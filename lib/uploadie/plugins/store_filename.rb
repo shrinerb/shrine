@@ -2,7 +2,7 @@ class Uploadie
   module Plugins
     module StoreFilename
       module InstanceMethods
-        def upload(io, *)
+        def uploaded_file(io, location)
           uploaded_file = super
           uploaded_file.metadata["original_filename"] = extract_filename(io)
           uploaded_file

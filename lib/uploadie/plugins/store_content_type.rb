@@ -2,7 +2,7 @@ class Uploadie
   module Plugins
     module StoreContentType
       module InstanceMethods
-        def upload(io, *)
+        def uploaded_file(io, location)
           uploaded_file = super
           uploaded_file.metadata["content_type"] = extract_content_type(io)
           uploaded_file

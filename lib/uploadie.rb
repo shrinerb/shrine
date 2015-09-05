@@ -29,7 +29,7 @@ class Uploadie
     def self.load_plugin(name)
       unless plugin = @plugins[name]
         require "uploadie/plugins/#{name}"
-        raise Error, "Plugin #{name} did not register itself correctly in Uploadie::Plugins" unless plugin = @plugins[name]
+        raise Error, "plugin #{name} did not register itself correctly in Uploadie::Plugins" unless plugin = @plugins[name]
       end
       plugin
     end
@@ -117,18 +117,14 @@ class Uploadie
           self.class.opts
         end
 
-        def upload(io, location = generate_location(io))
-          validate(io)
-          storage.upload(io, location)
-
-          uploaded_file(
-            "id"       => location,
-            "storage"  => storage_key.to_s,
-            "metadata" => {},
-          )
+        def upload(io, location = nil)
+          location = generate_location(io, location)
+          validate(io, location)
+          store(io, location)
+          uploaded_file(io, location)
         end
 
-        def validate(io)
+        def validate(io, location)
           IO_METHODS.each do |m|
             if not io.respond_to?(m)
               raise Error, "#{io.inspect} does not respond to `#{m}`"
@@ -136,14 +132,23 @@ class Uploadie
           end
         end
 
-        def generate_location(io)
+        def store(io, location)
+          storage.upload(io, location)
+        end
+
+        def uploaded_file(io, location)
+          self.class::UploadedFile.new(
+            "id"       => location,
+            "storage"  => storage_key.to_s,
+            "metadata" => {},
+          )
+        end
+
+        def generate_location(io, location)
+          return location if location.is_a?(String)
           filename = extract_filename(io)
           ext = (filename ? File.extname(filename) : "")
           generate_uid(io) + ext
-        end
-
-        def uploaded_file(data)
-          self.class::UploadedFile.new(data)
         end
 
         private
