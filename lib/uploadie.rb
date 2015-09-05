@@ -46,8 +46,6 @@ class Uploadie
       module ClassMethods
         attr_reader :opts
 
-        attr_accessor :storages
-
         # When inheriting Uploadie, copy the shared data into the subclass,
         # and setup the manager and proxy subclasses.
         def inherited(subclass)
@@ -79,6 +77,24 @@ class Uploadie
           self::UploadedFile.extend(plugin::FileClassMethods) if defined?(plugin::FileClassMethods)
           plugin.configure(self, *args, &block) if plugin.respond_to?(:configure)
           nil
+        end
+
+        attr_accessor :storages
+
+        def cache=(storage)
+          storages[:cache] = storage
+        end
+
+        def cache
+          storages[:cache]
+        end
+
+        def store=(storage)
+          storages[:store] = storage
+        end
+
+        def store
+          storages[:store]
         end
       end
 

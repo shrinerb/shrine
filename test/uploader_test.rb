@@ -57,7 +57,7 @@ class UploaderTest < Minitest::Test
   test "upload assigns storage and initializes metadata" do
     uploaded_file = @uploader.upload(fakeio, "custom")
 
-    assert_equal "memory", uploaded_file.data["storage"]
+    assert_equal "store", uploaded_file.data["storage"]
     assert_equal @storage, uploaded_file.storage
 
     assert_equal Hash.new, uploaded_file.data["metadata"]

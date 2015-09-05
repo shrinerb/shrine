@@ -15,7 +15,7 @@ class UploadedFileTest < Minitest::Test
     @storage.upload(fakeio("image"), "key")
     uploaded_file = @uploader_class::UploadedFile.new(
       "id"       => "key",
-      "storage"  => "memory",
+      "storage"  => "store",
       "metadata" => {}
     )
 
