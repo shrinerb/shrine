@@ -7,29 +7,29 @@ class UploaderTest < Minitest::Test
   end
 
   test "interface" do
-    assert_equal :memory, @uploader.storage_key
+    assert_equal :store, @uploader.storage_key
     assert_equal @storage, @uploader.storage
     assert_equal @uploader.class.opts, @uploader.opts
   end
 
   test "upload returns an UploadedFile with assigned data" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
+    uploaded_file = @uploader.upload(fakeio)
 
     assert_kind_of Uploadie::UploadedFile, uploaded_file
     assert_equal ["id", "storage", "metadata"], uploaded_file.data.keys
   end
 
   test "upload generates a unique location if it wasn't given" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
-    assert_equal "file", @storage.read(uploaded_file.id)
+    uploaded_file = @uploader.upload(fakeio("image"))
+    assert_equal "image", @storage.read(uploaded_file.id)
 
-    another_uploaded_file = @uploader.upload(FakeIO.new("file"))
+    another_uploaded_file = @uploader.upload(fakeio)
     refute_equal uploaded_file.id, another_uploaded_file.id
   end
 
   test "generated location preserves the extension" do
     # original_filename
-    uploaded_file = @uploader.upload(FakeIO.new("file", filename: "avatar.jpg"))
+    uploaded_file = @uploader.upload(fakeio(filename: "avatar.jpg"))
     assert_match /\.jpg$/, uploaded_file.id
 
     # path
@@ -42,20 +42,20 @@ class UploaderTest < Minitest::Test
   end
 
   test "generating location handles unkown filenames" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
+    uploaded_file = @uploader.upload(fakeio)
 
     assert_match /^[\w-]+$/, uploaded_file.id
   end
 
   test "upload accepts a specific location" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"), "custom")
+    uploaded_file = @uploader.upload(fakeio("image"), "custom")
 
     assert_equal "custom", uploaded_file.id
-    assert_equal "file", @storage.read("custom")
+    assert_equal "image", @storage.read("custom")
   end
 
   test "upload assigns storage and initializes metadata" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"), "custom")
+    uploaded_file = @uploader.upload(fakeio, "custom")
 
     assert_equal "memory", uploaded_file.data["storage"]
     assert_equal @storage, uploaded_file.storage

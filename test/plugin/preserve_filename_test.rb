@@ -7,7 +7,7 @@ class PreserveFilenameTest < Minitest::Test
 
   test "uses the unique location as the directory" do
     # original_filename
-    uploaded_file = @uploader.upload(FakeIO.new("file", filename: "foo.jpg"))
+    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
     assert_match /^[\w-]+\/foo\.jpg$/, uploaded_file.id
 
     # id
@@ -20,7 +20,7 @@ class PreserveFilenameTest < Minitest::Test
   end
 
   test "falls back to original location generating if filename cannot be extracted" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
+    uploaded_file = @uploader.upload(fakeio)
 
     assert_match /^[\w-]+$/, uploaded_file.id
   end

@@ -13,7 +13,7 @@ require "forwardable"
 class Minitest::Test
   def self.test(name, &block)
     test_name = "test_#{name.gsub(/\s+/,'_')}".to_sym
-    block ||= -> { skip "" }
+    block ||= -> { skip "Pending..." }
     define_method(test_name, &block)
   end
 
@@ -32,24 +32,24 @@ class Minitest::Test
     uploader_class.plugin plugin unless plugin == :bare
     uploader_class.instance_exec(&block) if block
     uploader_class.new(:memory)
+
+  def fakeio(content = "file", **options)
+    fakeio = FakeIO.new(content, **options)
+    fakeio.singleton_class.class_eval do
+      attr_reader :original_filename if options[:filename]
+      attr_reader :content_type if options[:content_type]
+    end
+    fakeio
   end
 end
 
 class FakeIO
   def initialize(content, filename: nil, content_type: nil)
     @io = StringIO.new(content)
-    @original_filename = filename and extend OriginalFilename
-    @content_type = content_type and extend ContentType
+    @original_filename = filename
+    @content_type = content_type
   end
 
   extend Forwardable
   delegate Uploadie::IO_METHODS => :@io
-
-  module OriginalFilename
-    attr_reader :original_filename
-  end
-
-  module ContentType
-    attr_reader :content_type
-  end
 end

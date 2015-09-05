@@ -7,7 +7,7 @@ class StoreFilenameTest < Minitest::Test
 
   test "filename gets stored into metadata" do
     # original_filename
-    uploaded_file = @uploader.upload(FakeIO.new("file", filename: "foo.jpg"))
+    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
     assert_equal "foo.jpg", uploaded_file.metadata["original_filename"]
 
     # id
@@ -20,13 +20,13 @@ class StoreFilenameTest < Minitest::Test
   end
 
   test "filename doesn't get stored when it's unkown" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
+    uploaded_file = @uploader.upload(fakeio)
 
     assert_equal nil, uploaded_file.metadata["original_filename"]
   end
 
   test "UploadedFile gets `original_filename` and `extension` methods" do
-    uploaded_file = @uploader.upload(FakeIO.new("file", filename: "foo.jpg"))
+    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
 
     assert_equal "foo.jpg", uploaded_file.original_filename
     assert_equal ".jpg",    uploaded_file.extension

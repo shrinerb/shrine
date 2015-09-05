@@ -6,14 +6,14 @@ class StoreFilesize < Minitest::Test
   end
 
   test "filesize gets stored into metadata" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
+    uploaded_file = @uploader.upload(fakeio("image"))
 
-    assert_equal 4, uploaded_file.metadata["size"]
+    assert_equal 5, uploaded_file.metadata["size"]
   end
 
   test "UploadedFile gets `size` method" do
-    uploaded_file = @uploader.upload(FakeIO.new("file"))
+    uploaded_file = @uploader.upload(fakeio("image"))
 
-    assert_equal 4, uploaded_file.size
+    assert_equal 5, uploaded_file.size
   end
 end

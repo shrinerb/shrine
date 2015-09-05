@@ -12,7 +12,7 @@ class UploadedFileTest < Minitest::Test
   end
 
   test "interface" do
-    @storage.upload(FakeIO.new("file"), "key")
+    @storage.upload(fakeio("image"), "key")
     uploaded_file = @uploader_class::UploadedFile.new(
       "id"       => "key",
       "storage"  => "memory",
@@ -26,13 +26,13 @@ class UploadedFileTest < Minitest::Test
     assert_equal @storage, uploaded_file.storage
     assert_equal Hash.new, uploaded_file.metadata
 
-    assert_equal "file", uploaded_file.read
+    assert_equal "image", uploaded_file.read
     assert_equal true, uploaded_file.eof?
     uploaded_file.rewind
     uploaded_file.close
 
     assert_equal "memory://key", uploaded_file.url
-    assert_equal 4, uploaded_file.size
+    assert_equal 5, uploaded_file.size
     assert_io uploaded_file.download
     uploaded_file.delete
     assert_equal false, uploaded_file.exists?
