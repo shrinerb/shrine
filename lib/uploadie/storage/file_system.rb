@@ -65,14 +65,10 @@ class Uploadie
         end
       end
 
-      def clear!(confirm = nil, &block)
-        if block_given?
+      def clear!(confirm = nil, &condition)
+        if condition
           Find.find(directory) do |path|
-            if block.call(path)
-              FileUtils.rm(path)
-            else
-              Find.prune
-            end
+            condition.(path) ? FileUtils.rm(path) : Find.prune
           end
         else
           raise Uploadie::Confirm unless confirm == :confirm
