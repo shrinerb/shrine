@@ -9,7 +9,8 @@ class Uploadie
 
       def upload(io, id)
         @store[id] = io.read
-        url(id)
+
+        id
       end
 
       def download(id)

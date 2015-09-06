@@ -20,7 +20,8 @@ class Uploadie
 
       def upload(io, id)
         IO.copy_stream(io, path(id))
-        url(id)
+
+        id
       end
 
       def download(id)
