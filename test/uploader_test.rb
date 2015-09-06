@@ -47,6 +47,12 @@ class UploaderTest < Minitest::Test
     assert_match /^[\w-]+$/, uploaded_file.id
   end
 
+  test "upload accepts a file type (and curently does nothing)" do
+    uploaded_file = @uploader.upload(fakeio("image"), :image)
+
+    assert_instance_of String, uploaded_file.id
+  end
+
   test "upload accepts a specific location" do
     uploaded_file = @uploader.upload(fakeio("image"), "custom")
 
@@ -65,7 +71,7 @@ class UploaderTest < Minitest::Test
   end
 
   test "upload validates that the given object is an IO" do
-    assert_raises(Uploadie::Error, /does not respond to/) do
+    assert_raises(Uploadie::InvalidFile, /does not respond to/) do
       @uploader.upload("not an IO")
     end
   end

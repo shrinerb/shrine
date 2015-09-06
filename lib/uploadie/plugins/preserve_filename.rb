@@ -2,8 +2,8 @@ class Uploadie
   module Plugins
     module PreserveFilename
       module InstanceMethods
-        def generate_location(io, location, *)
-          if location.nil? && filename = extract_filename(io)
+        def generate_location(context)
+          if filename = extract_filename(context[:io])
             directory = File.basename(super, ".*")
             File.join(directory, filename)
           else

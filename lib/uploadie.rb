@@ -5,6 +5,8 @@ require "securerandom"
 class Uploadie
   class Error < StandardError; end
 
+  class InvalidFile < Error; end
+
   class Confirm < Error
     def message
       "Are you sure you want to delete all files from the storage? \
@@ -117,41 +119,60 @@ class Uploadie
           self.class.opts
         end
 
-        def upload(io, location = nil)
-          location = generate_location(io, location)
-          validate(io, location)
-          store(io, location)
-          uploaded_file(io, location)
+        def upload(io, type = nil)
+          _upload(io, type)
         end
 
-        def validate(io, location)
-          IO_METHODS.each do |m|
-            if not io.respond_to?(m)
-              raise Error, "#{io.inspect} does not respond to `#{m}`"
-            end
-          end
+        def store(io, type = nil)
+          _enforce_io(io)
+          _store(io, type)
         end
 
-        def store(io, location)
-          storage.upload(io, location)
-        end
-
-        def uploaded_file(io, location)
-          self.class::UploadedFile.new(
-            "id"       => location,
-            "storage"  => storage_key.to_s,
-            "metadata" => {},
-          )
-        end
-
-        def generate_location(io, location)
-          return location if location.is_a?(String)
-          filename = extract_filename(io)
+        def generate_location(context)
+          filename = extract_filename(context[:io])
           ext = (filename ? File.extname(filename) : "")
-          generate_uid(io) + ext
+          generate_uid(context[:io]) + ext
+        end
+
+        def extract_metadata(io)
+          {}
+        end
+
+        def io?(io)
+          IO_METHODS.all? { |m| io.respond_to?(m) }
         end
 
         private
+
+        def _upload(io, type)
+          store(io, type)
+        end
+
+        def _store(io, type)
+          location   = type if type.is_a?(String)
+          location ||= generate_location(io: io, type: type)
+          metadata = extract_metadata(io)
+
+          _put(io, location)
+
+          self.class::UploadedFile.new(
+            "id"       => location,
+            "storage"  => storage_key.to_s,
+            "metadata" => metadata,
+          )
+        end
+
+        def _put(io, location)
+          storage.upload(io, location)
+        end
+
+        def _enforce_io(io)
+          IO_METHODS.each do |m|
+            if not io.respond_to?(m)
+              raise InvalidFile, "#{io.inspect} does not respond to `#{m}`"
+            end
+          end
+        end
 
         def extract_filename(io)
           if io.respond_to?(:original_filename)

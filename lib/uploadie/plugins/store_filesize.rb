@@ -2,10 +2,10 @@ class Uploadie
   module Plugins
     module StoreFilesize
       module InstanceMethods
-        def uploaded_file(io, location)
-          uploaded_file = super
-          uploaded_file.metadata["size"] = extract_size(io)
-          uploaded_file
+        def extract_metadata(io)
+          metadata = super
+          metadata["size"] = extract_size(io)
+          metadata
         end
 
         private
