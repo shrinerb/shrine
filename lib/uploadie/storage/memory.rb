@@ -11,7 +11,7 @@ class Uploadie
         @store[id] = io.read
         io.rewind
 
-        id
+        url(id)
       end
 
       def download(id)

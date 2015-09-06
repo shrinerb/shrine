@@ -22,7 +22,7 @@ class Uploadie
         IO.copy_stream(io, path(id))
         io.rewind
 
-        id
+        url(id)
       end
 
       def download(id)
