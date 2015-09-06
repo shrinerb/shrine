@@ -20,6 +20,7 @@ class Uploadie
 
       def upload(io, id)
         IO.copy_stream(io, path(id))
+        io.rewind
 
         id
       end

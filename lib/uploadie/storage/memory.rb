@@ -9,6 +9,7 @@ class Uploadie
 
       def upload(io, id)
         @store[id] = io.read
+        io.rewind
 
         id
       end
