@@ -7,6 +7,14 @@ class Uploadie
 
   class InvalidFile < Error; end
 
+  class ValidationFailed < Error
+    attr_reader :errors
+
+    def initialize(errors)
+      @errors = errors
+    end
+  end
+
   class Confirm < Error
     def message
       "Are you sure you want to delete all files from the storage? \
@@ -128,6 +136,15 @@ class Uploadie
           _store(io, context)
         end
 
+        def validate(io, context)
+          []
+        end
+
+        def valid?(io, context)
+          errors = validate(io, context)
+          errors.any?
+        end
+
         def extract_metadata(io)
           {}
         end
@@ -139,6 +156,8 @@ class Uploadie
         private
 
         def _upload(io, context)
+          errors = validate(io, context)
+          raise ValidationFailed.new(errors) if errors.any?
           store(io, context)
         end
 
