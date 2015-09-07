@@ -15,7 +15,12 @@ class Uploadie
       end
 
       def download(id)
-        StringIO.new(read(id))
+        tempfile = Tempfile.new(id, binmode: true)
+        tempfile.write(read(id))
+        tempfile.rewind
+        tempfile.fsync
+
+        tempfile
       end
 
       def open(id)
