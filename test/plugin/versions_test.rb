@@ -2,7 +2,11 @@ require "test_helper"
 
 class VersionsTest < Minitest::Test
   def setup
-    @uploader = uploader(:versions)
+    @uploader = uploader(:versions) do
+      def _generate_location(io, context)
+        (context[:type] || super).to_s
+      end
+    end
   end
 
   test "uploading a hash of versions" do
@@ -34,9 +38,9 @@ class VersionsTest < Minitest::Test
   end
 
   test "regular upload" do
-    uploaded_file = @uploader.upload(fakeio("image"), "location")
+    uploaded_file = @uploader.upload(fakeio("image"), {type: :avatar})
 
-    assert_equal "location", uploaded_file.id
-    assert_equal "image", @storage.read("location")
+    assert_equal "avatar", uploaded_file.id
+    assert_equal "image", @storage.read(uploaded_file.id)
   end
 end

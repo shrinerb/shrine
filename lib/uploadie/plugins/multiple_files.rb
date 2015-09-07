@@ -2,23 +2,29 @@ class Uploadie
   module Plugins
     module MultipleFiles
       module InstanceMethods
-        def upload(io, type = nil)
+        def upload(io, context = {})
           if io.is_a?(Array)
-            if type.is_a?(Array)
-              io.zip(type).map { |io, type| super(io, type) }
-            else
-              io.map { |io| super(io, type) }
-            end
+            upload_multiple(io, context) { |io, context| super(io, context) }
           else
             super
           end
         end
 
-        def store(io, type = nil)
+        def store(io, context = {})
           if io.is_a?(Array)
-            io.zip(type).map { |io, type| super(io, type) }
+            upload_multiple(io, context) { |io, context| super(io, context) }
           else
             super
+          end
+        end
+
+        private
+
+        def upload_multiple(ios, context)
+          if context.is_a?(Array)
+            ios.zip(context).map { |io, context| yield(io, context) }
+          else
+            ios.map { |io| yield(io, context) }
           end
         end
       end

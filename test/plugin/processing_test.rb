@@ -91,7 +91,7 @@ class ProcessingTest < Minitest::Test
 
   test "passing symbol :processor" do
     @uploader = processing_uploader(processor: :process)
-    def @uploader.process(io); FakeIO.new(io.read.reverse); end
+    def @uploader.process(io, context); FakeIO.new(io.read.reverse); end
 
     uploaded_file = @uploader.upload(fakeio("file"))
 

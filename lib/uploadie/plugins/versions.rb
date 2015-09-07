@@ -6,17 +6,17 @@ class Uploadie
       end
 
       module InstanceMethods
-        def upload(io, type = nil)
+        def upload(io, context = {})
           if io.is_a?(Hash)
-            upload_versions(io, type) { |ios, locations| super(ios, locations) }
+            upload_versions(io, context) { |ios, contexts| super(ios, contexts) }
           else
             super
           end
         end
 
-        def store(io, type = nil)
+        def store(io, context = {})
           if io.is_a?(Hash)
-            upload_versions(io, type) { |ios, locations| super(ios, locations) }
+            upload_versions(io, context) { |ios, contexts| super(ios, contexts) }
           else
             super
           end
@@ -24,12 +24,12 @@ class Uploadie
 
         private
 
-        def upload_versions(hash, type)
-          ios       = hash.values
-          locations = hash.map { |name, io| generate_location(io: io, type: type, version: name) }
-          names     = hash.keys
+        def upload_versions(hash, context)
+          versions = hash.values
+          names    = hash.keys
+          contexts = names.map { |name| context.merge(version: name) }
 
-          uploaded_files = yield(ios, locations)
+          uploaded_files = yield(versions, contexts)
 
           Hash[names.zip(uploaded_files)]
         end

@@ -1,6 +1,6 @@
 class Uploadie
   module Plugins
-    # plugin :processing, storage: :cache, processor: -> (raw_image) do
+    # plugin :processing, storage: :cache, processor: -> (raw_image, context) do
     #   size_700 = resize_to_fit(raw_image, 700, 700)
     #   size_500 = resize_to_fit(raw_image, 500, 500)
     #   size_300 = resize_to_fit(raw_image, 300, 300)
@@ -24,21 +24,21 @@ class Uploadie
       module InstanceMethods
         private
 
-        def store(io, type = nil)
-          if processing?(io, type)
+        def store(io, **context)
+          if processing?(io, context)
             processor = self.class.opts[:processor]
             processor = method(processor) if processor.is_a?(Symbol)
             io = io.download if io.is_a?(Uploadie::UploadedFile)
 
-            result = instance_exec(io, &processor)
+            result = instance_exec(io, context, &processor)
 
-            super(result, type)
+            super(result, context)
           else
             super
           end
         end
 
-        def processing?(io, type)
+        def processing?(io, context)
           io?(io) && storage_key == self.class.opts[:processing_storage]
         end
       end

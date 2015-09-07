@@ -119,19 +119,13 @@ class Uploadie
           self.class.opts
         end
 
-        def upload(io, type = nil)
-          _upload(io, type)
+        def upload(io, context = {})
+          _upload(io, context)
         end
 
-        def store(io, type = nil)
+        def store(io, context = {})
           _enforce_io(io)
-          _store(io, type)
-        end
-
-        def generate_location(context)
-          filename = extract_filename(context[:io])
-          ext = (filename ? File.extname(filename) : "")
-          generate_uid(context[:io]) + ext
+          _store(io, context)
         end
 
         def extract_metadata(io)
@@ -144,13 +138,12 @@ class Uploadie
 
         private
 
-        def _upload(io, type)
-          store(io, type)
+        def _upload(io, context)
+          store(io, context)
         end
 
-        def _store(io, type)
-          location   = type if type.is_a?(String)
-          location ||= generate_location(io: io, type: type)
+        def _store(io, context)
+          location = _generate_location(io, context)
           metadata = extract_metadata(io)
 
           _put(io, location)
@@ -164,6 +157,14 @@ class Uploadie
 
         def _put(io, location)
           storage.upload(io, location)
+        end
+
+        def _generate_location(io, context)
+          original_filename = extract_filename(io)
+          extension = File.extname(original_filename.to_s)
+          basename = generate_uid(io)
+
+          basename + extension
         end
 
         def _enforce_io(io)
