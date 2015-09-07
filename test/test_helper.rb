@@ -28,7 +28,8 @@ class Minitest::Test
 
   def uploader(plugin, &block)
     uploader_class = Class.new(Uploadie)
-    uploader_class.storages[:store] = @storage = Uploadie::Storage::Memory.new
+    uploader_class.cache = Uploadie::Storage::Memory.new
+    uploader_class.store = @storage = Uploadie::Storage::Memory.new
     uploader_class.plugin(plugin) unless plugin == :bare
     uploader_class.instance_exec(&block) if block
     uploader_class.new(:store)
