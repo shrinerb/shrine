@@ -5,7 +5,7 @@ class Uploadie
         private
 
         def _generate_location(io, context)
-          if filename = extract_filename(io)
+          if filename = _extract_filename(io)
             directory = File.basename(super, ".*")
             File.join(directory, filename)
           else

@@ -44,6 +44,10 @@ class Minitest::Test
     end
     fakeio
   end
+
+  def image
+    File.open("test/fixtures/image.jpg")
+  end
 end
 
 class FakeIO

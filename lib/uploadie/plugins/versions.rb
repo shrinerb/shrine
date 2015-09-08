@@ -61,7 +61,7 @@ class Uploadie
             if version
               get.fetch(version).url
             else
-              raise Error, "must call #{name}_url with a name of the version"
+              raise Error, "must call #{name}_url with the name of the version"
             end
           else
             super

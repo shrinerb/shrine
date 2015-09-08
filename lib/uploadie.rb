@@ -171,7 +171,7 @@ class Uploadie
           errors.empty?
         end
 
-        def extract_metadata(io)
+        def extract_metadata(io, context)
           {}
         end
 
@@ -189,7 +189,7 @@ class Uploadie
 
         def _store(io, context)
           location = _generate_location(io, context)
-          metadata = extract_metadata(io)
+          metadata = extract_metadata(io, context)
 
           _put(io, location)
 
@@ -205,7 +205,7 @@ class Uploadie
         end
 
         def _generate_location(io, context)
-          original_filename = extract_filename(io)
+          original_filename = _extract_filename(io)
           extension = File.extname(original_filename.to_s)
           basename = generate_uid(io)
 
@@ -220,7 +220,7 @@ class Uploadie
           end
         end
 
-        def extract_filename(io)
+        def _extract_filename(io)
           if io.respond_to?(:original_filename)
             io.original_filename
           elsif io.respond_to?(:path)

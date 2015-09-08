@@ -10,7 +10,7 @@ class Uploadie
         private
 
         def _generate_location(io, context)
-          generator = self.class.opts[:location_generator]
+          generator = opts[:location_generator]
           generator = method(generator) if generator.is_a?(Symbol)
           result = instance_exec(io, context, &generator)
           raise Error, "generated location should be a String, and was #{result.inspect}" if not result.is_a?(String)
