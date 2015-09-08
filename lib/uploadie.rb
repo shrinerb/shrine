@@ -187,6 +187,9 @@ class Uploadie
           basename + extension
         end
 
+        def default_url(*)
+        end
+
         private
 
         def _upload(io, context)
@@ -323,9 +326,16 @@ class Uploadie
           delete!(@old_attachment) if @old_attachment
         end
 
-        def url(*)
-          uploaded_file = get
-          uploaded_file.url if uploaded_file
+        def url(*args)
+          if uploaded_file = get
+            uploaded_file.url
+          else
+            default_url(*args)
+          end
+        end
+
+        def default_url(*)
+          store.default_url(name: name, record: record)
         end
 
         def valid?

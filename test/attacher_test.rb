@@ -113,4 +113,11 @@ class AttacherTest < Minitest::Test
 
     assert_match %r{^memory://}, @attacher.url
   end
+
+  test "default url" do
+    uploader = @attacher.store
+    def uploader.default_url(context); "#{context[:name]}_default"; end
+
+    assert_equal "avatar_default", @attacher.url
+  end
 end

@@ -146,6 +146,14 @@ class VersionsTest < Minitest::Test
     assert_raises(Uploadie::Error) { @user.avatar_url }
   end
 
+  test "passes in version to the default url" do
+    @attacher = versions_attacher { |io| Hash[thumb: io] }
+    uploader = @attacher.store
+    def uploader.default_url(context); context[:version].to_s; end
+
+    assert_equal "thumb", @attacher.record.avatar_url(:thumb)
+  end
+
   test "returning an invalid object" do
     @uploader = versions_uploader { |io| "not an IO" }
 

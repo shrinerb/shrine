@@ -68,6 +68,10 @@ class Uploadie
           end
         end
 
+        def default_url(version = nil)
+          store.default_url(name: name, record: record, version: version)
+        end
+
         def validate
           get.is_a?(Hash) ? [] : super
         end
