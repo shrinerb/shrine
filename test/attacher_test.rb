@@ -104,4 +104,12 @@ class AttacherTest < Minitest::Test
 
     assert_equal uploaded_file.id, @attacher.get.id
   end
+
+  test "url" do
+    assert_equal nil, @attacher.url
+
+    @attacher.set(fakeio)
+
+    assert_match %r{^memory://}, @attacher.url
+  end
 end

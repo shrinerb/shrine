@@ -264,6 +264,10 @@ class Uploadie
             def #{name}
               #{name}_attacher.get
             end
+
+            def #{name}_url(*args)
+              #{name}_attacher.url(*args)
+            end
           RUBY
         end
 
@@ -317,6 +321,11 @@ class Uploadie
           end
 
           delete!(@old_attachment) if @old_attachment
+        end
+
+        def url(*)
+          uploaded_file = get
+          uploaded_file.url if uploaded_file
         end
 
         def valid?

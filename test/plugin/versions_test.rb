@@ -10,7 +10,8 @@ class VersionsTest < Minitest::Test
   def versions_attacher(*args, &block)
     uploader = versions_uploader(*args, &block)
     user = Struct.new(:avatar_data).new
-    uploader.class::Attacher.new(user, :avatar)
+    user.class.include uploader.class[:avatar]
+    user.avatar_attacher
   end
 
   test "processing into multiple versions" do
@@ -114,6 +115,35 @@ class VersionsTest < Minitest::Test
 
     @attacher.commit!
     assert_equal version, @attacher.get[:thumb]
+  end
+
+  test "attachment url" do
+    @attacher = versions_attacher(storage: :cache) { |io| Hash[thumb: io] }
+    @user = @attacher.record
+
+    assert_equal nil, @user.avatar_url(:thumb)
+
+    @user.avatar = fakeio
+
+    refute_empty @user.avatar_url(:thumb)
+
+    assert_raises(KeyError) { @user.avatar_url(:unknown) }
+  end
+
+  test "attachment url returns raw file URL if versions haven't been generated" do
+    @attacher = versions_attacher(storage: :store) { |io| Hash[thumb: io] }
+    @user = @attacher.record
+
+    assert_equal @user.avatar_url, @user.avatar_url(:thumb)
+  end
+
+  test "attachment url doesn't allow no argument when attachment is versioned" do
+    @attacher = versions_attacher(storage: :cache) { |io| Hash[thumb: io] }
+    @user = @attacher.record
+
+    @user.avatar = fakeio
+
+    assert_raises(Uploadie::Error) { @user.avatar_url }
   end
 
   test "returning an invalid object" do

@@ -56,6 +56,18 @@ class Uploadie
       end
 
       module AttacherMethods
+        def url(version = nil)
+          if get.is_a?(Hash)
+            if version
+              get.fetch(version).url
+            else
+              raise Error, "must call #{name}_url with a name of the version"
+            end
+          else
+            super
+          end
+        end
+
         def validate
           get.is_a?(Hash) ? [] : super
         end

@@ -18,6 +18,12 @@ class AttachmentTest < Minitest::Test
     assert_equal "image", @user.avatar.read
   end
 
+  test "url" do
+    @user.avatar = fakeio("image")
+
+    refute_empty @user.avatar_url
+  end
+
   test "introspection" do
     assert_match "Attachment(avatar)", @user.class.ancestors[1].inspect
   end
