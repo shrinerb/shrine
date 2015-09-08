@@ -24,6 +24,7 @@ class Minitest::Test
   def assert_raises(exception_class, message = nil, &block)
     exception = super(exception_class, &block)
     assert_match message, exception.message if message
+    exception
   end
 
   def uploader(plugin, &block)

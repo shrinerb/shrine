@@ -8,7 +8,6 @@ class UploaderTest < Minitest::Test
 
   test "interface" do
     assert_equal :store, @uploader.storage_key
-    assert_equal @storage, @uploader.storage
     assert_equal @uploader.class.opts, @uploader.opts
   end
 
@@ -56,7 +55,6 @@ class UploaderTest < Minitest::Test
     uploaded_file = @uploader.upload(fakeio)
 
     assert_equal "store", uploaded_file.data["storage"]
-    assert_equal @storage, uploaded_file.storage
 
     assert_equal Hash.new, uploaded_file.data["metadata"]
     assert_equal Hash.new, uploaded_file.metadata

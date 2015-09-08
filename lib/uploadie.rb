@@ -1,6 +1,7 @@
 require "uploadie/version"
 
 require "securerandom"
+require "json"
 
 class Uploadie
   class Error < StandardError; end
@@ -23,6 +24,14 @@ class Uploadie
   end
 
   class UploadedFile
+    @uploadie_class = ::Uploadie
+  end
+
+  class Attachment < Module
+    @uploadie_class = ::Uploadie
+  end
+
+  class Attacher
     @uploadie_class = ::Uploadie
   end
 
@@ -70,6 +79,14 @@ class Uploadie
           file_class = Class.new(self::UploadedFile)
           file_class.uploadie_class = subclass
           subclass.const_set(:UploadedFile, file_class)
+
+          attachment_class = Class.new(self::Attachment)
+          attachment_class.uploadie_class = subclass
+          subclass.const_set(:Attachment, attachment_class)
+
+          attacher_class = Class.new(self::Attacher)
+          attacher_class.uploadie_class = subclass
+          subclass.const_set(:Attacher, attacher_class)
         end
 
         # Load a new plugin into the current class.  A plugin can be a module
@@ -85,6 +102,10 @@ class Uploadie
           extend(plugin::ClassMethods) if defined?(plugin::ClassMethods)
           self::UploadedFile.include(plugin::FileMethods) if defined?(plugin::FileMethods)
           self::UploadedFile.extend(plugin::FileClassMethods) if defined?(plugin::FileClassMethods)
+          self::Attachment.include(plugin::AttachmentMethods) if defined?(plugin::AttachmentMethods)
+          self::Attachment.extend(plugin::AttachmentClassMethods) if defined?(plugin::AttachmentClassMethods)
+          self::Attacher.include(plugin::AttacherMethods) if defined?(plugin::AttacherMethods)
+          self::Attacher.extend(plugin::AttacherClassMethods) if defined?(plugin::AttacherClassMethods)
           plugin.configure(self, *args, &block) if plugin.respond_to?(:configure)
           nil
         end
@@ -106,6 +127,11 @@ class Uploadie
         def store
           storages[:store]
         end
+
+        def attachment(*args)
+          self::Attachment.new(*args)
+        end
+        alias [] attachment
       end
 
       module InstanceMethods
@@ -142,7 +168,7 @@ class Uploadie
 
         def valid?(io, context)
           errors = validate(io, context)
-          errors.any?
+          errors.empty?
         end
 
         def extract_metadata(io)
@@ -209,6 +235,164 @@ class Uploadie
         end
       end
 
+      module AttachmentClassMethods
+        attr_accessor :uploadie_class
+
+        def inspect
+          "#{uploadie_class.inspect}::Attachment"
+        end
+      end
+
+      module AttachmentMethods
+        def initialize(name, cache: :cache, store: :store)
+          @name = name
+
+          class_variable_set(:"@@#{name}_attacher_class", uploadie_class::Attacher)
+
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{name}_attacher
+              @#{name}_attacher ||= @@#{name}_attacher_class.new(
+                self, #{name.inspect},
+                cache: #{cache.inspect}, store: #{store.inspect}
+              )
+            end
+
+            def #{name}=(value)
+              #{name}_attacher.set(value)
+            end
+
+            def #{name}
+              #{name}_attacher.get
+            end
+          RUBY
+        end
+
+        def to_s
+          "#{self.class.inspect}(#{@name})"
+        end
+
+        def inspect
+          "#{self.class.inspect}(#{@name})"
+        end
+
+        def uploadie_class
+          self.class.uploadie_class
+        end
+      end
+
+      module AttacherClassMethods
+        attr_accessor :uploadie_class
+
+        def inspect
+          "#{uploadie_class.inspect}::Attacher"
+        end
+      end
+
+      module AttacherMethods
+        attr_reader :record, :name, :cache, :store, :errors
+
+        def initialize(record, name, cache: :cache, store: :store)
+          @record = record
+          @name   = name
+          @cache  = uploadie_class.new(cache)
+          @store  = uploadie_class.new(store)
+          @errors = []
+        end
+
+        def set(value)
+          uploaded_file =
+            case value
+            when String            then uploaded_file(deserialize(value))
+            when Hash              then uploaded_file(value)
+            when UploadedFile, nil then value
+            else
+              cache!(value)
+            end
+
+          @old_attachment = get
+          _set(uploaded_file)
+        end
+
+        def get
+          if data = read
+            uploaded_file(data)
+          end
+        end
+
+        def commit!
+          uploaded_file = get
+
+          if uploaded_file && !stored?(uploaded_file)
+            stored_file = store!(uploaded_file)
+            _set(stored_file)
+          end
+
+          delete!(@old_attachment) if @old_attachment
+        end
+
+        def valid?
+          @errors = validate
+          @errors.empty?
+        end
+
+        def validate
+          if uploaded_file = get
+            store.validate(uploaded_file, name: name, record: record)
+          else
+            []
+          end
+        end
+
+        def uploadie_class
+          self.class.uploadie_class
+        end
+
+        private
+
+        def cache!(io)
+          cache.upload(io, name: name, record: record)
+        end
+
+        def store!(io)
+          store.upload(io, name: name, record: record)
+        end
+
+        def delete!(uploaded_file)
+          uploaded_file.delete
+        end
+
+        def _set(uploaded_file)
+          write(uploaded_file ? uploaded_file.data : nil)
+          uploaded_file
+        end
+
+        def stored?(uploaded_file)
+          uploaded_file.storage_key == store.storage_key
+        end
+
+        def write(data)
+          value = data ? serialize(data) : nil
+          record.send("#{name}_data=", value)
+        end
+
+        def read
+          data = record.send("#{name}_data")
+          data.is_a?(String) ? deserialize(data) : data
+        end
+
+        def uploaded_file(data)
+          uploadie_class::UploadedFile.new(data)
+        end
+
+        def deserialize(string)
+          JSON.load(string)
+        end
+
+        def serialize(object)
+          JSON.dump(object)
+        end
+      end
+
       module FileClassMethods
         attr_accessor :uploadie_class
 
@@ -218,13 +402,15 @@ class Uploadie
       end
 
       module FileMethods
-        attr_reader :data, :id, :storage, :metadata
+        attr_reader :data, :id, :storage_key, :metadata
 
         def initialize(data)
-          @data     = data
-          @id       = data.fetch("id")
-          @storage  = uploadie_class.storages.fetch(data.fetch("storage").to_sym)
-          @metadata = data.fetch("metadata")
+          @data        = data
+          @id          = data.fetch("id")
+          @storage_key = data.fetch("storage").to_sym
+          @metadata    = data.fetch("metadata")
+
+          storage # ensure that error is raised if storage key doesn't exist
         end
 
         def read(*args)
@@ -271,6 +457,10 @@ class Uploadie
 
         def io
           @io ||= storage.open(id)
+        end
+
+        def storage
+          @storage ||= uploadie_class.storages.fetch(storage_key)
         end
       end
     end
