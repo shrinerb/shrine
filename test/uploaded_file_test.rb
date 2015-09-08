@@ -11,7 +11,7 @@ class UploadedFileTest < Minitest::Test
     assert_equal @uploader_class, @uploader_class::UploadedFile.uploadie_class
   end
 
-  test "interface" do
+  test "main interface" do
     @storage.upload(fakeio("image"), "key")
     uploaded_file = @uploader_class::UploadedFile.new(
       "id"       => "key",
@@ -32,10 +32,21 @@ class UploadedFileTest < Minitest::Test
     uploaded_file.close
 
     assert_equal "memory://key", uploaded_file.url
-    assert_equal 5, uploaded_file.size
     assert_io uploaded_file.download
     uploaded_file.delete
     assert_equal false, uploaded_file.exists?
+  end
+
+  test "metadata interface" do
+    uploaded_file = @uploader_class::UploadedFile.new(
+      "id"       => "123",
+      "storage"  => "store",
+      "metadata" => {"filename" => "foo.jpg", "size" => 5, "content_type" => "image/jpeg"}
+    )
+
+    assert_equal "foo.jpg", uploaded_file.original_filename
+    assert_equal 5, uploaded_file.size
+    assert_equal "image/jpeg", uploaded_file.content_type
   end
 
   test "equality" do

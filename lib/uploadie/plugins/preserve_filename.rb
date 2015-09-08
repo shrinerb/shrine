@@ -3,7 +3,7 @@ class Uploadie
     module PreserveFilename
       module InstanceMethods
         def generate_location(io, context)
-          if filename = _extract_filename(io)
+          if filename = extract_filename(io)
             directory = File.basename(super, ".*")
             File.join(directory, filename)
           else

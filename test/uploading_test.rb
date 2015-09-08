@@ -27,15 +27,15 @@ class UploaderTest < Minitest::Test
   end
 
   test "generated location preserves the extension" do
-    # original_filename
+    # Rails file
     uploaded_file = @uploader.upload(fakeio(filename: "avatar.jpg"))
     assert_match /\.jpg$/, uploaded_file.id
 
-    # path
+    # Uploaded file
     second_uploaded_file = @uploader.upload(uploaded_file)
     assert_match /\.jpg$/, second_uploaded_file.id
 
-    # id
+    # File
     uploaded_file = @uploader.upload(File.open(__FILE__))
     assert_match /\.rb$/, uploaded_file.id
   end
@@ -51,13 +51,11 @@ class UploaderTest < Minitest::Test
     uploaded_file = @uploader.store(fakeio("image"), type: :image)
   end
 
-  test "upload assigns storage and initializes metadata" do
+  test "upload assigns storage and extracts metadata" do
     uploaded_file = @uploader.upload(fakeio)
 
     assert_equal "store", uploaded_file.data["storage"]
-
-    assert_equal Hash.new, uploaded_file.data["metadata"]
-    assert_equal Hash.new, uploaded_file.metadata
+    assert_instance_of Hash, uploaded_file.data["metadata"]
   end
 
   test "upload validates that the given object is an IO" do

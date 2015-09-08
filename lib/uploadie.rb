@@ -8,14 +8,6 @@ class Uploadie
 
   class InvalidFile < Error; end
 
-  class ValidationFailed < Error
-    attr_reader :errors
-
-    def initialize(errors)
-      @errors = errors
-    end
-  end
-
   class Confirm < Error
     def message
       "Are you sure you want to delete all files from the storage? \
@@ -132,6 +124,14 @@ class Uploadie
           self::Attachment.new(*args)
         end
         alias [] attachment
+
+        def validate(&block)
+          if block
+            @validate_block = block
+          else
+            @validate_block
+          end
+        end
       end
 
       module InstanceMethods
@@ -162,39 +162,50 @@ class Uploadie
           _store(io, context)
         end
 
-        def validate(io, context)
-          []
-        end
-
-        def valid?(io, context)
-          errors = validate(io, context)
-          errors.empty?
-        end
-
-        def extract_metadata(io, context)
-          {}
-        end
-
-        def io?(io)
-          IO_METHODS.all? { |m| io.respond_to?(m) }
-        end
-
         def generate_location(io, context)
-          original_filename = _extract_filename(io)
+          original_filename = extract_filename(io)
           extension = File.extname(original_filename.to_s)
           basename = generate_uid(io)
 
           basename + extension
         end
 
+        def extract_metadata(io, context)
+          {
+            "filename" => extract_filename(io),
+            "size" => extract_size(io),
+            "content_type" => extract_content_type(io),
+          }
+        end
+
+        def extract_filename(io)
+          if io.respond_to?(:original_filename)
+            io.original_filename
+          elsif io.respond_to?(:path)
+            File.basename(io.path)
+          end
+        end
+
+        def extract_content_type(io)
+          if io.respond_to?(:content_type)
+            io.content_type
+          end
+        end
+
+        def extract_size(io)
+          io.size
+        end
+
         def default_url(*)
+        end
+
+        def io?(io)
+          IO_METHODS.all? { |m| io.respond_to?(m) }
         end
 
         private
 
         def _upload(io, context)
-          errors = validate(io, context)
-          raise ValidationFailed.new(errors) if errors.any?
           store(io, context)
         end
 
@@ -220,16 +231,6 @@ class Uploadie
             if not io.respond_to?(m)
               raise InvalidFile, "#{io.inspect} does not respond to `#{m}`"
             end
-          end
-        end
-
-        def _extract_filename(io)
-          if io.respond_to?(:original_filename)
-            io.original_filename
-          elsif io.respond_to?(:path)
-            File.basename(io.path)
-          elsif io.is_a?(Uploadie::UploadedFile)
-            File.basename(io.id)
           end
         end
 
@@ -304,7 +305,7 @@ class Uploadie
 
         def set(value)
           uploaded_file = value
-          uploaded_file = cache!(value) if value && !uploaded?(value)
+          uploaded_file = cache!(value) unless value.nil? || uploaded?(value)
           @old_attachment = get
           _set(uploaded_file)
         end
@@ -339,16 +340,13 @@ class Uploadie
         end
 
         def valid?
-          @errors = validate
-          @errors.empty?
+          validate
+          errors.empty?
         end
 
         def validate
-          if uploaded_file = get
-            store.validate(uploaded_file, name: name, record: record)
-          else
-            []
-          end
+          errors.clear
+          instance_exec(&uploadie_class.validate) if uploadie_class.validate
         end
 
         def uploadie_class
@@ -429,6 +427,18 @@ class Uploadie
           storage # ensure that error is raised if storage key doesn't exist
         end
 
+        def original_filename
+          metadata.fetch("filename")
+        end
+
+        def size
+          metadata.fetch("size")
+        end
+
+        def content_type
+          metadata.fetch("content_type")
+        end
+
         def read(*args)
           io.read(*args)
         end
@@ -447,10 +457,6 @@ class Uploadie
 
         def url
           storage.url(id)
-        end
-
-        def size
-          storage.size(id)
         end
 
         def exists?

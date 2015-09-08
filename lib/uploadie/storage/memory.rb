@@ -31,10 +31,6 @@ class Uploadie
         @store[id].dup
       end
 
-      def size(id)
-        @store[id].bytesize
-      end
-
       def exists?(id)
         @store.key?(id)
       end

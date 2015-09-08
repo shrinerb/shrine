@@ -120,4 +120,12 @@ class AttacherTest < Minitest::Test
 
     assert_equal "avatar_default", @attacher.url
   end
+
+  test "validation" do
+    assert @attacher.valid?
+
+    @attacher.uploadie_class.validate { errors << :foo }
+
+    refute @attacher.valid?
+  end
 end

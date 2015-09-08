@@ -42,10 +42,6 @@ class Uploadie
         ::File.read(path(id))
       end
 
-      def size(id)
-        ::File.size(path(id))
-      end
-
       def exists?(id)
         ::File.exist?(path(id))
       end
