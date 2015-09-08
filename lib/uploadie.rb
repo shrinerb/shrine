@@ -267,12 +267,8 @@ class Uploadie
           RUBY
         end
 
-        def to_s
-          "#{self.class.inspect}(#{@name})"
-        end
-
         def inspect
-          "#{self.class.inspect}(#{@name})"
+          "#<#{self.class.inspect}(#{@name})>"
         end
 
         def uploadie_class
@@ -300,15 +296,8 @@ class Uploadie
         end
 
         def set(value)
-          uploaded_file =
-            case value
-            when String            then uploaded_file(deserialize(value))
-            when Hash              then uploaded_file(value)
-            when UploadedFile, nil then value
-            else
-              cache!(value)
-            end
-
+          uploaded_file = value
+          uploaded_file = cache!(value) if value && !uploaded?(value)
           @old_attachment = get
           _set(uploaded_file)
         end
@@ -349,6 +338,10 @@ class Uploadie
 
         private
 
+        def uploaded?(object)
+          object.is_a?(UploadedFile)
+        end
+
         def cache!(io)
           cache.upload(io, name: name, record: record)
         end
@@ -362,7 +355,7 @@ class Uploadie
         end
 
         def _set(uploaded_file)
-          write(uploaded_file ? uploaded_file.data : nil)
+          write(uploaded_file ? data(uploaded_file) : nil)
           uploaded_file
         end
 
@@ -382,6 +375,10 @@ class Uploadie
 
         def uploaded_file(data)
           uploadie_class::UploadedFile.new(data)
+        end
+
+        def data(uploaded_file)
+          uploaded_file.data
         end
 
         def deserialize(string)
@@ -447,6 +444,12 @@ class Uploadie
 
         def delete
           storage.delete(id)
+        end
+
+        def ==(other)
+          other.is_a?(self.class) &&
+          self.id == other.id &&
+          self.storage_key == other.storage_key
         end
 
         def uploadie_class

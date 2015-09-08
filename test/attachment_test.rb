@@ -19,12 +19,11 @@ class AttachmentTest < Minitest::Test
   end
 
   test "introspection" do
-    assert_match "Attachment(avatar)", @user.class.ancestors[1].to_s
     assert_match "Attachment(avatar)", @user.class.ancestors[1].inspect
   end
 
   test ".attachment alias" do
     @user.class.include @uploadie.attachment(:foo)
-    assert_match "Attachment(foo)", @user.class.ancestors[1].to_s
+    assert_instance_of @uploadie::Attachment, @user.class.ancestors[1]
   end
 end

@@ -25,20 +25,6 @@ class AttacherTest < Minitest::Test
     JSON.parse @user.avatar_data
   end
 
-  test "allows setting already uploaded files with JSON" do
-    uploaded_file = @uploadie.new(:cache).upload(fakeio)
-    @attacher.set(uploaded_file.data.to_json)
-
-    assert_instance_of @uploadie::UploadedFile, @attacher.get
-  end
-
-  test "allows setting already uploaded files with a Hash" do
-    uploaded_file = @uploadie.new(:cache).upload(fakeio)
-    @attacher.set(uploaded_file.data)
-
-    assert_instance_of @uploadie::UploadedFile, @attacher.get
-  end
-
   test "allows setting already uploaded files with an UploadedFile" do
     uploaded_file = @uploadie.new(:cache).upload(fakeio)
     @attacher.set(uploaded_file)

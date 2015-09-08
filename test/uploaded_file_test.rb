@@ -37,4 +37,21 @@ class UploadedFileTest < Minitest::Test
     uploaded_file.delete
     assert_equal false, uploaded_file.exists?
   end
+
+  test "equality" do
+    assert_equal(
+      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+    )
+
+    refute_equal(
+      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "cache", "metadata" => {}),
+    )
+
+    refute_equal(
+      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader_class::UploadedFile.new("id" => "bar", "storage" => "store", "metadata" => {}),
+    )
+  end
 end
