@@ -68,7 +68,8 @@ class AttacherTest < Minitest::Test
   end
 
   test "caching passes in name and record" do
-    @uploadie.plugin :location, generator: -> (io, name:, record:) { "foo" }
+    uploader = @attacher.cache
+    def uploader.generate_location(io, name:, record:); "foo" end
     @attacher.set(fakeio)
   end
 

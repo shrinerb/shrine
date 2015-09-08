@@ -179,6 +179,14 @@ class Uploadie
           IO_METHODS.all? { |m| io.respond_to?(m) }
         end
 
+        def generate_location(io, context)
+          original_filename = _extract_filename(io)
+          extension = File.extname(original_filename.to_s)
+          basename = generate_uid(io)
+
+          basename + extension
+        end
+
         private
 
         def _upload(io, context)
@@ -188,7 +196,7 @@ class Uploadie
         end
 
         def _store(io, context)
-          location = _generate_location(io, context)
+          location = generate_location(io, context)
           metadata = extract_metadata(io, context)
 
           _put(io, location)
@@ -202,14 +210,6 @@ class Uploadie
 
         def _put(io, location)
           storage.upload(io, location)
-        end
-
-        def _generate_location(io, context)
-          original_filename = _extract_filename(io)
-          extension = File.extname(original_filename.to_s)
-          basename = generate_uid(io)
-
-          basename + extension
         end
 
         def _enforce_io(io)
