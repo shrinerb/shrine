@@ -80,18 +80,9 @@ class VersionsTest < Minitest::Test
     @attacher.set(fakeio); @attacher.commit!
     refute_equal versions[:thumb].id, @attacher.get[:thumb].id
     refute versions[:thumb].exists?
-
-    version = @attacher.get[:thumb]
-
-    @attacher.set(nil)
-    @attacher.set(thumb: version)
-    assert_equal version, @attacher.get[:thumb]
-
-    @attacher.commit!
-    assert_equal version, @attacher.get[:thumb]
   end
 
-  test "attachment workflow when generating versions on storing" do
+  test "attachment workflow when generating versions on caching" do
     @attacher = versions_attacher(storage: :cache) { |io| Hash[thumb: io] }
 
     @attacher.set(fakeio)
@@ -108,8 +99,6 @@ class VersionsTest < Minitest::Test
     refute versions[:thumb].exists?
 
     version = @attacher.get[:thumb]
-
-    @attacher.set(nil)
     @attacher.set(thumb: version)
     assert_equal version, @attacher.get[:thumb]
 
