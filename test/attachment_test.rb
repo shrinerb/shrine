@@ -24,6 +24,15 @@ class AttachmentTest < Minitest::Test
     refute_empty @user.avatar_url
   end
 
+  test "inheritance" do
+    admin_class = Class.new(@user.class)
+    admin = admin_class.new
+
+    admin.avatar = fakeio("image")
+
+    assert_equal "image", admin.avatar.read
+  end
+
   test "introspection" do
     assert_match "Attachment(avatar)", @user.class.ancestors[1].inspect
   end
