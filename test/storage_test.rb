@@ -23,4 +23,14 @@ class StrorageTest < Minitest::Test
     assert_equal "bar", another_uploader.storages[:foo]
     assert_equal "foo", uploader.storages[:foo]
   end
+
+  test "raising error when storage doesn't exist" do
+    assert_raises(Uploadie::Error) do
+      Uploadie.new(:foo)
+    end
+
+    assert_raises(Uploadie::Error) do
+      Uploadie::UploadedFile.new("id" => "123", "storage" => "foo", "metadata" => {})
+    end
+  end
 end

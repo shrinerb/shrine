@@ -104,6 +104,12 @@ class Uploadie
 
         attr_accessor :storages
 
+        def storage(name)
+          storages.fetch(name)
+        rescue KeyError
+          raise Error, "#{self} doesn't have storage #{name.inspect}"
+        end
+
         def cache=(storage)
           storages[:cache] = storage
         end
@@ -141,12 +147,13 @@ class Uploadie
 
         def initialize(storage_key)
           @storage_key = storage_key
+          storage # ensure storage exists
         end
 
         attr_reader :storage_key
 
         def storage
-          @storage ||= self.class.storages.fetch(storage_key)
+          @storage ||= self.class.storage(storage_key)
         end
 
         def opts
@@ -428,7 +435,7 @@ class Uploadie
           @storage_key = data.fetch("storage").to_sym
           @metadata    = data.fetch("metadata")
 
-          storage # ensure that error is raised if storage key doesn't exist
+          storage # ensure storage exists
         end
 
         def original_filename
@@ -492,7 +499,7 @@ class Uploadie
         end
 
         def storage
-          @storage ||= uploadie_class.storages.fetch(storage_key)
+          @storage ||= uploadie_class.storage(storage_key)
         end
       end
     end
