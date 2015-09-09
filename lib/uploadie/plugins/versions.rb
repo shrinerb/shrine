@@ -114,6 +114,14 @@ class Uploadie
           end
         end
 
+        def cached?(uploaded_file)
+          if (versions = uploaded_file).is_a?(Hash)
+            versions.all? { |name, uploaded_file| super(uploaded_file) }
+          else
+            super
+          end
+        end
+
         def delete!(uploaded_file)
           if (versions = uploaded_file).is_a?(Hash)
             versions.each { |name, uploaded_file| super(uploaded_file) }

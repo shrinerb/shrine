@@ -355,10 +355,6 @@ class Uploadie
 
         private
 
-        def uploaded?(object)
-          object.is_a?(UploadedFile)
-        end
-
         def cache!(io)
           cache.upload(io, name: name, record: record)
         end
@@ -374,6 +370,14 @@ class Uploadie
         def _set(uploaded_file)
           write(uploaded_file ? data(uploaded_file) : nil)
           uploaded_file
+        end
+
+        def uploaded?(object)
+          object.is_a?(UploadedFile)
+        end
+
+        def cached?(uploaded_file)
+          uploaded_file.storage_key == cache.storage_key
         end
 
         def stored?(uploaded_file)
