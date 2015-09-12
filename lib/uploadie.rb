@@ -303,9 +303,17 @@ class Uploadie
         end
 
         def set(value)
-          uploaded_file = value
-          uploaded_file = cache!(value) unless value.nil? || uploaded?(value)
+          return if value == ""
+
+          uploaded_file =
+            if value.is_a?(String)
+              uploaded_file(deserialize(value))
+            elsif value
+              cache!(value)
+            end
+
           @old_attachment = get
+
           _set(uploaded_file)
         end
 
@@ -315,15 +323,19 @@ class Uploadie
           end
         end
 
-        def commit!
-          uploaded_file = get
-
-          if uploaded_file && !stored?(uploaded_file)
+        def save
+          if (uploaded_file = get) && !stored?(uploaded_file)
             stored_file = store!(uploaded_file)
             _set(stored_file)
           end
 
           delete!(@old_attachment) if @old_attachment
+        end
+
+        def destroy
+          if uploaded_file = get
+            delete!(uploaded_file)
+          end
         end
 
         def url(*args)
@@ -369,10 +381,6 @@ class Uploadie
         def _set(uploaded_file)
           write(uploaded_file ? data(uploaded_file) : nil)
           uploaded_file
-        end
-
-        def uploaded?(object)
-          object.is_a?(UploadedFile)
         end
 
         def cached?(uploaded_file)

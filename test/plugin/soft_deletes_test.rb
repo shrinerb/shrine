@@ -9,22 +9,22 @@ class SoftDeletesTest < Minitest::Test
 
   test "doesn't delete file on nullifying" do
     @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
 
     uploaded_file = @attacher.get
     @attacher.set(nil)
-    @attacher.commit!
+    @attacher.save
 
     assert uploaded_file.exists?
   end
 
   test "doesn't delete file on replacing" do
     @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
 
     uploaded_file = @attacher.get
     @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
 
     assert uploaded_file.exists?
   end

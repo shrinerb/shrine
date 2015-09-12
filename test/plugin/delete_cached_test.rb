@@ -9,7 +9,7 @@ class DeleteCachedTest < Minitest::Test
 
   test "deletes cached files" do
     uploaded_file = @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
 
     refute uploaded_file.exists?
   end
@@ -17,12 +17,12 @@ class DeleteCachedTest < Minitest::Test
   test "handles setting already stored files" do
     stored_file = @attacher.store.upload(fakeio)
     @attacher.set(stored_file)
-    @attacher.commit!
+    @attacher.save
 
     assert stored_file.exists?
   end
 
   test "handles no files" do
-    @attacher.commit!
+    @attacher.save
   end
 end

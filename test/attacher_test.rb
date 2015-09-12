@@ -1,9 +1,6 @@
 require "test_helper"
 require "json"
 
-# TODO: If a user selects a file, and then deselects it, a nil/false-value will
-# be sent, and prepare to handle that in a way that you simply ignore it
-
 class AttacherTest < Minitest::Test
   def setup
     @uploadie = uploader(:bare).class
@@ -11,7 +8,7 @@ class AttacherTest < Minitest::Test
     @attacher = @uploadie::Attacher.new(@user, :avatar)
   end
 
-  test "setting caches a given IO" do
+  test "setting caches the given IO" do
     uploaded_file = @attacher.set(fakeio("image"))
 
     assert_instance_of @uploadie::UploadedFile, uploaded_file
@@ -25,25 +22,11 @@ class AttacherTest < Minitest::Test
     JSON.parse @user.avatar_data
   end
 
-  test "allows setting already uploaded files with an UploadedFile" do
+  test "allows setting already uploaded file with a JSON string" do
     uploaded_file = @uploadie.new(:cache).upload(fakeio)
-    @attacher.set(uploaded_file)
+    @attacher.set(uploaded_file.data.to_json)
 
-    assert_instance_of @uploadie::UploadedFile, @attacher.get
-  end
-
-  test "setting cached files doesn't recache them" do
-    uploaded_file = @uploadie.new(:cache).upload(fakeio)
-    @attacher.set uploaded_file
-
-    assert_equal uploaded_file.id, @attacher.get.id
-  end
-
-  test "setting stored files doesn't cache them" do
-    uploaded_file = @uploadie.new(:store).upload(fakeio)
-    @attacher.set uploaded_file
-
-    assert_equal uploaded_file.id, @attacher.get.id
+    assert_equal uploaded_file, @attacher.get
   end
 
   test "setting to nil nullifies the attachment" do
@@ -51,6 +34,13 @@ class AttacherTest < Minitest::Test
     @attacher.set(nil)
 
     assert_equal nil, @attacher.get
+  end
+
+  test "setting to empty string is a noop" do
+    @attacher.set(fakeio)
+    @attacher.set("")
+
+    assert_instance_of @uploadie::UploadedFile, @attacher.get
   end
 
   test "getting reads from the database column" do
@@ -69,41 +59,52 @@ class AttacherTest < Minitest::Test
 
   test "caching passes in name and record" do
     uploader = @attacher.cache
-    def uploader.generate_location(io, name:, record:); "foo" end
+    def uploader.generate_location(io, name:, record:); "foo"; end
     @attacher.set(fakeio)
   end
 
-  test "commiting uploads the cached file to the store" do
+  test "saving uploads the cached file to the store" do
     @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
 
     assert_equal :store, @attacher.get.storage_key
   end
 
-  test "commmiting deletes removed files" do
+  test "saving deletes removed files" do
     uploaded_file = @attacher.set(fakeio)
     @attacher.set(nil)
-    @attacher.commit!
+    @attacher.save
 
     refute uploaded_file.exists?
   end
 
-  test "commiting deletes replaced files" do
+  test "saving deletes replaced files" do
     uploaded_file = @attacher.set(fakeio)
     @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
 
     refute uploaded_file.exists?
   end
 
-  test "commiting doesn't reupload UploadedFiles from store" do
+  test "saving doesn't reupload UploadedFiles from store" do
     @attacher.set(fakeio)
-    @attacher.commit!
+    @attacher.save
     uploaded_file = @attacher.get
 
-    @attacher.commit!
+    @attacher.save
 
     assert_equal uploaded_file.id, @attacher.get.id
+  end
+
+  test "destroying deletes attached file" do
+    uploaded_file = @attacher.set(fakeio)
+    @attacher.destroy
+
+    refute uploaded_file.exists?
+  end
+
+  test "destroying doesn't trip if file doesn't exist" do
+    @attacher.destroy
   end
 
   test "url" do

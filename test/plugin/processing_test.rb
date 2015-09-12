@@ -7,7 +7,7 @@ class VersionsTest < Minitest::Test
     end
   end
 
-  def versions_attacher(*args, &block)
+  def attacher(*args, &block)
     uploader = uploader(*args, &block)
     user = Struct.new(:avatar_data).new
     user.class.include uploader.class[:avatar]
@@ -67,47 +67,40 @@ class VersionsTest < Minitest::Test
   end
 
   test "attachment workflow when generating versions on storing" do
-    @attacher = versions_attacher(storage: :store) { |io| Hash[thumb: io] }
+    @attacher = attacher(storage: :store) { |io| Hash[thumb: io] }
 
     @attacher.set(fakeio)
     assert_kind_of Uploadie::UploadedFile, @attacher.get
 
-    @attacher.commit!
+    @attacher.save
     assert_kind_of Uploadie::UploadedFile, @attacher.get[:thumb]
     assert_equal :store, @attacher.get[:thumb].storage_key
 
     versions = @attacher.get
-    @attacher.set(fakeio); @attacher.commit!
+    @attacher.set(fakeio); @attacher.save
     refute_equal versions[:thumb].id, @attacher.get[:thumb].id
     refute versions[:thumb].exists?
   end
 
   test "attachment workflow when generating versions on caching" do
-    @attacher = versions_attacher(storage: :cache) { |io| Hash[thumb: io] }
+    @attacher = attacher(storage: :cache) { |io| Hash[thumb: io] }
 
     @attacher.set(fakeio)
     assert_kind_of Uploadie::UploadedFile, @attacher.get[:thumb]
     assert_equal :cache, @attacher.get[:thumb].storage_key
 
-    @attacher.commit!
+    @attacher.save
     assert_kind_of Uploadie::UploadedFile, @attacher.get[:thumb]
     assert_equal :store, @attacher.get[:thumb].storage_key
 
     versions = @attacher.get
-    @attacher.set(fakeio); @attacher.commit!
+    @attacher.set(fakeio); @attacher.save
     refute_equal versions[:thumb].id, @attacher.get[:thumb].id
     refute versions[:thumb].exists?
-
-    version = @attacher.get[:thumb]
-    @attacher.set(thumb: version)
-    assert_equal version, @attacher.get[:thumb]
-
-    @attacher.commit!
-    assert_equal version, @attacher.get[:thumb]
   end
 
   test "attachment url" do
-    @attacher = versions_attacher(storage: :cache) { |io| Hash[thumb: io] }
+    @attacher = attacher(storage: :cache) { |io| Hash[thumb: io] }
     @user = @attacher.record
 
     assert_equal nil, @user.avatar_url(:thumb)
@@ -120,14 +113,14 @@ class VersionsTest < Minitest::Test
   end
 
   test "attachment url returns raw file URL if versions haven't been generated" do
-    @attacher = versions_attacher(storage: :store) { |io| Hash[thumb: io] }
+    @attacher = attacher(storage: :store) { |io| Hash[thumb: io] }
     @user = @attacher.record
 
     assert_equal @user.avatar_url, @user.avatar_url(:thumb)
   end
 
   test "attachment url doesn't allow no argument when attachment is versioned" do
-    @attacher = versions_attacher(storage: :cache) { |io| Hash[thumb: io] }
+    @attacher = attacher(storage: :cache) { |io| Hash[thumb: io] }
     @user = @attacher.record
 
     @user.avatar = fakeio
@@ -136,7 +129,7 @@ class VersionsTest < Minitest::Test
   end
 
   test "passes in version to the default url" do
-    @attacher = versions_attacher { |io| Hash[thumb: io] }
+    @attacher = attacher { |io| Hash[thumb: io] }
     uploader = @attacher.store
     def uploader.default_url(context); context[:version].to_s; end
 

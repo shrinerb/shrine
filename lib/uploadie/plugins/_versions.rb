@@ -32,14 +32,6 @@ class Uploadie
 
         private
 
-        def uploaded?(object)
-          if object.is_a?(Hash)
-            object.all? { |name, object| super(object) }
-          else
-            super
-          end
-        end
-
         def uploaded_file(hash)
           if hash.key?("storage")
             super

@@ -2,7 +2,7 @@ class Uploadie
   module Plugins
     module DeleteCached
       module AttacherMethods
-        def commit!
+        def save
           cached = get
           super
           delete!(cached) if cached && cached?(cached)
