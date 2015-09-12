@@ -161,15 +161,6 @@ class VersionsTest < Minitest::Test
     cached, stored = cache_and_store(fakeio)
   end
 
-  test "passing symbol :processor" do
-    @uploader = processing_uploader(processor: :process)
-    def @uploader.process(io, context); FakeIO.new(io.read.reverse); end
-
-    uploaded_file = @uploader.upload(fakeio("file"))
-
-    assert_equal "elif", uploaded_file.read
-  end
-
   test "passing invalid options" do
     assert_raises(ArgumentError) { processing_uploader(processor: "invalid") }
     assert_raises(IndexError) { processing_uploader(storage: :nonexistent) {} }

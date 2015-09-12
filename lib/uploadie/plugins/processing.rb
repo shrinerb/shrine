@@ -14,7 +14,7 @@ class Uploadie
       end
 
       def self.configure(uploadie, processor:, storage:, **)
-        raise ArgumentError, ":processor must be a proc or a symbol" if !processor.is_a?(Proc) && !processor.is_a?(Symbol)
+        raise ArgumentError, ":processor must be a proc" if !processor.is_a?(Proc)
         uploadie.opts[:processor] = processor
 
         uploadie.storages.fetch(storage)
@@ -25,7 +25,6 @@ class Uploadie
         def upload(io, context = {})
           if processing?(io, context)
             processor = opts[:processor]
-            processor = method(processor) if processor.is_a?(Symbol)
             io = io.download if io.is_a?(Uploadie::UploadedFile)
 
             processed = instance_exec(io, context, &processor)
