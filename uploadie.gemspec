@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "minitest-hooks", "~> 1.3.0"
   gem.add_development_dependency "mime-types", "~> 2.6"
+  gem.add_development_dependency "ruby-filemagic"
   gem.add_development_dependency "mini_magick"
   gem.add_development_dependency "rmagick"
   gem.add_development_dependency "dimensions"
