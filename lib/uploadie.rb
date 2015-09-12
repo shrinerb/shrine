@@ -161,12 +161,8 @@ class Uploadie
         end
 
         def upload(io, context = {})
-          _upload(io, context)
-        end
-
-        def store(io, context = {})
           _enforce_io(io)
-          _store(io, context)
+          _upload(io, context)
         end
 
         def generate_location(io, context)
@@ -213,14 +209,10 @@ class Uploadie
         private
 
         def _upload(io, context)
-          store(io, context)
-        end
-
-        def _store(io, context)
           location = generate_location(io, context)
           metadata = extract_metadata(io, context)
 
-          _put(io, location)
+          store(io, location)
 
           self.class::UploadedFile.new(
             "id"       => location,
@@ -229,7 +221,7 @@ class Uploadie
           )
         end
 
-        def _put(io, location)
+        def store(io, location)
           storage.upload(io, location)
         end
 

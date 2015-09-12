@@ -46,9 +46,8 @@ class UploaderTest < Minitest::Test
     assert_match /^[\w-]+$/, uploaded_file.id
   end
 
-  test "uploading and storing accept a context" do
-    uploaded_file = @uploader.upload(fakeio("image"), type: :image)
-    uploaded_file = @uploader.store(fakeio("image"), type: :image)
+  test "uploading accepts a context" do
+    @uploader.upload(fakeio("image"), type: :image)
   end
 
   test "upload assigns storage and extracts metadata" do
