@@ -3,13 +3,13 @@ require "mini_magick"
 require "rmagick"
 require "dimensions"
 
-class StoreMetadataTest < Minitest::Test
-  def dimensions_uploader(library)
-    uploader(:bare) { plugin :store_dimensions, library: library }
+class StoreDimensionsTest < Minitest::Test
+  def uploader(library)
+    super(:bare) { plugin :store_dimensions, library: library }
   end
 
   test "storing dimensions with MiniMagick" do
-    @uploader = dimensions_uploader(:mini_magick)
+    @uploader = uploader(:mini_magick)
     uploaded_file = @uploader.upload(image)
 
     assert_equal 100, uploaded_file.metadata["width"]
@@ -17,7 +17,7 @@ class StoreMetadataTest < Minitest::Test
   end
 
   test "storing dimensions with RMagick" do
-    @uploader = dimensions_uploader(:rmagick)
+    @uploader = uploader(:rmagick)
     uploaded_file = @uploader.upload(image)
 
     assert_equal 100, uploaded_file.metadata["width"]
@@ -25,7 +25,7 @@ class StoreMetadataTest < Minitest::Test
   end
 
   test "storing dimensions with Dimensions" do
-    @uploader = dimensions_uploader(:dimensions)
+    @uploader = uploader(:dimensions)
 
     uploaded_file = @uploader.upload(image)
     assert_equal 100, uploaded_file.metadata["width"]
@@ -37,7 +37,7 @@ class StoreMetadataTest < Minitest::Test
   end
 
   test "reuploading reuses the dimensions" do
-    @uploader = dimensions_uploader(:mini_magick)
+    @uploader = uploader(:mini_magick)
 
     uploaded_file = @uploader.upload(image)
     reuploaded_file = @uploader.upload(uploaded_file)
@@ -47,7 +47,7 @@ class StoreMetadataTest < Minitest::Test
   end
 
   test "UploadedFile gets `width` and `height` methods" do
-    @uploader = dimensions_uploader(:mini_magick)
+    @uploader = uploader(:mini_magick)
     uploaded_file = @uploader.upload(image)
 
     assert_equal uploaded_file.metadata["width"], uploaded_file.width
@@ -55,6 +55,6 @@ class StoreMetadataTest < Minitest::Test
   end
 
   test "passing unsupported library" do
-    assert_raises(Uploadie::Error) { dimensions_uploader(:foo) }
+    assert_raises(Uploadie::Error) { uploader(:foo) }
   end
 end

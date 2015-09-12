@@ -1,21 +1,21 @@
 require "test_helper"
 
 class VersionsTest < Minitest::Test
-  def processing_uploader(storage: :store, **options, &processor)
-    uploader(:bare) do
+  def uploader(storage: :store, **options, &processor)
+    super(:bare) do
       plugin :processing, versions: true, storage: storage, processor: processor, **options
     end
   end
 
   def versions_attacher(*args, &block)
-    uploader = processing_uploader(*args, &block)
+    uploader = uploader(*args, &block)
     user = Struct.new(:avatar_data).new
     user.class.include uploader.class[:avatar]
     user.avatar_attacher
   end
 
   test "processing into a single file" do
-    @uploader = processing_uploader(storage: :cache) { |io| FakeIO.new(io.read.reverse) }
+    @uploader = uploader(storage: :cache) { |io| FakeIO.new(io.read.reverse) }
 
     cached, stored = cache_and_store(fakeio("original"))
 
@@ -27,7 +27,7 @@ class VersionsTest < Minitest::Test
     assert_equal :store, stored.storage_key
     assert_equal "lanigiro", stored.read
 
-    @uploader = processing_uploader(storage: :store) { |io| FakeIO.new(io.read.reverse) }
+    @uploader = uploader(storage: :store) { |io| FakeIO.new(io.read.reverse) }
 
     cached, stored = cache_and_store(fakeio("original"))
 
@@ -41,7 +41,7 @@ class VersionsTest < Minitest::Test
   end
 
   test "processing into multiple versions" do
-    @uploader = processing_uploader(storage: :cache) { |io| Hash[original: FakeIO.new(io.read.reverse)] }
+    @uploader = uploader(storage: :cache) { |io| Hash[original: FakeIO.new(io.read.reverse)] }
 
     cached, stored = cache_and_store(fakeio("original"))
 
@@ -53,7 +53,7 @@ class VersionsTest < Minitest::Test
     assert_equal :store, stored[:original].storage_key
     assert_equal "lanigiro", stored[:original].read
 
-    @uploader = processing_uploader(storage: :store) { |io| Hash[original: FakeIO.new(io.read.reverse)] }
+    @uploader = uploader(storage: :store) { |io| Hash[original: FakeIO.new(io.read.reverse)] }
 
     cached, stored = cache_and_store(fakeio("original"))
 
@@ -144,17 +144,17 @@ class VersionsTest < Minitest::Test
   end
 
   test "returning an invalid object" do
-    @uploader = processing_uploader { |io| "not an IO" }
+    @uploader = uploader { |io| "not an IO" }
 
     assert_raises(Uploadie::InvalidFile) { @uploader.upload(fakeio) }
 
-    @uploader = processing_uploader { |io| Hash[original: "not an IO"] }
+    @uploader = uploader { |io| Hash[original: "not an IO"] }
 
     assert_raises(Uploadie::InvalidFile) { @uploader.upload(fakeio) }
   end
 
   test "cached file is downloaded for processing" do
-    @uploader = processing_uploader(storage: :store) do |io|
+    @uploader = uploader(storage: :store) do |io|
       io.is_a?(Uploadie::UploadedFile) ? raise("io is not downloaded") : io
     end
 
@@ -162,8 +162,8 @@ class VersionsTest < Minitest::Test
   end
 
   test "passing invalid options" do
-    assert_raises(ArgumentError) { processing_uploader(processor: "invalid") }
-    assert_raises(IndexError) { processing_uploader(storage: :nonexistent) {} }
+    assert_raises(ArgumentError) { uploader(processor: "invalid") }
+    assert_raises(IndexError) { uploader(storage: :nonexistent) {} }
   end
 
   private
