@@ -1,0 +1,2 @@
+install imagemagick
+install libmagic
