@@ -6,13 +6,15 @@ require "find"
 class Uploadie
   module Storage
     class FileSystem
-      attr_reader :directory, :subdirectory
+      attr_reader :directory, :subdirectory, :host
 
-      def initialize(directory, root: nil)
+      def initialize(directory, root: nil, host: "")
         if root
           @subdirectory = directory
           @directory = File.join(root, directory)
+          @host = host
         else
+          raise Error, ":host only works in combination with :root" if !host.empty?
           @directory = directory
         end
 
@@ -52,7 +54,7 @@ class Uploadie
 
       def path(id)
         if subdirectory
-          "/" + ::File.join(subdirectory, id)
+          File.join(host, ::File.join(subdirectory, id))
         else
           ::File.join(directory, id)
         end
