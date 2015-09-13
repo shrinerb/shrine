@@ -1,19 +1,16 @@
 class Uploadie
   module Plugins
     module StoreDimensions
-      SUPPORTED_LIBRARIES = [:mini_magick, :rmagick, :dimensions]
-
-      def self.load_dependencies(uploadie, library:)
-        case library
+      def self.load_dependencies(uploadie, extractor:)
+        case extractor
         when :mini_magick then require "mini_magick"
         when :rmagick     then require "rmagick"
         when :dimensions  then require "dimensions"
         end
       end
 
-      def self.configure(uploadie, library:)
-        raise Error, "unsupported dimensions library: #{library.inspect}" if !SUPPORTED_LIBRARIES.include?(library)
-        uploadie.opts[:dimensions_library] = library
+      def self.configure(uploadie, extractor:)
+        uploadie.opts[:dimensions_extractor] = extractor
       end
 
       module InstanceMethods
@@ -27,10 +24,14 @@ class Uploadie
         end
 
         def extract_dimensions(io)
+          extractor = opts[:dimensions_extractor]
+
           if io.respond_to?(:width) && io.respond_to?(:height)
             [io.width, io.height]
+          elsif extractor.is_a?(Symbol)
+            send(:"_extract_dimensions_with_#{extractor}", io)
           else
-            send(:"_extract_dimensions_with_#{opts[:dimensions_library]}", io)
+            extractor.call(io)
           end
         end
 

@@ -1,10 +1,8 @@
 class Uploadie
   module Plugins
     module ExtractContentType
-      SUPPORTED_LIBRARIES = [:mime_types, :filemagic]
-
-      def self.load_dependencies(uploadie, library:)
-        case library
+      def self.load_dependencies(uploadie, extractor:)
+        case extractor
         when :mime_types
           begin
             require "mime/types/columnar"
@@ -16,14 +14,19 @@ class Uploadie
         end
       end
 
-      def self.configure(uploadie, library:)
-        raise Error, "unsupported content type library: #{library.inspect}" if !SUPPORTED_LIBRARIES.include?(library)
-        uploadie.opts[:content_type_library] = library
+      def self.configure(uploadie, extractor:)
+        uploadie.opts[:content_type_extractor] = extractor
       end
 
       module InstanceMethods
         def extract_content_type(io)
-          send(:"_extract_content_type_with_#{opts[:content_type_library]}", io)
+          extractor = opts[:content_type_extractor]
+
+          if extractor.is_a?(Symbol)
+            send(:"_extract_content_type_with_#{extractor}", io)
+          else
+            extractor.call(io)
+          end
         end
 
         private

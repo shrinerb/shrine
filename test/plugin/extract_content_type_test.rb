@@ -1,8 +1,8 @@
 require "test_helper"
 
 class ExtractContentTypeTest < Minitest::Test
-  def uploader(library)
-    super(:bare) { plugin :extract_content_type, library: library }
+  def uploader(extractor)
+    super(:bare) { plugin :extract_content_type, extractor: extractor }
   end
 
   test ":mime_types determines content type from file extension" do
@@ -38,5 +38,12 @@ class ExtractContentTypeTest < Minitest::Test
     uploaded_file = @uploader.upload(file = fakeio("image"))
 
     assert_equal "image", file.read
+  end
+
+  test "extracting content type with custom extractor" do
+    @uploader = uploader ->(io) { "foo/bar" }
+    uploaded_file = @uploader.upload(fakeio)
+
+    assert_equal "foo/bar", uploaded_file.content_type
   end
 end

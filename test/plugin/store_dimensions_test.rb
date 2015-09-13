@@ -1,8 +1,8 @@
 require "test_helper"
 
 class StoreDimensionsTest < Minitest::Test
-  def uploader(library)
-    super(:bare) { plugin :store_dimensions, library: library }
+  def uploader(extractor)
+    super(:bare) { plugin :store_dimensions, extractor: extractor }
   end
 
   test "storing dimensions with MiniMagick" do
@@ -33,6 +33,14 @@ class StoreDimensionsTest < Minitest::Test
     assert_equal 67, uploaded_file.metadata["height"]
   end
 
+  test "storing dimensions with custom extractor" do
+    @uploader = uploader ->(io) {[5, 10]}
+    uploaded_file = @uploader.upload(image)
+
+    assert_equal 5, uploaded_file.metadata["width"]
+    assert_equal 10, uploaded_file.metadata["height"]
+  end
+
   test "reuploading reuses the dimensions" do
     @uploader = uploader(:mini_magick)
 
@@ -49,9 +57,5 @@ class StoreDimensionsTest < Minitest::Test
 
     assert_equal uploaded_file.metadata["width"], uploaded_file.width
     assert_equal uploaded_file.metadata["height"], uploaded_file.height
-  end
-
-  test "passing unsupported library" do
-    assert_raises(Uploadie::Error) { uploader(:foo) }
   end
 end
