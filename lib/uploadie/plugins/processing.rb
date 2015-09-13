@@ -35,6 +35,8 @@ class Uploadie
           end
         end
 
+        private
+
         def processing?(io, context)
           storage_key == self.class.opts[:processing_storage]
         end

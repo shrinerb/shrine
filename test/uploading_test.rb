@@ -58,8 +58,6 @@ class UploaderTest < Minitest::Test
   end
 
   test "upload validates that the given object is an IO" do
-    assert_raises(Uploadie::InvalidFile, /does not respond to/) do
-      @uploader.upload("not an IO")
-    end
+    assert_raises(Uploadie::InvalidFile) { @uploader.upload("not an IO") }
   end
 end

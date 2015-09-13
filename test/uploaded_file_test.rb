@@ -19,8 +19,6 @@ class UploadedFileTest < Minitest::Test
       "metadata" => {}
     )
 
-    assert_io uploaded_file # UploadedFile has to itself be an IO
-
     assert_instance_of Hash, uploaded_file.data
     assert_equal "key", uploaded_file.id
     assert_equal :store, uploaded_file.storage_key
@@ -32,7 +30,7 @@ class UploadedFileTest < Minitest::Test
     uploaded_file.close
 
     assert_equal "memory://key", uploaded_file.url
-    assert_io uploaded_file.download
+    assert_instance_of Tempfile, uploaded_file.download
     uploaded_file.delete
     assert_equal false, uploaded_file.exists?
   end

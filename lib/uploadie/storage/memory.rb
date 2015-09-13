@@ -1,4 +1,5 @@
 require "stringio"
+require "uploadie/utils"
 
 class Uploadie
   module Storage
@@ -15,12 +16,7 @@ class Uploadie
       end
 
       def download(id)
-        tempfile = Tempfile.new(id, binmode: true)
-        tempfile.write(read(id))
-        tempfile.rewind
-        tempfile.fsync
-
-        tempfile
+        Uploadie::Utils.copy_to_tempfile(id, open(id))
       end
 
       def open(id)

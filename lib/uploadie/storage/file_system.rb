@@ -1,5 +1,6 @@
+require "uploadie/utils"
+
 require "fileutils"
-require "tempfile"
 require "find"
 
 class Uploadie
@@ -26,12 +27,7 @@ class Uploadie
       end
 
       def download(id)
-        tempfile = Tempfile.new(id, binmode: true)
-        IO.copy_stream(open(id), tempfile)
-        tempfile.rewind
-        tempfile.fsync
-
-        tempfile
+        Uploadie::Utils.copy_to_tempfile(id, open(id))
       end
 
       def open(id)

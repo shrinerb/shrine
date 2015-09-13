@@ -17,16 +17,6 @@ class Minitest::Test
     define_method(test_name, &block)
   end
 
-  def assert_io(object)
-    Uploadie::IO_METHODS.each { |m| assert_respond_to object, m }
-  end
-
-  def assert_raises(exception_class, message = nil, &block)
-    exception = super(exception_class, &block)
-    assert_match message, exception.message if message
-    exception
-  end
-
   def uploader(plugin, &block)
     uploader_class = Class.new(Uploadie)
     uploader_class.cache = Uploadie::Storage::Memory.new
@@ -47,6 +37,30 @@ class Minitest::Test
 
   def image
     File.open("test/fixtures/image.jpg")
+  end
+
+  def image_url
+    "https://cdn0.iconfinder.com/data/icons/octicons/1024/mark-github-128.png?foo=bar"
+  end
+end
+
+module TestHelpers
+  module Interactions
+    include Minitest::Hooks
+
+    def self.included(test)
+      super
+      require "vcr"
+      VCR.configure do |config|
+        config.cassette_library_dir = "test/fixtures"
+        config.default_cassette_options = {record: :new_episodes}
+        config.hook_into :webmock
+      end
+    end
+
+    def around
+      VCR.use_cassette("interactions") { super }
+    end
   end
 end
 
