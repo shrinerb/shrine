@@ -51,6 +51,6 @@ class UtilsTest < Minitest::Test
   end
 
   test "download unifies different kinds of upload errors" do
-    assert_raises(Uploadie::Error) { @utils.download("https://a.com") }
+    assert_raises(Uploadie::Error) { @utils.download(invalid_url) }
   end
 end

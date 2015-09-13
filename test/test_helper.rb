@@ -42,6 +42,10 @@ class Minitest::Test
   def image_url
     "https://cdn0.iconfinder.com/data/icons/octicons/1024/mark-github-128.png?foo=bar"
   end
+
+  def invalid_url
+    "https://a.com"
+  end
 end
 
 module TestHelpers
