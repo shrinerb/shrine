@@ -357,7 +357,7 @@ class Uploadie
 
         def validate
           errors.clear
-          instance_exec(&uploadie_class.validate) if uploadie_class.validate
+          instance_exec(&validate_block) if validate_block && get
         end
 
         def uploadie_class
@@ -376,6 +376,10 @@ class Uploadie
 
         def delete!(uploaded_file)
           uploaded_file.delete
+        end
+
+        def validate_block
+          uploadie_class.validate
         end
 
         def _set(uploaded_file)

@@ -154,6 +154,14 @@ class VersionsTest < Minitest::Test
     cached, stored = cache_and_store(fakeio)
   end
 
+  test "doesn't allow validating versions" do
+    @attacher = attacher(storage: :cache) { |io| Hash[thumb: io] }
+    @attacher.set(fakeio)
+    @attacher.uploadie_class.validate {}
+
+    assert_raises(Uploadie::Error) { @attacher.valid? }
+  end
+
   test "passing invalid options" do
     assert_raises(ArgumentError) { uploader(processor: "invalid") }
     assert_raises(IndexError) { uploader(storage: :nonexistent) {} }

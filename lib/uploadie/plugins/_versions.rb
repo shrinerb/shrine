@@ -30,6 +30,14 @@ class Uploadie
           store.default_url(name: name, record: record, version: version)
         end
 
+        def validate
+          if validate_block && get.is_a?(Hash)
+            raise Error, "cannot validate versions"
+          else
+            super
+          end
+        end
+
         private
 
         def uploaded_file(hash)

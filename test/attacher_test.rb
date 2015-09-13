@@ -123,10 +123,16 @@ class AttacherTest < Minitest::Test
   end
 
   test "validation" do
+    @attacher.set(fakeio)
     assert @attacher.valid?
 
     @attacher.uploadie_class.validate { errors << :foo }
-
     refute @attacher.valid?
+  end
+
+  test "doesn't run validations when there is no attachment" do
+    @attacher.uploadie_class.validate { errors << :foo }
+
+    assert @attacher.valid?
   end
 end
