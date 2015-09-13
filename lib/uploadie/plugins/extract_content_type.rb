@@ -1,7 +1,7 @@
 class Uploadie
   module Plugins
     module ExtractContentType
-      def self.load_dependencies(uploadie, extractor:)
+      def self.load_dependencies(uploader, extractor:)
         case extractor
         when :mime_types
           begin
@@ -14,8 +14,8 @@ class Uploadie
         end
       end
 
-      def self.configure(uploadie, extractor:)
-        uploadie.opts[:content_type_extractor] = extractor
+      def self.configure(uploader, extractor:)
+        uploader.opts[:content_type_extractor] = extractor
       end
 
       module InstanceMethods

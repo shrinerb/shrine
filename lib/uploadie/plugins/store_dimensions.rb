@@ -1,7 +1,7 @@
 class Uploadie
   module Plugins
     module StoreDimensions
-      def self.load_dependencies(uploadie, extractor:)
+      def self.load_dependencies(uploader, extractor:)
         case extractor
         when :mini_magick then require "mini_magick"
         when :rmagick     then require "rmagick"
@@ -9,8 +9,8 @@ class Uploadie
         end
       end
 
-      def self.configure(uploadie, extractor:)
-        uploadie.opts[:dimensions_extractor] = extractor
+      def self.configure(uploader, extractor:)
+        uploader.opts[:dimensions_extractor] = extractor
       end
 
       module InstanceMethods

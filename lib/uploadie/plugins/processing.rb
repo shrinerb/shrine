@@ -9,16 +9,16 @@ class Uploadie
     # end
     #
     module Processing
-      def self.load_dependencies(uploadie, versions: nil, **)
-        uploadie.plugin :_versions if versions
+      def self.load_dependencies(uploader, versions: nil, **)
+        uploader.plugin :_versions if versions
       end
 
-      def self.configure(uploadie, processor:, storage:, **)
+      def self.configure(uploader, processor:, storage:, **)
         raise ArgumentError, ":processor must be a proc" if !processor.is_a?(Proc)
-        uploadie.opts[:processor] = processor
+        uploader.opts[:processor] = processor
 
-        uploadie.storages.fetch(storage)
-        uploadie.opts[:processing_storage] = storage
+        uploader.storages.fetch(storage)
+        uploader.opts[:processing_storage] = storage
       end
 
       module InstanceMethods
