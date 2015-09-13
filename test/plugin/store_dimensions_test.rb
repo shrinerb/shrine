@@ -1,7 +1,4 @@
 require "test_helper"
-require "mini_magick"
-require "rmagick"
-require "dimensions"
 
 class StoreDimensionsTest < Minitest::Test
   def uploader(library)

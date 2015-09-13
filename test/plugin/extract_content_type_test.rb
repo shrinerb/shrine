@@ -1,6 +1,4 @@
 require "test_helper"
-require "mime/types/columnar"
-require "filemagic"
 
 class ExtractContentTypeTest < Minitest::Test
   def uploader(library)
