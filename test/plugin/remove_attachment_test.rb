@@ -8,14 +8,21 @@ class RemoveAttachmentTest < Minitest::Test
     @attacher = @user.avatar_attacher
   end
 
-  test "writer" do
+  test "removing files" do
     @user.avatar = fakeio
     @user.remove_avatar = true
 
     assert_equal nil, @user.avatar
   end
 
-  test "reader" do
+  test "not removing files" do
+    @user.avatar = fakeio
+    @user.remove_avatar = "false"
+
+    refute_equal nil, @user.avatar
+  end
+
+  test "reading the remove state" do
     assert_equal nil, @user.remove_avatar
 
     @user.remove_avatar = true
