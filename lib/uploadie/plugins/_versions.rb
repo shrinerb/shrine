@@ -11,6 +11,14 @@ class Uploadie
             super
           end
         end
+
+        def uploaded?(uploaded_file)
+          if (versions = uploaded_file).is_a?(Hash)
+            versions.all? { |name, version| super(version) }
+          else
+            super
+          end
+        end
       end
 
       module AttacherMethods
@@ -55,22 +63,6 @@ class Uploadie
             versions.inject({}) do |hash, (name, version)|
               hash.update(name => super(version))
             end
-          else
-            super
-          end
-        end
-
-        def stored?(uploaded_file)
-          if (versions = uploaded_file).is_a?(Hash)
-            versions.all? { |name, uploaded_file| super(uploaded_file) }
-          else
-            super
-          end
-        end
-
-        def cached?(uploaded_file)
-          if (versions = uploaded_file).is_a?(Hash)
-            versions.all? { |name, uploaded_file| super(uploaded_file) }
           else
             super
           end

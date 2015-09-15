@@ -3,9 +3,9 @@ class Uploadie
     module DeleteCached
       module AttacherMethods
         def save
-          cached = get
+          uploaded_file = get
           super
-          delete!(cached) if cached && cached?(cached)
+          delete!(uploaded_file) if uploaded_file && cache.uploaded?(uploaded_file)
         end
       end
     end

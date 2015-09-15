@@ -57,6 +57,12 @@ class UploaderTest < Minitest::Test
     assert_instance_of Hash, uploaded_file.data["metadata"]
   end
 
+  test "can tell if it uploaded an UploadedFile" do
+    uploaded_file = @uploader.upload(fakeio("image"))
+
+    assert @uploader.uploaded?(uploaded_file)
+  end
+
   test "upload validates that the given object is an IO" do
     assert_raises(Uploadie::InvalidFile) { @uploader.upload("not an IO") }
   end

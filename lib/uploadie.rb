@@ -165,6 +165,10 @@ class Uploadie
           _upload(io, context)
         end
 
+        def uploaded?(uploaded_file)
+          uploaded_file.storage_key == storage_key
+        end
+
         def generate_location(io, context)
           original_filename = extract_filename(io)
           extension = File.extname(original_filename.to_s)
@@ -324,7 +328,7 @@ class Uploadie
         end
 
         def save
-          if (uploaded_file = get) && !stored?(uploaded_file)
+          if (uploaded_file = get) && !store.uploaded?(uploaded_file)
             stored_file = store!(uploaded_file)
             _set(stored_file)
           end
@@ -385,14 +389,6 @@ class Uploadie
         def _set(uploaded_file)
           write(uploaded_file ? data(uploaded_file) : nil)
           uploaded_file
-        end
-
-        def cached?(uploaded_file)
-          uploaded_file.storage_key == cache.storage_key
-        end
-
-        def stored?(uploaded_file)
-          uploaded_file.storage_key == store.storage_key
         end
 
         def write(data)
