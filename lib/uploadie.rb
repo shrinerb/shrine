@@ -351,7 +351,7 @@ class Uploadie
         end
 
         def default_url(*)
-          store.default_url(name: name, record: record)
+          store.default_url(context)
         end
 
         def valid?
@@ -371,11 +371,11 @@ class Uploadie
         private
 
         def cache!(io)
-          cache.upload(io, name: name, record: record)
+          cache.upload(io, context)
         end
 
         def store!(io)
-          store.upload(io, name: name, record: record)
+          store.upload(io, context)
         end
 
         def delete!(uploaded_file)
@@ -407,6 +407,10 @@ class Uploadie
 
         def data(uploaded_file)
           uploaded_file.data
+        end
+
+        def context
+          {name: name, record: record}
         end
 
         def deserialize(string)
