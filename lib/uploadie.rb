@@ -491,6 +491,11 @@ class Uploadie
           self.id == other.id &&
           self.storage_key == other.storage_key
         end
+        alias eql? ==
+
+        def hash
+          [id, storage_key].hash
+        end
 
         def uploadie_class
           self.class.uploadie_class

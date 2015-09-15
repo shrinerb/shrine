@@ -1,5 +1,5 @@
 require "test_helper"
-require "stringio"
+require "set"
 
 class UploadedFileTest < Minitest::Test
   def setup
@@ -62,5 +62,12 @@ class UploadedFileTest < Minitest::Test
       @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
       @uploader_class::UploadedFile.new("id" => "bar", "storage" => "store", "metadata" => {}),
     )
+  end
+
+  test "hash equality" do
+    uploaded_file1 = @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
+    uploaded_file2 = @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
+
+    assert_equal 1, Set.new([uploaded_file1, uploaded_file2]).count
   end
 end
