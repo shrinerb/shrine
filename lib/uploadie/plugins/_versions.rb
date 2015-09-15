@@ -3,7 +3,7 @@ class Uploadie
     module Versions
       module InstanceMethods
         def upload(io, context = {})
-          if (hash = io).is_a?(Hash)
+          if (hash = io).is_a?(Hash) && !hash.key?(:tempfile)
             hash.inject({}) do |versions, (name, version)|
               versions.update(name => super(version, version: name, **context))
             end
