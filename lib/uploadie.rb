@@ -321,8 +321,10 @@ class Uploadie
             end
 
           @old_attachment = get
-
           _set(uploaded_file)
+          validate!
+
+          get
         end
 
         def get
@@ -358,12 +360,7 @@ class Uploadie
           store.default_url(context)
         end
 
-        def valid?
-          validate
-          errors.empty?
-        end
-
-        def validate
+        def validate!
           errors.clear
           instance_exec(&validate_block) if validate_block && get
         end
@@ -392,7 +389,6 @@ class Uploadie
 
         def _set(uploaded_file)
           write(uploaded_file ? data(uploaded_file) : nil)
-          uploaded_file
         end
 
         def write(data)

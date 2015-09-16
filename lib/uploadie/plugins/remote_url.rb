@@ -31,23 +31,17 @@ class Uploadie
       module AttacherMethods
         def remote_url=(url)
           return if url == ""
-
-          @remote_url = url
           downloaded_file = download(url)
-          set(downloaded_file)
+
+          if downloaded_file
+            set(downloaded_file)
+          else
+            @remote_url = url
+          end
         end
 
         def remote_url
           @remote_url
-        end
-
-        def validate
-          super
-          if remote_url && !get
-            error_message = uploadie_class.opts[:remote_url_error_message]
-            error_message = error_message.call(url) if error_message.respond_to?(:call)
-            errors << error_message
-          end
         end
 
         private
@@ -65,6 +59,10 @@ class Uploadie
         def download_with_open_uri(url)
           Uploadie::Utils.download(url)
         rescue Uploadie::Error
+          message = uploadie_class.opts[:remote_url_error_message]
+          message = message.call(url) if message.respond_to?(:call)
+          errors << message
+          nil
         end
       end
     end

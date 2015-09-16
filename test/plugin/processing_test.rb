@@ -156,10 +156,9 @@ class VersionsTest < Minitest::Test
 
   test "doesn't allow validating versions" do
     @attacher = attacher(storage: :cache) { |io| Hash[thumb: io] }
-    @attacher.set(fakeio)
     @attacher.uploadie_class.validate {}
 
-    assert_raises(Uploadie::Error) { @attacher.valid? }
+    assert_raises(Uploadie::Error) { @attacher.set(fakeio) }
   end
 
   test "passing invalid options" do

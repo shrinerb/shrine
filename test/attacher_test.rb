@@ -129,17 +129,33 @@ class AttacherTest < Minitest::Test
     assert_equal "avatar_default", @attacher.url
   end
 
-  test "validation" do
-    @attacher.set(fakeio)
-    assert @attacher.valid?
-
+  test "does validation on assignment" do
     @attacher.uploadie_class.validate { errors << :foo }
-    refute @attacher.valid?
+    @attacher.set(fakeio)
+
+    refute_empty @attacher.errors
   end
 
-  test "doesn't run validations when there is no attachment" do
+  test "validation block has access to the cached file" do
+    @attacher.uploadie_class.validate { errors << get.read }
+    @attacher.set(fakeio("image"))
+
+    assert_equal "image", @attacher.errors.first
+  end
+
+  test "validation doesn't happen when attachment is empty" do
     @attacher.uploadie_class.validate { errors << :foo }
 
-    assert @attacher.valid?
+    assert_empty @attacher.errors
+  end
+
+  test "errors are cleared before validation" do
+    @attacher.errors << [:foo]
+    @attacher.set(fakeio)
+    assert_empty @attacher.errors
+
+    @attacher.errors << [:foo]
+    @attacher.set(nil)
+    assert_empty @attacher.errors
   end
 end

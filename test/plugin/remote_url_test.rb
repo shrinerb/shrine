@@ -38,22 +38,29 @@ class RemoteUrlTest < Minitest::Test
     assert_equal nil, @attacher.get
   end
 
-  test "fails validation if download error has happened" do
+  test "download errors are added as validation errors" do
     @attacher = attacher(:open_uri)
 
     @attacher.remote_url = image_url
-    assert @attacher.valid?
+    assert_empty @attacher.errors
 
     @attacher.remote_url = invalid_url
-    refute @attacher.valid?
     assert_equal ["Download failed"], @attacher.errors
+  end
+
+  test "download error doesn't nullify the existing attachment" do
+    @attacher = attacher(:open_uri)
+
+    @attacher.set(fakeio)
+    @attacher.remote_url = invalid_url
+
+    refute_equal nil, @attacher.get
   end
 
   test "accepts error message as a block" do
     @attacher = attacher(:open_uri, error_message: ->(url) { "Message" })
     @attacher.remote_url = invalid_url
 
-    refute @attacher.valid?
     assert_equal ["Message"], @attacher.errors
   end
 
@@ -76,8 +83,8 @@ class RemoteUrlTest < Minitest::Test
     @user.class.include @attacher.uploadie_class[:avatar]
 
     @user.avatar_remote_url = image_url
-
-    assert_equal image_url, @user.avatar_remote_url
     assert_instance_of @attacher.uploadie_class::UploadedFile, @user.avatar
+
+    assert_respond_to @user, :avatar_remote_url
   end
 end
