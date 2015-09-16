@@ -314,6 +314,8 @@ class Uploadie
           uploaded_file =
             if value.is_a?(String)
               uploaded_file(deserialize(value))
+            elsif value.is_a?(Hash)
+              uploaded_file(value)
             elsif value
               cache!(value)
             end

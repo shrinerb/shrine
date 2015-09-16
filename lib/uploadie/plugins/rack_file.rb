@@ -13,6 +13,16 @@ class Uploadie
         end
       end
 
+      module AttacherMethods
+        def set(value)
+          if value.is_a?(Hash) && value.key?(:tempfile)
+            super(UploadedFile.new(value))
+          else
+            super
+          end
+        end
+      end
+
       class UploadedFile
         attr_reader :original_filename, :content_type
 

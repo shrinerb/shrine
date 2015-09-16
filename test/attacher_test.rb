@@ -29,6 +29,13 @@ class AttacherTest < Minitest::Test
     assert_equal uploaded_file, @attacher.get
   end
 
+  test "allows setting already uploaded file with a Hash of data" do
+    uploaded_file = @uploadie.new(:cache).upload(fakeio)
+    @attacher.set(uploaded_file.data)
+
+    assert_equal uploaded_file, @attacher.get
+  end
+
   test "setting to nil nullifies the attachment" do
     @attacher.set(fakeio)
     @attacher.set(nil)

@@ -20,6 +20,15 @@ class RackFileTest < Minitest::Test
     assert_equal "image/jpeg", uploaded_file.content_type
   end
 
+  test "works on attacher" do
+    user = Struct.new(:avatar_data).new
+    @attacher = @uploader.class::Attacher.new(user, :avatar)
+
+    uploaded_file = @attacher.set(tempfile: fakeio)
+
+    assert_kind_of Uploadie::UploadedFile, uploaded_file
+  end
+
   test "works with versions" do
     @uploader = uploader(:bare) do
       plugin :rack_file
