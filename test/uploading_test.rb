@@ -50,6 +50,12 @@ class UploaderTest < Minitest::Test
     @uploader.upload(fakeio("image"), type: :image)
   end
 
+  test "uploading uses :location if available" do
+    uploaded_file = @uploader.upload(fakeio("image"), location: "foo")
+
+    assert_equal "foo", uploaded_file.id
+  end
+
   test "upload assigns storage and extracts metadata" do
     uploaded_file = @uploader.upload(fakeio)
 

@@ -170,6 +170,8 @@ class Uploadie
         end
 
         def generate_location(io, context)
+          return context[:location] if context.key?(:location)
+
           original_filename = extract_filename(io)
           extension = File.extname(original_filename.to_s)
           basename = generate_uid(io)
