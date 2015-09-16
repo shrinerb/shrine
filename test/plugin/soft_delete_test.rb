@@ -2,9 +2,7 @@ require "test_helper"
 
 class SoftDeleteTest < Minitest::Test
   def setup
-    @uploader = uploader(:soft_delete)
-    @user = Struct.new(:avatar_data).new
-    @attacher = @uploader.class::Attacher.new(@user, :avatar)
+    @attacher = attacher { plugin :soft_delete }
   end
 
   test "doesn't delete file on #destroy" do

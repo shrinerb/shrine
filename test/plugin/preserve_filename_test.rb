@@ -2,7 +2,7 @@ require "test_helper"
 
 class PreserveFilenameTest < Minitest::Test
   def setup
-    @uploader = uploader(:preserve_filename)
+    @uploader = uploader { plugin :preserve_filename }
   end
 
   test "uses the unique location as the directory" do

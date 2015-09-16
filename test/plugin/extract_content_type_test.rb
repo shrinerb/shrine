@@ -2,7 +2,7 @@ require "test_helper"
 
 class ExtractContentTypeTest < Minitest::Test
   def uploader(extractor)
-    super(:bare) { plugin :extract_content_type, extractor: extractor }
+    super() { plugin :extract_content_type, extractor: extractor }
   end
 
   test ":mime_types determines content type from file extension" do

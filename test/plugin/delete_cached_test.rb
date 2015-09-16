@@ -2,9 +2,7 @@ require "test_helper"
 
 class DeleteCachedTest < Minitest::Test
   def setup
-    @uploader = uploader(:delete_cached)
-    @user = Struct.new(:avatar_data).new
-    @attacher = @uploader.class::Attacher.new(@user, :avatar)
+    @attacher = attacher { plugin :delete_cached }
   end
 
   test "deletes cached files" do

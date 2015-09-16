@@ -17,13 +17,19 @@ class Minitest::Test
     define_method(test_name, &block)
   end
 
-  def uploader(plugin, &block)
+  def uploader(storage_key = :store, &block)
     uploader_class = Class.new(Uploadie)
     uploader_class.cache = Uploadie::Storage::Memory.new
-    uploader_class.store = @storage = Uploadie::Storage::Memory.new
-    uploader_class.plugin(plugin) unless plugin == :bare
+    uploader_class.store = Uploadie::Storage::Memory.new
     uploader_class.class_eval(&block) if block
-    uploader_class.new(:store)
+    uploader_class.new(storage_key)
+  end
+
+  def attacher(*args, &block)
+    uploader = uploader(*args, &block)
+    user = Struct.new(:avatar_data).new
+    user.class.include uploader.class[:avatar]
+    user.avatar_attacher
   end
 
   def fakeio(content = "file", **options)

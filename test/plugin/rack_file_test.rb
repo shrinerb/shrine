@@ -2,7 +2,7 @@ require "test_helper"
 
 class RackFileTest < Minitest::Test
   def setup
-    @uploader = uploader(:rack_file)
+    @uploader = uploader { plugin :rack_file }
   end
 
   test "enables storing Rack's uploaded file hash" do
@@ -21,20 +21,10 @@ class RackFileTest < Minitest::Test
   end
 
   test "works on attacher" do
-    user = Struct.new(:avatar_data).new
-    @attacher = @uploader.class::Attacher.new(user, :avatar)
+    @attacher = attacher { plugin :rack_file }
 
     uploaded_file = @attacher.set(tempfile: fakeio)
 
     assert_kind_of Uploadie::UploadedFile, uploaded_file
-  end
-
-  test "works with versions" do
-    @uploader = uploader(:bare) do
-      plugin :rack_file
-      plugin :_versions
-    end
-
-    @uploader.upload(tempfile: fakeio)
   end
 end

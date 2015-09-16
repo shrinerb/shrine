@@ -1,8 +1,9 @@
 require "test_helper"
+require "json"
 
 class AttachmentTest < Minitest::Test
   def setup
-    @uploadie = uploader(:bare).class
+    @uploadie = uploader.class
     user_class = Struct.new(:avatar_data)
     user_class.include @uploadie[:avatar]
     @user = user_class.new

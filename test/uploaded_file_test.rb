@@ -3,26 +3,21 @@ require "set"
 
 class UploadedFileTest < Minitest::Test
   def setup
-    @uploader_class = uploader(:bare).class
+    @uploader = uploader(:store)
   end
 
   test "every subclass gets its own copy" do
-    refute_equal Uploadie::UploadedFile, @uploader_class::UploadedFile
-    assert_equal @uploader_class, @uploader_class::UploadedFile.uploadie_class
+    refute_equal Uploadie::UploadedFile, @uploader.class::UploadedFile
+    assert_equal @uploader.class, @uploader.class::UploadedFile.uploadie_class
   end
 
   test "main interface" do
-    @storage.upload(fakeio("image"), "key")
-    uploaded_file = @uploader_class::UploadedFile.new(
-      "id"       => "key",
-      "storage"  => "store",
-      "metadata" => {}
-    )
+    uploaded_file = @uploader.upload(fakeio("image"), location: "key")
 
     assert_instance_of Hash, uploaded_file.data
     assert_equal "key", uploaded_file.id
     assert_equal :store, uploaded_file.storage_key
-    assert_equal Hash.new, uploaded_file.metadata
+    assert_instance_of Hash, uploaded_file.metadata
 
     assert_equal "image", uploaded_file.read
     assert_equal true, uploaded_file.eof?
@@ -36,11 +31,8 @@ class UploadedFileTest < Minitest::Test
   end
 
   test "metadata interface" do
-    uploaded_file = @uploader_class::UploadedFile.new(
-      "id"       => "123",
-      "storage"  => "store",
-      "metadata" => {"filename" => "foo.jpg", "size" => 5, "content_type" => "image/jpeg"}
-    )
+    io = fakeio("image", filename: "foo.jpg", content_type: "image/jpeg")
+    uploaded_file = @uploader.upload(io)
 
     assert_equal "foo.jpg", uploaded_file.original_filename
     assert_equal 5, uploaded_file.size
@@ -49,24 +41,24 @@ class UploadedFileTest < Minitest::Test
 
   test "equality" do
     assert_equal(
-      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
     )
 
     refute_equal(
-      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "cache", "metadata" => {}),
+      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "cache", "metadata" => {}),
     )
 
     refute_equal(
-      @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-      @uploader_class::UploadedFile.new("id" => "bar", "storage" => "store", "metadata" => {}),
+      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
+      @uploader.class::UploadedFile.new("id" => "bar", "storage" => "store", "metadata" => {}),
     )
   end
 
   test "hash equality" do
-    uploaded_file1 = @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
-    uploaded_file2 = @uploader_class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
+    uploaded_file1 = @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
+    uploaded_file2 = @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
 
     assert_equal 1, Set.new([uploaded_file1, uploaded_file2]).count
   end

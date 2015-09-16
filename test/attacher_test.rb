@@ -3,15 +3,13 @@ require "json"
 
 class AttacherTest < Minitest::Test
   def setup
-    @uploadie = uploader(:bare).class
-    @user = Struct.new(:avatar_data).new
-    @attacher = @uploadie::Attacher.new(@user, :avatar)
+    @attacher = attacher
   end
 
   test "setting caches the given IO" do
     uploaded_file = @attacher.set(fakeio("image"))
 
-    assert_instance_of @uploadie::UploadedFile, uploaded_file
+    assert_instance_of @attacher.uploadie_class::UploadedFile, uploaded_file
     assert_equal "cache", uploaded_file.data["storage"]
     assert_equal "image", uploaded_file.read
   end
@@ -19,18 +17,18 @@ class AttacherTest < Minitest::Test
   test "setting writes to record's data attribute" do
     @attacher.set(fakeio("image"))
 
-    JSON.parse @user.avatar_data
+    JSON.parse @attacher.record.avatar_data
   end
 
   test "allows setting already uploaded file with a JSON string" do
-    uploaded_file = @uploadie.new(:cache).upload(fakeio)
+    uploaded_file = @attacher.set(fakeio)
     @attacher.set(uploaded_file.data.to_json)
 
     assert_equal uploaded_file, @attacher.get
   end
 
   test "allows setting already uploaded file with a Hash of data" do
-    uploaded_file = @uploadie.new(:cache).upload(fakeio)
+    uploaded_file = @attacher.set(fakeio)
     @attacher.set(uploaded_file.data)
 
     assert_equal uploaded_file, @attacher.get
@@ -47,27 +45,21 @@ class AttacherTest < Minitest::Test
     @attacher.set(fakeio)
     @attacher.set("")
 
-    assert_instance_of @uploadie::UploadedFile, @attacher.get
+    assert_kind_of Uploadie::UploadedFile, @attacher.get
   end
 
   test "getting reads from the database column" do
-    uploaded_file = @uploadie.new(:cache).upload(fakeio)
+    uploaded_file = @attacher.set(fakeio)
 
-    @user.avatar_data = uploaded_file.data.to_json
-    assert_instance_of @uploadie::UploadedFile, @attacher.get
+    @attacher.record.avatar_data = uploaded_file.data.to_json
+    assert_instance_of @attacher.uploadie_class::UploadedFile, @attacher.get
 
-    @user.avatar_data = uploaded_file.data # serialized
-    assert_instance_of @uploadie::UploadedFile, @attacher.get
+    @attacher.record.avatar_data = uploaded_file.data # serialized
+    assert_instance_of @attacher.uploadie_class::UploadedFile, @attacher.get
   end
 
   test "getting returns nil for nil-column" do
     assert_equal nil, @attacher.get
-  end
-
-  test "caching passes in name and record" do
-    uploader = @attacher.cache
-    def uploader.generate_location(io, name:, record:); "foo"; end
-    @attacher.set(fakeio)
   end
 
   test "saving uploads the cached file to the store" do
@@ -103,6 +95,11 @@ class AttacherTest < Minitest::Test
     assert_equal uploaded_file.id, @attacher.get.id
   end
 
+  test "saving doesn't try to delete an unexisting file" do
+    @attacher.set(nil)
+    @attacher.save
+  end
+
   test "destroying deletes attached file" do
     uploaded_file = @attacher.set(fakeio)
     @attacher.destroy
@@ -114,6 +111,20 @@ class AttacherTest < Minitest::Test
     @attacher.destroy
   end
 
+  test "caching and storing passes in name and record" do
+    @attacher.uploadie_class.class_eval do
+      def generate_location(io, context)
+        context.keys.to_json
+      end
+    end
+
+    @attacher.set(fakeio)
+    assert_equal '["name","record"]', @attacher.get.id
+
+    @attacher.save
+    assert_equal '["name","record"]', @attacher.get.id
+  end
+
   test "url" do
     assert_equal nil, @attacher.url
 
@@ -123,8 +134,11 @@ class AttacherTest < Minitest::Test
   end
 
   test "default url" do
-    uploader = @attacher.store
-    def uploader.default_url(context); "#{context[:name]}_default"; end
+    @attacher.uploadie_class.class_eval do
+      def default_url(context)
+        "#{context[:name]}_default"
+      end
+    end
 
     assert_equal "avatar_default", @attacher.url
   end

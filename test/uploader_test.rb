@@ -1,9 +1,8 @@
 require "test_helper"
-require "stringio"
 
 class UploaderTest < Minitest::Test
   def setup
-    @uploader = uploader(:bare)
+    @uploader = uploader(:store)
   end
 
   test "interface" do
@@ -20,7 +19,7 @@ class UploaderTest < Minitest::Test
 
   test "upload generates a unique location if it wasn't given" do
     uploaded_file = @uploader.upload(fakeio("image"))
-    assert_equal "image", @storage.read(uploaded_file.id)
+    assert_equal "image", @uploader.storage.read(uploaded_file.id)
 
     another_uploaded_file = @uploader.upload(fakeio)
     refute_equal uploaded_file.id, another_uploaded_file.id

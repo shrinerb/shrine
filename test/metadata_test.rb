@@ -2,7 +2,7 @@ require "test_helper"
 
 class MetadataTest < Minitest::Test
   def setup
-    @uploader = uploader(:bare)
+    @uploader = uploader
   end
 
   test "filename gets stored into metadata" do

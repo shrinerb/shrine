@@ -2,7 +2,7 @@ require "test_helper"
 
 class StoreDimensionsTest < Minitest::Test
   def uploader(extractor)
-    super(:bare) { plugin :store_dimensions, extractor: extractor }
+    super() { plugin :store_dimensions, extractor: extractor }
   end
 
   test "storing dimensions with MiniMagick" do
