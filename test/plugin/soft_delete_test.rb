@@ -14,4 +14,20 @@ class SoftDeleteTest < Minitest::Test
 
     assert uploaded_file.exists?
   end
+
+  test "can keep replaced files also" do
+    @attacher = attacher { plugin :soft_delete, replaced: true }
+
+    uploaded_file = @attacher.set(fakeio)
+    @attacher.set(fakeio)
+    @attacher.save
+
+    assert uploaded_file.exists?
+
+    uploaded_file = @attacher.set(fakeio)
+    @attacher.set(nil)
+    @attacher.save
+
+    assert uploaded_file.exists?
+  end
 end
