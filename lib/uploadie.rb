@@ -486,6 +486,10 @@ class Uploadie
           storage.delete(id)
         end
 
+        def to_json(*args)
+          data.to_json(*args)
+        end
+
         def ==(other)
           other.is_a?(self.class) &&
           self.id == other.id &&

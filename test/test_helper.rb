@@ -42,7 +42,11 @@ class Minitest::Test
   end
 
   def image
-    File.open("test/fixtures/image.jpg")
+    File.open(image_path)
+  end
+
+  def image_path
+    "test/fixtures/image.jpg"
   end
 
   def image_url
@@ -70,6 +74,24 @@ module TestHelpers
 
     def around
       VCR.use_cassette("interactions") { super }
+    end
+  end
+
+  module Rack
+    def self.included(test)
+      super
+      require "rack/test"
+      test.include ::Rack::Test::Methods
+    end
+
+    def response
+      last_response
+    end
+
+    def body
+      require "json"
+      JSON.parse(response.body)
+    rescue JSON::ParserError
     end
   end
 end

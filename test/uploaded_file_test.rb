@@ -39,6 +39,17 @@ class UploadedFileTest < Minitest::Test
     assert_equal "image/jpeg", uploaded_file.content_type
   end
 
+  test "JSON" do
+    uploaded_file = @uploader.class::UploadedFile.new(
+      "id"       => "123",
+      "storage"  => "store",
+      "metadata" => {},
+    )
+
+    assert_equal '{"id":"123","storage":"store","metadata":{}}', uploaded_file.to_json
+    assert_equal '{"thumb":{"id":"123","storage":"store","metadata":{}}}', {thumb: uploaded_file}.to_json
+  end
+
   test "equality" do
     assert_equal(
       @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),

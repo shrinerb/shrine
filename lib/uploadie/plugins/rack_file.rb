@@ -26,7 +26,7 @@ class Uploadie
       class UploadedFile
         attr_reader :original_filename, :content_type
 
-        def initialize(tempfile:, filename: nil, type: nil, head: nil)
+        def initialize(tempfile:, filename: nil, type: nil, **)
           @tempfile          = tempfile
           @original_filename = filename
           @content_type      = type

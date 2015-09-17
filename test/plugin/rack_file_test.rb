@@ -20,6 +20,10 @@ class RackFileTest < Minitest::Test
     assert_equal "image/jpeg", uploaded_file.content_type
   end
 
+  test "accepts any other options Rack might add in the future" do
+    @uploader.upload(tempfile: fakeio, name: "bar")
+  end
+
   test "works on attacher" do
     @attacher = attacher { plugin :rack_file }
 
