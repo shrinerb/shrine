@@ -90,4 +90,10 @@ class EndpointTest < Minitest::Test
 
     refute_empty body.fetch("reverse")
   end
+
+  test "throws error when storage doesn't exist" do
+    assert_raises(Uploadie::Error) do
+      uploader { plugin :endpoint, allowed_storages: [:foo] }
+    end
+  end
 end

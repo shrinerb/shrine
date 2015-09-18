@@ -8,6 +8,7 @@ class Uploadie
       end
 
       def self.configure(uploader, allowed_storages: [:cache])
+        allowed_storages.each { |key| uploader.storage(key) }
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
       end
 

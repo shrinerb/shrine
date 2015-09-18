@@ -52,7 +52,7 @@ class ProcessingTest < Minitest::Test
       @uploader.class.plugin :processing, storage: :store, processor: "invalid"
     end
 
-    assert_raises(IndexError) do
+    assert_raises(Uploadie::Error) do
       @uploader.class.plugin :processing, storage: :nonexistent, processor: ->{}
     end
   end

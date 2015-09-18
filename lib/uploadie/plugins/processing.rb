@@ -17,7 +17,7 @@ class Uploadie
         raise ArgumentError, ":processor must be a proc" if !processor.is_a?(Proc)
         uploader.opts[:processor] = processor
 
-        uploader.storages.fetch(storage)
+        uploader.storage(storage)
         uploader.opts[:processing_storage] = storage
       end
 
