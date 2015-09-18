@@ -33,15 +33,15 @@ class Uploadie
       end
 
       def open(id)
-        ::File.open(path(id), "rb")
+        File.open(path(id), "rb")
       end
 
       def read(id)
-        ::File.read(path(id))
+        File.read(path(id))
       end
 
       def exists?(id)
-        ::File.exist?(path(id))
+        File.exist?(path(id))
       end
 
       def delete(id)
@@ -54,9 +54,9 @@ class Uploadie
 
       def path(id)
         if subdirectory
-          File.join(host, ::File.join(subdirectory, id))
+          File.join(host, File.join(subdirectory, id))
         else
-          ::File.join(directory, id)
+          File.join(directory, id)
         end
       end
 
