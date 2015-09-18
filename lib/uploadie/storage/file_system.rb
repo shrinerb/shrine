@@ -49,15 +49,15 @@ class Uploadie
       end
 
       def url(id)
-        path(id)
-      end
-
-      def path(id)
         if subdirectory
           File.join(host, File.join(subdirectory, id))
         else
           File.join(directory, id)
         end
+      end
+
+      def path(id)
+        File.join(directory, id)
       end
 
       def clear!(confirm = nil, &condition)
