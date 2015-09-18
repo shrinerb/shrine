@@ -67,7 +67,14 @@ class EndpointTest < Minitest::Test
   test "returns appropriate error message for missing file" do
     post "/cache/avatar"
 
-    assert_equal 500, response.status
+    assert_equal 400, response.status
+    refute_empty body.fetch("error")
+  end
+
+  test "returns appropriate error message for invalid file" do
+    post "/cache/avatar", file: "foo"
+
+    assert_equal 400, response.status
     refute_empty body.fetch("error")
   end
 

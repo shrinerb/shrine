@@ -28,6 +28,7 @@ class Uploadie
       class App < Roda
         plugin :json, classes: [Hash, Array, Uploadie::UploadedFile]
         plugin :halt
+        plugin :error_handler
 
         route do |r|
           r.on ":storage" do |storage|
@@ -43,6 +44,12 @@ class Uploadie
           end
         end
 
+        error do |exception|
+          if exception.is_a?(Uploadie::InvalidFile)
+            error! 400, "The \"file\" query parameter is not a file."
+          end
+        end
+
         def allow_storage!(storage)
           if !allowed_storages.include?(storage)
             error! 403, "Storage :#{storage} is not allowed."
@@ -52,7 +59,7 @@ class Uploadie
         def require_param!(name)
           request.params.fetch(name)
         rescue KeyError
-          error! 500, "Missing query parameter: #{name.inspect}"
+          error! 400, "Missing query parameter: #{name.inspect}"
         end
 
         def error!(status, message)
