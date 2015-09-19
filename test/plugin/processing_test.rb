@@ -1,4 +1,5 @@
 require "test_helper"
+require "tempfile"
 
 class ProcessingTest < Minitest::Test
   def uploader(storage_key = :store, &processor)
@@ -19,6 +20,20 @@ class ProcessingTest < Minitest::Test
     uploaded_file = @uploader.upload(fakeio("original"))
 
     assert_equal "lanigiro", uploaded_file[:processed].read
+  end
+
+  test "processed files are moved to the storage" do
+    tempfile = Tempfile.new("")
+    @uploader = uploader { |io| tempfile }
+    @uploader.upload(fakeio)
+
+    assert_equal nil, tempfile.path
+
+    tempfile = Tempfile.new("")
+    @uploader = uploader { |io| Hash[processed: tempfile] }
+    @uploader.upload(fakeio)
+
+    assert_equal nil, tempfile.path
   end
 
   test "only does processing on specified storage" do

@@ -9,8 +9,9 @@ class Shrine
     # end
     #
     module Processing
-      def self.load_dependencies(uploader, versions: nil, **)
+      def self.load_dependencies(uploader, versions: nil, storage:, **)
         uploader.plugin :_versions if versions
+        uploader.plugin :moving, storages: [storage]
       end
 
       def self.configure(uploader, processor:, storage:, **)
