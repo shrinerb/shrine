@@ -8,21 +8,20 @@ class Uploadie
     class FileSystem
       attr_reader :directory, :subdirectory, :host
 
-      def initialize(directory, root: nil, host: "")
-        if root
-          @subdirectory = directory
-          @directory = File.join(root, directory)
-          @host = host
+      def initialize(directory, subdirectory: nil, host: nil)
+        if subdirectory
+          @subdirectory = subdirectory
+          @directory = File.join(directory, subdirectory)
         else
-          raise Error, ":host only works in combination with :root" if !host.empty?
           @directory = directory
         end
+        @host = host
 
-        FileUtils.mkdir_p(directory)
+        FileUtils.mkdir_p(@directory)
       end
 
       def upload(io, id)
-        IO.copy_stream(io, path(id))
+        IO.copy_stream(io, path!(id))
         io.rewind
       end
 
@@ -48,9 +47,13 @@ class Uploadie
 
       def url(id)
         if subdirectory
-          File.join(host, File.join(subdirectory, id))
+          File.join(host || "", File.join(subdirectory, id))
         else
-          File.join(directory, id)
+          if host
+            File.join(host, File.join(directory, id))
+          else
+            File.join(directory, id)
+          end
         end
       end
 
@@ -58,16 +61,23 @@ class Uploadie
         File.join(directory, id)
       end
 
-      def clear!(confirm = nil, &condition)
-        if condition
+      def clear!(confirm = nil, older_than: nil)
+        if older_than
           Find.find(directory) do |path|
-            condition.(path) ? FileUtils.rm(path) : Find.prune
+            File.mtime(path) < older_than ? FileUtils.rm_r(path) : Find.prune
           end
         else
           raise Uploadie::Confirm unless confirm == :confirm
-          FileUtils.rm_rf(directory)
+          FileUtils.rm_r(directory)
           FileUtils.mkdir_p(directory)
         end
+      end
+
+      private
+
+      def path!(id)
+        FileUtils.mkdir_p File.dirname(path(id))
+        path(id)
       end
     end
   end
