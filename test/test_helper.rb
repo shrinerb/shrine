@@ -54,7 +54,7 @@ class Minitest::Test
   end
 
   def invalid_url
-    "https://a.com"
+    "https://google.com/foo"
   end
 end
 
