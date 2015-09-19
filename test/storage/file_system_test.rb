@@ -126,4 +126,29 @@ class FileSystemTest < Minitest::Test
     @storage.clear!(older_than: Time.now + 1)
     refute @storage.exists?("foo")
   end
+
+  test "sets directory permissions" do
+    @storage = file_system(root, permissions: 0755)
+    assert_permissions 0755, root
+
+    @storage.clear!(:confirm)
+    assert_permissions 0755, root
+  end
+
+  test "sets file permissions" do
+    @storage = file_system(root, permissions: 0755)
+    @storage.upload(fakeio, "foo.jpg")
+
+    assert_permissions 0755, @storage.path("foo.jpg")
+
+    @storage = file_system(root, permissions: 0755)
+    file = Shrine::Utils.copy_to_tempfile("", image)
+    @storage.move(file, "bar.jpg")
+
+    assert_permissions 0755, @storage.path("bar.jpg")
+  end
+
+  def assert_permissions(expected, path)
+    assert_equal expected, File.lstat(path).mode & 0777
+  end
 end

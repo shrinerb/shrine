@@ -6,23 +6,26 @@ require "find"
 class Shrine
   module Storage
     class FileSystem
-      attr_reader :directory, :subdirectory, :host
+      attr_reader :directory, :subdirectory, :host, :permissions
 
-      def initialize(directory, subdirectory: nil, host: nil)
+      def initialize(directory, subdirectory: nil, host: nil, permissions: nil)
         if subdirectory
           @subdirectory = subdirectory
           @directory = File.join(directory, subdirectory)
         else
           @directory = directory
         end
-        @host = host
 
-        FileUtils.mkdir_p(@directory)
+        @host = host
+        @permissions = permissions
+
+        FileUtils.mkdir_p(@directory, mode: permissions)
       end
 
       def upload(io, id)
         IO.copy_stream(io, path!(id))
         io.rewind
+        FileUtils.chmod(permissions, path(id)) if permissions
       end
 
       def download(id)
@@ -35,6 +38,7 @@ class Shrine
         else
           FileUtils.mv io.storage.path(io.id), path!(id)
         end
+        FileUtils.chmod(permissions, path(id)) if permissions
       end
 
       def movable?(io, id)
@@ -78,7 +82,7 @@ class Shrine
         else
           raise Shrine::Confirm unless confirm == :confirm
           FileUtils.rm_r(directory)
-          FileUtils.mkdir_p(directory)
+          FileUtils.mkdir_p(@directory, mode: permissions)
         end
       end
 
