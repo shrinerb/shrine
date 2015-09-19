@@ -4,7 +4,7 @@ require "tempfile"
 class ProcessingTest < Minitest::Test
   def uploader(storage_key = :store, &processor)
     super(storage_key) do
-      plugin :processing, versions: true, storage: :store, processor: processor
+      plugin :processing, versions: [:processed], storage: :store, processor: processor
     end
   end
 
@@ -47,7 +47,7 @@ class ProcessingTest < Minitest::Test
     @uploader = uploader { |io| "not an IO" }
     assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
 
-    @uploader = uploader { |io| Hash[original: "not an IO"] }
+    @uploader = uploader { |io| Hash[processed: "not an IO"] }
     assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
   end
 
@@ -58,6 +58,14 @@ class ProcessingTest < Minitest::Test
     processed_file = @uploader.upload(uploaded_file)
 
     assert_equal "Tempfile", processed_file.read
+  end
+
+  test "complains when unknown/missing versions are given" do
+    @uploader = uploader { |io| Hash[unkown: FakeIO.new("image")] }
+    assert_raises(Shrine::Error) { @uploader.upload(fakeio) }
+
+    @uploader = uploader { |io| Hash[] }
+    assert_raises(Shrine::Error) { @uploader.upload(fakeio) }
   end
 
   test "passing invalid options" do

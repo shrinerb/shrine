@@ -94,7 +94,7 @@ class EndpointTest < Minitest::Test
   end
 
   test "works with processing versions" do
-    @uploader.class.plugin :processing, storage: :cache, versions: true,
+    @uploader.class.plugin :processing, storage: :cache, versions: [:reverse],
       processor: ->(io, context) { Hash[reverse: io] }
 
     post "/cache/avatar", file: image

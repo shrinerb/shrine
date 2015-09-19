@@ -1,10 +1,34 @@
 class Shrine
   module Plugins
     module Versions
+      def self.configure(uploader, names:)
+        uploader.opts[:version_names] = names.map(&:to_s)
+      end
+
+      module ClassMethods
+        def version_names
+          opts[:version_names]
+        end
+
+        def versions!(hash)
+          unknown_versions = hash.keys.map(&:to_s) - version_names
+          unknown_versions.each { |name| raise Error, "unkown version: #{name.inspect}" }
+
+          missing_versions = version_names - hash.keys.map(&:to_s)
+          missing_versions.each { |name| raise Error, "missing version: #{name.inspect}" }
+
+          hash
+        end
+
+        def versions(hash)
+          hash.select { |key, value| version_names.include?(key) }
+        end
+      end
+
       module InstanceMethods
         def upload(io, context = {})
           if (hash = io).is_a?(Hash) && !hash.key?(:tempfile)
-            hash.inject({}) do |versions, (name, version)|
+            self.class.versions!(hash).inject({}) do |versions, (name, version)|
               versions.update(name.to_s => super(version, version: name.to_s, **context))
             end
           else
@@ -13,8 +37,8 @@ class Shrine
         end
 
         def uploaded?(uploaded_file)
-          if (versions = uploaded_file).is_a?(Hash)
-            versions.all? { |name, version| super(version) }
+          if (hash = uploaded_file).is_a?(Hash)
+            hash.all? { |name, version| super(version) }
           else
             super
           end
@@ -52,7 +76,7 @@ class Shrine
           if hash.key?("storage")
             super
           else
-            hash.inject({}) do |versions, (name, data)|
+            shrine_class.versions(hash).inject({}) do |versions, (name, data)|
               versions.update(name => super(data))
             end
           end

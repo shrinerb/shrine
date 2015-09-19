@@ -2,7 +2,7 @@ require "test_helper"
 
 class VersionsTest < Minitest::Test
   def setup
-    @attacher = attacher { plugin :_versions }
+    @attacher = attacher { plugin :_versions, names: [:thumb] }
     @uploader = @attacher.store
   end
 
@@ -26,7 +26,7 @@ class VersionsTest < Minitest::Test
   test "works with the rack_file plugin" do
     @uploader = uploader do
       plugin :rack_file
-      plugin :_versions
+      plugin :_versions, names: [:thumb]
     end
 
     uploaded_file = @uploader.upload(tempfile: fakeio)
@@ -85,7 +85,7 @@ class VersionsTest < Minitest::Test
     @uploader.class.validate {}
     uploaded_file = @uploader.upload(fakeio)
 
-    assert_raises(Shrine::Error) { @attacher.set(thumb: uploaded_file.data) }
+    assert_raises(Shrine::Error) { @attacher.set("thumb" => uploaded_file.data) }
   end
 
   test "attacher returns a hash of versions" do
@@ -112,5 +112,12 @@ class VersionsTest < Minitest::Test
     @attacher.save
 
     refute uploaded_file.exists?
+  end
+
+  test "attacher filters the hash to only registered version" do
+    uploaded_file = @uploader.upload(fakeio)
+    @attacher.set("thumb" => uploaded_file.data, "malicious" => uploaded_file.data)
+
+    assert_equal ["thumb"], @attacher.get.keys
   end
 end
