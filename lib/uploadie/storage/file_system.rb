@@ -24,8 +24,6 @@ class Uploadie
       def upload(io, id)
         IO.copy_stream(io, path(id))
         io.rewind
-
-        url(id)
       end
 
       def download(id)
