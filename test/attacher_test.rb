@@ -66,7 +66,7 @@ class AttacherTest < Minitest::Test
     @attacher.set(fakeio)
     @attacher.save
 
-    assert_equal :store, @attacher.get.storage_key
+    assert_equal "store", @attacher.get.storage_key
   end
 
   test "saving deletes removed files" do

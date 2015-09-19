@@ -16,7 +16,7 @@ class UploadedFileTest < Minitest::Test
 
     assert_instance_of Hash, uploaded_file.data
     assert_equal "key", uploaded_file.id
-    assert_equal :store, uploaded_file.storage_key
+    assert_equal "store", uploaded_file.storage_key
     assert_instance_of Hash, uploaded_file.metadata
 
     assert_equal "image", uploaded_file.read

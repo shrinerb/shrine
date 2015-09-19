@@ -19,7 +19,7 @@ class ProcessingTest < Minitest::Test
     @uploader = uploader { |io| Hash[processed: FakeIO.new(io.read.reverse)] }
     uploaded_file = @uploader.upload(fakeio("original"))
 
-    assert_equal "lanigiro", uploaded_file[:processed].read
+    assert_equal "lanigiro", uploaded_file["processed"].read
   end
 
   test "processed files are moved to the storage" do

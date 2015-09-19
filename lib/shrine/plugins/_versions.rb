@@ -5,7 +5,7 @@ class Shrine
         def upload(io, context = {})
           if (hash = io).is_a?(Hash) && !hash.key?(:tempfile)
             hash.inject({}) do |versions, (name, version)|
-              versions.update(name => super(version, version: name, **context))
+              versions.update(name.to_s => super(version, version: name.to_s, **context))
             end
           else
             super
@@ -25,7 +25,7 @@ class Shrine
         def url(version = nil)
           if get.is_a?(Hash)
             if version
-              get.fetch(version).url
+              get.fetch(version.to_s).url
             else
               raise Error, "must call #{name}_url with the name of the version"
             end
@@ -35,7 +35,7 @@ class Shrine
         end
 
         def default_url(version = nil)
-          store.default_url(name: name, record: record, version: version)
+          store.default_url(context.merge(version: version.to_s))
         end
 
         def validate!
@@ -53,7 +53,7 @@ class Shrine
             super
           else
             hash.inject({}) do |versions, (name, data)|
-              versions.update(name.to_sym => super(data))
+              versions.update(name => super(data))
             end
           end
         end

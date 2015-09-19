@@ -8,7 +8,7 @@ class Shrine
       end
 
       def self.configure(uploader, allowed_storages: [:cache])
-        allowed_storages.each { |key| uploader.storage(key) }
+        allowed_storages = allowed_storages.map { |key| uploader.storage(key) }
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
       end
 
@@ -32,13 +32,13 @@ class Shrine
         plugin :error_handler
 
         route do |r|
-          r.on ":storage" do |storage|
-            allow_storage!(storage.to_sym)
-            @uploader = shrine_class.new(storage.to_sym)
+          r.on ":storage" do |storage_key|
+            allow_storage!(storage_key)
+            @uploader = shrine_class.new(storage_key)
 
             r.post ":name" do |name|
               file = require_param!("file")
-              context = {name: name.to_sym}
+              context = {name: name}
 
               @uploader.upload(file, context)
             end
@@ -48,12 +48,15 @@ class Shrine
         error do |exception|
           if exception.is_a?(Shrine::InvalidFile)
             error! 400, "The \"file\" query parameter is not a file."
+          else
+            raise exception
           end
         end
 
-        def allow_storage!(storage)
+        def allow_storage!(storage_key)
+          storage = shrine_class.storages[storage_key]
           if !allowed_storages.include?(storage)
-            error! 403, "Storage :#{storage} is not allowed."
+            error! 403, "Storage #{storage_key.inspect} is not allowed."
           end
         end
 

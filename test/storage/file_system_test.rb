@@ -20,8 +20,8 @@ class FileSystemTest < Minitest::Test
     @storage = file_system(root)
     @shrine = Class.new(Shrine)
     @shrine.storages = {
-      file_system: Shrine::Storage::FileSystem.new(root),
-      memory:      Shrine::Storage::Memory.new,
+      "file_system" => Shrine::Storage::FileSystem.new(root),
+      "memory"      => Shrine::Storage::Memory.new,
     }
   end
 

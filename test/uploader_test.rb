@@ -6,7 +6,7 @@ class UploaderTest < Minitest::Test
   end
 
   test "interface" do
-    assert_equal :store, @uploader.storage_key
+    assert_equal "store", @uploader.storage_key
     assert_equal @uploader.class.opts, @uploader.opts
   end
 

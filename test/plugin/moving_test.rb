@@ -10,8 +10,8 @@ class MovingTest < Minitest::Test
   def shrine(storages)
     shrine = Class.new(Shrine)
     shrine.storages = {
-      file_system: Shrine::Storage::FileSystem.new("tmp"),
-      memory:      Shrine::Storage::Memory.new,
+      "file_system" => Shrine::Storage::FileSystem.new("tmp"),
+      "memory"      => Shrine::Storage::Memory.new,
     }
     shrine.plugin :moving, storages: storages
     shrine

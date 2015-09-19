@@ -128,25 +128,25 @@ class Shrine
         attr_accessor :storages
 
         def storage(name)
-          storages.fetch(name)
+          storages.fetch(name.to_s)
         rescue KeyError
           raise Error, "#{self} doesn't have storage #{name.inspect}"
         end
 
         def cache=(storage)
-          storages[:cache] = storage
+          storages["cache"] = storage
         end
 
         def cache
-          storages[:cache]
+          storages["cache"]
         end
 
         def store=(storage)
-          storages[:store] = storage
+          storages["store"] = storage
         end
 
         def store
-          storages[:store]
+          storages["store"]
         end
 
         def attachment(*args)
@@ -176,7 +176,7 @@ class Shrine
 
       module InstanceMethods
         def initialize(storage_key)
-          @storage_key = storage_key
+          @storage_key = storage_key.to_s
           storage # ensure storage exists
         end
 
@@ -248,7 +248,7 @@ class Shrine
 
           self.class::UploadedFile.new(
             "id"       => location,
-            "storage"  => storage_key.to_s,
+            "storage"  => storage_key,
             "metadata" => metadata,
           )
         end
@@ -432,7 +432,7 @@ class Shrine
         end
 
         def context
-          {name: name, record: record}
+          {name: name.to_s, record: record}
         end
 
         def deserialize(string)
@@ -458,7 +458,7 @@ class Shrine
         def initialize(data)
           @data        = data
           @id          = data.fetch("id")
-          @storage_key = data.fetch("storage").to_sym
+          @storage_key = data.fetch("storage")
           @metadata    = data.fetch("metadata")
 
           storage # ensure storage exists

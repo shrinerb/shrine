@@ -9,7 +9,7 @@ class VersionsTest < Minitest::Test
   test "allows uploading versions" do
     versions = @uploader.upload(thumb: fakeio)
 
-    assert_kind_of Shrine::UploadedFile, versions[:thumb]
+    assert_kind_of Shrine::UploadedFile, versions.fetch("thumb")
   end
 
   test "passes the version name to location generator" do
@@ -20,7 +20,7 @@ class VersionsTest < Minitest::Test
     end
     versions = @uploader.upload(thumb: fakeio)
 
-    assert_equal "thumb", versions[:thumb].id
+    assert_equal "thumb", versions.fetch("thumb").id
   end
 
   test "works with the rack_file plugin" do
@@ -92,7 +92,7 @@ class VersionsTest < Minitest::Test
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data)
 
-    assert_kind_of Shrine::UploadedFile, @attacher.get[:thumb]
+    assert_kind_of Shrine::UploadedFile, @attacher.get.fetch("thumb")
   end
 
   test "attacher destroys versions successfully" do

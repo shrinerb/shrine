@@ -62,6 +62,11 @@ class EndpointTest < Minitest::Test
 
     assert_equal 403, response.status
     refute_empty body.fetch("error")
+
+    post "/nonexistent/avatar", file: image
+
+    assert_equal 403, response.status
+    refute_empty body.fetch("error")
   end
 
   test "returns appropriate error message for missing file" do
@@ -76,6 +81,12 @@ class EndpointTest < Minitest::Test
 
     assert_equal 400, response.status
     refute_empty body.fetch("error")
+  end
+
+  test "allows other errors to propagate" do
+    @uploader.class.plugin :processing, storage: :cache, processor: proc { raise }
+
+    assert_raises(RuntimeError) { post "/cache/avatar", file: image }
   end
 
   test "endpoint is memoized" do
