@@ -12,7 +12,7 @@ class Uploadie
     ]
 
     def download(url)
-      downloaded_file = URI(url).open
+      downloaded_file = URI(url).open("User-Agent"=>"Uploadie/#{Uploadie.version.to_s}")
 
       # open-uri will return a StringIO instead of a Tempfile if the filesize
       # is less than 10 KB (ಠ_ಠ), so we patch this behaviour by converting it
