@@ -7,9 +7,10 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache])
+      def self.configure(uploader, allowed_storages: [:cache], return_url: false)
         allowed_storages = allowed_storages.map { |key| uploader.storage(key) }
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
+        uploader.opts[:endpoint_return_url] = return_url
       end
 
       module ClassMethods
@@ -23,6 +24,16 @@ class Shrine
           app = Class.new(App)
           app.opts[:shrine_class] = self
           app.app
+        end
+      end
+
+      module InstanceMethods
+        private
+
+        def _upload(io, context)
+          uploaded_file = super
+          uploaded_file.data.update("url" => uploaded_file.url) if opts[:endpoint_return_url]
+          uploaded_file
         end
       end
 

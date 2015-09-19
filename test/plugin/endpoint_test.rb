@@ -51,6 +51,13 @@ class EndpointTest < Minitest::Test
     assert_kind_of Integer, metadata['size']
   end
 
+  test "returns url of :return_url is passed in" do
+    @uploader = uploader(:cache) { plugin :endpoint, return_url: true }
+    post "/cache/avatar", file: image
+
+    refute_empty body.fetch("url")
+  end
+
   test "accepts only POST requests" do
     put "/cache/avatar", file: image
 
