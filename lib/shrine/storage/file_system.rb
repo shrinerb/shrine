@@ -2,13 +2,14 @@ require "shrine/utils"
 
 require "fileutils"
 require "find"
+require "pathname"
 
 class Shrine
   module Storage
     class FileSystem
       attr_reader :directory, :subdirectory, :host, :permissions
 
-      def initialize(directory, subdirectory: nil, host: nil, permissions: nil)
+      def initialize(directory, subdirectory: nil, host: nil, clean: true, permissions: nil)
         if subdirectory
           @subdirectory = subdirectory
           @directory = File.join(directory, subdirectory)
@@ -18,6 +19,7 @@ class Shrine
 
         @host = host
         @permissions = permissions
+        @clean = clean
 
         FileUtils.mkdir_p(@directory, mode: permissions)
       end
@@ -60,6 +62,7 @@ class Shrine
 
       def delete(id)
         FileUtils.rm(path(id))
+        clean(path(id)) if @clean
       end
 
       def url(id, **options)
@@ -95,6 +98,16 @@ class Shrine
       def path!(id)
         FileUtils.mkdir_p File.dirname(path(id))
         path(id)
+      end
+
+      def clean(path)
+        Pathname.new(path).dirname.ascend do |pathname|
+          if pathname.children.empty? && pathname.to_s != directory
+            FileUtils.rmdir(pathname)
+          else
+            break
+          end
+        end
       end
     end
   end

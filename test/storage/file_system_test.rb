@@ -88,6 +88,20 @@ class FileSystemTest < Minitest::Test
     assert @storage.open("foo.jpg").binmode?
   end
 
+  test "delete cleans subdirectories, unless :clean is false" do
+    @storage.upload(fakeio, "a/a/a.jpg")
+    @storage.delete("a/a/a.jpg")
+
+    refute File.exist?(@storage.path("a"))
+    assert File.exist?(@storage.directory)
+
+    @storage = file_system(root, clean: false)
+    @storage.upload(fakeio, "a/a/a.jpg")
+    @storage.delete("a/a/a.jpg")
+
+    assert File.exist?(@storage.path("a"))
+  end
+
   test "#url returns the full path without :subdirectory" do
     @storage = file_system(root)
     @storage.upload(fakeio, "foo.jpg")
