@@ -56,6 +56,10 @@ class Minitest::Test
   def invalid_url
     "https://google.com/foo"
   end
+
+  def data_uri(content_type = "image/png")
+    "data:#{content_type};base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+  end
 end
 
 module TestHelpers
