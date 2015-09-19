@@ -6,12 +6,28 @@ require "json"
 class Uploadie
   class Error < StandardError; end
 
-  class InvalidFile < Error; end
+  class InvalidFile < Error
+    def initialize(io, missing_methods)
+      @io = io
+      @missing_methods = missing_methods
+    end
+
+    def message
+      "#{@io.inspect} is not a valid IO object " \
+      "(it doesn't respond to #{missing_methods_string})"
+    end
+
+    private
+
+    def missing_methods_string
+      @missing_methods.map { |m| "`#{m}`" }.join(", ")
+    end
+  end
 
   class Confirm < Error
     def message
-      "Are you sure you want to delete all files from the storage? \
-      (confirm with `clear!(:confirm)`)"
+      "Are you sure you want to delete all files from the storage? " \
+      "(confirm with `clear!(:confirm)`)"
     end
   end
 
@@ -232,11 +248,8 @@ class Uploadie
         end
 
         def _enforce_io(io)
-          IO_METHODS.each do |m|
-            if not io.respond_to?(m)
-              raise InvalidFile, "#{io.inspect} does not respond to `#{m}`"
-            end
-          end
+          missing_methods = IO_METHODS.reject { |m| io.respond_to?(m) }
+          raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 
         def generate_uid(io)

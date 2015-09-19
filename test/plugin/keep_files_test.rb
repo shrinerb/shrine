@@ -31,4 +31,13 @@ class KeepFilesTest < Minitest::Test
 
     assert uploaded_file.exists?
   end
+
+  test ":replaced still deletes cached files" do
+    @attacher = attacher(replaced: true)
+
+    cached_file = @attacher.set(fakeio)
+    @attacher.send(:delete!, cached_file)
+
+    refute cached_file.exists?
+  end
 end
