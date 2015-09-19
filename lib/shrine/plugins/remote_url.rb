@@ -1,9 +1,9 @@
-class Uploadie
+class Shrine
   module Plugins
     module RemoteUrl
       def self.load_dependencies(uploader, downloader: :open_uri, **)
         case downloader
-        when :open_uri then require "uploadie/utils"
+        when :open_uri then require "shrine/utils"
         end
       end
 
@@ -47,7 +47,7 @@ class Uploadie
         private
 
         def download(url)
-          downloader = uploadie_class.opts[:remote_url_downloader]
+          downloader = shrine_class.opts[:remote_url_downloader]
 
           if downloader.is_a?(Symbol)
             send(:"download_with_#{downloader}", url)
@@ -57,9 +57,9 @@ class Uploadie
         end
 
         def download_with_open_uri(url)
-          Uploadie::Utils.download(url)
-        rescue Uploadie::Error
-          message = uploadie_class.opts[:remote_url_error_message]
+          Shrine::Utils.download(url)
+        rescue Shrine::Error
+          message = shrine_class.opts[:remote_url_error_message]
           message = message.call(url) if message.respond_to?(:call)
           errors << message
           nil

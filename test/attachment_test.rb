@@ -3,14 +3,14 @@ require "json"
 
 class AttachmentTest < Minitest::Test
   def setup
-    @uploadie = uploader.class
+    @shrine = uploader.class
     user_class = Struct.new(:avatar_data)
-    user_class.include @uploadie[:avatar]
+    user_class.include @shrine[:avatar]
     @user = user_class.new
   end
 
   test "assigns the correct attacher class" do
-    assert_equal @uploadie, @user.avatar_attacher.uploadie_class
+    assert_equal @shrine, @user.avatar_attacher.shrine_class
   end
 
   test "setting and getting" do
@@ -39,7 +39,7 @@ class AttachmentTest < Minitest::Test
   end
 
   test ".attachment alias" do
-    @user.class.include @uploadie.attachment(:foo)
-    assert_instance_of @uploadie::Attachment, @user.class.ancestors[1]
+    @user.class.include @shrine.attachment(:foo)
+    assert_instance_of @shrine::Attachment, @user.class.ancestors[1]
   end
 end

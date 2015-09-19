@@ -30,10 +30,10 @@ class ProcessingTest < Minitest::Test
 
   test "returning an invalid object" do
     @uploader = uploader { |io| "not an IO" }
-    assert_raises(Uploadie::InvalidFile) { @uploader.upload(fakeio) }
+    assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
 
     @uploader = uploader { |io| Hash[original: "not an IO"] }
-    assert_raises(Uploadie::InvalidFile) { @uploader.upload(fakeio) }
+    assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
   end
 
   test "uploaded files are downloaded before processing" do
@@ -52,7 +52,7 @@ class ProcessingTest < Minitest::Test
       @uploader.class.plugin :processing, storage: :store, processor: "invalid"
     end
 
-    assert_raises(Uploadie::Error) do
+    assert_raises(Shrine::Error) do
       @uploader.class.plugin :processing, storage: :nonexistent, processor: ->{}
     end
   end

@@ -4,7 +4,7 @@ class UtilsTest < Minitest::Test
   include TestHelpers::Interactions
 
   def setup
-    @utils = Uploadie::Utils
+    @utils = Shrine::Utils
   end
 
   test "copy_to_tempfile returns a tempfile" do
@@ -50,6 +50,6 @@ class UtilsTest < Minitest::Test
   end
 
   test "download unifies different kinds of upload errors" do
-    assert_raises(Uploadie::Error) { @utils.download(invalid_url) }
+    assert_raises(Shrine::Error) { @utils.download(invalid_url) }
   end
 end

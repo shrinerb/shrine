@@ -1,4 +1,4 @@
-class Uploadie
+class Shrine
   module Plugins
     module RemoveAttachment
       module AttachmentMethods

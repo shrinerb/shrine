@@ -4,8 +4,8 @@ require "minitest/autorun"
 require "minitest/pride"
 require "minitest/hooks/test"
 
-require "uploadie"
-require "uploadie/storage/memory"
+require "shrine"
+require "shrine/storage/memory"
 
 require "stringio"
 require "forwardable"
@@ -18,9 +18,9 @@ class Minitest::Test
   end
 
   def uploader(storage_key = :store, &block)
-    uploader_class = Class.new(Uploadie)
-    uploader_class.cache = Uploadie::Storage::Memory.new
-    uploader_class.store = Uploadie::Storage::Memory.new
+    uploader_class = Class.new(Shrine)
+    uploader_class.cache = Shrine::Storage::Memory.new
+    uploader_class.store = Shrine::Storage::Memory.new
     uploader_class.class_eval(&block) if block
     uploader_class.new(storage_key)
   end
@@ -104,5 +104,5 @@ class FakeIO
   end
 
   extend Forwardable
-  delegate Uploadie::IO_METHODS.keys => :@io
+  delegate Shrine::IO_METHODS.keys => :@io
 end

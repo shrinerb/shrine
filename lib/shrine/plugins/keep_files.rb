@@ -1,4 +1,4 @@
-class Uploadie
+class Shrine
   module Plugins
     module KeepFiles
       def self.configure(uploader, destroyed: nil, replaced: nil)
@@ -15,12 +15,12 @@ class Uploadie
 
       module AttacherMethods
         def destroy
-          super unless uploadie_class.keep?(:destroyed)
+          super unless shrine_class.keep?(:destroyed)
         end
 
         def delete!(uploaded_file)
           if store.uploaded?(uploaded_file)
-            super unless uploadie_class.keep?(:replaced)
+            super unless shrine_class.keep?(:replaced)
           else
             super
           end

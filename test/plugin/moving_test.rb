@@ -1,20 +1,20 @@
 require "test_helper"
 require "minitest/mock"
 
-require "uploadie/storage/file_system"
-require "uploadie/utils"
+require "shrine/storage/file_system"
+require "shrine/utils"
 
 require "fileutils"
 
 class MovingTest < Minitest::Test
-  def uploadie(storages)
-    uploadie = Class.new(Uploadie)
-    uploadie.storages = {
-      file_system: Uploadie::Storage::FileSystem.new("tmp"),
-      memory:      Uploadie::Storage::Memory.new,
+  def shrine(storages)
+    shrine = Class.new(Shrine)
+    shrine.storages = {
+      file_system: Shrine::Storage::FileSystem.new("tmp"),
+      memory:      Shrine::Storage::Memory.new,
     }
-    uploadie.plugin :moving, storages: storages
-    uploadie
+    shrine.plugin :moving, storages: storages
+    shrine
   end
 
   def teardown
@@ -22,8 +22,8 @@ class MovingTest < Minitest::Test
   end
 
   test "uses the storage to move the IO" do
-    @uploader = uploadie([:file_system]).new(:file_system)
-    file = Uploadie::Utils.copy_to_tempfile("", image)
+    @uploader = shrine([:file_system]).new(:file_system)
+    file = Shrine::Utils.copy_to_tempfile("", image)
     file.singleton_class.instance_eval { undef_method :delete }
 
     uploaded_file = @uploader.upload(file)
@@ -33,9 +33,9 @@ class MovingTest < Minitest::Test
   end
 
   test "uploads and deletes the IO if storage doesn't support moving" do
-    @uploader = uploadie([:memory]).new(:memory)
+    @uploader = shrine([:memory]).new(:memory)
 
-    file = Uploadie::Utils.copy_to_tempfile("", image); path = file.path
+    file = Shrine::Utils.copy_to_tempfile("", image); path = file.path
     stored_file = @uploader.upload(file)
     assert stored_file.exists?
     refute File.exist?(path)
@@ -47,25 +47,25 @@ class MovingTest < Minitest::Test
   end
 
   test "doesn't trip if IO doesn't respond to delete" do
-    @uploader = uploadie([:memory]).new(:memory)
+    @uploader = shrine([:memory]).new(:memory)
     uploaded_file = @uploader.upload(fakeio)
 
     assert uploaded_file.exists?
   end
 
   test "only moves to specified storages" do
-    @uploader = uploadie([:file_system]).new(:memory)
-    file = Uploadie::Utils.copy_to_tempfile("", image)
+    @uploader = shrine([:file_system]).new(:memory)
+    file = Shrine::Utils.copy_to_tempfile("", image)
     uploaded_file = @uploader.upload(file)
     assert File.exist?(file.path)
 
-    @uploader = uploadie([:memory]).new(:file_system)
-    file = Uploadie::Utils.copy_to_tempfile("", image)
+    @uploader = shrine([:memory]).new(:file_system)
+    file = Shrine::Utils.copy_to_tempfile("", image)
     uploaded_file = @uploader.upload(file)
     assert File.exist?(file.path)
   end
 
   test "throws error for unexisting storage" do
-    assert_raises(Uploadie::Error) { uploadie([:nonexistent]) }
+    assert_raises(Shrine::Error) { shrine([:nonexistent]) }
   end
 end

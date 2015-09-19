@@ -1,6 +1,6 @@
 require "forwardable"
 
-class Uploadie
+class Shrine
   module Plugins
     module RackFile
       module InstanceMethods
@@ -37,7 +37,7 @@ class Uploadie
         end
 
         extend Forwardable
-        delegate Uploadie::IO_METHODS.keys => :@tempfile
+        delegate Shrine::IO_METHODS.keys => :@tempfile
       end
     end
 

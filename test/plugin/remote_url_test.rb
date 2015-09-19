@@ -14,7 +14,7 @@ class RemoteUrlTest < Minitest::Test
   test "attaching a file via a remote url" do
     @attacher.remote_url = image_url
 
-    assert_instance_of @attacher.uploadie_class::UploadedFile, @attacher.get
+    assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
   end
 
   test "ignores when url is empty" do
@@ -61,14 +61,14 @@ class RemoteUrlTest < Minitest::Test
   end
 
   test "defaults downloader to :open_uri" do
-    assert_equal :open_uri, @attacher.uploadie_class.opts[:remote_url_downloader]
+    assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url_downloader]
   end
 
   test "attachment interface" do
     @user = @attacher.record
 
     @user.avatar_remote_url = image_url
-    assert_instance_of @attacher.uploadie_class::UploadedFile, @user.avatar
+    assert_instance_of @attacher.shrine_class::UploadedFile, @user.avatar
 
     assert_respond_to @user, :avatar_remote_url
   end

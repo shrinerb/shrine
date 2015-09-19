@@ -1,4 +1,4 @@
-class Uploadie
+class Shrine
   module Plugins
     # plugin :versions, storage: :cache, processor: -> (raw_image, context) do
     #   size_700 = resize_to_fit(raw_image, 700, 700)
@@ -25,7 +25,7 @@ class Uploadie
         def upload(io, context = {})
           if processing?(io, context)
             processor = opts[:processor]
-            io = io.download if io.is_a?(Uploadie::UploadedFile)
+            io = io.download if io.is_a?(Shrine::UploadedFile)
 
             processed = instance_exec(io, context, &processor)
 

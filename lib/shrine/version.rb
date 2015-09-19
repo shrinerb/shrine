@@ -1,4 +1,4 @@
-class Uploadie
+class Shrine
   def self.version
     Gem::Version.new VERSION::STRING
   end

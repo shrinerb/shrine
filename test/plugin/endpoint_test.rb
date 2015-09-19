@@ -92,7 +92,7 @@ class EndpointTest < Minitest::Test
   end
 
   test "throws error when storage doesn't exist" do
-    assert_raises(Uploadie::Error) do
+    assert_raises(Shrine::Error) do
       uploader { plugin :endpoint, allowed_storages: [:foo] }
     end
   end

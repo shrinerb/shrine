@@ -1,15 +1,15 @@
 require "test_helper"
 
-require "uploadie/storage/file_system"
-require "uploadie/storage/memory"
-require "uploadie/storage"
-require "uploadie/utils"
+require "shrine/storage/file_system"
+require "shrine/storage/memory"
+require "shrine/storage"
+require "shrine/utils"
 
 require "fileutils"
 
 class FileSystemTest < Minitest::Test
   def file_system(*args)
-    Uploadie::Storage::FileSystem.new(*args)
+    Shrine::Storage::FileSystem.new(*args)
   end
 
   def root
@@ -18,10 +18,10 @@ class FileSystemTest < Minitest::Test
 
   def setup
     @storage = file_system(root)
-    @uploadie = Class.new(Uploadie)
-    @uploadie.storages = {
-      file_system: Uploadie::Storage::FileSystem.new(root),
-      memory:      Uploadie::Storage::Memory.new,
+    @shrine = Class.new(Shrine)
+    @shrine.storages = {
+      file_system: Shrine::Storage::FileSystem.new(root),
+      memory:      Shrine::Storage::Memory.new,
     }
   end
 
@@ -30,8 +30,8 @@ class FileSystemTest < Minitest::Test
   end
 
   test "passes the lint" do
-    Uploadie::Storage::Lint.call(file_system(root))
-    Uploadie::Storage::Lint.call(file_system(root, subdirectory: "uploads"))
+    Shrine::Storage::Lint.call(file_system(root))
+    Shrine::Storage::Lint.call(file_system(root, subdirectory: "uploads"))
   end
 
   test "creates the given directory" do
@@ -49,9 +49,9 @@ class FileSystemTest < Minitest::Test
   end
 
   test "files and UploadeFiles from FileSystem are movable" do
-    file                      = Uploadie::Utils.copy_to_tempfile("", image)
-    file_system_uploaded_file = @uploadie.new(:file_system).upload(fakeio)
-    memory_uploaded_file      = @uploadie.new(:memory).upload(fakeio)
+    file                      = Shrine::Utils.copy_to_tempfile("", image)
+    file_system_uploaded_file = @shrine.new(:file_system).upload(fakeio)
+    memory_uploaded_file      = @shrine.new(:memory).upload(fakeio)
 
     assert @storage.movable?(file, nil)
     assert @storage.movable?(file_system_uploaded_file, nil)
@@ -59,8 +59,8 @@ class FileSystemTest < Minitest::Test
   end
 
   test "moves files and uploaded files" do
-    file          = Uploadie::Utils.copy_to_tempfile("", image)
-    uploaded_file = @uploadie.new(:file_system).upload(fakeio)
+    file          = Shrine::Utils.copy_to_tempfile("", image)
+    uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
     @storage.move(file, "foo")
     assert @storage.exists?("foo")
@@ -72,8 +72,8 @@ class FileSystemTest < Minitest::Test
   end
 
   test "creates subdirectories when moving files" do
-    file          = Uploadie::Utils.copy_to_tempfile("", image)
-    uploaded_file = @uploadie.new(:file_system).upload(fakeio)
+    file          = Shrine::Utils.copy_to_tempfile("", image)
+    uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
     @storage.move(file, "a/a/a.jpg")
     assert @storage.exists?("a/a/a.jpg")

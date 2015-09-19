@@ -13,7 +13,7 @@ class UploaderTest < Minitest::Test
   test "upload returns an UploadedFile with assigned data" do
     uploaded_file = @uploader.upload(fakeio)
 
-    assert_kind_of Uploadie::UploadedFile, uploaded_file
+    assert_kind_of Shrine::UploadedFile, uploaded_file
     assert_equal ["id", "storage", "metadata"], uploaded_file.data.keys
   end
 
@@ -69,6 +69,6 @@ class UploaderTest < Minitest::Test
   end
 
   test "upload validates that the given object is an IO" do
-    assert_raises(Uploadie::InvalidFile) { @uploader.upload("not an IO") }
+    assert_raises(Shrine::InvalidFile) { @uploader.upload("not an IO") }
   end
 end

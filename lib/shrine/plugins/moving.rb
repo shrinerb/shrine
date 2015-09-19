@@ -1,4 +1,4 @@
-class Uploadie
+class Shrine
   module Plugins
     module Moving
       def self.configure(uploader, storages:)

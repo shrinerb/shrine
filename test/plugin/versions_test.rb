@@ -9,7 +9,7 @@ class VersionsTest < Minitest::Test
   test "allows uploading versions" do
     versions = @uploader.upload(thumb: fakeio)
 
-    assert_kind_of Uploadie::UploadedFile, versions[:thumb]
+    assert_kind_of Shrine::UploadedFile, versions[:thumb]
   end
 
   test "passes the version name to location generator" do
@@ -31,7 +31,7 @@ class VersionsTest < Minitest::Test
 
     uploaded_file = @uploader.upload(tempfile: fakeio)
 
-    assert_kind_of Uploadie::UploadedFile, uploaded_file
+    assert_kind_of Shrine::UploadedFile, uploaded_file
   end
 
   test "overrides #uploaded?" do
@@ -68,7 +68,7 @@ class VersionsTest < Minitest::Test
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data)
 
-    assert_raises(Uploadie::Error) { @attacher.url }
+    assert_raises(Shrine::Error) { @attacher.url }
   end
 
   test "passes in :version to the default url" do
@@ -85,14 +85,14 @@ class VersionsTest < Minitest::Test
     @uploader.class.validate {}
     uploaded_file = @uploader.upload(fakeio)
 
-    assert_raises(Uploadie::Error) { @attacher.set(thumb: uploaded_file.data) }
+    assert_raises(Shrine::Error) { @attacher.set(thumb: uploaded_file.data) }
   end
 
   test "attacher returns a hash of versions" do
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data)
 
-    assert_kind_of Uploadie::UploadedFile, @attacher.get[:thumb]
+    assert_kind_of Shrine::UploadedFile, @attacher.get[:thumb]
   end
 
   test "attacher destroys versions successfully" do

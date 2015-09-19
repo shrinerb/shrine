@@ -1,19 +1,19 @@
-require_relative "lib/uploadie/version"
+require_relative "lib/shrine/version"
 
 Gem::Specification.new do |gem|
-  gem.name         = "uploadie"
-  gem.version      = Uploadie.version
+  gem.name         = "shrine"
+  gem.version      = Shrine.version
 
   gem.required_ruby_version = ">= 2.1"
 
-  gem.summary      = "Uploading toolkit for Ruby applications"
-  gem.description  = "Uploading toolkit for Ruby applications"
-  gem.homepage     = "https://github.com/janko-m/uploadie"
+  gem.summary      = "Toolkit for file uploads in Ruby applications"
+  gem.description  = "Toolkit for file uploads in Ruby applications"
+  gem.homepage     = "https://github.com/janko-m/shrine"
   gem.authors      = ["Janko Marohnić"]
   gem.email        = ["janko.marohnic@gmail.com"]
   gem.license      = "MIT"
 
-  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*", "uploadie.gemspec"]
+  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*", "shrine.gemspec"]
   gem.require_path = "lib"
 
   gem.add_development_dependency "minitest", "~> 5.8"

@@ -7,8 +7,8 @@ class UploadedFileTest < Minitest::Test
   end
 
   test "every subclass gets its own copy" do
-    refute_equal Uploadie::UploadedFile, @uploader.class::UploadedFile
-    assert_equal @uploader.class, @uploader.class::UploadedFile.uploadie_class
+    refute_equal Shrine::UploadedFile, @uploader.class::UploadedFile
+    assert_equal @uploader.class, @uploader.class::UploadedFile.shrine_class
   end
 
   test "main interface" do

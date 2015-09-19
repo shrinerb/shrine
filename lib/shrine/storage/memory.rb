@@ -1,7 +1,7 @@
 require "stringio"
-require "uploadie/utils"
+require "shrine/utils"
 
-class Uploadie
+class Shrine
   module Storage
     class Memory
       def initialize(store = {})
@@ -14,7 +14,7 @@ class Uploadie
       end
 
       def download(id)
-        Uploadie::Utils.copy_to_tempfile(id, open(id))
+        Shrine::Utils.copy_to_tempfile(id, open(id))
       end
 
       def open(id)
@@ -38,7 +38,7 @@ class Uploadie
       end
 
       def clear!(confirm = nil)
-        raise Uploadie::Confirm unless confirm == :confirm
+        raise Shrine::Confirm unless confirm == :confirm
         @store.clear
       end
     end

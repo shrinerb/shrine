@@ -9,7 +9,7 @@ class DeleteInvalidTest < Minitest::Test
     @attacher.set(fakeio)
     assert @attacher.get.exists?
 
-    @attacher.uploadie_class.validate { errors << :foo }
+    @attacher.shrine_class.validate { errors << :foo }
     @attacher.set(fakeio)
     refute @attacher.get.exists?
   end

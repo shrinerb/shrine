@@ -1,6 +1,6 @@
 require "roda"
 
-class Uploadie
+class Shrine
   module Plugins
     module Endpoint
       def self.load_dependencies(uploader, *)
@@ -21,20 +21,20 @@ class Uploadie
 
         def build_endpoint
           app = Class.new(App)
-          app.opts[:uploadie_class] = self
+          app.opts[:shrine_class] = self
           app.app
         end
       end
 
       class App < Roda
-        plugin :json, classes: [Hash, Array, Uploadie::UploadedFile]
+        plugin :json, classes: [Hash, Array, Shrine::UploadedFile]
         plugin :halt
         plugin :error_handler
 
         route do |r|
           r.on ":storage" do |storage|
             allow_storage!(storage.to_sym)
-            @uploader = uploadie_class.new(storage.to_sym)
+            @uploader = shrine_class.new(storage.to_sym)
 
             r.post ":name" do |name|
               file = require_param!("file")
@@ -46,7 +46,7 @@ class Uploadie
         end
 
         error do |exception|
-          if exception.is_a?(Uploadie::InvalidFile)
+          if exception.is_a?(Shrine::InvalidFile)
             error! 400, "The \"file\" query parameter is not a file."
           end
         end
@@ -67,12 +67,12 @@ class Uploadie
           request.halt status, {error: message}
         end
 
-        def uploadie_class
-          opts[:uploadie_class]
+        def shrine_class
+          opts[:shrine_class]
         end
 
         def allowed_storages
-          uploadie_class.opts[:endpoint_allowed_storages]
+          shrine_class.opts[:endpoint_allowed_storages]
         end
       end
     end

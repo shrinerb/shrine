@@ -9,7 +9,7 @@ class AttacherTest < Minitest::Test
   test "setting caches the given IO" do
     uploaded_file = @attacher.set(fakeio("image"))
 
-    assert_instance_of @attacher.uploadie_class::UploadedFile, uploaded_file
+    assert_instance_of @attacher.shrine_class::UploadedFile, uploaded_file
     assert_equal "cache", uploaded_file.data["storage"]
     assert_equal "image", uploaded_file.read
   end
@@ -45,17 +45,17 @@ class AttacherTest < Minitest::Test
     @attacher.set(fakeio)
     @attacher.set("")
 
-    assert_kind_of Uploadie::UploadedFile, @attacher.get
+    assert_kind_of Shrine::UploadedFile, @attacher.get
   end
 
   test "getting reads from the database column" do
     uploaded_file = @attacher.set(fakeio)
 
     @attacher.record.avatar_data = uploaded_file.data.to_json
-    assert_instance_of @attacher.uploadie_class::UploadedFile, @attacher.get
+    assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
 
     @attacher.record.avatar_data = uploaded_file.data # serialized
-    assert_instance_of @attacher.uploadie_class::UploadedFile, @attacher.get
+    assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
   end
 
   test "getting returns nil for nil-column" do
@@ -119,7 +119,7 @@ class AttacherTest < Minitest::Test
   end
 
   test "caching and storing passes in name and record" do
-    @attacher.uploadie_class.class_eval do
+    @attacher.shrine_class.class_eval do
       def generate_location(io, context)
         context.keys.to_json
       end
@@ -141,7 +141,7 @@ class AttacherTest < Minitest::Test
   end
 
   test "default url" do
-    @attacher.uploadie_class.class_eval do
+    @attacher.shrine_class.class_eval do
       def default_url(context)
         "#{context[:name]}_default"
       end
@@ -151,21 +151,21 @@ class AttacherTest < Minitest::Test
   end
 
   test "does validation on assignment" do
-    @attacher.uploadie_class.validate { errors << :foo }
+    @attacher.shrine_class.validate { errors << :foo }
     @attacher.set(fakeio)
 
     refute_empty @attacher.errors
   end
 
   test "validation block has access to the cached file" do
-    @attacher.uploadie_class.validate { errors << get.read }
+    @attacher.shrine_class.validate { errors << get.read }
     @attacher.set(fakeio("image"))
 
     assert_equal "image", @attacher.errors.first
   end
 
   test "validation doesn't happen when attachment is empty" do
-    @attacher.uploadie_class.validate { errors << :foo }
+    @attacher.shrine_class.validate { errors << :foo }
 
     assert_empty @attacher.errors
   end

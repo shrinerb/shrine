@@ -1,9 +1,9 @@
-require "uploadie/utils"
+require "shrine/utils"
 
 require "fileutils"
 require "find"
 
-class Uploadie
+class Shrine
   module Storage
     class FileSystem
       attr_reader :directory, :subdirectory, :host
@@ -26,7 +26,7 @@ class Uploadie
       end
 
       def download(id)
-        Uploadie::Utils.copy_to_tempfile(id, open(id))
+        Shrine::Utils.copy_to_tempfile(id, open(id))
       end
 
       def move(io, id)
@@ -76,7 +76,7 @@ class Uploadie
             File.mtime(path) < older_than ? FileUtils.rm_r(path) : Find.prune
           end
         else
-          raise Uploadie::Confirm unless confirm == :confirm
+          raise Shrine::Confirm unless confirm == :confirm
           FileUtils.rm_r(directory)
           FileUtils.mkdir_p(directory)
         end

@@ -29,6 +29,6 @@ class RackFileTest < Minitest::Test
 
     uploaded_file = @attacher.set(tempfile: fakeio)
 
-    assert_kind_of Uploadie::UploadedFile, uploaded_file
+    assert_kind_of Shrine::UploadedFile, uploaded_file
   end
 end

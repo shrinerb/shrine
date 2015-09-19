@@ -1,43 +1,43 @@
-# Uploadie
+# Shrine
 
-Uploadie is a file uploading toolkit for Ruby applications.
+Shrine is a file uploading toolkit for Ruby applications.
 
 ## Installation
 
 Add the gem to your Gemfile:
 
 ```ruby
-gem 'uploadie'
+gem 'shrine'
 ```
 
 ## Usage
 
 ```rb
-require "uploadie"
-require "uploadie/storage/file_system"
+require "shrine"
+require "shrine/storage/file_system"
 require "tmpdir"
 
-Uploadie.cache = Uploadie::Storage::FileSystem.new(Dir.tmpdir)
-Uploadie.store = Uploadie::Storage::FileSystem.new("uploads", root: "public")
+Shrine.cache = Shrine::Storage::FileSystem.new(Dir.tmpdir)
+Shrine.store = Shrine::Storage::FileSystem.new("uploads", root: "public")
 
 # Basic
 
-cache = Uploadie.new(:cache)
-store = Uploadie.new(:store)
+cache = Shrine.new(:cache)
+store = Shrine.new(:store)
 
 cached_file = cache.upload(File.open("path/to/image.jpg"))
-cached_file      #=> Uploadie::UploadedFile
+cached_file      #=> Shrine::UploadedFile
 cached_file.data #=> {"storage" => "temporary", "id" => "09c7876a-d33a-4279-a860-41b7d5cb0272.jpg", "metadata" => {}}
 cached_file.url  #=> "/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/09c7876a-d33a-4279-a860-41b7d5cb0272.jpg"
 
 stored_file = store.upload(cached_file)
-stored_file      #=> Uploadie::UploadedFile
+stored_file      #=> Shrine::UploadedFile
 stored_file.data #=> {"storage" => "permanent", "id" => "avatar/23alsd05l/image.jpg", "metadata" => {}}
 stored_file.url  #=> "/uploads/avatar/23alsd05l/image.jpg"
 
 # Advanced
 
-class AvatarUploader < Uploadie
+class AvatarUploader < Shrine
   plugin :preserve_filename
   plugin :store_dimensions
   plugin :store_original_filename

@@ -1,10 +1,10 @@
-require "uploadie"
+require "shrine"
 
 require "forwardable"
 require "stringio"
 require "tempfile"
 
-class Uploadie
+class Shrine
   class LintError < Error
     attr_reader :errors
 
@@ -44,8 +44,8 @@ class Uploadie
         end
 
         begin
-          Uploadie.io!(storage.open("foo.jpg"))
-        rescue Uploadie::InvalidFile => error
+          Shrine.io!(storage.open("foo.jpg"))
+        rescue Shrine::InvalidFile => error
           error! "#open doesn't return a valid IO object"
         end
 
@@ -58,8 +58,8 @@ class Uploadie
 
         begin
           storage.clear!
-          error! "#clear! should raise Uploadie::Confirm unless :confirm is passed in"
-        rescue Uploadie::Confirm
+          error! "#clear! should raise Shrine::Confirm unless :confirm is passed in"
+        rescue Shrine::Confirm
         end
 
         storage.upload(FakeIO.new("image"), "foo.jpg")
@@ -84,7 +84,7 @@ class Uploadie
         end
 
         extend Forwardable
-        delegate Uploadie::IO_METHODS.keys => :@io
+        delegate Shrine::IO_METHODS.keys => :@io
       end
     end
   end

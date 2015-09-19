@@ -1,4 +1,4 @@
-class Uploadie
+class Shrine
   module Plugins
     module StoreDimensions
       def self.load_dependencies(uploader, extractor:)

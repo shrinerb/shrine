@@ -2,7 +2,7 @@ require "test_helper"
 
 class StrorageTest < Minitest::Test
   test "`cache` and `store`" do
-    uploader = Class.new(Uploadie)
+    uploader = Class.new(Shrine)
     uploader.cache = "cache"
     assert_equal "cache", uploader.cache
 
@@ -13,7 +13,7 @@ class StrorageTest < Minitest::Test
   end
 
   test "every subclass gets its own copy" do
-    uploader = Class.new(Uploadie)
+    uploader = Class.new(Shrine)
     uploader.storages[:foo] = "foo"
 
     another_uploader = Class.new(uploader)
@@ -25,12 +25,12 @@ class StrorageTest < Minitest::Test
   end
 
   test "raising error when storage doesn't exist" do
-    assert_raises(Uploadie::Error) do
-      Uploadie.new(:foo)
+    assert_raises(Shrine::Error) do
+      Shrine.new(:foo)
     end
 
-    assert_raises(Uploadie::Error) do
-      Uploadie::UploadedFile.new("id" => "123", "storage" => "foo", "metadata" => {})
+    assert_raises(Shrine::Error) do
+      Shrine::UploadedFile.new("id" => "123", "storage" => "foo", "metadata" => {})
     end
   end
 end

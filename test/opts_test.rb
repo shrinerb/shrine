@@ -2,7 +2,7 @@ require "test_helper"
 
 class OptsTest < Minitest::Test
   test "every subclass gets its own copy" do
-    uploader = Class.new(Uploadie)
+    uploader = Class.new(Shrine)
     uploader.opts[:foo] = "foo"
 
     another_uploader = Class.new(uploader)
@@ -14,7 +14,7 @@ class OptsTest < Minitest::Test
   end
 
   test "inheritance duplicates collection values" do
-    uploader = Class.new(Uploadie)
+    uploader = Class.new(Shrine)
     uploader.opts[:a] = ["a"]
     uploader.opts[:b] = {"b" => "b"}
     uploader.opts[:c] = ["c"].freeze

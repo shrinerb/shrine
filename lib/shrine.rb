@@ -1,9 +1,9 @@
-require "uploadie/version"
+require "shrine/version"
 
 require "securerandom"
 require "json"
 
-class Uploadie
+class Shrine
   class Error < StandardError; end
 
   class InvalidFile < Error
@@ -39,15 +39,15 @@ class Uploadie
   }
 
   class UploadedFile
-    @uploadie_class = ::Uploadie
+    @shrine_class = ::Shrine
   end
 
   class Attachment < Module
-    @uploadie_class = ::Uploadie
+    @shrine_class = ::Shrine
   end
 
   class Attacher
-    @uploadie_class = ::Uploadie
+    @shrine_class = ::Shrine
   end
 
   @opts = {}
@@ -58,20 +58,20 @@ class Uploadie
 
     # If the registered plugin already exists, use it.  Otherwise, require it
     # and return it.  This raises a LoadError if such a plugin doesn't exist,
-    # or a Uploadie::Error if it exists but it does not register itself
+    # or a Shrine::Error if it exists but it does not register itself
     # correctly.
     def self.load_plugin(name)
       unless plugin = @plugins[name]
-        require "uploadie/plugins/#{name}"
-        raise Error, "plugin #{name} did not register itself correctly in Uploadie::Plugins" unless plugin = @plugins[name]
+        require "shrine/plugins/#{name}"
+        raise Error, "plugin #{name} did not register itself correctly in Shrine::Plugins" unless plugin = @plugins[name]
       end
       plugin
     end
 
-    # Register the given plugin with Uploadie, so that it can be loaded using
+    # Register the given plugin with Shrine, so that it can be loaded using
     # #plugin with a symbol.  Should be used by plugin files. Example:
     #
-    #   Uploadie::Plugins.register_plugin(:plugin_name, PluginModule)
+    #   Shrine::Plugins.register_plugin(:plugin_name, PluginModule)
     def self.register_plugin(name, mod)
       @plugins[name] = mod
     end
@@ -80,7 +80,7 @@ class Uploadie
       module ClassMethods
         attr_reader :opts
 
-        # When inheriting Uploadie, copy the shared data into the subclass,
+        # When inheriting Shrine, copy the shared data into the subclass,
         # and setup the manager and proxy subclasses.
         def inherited(subclass)
           subclass.instance_variable_set(:@opts, opts.dup)
@@ -92,15 +92,15 @@ class Uploadie
           subclass.instance_variable_set(:@storages, storages.dup)
 
           file_class = Class.new(self::UploadedFile)
-          file_class.uploadie_class = subclass
+          file_class.shrine_class = subclass
           subclass.const_set(:UploadedFile, file_class)
 
           attachment_class = Class.new(self::Attachment)
-          attachment_class.uploadie_class = subclass
+          attachment_class.shrine_class = subclass
           subclass.const_set(:Attachment, attachment_class)
 
           attacher_class = Class.new(self::Attacher)
-          attacher_class.uploadie_class = subclass
+          attacher_class.shrine_class = subclass
           subclass.const_set(:Attacher, attacher_class)
         end
 
@@ -108,8 +108,8 @@ class Uploadie
         # which is used directly, or a symbol represented a registered plugin
         # which will be required and then used. Returns nil.
         #
-        #   Uploadie.plugin PluginModule
-        #   Uploadie.plugin :basic_authentication
+        #   Shrine.plugin PluginModule
+        #   Shrine.plugin :basic_authentication
         def plugin(plugin, *args, &block)
           plugin = Plugins.load_plugin(plugin) if plugin.is_a?(Symbol)
           plugin.load_dependencies(self, *args, &block) if plugin.respond_to?(:load_dependencies)
@@ -267,10 +267,10 @@ class Uploadie
       end
 
       module AttachmentClassMethods
-        attr_accessor :uploadie_class
+        attr_accessor :shrine_class
 
         def inspect
-          "#{uploadie_class.inspect}::Attachment"
+          "#{shrine_class.inspect}::Attachment"
         end
       end
 
@@ -278,7 +278,7 @@ class Uploadie
         def initialize(name, cache: :cache, store: :store)
           @name = name
 
-          class_variable_set(:"@@#{name}_attacher_class", uploadie_class::Attacher)
+          class_variable_set(:"@@#{name}_attacher_class", shrine_class::Attacher)
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}_attacher
@@ -306,16 +306,16 @@ class Uploadie
           "#<#{self.class.inspect}(#{@name})>"
         end
 
-        def uploadie_class
-          self.class.uploadie_class
+        def shrine_class
+          self.class.shrine_class
         end
       end
 
       module AttacherClassMethods
-        attr_accessor :uploadie_class
+        attr_accessor :shrine_class
 
         def inspect
-          "#{uploadie_class.inspect}::Attacher"
+          "#{shrine_class.inspect}::Attacher"
         end
       end
 
@@ -325,8 +325,8 @@ class Uploadie
         def initialize(record, name, cache: :cache, store: :store)
           @record = record
           @name   = name
-          @cache  = uploadie_class.new(cache)
-          @store  = uploadie_class.new(store)
+          @cache  = shrine_class.new(cache)
+          @store  = shrine_class.new(store)
           @errors = []
         end
 
@@ -387,8 +387,8 @@ class Uploadie
           instance_exec(&validate_block) if validate_block && get
         end
 
-        def uploadie_class
-          self.class.uploadie_class
+        def shrine_class
+          self.class.shrine_class
         end
 
         private
@@ -406,7 +406,7 @@ class Uploadie
         end
 
         def validate_block
-          uploadie_class.validate
+          shrine_class.validate
         end
 
         def _set(uploaded_file)
@@ -424,7 +424,7 @@ class Uploadie
         end
 
         def uploaded_file(data)
-          uploadie_class::UploadedFile.new(data)
+          shrine_class::UploadedFile.new(data)
         end
 
         def data(uploaded_file)
@@ -445,10 +445,10 @@ class Uploadie
       end
 
       module FileClassMethods
-        attr_accessor :uploadie_class
+        attr_accessor :shrine_class
 
         def inspect
-          "#{uploadie_class.inspect}::UploadedFile"
+          "#{shrine_class.inspect}::UploadedFile"
         end
       end
 
@@ -524,11 +524,11 @@ class Uploadie
         end
 
         def storage
-          @storage ||= uploadie_class.storage(storage_key)
+          @storage ||= shrine_class.storage(storage_key)
         end
 
-        def uploadie_class
-          self.class.uploadie_class
+        def shrine_class
+          self.class.shrine_class
         end
 
         private

@@ -1,11 +1,11 @@
 require "test_helper"
 
-require "uploadie/storage/memory"
-require "uploadie/storage"
+require "shrine/storage/memory"
+require "shrine/storage"
 
 class MemoryTest < Minitest::Test
   def memory(*args)
-    Uploadie::Storage::Memory.new(*args)
+    Shrine::Storage::Memory.new(*args)
   end
 
   def setup
@@ -13,6 +13,6 @@ class MemoryTest < Minitest::Test
   end
 
   test "passes the lint" do
-    Uploadie::Storage::Lint.call(@memory)
+    Shrine::Storage::Lint.call(@memory)
   end
 end
