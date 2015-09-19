@@ -8,28 +8,35 @@ class Uploadie
 
   class InvalidFile < Error
     def initialize(io, missing_methods)
-      @io = io
-      @missing_methods = missing_methods
+      @io, @missing_methods = io, missing_methods
     end
 
     def message
-      "#{@io.inspect} is not a valid IO object " \
-      "(it doesn't respond to #{missing_methods_string})"
+      "#{@io.inspect} is not a valid IO object (it doesn't respond to #{missing_methods_string})"
     end
 
     private
 
     def missing_methods_string
-      @missing_methods.map { |m| "`#{m}`" }.join(", ")
+      @missing_methods.map { |m, args| "`#{m}(#{args.join(", ")})`" }.join(", ")
     end
   end
 
   class Confirm < Error
     def message
-      "Are you sure you want to delete all files from the storage? " \
-      "(confirm with `clear!(:confirm)`)"
+      "Are you sure you want to delete all files from the storage? (confirm with `clear!(:confirm)`)"
     end
   end
+
+  # Methods which an object has to respond to in order to be considered
+  # an IO object.
+  IO_METHODS = {
+    :read   => [:length, :outbuf],
+    :eof?   => [],
+    :rewind => [],
+    :size   => [],
+    :close  => [],
+  }
 
   class UploadedFile
     @uploadie_class = ::Uploadie
@@ -154,13 +161,20 @@ class Uploadie
             @validate_block
           end
         end
+
+        def io!(io)
+          missing_methods = IO_METHODS.reject do |m, args|
+            io.respond_to?(m) && (io.method(m).arity == args.count || io.method(m).arity == -1)
+          end
+          raise InvalidFile.new(io, missing_methods) if missing_methods.any?
+        end
+
+        def io?(io)
+          IO_METHODS.all? { |m| io.respond_to?(m) }
+        end
       end
 
       module InstanceMethods
-        # Methods which an object has to respond to in order to be considered
-        # an IO object.
-        IO_METHODS = [:read, :eof?, :rewind, :size, :close].freeze
-
         def initialize(storage_key)
           @storage_key = storage_key
           storage # ensure storage exists
@@ -224,10 +238,6 @@ class Uploadie
         def default_url(*)
         end
 
-        def io?(io)
-          IO_METHODS.all? { |m| io.respond_to?(m) }
-        end
-
         private
 
         def _upload(io, context)
@@ -248,8 +258,7 @@ class Uploadie
         end
 
         def _enforce_io(io)
-          missing_methods = IO_METHODS.reject { |m| io.respond_to?(m) }
-          raise InvalidFile.new(io, missing_methods) if missing_methods.any?
+          self.class.io!(io)
         end
 
         def generate_uid(io)

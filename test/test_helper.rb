@@ -104,5 +104,5 @@ class FakeIO
   end
 
   extend Forwardable
-  delegate Uploadie::IO_METHODS => :@io
+  delegate Uploadie::IO_METHODS.keys => :@io
 end

@@ -37,7 +37,7 @@ class Uploadie
         end
 
         extend Forwardable
-        delegate Uploadie::IO_METHODS => :@tempfile
+        delegate Uploadie::IO_METHODS.keys => :@tempfile
       end
     end
 
