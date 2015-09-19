@@ -26,7 +26,7 @@ class Shrine
       DownloadedFile.new(downloaded_file)
 
     rescue *DOWNLOAD_ERRORS => error
-      raise Error, "download failed: #{error.message}"
+      raise Error, "download failed (#{url}): #{error.message}"
     end
 
     def copy_to_tempfile(basename, io)
