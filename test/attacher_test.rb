@@ -95,9 +95,16 @@ class AttacherTest < Minitest::Test
     assert_equal uploaded_file.id, @attacher.get.id
   end
 
-  test "saving doesn't try to delete an unexisting file" do
+  test "saving doesn't try to delete a nonexisting file" do
     @attacher.set(nil)
     @attacher.save
+  end
+
+  test "saving keeps the cached file" do
+    cached_file = @attacher.set(fakeio)
+    @attacher.save
+
+    assert cached_file.exists?
   end
 
   test "destroying deletes attached file" do

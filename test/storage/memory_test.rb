@@ -1,4 +1,5 @@
 require "test_helper"
+
 require "uploadie/storage/memory"
 require "uploadie/storage"
 

@@ -356,8 +356,8 @@ class Uploadie
         end
 
         def save
-          if (uploaded_file = get) && !store.uploaded?(uploaded_file)
-            stored_file = store!(uploaded_file)
+          if (cached_file = get) && !store.uploaded?(cached_file)
+            stored_file = store!(cached_file)
             _set(stored_file)
           end
 
@@ -523,6 +523,10 @@ class Uploadie
           [id, storage_key].hash
         end
 
+        def storage
+          @storage ||= uploadie_class.storage(storage_key)
+        end
+
         def uploadie_class
           self.class.uploadie_class
         end
@@ -531,10 +535,6 @@ class Uploadie
 
         def io
           @io ||= storage.open(id)
-        end
-
-        def storage
-          @storage ||= uploadie_class.storage(storage_key)
         end
       end
     end

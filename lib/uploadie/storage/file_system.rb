@@ -29,6 +29,19 @@ class Uploadie
         Uploadie::Utils.copy_to_tempfile(id, open(id))
       end
 
+      def move(io, id)
+        if io.respond_to?(:path)
+          FileUtils.mv io.path, path!(id)
+        else
+          FileUtils.mv io.storage.path(io.id), path!(id)
+        end
+      end
+
+      def movable?(io, id)
+        io.respond_to?(:path) ||
+          (io.is_a?(UploadedFile) && io.storage.is_a?(self.class))
+      end
+
       def open(id)
         File.open(path(id), "rb")
       end
@@ -57,10 +70,6 @@ class Uploadie
         end
       end
 
-      def path(id)
-        File.join(directory, id)
-      end
-
       def clear!(confirm = nil, older_than: nil)
         if older_than
           Find.find(directory) do |path|
@@ -71,6 +80,10 @@ class Uploadie
           FileUtils.rm_r(directory)
           FileUtils.mkdir_p(directory)
         end
+      end
+
+      def path(id)
+        File.join(directory, id)
       end
 
       private

@@ -34,6 +34,15 @@ class Uploadie
         error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)
         error! "#download doesn't return the uploaded file" if !(file.read == "image")
 
+        if storage.respond_to?(:move)
+          if storage.respond_to?(:movable?)
+            error! "#movable? doesn't accept 2 arguments" if !(storage.method(:movable?).arity == 2)
+            error! "#move doesn't accept 2 arguments" if !(storage.method(:move).arity == 2)
+          else
+            error! "doesn't respond to #movable?" if !storage.respond_to?(:movable?)
+          end
+        end
+
         begin
           Uploadie.io!(storage.open("foo.jpg"))
         rescue Uploadie::InvalidFile => error
