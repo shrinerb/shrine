@@ -25,6 +25,17 @@ class AttachmentTest < Minitest::Test
     refute_empty @user.avatar_url
   end
 
+  test "forwards url arguments to attacher" do
+    @shrine.cache.singleton_class.class_eval do
+      def url(id, **options)
+        options
+      end
+    end
+    @user.avatar = fakeio
+
+    assert_equal Hash[foo: "foo"], @user.avatar_url(foo: "foo")
+  end
+
   test "inheritance" do
     admin_class = Class.new(@user.class)
     admin = admin_class.new

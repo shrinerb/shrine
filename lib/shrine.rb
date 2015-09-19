@@ -370,16 +370,16 @@ class Shrine
           end
         end
 
-        def url(*args)
+        def url(**options)
           if uploaded_file = get
-            uploaded_file.url
+            uploaded_file.url(**options)
           else
-            default_url(*args)
+            default_url(**options)
           end
         end
 
-        def default_url(*)
-          store.default_url(context)
+        def default_url(**options)
+          store.default_url(options.merge(context))
         end
 
         def validate!
@@ -492,8 +492,8 @@ class Shrine
           @io = nil
         end
 
-        def url
-          storage.url(id)
+        def url(**options)
+          storage.url(id, **options)
         end
 
         def exists?

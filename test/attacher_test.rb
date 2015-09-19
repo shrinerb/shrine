@@ -140,6 +140,17 @@ class AttacherTest < Minitest::Test
     assert_match %r{^memory://}, @attacher.url
   end
 
+  test "forwards url options to the uploaded file" do
+    @attacher.cache.storage.singleton_class.class_eval do
+      def url(id, **options)
+        options
+      end
+    end
+    @attacher.set(fakeio)
+
+    assert_equal Hash[foo: "foo"], @attacher.url(foo: "foo")
+  end
+
   test "default url" do
     @attacher.shrine_class.class_eval do
       def default_url(context)
@@ -148,6 +159,17 @@ class AttacherTest < Minitest::Test
     end
 
     assert_equal "avatar_default", @attacher.url
+  end
+
+  test "forwards url options to default url" do
+    @attacher.shrine_class.class_eval do
+      def default_url(context)
+        context
+      end
+    end
+
+    assert_equal Hash[name: "avatar", record: @attacher.record, foo: "foo"],
+                 @attacher.url(foo: "foo")
   end
 
   test "does validation on assignment" do

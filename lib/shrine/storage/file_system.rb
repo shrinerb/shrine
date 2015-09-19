@@ -58,7 +58,7 @@ class Shrine
         FileUtils.rm(path(id))
       end
 
-      def url(id)
+      def url(id, **options)
         if subdirectory
           File.join(host || "", File.join(subdirectory, id))
         else

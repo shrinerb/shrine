@@ -39,6 +39,17 @@ class UploadedFileTest < Minitest::Test
     assert_equal "image/jpeg", uploaded_file.content_type
   end
 
+  test "forwards url arguments to storage" do
+    @uploader.storage.singleton_class.class_eval do
+      def url(id, **options)
+        options
+      end
+    end
+    uploaded_file = @uploader.upload(fakeio)
+
+    assert_equal Hash[foo: "foo"], uploaded_file.url(foo: "foo")
+  end
+
   test "JSON" do
     uploaded_file = @uploader.class::UploadedFile.new(
       "id"       => "123",

@@ -51,7 +51,7 @@ class Shrine
 
         error! "#read doesn't return content of the uploaded file" if !(storage.read("foo.jpg") == "image")
         error! "#exists? returns false for a file that was uploaded" if !storage.exists?("foo.jpg")
-        error! "#url doesn't return a string" if !storage.url("foo.jpg").is_a?(String)
+        error! "#url doesn't return a string" if !storage.url("foo.jpg", {}).is_a?(String)
 
         storage.delete("foo.jpg")
         error! "#exists? returns true for a file that was deleted" if storage.exists?("foo.jpg")

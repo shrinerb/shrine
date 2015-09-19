@@ -81,6 +81,32 @@ class VersionsTest < Minitest::Test
     assert_equal "thumb", @attacher.url(:thumb)
   end
 
+  test "forwards url options" do
+    @attacher.cache.storage.singleton_class.class_eval do
+      def url(id, **options)
+        options
+      end
+    end
+    @attacher.shrine_class.class_eval do
+      def default_url(context)
+        context
+      end
+    end
+
+    uploaded_file = @attacher.set(fakeio)
+    @attacher.set("thumb" => uploaded_file.data)
+    assert_equal Hash[foo: "foo"], @attacher.url(:thumb, foo: "foo")
+
+    @attacher.set(fakeio)
+    assert_equal Hash[foo: "foo"], @attacher.url(:thumb, foo: "foo")
+
+    @attacher.set(nil)
+    assert_equal Hash[foo: "foo", name: "avatar", record: @attacher.record],
+                 @attacher.url(foo: "foo")
+    assert_equal Hash[version: "thumb", foo: "foo", name: "avatar", record: @attacher.record],
+                 @attacher.url(:thumb, foo: "foo")
+  end
+
   test "doesn't allow validating versions" do
     @uploader.class.validate {}
     uploaded_file = @uploader.upload(fakeio)

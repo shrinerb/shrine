@@ -46,20 +46,20 @@ class Shrine
       end
 
       module AttacherMethods
-        def url(version = nil)
+        def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
-              get.fetch(version.to_s).url
+              get.fetch(version.to_s).url(**options)
             else
               raise Error, "must call #{name}_url with the name of the version"
             end
           else
-            super
+            if get || version.nil?
+              super(**options)
+            else
+              default_url(options.merge(version: version.to_s))
+            end
           end
-        end
-
-        def default_url(version = nil)
-          store.default_url(context.merge(version: version.to_s))
         end
 
         def validate!

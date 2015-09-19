@@ -33,7 +33,7 @@ class Shrine
         @store.delete(id)
       end
 
-      def url(id)
+      def url(id, **options)
         "memory://#{id}"
       end
 
