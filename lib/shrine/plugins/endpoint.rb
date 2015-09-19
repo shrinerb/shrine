@@ -7,10 +7,11 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], return_url: false)
+      def self.configure(uploader, allowed_storages: [:cache], return_url: false, max_size: nil)
         allowed_storages = allowed_storages.map { |key| uploader.storage(key) }
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
         uploader.opts[:endpoint_return_url] = return_url
+        uploader.opts[:endpoint_max_size] = max_size
       end
 
       module ClassMethods
@@ -40,7 +41,6 @@ class Shrine
       class App < Roda
         plugin :json, classes: [Hash, Array, Shrine::UploadedFile]
         plugin :halt
-        plugin :error_handler
 
         route do |r|
           r.on ":storage" do |storage_key|
@@ -48,7 +48,7 @@ class Shrine
             @uploader = shrine_class.new(storage_key)
 
             r.post ":name" do |name|
-              file = require_param!("file")
+              file = get_file
               context = {name: name}
 
               @uploader.upload(file, context)
@@ -56,18 +56,25 @@ class Shrine
           end
         end
 
-        error do |exception|
-          if exception.is_a?(Shrine::InvalidFile)
-            error! 400, "The \"file\" query parameter is not a file."
-          else
-            raise exception
-          end
-        end
-
         def allow_storage!(storage_key)
           storage = shrine_class.storages[storage_key]
           if !allowed_storages.include?(storage)
             error! 403, "Storage #{storage_key.inspect} is not allowed."
+          end
+        end
+
+        def get_file
+          file = require_param!("file")
+          error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
+          check_filesize!(file[:tempfile])
+
+          file
+        end
+
+        def check_filesize!(file)
+          if max_size && file.size > max_size * 1024 * 1024
+            file.delete
+            error! 413, "The file is too big (maximum size is #{max_size} MB)."
           end
         end
 
@@ -87,6 +94,10 @@ class Shrine
 
         def allowed_storages
           shrine_class.opts[:endpoint_allowed_storages]
+        end
+
+        def max_size
+          shrine_class.opts[:endpoint_max_size]
         end
       end
     end

@@ -90,6 +90,17 @@ class EndpointTest < Minitest::Test
     refute_empty body.fetch("error")
   end
 
+  test "refuses files which are too big" do
+    @uploader = uploader(:cache) { plugin :endpoint, max_size: 0 }
+    post "/cache/avatar", file: image
+    assert_equal 413, response.status
+    refute_empty body.fetch("error")
+
+    @uploader.opts[:endpoint_max_size] = 5
+    post "/cache/avatar", file: image
+    assert_equal 200, response.status
+  end
+
   test "allows other errors to propagate" do
     @uploader.class.plugin :processing, storage: :cache, processor: proc { raise }
 
