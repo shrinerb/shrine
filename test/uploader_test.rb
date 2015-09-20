@@ -49,7 +49,12 @@ class UploaderTest < Minitest::Test
     @uploader.upload(fakeio("image"), type: :image)
   end
 
-  test "uploading uses :location if available" do
+  test "uploading uses :location if available, even if #generate_location was overriden" do
+    @uploader.singleton_class.class_eval do
+      def generate_location(io, context)
+        "rainbows"
+      end
+    end
     uploaded_file = @uploader.upload(fakeio("image"), location: "foo")
 
     assert_equal "foo", uploaded_file.id

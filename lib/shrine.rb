@@ -200,8 +200,6 @@ class Shrine
         end
 
         def generate_location(io, context)
-          return context[:location] if context.key?(:location)
-
           original_filename = extract_filename(io)
           extension = File.extname(original_filename.to_s)
           basename = generate_uid(io)
@@ -241,7 +239,7 @@ class Shrine
         private
 
         def _upload(io, context)
-          location = generate_location(io, context)
+          location = context[:location] || generate_location(io, context)
           metadata = extract_metadata(io, context)
 
           store(io, location)
