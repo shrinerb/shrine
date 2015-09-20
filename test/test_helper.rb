@@ -71,7 +71,6 @@ module TestHelpers
       require "vcr"
       VCR.configure do |config|
         config.cassette_library_dir = "test/fixtures"
-        config.default_cassette_options = {record: :new_episodes}
         config.hook_into :webmock
       end
     end

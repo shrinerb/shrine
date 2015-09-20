@@ -43,6 +43,18 @@ class UtilsTest < Minitest::Test
     assert_equal "mark-github-128.png", tempfile.original_filename
   end
 
+  test "original filename is URI decoded" do
+    tempfile = @utils.download("http://www.google.com/filename%20with%20spaces.jpg")
+
+    assert_equal "filename with spaces.jpg", tempfile.original_filename
+  end
+
+  test "download also accepts decoded URIs with spaces" do
+    tempfile = @utils.download("http://www.google.com/filename with spaces.jpg")
+
+    assert_equal "filename with spaces.jpg", tempfile.original_filename
+  end
+
   test "download exposes the content type" do
     tempfile = @utils.download(image_url)
 

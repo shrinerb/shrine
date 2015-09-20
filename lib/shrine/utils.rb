@@ -1,5 +1,6 @@
 require "open-uri"
 require "tempfile"
+require "uri"
 
 class Shrine
   module Utils
@@ -12,6 +13,7 @@ class Shrine
     ]
 
     def download(url)
+      url = URI.encode(URI.decode(url))
       downloaded_file = URI(url).open("User-Agent"=>"Shrine/#{Shrine.version.to_s}")
 
       # open-uri will return a StringIO instead of a Tempfile if the filesize
@@ -30,14 +32,15 @@ class Shrine
     end
 
     def copy_to_tempfile(basename, io)
-      tempfile = Tempfile.new(basename, binmode: true)
-      IO.copy_stream(io, tempfile.path)
-      tempfile
+      Tempfile.new(basename, binmode: true).tap do |tempfile|
+        IO.copy_stream(io, tempfile.path)
+      end
     end
 
     class DownloadedFile < DelegateClass(Tempfile)
       def original_filename
         path = __getobj__.base_uri.path
+        path = URI.decode(path)
         File.basename(path) unless path.empty?
       end
 
