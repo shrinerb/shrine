@@ -11,6 +11,8 @@ class Shrine
           end
         when :filemagic
           require "filemagic"
+        when :file
+          require "shellwords"
         end
       end
 
@@ -22,7 +24,9 @@ class Shrine
         def extract_content_type(io)
           extractor = opts[:content_type_extractor]
 
-          if extractor.is_a?(Symbol)
+          if content_type = super
+            content_type
+          elsif extractor.is_a?(Symbol)
             send(:"_extract_content_type_with_#{extractor}", io)
           else
             extractor.call(io)
@@ -42,6 +46,13 @@ class Shrine
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
           data = io.read(1024); io.rewind
           filemagic.buffer(data)
+        end
+
+        def _extract_content_type_with_file(io)
+          if io.respond_to?(:path)
+            content_type = `file -b --mime-type #{io.path.shellescape}`
+            content_type.strip unless content_type.empty?
+          end
         end
       end
     end
