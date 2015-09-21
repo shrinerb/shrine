@@ -3,7 +3,7 @@ class Shrine
     module PreserveFilename
       module InstanceMethods
         def generate_location(io, context)
-          if filename = extract_filename(io)
+          if (filename = extract_filename(io)) && !io.is_a?(Tempfile)
             directory = File.basename(super, ".*")
             File.join(directory, filename)
           else

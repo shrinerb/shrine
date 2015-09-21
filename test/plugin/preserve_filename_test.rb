@@ -24,4 +24,10 @@ class PreserveFilenameTest < Minitest::Test
 
     assert_match /^[\w-]+$/, uploaded_file.id
   end
+
+  test "doesn't use the filename if the IO is a Tempfile" do
+    uploaded_file = @uploader.upload(Tempfile.new("foobar"))
+
+    refute_match "foobar", uploaded_file.id
+  end
 end
