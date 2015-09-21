@@ -23,6 +23,20 @@ class Shrine
         def versions(hash)
           hash.select { |key, value| version_names.include?(key) }
         end
+
+        def uploaded_file(object)
+          if object.is_a?(Hash)
+            if object.key?("storage")
+              super
+            else
+              versions(object).inject({}) do |versions, (name, data)|
+                versions.update(name => super(data))
+              end
+            end
+          else
+            super
+          end
+        end
       end
 
       module InstanceMethods
@@ -71,16 +85,6 @@ class Shrine
         end
 
         private
-
-        def uploaded_file(hash)
-          if hash.key?("storage")
-            super
-          else
-            shrine_class.versions(hash).inject({}) do |versions, (name, data)|
-              versions.update(name => super(data))
-            end
-          end
-        end
 
         def data(uploaded_file)
           if (versions = uploaded_file).is_a?(Hash)

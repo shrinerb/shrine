@@ -1,6 +1,6 @@
 require "test_helper"
 
-class UploaderTest < Minitest::Test
+class InstanceTest < Minitest::Test
   def setup
     @uploader = uploader(:store)
   end
@@ -75,5 +75,12 @@ class UploaderTest < Minitest::Test
 
   test "upload validates that the given object is an IO" do
     assert_raises(Shrine::InvalidFile) { @uploader.upload("not an IO") }
+  end
+
+  test "deleting" do
+    uploaded_file = @uploader.upload(fakeio)
+    @uploader.delete(uploaded_file)
+
+    refute uploaded_file.exists?
   end
 end

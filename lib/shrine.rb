@@ -162,15 +162,32 @@ class Shrine
           end
         end
 
-        def io!(io)
-          missing_methods = IO_METHODS.reject do |m, args|
-            io.respond_to?(m) && (io.method(m).arity == args.count || io.method(m).arity == -1)
+        def uploaded_file(object)
+          case object
+          when String
+            uploaded_file JSON.parse(object)
+          when Hash
+            self::UploadedFile.new(object)
+          when self::UploadedFile
+            object
+          else
+            raise Error, "#{object.inspect} cannot be converted to an UploadedFile"
           end
+        end
+
+        def io!(io)
+          missing_methods = IO_METHODS.reject do |m, a|
+            io.respond_to?(m) && [a.count, -1].include?(io.method(m).arity)
+          end
+
           raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 
         def io?(io)
-          IO_METHODS.all? { |m| io.respond_to?(m) }
+          io!(io)
+          true
+        rescue InvalidFile
+          false
         end
       end
 
@@ -197,6 +214,10 @@ class Shrine
 
         def uploaded?(uploaded_file)
           uploaded_file.storage_key == storage_key
+        end
+
+        def delete(uploaded_file)
+          uploaded_file.delete
         end
 
         def generate_location(io, context)
@@ -332,10 +353,8 @@ class Shrine
           return if value == ""
 
           uploaded_file =
-            if value.is_a?(String)
-              uploaded_file(deserialize(value))
-            elsif value.is_a?(Hash)
-              uploaded_file(value)
+            if value.is_a?(String) || value.is_a?(Hash)
+              shrine_class.uploaded_file(value)
             elsif value
               cache!(value)
             end
@@ -349,17 +368,21 @@ class Shrine
 
         def get
           if data = read
-            uploaded_file(data)
+            shrine_class.uploaded_file(data)
           end
         end
 
-        def save
-          if (cached_file = get) && !store.uploaded?(cached_file)
-            stored_file = store!(cached_file)
-            _set(stored_file)
-          end
-
+        def replace
           delete!(@old_attachment) if @old_attachment
+        end
+
+        def promote?(uploaded_file)
+          uploaded_file && cache.uploaded?(uploaded_file)
+        end
+
+        def promote(uploaded_file)
+          stored_file = store!(uploaded_file)
+          _set(stored_file) unless get != uploaded_file
         end
 
         def destroy
@@ -374,10 +397,6 @@ class Shrine
           else
             default_url(**options)
           end
-        end
-
-        def default_url(**options)
-          store.default_url(options.merge(context))
         end
 
         def validate!
@@ -400,7 +419,11 @@ class Shrine
         end
 
         def delete!(uploaded_file)
-          uploaded_file.delete
+          store.delete(uploaded_file)
+        end
+
+        def default_url(**options)
+          store.default_url(options.merge(context))
         end
 
         def validate_block
@@ -412,17 +435,13 @@ class Shrine
         end
 
         def write(data)
-          value = data ? serialize(data) : nil
+          value = data ? data.to_json : nil
           record.send("#{name}_data=", value)
         end
 
         def read
           data = record.send("#{name}_data")
-          data.is_a?(String) ? deserialize(data) : data
-        end
-
-        def uploaded_file(data)
-          shrine_class::UploadedFile.new(data)
+          data.is_a?(String) ? JSON.parse(data) : data
         end
 
         def data(uploaded_file)
@@ -431,14 +450,6 @@ class Shrine
 
         def context
           {name: name.to_s, record: record}
-        end
-
-        def deserialize(string)
-          JSON.load(string)
-        end
-
-        def serialize(object)
-          JSON.dump(object)
         end
       end
 

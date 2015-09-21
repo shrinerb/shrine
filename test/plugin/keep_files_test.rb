@@ -7,10 +7,7 @@ class KeepFilesTest < Minitest::Test
 
   test ":destroyed keeps files which are deleted on destroy" do
     @attacher = attacher(destroyed: true)
-
-    @attacher.set(fakeio)
-    @attacher.save
-    uploaded_file = @attacher.get
+    uploaded_file = @attacher.set(fakeio)
 
     @attacher.destroy
 
@@ -19,25 +16,16 @@ class KeepFilesTest < Minitest::Test
 
   test ":replaced keeps files which were replaced during saving" do
     @attacher = attacher(replaced: true)
-
-    @attacher.set(fakeio); @attacher.save
-    uploaded_file = @attacher.get
-    @attacher.set(fakeio); @attacher.save
-
-    assert uploaded_file.exists?
-
-    uploaded_file = @attacher.get
-    @attacher.set(nil); @attacher.save
+    uploaded_file = @attacher.set(fakeio)
+    @attacher.set(fakeio)
+    @attacher.replace
 
     assert uploaded_file.exists?
-  end
 
-  test ":replaced still deletes cached files" do
-    @attacher = attacher(replaced: true)
+    uploaded_file = @attacher.get
+    @attacher.set(nil)
+    @attacher.replace
 
-    cached_file = @attacher.set(fakeio)
-    @attacher.send(:delete!, cached_file)
-
-    refute cached_file.exists?
+    assert uploaded_file.exists?
   end
 end

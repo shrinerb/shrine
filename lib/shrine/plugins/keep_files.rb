@@ -18,12 +18,8 @@ class Shrine
           super unless shrine_class.keep?(:destroyed)
         end
 
-        def delete!(uploaded_file)
-          if store.uploaded?(uploaded_file)
-            super unless shrine_class.keep?(:replaced)
-          else
-            super
-          end
+        def replace
+          super unless shrine_class.keep?(:replaced)
         end
       end
     end

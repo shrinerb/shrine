@@ -62,49 +62,53 @@ class AttacherTest < Minitest::Test
     assert_equal nil, @attacher.get
   end
 
-  test "saving uploads the cached file to the store" do
+  test "#replace deletes removed files" do
+    uploaded_file = @attacher.set(fakeio)
+    @attacher.set(nil)
+    @attacher.replace
+
+    refute uploaded_file.exists?
+  end
+
+  test "#replace deletes replaced files" do
+    uploaded_file = @attacher.set(fakeio)
     @attacher.set(fakeio)
-    @attacher.save
+    @attacher.replace
+
+    refute uploaded_file.exists?
+  end
+
+  test "#replace doesn't trip if there was no previous file" do
+    @attacher.set(nil)
+    @attacher.replace
+  end
+
+  test "#promote uploads the cached file to the store" do
+    @attacher.set(fakeio)
+    @attacher.promote(@attacher.get)
 
     assert_equal "store", @attacher.get.storage_key
   end
 
-  test "saving deletes removed files" do
-    uploaded_file = @attacher.set(fakeio)
-    @attacher.set(nil)
-    @attacher.save
-
-    refute uploaded_file.exists?
-  end
-
-  test "saving deletes replaced files" do
-    uploaded_file = @attacher.set(fakeio)
-    @attacher.set(fakeio)
-    @attacher.save
-
-    refute uploaded_file.exists?
-  end
-
-  test "saving doesn't reupload UploadedFiles from store" do
-    @attacher.set(fakeio)
-    @attacher.save
-    uploaded_file = @attacher.get
-
-    @attacher.save
-
-    assert_equal uploaded_file.id, @attacher.get.id
-  end
-
-  test "saving doesn't try to delete a nonexisting file" do
-    @attacher.set(nil)
-    @attacher.save
-  end
-
-  test "saving keeps the cached file" do
+  test "#promote keeps the cached file" do
     cached_file = @attacher.set(fakeio)
-    @attacher.save
+    @attacher.promote(@attacher.get)
 
     assert cached_file.exists?
+  end
+
+  test "#promote doesn't assign stored file if cached files don't match" do
+    cached_file = @attacher.set(fakeio)
+    another_cached_file = @attacher.set(fakeio)
+    @attacher.promote(cached_file)
+
+    assert another_cached_file, @attacher.get
+  end
+
+  test "#promote? returns true if uploaded file is present and cached" do
+    refute @attacher.promote?(nil)
+    refute @attacher.promote?(@attacher.store.upload(fakeio))
+    assert @attacher.promote?(@attacher.cache.upload(fakeio))
   end
 
   test "destroying deletes attached file" do
@@ -128,7 +132,7 @@ class AttacherTest < Minitest::Test
     @attacher.set(fakeio)
     assert_equal '["name","record"]', @attacher.get.id
 
-    @attacher.save
+    @attacher.promote(@attacher.get)
     assert_equal '["name","record"]', @attacher.get.id
   end
 

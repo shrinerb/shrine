@@ -12,6 +12,13 @@ class VersionsTest < Minitest::Test
     assert_kind_of Shrine::UploadedFile, versions.fetch("thumb")
   end
 
+  test "allows uploaded_file to accept JSON strings" do
+    versions = @uploader.upload(thumb: fakeio)
+    retrieved = @uploader.class.uploaded_file(versions.to_json)
+
+    assert_equal versions, retrieved
+  end
+
   test "passes the version name to location generator" do
     @uploader.class.class_eval do
       def generate_location(io, version:)
@@ -135,9 +142,16 @@ class VersionsTest < Minitest::Test
     @attacher.set("thumb" => uploaded_file.data)
 
     @attacher.set("thumb" => @uploader.upload(fakeio).data)
-    @attacher.save
+    @attacher.replace
 
     refute uploaded_file.exists?
+  end
+
+  test "attacher promotes versions successfully" do
+    cached_file = @attacher.set("thumb" => @uploader.upload(fakeio).data)
+    @attacher.promote(cached_file)
+
+    assert @attacher.store.uploaded?(@attacher.get["thumb"])
   end
 
   test "attacher filters the hash to only registered version" do
