@@ -216,10 +216,6 @@ class Shrine
           uploaded_file.storage_key == storage_key
         end
 
-        def delete(uploaded_file)
-          uploaded_file.delete
-        end
-
         def generate_location(io, context)
           type = context[:record].class.name.downcase if context[:record] && context[:record].class.name
           id   = context[:record].id if context[:record].respond_to?(:id)
@@ -424,7 +420,7 @@ class Shrine
         end
 
         def delete!(uploaded_file)
-          store.delete(uploaded_file)
+          uploaded_file.delete
         end
 
         def default_url(**options)

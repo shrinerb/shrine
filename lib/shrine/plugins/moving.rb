@@ -15,11 +15,7 @@ class Shrine
               storage.move(io, location)
             else
               super
-              if io.is_a?(Shrine::UploadedFile)
-                delete(io)
-              elsif io.respond_to?(:delete)
-                io.delete
-              end
+              io.delete if io.respond_to?(:delete)
             end
           else
             super
