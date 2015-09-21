@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class EndpointTest < Minitest::Test
   include TestHelpers::Rack
@@ -26,7 +27,7 @@ class EndpointTest < Minitest::Test
   test "uploads the given file" do
     post "/cache/avatar", file: image
 
-    assert @uploader.storage.exists?(body["id"])
+    assert @uploader.storage.exists?(body["data"]["id"])
   end
 
   test "passes in the :name parameter as context" do
@@ -38,17 +39,29 @@ class EndpointTest < Minitest::Test
 
     post "/cache/avatar", file: image
 
-    assert_equal 'avatar', body['id']
+    assert_equal 'avatar', body['data']['id']
   end
 
   test "assigns metadata" do
     image = Rack::Test::UploadedFile.new("test/fixtures/image.jpg", "image/jpeg")
     post "/cache/avatar", file: image
 
-    metadata = body.fetch('metadata')
+    metadata = body['data'].fetch('metadata')
     assert_equal 'image.jpg', metadata['filename']
     assert_equal 'image/jpeg', metadata['content_type']
     assert_kind_of Integer, metadata['size']
+  end
+
+  test "serializes uploaded hashes and arrays as well" do
+    uploaded_file = @uploader.upload(fakeio)
+
+    @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
+    post "/cache/avatar", file: image
+    refute_empty body.fetch('thumb')
+
+    @uploader.class.class_eval { define_method(:upload) { |*| Array[uploaded_file] } }
+    post "/cache/avatar", file: image
+    refute_empty body.fetch(0)
   end
 
   test "returns url of :return_url is passed in" do
@@ -109,15 +122,6 @@ class EndpointTest < Minitest::Test
 
   test "endpoint is memoized" do
     assert_equal @uploader.class.endpoint, @uploader.class.endpoint
-  end
-
-  test "works with processing versions" do
-    @uploader.class.plugin :processing, storage: :cache, versions: [:reverse],
-      processor: ->(io, context) { Hash[reverse: io] }
-
-    post "/cache/avatar", file: image
-
-    refute_empty body.fetch("reverse")
   end
 
   test "throws error when storage doesn't exist" do

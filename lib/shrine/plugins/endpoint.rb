@@ -28,18 +28,8 @@ class Shrine
         end
       end
 
-      module InstanceMethods
-        private
-
-        def _upload(io, context)
-          uploaded_file = super
-          uploaded_file.data.update("url" => uploaded_file.url) if opts[:endpoint_return_url]
-          uploaded_file
-        end
-      end
-
       class App < Roda
-        plugin :json, classes: [Hash, Array, Shrine::UploadedFile]
+        plugin :default_headers, "Content-Type"=>"application/json"
         plugin :halt
 
         route do |r|
@@ -51,8 +41,25 @@ class Shrine
               file = get_file
               context = {name: name}
 
-              @uploader.upload(file, context)
+              json @uploader.upload(file, context)
             end
+          end
+        end
+
+        def json(object)
+          serialize(object).to_json
+        end
+
+        def serialize(object)
+          case object
+          when shrine_class::UploadedFile
+            hash = {"data" => object.data}
+            hash["url"] = object.url if shrine_class.opts[:endpoint_return_url]
+            hash
+          when Hash
+            object.each { |key, value| object[key] = serialize(value) }
+          when Array
+            object.map { |item| serialize(item) }
           end
         end
 
@@ -85,7 +92,7 @@ class Shrine
         end
 
         def error!(status, message)
-          request.halt status, {error: message}
+          request.halt status, {error: message}.to_json
         end
 
         def shrine_class
