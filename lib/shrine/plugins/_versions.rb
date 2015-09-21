@@ -57,6 +57,12 @@ class Shrine
             super
           end
         end
+
+        def generate_location(io, c)
+          location = super
+          location.sub!(/(\.\w{1,10})?$/) { |e| "-#{c[:version]}#{e}" } if c[:version]
+          location
+        end
       end
 
       module AttacherMethods

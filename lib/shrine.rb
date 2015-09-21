@@ -221,11 +221,16 @@ class Shrine
         end
 
         def generate_location(io, context)
+          type = context[:record].class.name.downcase if context[:record] && context[:record].class.name
+          id   = context[:record].id if context[:record].respond_to?(:id)
+          name = context[:name]
+
           original_filename = extract_filename(io)
           extension = File.extname(original_filename.to_s)
           basename = generate_uid(io)
+          filename = basename + extension
 
-          basename + extension
+          [type, id, name, filename].compact.join("/")
         end
 
         def extract_metadata(io, context)

@@ -17,47 +17,8 @@ class InstanceTest < Minitest::Test
     assert_equal ["id", "storage", "metadata"], uploaded_file.data.keys
   end
 
-  test "upload generates a unique location if it wasn't given" do
-    uploaded_file = @uploader.upload(fakeio("image"))
-    assert_equal "image", @uploader.storage.read(uploaded_file.id)
-
-    another_uploaded_file = @uploader.upload(fakeio)
-    refute_equal uploaded_file.id, another_uploaded_file.id
-  end
-
-  test "generated location preserves the extension" do
-    # Rails file
-    uploaded_file = @uploader.upload(fakeio(filename: "avatar.jpg"))
-    assert_match /\.jpg$/, uploaded_file.id
-
-    # Uploaded file
-    second_uploaded_file = @uploader.upload(uploaded_file)
-    assert_match /\.jpg$/, second_uploaded_file.id
-
-    # File
-    uploaded_file = @uploader.upload(File.open(__FILE__))
-    assert_match /\.rb$/, uploaded_file.id
-  end
-
-  test "generating location handles unkown filenames" do
-    uploaded_file = @uploader.upload(fakeio)
-
-    assert_match /^[\w-]+$/, uploaded_file.id
-  end
-
   test "uploading accepts a context" do
     @uploader.upload(fakeio("image"), type: :image)
-  end
-
-  test "uploading uses :location if available, even if #generate_location was overriden" do
-    @uploader.singleton_class.class_eval do
-      def generate_location(io, context)
-        "rainbows"
-      end
-    end
-    uploaded_file = @uploader.upload(fakeio("image"), location: "foo")
-
-    assert_equal "foo", uploaded_file.id
   end
 
   test "upload assigns storage and extracts metadata" do
