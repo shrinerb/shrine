@@ -30,7 +30,7 @@ class Shrine
               super
             else
               versions(object).inject({}) do |versions, (name, data)|
-                versions.update(name => super(data))
+                versions.update(name.to_sym => super(data))
               end
             end
           else
@@ -43,7 +43,7 @@ class Shrine
         def upload(io, context = {})
           if (hash = io).is_a?(Hash) && !hash.key?(:tempfile)
             self.class.versions!(hash).inject({}) do |versions, (name, version)|
-              versions.update(name.to_s => super(version, version: name.to_s, **context))
+              versions.update(name => super(version, version: name, **context))
             end
           else
             super
@@ -63,7 +63,7 @@ class Shrine
         def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
-              get.fetch(version.to_s).url(**options)
+              get.fetch(version).url(**options)
             else
               raise Error, "must call #{name}_url with the name of the version"
             end
@@ -71,7 +71,7 @@ class Shrine
             if get || version.nil?
               super(**options)
             else
-              default_url(options.merge(version: version.to_s))
+              default_url(options.merge(version: version))
             end
           end
         end

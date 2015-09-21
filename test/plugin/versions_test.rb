@@ -9,7 +9,7 @@ class VersionsTest < Minitest::Test
   test "allows uploading versions" do
     versions = @uploader.upload(thumb: fakeio)
 
-    assert_kind_of Shrine::UploadedFile, versions.fetch("thumb")
+    assert_kind_of Shrine::UploadedFile, versions.fetch(:thumb)
   end
 
   test "allows uploaded_file to accept JSON strings" do
@@ -27,7 +27,7 @@ class VersionsTest < Minitest::Test
     end
     versions = @uploader.upload(thumb: fakeio)
 
-    assert_equal "thumb", versions.fetch("thumb").id
+    assert_equal "thumb", versions.fetch(:thumb).id
   end
 
   test "works with the rack_file plugin" do
@@ -110,7 +110,7 @@ class VersionsTest < Minitest::Test
     @attacher.set(nil)
     assert_equal Hash[foo: "foo", name: "avatar", record: @attacher.record],
                  @attacher.url(foo: "foo")
-    assert_equal Hash[version: "thumb", foo: "foo", name: "avatar", record: @attacher.record],
+    assert_equal Hash[version: :thumb, foo: "foo", name: "avatar", record: @attacher.record],
                  @attacher.url(:thumb, foo: "foo")
   end
 
@@ -125,7 +125,7 @@ class VersionsTest < Minitest::Test
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data)
 
-    assert_kind_of Shrine::UploadedFile, @attacher.get.fetch("thumb")
+    assert_kind_of Shrine::UploadedFile, @attacher.get.fetch(:thumb)
   end
 
   test "attacher destroys versions successfully" do
@@ -151,13 +151,13 @@ class VersionsTest < Minitest::Test
     cached_file = @attacher.set("thumb" => @uploader.upload(fakeio).data)
     @attacher.promote(cached_file)
 
-    assert @attacher.store.uploaded?(@attacher.get["thumb"])
+    assert @attacher.store.uploaded?(@attacher.get[:thumb])
   end
 
   test "attacher filters the hash to only registered version" do
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data, "malicious" => uploaded_file.data)
 
-    assert_equal ["thumb"], @attacher.get.keys
+    assert_equal [:thumb], @attacher.get.keys
   end
 end
