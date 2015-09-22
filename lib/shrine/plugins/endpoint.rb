@@ -8,7 +8,6 @@ class Shrine
       end
 
       def self.configure(uploader, allowed_storages: [:cache], return_url: false, max_size: nil)
-        allowed_storages = allowed_storages.map { |key| uploader.storage(key) }
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
         uploader.opts[:endpoint_return_url] = return_url
         uploader.opts[:endpoint_max_size] = max_size
@@ -35,7 +34,7 @@ class Shrine
         route do |r|
           r.on ":storage" do |storage_key|
             allow_storage!(storage_key)
-            @uploader = shrine_class.new(storage_key)
+            @uploader = shrine_class.new(storage_key.to_sym)
 
             r.post ":name" do |name|
               file = get_file
@@ -63,10 +62,9 @@ class Shrine
           end
         end
 
-        def allow_storage!(storage_key)
-          storage = shrine_class.storages[storage_key]
-          if !allowed_storages.include?(storage)
-            error! 403, "Storage #{storage_key.inspect} is not allowed."
+        def allow_storage!(storage)
+          if !allowed_storages.map(&:to_s).include?(storage)
+            error! 403, "Storage #{storage.inspect} is not allowed."
           end
         end
 

@@ -172,7 +172,7 @@ class AttacherTest < Minitest::Test
       end
     end
 
-    assert_equal Hash[name: "avatar", record: @attacher.record, foo: "foo"],
+    assert_equal Hash[name: :avatar, record: @attacher.record, foo: "foo"],
                  @attacher.url(foo: "foo")
   end
 

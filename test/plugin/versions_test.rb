@@ -119,9 +119,9 @@ class VersionsTest < Minitest::Test
     assert_equal Hash[foo: "foo"], @attacher.url(:thumb, foo: "foo")
 
     @attacher.set(nil)
-    assert_equal Hash[foo: "foo", name: "avatar", record: @attacher.record],
+    assert_equal Hash[foo: "foo", name: :avatar, record: @attacher.record],
                  @attacher.url(foo: "foo")
-    assert_equal Hash[version: :thumb, foo: "foo", name: "avatar", record: @attacher.record],
+    assert_equal Hash[version: :thumb, foo: "foo", name: :avatar, record: @attacher.record],
                  @attacher.url(:thumb, foo: "foo")
   end
 

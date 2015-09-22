@@ -9,7 +9,7 @@ class StrorageTest < Minitest::Test
     uploader.store = :store
     assert_equal :store, uploader.store
 
-    assert_equal Hash["cache" => :cache, "store" => :store], uploader.storages
+    assert_equal Hash[cache: :cache, store: :store], uploader.storages
   end
 
   test "every subclass gets its own copy" do

@@ -123,10 +123,4 @@ class EndpointTest < Minitest::Test
   test "endpoint is memoized" do
     assert_equal @uploader.class.endpoint, @uploader.class.endpoint
   end
-
-  test "throws error when storage doesn't exist" do
-    assert_raises(Shrine::Error) do
-      uploader { plugin :endpoint, allowed_storages: [:foo] }
-    end
-  end
 end

@@ -128,25 +128,24 @@ class Shrine
         attr_accessor :storages
 
         def storage(name)
-          storages.fetch(name.to_s)
-        rescue KeyError
+          storages.each { |key, value| return value if key.to_s == name.to_s }
           raise Error, "#{self} doesn't have storage #{name.inspect}"
         end
 
         def cache=(storage)
-          storages["cache"] = storage
+          storages[:cache] = storage
         end
 
         def cache
-          storages["cache"]
+          storages[:cache]
         end
 
         def store=(storage)
-          storages["store"] = storage
+          storages[:store] = storage
         end
 
         def store
-          storages["store"]
+          storages[:store]
         end
 
         def attachment(*args)
@@ -193,7 +192,7 @@ class Shrine
 
       module InstanceMethods
         def initialize(storage_key)
-          @storage_key = storage_key.to_s
+          @storage_key = storage_key
           storage # ensure storage exists
         end
 
@@ -213,7 +212,7 @@ class Shrine
         end
 
         def uploaded?(uploaded_file)
-          uploaded_file.storage_key == storage_key
+          uploaded_file.storage_key == storage_key.to_s
         end
 
         def generate_location(io, context)
@@ -268,7 +267,7 @@ class Shrine
 
           self.class::UploadedFile.new(
             "id"       => location,
-            "storage"  => storage_key,
+            "storage"  => storage_key.to_s,
             "metadata" => metadata,
           )
         end
@@ -450,7 +449,7 @@ class Shrine
         end
 
         def context
-          {name: name.to_s, record: record}
+          {name: name, record: record}
         end
       end
 

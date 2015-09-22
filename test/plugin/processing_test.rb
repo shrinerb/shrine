@@ -71,9 +71,5 @@ class ProcessingTest < Minitest::Test
     assert_raises(ArgumentError) do
       @uploader.class.plugin :processing, storage: :store, processor: "invalid"
     end
-
-    assert_raises(Shrine::Error) do
-      @uploader.class.plugin :processing, storage: :nonexistent, processor: ->{}
-    end
   end
 end

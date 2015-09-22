@@ -2,7 +2,7 @@ class Shrine
   module Plugins
     module Versions
       def self.configure(uploader, names:)
-        uploader.opts[:version_names] = names.map(&:to_s)
+        uploader.opts[:version_names] = names
       end
 
       module ClassMethods
@@ -11,14 +11,14 @@ class Shrine
         end
 
         def versions!(hash)
-          unknown = hash.keys.map(&:to_s) - version_names
+          unknown = hash.keys - version_names
           unknown.each { |name| raise Error, "unknown version: #{name.inspect}" }
 
           hash
         end
 
         def versions(hash)
-          hash.select { |key, value| version_names.include?(key) }
+          hash.select { |key, value| version_names.map(&:to_s).include?(key.to_s) }
         end
 
         def uploaded_file(object)
@@ -66,7 +66,7 @@ class Shrine
         def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
-              raise Error, "unknown version: #{version.inspect}" if !shrine_class.version_names.include?(version.to_s)
+              raise Error, "unknown version: #{version.inspect}" if !shrine_class.version_names.include?(version)
               if file = get[version]
                 file.url(**options)
               else

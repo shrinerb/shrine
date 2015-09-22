@@ -2,7 +2,6 @@ class Shrine
   module Plugins
     module Moving
       def self.configure(uploader, storages:)
-        storages = storages.map { |key| uploader.storage(key) }
         uploader.opts[:move_files_to_storages] = storages
       end
 
@@ -23,7 +22,7 @@ class Shrine
         end
 
         def move_file?
-          opts[:move_files_to_storages].include?(storage)
+          opts[:move_files_to_storages].include?(storage_key)
         end
       end
     end

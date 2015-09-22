@@ -17,8 +17,7 @@ class Shrine
       def self.configure(uploader, processor:, storage:, **)
         raise ArgumentError, ":processor must be a proc" if !processor.is_a?(Proc)
         uploader.opts[:processor] = processor
-
-        uploader.opts[:processing_storage] = uploader.storage(storage)
+        uploader.opts[:processing_storage] = storage
       end
 
       module InstanceMethods
@@ -38,7 +37,7 @@ class Shrine
         private
 
         def processing?(io, context)
-          storage == self.class.opts[:processing_storage]
+          storage_key == self.class.opts[:processing_storage]
         end
       end
     end

@@ -64,8 +64,4 @@ class MovingTest < Minitest::Test
     uploaded_file = @uploader.upload(file)
     assert File.exist?(file.path)
   end
-
-  test "throws error for unexisting storage" do
-    assert_raises(Shrine::Error) { shrine([:nonexistent]) }
-  end
 end
