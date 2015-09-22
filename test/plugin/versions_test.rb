@@ -58,11 +58,22 @@ class VersionsTest < Minitest::Test
     assert_equal nil, @attacher.url(:thumb)
   end
 
-  test "attachment url fails explicity when version doesn't exist" do
+  test "attachment url fails explicity when version isn't registered" do
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data)
 
-    assert_raises(KeyError) { @attacher.url(:unknown) }
+    assert_raises(Shrine::Error) { @attacher.url(:unknown) }
+  end
+
+  test "attachment url doesn't fail if version is registered but missing" do
+    @attacher.set({})
+    @attacher.singleton_class.class_eval do
+      def default_url(options)
+        "missing #{options[:version]}"
+      end
+    end
+
+    assert_equal "missing thumb", @attacher.url(:thumb)
   end
 
   test "attachment url returns raw file URL if versions haven't been generated" do

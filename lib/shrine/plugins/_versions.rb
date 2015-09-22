@@ -11,11 +11,8 @@ class Shrine
         end
 
         def versions!(hash)
-          unknown_versions = hash.keys.map(&:to_s) - version_names
-          unknown_versions.each { |name| raise Error, "unkown version: #{name.inspect}" }
-
-          missing_versions = version_names - hash.keys.map(&:to_s)
-          missing_versions.each { |name| raise Error, "missing version: #{name.inspect}" }
+          unknown = hash.keys.map(&:to_s) - version_names
+          unknown.each { |name| raise Error, "unknown version: #{name.inspect}" }
 
           hash
         end
@@ -69,7 +66,12 @@ class Shrine
         def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
-              get.fetch(version).url(**options)
+              raise Error, "unknown version: #{version.inspect}" if !shrine_class.version_names.include?(version.to_s)
+              if file = get[version]
+                file.url(**options)
+              else
+                default_url(options.merge(version: version))
+              end
             else
               raise Error, "must call #{name}_url with the name of the version"
             end

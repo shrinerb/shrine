@@ -63,9 +63,6 @@ class ProcessingTest < Minitest::Test
   test "complains when unknown/missing versions are given" do
     @uploader = uploader { |io| Hash[unkown: FakeIO.new("image")] }
     assert_raises(Shrine::Error) { @uploader.upload(fakeio) }
-
-    @uploader = uploader { |io| Hash[] }
-    assert_raises(Shrine::Error) { @uploader.upload(fakeio) }
   end
 
   test "passing invalid options" do
