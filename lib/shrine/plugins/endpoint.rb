@@ -77,9 +77,10 @@ class Shrine
         end
 
         def check_filesize!(file)
-          if max_size && file.size > max_size * 1024 * 1024
+          if max_size && file.size > max_size
             file.delete
-            error! 413, "The file is too big (maximum size is #{max_size} MB)."
+            megabytes = max_size.to_f / 1024 / 1024
+            error! 413, "The file is too big (maximum size is #{megabytes} MB)."
           end
         end
 

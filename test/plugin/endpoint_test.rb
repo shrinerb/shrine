@@ -109,7 +109,7 @@ class EndpointTest < Minitest::Test
     assert_equal 413, response.status
     refute_empty body.fetch("error")
 
-    @uploader.opts[:endpoint_max_size] = 5
+    @uploader.opts[:endpoint_max_size] = 5 * 1024 * 1024
     post "/cache/avatar", file: image
     assert_equal 200, response.status
   end
