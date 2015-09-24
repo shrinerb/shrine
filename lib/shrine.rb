@@ -381,7 +381,7 @@ class Shrine
 
           @old_attachment = get
           _set(uploaded_file)
-          validate!
+          validate
 
           get
         end
@@ -422,7 +422,7 @@ class Shrine
           end
         end
 
-        def validate!
+        def validate
           errors.clear
           instance_exec(&validate_block) if validate_block && get
         end

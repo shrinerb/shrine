@@ -92,7 +92,7 @@ class Shrine
           end
         end
 
-        def validate!
+        def validate
           if validate_block && get.is_a?(Hash)
             raise Error, "cannot validate versions"
           else

@@ -2,7 +2,7 @@ class Shrine
   module Plugins
     module DeleteInvalid
       module AttacherMethods
-        def validate!
+        def validate
           super
         ensure
           delete!(get) if !errors.empty?
