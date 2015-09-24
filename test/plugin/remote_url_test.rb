@@ -64,6 +64,13 @@ class RemoteUrlTest < Minitest::Test
     assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url_downloader]
   end
 
+  test "accepts :max_size" do
+    @attacher = attacher(max_size: 5)
+    @attacher.remote_url = image_url
+
+    assert_equal ["Download failed"], @attacher.errors
+  end
+
   test "attachment interface" do
     @user = @attacher.record
 

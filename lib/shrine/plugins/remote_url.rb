@@ -7,9 +7,10 @@ class Shrine
         end
       end
 
-      def self.configure(uploader, downloader: :open_uri, error_message:)
+      def self.configure(uploader, downloader: :open_uri, error_message:, max_size: nil)
         uploader.opts[:remote_url_downloader] = downloader
         uploader.opts[:remote_url_error_message] = error_message
+        uploader.opts[:remote_url_max_size] = max_size
       end
 
       module AttachmentMethods
@@ -48,16 +49,17 @@ class Shrine
 
         def download(url)
           downloader = shrine_class.opts[:remote_url_downloader]
+          max_size = shrine_class.opts[:remote_url_max_size]
 
           if downloader.is_a?(Symbol)
-            send(:"download_with_#{downloader}", url)
+            send(:"download_with_#{downloader}", url, max_size: max_size)
           else
             downloader.call(url)
           end
         end
 
-        def download_with_open_uri(url)
-          Shrine::Utils.download(url)
+        def download_with_open_uri(url, max_size:)
+          Shrine::Utils.download(url, max_size: max_size)
         rescue Shrine::Error
           message = shrine_class.opts[:remote_url_error_message]
           message = message.call(url) if message.respond_to?(:call)
