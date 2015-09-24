@@ -395,9 +395,7 @@ class Shrine
         end
 
         def get
-          if data = read
-            shrine_class.uploaded_file(data)
-          end
+          shrine_class.uploaded_file(read) if read
         end
 
         def save
@@ -417,9 +415,7 @@ class Shrine
         end
 
         def destroy
-          if uploaded_file = get
-            delete!(uploaded_file)
-          end
+          delete!(get) if read
         end
 
         def url(**options)
