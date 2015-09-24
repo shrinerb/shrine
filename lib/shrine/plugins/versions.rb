@@ -99,18 +99,6 @@ class Shrine
             super
           end
         end
-
-        private
-
-        def data(uploaded_file)
-          if (versions = uploaded_file).is_a?(Hash)
-            versions.inject({}) do |hash, (name, version)|
-              hash.update(name => super(version))
-            end
-          else
-            super
-          end
-        end
       end
     end
 

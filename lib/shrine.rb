@@ -462,21 +462,15 @@ class Shrine
         end
 
         def _set(uploaded_file)
-          write(uploaded_file ? data(uploaded_file) : nil)
+          write(uploaded_file ? uploaded_file.to_json : nil)
         end
 
-        def write(data)
-          value = data ? data.to_json : nil
+        def write(value)
           record.send("#{name}_data=", value)
         end
 
         def read
-          data = record.send("#{name}_data")
-          data.is_a?(String) ? JSON.parse(data) : data
-        end
-
-        def data(uploaded_file)
-          uploaded_file.data
+          record.send("#{name}_data")
         end
 
         def context
