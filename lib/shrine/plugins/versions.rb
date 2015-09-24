@@ -37,8 +37,8 @@ class Shrine
       end
 
       module InstanceMethods
-        def upload(io, context = {})
-          if (hash = io).is_a?(Hash) && !hash.key?(:tempfile)
+        def store(io, context)
+          if (hash = io).is_a?(Hash)
             self.class.versions!(hash).inject({}) do |versions, (name, version)|
               versions.update(name => super(version, version: name, **context))
             end
@@ -114,6 +114,6 @@ class Shrine
       end
     end
 
-    register_plugin(:_versions, Versions)
+    register_plugin(:versions, Versions)
   end
 end

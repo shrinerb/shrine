@@ -207,8 +207,25 @@ class Shrine
         end
 
         def upload(io, context = {})
+          io = process(io, context) || io
+          store(io, context)
+        end
+
+        def process(io, context)
+        end
+
+        def store(io, context)
           _enforce_io(io)
-          _upload(io, context)
+          location = context[:location] || generate_location(io, context)
+          metadata = extract_metadata(io, context)
+
+          put(io, location)
+
+          self.class::UploadedFile.new(
+            "id"       => location,
+            "storage"  => storage_key.to_s,
+            "metadata" => metadata,
+          )
         end
 
         def uploaded?(uploaded_file)
@@ -254,25 +271,12 @@ class Shrine
           io.size
         end
 
-        def default_url(*)
+        def default_url(context)
         end
 
         private
 
-        def _upload(io, context)
-          location = context[:location] || generate_location(io, context)
-          metadata = extract_metadata(io, context)
-
-          store(io, location)
-
-          self.class::UploadedFile.new(
-            "id"       => location,
-            "storage"  => storage_key.to_s,
-            "metadata" => metadata,
-          )
-        end
-
-        def store(io, location)
+        def put(io, location)
           storage.upload(io, location)
         end
 
@@ -356,7 +360,7 @@ class Shrine
             if value.is_a?(String) || value.is_a?(Hash)
               shrine_class.uploaded_file(value)
             elsif value
-              cache!(value)
+              cache!(value, phase: :assign)
             end
 
           @old_attachment = get
@@ -372,8 +376,7 @@ class Shrine
           end
         end
 
-        def replace
-          delete!(@old_attachment) if @old_attachment
+        def save
         end
 
         def promote?(uploaded_file)
@@ -381,8 +384,12 @@ class Shrine
         end
 
         def promote(uploaded_file)
-          stored_file = store!(uploaded_file)
+          stored_file = store!(uploaded_file, phase: :promote)
           _set(stored_file) unless get != uploaded_file
+        end
+
+        def replace
+          delete!(@old_attachment) if @old_attachment
         end
 
         def destroy
@@ -410,12 +417,12 @@ class Shrine
 
         private
 
-        def cache!(io)
-          cache.upload(io, context)
+        def cache!(io, phase:)
+          cache.upload(io, context.merge(phase: phase))
         end
 
-        def store!(io)
-          store.upload(io, context)
+        def store!(io, phase:)
+          store.upload(io, context.merge(phase: phase))
         end
 
         def delete!(uploaded_file)
@@ -503,6 +510,10 @@ class Shrine
 
         def url(**options)
           storage.url(id, **options)
+        end
+
+        def path
+          storage.path(id) if storage.class.name =~ /FileSystem/
         end
 
         def exists?

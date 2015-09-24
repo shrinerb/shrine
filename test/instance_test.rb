@@ -1,4 +1,5 @@
 require "test_helper"
+require "minitest/mock"
 
 class InstanceTest < Minitest::Test
   def setup
@@ -26,6 +27,19 @@ class InstanceTest < Minitest::Test
 
     assert_equal "store", uploaded_file.data["storage"]
     assert_instance_of Hash, uploaded_file.data["metadata"]
+  end
+
+  test "upload calls #process" do
+    @uploader.stub(:process, fakeio("processed")) do
+      uploaded_file = @uploader.upload(fakeio)
+      assert_equal "processed", uploaded_file.read
+    end
+  end
+
+  test "checking IO-ness of file happens after processing" do
+    @uploader.stub(:process, "invalid file") do
+      assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
+    end
   end
 
   test "can tell if it uploaded an UploadedFile" do

@@ -44,8 +44,7 @@ class Shrine
       end
 
       def movable?(io, id)
-        io.respond_to?(:path) ||
-          (io.is_a?(UploadedFile) && io.storage.is_a?(self.class))
+        io.respond_to?(:path) && !io.path.nil?
       end
 
       def open(id)

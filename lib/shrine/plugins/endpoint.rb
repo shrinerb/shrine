@@ -7,7 +7,7 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], return_url: false, max_size: nil)
+      def self.configure(uploader, allowed_storages: [:cache], return_url: nil, max_size: nil)
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
         uploader.opts[:endpoint_return_url] = return_url
         uploader.opts[:endpoint_max_size] = max_size
@@ -38,7 +38,7 @@ class Shrine
 
             r.post ":name" do |name|
               file = get_file
-              context = {name: name}
+              context = {name: name, phase: :endpoint}
 
               json @uploader.upload(file, context)
             end
@@ -73,7 +73,7 @@ class Shrine
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
           check_filesize!(file[:tempfile])
 
-          file
+          RackFile::UploadedFile.new(file)
         end
 
         def check_filesize!(file)

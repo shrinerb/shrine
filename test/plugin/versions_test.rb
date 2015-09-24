@@ -2,7 +2,7 @@ require "test_helper"
 
 class VersionsTest < Minitest::Test
   def setup
-    @attacher = attacher { plugin :_versions, names: [:thumb] }
+    @attacher = attacher { plugin :versions, names: [:thumb] }
     @uploader = @attacher.store
   end
 
@@ -10,6 +10,28 @@ class VersionsTest < Minitest::Test
     versions = @uploader.upload(thumb: fakeio)
 
     assert_kind_of Shrine::UploadedFile, versions.fetch(:thumb)
+  end
+
+  test "processing into versions" do
+    @uploader.singleton_class.class_eval do
+      def process(io, context)
+        {thumb: FakeIO.new(io.read.reverse)}
+      end
+    end
+    versions = @uploader.upload(fakeio("original"))
+
+    assert_equal "lanigiro", versions.fetch(:thumb).read
+  end
+
+  test "processing versions" do
+    @uploader.singleton_class.class_eval do
+      def process(hash, context)
+        {thumb: FakeIO.new(hash.fetch(:thumb).read.reverse)}
+      end
+    end
+    versions = @uploader.upload(thumb: fakeio("thumb"))
+
+    assert_equal "bmuht", versions.fetch(:thumb).read
   end
 
   test "allows uploaded_file to accept JSON strings" do
@@ -31,12 +53,12 @@ class VersionsTest < Minitest::Test
   end
 
   test "works with the rack_file plugin" do
-    @uploader = uploader do
+    @attacher = attacher do
       plugin :rack_file
-      plugin :_versions, names: [:thumb]
+      plugin :versions, names: [:thumb]
     end
 
-    uploaded_file = @uploader.upload(tempfile: fakeio)
+    uploaded_file = @attacher.set(tempfile: fakeio)
 
     assert_kind_of Shrine::UploadedFile, uploaded_file
   end
@@ -178,5 +200,15 @@ class VersionsTest < Minitest::Test
 
     versions = @uploader.upload(thumb: fakeio)
     assert_match /-thumb$/, versions[:thumb].id
+  end
+
+  test "invalid IOs are still caught" do
+    @uploader.singleton_class.class_eval do
+      def process(io, context)
+        {thumb: "invalid IO"}
+      end
+    end
+
+    assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
   end
 end

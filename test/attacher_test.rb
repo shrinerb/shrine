@@ -14,6 +14,17 @@ class AttacherTest < Minitest::Test
     assert_equal "image", uploaded_file.read
   end
 
+  test "setting sets phase: :assign" do
+    @attacher.cache.singleton_class.class_eval do
+      def process(io, context)
+        FakeIO.new(context[:phase].to_s)
+      end
+    end
+    uploaded_file = @attacher.set(fakeio("image"))
+
+    assert_equal "assign", uploaded_file.read
+  end
+
   test "setting writes to record's data attribute" do
     @attacher.set(fakeio("image"))
 
@@ -90,6 +101,18 @@ class AttacherTest < Minitest::Test
     assert_equal "store", @attacher.get.storage_key
   end
 
+  test "#promote sets phase: :promote" do
+    @attacher.store.singleton_class.class_eval do
+      def process(io, context)
+        FakeIO.new(context[:phase].to_s)
+      end
+    end
+    @attacher.set(fakeio)
+    @attacher.promote(@attacher.get)
+
+    assert_equal "promote", @attacher.get.read
+  end
+
   test "#promote keeps the cached file" do
     cached_file = @attacher.set(fakeio)
     @attacher.promote(@attacher.get)
@@ -130,10 +153,10 @@ class AttacherTest < Minitest::Test
     end
 
     @attacher.set(fakeio)
-    assert_equal '["name","record"]', @attacher.get.id
+    assert_match '"name","record"', @attacher.get.id
 
     @attacher.promote(@attacher.get)
-    assert_equal '["name","record"]', @attacher.get.id
+    assert_match '"name","record"', @attacher.get.id
   end
 
   test "url" do

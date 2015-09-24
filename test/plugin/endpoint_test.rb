@@ -1,5 +1,5 @@
 require "test_helper"
-require "minitest/mock"
+require "json"
 
 class EndpointTest < Minitest::Test
   include TestHelpers::Rack
@@ -30,16 +30,16 @@ class EndpointTest < Minitest::Test
     assert @uploader.storage.exists?(body["data"]["id"])
   end
 
-  test "passes in the :name parameter as context" do
+  test "passes in :name and :phase parameters as context" do
     @uploader.class.class_eval do
       def generate_location(io, context)
-        context.fetch(:name).to_s
+        context.to_json
       end
     end
 
     post "/cache/avatar", file: image
 
-    assert_equal 'avatar', body['data']['id']
+    assert_equal '{"name":"avatar","phase":"endpoint"}', body['data']['id']
   end
 
   test "assigns metadata" do
@@ -115,7 +115,11 @@ class EndpointTest < Minitest::Test
   end
 
   test "allows other errors to propagate" do
-    @uploader.class.plugin :processing, storage: :cache, processor: proc { raise }
+    @uploader.class.class_eval do
+      def process(io, context)
+        raise
+      end
+    end
 
     assert_raises(RuntimeError) { post "/cache/avatar", file: image }
   end

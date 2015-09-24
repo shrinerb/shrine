@@ -1,5 +1,9 @@
 require "test_helper"
+
+require "shrine/storage/file_system"
+
 require "set"
+require "tmpdir"
 
 class UploadedFileTest < Minitest::Test
   def setup
@@ -48,6 +52,19 @@ class UploadedFileTest < Minitest::Test
     uploaded_file = @uploader.upload(fakeio)
 
     assert_equal Hash[foo: "foo"], uploaded_file.url(foo: "foo")
+  end
+
+  test "returns path if storage is FileSystem" do
+    @uploader = uploader(:store)
+    uploaded_file = @uploader.upload(fakeio)
+
+    assert_equal nil, uploaded_file.path
+
+    @uploader.class.store = Shrine::Storage::FileSystem.new(Dir.tmpdir)
+    @uploader = @uploader.class.new(:store)
+    uploaded_file = @uploader.upload(fakeio)
+
+    refute_empty uploaded_file.path
   end
 
   test "JSON" do
