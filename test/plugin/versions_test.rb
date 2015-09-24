@@ -194,12 +194,12 @@ class VersionsTest < Minitest::Test
     assert_equal [:thumb], @attacher.get.keys
   end
 
-  test "appends version names to generated location" do
-    versions = @uploader.upload(thumb: fakeio(filename: "foo.jpg"))
-    assert_match /-thumb.jpg$/, versions[:thumb].id
+  test "prepends version names to generated location" do
+    versions = @uploader.upload({thumb: fakeio(filename: "foo.jpg")}, {name: :avatar})
+    assert_match %r{^avatar/thumb-[\w-]+.jpg$}, versions[:thumb].id
 
-    versions = @uploader.upload(thumb: fakeio)
-    assert_match /-thumb$/, versions[:thumb].id
+    versions = @uploader.upload({thumb: fakeio(filename: "foo.jpg")})
+    assert_match %r{^thumb-[\w-]+.jpg$}, versions[:thumb].id
   end
 
   test "invalid IOs are still caught" do

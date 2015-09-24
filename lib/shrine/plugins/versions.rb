@@ -55,10 +55,10 @@ class Shrine
           end
         end
 
-        def generate_location(io, c)
-          location = super
-          location.sub!(/(\.\w{1,10})?$/) { |e| "-#{c[:version]}#{e}" } if c[:version]
-          location
+        def generate_location(io, context)
+          components = super.rpartition("/")
+          components[2].prepend "#{context[:version]}-" if context[:version]
+          components.join
         end
       end
 
