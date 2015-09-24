@@ -29,4 +29,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "mini_magick"
   gem.add_development_dependency "rmagick"
   gem.add_development_dependency "dimensions"
+  gem.add_development_dependency "fastimage"
 end

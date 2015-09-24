@@ -6,6 +6,7 @@ class Shrine
         when :mini_magick then require "mini_magick"
         when :rmagick     then require "rmagick"
         when :dimensions  then require "dimensions"
+        when :fastimage   then require "fastimage"
         end
       end
 
@@ -52,6 +53,12 @@ class Shrine
             Dimensions.dimensions(io.path)
           else
             Dimensions(io).dimensions
+          end
+        end
+
+        def _extract_dimensions_with_fastimage(io)
+          if io.respond_to?(:path)
+            FastImage.size(io.path)
           end
         end
       end

@@ -33,6 +33,14 @@ class StoreDimensionsTest < Minitest::Test
     assert_equal 67, uploaded_file.metadata["height"]
   end
 
+  test "storing dimensions with FastImage" do
+    @uploader = uploader(:fastimage)
+
+    uploaded_file = @uploader.upload(image)
+    assert_equal 100, uploaded_file.metadata["width"]
+    assert_equal 67, uploaded_file.metadata["height"]
+  end
+
   test "storing dimensions with custom extractor" do
     @uploader = uploader ->(io) {[5, 10]}
     uploaded_file = @uploader.upload(image)
