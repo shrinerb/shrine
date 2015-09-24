@@ -6,10 +6,12 @@ class Shrine
       end
 
       module InstanceMethods
+        private
+
         def put(io, location)
-          if move_file?
-            if storage.respond_to?(:move) && storage.movable?(io, location)
-              storage.move(io, location)
+          if move?
+            if movable?(io, location)
+              move(io, location)
             else
               super
               io.delete if io.respond_to?(:delete)
@@ -19,9 +21,11 @@ class Shrine
           end
         end
 
-        private
+        def movable?(io, location)
+          storage.respond_to?(:move) && storage.movable?(io, location)
+        end
 
-        def move_file?
+        def move?
           opts[:move_files_to_storages].include?(storage_key)
         end
       end
