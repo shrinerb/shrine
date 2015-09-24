@@ -64,4 +64,17 @@ class UtilsTest < Minitest::Test
   test "download unifies different kinds of upload errors" do
     assert_raises(Shrine::Error) { @utils.download(invalid_url) }
   end
+
+  test "download accepts a :max_size" do
+    assert_raises(Shrine::Error) { @utils.download(image_url, max_size: 5) }
+  end
+
+  test "download raises an error when URI is invalid" do
+    assert_raises(Shrine::Error) { @utils.download("foobar") }
+  end
+
+  test "download raises errors on invalid URLs" do
+    assert_raises(Shrine::Error) { @utils.download("http://\\") }
+    assert_raises(Shrine::Error) { @utils.download("foo://") }
+  end
 end
