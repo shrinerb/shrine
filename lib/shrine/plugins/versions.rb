@@ -55,6 +55,14 @@ class Shrine
           end
         end
 
+        def delete(uploaded_file, context = {})
+          if (versions = uploaded_file).is_a?(Hash)
+            versions.each { |name, uploaded_file| super(uploaded_file) }
+          else
+            super
+          end
+        end
+
         def generate_location(io, context)
           components = super.rpartition("/")
           components[2].prepend "#{context[:version]}-" if context[:version]
@@ -99,14 +107,6 @@ class Shrine
             versions.inject({}) do |hash, (name, version)|
               hash.update(name => super(version))
             end
-          else
-            super
-          end
-        end
-
-        def delete!(uploaded_file)
-          if (versions = uploaded_file).is_a?(Hash)
-            versions.each { |name, uploaded_file| super(uploaded_file) }
           else
             super
           end

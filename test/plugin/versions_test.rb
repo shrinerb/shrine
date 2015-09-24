@@ -69,6 +69,13 @@ class VersionsTest < Minitest::Test
     assert @uploader.uploaded?(versions)
   end
 
+  test "deletes versions" do
+    versions = @uploader.upload(thumb: fakeio)
+    @uploader.delete(versions)
+
+    refute versions[:thumb].exists?
+  end
+
   test "attachment url accepts a version name" do
     uploaded_file = @uploader.upload(fakeio)
     @attacher.set("thumb" => uploaded_file.data)

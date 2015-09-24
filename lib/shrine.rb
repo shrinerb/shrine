@@ -174,6 +174,10 @@ class Shrine
           end
         end
 
+        def delete(uploaded_file, context = {})
+          uploader_for(uploaded_file).delete(uploaded_file, context)
+        end
+
         def io!(io)
           missing_methods = IO_METHODS.reject do |m, a|
             io.respond_to?(m) && [a.count, -1].include?(io.method(m).arity)
@@ -187,6 +191,14 @@ class Shrine
           true
         rescue InvalidFile
           false
+        end
+
+        private
+
+        def uploader_for(uploaded_file)
+          storages.each do |key, value|
+            return new(key) if new(key).uploaded?(uploaded_file)
+          end
         end
       end
 
@@ -230,6 +242,10 @@ class Shrine
 
         def uploaded?(uploaded_file)
           uploaded_file.storage_key == storage_key.to_s
+        end
+
+        def delete(uploaded_file, context = {})
+          uploaded_file.delete
         end
 
         def generate_location(io, context)
@@ -426,7 +442,7 @@ class Shrine
         end
 
         def delete!(uploaded_file)
-          uploaded_file.delete
+          shrine_class.delete(uploaded_file, context)
         end
 
         def default_url(**options)

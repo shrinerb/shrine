@@ -30,6 +30,13 @@ class ClassTest < Minitest::Test
     assert_raises(Shrine::Error) { @shrine.uploaded_file(:foo) }
   end
 
+  test "#delete deletes the uploaded file" do
+    uploaded_file = @shrine.new(:cache).upload(fakeio)
+    @shrine.delete uploaded_file
+
+    refute uploaded_file.exists?
+  end
+
   test "#io! raises an error if given object is not an IO" do
     @shrine.io!(fakeio)
     assert_raises(Shrine::InvalidFile) { @shrine.io!(:foo) }
