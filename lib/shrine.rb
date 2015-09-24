@@ -293,7 +293,15 @@ class Shrine
         private
 
         def put(io, location)
+          copy(io, location)
+        end
+
+        def copy(io, location)
           storage.upload(io, location)
+        end
+
+        def move(io, location)
+          storage.move(io, location)
         end
 
         def _enforce_io(io)
