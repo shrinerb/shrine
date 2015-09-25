@@ -37,27 +37,9 @@ class Shrine
       end
 
       module InstanceMethods
-        def store(io, context)
-          if (hash = io).is_a?(Hash)
-            self.class.versions!(hash).inject({}) do |versions, (name, version)|
-              versions.update(name => super(version, version: name, **context))
-            end
-          else
-            super
-          end
-        end
-
         def uploaded?(uploaded_file)
           if (hash = uploaded_file).is_a?(Hash)
             hash.all? { |name, version| super(version) }
-          else
-            super
-          end
-        end
-
-        def delete(uploaded_file, context = {})
-          if (versions = uploaded_file).is_a?(Hash)
-            versions.each { |name, uploaded_file| super(uploaded_file) }
           else
             super
           end
@@ -67,6 +49,28 @@ class Shrine
           components = super.rpartition("/")
           components[2].prepend "#{context[:version]}-" if context[:version]
           components.join
+        end
+
+        private
+
+        def _store(io, context)
+          if (hash = io).is_a?(Hash)
+            self.class.versions!(hash).inject({}) do |versions, (name, version)|
+              versions.update(name => super(version, version: name, **context))
+            end
+          else
+            super
+          end
+        end
+
+        def _delete(uploaded_file, context)
+          if (versions = uploaded_file).is_a?(Hash)
+            versions.inject({}) do |versions, (name, version)|
+              versions.update(name => super(version, version: name, **context))
+            end
+          else
+            super
+          end
         end
       end
 

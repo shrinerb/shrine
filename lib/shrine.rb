@@ -226,17 +226,7 @@ class Shrine
         end
 
         def store(io, context)
-          _enforce_io(io)
-          location = context[:location] || generate_location(io, context)
-          metadata = extract_metadata(io, context)
-
-          put(io, location)
-
-          self.class::UploadedFile.new(
-            "id"       => location,
-            "storage"  => storage_key.to_s,
-            "metadata" => metadata,
-          )
+          _store(io, context)
         end
 
         def uploaded?(uploaded_file)
@@ -244,7 +234,7 @@ class Shrine
         end
 
         def delete(uploaded_file, context = {})
-          uploaded_file.delete
+          _delete(uploaded_file, context)
         end
 
         def generate_location(io, context)
@@ -291,6 +281,20 @@ class Shrine
 
         private
 
+        def _store(io, context)
+          _enforce_io(io)
+          location = context[:location] || generate_location(io, context)
+          metadata = extract_metadata(io, context)
+
+          put(io, location)
+
+          self.class::UploadedFile.new(
+            "id"       => location,
+            "storage"  => storage_key.to_s,
+            "metadata" => metadata,
+          )
+        end
+
         def put(io, location)
           copy(io, location)
         end
@@ -301,6 +305,10 @@ class Shrine
 
         def move(io, location)
           storage.move(io, location)
+        end
+
+        def _delete(uploaded_file, context)
+          uploaded_file.delete
         end
 
         def _enforce_io(io)
