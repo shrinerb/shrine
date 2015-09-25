@@ -1,7 +1,6 @@
 require "test_helper"
 
 require "shrine/storage/file_system"
-require "shrine/storage/memory"
 require "shrine/storage"
 
 require "down"

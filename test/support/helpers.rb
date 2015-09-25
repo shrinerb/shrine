@@ -1,5 +1,6 @@
 require "minitest/hooks/test"
-require "shrine/storage/memory"
+require "./test/support/fakeio"
+require "./test/support/memory"
 
 module TestHelpers
   module Generic

@@ -5,8 +5,7 @@ require "minitest/pride"
 
 require "shrine"
 
-require "./test/support/fakeio"
-require "./test/support/test_helpers"
+require "./test/support/helpers"
 
 class Minitest::Test
   include TestHelpers::Generic
