@@ -1,4 +1,3 @@
-require "minitest/hooks/test"
 require "./test/support/fakeio"
 require "./test/support/memory"
 

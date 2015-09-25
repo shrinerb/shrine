@@ -2,6 +2,7 @@ require "bundler/setup"
 
 require "minitest/autorun"
 require "minitest/pride"
+require "minitest/hooks/test"
 
 require "shrine"
 
