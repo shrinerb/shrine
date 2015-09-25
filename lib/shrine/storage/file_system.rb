@@ -1,4 +1,4 @@
-require "shrine/utils"
+require "down"
 
 require "fileutils"
 require "find"
@@ -31,7 +31,7 @@ class Shrine
       end
 
       def download(id)
-        Shrine::Utils.copy_to_tempfile(id, open(id))
+        Down.copy_to_tempfile(id, open(id))
       end
 
       def move(io, id)

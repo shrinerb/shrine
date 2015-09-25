@@ -3,7 +3,7 @@ class Shrine
     module RemoteUrl
       def self.load_dependencies(uploader, downloader: :open_uri, **)
         case downloader
-        when :open_uri then require "shrine/utils"
+        when :open_uri then require "down"
         end
       end
 
@@ -59,8 +59,8 @@ class Shrine
         end
 
         def download_with_open_uri(url, max_size:)
-          Shrine::Utils.download(url, max_size: max_size)
-        rescue Shrine::Error
+          Down.download(url, max_size: max_size)
+        rescue Down::Error
           message = shrine_class.opts[:remote_url_error_message]
           message = message.call(url) if message.respond_to?(:call)
           errors << message

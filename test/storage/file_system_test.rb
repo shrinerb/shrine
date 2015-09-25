@@ -3,8 +3,8 @@ require "test_helper"
 require "shrine/storage/file_system"
 require "shrine/storage/memory"
 require "shrine/storage"
-require "shrine/utils"
 
+require "down"
 require "fileutils"
 
 class FileSystemTest < Minitest::Test
@@ -49,7 +49,7 @@ class FileSystemTest < Minitest::Test
   end
 
   test "files and UploadeFiles from FileSystem are movable" do
-    file                      = Shrine::Utils.copy_to_tempfile("", image)
+    file                      = Down.copy_to_tempfile("", image)
     file_system_uploaded_file = @shrine.new(:file_system).upload(fakeio)
     memory_uploaded_file      = @shrine.new(:memory).upload(fakeio)
 
@@ -59,7 +59,7 @@ class FileSystemTest < Minitest::Test
   end
 
   test "moves files and uploaded files" do
-    file          = Shrine::Utils.copy_to_tempfile("", image)
+    file          = Down.copy_to_tempfile("", image)
     uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
     @storage.move(file, "foo")
@@ -72,7 +72,7 @@ class FileSystemTest < Minitest::Test
   end
 
   test "creates subdirectories when moving files" do
-    file          = Shrine::Utils.copy_to_tempfile("", image)
+    file          = Down.copy_to_tempfile("", image)
     uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
     @storage.move(file, "a/a/a.jpg")
@@ -156,7 +156,7 @@ class FileSystemTest < Minitest::Test
     assert_permissions 0755, @storage.path("foo.jpg")
 
     @storage = file_system(root, permissions: 0755)
-    file = Shrine::Utils.copy_to_tempfile("", image)
+    file = Down.copy_to_tempfile("", image)
     @storage.move(file, "bar.jpg")
 
     assert_permissions 0755, @storage.path("bar.jpg")

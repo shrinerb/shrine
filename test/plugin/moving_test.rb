@@ -2,7 +2,7 @@ require "test_helper"
 require "minitest/mock"
 
 require "shrine/storage/file_system"
-require "shrine/utils"
+require "down"
 
 require "fileutils"
 
@@ -23,7 +23,7 @@ class MovingTest < Minitest::Test
 
   test "uses the storage to move the IO" do
     @uploader = shrine([:file_system]).new(:file_system)
-    file = Shrine::Utils.copy_to_tempfile("", image)
+    file = Down.copy_to_tempfile("", image)
     file.singleton_class.instance_eval { undef_method :delete }
 
     uploaded_file = @uploader.upload(file)
@@ -35,7 +35,7 @@ class MovingTest < Minitest::Test
   test "uploads and deletes the IO if storage doesn't support moving" do
     @uploader = shrine([:memory]).new(:memory)
 
-    file = Shrine::Utils.copy_to_tempfile("", image); path = file.path
+    file = Down.copy_to_tempfile("", image); path = file.path
     stored_file = @uploader.upload(file)
     assert stored_file.exists?
     refute File.exist?(path)
@@ -55,12 +55,12 @@ class MovingTest < Minitest::Test
 
   test "only moves to specified storages" do
     @uploader = shrine([:file_system]).new(:memory)
-    file = Shrine::Utils.copy_to_tempfile("", image)
+    file = Down.copy_to_tempfile("", image)
     uploaded_file = @uploader.upload(file)
     assert File.exist?(file.path)
 
     @uploader = shrine([:memory]).new(:file_system)
-    file = Shrine::Utils.copy_to_tempfile("", image)
+    file = Down.copy_to_tempfile("", image)
     uploaded_file = @uploader.upload(file)
     assert File.exist?(file.path)
   end
