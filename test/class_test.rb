@@ -46,4 +46,11 @@ class ClassTest < Minitest::Test
     assert @shrine.io?(fakeio)
     refute @shrine.io?(:foo)
   end
+
+  test "validate_block gets copied over on inheritance" do
+    @shrine.validate {}
+    subclass = Class.new(@shrine)
+
+    refute_equal nil, subclass.validate_block
+  end
 end

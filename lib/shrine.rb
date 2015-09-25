@@ -80,6 +80,8 @@ class Shrine
       module ClassMethods
         attr_reader :opts
 
+        attr_reader :validate_block
+
         # When inheriting Shrine, copy the shared data into the subclass,
         # and setup the manager and proxy subclasses.
         def inherited(subclass)
@@ -90,6 +92,7 @@ class Shrine
             end
           end
           subclass.instance_variable_set(:@storages, storages.dup)
+          subclass.instance_variable_set(:@validate_block, validate_block)
 
           file_class = Class.new(self::UploadedFile)
           file_class.shrine_class = subclass
@@ -154,11 +157,7 @@ class Shrine
         alias [] attachment
 
         def validate(&block)
-          if block
-            @validate_block = block
-          else
-            @validate_block
-          end
+          @validate_block = block
         end
 
         def uploaded_file(object)
@@ -454,7 +453,7 @@ class Shrine
         end
 
         def validate_block
-          shrine_class.validate
+          shrine_class.validate_block
         end
 
         def _set(uploaded_file)
