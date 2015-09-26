@@ -10,15 +10,24 @@ class Shrine
           opts[:version_names]
         end
 
-        def versions!(hash)
-          unknown = hash.keys - version_names
-          unknown.each { |name| raise Error, "unknown version: #{name.inspect}" }
+        def version?(name)
+          version_names.map(&:to_s).include?(name.to_s)
+        end
 
-          hash
+        def versions!(hash)
+          hash.each do |name, version|
+            if version?(name)
+              yield name, version
+            else
+              raise Error, "unknown version: #{name.inspect}"
+            end
+          end
         end
 
         def versions(hash)
-          hash.select { |key, value| version_names.map(&:to_s).include?(key.to_s) }
+          hash.each do |name, version|
+            yield name, version if version?(name)
+          end
         end
 
         def uploaded_file(object)
@@ -26,9 +35,9 @@ class Shrine
             if object.key?("storage")
               super
             else
-              versions(object).inject({}) do |versions, (name, data)|
-                versions.update(name.to_sym => super(data))
-              end
+              result = {}
+              versions(object) { |name, data| result[name.to_sym] = super(data) }
+              result
             end
           else
             super
@@ -55,9 +64,11 @@ class Shrine
 
         def _store(io, context)
           if (hash = io).is_a?(Hash)
-            self.class.versions!(hash).inject({}) do |versions, (name, version)|
-              versions.update(name => super(version, version: name, **context))
+            result = {}
+            self.class.versions!(hash) do |name, version|
+              result[name] = super(version, version: name, **context)
             end
+            result
           else
             super
           end
@@ -65,9 +76,7 @@ class Shrine
 
         def _delete(uploaded_file, context)
           if (versions = uploaded_file).is_a?(Hash)
-            versions.inject({}) do |versions, (name, version)|
-              versions.update(name => super(version, version: name, **context))
-            end
+            versions.each { |name, version| super(version, version: name, **context) }
           else
             super
           end
