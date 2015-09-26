@@ -82,6 +82,8 @@ class Shrine
 
         attr_reader :validate_block
 
+        attr_accessor :storages
+
         # When inheriting Shrine, copy the shared data into the subclass,
         # and setup the manager and proxy subclasses.
         def inherited(subclass)
@@ -127,8 +129,6 @@ class Shrine
           plugin.configure(self, *args, &block) if plugin.respond_to?(:configure)
           nil
         end
-
-        attr_accessor :storages
 
         def storage(name)
           storages.each { |key, value| return value if key.to_s == name.to_s }
