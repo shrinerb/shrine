@@ -94,6 +94,17 @@ class AttacherTest < Minitest::Test
     @attacher.replace
   end
 
+  test "#replace doesn't try to delete the same file twice" do
+    @attacher.set(fakeio)
+    @attacher.set(fakeio)
+    refute_equal nil, @attacher.instance_variable_get("@old_attachment")
+
+    @attacher.replace
+    assert_equal nil, @attacher.instance_variable_get("@old_attachment")
+
+    @attacher.replace
+  end
+
   test "#promote uploads the cached file to the store" do
     @attacher.set(fakeio)
     @attacher.promote(@attacher.get)

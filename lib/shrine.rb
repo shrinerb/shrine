@@ -419,6 +419,7 @@ class Shrine
 
         def replace
           delete!(@old_attachment) if @old_attachment
+          @old_attachment = nil
         end
 
         def destroy
