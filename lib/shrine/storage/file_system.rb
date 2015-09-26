@@ -39,6 +39,7 @@ class Shrine
           FileUtils.mv io.path, path!(id)
         else
           FileUtils.mv io.storage.path(io.id), path!(id)
+          io.storage.clean(io.id) if io.storage.clean?
         end
         FileUtils.chmod(permissions, path(id)) if permissions
       end
@@ -61,7 +62,7 @@ class Shrine
 
       def delete(id)
         FileUtils.rm(path(id))
-        clean(path(id)) if @clean
+        clean(id) if clean?
       end
 
       def url(id, **options)
@@ -92,21 +93,25 @@ class Shrine
         File.join(directory, id)
       end
 
-      private
-
-      def path!(id)
-        FileUtils.mkdir_p File.dirname(path(id))
-        path(id)
-      end
-
-      def clean(path)
-        Pathname.new(path).dirname.ascend do |pathname|
+      def clean(id)
+        Pathname.new(path(id)).dirname.ascend do |pathname|
           if pathname.children.empty? && pathname.to_s != directory
             FileUtils.rmdir(pathname)
           else
             break
           end
         end
+      end
+
+      def clean?
+        @clean
+      end
+
+      private
+
+      def path!(id)
+        FileUtils.mkdir_p File.dirname(path(id))
+        path(id)
       end
     end
   end

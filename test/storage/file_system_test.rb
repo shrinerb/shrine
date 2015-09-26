@@ -81,24 +81,24 @@ class FileSystemTest < Minitest::Test
     assert @storage.exists?("b/b/b.jpg")
   end
 
+  test "it cleans moved file's directory" do
+    uploaded_file = @shrine.new(:file_system).upload(fakeio, location: "a/a/a.jpg")
+
+    @storage.move(uploaded_file, "b.jpg")
+    refute @storage.exists?("a/a")
+  end
+
   test "opens the file in binary mode" do
     @storage.upload(fakeio, "foo.jpg")
 
     assert @storage.open("foo.jpg").binmode?
   end
 
-  test "delete cleans subdirectories, unless :clean is false" do
+  test "delete cleans subdirectories" do
     @storage.upload(fakeio, "a/a/a.jpg")
     @storage.delete("a/a/a.jpg")
 
-    refute File.exist?(@storage.path("a"))
-    assert File.exist?(@storage.directory)
-
-    @storage = file_system(root, clean: false)
-    @storage.upload(fakeio, "a/a/a.jpg")
-    @storage.delete("a/a/a.jpg")
-
-    assert File.exist?(@storage.path("a"))
+    refute @storage.exists?("a/a")
   end
 
   test "#url returns the full path without :subdirectory" do
@@ -138,6 +138,23 @@ class FileSystemTest < Minitest::Test
 
     @storage.clear!(older_than: Time.now + 1)
     refute @storage.exists?("foo")
+  end
+
+  test "#clean deletes empty directories up the hierarchy" do
+    @storage.upload(fakeio, "a/a/a/a.jpg")
+    File.delete(@storage.path("a/a/a/a.jpg"))
+    @storage.clean("a/a/a/a.jpg")
+
+    refute @storage.exists?("a")
+    assert File.exist?(@storage.directory)
+
+    @storage.upload(fakeio, "a/a/a/a.jpg")
+    @storage.upload(fakeio, "a/b.jpg")
+    File.delete(@storage.path("a/a/a/a.jpg"))
+    @storage.clean("a/a/a/a.jpg")
+
+    refute @storage.exists?("a/a")
+    assert @storage.exists?("a")
   end
 
   test "sets directory permissions" do
