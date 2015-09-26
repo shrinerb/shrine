@@ -1,7 +1,6 @@
 require "down"
 
 require "fileutils"
-require "find"
 require "pathname"
 
 class Shrine
@@ -11,23 +10,24 @@ class Shrine
 
       def initialize(directory, subdirectory: nil, host: nil, clean: true, permissions: nil)
         if subdirectory
-          @subdirectory = subdirectory
-          @directory = File.join(directory, subdirectory)
+          @subdirectory = Pathname(relative(subdirectory))
+          @directory = Pathname(directory).join(@subdirectory)
         else
-          @directory = directory
+          @directory = Pathname(directory)
         end
 
         @host = host
         @permissions = permissions
         @clean = clean
 
-        FileUtils.mkdir_p(@directory, mode: permissions)
+        @directory.mkpath
+        @directory.chmod(permissions) if permissions
       end
 
       def upload(io, id)
         IO.copy_stream(io, path!(id))
         io.rewind
-        FileUtils.chmod(permissions, path(id)) if permissions
+        path(id).chmod(permissions) if permissions
       end
 
       def download(id)
@@ -41,7 +41,7 @@ class Shrine
           FileUtils.mv io.storage.path(io.id), path!(id)
           io.storage.clean(io.id) if io.storage.clean?
         end
-        FileUtils.chmod(permissions, path(id)) if permissions
+        path(id).chmod(permissions) if permissions
       end
 
       def movable?(io, id)
@@ -49,54 +49,55 @@ class Shrine
       end
 
       def open(id)
-        File.open(path(id), "rb")
+        path(id).open("rb")
       end
 
       def read(id)
-        File.read(path(id))
+        path(id).binread
       end
 
       def exists?(id)
-        File.exist?(path(id))
+        path(id).exist?
       end
 
       def delete(id)
-        FileUtils.rm(path(id))
+        path(id).delete
         clean(id) if clean?
       end
 
       def url(id, **options)
         if subdirectory
-          File.join(host || "", File.join(subdirectory, id))
+          File.join(host || "", subdirectory, id)
         else
           if host
-            File.join(host, File.join(directory, id))
+            File.join(host, path(id))
           else
-            File.join(directory, id)
+            path(id).to_s
           end
         end
       end
 
       def clear!(confirm = nil, older_than: nil)
         if older_than
-          Find.find(directory) do |path|
-            File.mtime(path) < older_than ? FileUtils.rm_r(path) : Find.prune
+          directory.find do |path|
+            path.mtime < older_than ? path.rmtree : Find.prune
           end
         else
           raise Shrine::Confirm unless confirm == :confirm
-          FileUtils.rm_r(directory)
-          FileUtils.mkdir_p(@directory, mode: permissions)
+          directory.rmtree
+          directory.mkpath
+          directory.chmod(permissions) if permissions
         end
       end
 
       def path(id)
-        File.join(directory, id)
+        directory.join(relative(id))
       end
 
       def clean(id)
-        Pathname.new(path(id)).dirname.ascend do |pathname|
-          if pathname.children.empty? && pathname.to_s != directory
-            FileUtils.rmdir(pathname)
+        path(id).dirname.ascend do |pathname|
+          if pathname.children.empty? && pathname != directory
+            pathname.rmdir
           else
             break
           end
@@ -110,8 +111,12 @@ class Shrine
       private
 
       def path!(id)
-        FileUtils.mkdir_p File.dirname(path(id))
+        path(id).dirname.mkpath
         path(id)
+      end
+
+      def relative(path)
+        path.sub(%r{^/}, "")
       end
     end
   end

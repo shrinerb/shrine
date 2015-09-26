@@ -77,7 +77,7 @@ class FileSystemTest < Minitest::Test
     @storage.move(file, "a/a/a.jpg")
     assert @storage.exists?("a/a/a.jpg")
 
-    @storage.move(uploaded_file, "/b/b/b.jpg")
+    @storage.move(uploaded_file, "b/b/b.jpg")
     assert @storage.exists?("b/b/b.jpg")
   end
 
@@ -176,6 +176,13 @@ class FileSystemTest < Minitest::Test
     @storage.move(file, "bar.jpg")
 
     assert_permissions 0755, @storage.path("bar.jpg")
+  end
+
+  test "accepts absolute pathnames" do
+    @storage = file_system(root, subdirectory: "/uploads")
+
+    assert_equal "tmp/uploads", @storage.directory.to_s
+    assert_equal "tmp/uploads/foo.jpg", @storage.path("/foo.jpg").to_s
   end
 
   def assert_permissions(expected, path)
