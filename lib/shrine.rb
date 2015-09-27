@@ -534,10 +534,6 @@ class Shrine
           storage.url(id, **options)
         end
 
-        def path
-          storage.path(id) if storage.class.name =~ /FileSystem/
-        end
-
         def exists?
           storage.exists?(id)
         end
