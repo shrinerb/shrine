@@ -1,28 +1,34 @@
 require "test_helper"
-require "sequel"
+require "active_record"
 
-DB = Sequel.sqlite
-DB.create_table :users do
-  primary_key :id
-  column :avatar_data, :text
+ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
+ActiveRecord::Migration.class_eval do
+  self.verbose = false
+
+  create_table :users do |t|
+    t.text :avatar_data
+  end
 end
 
-Sequel.cache_anonymous_models = false
-
-class SequelTest < Minitest::Test
+class ActiverecordTest < Minitest::Test
   include Minitest::Hooks
 
   def setup
-    @uploader = uploader { plugin :sequel }
+    @uploader = uploader { plugin :activerecord }
 
-    user_class = Sequel::Model(:users)
+    user_class = Class.new(ActiveRecord::Base)
+    user_class.table_name = :users
+    def user_class.model_name; ActiveModel::Name.new(self, nil, "User"); end
     user_class.include @uploader.class[:avatar]
 
     @user = user_class.new
   end
 
   def around
-    DB.transaction(rollback: :always) { super }
+    ActiveRecord::Base.transaction do
+      super
+      raise ActiveRecord::Rollback
+    end
   end
 
   test "validation" do
@@ -52,7 +58,7 @@ class SequelTest < Minitest::Test
   end
 
   test "custom promoting" do
-    @uploader.class.plugin :sequel, promote: ->(record, name, uploaded_file) do
+    @uploader.class.plugin :activerecord, promote: ->(record, name, uploaded_file) do
       record.avatar = nil
     end
     @user.avatar = fakeio
@@ -77,11 +83,8 @@ class SequelTest < Minitest::Test
     @user.save
     uploaded_file = @user.avatar
 
-    @user.class.class_eval do
-      def before_save
-        super
-        raise
-      end
+    @user.class.before_save do
+      raise
     end
 
     @user.avatar = fakeio

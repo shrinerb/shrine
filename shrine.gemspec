@@ -35,5 +35,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "thread"
 
   gem.add_development_dependency "sequel"
+  gem.add_development_dependency "activerecord"
   gem.add_development_dependency "sqlite3"
 end

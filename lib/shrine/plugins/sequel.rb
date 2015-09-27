@@ -22,6 +22,10 @@ class Shrine
               super
               #{name}_attacher.save
               #{name}_attacher._promote
+            end
+
+            def after_save
+              super
               #{name}_attacher.replace
             end
 
