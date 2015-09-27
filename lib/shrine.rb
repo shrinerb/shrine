@@ -416,9 +416,9 @@ class Shrine
           uploaded_file && cache.uploaded?(uploaded_file)
         end
 
-        def promote(uploaded_file)
-          stored_file = store!(uploaded_file, phase: :promote)
-          _set(stored_file) unless get != uploaded_file
+        def promote(cached_file)
+          stored_file = store!(cached_file, phase: :promote)
+          _set(stored_file) unless get != cached_file
         end
 
         def replace
