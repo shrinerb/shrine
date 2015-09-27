@@ -195,9 +195,8 @@ class Shrine
         private
 
         def uploader_for(uploaded_file)
-          storages.each do |key, value|
-            return new(key) if new(key).uploaded?(uploaded_file)
-          end
+          uploaders = storages.keys.map { |key| new(key) }
+          uploaders.find { |uploader| uploader.uploaded?(uploaded_file) }
         end
       end
 

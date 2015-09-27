@@ -15,19 +15,13 @@ class Shrine
         end
 
         def versions!(hash)
-          hash.each do |name, version|
-            if version?(name)
-              yield name, version
-            else
-              raise Error, "unknown version: #{name.inspect}"
-            end
+          hash.select do |name, version|
+            version?(name) or raise Error, "unknown version: #{name.inspect}"
           end
         end
 
         def versions(hash)
-          hash.each do |name, version|
-            yield name, version if version?(name)
-          end
+          hash.select { |name, version| version?(name) }
         end
 
         def uploaded_file(object)
@@ -36,7 +30,7 @@ class Shrine
               super
             else
               result = {}
-              versions(object) { |name, data| result[name.to_sym] = super(data) }
+              versions(object).each { |name, data| result[name.to_sym] = super(data) }
               result
             end
           else
@@ -55,20 +49,18 @@ class Shrine
         end
 
         def generate_location(io, context)
-          components = super.rpartition("/")
-          components[2].prepend "#{context[:version]}-" if context[:version]
-          components.join
+          dirname, slash, basename = super.rpartition("/")
+          basename = "#{context[:version]}-#{basename}" if context[:version]
+          dirname + slash + basename
         end
 
         private
 
         def _store(io, context)
           if (hash = io).is_a?(Hash)
-            result = {}
-            self.class.versions!(hash) do |name, version|
-              result[name] = super(version, version: name, **context)
+            self.class.versions!(hash).inject({}) do |result, (name, version)|
+              result.update(name => super(version, version: name, **context))
             end
-            result
           else
             super
           end
