@@ -43,6 +43,13 @@ class InstanceTest < Minitest::Test
     refute uploaded_file.exists?
   end
 
+  test "#delete returns the deleted files" do
+    uploaded_file = @uploader.upload(fakeio)
+    result = @uploader.delete(uploaded_file)
+
+    assert_equal uploaded_file, result
+  end
+
   test "checking IO-ness of file happens after processing" do
     @uploader.stub(:process, "invalid file") do
       assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }

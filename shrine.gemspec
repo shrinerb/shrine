@@ -32,6 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rmagick"
   gem.add_development_dependency "dimensions"
   gem.add_development_dependency "fastimage"
+  gem.add_development_dependency "thread"
 
   gem.add_development_dependency "sequel"
   gem.add_development_dependency "sqlite3"

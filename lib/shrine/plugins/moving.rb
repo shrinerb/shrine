@@ -8,10 +8,10 @@ class Shrine
       module InstanceMethods
         private
 
-        def put(io, location)
+        def put(io, context)
           if move?
-            if movable?(io, location)
-              move(io, location)
+            if movable?(io, context)
+              move(io, context[:location])
             else
               super
               io.delete if io.respond_to?(:delete)
@@ -21,8 +21,8 @@ class Shrine
           end
         end
 
-        def movable?(io, location)
-          storage.respond_to?(:move) && storage.movable?(io, location)
+        def movable?(io, context)
+          storage.respond_to?(:move) && storage.movable?(io, context[:location])
         end
 
         def move?
