@@ -1,11 +1,12 @@
 require "thread/pool"
 
+Thread::Pool.abort_on_exception = true
+
 class Shrine
   module Plugins
     module Parallelize
       def self.configure(uploader, threads: 3)
         uploader.opts[:parallelize_threads] = threads
-        Thread::Pool.abort_on_exception = true
       end
 
       module InstanceMethods

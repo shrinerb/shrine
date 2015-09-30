@@ -5,7 +5,7 @@ class Shrine
         def validate
           super
         ensure
-          delete!(get) if !errors.empty?
+          delete!(get, phase: :invalid) if !errors.empty?
         end
       end
     end

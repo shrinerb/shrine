@@ -7,7 +7,7 @@ class BackgroundDeleteTest < Minitest::Test
 
   test "calls the block when replacing" do
     called = false
-    @attacher = attacher ->(uploaded_file) { called = true }
+    @attacher = attacher ->(uploaded_file, context) { called = true }
     @attacher.set(fakeio)
     @attacher.set(fakeio)
     @attacher.replace
@@ -17,7 +17,7 @@ class BackgroundDeleteTest < Minitest::Test
 
   test "calls the block when destroying" do
     called = false
-    @attacher = attacher ->(uploaded_file) { called = true }
+    @attacher = attacher ->(uploaded_file, context) { called = true }
     @attacher.set(fakeio)
     @attacher.destroy
 

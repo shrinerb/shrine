@@ -217,7 +217,7 @@ class Shrine
         end
 
         def upload(io, context = {})
-          io = process(io, context) || io
+          io = processed(io, context) || io
           store(io, context)
         end
 
@@ -313,6 +313,10 @@ class Shrine
 
         def remove(uploaded_file, context)
           uploaded_file.delete
+        end
+
+        def processed(io, context)
+          process(io, context)
         end
 
         def _enforce_io(io)
@@ -422,12 +426,12 @@ class Shrine
         end
 
         def replace
-          delete!(@old_attachment) if @old_attachment
+          delete!(@old_attachment, phase: :replace) if @old_attachment
           @old_attachment = nil
         end
 
         def destroy
-          delete!(get) if read
+          delete!(get, phase: :destroy) if read
         end
 
         def url(**options)
@@ -457,7 +461,7 @@ class Shrine
           store.upload(io, context.merge(phase: phase))
         end
 
-        def delete!(uploaded_file)
+        def delete!(uploaded_file, phase:)
           shrine_class.delete(uploaded_file, context)
         end
 

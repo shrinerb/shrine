@@ -6,8 +6,8 @@ class Shrine
       end
 
       module AttacherMethods
-        def delete!(uploaded_file)
-          shrine_class.opts[:delete].call(uploaded_file)
+        def delete!(uploaded_file, phase:)
+          shrine_class.opts[:delete].call(uploaded_file, context.merge(phase: phase))
         end
       end
     end
