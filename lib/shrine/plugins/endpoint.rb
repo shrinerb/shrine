@@ -8,9 +8,8 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], return_url: nil, max_size: nil)
+      def self.configure(uploader, allowed_storages: [:cache], max_size: nil)
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
-        uploader.opts[:endpoint_return_url] = return_url
         uploader.opts[:endpoint_max_size] = max_size
       end
 
@@ -47,20 +46,7 @@ class Shrine
         end
 
         def json(object)
-          serialize(object).to_json
-        end
-
-        def serialize(object)
-          case object
-          when shrine_class::UploadedFile
-            hash = object.data
-            hash["url"] = object.url if shrine_class.opts[:endpoint_return_url]
-            hash
-          when Hash
-            object.each { |key, value| object[key] = serialize(value) }
-          when Array
-            object.map { |item| serialize(item) }
-          end
+          JSON.dump(object)
         end
 
         def allow_storage!(storage)
