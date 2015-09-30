@@ -1,13 +1,10 @@
 require "roda"
 require "json"
+require "forwardable"
 
 class Shrine
   module Plugins
     module Endpoint
-      def self.load_dependencies(uploader, *)
-        uploader.plugin :rack_file
-      end
-
       def self.configure(uploader, allowed_storages: [:cache], max_size: nil)
         uploader.opts[:endpoint_allowed_storages] = allowed_storages
         uploader.opts[:endpoint_max_size] = max_size
@@ -60,7 +57,7 @@ class Shrine
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
           check_filesize!(file[:tempfile]) if max_size
 
-          RackFile::UploadedFile.new(file)
+          RackFile.new(file)
         end
 
         def check_filesize!(file)
@@ -92,6 +89,28 @@ class Shrine
         def max_size
           shrine_class.opts[:endpoint_max_size]
         end
+      end
+
+      class RackFile
+        attr_reader :original_filename, :content_type
+        attr_accessor :tempfile
+
+        def initialize(tempfile:, filename: nil, type: nil, **)
+          @tempfile          = tempfile
+          @original_filename = filename
+          @content_type      = type
+        end
+
+        def path
+          @tempfile.path
+        end
+
+        def to_io
+          @tempfile
+        end
+
+        extend Forwardable
+        delegate Shrine::IO_METHODS.keys => :@tempfile
       end
     end
 

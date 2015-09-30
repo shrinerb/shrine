@@ -9,7 +9,7 @@ class Shrine
         private
 
         def put(io, context)
-          if move?
+          if move?(io, context)
             if movable?(io, context)
               move(io, context[:location])
             else
@@ -25,7 +25,7 @@ class Shrine
           storage.respond_to?(:move) && storage.movable?(io, context[:location])
         end
 
-        def move?
+        def move?(io, context)
           opts[:move_files_to_storages].include?(storage_key)
         end
       end

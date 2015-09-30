@@ -52,17 +52,6 @@ class VersionsTest < Minitest::Test
     assert_equal "thumb", versions.fetch(:thumb).id
   end
 
-  test "works with the rack_file plugin" do
-    @attacher = attacher do
-      plugin :rack_file
-      plugin :versions, names: [:thumb]
-    end
-
-    uploaded_file = @attacher.set(tempfile: fakeio)
-
-    assert_kind_of Shrine::UploadedFile, uploaded_file
-  end
-
   test "overrides #uploaded?" do
     versions = @uploader.upload(thumb: fakeio)
 

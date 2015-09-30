@@ -25,14 +25,10 @@ class Shrine
         end
 
         def uploaded_file(object)
-          if object.is_a?(Hash)
-            if object.key?("storage")
-              super
-            else
-              result = {}
-              versions(object).each { |name, data| result[name.to_sym] = super(data) }
-              result
-            end
+          if object.is_a?(Hash) && !object.key?("storage")
+            result = {}
+            versions(object).each { |name, data| result[name.to_sym] = super(data) }
+            result
           else
             super
           end
