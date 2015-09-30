@@ -243,7 +243,7 @@ class Shrine
 
           original_filename = extract_filename(io)
           extension = File.extname(original_filename.to_s)
-          basename = generate_uid(io)
+          basename = generate_uid
           filename = basename + extension
 
           [type, id, name, filename].compact.join("/")
@@ -319,7 +319,7 @@ class Shrine
           self.class.io!(io)
         end
 
-        def generate_uid(io)
+        def generate_uid
           SecureRandom.uuid
         end
       end
