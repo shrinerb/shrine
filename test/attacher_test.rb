@@ -69,7 +69,11 @@ class AttacherTest < Minitest::Test
     assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
   end
 
-  test "getting returns nil for nil-column" do
+  test "getting returns nil for nil or empty column" do
+    @attacher.record.avatar_data = nil
+    assert_equal nil, @attacher.get
+
+    @attacher.record.avatar_data = ""
     assert_equal nil, @attacher.get
   end
 

@@ -478,7 +478,8 @@ class Shrine
         end
 
         def read
-          record.send("#{name}_data")
+          value = record.send("#{name}_data")
+          value unless value.nil? || value.empty?
         end
 
         def context
