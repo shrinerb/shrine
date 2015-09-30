@@ -102,4 +102,22 @@ class ActiverecordTest < Minitest::Test
 
     refute uploaded_file.exists?
   end
+
+  test "works on form objects" do
+    user_form_class = Class.new do
+      attr_accessor :avatar_data
+
+      def self.validate(&block)
+        @validation = block
+      end
+    end
+
+    user_form_class.include @uploader.class[:avatar]
+    user_form = user_form_class.new
+
+    user_form.avatar = fakeio
+
+    refute_equal nil, user_form.avatar
+    refute_equal nil, user_form_class.instance_variable_get('@validation')
+  end
 end

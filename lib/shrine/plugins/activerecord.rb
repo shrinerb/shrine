@@ -18,17 +18,19 @@ class Shrine
               end
             end
 
-            before_save do
-              #{@name}_attacher.save
-              #{@name}_attacher._promote
-            end
+            if self < ActiveRecord::Base
+              before_save do
+                #{@name}_attacher.save
+                #{@name}_attacher._promote
+              end
 
-            after_save do
-              #{@name}_attacher.replace
-            end
+              after_save do
+                #{@name}_attacher.replace
+              end
 
-            after_destroy do
-              #{@name}_attacher.destroy
+              after_destroy do
+                #{@name}_attacher.destroy
+              end
             end
           RUBY
         end
