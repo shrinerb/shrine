@@ -1,16 +1,13 @@
 class Shrine
   module Plugins
     module StoreDimensions
-      def self.load_dependencies(uploader, extractor:)
+      def self.load_dependencies(uploader, extractor: :fastimage)
         case extractor
-        when :mini_magick then require "mini_magick"
-        when :rmagick     then require "rmagick"
-        when :dimensions  then require "dimensions"
-        when :fastimage   then require "fastimage"
+        when :fastimage then require "fastimage"
         end
       end
 
-      def self.configure(uploader, extractor:)
+      def self.configure(uploader, extractor: :fastimage)
         uploader.opts[:dimensions_extractor] = extractor
       end
 
@@ -38,28 +35,8 @@ class Shrine
 
         private
 
-        def _extract_dimensions_with_mini_magick(io)
-          image = MiniMagick::Image.new(io.path)
-          [image.width, image.height]
-        end
-
-        def _extract_dimensions_with_rmagick(io)
-          image = Magick::Image.ping(io.path).first
-          [image.columns, image.rows]
-        end
-
-        def _extract_dimensions_with_dimensions(io)
-          if io.respond_to?(:path)
-            Dimensions.dimensions(io.path)
-          else
-            Dimensions(io).dimensions
-          end
-        end
-
         def _extract_dimensions_with_fastimage(io)
-          if io.respond_to?(:path)
-            FastImage.size(io.path)
-          end
+          FastImage.size(io)
         end
       end
 
