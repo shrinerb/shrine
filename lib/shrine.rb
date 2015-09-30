@@ -470,7 +470,7 @@ class Shrine
         end
 
         def _set(uploaded_file)
-          write(uploaded_file ? uploaded_file.to_json : nil)
+          write(uploaded_file ? JSON.dump(uploaded_file) : nil)
         end
 
         def write(value)

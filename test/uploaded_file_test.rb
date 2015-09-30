@@ -62,7 +62,7 @@ class UploadedFileTest < Minitest::Test
     )
 
     assert_equal '{"id":"123","storage":"store","metadata":{}}', uploaded_file.to_json
-    assert_equal '{"thumb":{"id":"123","storage":"store","metadata":{}}}', {thumb: uploaded_file}.to_json
+    assert_equal '{"thumb":{"id":"123","storage":"store","metadata":{}}}', JSON.dump({thumb: uploaded_file})
   end
 
   test "equality" do

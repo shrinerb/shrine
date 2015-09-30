@@ -36,7 +36,7 @@ class VersionsTest < Minitest::Test
 
   test "allows uploaded_file to accept JSON strings" do
     versions = @uploader.upload(thumb: fakeio)
-    retrieved = @uploader.class.uploaded_file(versions.to_json)
+    retrieved = @uploader.class.uploaded_file(JSON.dump(versions))
 
     assert_equal versions, retrieved
   end
