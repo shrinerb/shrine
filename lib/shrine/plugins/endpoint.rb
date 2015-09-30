@@ -1,4 +1,5 @@
 require "roda"
+require "json"
 
 class Shrine
   module Plugins
@@ -52,7 +53,7 @@ class Shrine
         def serialize(object)
           case object
           when shrine_class::UploadedFile
-            hash = {"data" => object.data}
+            hash = object.data
             hash["url"] = object.url if shrine_class.opts[:endpoint_return_url]
             hash
           when Hash
@@ -71,13 +72,13 @@ class Shrine
         def get_file
           file = require_param!("file")
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
-          check_filesize!(file[:tempfile])
+          check_filesize!(file[:tempfile]) if max_size
 
           RackFile::UploadedFile.new(file)
         end
 
         def check_filesize!(file)
-          if max_size && file.size > max_size
+          if file.size > max_size
             file.delete
             megabytes = max_size.to_f / 1024 / 1024
             error! 413, "The file is too big (maximum size is #{megabytes} MB)."

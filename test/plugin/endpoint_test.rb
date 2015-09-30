@@ -27,7 +27,7 @@ class EndpointTest < Minitest::Test
   test "uploads the given file" do
     post "/cache/avatar", file: image
 
-    assert @uploader.storage.exists?(body["data"]["id"])
+    assert @uploader.storage.exists?(body["id"])
   end
 
   test "passes in :name and :phase parameters as context" do
@@ -39,14 +39,14 @@ class EndpointTest < Minitest::Test
 
     post "/cache/avatar", file: image
 
-    assert_equal '{"name":"avatar","phase":"endpoint"}', body['data']['id']
+    assert_equal '{"name":"avatar","phase":"endpoint"}', body['id']
   end
 
   test "assigns metadata" do
     image = Rack::Test::UploadedFile.new("test/fixtures/image.jpg", "image/jpeg")
     post "/cache/avatar", file: image
 
-    metadata = body['data'].fetch('metadata')
+    metadata = body.fetch('metadata')
     assert_equal 'image.jpg', metadata['filename']
     assert_equal 'image/jpeg', metadata['content_type']
     assert_kind_of Integer, metadata['size']
