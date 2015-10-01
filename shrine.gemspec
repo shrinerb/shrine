@@ -26,8 +26,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rack-test"
 
   gem.add_development_dependency "roda"
-  gem.add_development_dependency "mime-types", "~> 2.6"
   gem.add_development_dependency "ruby-filemagic"
+  gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "thread"
 
