@@ -73,34 +73,31 @@ class EndpointTest < Minitest::Test
   test "refuses storages which are not allowed" do
     post "/store/avatar", file: image
 
-    assert_equal 403, response.status
-    refute_empty body.fetch("error")
+    assert_http_error 403
+  end
 
+  test "refuses storages which are nonexistent" do
     post "/nonexistent/avatar", file: image
 
-    assert_equal 403, response.status
-    refute_empty body.fetch("error")
+    assert_http_error 403
   end
 
   test "returns appropriate error message for missing file" do
     post "/cache/avatar"
 
-    assert_equal 400, response.status
-    refute_empty body.fetch("error")
+    assert_http_error 400
   end
 
   test "returns appropriate error message for invalid file" do
     post "/cache/avatar", file: "foo"
 
-    assert_equal 400, response.status
-    refute_empty body.fetch("error")
+    assert_http_error 400
   end
 
   test "refuses files which are too big" do
     @uploader = uploader(:cache) { plugin :endpoint, max_size: 0 }
     post "/cache/avatar", file: image
-    assert_equal 413, response.status
-    refute_empty body.fetch("error")
+    assert_http_error 413
 
     @uploader.opts[:endpoint_max_size] = 5 * 1024 * 1024
     post "/cache/avatar", file: image
@@ -119,5 +116,11 @@ class EndpointTest < Minitest::Test
 
   test "endpoint is memoized" do
     assert_equal @uploader.class.endpoint, @uploader.class.endpoint
+  end
+
+  def assert_http_error(status)
+    assert_equal status, response.status
+    assert_equal "application/json", response.headers["Content-Type"]
+    refute_empty body.fetch("error")
   end
 end
