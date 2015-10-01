@@ -26,7 +26,7 @@ class AttachmentTest < Minitest::Test
   end
 
   test "forwards url arguments to attacher" do
-    @shrine.cache.singleton_class.class_eval do
+    @shrine.storages[:cache].singleton_class.class_eval do
       def url(id, **options)
         options
       end

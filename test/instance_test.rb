@@ -65,4 +65,43 @@ class InstanceTest < Minitest::Test
   test "upload validates that the given object is an IO" do
     assert_raises(Shrine::InvalidFile) { @uploader.upload("not an IO") }
   end
+
+  test "generated location is unique" do
+    uploaded_file = @uploader.upload(fakeio("image"))
+    assert_equal "image", @uploader.storage.read(uploaded_file.id)
+
+    another_uploaded_file = @uploader.upload(fakeio)
+    refute_equal uploaded_file.id, another_uploaded_file.id
+  end
+
+  test "generated location preserves the extension" do
+    # Rails file
+    uploaded_file = @uploader.upload(fakeio(filename: "avatar.jpg"))
+    assert_match /\.jpg$/, uploaded_file.id
+
+    # Uploaded file
+    second_uploaded_file = @uploader.upload(uploaded_file)
+    assert_match /\.jpg$/, second_uploaded_file.id
+
+    # File
+    uploaded_file = @uploader.upload(File.open(__FILE__))
+    assert_match /\.rb$/, uploaded_file.id
+  end
+
+  test "generated location handles no filename" do
+    uploaded_file = @uploader.upload(fakeio)
+
+    assert_match /^[\w-]+$/, uploaded_file.id
+  end
+
+  test "uploading uses :location if available, even if #generate_location was overriden" do
+    @uploader.singleton_class.class_eval do
+      def generate_location(io, context)
+        "rainbows"
+      end
+    end
+    uploaded_file = @uploader.upload(fakeio("image"), location: "foo")
+
+    assert_equal "foo", uploaded_file.id
+  end
 end

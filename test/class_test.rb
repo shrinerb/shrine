@@ -35,11 +35,6 @@ class ClassTest < Minitest::Test
     assert_raises(Shrine::InvalidFile) { @shrine.io!(:foo) }
   end
 
-  test "io? returns whether the given object is an IO" do
-    assert @shrine.io?(fakeio)
-    refute @shrine.io?(:foo)
-  end
-
   test "validate_block gets copied over on inheritance" do
     @shrine.validate {}
     subclass = Class.new(@shrine)

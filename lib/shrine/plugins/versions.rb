@@ -44,12 +44,6 @@ class Shrine
           end
         end
 
-        def generate_location(io, context)
-          dirname, slash, basename = super.rpartition("/")
-          basename = "#{context[:version]}-#{basename}" if context[:version]
-          dirname + slash + basename
-        end
-
         private
 
         def _store(io, context)

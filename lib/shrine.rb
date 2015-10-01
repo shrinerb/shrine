@@ -135,22 +135,6 @@ class Shrine
           raise Error, "#{self} doesn't have storage #{name.inspect}"
         end
 
-        def cache=(storage)
-          storages[:cache] = storage
-        end
-
-        def cache
-          storages[:cache]
-        end
-
-        def store=(storage)
-          storages[:store] = storage
-        end
-
-        def store
-          storages[:store]
-        end
-
         def attachment(*args)
           self::Attachment.new(*args)
         end
@@ -183,13 +167,6 @@ class Shrine
           raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 
-        def io?(io)
-          io!(io)
-          true
-        rescue InvalidFile
-          false
-        end
-
         def uploader_for(uploaded_file)
           uploaders = storages.keys.map { |key| new(key) }
           uploaders.find { |uploader| uploader.uploaded?(uploaded_file) }
@@ -197,15 +174,11 @@ class Shrine
       end
 
       module InstanceMethods
+        attr_reader :storage_key, :storage
+
         def initialize(storage_key)
-          @storage_key = storage_key
-          storage # ensure storage exists
-        end
-
-        attr_reader :storage_key
-
-        def storage
-          @storage ||= self.class.storage(storage_key)
+          @storage = self.class.storage(storage_key)
+          @storage_key = storage_key.to_sym
         end
 
         def opts
@@ -233,22 +206,16 @@ class Shrine
         end
 
         def generate_location(io, context)
-          type = context[:record].class.name.downcase if context[:record] && context[:record].class.name
-          id   = context[:record].id if context[:record].respond_to?(:id)
-          name = context[:name]
+          extension = File.extname(extract_filename(io).to_s)
+          basename  = generate_uid
 
-          original_filename = extract_filename(io)
-          extension = File.extname(original_filename.to_s)
-          basename = generate_uid
-          filename = basename + extension
-
-          [type, id, name, filename].compact.join("/")
+          basename + extension
         end
 
         def extract_metadata(io, context)
           {
-            "filename" => extract_filename(io),
-            "size" => extract_size(io),
+            "filename"     => extract_filename(io),
+            "size"         => extract_size(io),
             "content_type" => extract_content_type(io),
           }
         end
@@ -278,28 +245,28 @@ class Shrine
 
         def _store(io, context)
           _enforce_io(io)
-          context[:location] ||= generate_location(io, context)
+          location = context[:location] || generate_location(io, context)
           metadata = extract_metadata(io, context)
 
-          put(io, context)
+          put(io, context.merge(location: location))
 
           self.class::UploadedFile.new(
-            "id"       => context[:location],
+            "id"       => location,
             "storage"  => storage_key.to_s,
             "metadata" => metadata,
           )
         end
 
         def put(io, context)
-          copy(io, context[:location])
+          copy(io, context)
         end
 
-        def copy(io, location)
-          storage.upload(io, location)
+        def copy(io, context)
+          storage.upload(io, context[:location])
         end
 
-        def move(io, location)
-          storage.move(io, location)
+        def move(io, context)
+          storage.move(io, context[:location])
         end
 
         def _delete(uploaded_file, context)
@@ -333,17 +300,14 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(name, cache: :cache, store: :store)
+        def initialize(name, **options)
           @name = name
 
           class_variable_set(:"@@#{name}_attacher_class", shrine_class::Attacher)
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}_attacher
-              @#{name}_attacher ||= @@#{name}_attacher_class.new(
-                self, #{name.inspect},
-                cache: #{cache.inspect}, store: #{store.inspect}
-              )
+              @#{name}_attacher ||= @@#{name}_attacher_class.new(self, :#{name}, #{options})
             end
 
             def #{name}=(value)
@@ -427,7 +391,7 @@ class Shrine
         end
 
         def destroy
-          delete!(get, phase: :destroy) if read
+          delete!(get, phase: :destroy) if get
         end
 
         def url(**options)
@@ -449,16 +413,16 @@ class Shrine
 
         private
 
-        def cache!(io, phase:)
-          cache.upload(io, context.merge(phase: phase))
+        def cache!(io, **options)
+          cache.upload(io, context.merge(options))
         end
 
-        def store!(io, phase:)
-          store.upload(io, context.merge(phase: phase))
+        def store!(io, **options)
+          store.upload(io, context.merge(options))
         end
 
-        def delete!(uploaded_file, phase:)
-          shrine_class.delete(uploaded_file, context)
+        def delete!(uploaded_file, **options)
+          shrine_class.delete(uploaded_file, context.merge(options))
         end
 
         def default_url(**options)
@@ -483,7 +447,7 @@ class Shrine
         end
 
         def context
-          {name: name, record: record}
+          @context ||= {name: name, record: record}.freeze
         end
       end
 

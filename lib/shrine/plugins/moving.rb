@@ -11,7 +11,7 @@ class Shrine
         def put(io, context)
           if move?(io, context)
             if movable?(io, context)
-              move(io, context[:location])
+              move(io, context)
             else
               super
               io.delete if io.respond_to?(:delete)

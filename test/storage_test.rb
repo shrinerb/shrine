@@ -1,17 +1,6 @@
 require "test_helper"
 
 class StrorageTest < Minitest::Test
-  test "`cache` and `store`" do
-    uploader = Class.new(Shrine)
-    uploader.cache = :cache
-    assert_equal :cache, uploader.cache
-
-    uploader.store = :store
-    assert_equal :store, uploader.store
-
-    assert_equal Hash[cache: :cache, store: :store], uploader.storages
-  end
-
   test "every subclass gets its own copy" do
     uploader = Class.new(Shrine)
     uploader.storages[:foo] = "foo"

@@ -14,7 +14,7 @@ class RetryTest < Minitest::Test
     end
 
     @shrine = Class.new(Shrine) { plugin :retry, tries: 3 }
-    @shrine.store = storage.new
+    @shrine.storages[:store] = storage.new
     @shrine.new(:store).upload(fakeio)
   end
 
@@ -33,11 +33,11 @@ class RetryTest < Minitest::Test
     end
 
     @shrine = Class.new(Shrine) { plugin :retry, tries: 3 }
-    @shrine.store = storage.new
+    @shrine.storages[:store] = storage.new
     @shrine.new(:store).upload(fakeio)
 
     @shrine = Class.new(Shrine) { plugin :retry, tries: 2 }
-    @shrine.store = storage.new
+    @shrine.storages[:store] = storage.new
     assert_raises(RuntimeError) { @shrine.new(:store).upload(fakeio) }
   end
 end

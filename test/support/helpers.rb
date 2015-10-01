@@ -5,8 +5,8 @@ module TestHelpers
   module Generic
     def uploader(storage_key = :store, &block)
       uploader_class = Class.new(Shrine)
-      uploader_class.cache = Shrine::Storage::Memory.new
-      uploader_class.store = Shrine::Storage::Memory.new
+      uploader_class.storages[:cache] = Shrine::Storage::Memory.new
+      uploader_class.storages[:store] = Shrine::Storage::Memory.new
       uploader_class.class_eval(&block) if block
       uploader_class.new(storage_key)
     end
