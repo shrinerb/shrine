@@ -18,6 +18,9 @@ class UploadedFileTest < Minitest::Test
   test "main interface" do
     uploaded_file = @uploader.upload(fakeio("image"), location: "key")
 
+    Shrine.io!(uploaded_file)
+    Shrine.io!(uploaded_file.to_io)
+
     assert_instance_of Hash, uploaded_file.data
     assert_equal "key", uploaded_file.id
     assert_equal "store", uploaded_file.storage_key

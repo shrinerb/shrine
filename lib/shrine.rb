@@ -160,14 +160,12 @@ class Shrine
           @validate_block = block
         end
 
-        def uploaded_file(object)
+        def uploaded_file(object, &block)
           case object
           when String
-            uploaded_file JSON.parse(object)
+            uploaded_file(JSON.parse(object), &block)
           when Hash
-            self::UploadedFile.new(object)
-          when self::UploadedFile
-            object
+            self::UploadedFile.new(object).tap { |f| yield(f) if block_given? }
           else
             raise Error, "#{object.inspect} cannot be converted to an UploadedFile"
           end
@@ -191,8 +189,6 @@ class Shrine
         rescue InvalidFile
           false
         end
-
-        private
 
         def uploader_for(uploaded_file)
           uploaders = storages.keys.map { |key| new(key) }
@@ -553,6 +549,10 @@ class Shrine
 
         def delete
           storage.delete(id)
+        end
+
+        def to_io
+          io
         end
 
         def to_json(*args)

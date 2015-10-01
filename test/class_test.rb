@@ -19,13 +19,6 @@ class ClassTest < Minitest::Test
     assert_equal uploaded_file, retrieved
   end
 
-  test "#uploaded_file accepts an UploadedFile" do
-    uploaded_file = @shrine.new(:cache).upload(fakeio)
-    retrieved = @shrine.uploaded_file(uploaded_file)
-
-    assert_equal uploaded_file, retrieved
-  end
-
   test "#uploaded_file raises an error on invalid input" do
     assert_raises(Shrine::Error) { @shrine.uploaded_file(:foo) }
   end
