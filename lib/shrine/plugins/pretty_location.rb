@@ -7,10 +7,11 @@ class Shrine
           id   = context[:record].id if context[:record].respond_to?(:id)
           name = context[:name]
 
-          filename = super
-          filename = "#{context[:version]}-#{filename}" if context[:version]
+          dirname, slash, basename = super.rpartition("/")
+          basename = "#{context[:version]}-#{basename}" if context[:version]
+          original = dirname + slash + basename
 
-          [type, id, name, filename].compact.join("/")
+          [type, id, name, original].compact.join("/")
         end
       end
     end

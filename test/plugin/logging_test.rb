@@ -1,13 +1,9 @@
 require "test_helper"
 require "stringio"
 
-class LoggingTest < Minitest::Test
+describe "logging plugin" do
   def uploader(**options)
     super() { plugin :logging, stream: $out, **options }
-  end
-
-  def setup
-    $out = StringIO.new
   end
 
   def capture
@@ -17,7 +13,11 @@ class LoggingTest < Minitest::Test
     result
   end
 
-  test "logging processing" do
+  before do
+    $out = StringIO.new
+  end
+
+  it "logs processing" do
     @uploader = uploader
 
     stdout = capture { @uploader.upload(fakeio) }
@@ -36,7 +36,7 @@ class LoggingTest < Minitest::Test
     assert_match /PROCESS \S+ 1 file => 2 files \(0.00s\)$/, stdout
   end
 
-  test "logging storing" do
+  it "logs storing" do
     @uploader = uploader
 
     stdout = capture { @uploader.upload(fakeio) }
@@ -44,7 +44,7 @@ class LoggingTest < Minitest::Test
     assert_match /UPLOAD \S+ 1 file \(0.00s\)$/, stdout
   end
 
-  test "logging deleting" do
+  it "logs deleting" do
     @uploader = uploader
     uploaded_file = @uploader.upload(fakeio)
 
@@ -53,7 +53,7 @@ class LoggingTest < Minitest::Test
     assert_match /DELETE \S+ 1 file \(0.00s\)$/, stdout
   end
 
-  test "outputting :phase and :name" do
+  it "outputs :phase and :name" do
     @uploader = uploader
 
     @uploader.singleton_class.class_eval do

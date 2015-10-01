@@ -25,8 +25,7 @@ class Shrine
       end
 
       def upload(io, id)
-        IO.copy_stream(io, path!(id))
-        io.rewind
+        IO.copy_stream(io, path!(id)); io.rewind
         path(id).chmod(permissions) if permissions
       end
 

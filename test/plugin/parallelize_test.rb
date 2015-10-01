@@ -1,14 +1,14 @@
 require "test_helper"
 
-class ParallelizeTest < Minitest::Test
-  def setup
+describe "parallelize plugin" do
+  before do
     @uploader = uploader do
       plugin :versions, names: [:large, :medium, :small]
       plugin :parallelize
     end
   end
 
-  test "uploads in parallel" do
+  it "uploads in parallel" do
     versions = @uploader.upload(
       large:  fakeio("large"),
       medium: fakeio("medium"),
@@ -20,7 +20,7 @@ class ParallelizeTest < Minitest::Test
     assert_equal "small", versions[:small].read
   end
 
-  test "deletes in parallel" do
+  it "deletes in parallel" do
     versions = @uploader.upload(
       large:  fakeio("large"),
       medium: fakeio("medium"),

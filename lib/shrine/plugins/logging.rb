@@ -38,13 +38,6 @@ class Shrine
           output
         end
 
-        def store(io, context = {})
-          result, duration = benchmark { super }
-          log("#{files(result)}",
-              action: "upload", duration: duration, context: context)
-          result
-        end
-
         def delete(uploaded_file, context = {})
           result, duration = benchmark { super }
           log("#{files(result)}",
@@ -53,6 +46,13 @@ class Shrine
         end
 
         private
+
+        def store(io, context = {})
+          result, duration = benchmark { super }
+          log("#{files(result)}",
+              action: "upload", duration: duration, context: context)
+          result
+        end
 
         def log(message, action:, duration:, context:)
           components = []

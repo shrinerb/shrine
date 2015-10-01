@@ -1,11 +1,11 @@
 require "test_helper"
 
-class BackgroundDeleteTest < Minitest::Test
+describe "background_delete plugin" do
   def attacher(block)
     super() { plugin :background_delete, delete: block }
   end
 
-  test "calls the block when replacing" do
+  it "calls the block when replacing" do
     called = false
     @attacher = attacher ->(uploaded_file, context) { called = true }
     @attacher.set(fakeio)
@@ -15,7 +15,7 @@ class BackgroundDeleteTest < Minitest::Test
     assert called
   end
 
-  test "calls the block when destroying" do
+  it "calls the block when destroying" do
     called = false
     @attacher = attacher ->(uploaded_file, context) { called = true }
     @attacher.set(fakeio)

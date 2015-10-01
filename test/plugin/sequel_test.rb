@@ -9,10 +9,8 @@ end
 
 Sequel.cache_anonymous_models = false
 
-class SequelTest < Minitest::Test
-  include Minitest::Hooks
-
-  def setup
+describe "sequel plugin" do
+  before do
     @uploader = uploader { plugin :sequel }
 
     user_class = Sequel::Model(:users)
@@ -21,11 +19,11 @@ class SequelTest < Minitest::Test
     @user = user_class.new
   end
 
-  def around
-    DB.transaction(rollback: :always) { super }
+  around do |&block|
+    DB.transaction(rollback: :always) { super(&block) }
   end
 
-  test "validation" do
+  it "sets validation errors on the record" do
     @uploader.class.validate { errors << "Foo" }
     @user.avatar = fakeio
 
@@ -33,7 +31,7 @@ class SequelTest < Minitest::Test
     assert_equal ["Foo"], @user.errors[:avatar]
   end
 
-  test "saving" do
+  it "triggers save functionality" do
     @user.avatar_attacher.singleton_class.class_eval do
       def save
         @saved = true
@@ -44,14 +42,14 @@ class SequelTest < Minitest::Test
     assert @user.avatar_attacher.instance_variable_get("@saved")
   end
 
-  test "promoting" do
+  it "promotes on save" do
     @user.avatar = fakeio
     @user.save
 
     assert_equal "store", @user.avatar.storage_key
   end
 
-  test "custom promoting" do
+  it "accepts custom promoting" do
     @uploader.class.plugin :sequel, promote: ->(record, name, uploaded_file) do
       record.avatar = nil
     end
@@ -61,7 +59,7 @@ class SequelTest < Minitest::Test
     assert_equal nil, @user.avatar
   end
 
-  test "replacing" do
+  it "replaces after saving" do
     @user.avatar = fakeio
     @user.save
     uploaded_file = @user.avatar
@@ -72,7 +70,7 @@ class SequelTest < Minitest::Test
     refute uploaded_file.exists?
   end
 
-  test "replacing only happens at the very end" do
+  it "doesn't replace if there were errors during saving" do
     @user.avatar = fakeio
     @user.save
     uploaded_file = @user.avatar
@@ -90,7 +88,7 @@ class SequelTest < Minitest::Test
     assert uploaded_file.exists?
   end
 
-  test "destroying" do
+  it "destroys attachments" do
     @user.avatar = fakeio
     @user.save
     uploaded_file = @user.avatar

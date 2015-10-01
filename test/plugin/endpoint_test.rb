@@ -1,7 +1,7 @@
 require "test_helper"
 require "json"
 
-class EndpointTest < Minitest::Test
+describe "endpoint plugin" do
   include TestHelpers::Rack
 
   def app
@@ -16,7 +16,7 @@ class EndpointTest < Minitest::Test
     @uploader = uploader(:cache) { plugin :endpoint }
   end
 
-  test "returns a JSON response" do
+  it "returns a JSON response" do
     post "/cache/avatar", file: image
 
     assert_equal 200, response.status
@@ -24,13 +24,13 @@ class EndpointTest < Minitest::Test
     JSON.parse(response.body)
   end
 
-  test "uploads the given file" do
+  it "uploads the given file" do
     post "/cache/avatar", file: image
 
     assert @uploader.storage.exists?(body["id"])
   end
 
-  test "passes in :name and :phase parameters as context" do
+  it "passes in :name and :phase parameters as context" do
     @uploader.class.class_eval do
       def generate_location(io, context)
         context.to_json
@@ -42,7 +42,7 @@ class EndpointTest < Minitest::Test
     assert_equal '{"name":"avatar","phase":"endpoint"}', body['id']
   end
 
-  test "assigns metadata" do
+  it "assigns metadata" do
     image = Rack::Test::UploadedFile.new("test/fixtures/image.jpg", "image/jpeg")
     post "/cache/avatar", file: image
 
@@ -52,7 +52,7 @@ class EndpointTest < Minitest::Test
     assert_kind_of Integer, metadata['size']
   end
 
-  test "serializes uploaded hashes and arrays as well" do
+  it "serializes uploaded hashes and arrays as well" do
     uploaded_file = @uploader.upload(fakeio)
 
     @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
@@ -64,37 +64,37 @@ class EndpointTest < Minitest::Test
     refute_empty body.fetch(0)
   end
 
-  test "accepts only POST requests" do
+  it "accepts only POST requests" do
     put "/cache/avatar", file: image
 
     assert_equal 404, response.status
   end
 
-  test "refuses storages which are not allowed" do
+  it "refuses storages which are not allowed" do
     post "/store/avatar", file: image
 
     assert_http_error 403
   end
 
-  test "refuses storages which are nonexistent" do
+  it "refuses storages which are nonexistent" do
     post "/nonexistent/avatar", file: image
 
     assert_http_error 403
   end
 
-  test "returns appropriate error message for missing file" do
+  it "returns appropriate error message for missing file" do
     post "/cache/avatar"
 
     assert_http_error 400
   end
 
-  test "returns appropriate error message for invalid file" do
+  it "returns appropriate error message for invalid file" do
     post "/cache/avatar", file: "foo"
 
     assert_http_error 400
   end
 
-  test "refuses files which are too big" do
+  it "refuses files which are too big" do
     @uploader = uploader(:cache) { plugin :endpoint, max_size: 0 }
     post "/cache/avatar", file: image
     assert_http_error 413
@@ -104,7 +104,7 @@ class EndpointTest < Minitest::Test
     assert_equal 200, response.status
   end
 
-  test "allows other errors to propagate" do
+  it "allows other errors to propagate" do
     @uploader.class.class_eval do
       def process(io, context)
         raise
@@ -114,7 +114,7 @@ class EndpointTest < Minitest::Test
     assert_raises(RuntimeError) { post "/cache/avatar", file: image }
   end
 
-  test "endpoint is memoized" do
+  it "memoizes the endpoint" do
     assert_equal @uploader.class.endpoint, @uploader.class.endpoint
   end
 

@@ -1,12 +1,8 @@
 require "test_helper"
-require "minitest/mock"
-
 require "shrine/storage/file_system"
 require "down"
 
-require "fileutils"
-
-class MovingTest < Minitest::Test
+describe "moving plugin" do
   def shrine(storages)
     shrine = Class.new(Shrine)
     shrine.storages = {
@@ -17,11 +13,11 @@ class MovingTest < Minitest::Test
     shrine
   end
 
-  def teardown
+  after do
     FileUtils.rm_rf("tmp")
   end
 
-  test "uses the storage to move the IO" do
+  it "uses the storage to move the IO" do
     @uploader = shrine([:file_system]).new(:file_system)
     file = Down.copy_to_tempfile("", image)
     file.singleton_class.instance_eval { undef_method :delete }
@@ -32,7 +28,7 @@ class MovingTest < Minitest::Test
     refute File.exist?(file.path)
   end
 
-  test "uploads and deletes the IO if storage doesn't support moving" do
+  it "uploads and deletes the IO if storage doesn't support moving" do
     @uploader = shrine([:memory]).new(:memory)
 
     file = Down.copy_to_tempfile("", image); path = file.path
@@ -46,14 +42,14 @@ class MovingTest < Minitest::Test
     refute uploaded_file.exists?
   end
 
-  test "doesn't trip if IO doesn't respond to delete" do
+  it "doesn't trip if IO doesn't respond to delete" do
     @uploader = shrine([:memory]).new(:memory)
     uploaded_file = @uploader.upload(fakeio)
 
     assert uploaded_file.exists?
   end
 
-  test "only moves to specified storages" do
+  it "only moves to specified storages" do
     @uploader = shrine([:file_system]).new(:memory)
     file = Down.copy_to_tempfile("", image)
     uploaded_file = @uploader.upload(file)

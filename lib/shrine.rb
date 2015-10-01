@@ -205,20 +205,25 @@ class Shrine
           _delete(uploaded_file, context)
         end
 
-        def generate_location(io, context)
+        def generate_location(io, context = {})
           extension = File.extname(extract_filename(io).to_s)
           basename  = generate_uid
 
           basename + extension
         end
 
-        def extract_metadata(io, context)
+        def extract_metadata(io, context = {})
           {
             "filename"     => extract_filename(io),
             "size"         => extract_size(io),
             "content_type" => extract_content_type(io),
           }
         end
+
+        def default_url(context)
+        end
+
+        private
 
         def extract_filename(io)
           if io.respond_to?(:original_filename)
@@ -237,11 +242,6 @@ class Shrine
         def extract_size(io)
           io.size
         end
-
-        def default_url(context)
-        end
-
-        private
 
         def _store(io, context)
           _enforce_io(io)

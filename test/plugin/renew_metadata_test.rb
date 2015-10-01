@@ -1,11 +1,11 @@
 require "test_helper"
 
-class RenewMetadataTest < Minitest::Test
-  def setup
+describe "renew_metadata test" do
+  before do
     @attacher = attacher { plugin :renew_metadata }
   end
 
-  test "reextracts metadata on attacher set" do
+  it "reextracts metadata on attacher set" do
     uploaded_file = @attacher.cache.upload(fakeio("image"))
     uploaded_file.metadata["size"] = 24354535
 
@@ -14,7 +14,7 @@ class RenewMetadataTest < Minitest::Test
     assert_equal 5, recached_file.metadata["size"]
   end
 
-  test "works with versions" do
+  it "works with versions" do
     @attacher.shrine_class.plugin :versions, names: [:original, :thumb]
 
     original = @attacher.cache.upload(fakeio("original"))

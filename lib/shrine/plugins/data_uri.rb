@@ -38,10 +38,12 @@ class Shrine
             message = shrine_class.opts[:data_uri_error_message]
             message = message.call(uri) if message.respond_to?(:call)
             errors << message
+            @data_uri = uri
           end
         end
 
         def data_uri
+          @data_uri
         end
       end
 

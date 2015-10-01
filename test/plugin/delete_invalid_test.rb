@@ -1,11 +1,11 @@
 require "test_helper"
 
-class DeleteInvalidTest < Minitest::Test
+describe "delete_invalid plugin" do
   def setup
     @attacher = attacher { plugin :delete_invalid }
   end
 
-  test "it deletes the cached file if it was invalid" do
+  it "deletes the cached file if it was invalid" do
     @attacher.set(fakeio)
     assert @attacher.get.exists?
 
@@ -14,7 +14,7 @@ class DeleteInvalidTest < Minitest::Test
     refute @attacher.get.exists?
   end
 
-  test "it deletes the cached file if validation errors are raised" do
+  it "deletes the cached file if validation errors are raised" do
     @attacher.shrine_class.validate { errors << :foo; raise }
     @attacher.set(fakeio) rescue nil
 

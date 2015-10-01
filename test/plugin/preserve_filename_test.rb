@@ -1,11 +1,11 @@
 require "test_helper"
 
-class PreserveFilenameTest < Minitest::Test
-  def setup
+describe "preserve_filename plugin" do
+  before do
     @uploader = uploader { plugin :preserve_filename }
   end
 
-  test "uses the unique location as the directory" do
+  it "uses the original location as the directory" do
     # original_filename
     uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
     assert_match /^[\w-]+\/foo\.jpg$/, uploaded_file.id
@@ -19,13 +19,13 @@ class PreserveFilenameTest < Minitest::Test
     assert_match /^[\w-]+\/Gemfile$/, uploaded_file.id
   end
 
-  test "falls back to original location generating if filename cannot be extracted" do
+  it "falls back to original location generating if filename cannot be extracted" do
     uploaded_file = @uploader.upload(fakeio)
 
     assert_match /^[\w-]+$/, uploaded_file.id
   end
 
-  test "doesn't use the filename if the IO is a Tempfile" do
+  it "doesn't use the filename if the IO is a Tempfile" do
     uploaded_file = @uploader.upload(Tempfile.new("foobar"))
 
     refute_match "foobar", uploaded_file.id

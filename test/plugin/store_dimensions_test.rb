@@ -1,25 +1,29 @@
 require "test_helper"
 
-class StoreDimensionsTest < Minitest::Test
+describe "store_dimensions plugin" do
   def uploader(extractor)
     super() { plugin :store_dimensions, extractor: extractor }
   end
 
-  test "storing dimensions with FastImage" do
-    @uploader = uploader(:fastimage)
+  describe ":fastimage" do
+    it "extracts dimensions from files" do
+      @uploader = uploader(:fastimage)
 
-    uploaded_file = @uploader.upload(image)
-    assert_equal 100, uploaded_file.metadata["width"]
-    assert_equal 67, uploaded_file.metadata["height"]
+      uploaded_file = @uploader.upload(image)
+      assert_equal 100, uploaded_file.metadata["width"]
+      assert_equal 67, uploaded_file.metadata["height"]
+    end
 
-    @uploader = uploader(:fastimage)
+    it "extracts dimensions from non-files" do
+      @uploader = uploader(:fastimage)
 
-    uploaded_file = @uploader.upload(FakeIO.new(image.read))
-    assert_equal 100, uploaded_file.metadata["width"]
-    assert_equal 67, uploaded_file.metadata["height"]
+      uploaded_file = @uploader.upload(FakeIO.new(image.read))
+      assert_equal 100, uploaded_file.metadata["width"]
+      assert_equal 67, uploaded_file.metadata["height"]
+    end
   end
 
-  test "storing dimensions with custom extractor" do
+  it "allows storing with custom extractor" do
     @uploader = uploader ->(io) {[5, 10]}
     uploaded_file = @uploader.upload(image)
 
@@ -27,7 +31,7 @@ class StoreDimensionsTest < Minitest::Test
     assert_equal 10, uploaded_file.metadata["height"]
   end
 
-  test "reuploading reuses the dimensions" do
+  it "persists between UploadedFiles" do
     @uploader = uploader(:fastimage)
 
     uploaded_file = @uploader.upload(image)
@@ -37,7 +41,7 @@ class StoreDimensionsTest < Minitest::Test
     assert_equal 67, reuploaded_file.metadata["height"]
   end
 
-  test "UploadedFile gets `width` and `height` methods" do
+  it "gives UploadedFile `width` and `height` methods" do
     @uploader = uploader(:fastimage)
     uploaded_file = @uploader.upload(image)
 

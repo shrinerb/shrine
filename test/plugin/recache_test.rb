@@ -1,11 +1,11 @@
 require "test_helper"
 
-class RecacheTest < Minitest::Test
+describe "recache plugin" do
   def setup
     @attacher = attacher { plugin :recache }
   end
 
-  test "recaching cached files" do
+  it "recaches cached files" do
     @attacher.shrine_class.class_eval do
       def process(io, context)
         FakeIO.new(io.read.reverse) if context[:phase] == :recache
@@ -19,7 +19,7 @@ class RecacheTest < Minitest::Test
     assert_equal "lanigiro", @attacher.get.read
   end
 
-  test "recaching stored files" do
+  it "recaches stored files" do
     @attacher.shrine_class.class_eval do
       def process(io, context)
         FakeIO.new(io.read.reverse) if context[:phase] == :recache
@@ -33,7 +33,7 @@ class RecacheTest < Minitest::Test
     assert_equal "lanigiro", @attacher.get.read
   end
 
-  test "recaches only if the attachment was assigned" do
+  it "recaches only if the attachment was assigned" do
     @attacher.shrine_class.class_eval do
       def process(io, context)
         FakeIO.new(io.read.reverse) if context[:phase] == :recache
@@ -47,7 +47,7 @@ class RecacheTest < Minitest::Test
     assert_equal "original", @attacher.get.read
   end
 
-  test "doesn't recache if attachment is missing" do
+  it "doesn't recache if attachment is missing" do
     @attacher.save
   end
 end

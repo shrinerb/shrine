@@ -1,49 +1,50 @@
 require "test_helper"
 
-class DataUriTest < Minitest::Test
+describe "data_uri plugin" do
   def setup
     @attacher = attacher { plugin :data_uri, error_message: ->(uri) { "Data URI failed" } }
+    @user = @attacher.record
   end
 
-  test "enables caching with a data URI" do
-    @attacher.data_uri = data_uri
+  it "enables caching with a data URI" do
+    @user.avatar_data_uri = data_uri
 
-    assert @attacher.get
-    refute_empty @attacher.get.read
-    assert_equal "image/png", @attacher.get.content_type
-    assert @attacher.get.size > 0
+    assert @user.avatar
+    refute_empty @user.avatar.read
+    assert_equal "image/png", @user.avatar.content_type
+    assert @user.avatar.size > 0
   end
 
-  test "defaults content type to text/plain" do
-    @attacher.data_uri = data_uri(nil)
+  it "keeps the data uri value if uploading doesn't succeed" do
+    @user.avatar_data_uri = data_uri
+    assert_equal nil, @user.avatar_data_uri
 
-    assert_equal "text/plain", @attacher.get.content_type
+    @user.avatar_data_uri = "foo"
+    assert_equal "foo", @user.avatar_data_uri
   end
 
-  test "allows content types with dots in them" do
-    @attacher.data_uri = data_uri("image/vnd.microsoft.icon")
+  it "defaults content type to text/plain" do
+    @user.avatar_data_uri = data_uri(nil)
 
-    assert_equal "image/vnd.microsoft.icon", @attacher.get.content_type
+    assert_equal "text/plain", @user.avatar.content_type
   end
 
-  test "setting an empty string is a noop" do
-    @attacher.data_uri = data_uri
-    @attacher.data_uri = ""
+  it "allows content types with dots in them" do
+    @user.avatar_data_uri = data_uri("image/vnd.microsoft.icon")
 
-    assert @attacher.get
+    assert_equal "image/vnd.microsoft.icon", @user.avatar.content_type
   end
 
-  test "adds a validation error if data_uri wasn't properly matched" do
-    @attacher.data_uri = "bla"
+  it "ignores empty strings" do
+    @user.avatar_data_uri = data_uri
+    @user.avatar_data_uri = ""
 
-    assert_equal ["Data URI failed"], @attacher.errors
+    assert @user.avatar
   end
 
-  test "record interface" do
-    user = @attacher.record
-    user.avatar_data_uri = data_uri
+  it "adds a validation error if data_uri wasn't properly matched" do
+    @user.avatar_data_uri = "bla"
 
-    assert @attacher.get
-    assert_respond_to user, :avatar_data_uri
+    assert_equal ["Data URI failed"], @user.avatar_attacher.errors
   end
 end

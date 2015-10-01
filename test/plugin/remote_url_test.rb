@@ -1,82 +1,82 @@
 require "test_helper"
 
-class RemoteUrlTest < Minitest::Test
+describe "remote_url plugin" do
   include TestHelpers::Interactions
 
   def uploader(**options)
     super() { plugin :remote_url, error_message: "Download failed", **options }
   end
 
-  def setup
+  before do
     @attacher = attacher
+    @user = @attacher.record
   end
 
-  test "attaching a file via a remote url" do
-    @attacher.remote_url = image_url
+  it "enables attaching a file via a remote url" do
+    @user.avatar_remote_url = image_url
 
-    assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
+    assert_instance_of @attacher.shrine_class::UploadedFile, @user.avatar
   end
 
-  test "ignores when url is empty" do
-    @attacher.remote_url = ""
+  it "keeps the remote url value if uploading doesn't succeed" do
+    @user.avatar_remote_url = image_url
+    assert_equal nil, @user.avatar_remote_url
 
-    assert_equal nil, @attacher.remote_url
-    assert_equal nil, @attacher.get
+    @user.avatar_remote_url = "foo"
+    assert_equal "foo", @user.avatar_remote_url
   end
 
-  test "rescues download errors" do
-    @attacher.remote_url = invalid_url
+  it "ignores empty urls" do
+    @user.avatar_remote_url = ""
 
-    assert_equal invalid_url, @attacher.remote_url
-    assert_equal nil, @attacher.get
+    assert_equal nil, @user.avatar_remote_url
+    assert_equal nil, @user.avatar
   end
 
-  test "download errors are added as validation errors" do
-    @attacher.remote_url = image_url
+  it "rescues download errors" do
+    @user.avatar_remote_url = invalid_url
+
+    assert_equal invalid_url, @user.avatar_remote_url
+    assert_equal nil, @user.avatar
+  end
+
+  it "adds download errors as validation errors" do
+    @user.avatar_remote_url = image_url
     assert_empty @attacher.errors
 
-    @attacher.remote_url = invalid_url
+    @user.avatar_remote_url = invalid_url
     assert_equal ["Download failed"], @attacher.errors
   end
 
-  test "download error doesn't nullify the existing attachment" do
+  it "doesn't nullify the existing attachment on download error" do
     @attacher.set(fakeio)
-    @attacher.remote_url = invalid_url
+    @attacher.record.avatar_remote_url = invalid_url
 
-    refute_equal nil, @attacher.get
+    refute_equal nil, @attacher.record.avatar
   end
 
-  test "accepts error message as a block" do
+  it "accepts error message as a block" do
     @attacher = attacher(error_message: ->(url) { "Message" })
-    @attacher.remote_url = invalid_url
+    @attacher.record.avatar_remote_url = invalid_url
 
     assert_equal ["Message"], @attacher.errors
   end
 
-  test "accepts custom downloader" do
-    @attacher = attacher(downloader: ->(url) { fakeio("image") })
-    @attacher.remote_url = "foo"
+  it "accepts custom downloader" do
+    @attacher = attacher(downloader: ->(url, **) { fakeio(url) })
+    @attacher.record.avatar_remote_url = "foo"
 
-    assert_equal "image", @attacher.get.read
+    assert_equal "foo", @attacher.record.avatar.read
   end
 
-  test "defaults downloader to :open_uri" do
+  it "defaults downloader to :open_uri" do
     assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url_downloader]
   end
 
-  test "accepts :max_size" do
+  it "accepts :max_size" do
     @attacher = attacher(max_size: 5)
-    @attacher.remote_url = image_url
+    @attacher.record.avatar_remote_url = image_url
 
     assert_equal ["Download failed"], @attacher.errors
-  end
-
-  test "attachment interface" do
-    @user = @attacher.record
-
-    @user.avatar_remote_url = image_url
-    assert_instance_of @attacher.shrine_class::UploadedFile, @user.avatar
-
-    assert_respond_to @user, :avatar_remote_url
   end
 end

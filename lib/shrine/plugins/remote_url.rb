@@ -32,11 +32,13 @@ class Shrine
       module AttacherMethods
         def remote_url=(url)
           return if url == ""
-          downloaded_file = download(url)
 
-          if downloaded_file
+          if downloaded_file = download(url)
             set(downloaded_file)
           else
+            message = shrine_class.opts[:remote_url_error_message]
+            message = message.call(url) if message.respond_to?(:call)
+            errors << message
             @remote_url = url
           end
         end
@@ -54,17 +56,13 @@ class Shrine
           if downloader.is_a?(Symbol)
             send(:"download_with_#{downloader}", url, max_size: max_size)
           else
-            downloader.call(url)
+            downloader.call(url, max_size: max_size)
           end
         end
 
         def download_with_open_uri(url, max_size:)
           Down.download(url, max_size: max_size)
         rescue Down::Error
-          message = shrine_class.opts[:remote_url_error_message]
-          message = message.call(url) if message.respond_to?(:call)
-          errors << message
-          nil
         end
       end
     end
