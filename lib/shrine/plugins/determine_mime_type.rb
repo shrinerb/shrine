@@ -6,6 +6,12 @@ class Shrine
         when :file      then require "open3"
         when :filemagic then require "filemagic"
         when :mimemagic then require "mimemagic"
+        when :mime_types
+          begin
+            require "mime/types/columnar"
+          rescue LoadError
+            require "mime/types"
+          end
         end
       end
 
@@ -43,6 +49,13 @@ class Shrine
 
         def _extract_mime_type_with_mimemagic(io)
           MimeMagic.by_magic(io).type
+        end
+
+        def _extract_mime_type_with_mime_types(io)
+          if filename = extract_filename(io)
+            mime_type = MIME::Types.of(filename).first
+            mime_type.to_s if mime_type
+          end
         end
       end
     end

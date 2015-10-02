@@ -49,6 +49,32 @@ describe "determine_mime_type plugin" do
     end
   end
 
+  describe ":mime_types" do
+    it "extract content type from the file extension" do
+      @uploader = uploader(:mime_types)
+
+      uploaded_file = @uploader.upload(fakeio(filename: "image.png"))
+      assert_equal "image/png", uploaded_file.mime_type
+
+      uploaded_file = @uploader.upload(File.open(image_path))
+      assert_equal "image/jpeg", uploaded_file.mime_type
+    end
+
+    it "returns nil on unkown extension" do
+      @uploader = uploader(:mime_types)
+      uploaded_file = @uploader.upload(fakeio(filename: "file.foo"))
+
+      assert_equal nil, uploaded_file.mime_type
+    end
+
+    it "returns nil when input is not a file" do
+      @uploader = uploader(:mime_types)
+      uploaded_file = @uploader.upload(fakeio)
+
+      assert_equal nil, uploaded_file.mime_type
+    end
+  end
+
   it "allows passing a custom extractor" do
     @uploader = uploader ->(io) { "foo/bar" }
     uploaded_file = @uploader.upload(fakeio)

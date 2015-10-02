@@ -28,6 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "roda"
   gem.add_development_dependency "ruby-filemagic"
   gem.add_development_dependency "mimemagic"
+  gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "thread"
 
