@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "retry_uploads plugin" do
+describe "retry plugin" do
   it "retries upload" do
     storage = Class.new(Shrine::Storage::Memory) do
       def upload(io, location)
@@ -13,7 +13,7 @@ describe "retry_uploads plugin" do
       end
     end
 
-    @shrine = Class.new(Shrine) { plugin :retry_uploads, tries: 3 }
+    @shrine = Class.new(Shrine) { plugin :retry, tries: 3 }
     @shrine.storages[:store] = storage.new
     @shrine.new(:store).upload(fakeio)
   end
@@ -32,11 +32,11 @@ describe "retry_uploads plugin" do
       end
     end
 
-    @shrine = Class.new(Shrine) { plugin :retry_uploads, tries: 3 }
+    @shrine = Class.new(Shrine) { plugin :retry, tries: 3 }
     @shrine.storages[:store] = storage.new
     @shrine.new(:store).upload(fakeio)
 
-    @shrine = Class.new(Shrine) { plugin :retry_uploads, tries: 2 }
+    @shrine = Class.new(Shrine) { plugin :retry, tries: 2 }
     @shrine.storages[:store] = storage.new
     assert_raises(RuntimeError) { @shrine.new(:store).upload(fakeio) }
   end
