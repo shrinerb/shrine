@@ -4,20 +4,20 @@ require "forwardable"
 
 class Shrine
   module Plugins
-    module Endpoint
+    module DirectUpload
       def self.configure(uploader, allowed_storages: [:cache], max_size: nil)
-        uploader.opts[:endpoint_allowed_storages] = allowed_storages
-        uploader.opts[:endpoint_max_size] = max_size
+        uploader.opts[:direct_upload_allowed_storages] = allowed_storages
+        uploader.opts[:direct_upload_max_size] = max_size
       end
 
       module ClassMethods
-        def endpoint
-          @endpoint ||= build_endpoint
+        def direct_endpoint
+          @direct_endpoint ||= build_direct_endpoint
         end
 
         private
 
-        def build_endpoint
+        def build_direct_endpoint
           app = Class.new(App)
           app.opts[:shrine_class] = self
           app.app
@@ -35,7 +35,7 @@ class Shrine
 
             r.post ":name" do |name|
               file = get_file
-              context = {name: name, phase: :endpoint}
+              context = {name: name, phase: :direct}
 
               json @uploader.upload(file, context)
             end
@@ -83,11 +83,11 @@ class Shrine
         end
 
         def allowed_storages
-          shrine_class.opts[:endpoint_allowed_storages]
+          shrine_class.opts[:direct_upload_allowed_storages]
         end
 
         def max_size
-          shrine_class.opts[:endpoint_max_size]
+          shrine_class.opts[:direct_upload_max_size]
         end
       end
 
@@ -114,6 +114,6 @@ class Shrine
       end
     end
 
-    register_plugin(:endpoint, Endpoint)
+    register_plugin(:direct_upload, DirectUpload)
   end
 end
