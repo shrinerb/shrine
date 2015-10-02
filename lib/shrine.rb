@@ -214,9 +214,9 @@ class Shrine
 
         def extract_metadata(io, context = {})
           {
-            "filename"     => extract_filename(io),
-            "size"         => extract_size(io),
-            "content_type" => extract_content_type(io),
+            "filename"  => extract_filename(io),
+            "size"      => extract_size(io),
+            "mime_type" => extract_mime_type(io),
           }
         end
 
@@ -233,8 +233,10 @@ class Shrine
           end
         end
 
-        def extract_content_type(io)
-          if io.respond_to?(:content_type)
+        def extract_mime_type(io)
+          if io.respond_to?(:mime_type)
+            io.mime_type
+          elsif io.respond_to?(:content_type)
             io.content_type
           end
         end
@@ -480,8 +482,8 @@ class Shrine
           metadata.fetch("size")
         end
 
-        def content_type
-          metadata.fetch("content_type")
+        def mime_type
+          metadata.fetch("mime_type")
         end
 
         def read(*args)

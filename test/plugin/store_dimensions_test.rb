@@ -1,8 +1,8 @@
 require "test_helper"
 
 describe "store_dimensions plugin" do
-  def uploader(extractor)
-    super() { plugin :store_dimensions, extractor: extractor }
+  def uploader(analyser)
+    super() { plugin :store_dimensions, analyser: analyser }
   end
 
   describe ":fastimage" do

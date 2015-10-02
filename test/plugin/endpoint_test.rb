@@ -48,7 +48,7 @@ describe "endpoint plugin" do
 
     metadata = body.fetch('metadata')
     assert_equal 'image.jpg', metadata['filename']
-    assert_equal 'image/jpeg', metadata['content_type']
+    assert_equal 'image/jpeg', metadata['mime_type']
     assert_kind_of Integer, metadata['size']
   end
 

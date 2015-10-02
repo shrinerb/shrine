@@ -207,7 +207,7 @@ describe Shrine do
 
       assert_equal 5, uploaded_file.metadata["size"]
       assert_equal "nature.jpg", uploaded_file.metadata["filename"]
-      assert_equal "image/jpeg", uploaded_file.metadata["content_type"]
+      assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
     end
 
     it "checks if the input is a valid IO" do
@@ -282,10 +282,10 @@ describe Shrine do
 
     it "extracts the content type" do
       metadata = @uploader.extract_metadata(fakeio(content_type: "image/jpeg"))
-      assert_equal "image/jpeg", metadata["content_type"]
+      assert_equal "image/jpeg", metadata["mime_type"]
 
       metadata = @uploader.extract_metadata(fakeio)
-      assert_equal nil, metadata.fetch("content_type")
+      assert_equal nil, metadata.fetch("mime_type")
     end
 
     it "successfully extracts metadata from another UploadedFile" do
@@ -296,7 +296,7 @@ describe Shrine do
 
       assert_equal 6, metadata["size"]
       assert_equal "foo.jpg", metadata["filename"]
-      assert_equal "image/jpeg", metadata["content_type"]
+      assert_equal "image/jpeg", metadata["mime_type"]
     end
   end
 

@@ -1,9 +1,9 @@
 require "test_helper"
 require "stringio"
 
-describe "real_content_type plugin" do
-  def uploader(extractor)
-    super() { plugin :real_content_type, extractor: extractor }
+describe "determine_mime_type plugin" do
+  def uploader(analyser)
+    super() { plugin :determine_mime_type, analyser: analyser }
   end
 
   describe ":filemagic" do
@@ -11,7 +11,7 @@ describe "real_content_type plugin" do
       @uploader = uploader(:filemagic)
       uploaded_file = @uploader.upload(image)
 
-      assert_equal "image/jpeg", uploaded_file.content_type
+      assert_equal "image/jpeg", uploaded_file.mime_type
     end
 
     it "rewinds the file after reading from it" do
@@ -27,7 +27,7 @@ describe "real_content_type plugin" do
       @uploader = uploader(:file)
       uploaded_file = @uploader.upload(image)
 
-      assert_equal "image/jpeg", uploaded_file.content_type
+      assert_equal "image/jpeg", uploaded_file.mime_type
     end
 
     it "returns nil when IO was not a file" do
@@ -35,7 +35,7 @@ describe "real_content_type plugin" do
       stringio = StringIO.new(image.read)
       uploaded_file = @uploader.upload(stringio)
 
-      assert_equal nil, uploaded_file.content_type
+      assert_equal nil, uploaded_file.mime_type
     end
   end
 
@@ -45,7 +45,7 @@ describe "real_content_type plugin" do
       stringio = StringIO.new(image.read)
       uploaded_file = @uploader.upload(stringio)
 
-      assert_equal "image/jpeg", uploaded_file.content_type
+      assert_equal "image/jpeg", uploaded_file.mime_type
     end
   end
 
@@ -53,7 +53,7 @@ describe "real_content_type plugin" do
     @uploader = uploader ->(io) { "foo/bar" }
     uploaded_file = @uploader.upload(fakeio)
 
-    assert_equal "foo/bar", uploaded_file.content_type
+    assert_equal "foo/bar", uploaded_file.mime_type
   end
 
   it "doesn't do extracting on UploadedFiles" do
@@ -61,6 +61,6 @@ describe "real_content_type plugin" do
     uploaded_file = @uploader.upload(image)
     another_uploaded_file = @uploader.upload(uploaded_file)
 
-    assert_equal "image/jpeg", another_uploaded_file.content_type
+    assert_equal "image/jpeg", another_uploaded_file.mime_type
   end
 end
