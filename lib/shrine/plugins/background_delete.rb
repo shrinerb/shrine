@@ -1,13 +1,14 @@
 class Shrine
   module Plugins
     module BackgroundDelete
-      def self.configure(uploader, delete:)
-        uploader.opts[:delete] = delete
+      def self.configure(uploader, &block)
+        uploader.opts[:delete] = block
       end
 
       module AttacherMethods
         def delete!(uploaded_file, phase:)
-          shrine_class.opts[:delete].call(uploaded_file, context.merge(phase: phase))
+          delete = shrine_class.opts[:delete]
+          delete.call(uploaded_file, context.merge(phase: phase))
         end
       end
     end

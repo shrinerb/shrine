@@ -109,11 +109,11 @@ describe Shrine::Attacher do
       assert_equal "store", @attacher.get.storage_key
     end
 
-    it "keeps the cached file" do
+    it "deletes the cached file" do
       cached_file = @attacher.set(fakeio)
-      @attacher.promote(@attacher.get)
+      @attacher.promote(cached_file)
 
-      assert cached_file.exists?
+      refute cached_file.exists?
     end
 
     it "doesn't assign stored file if cached files don't match" do

@@ -383,6 +383,7 @@ class Shrine
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :promote)
           _set(stored_file) unless get != cached_file
+          delete!(cached_file, phase: :promote)
         end
 
         def replace
@@ -413,16 +414,16 @@ class Shrine
 
         private
 
-        def cache!(io, **options)
-          cache.upload(io, context.merge(options))
+        def cache!(io, phase:)
+          cache.upload(io, context.merge(phase: phase))
         end
 
-        def store!(io, **options)
-          store.upload(io, context.merge(options))
+        def store!(io, phase:)
+          store.upload(io, context.merge(phase: phase))
         end
 
-        def delete!(uploaded_file, **options)
-          shrine_class.delete(uploaded_file, context.merge(options))
+        def delete!(uploaded_file, phase:)
+          shrine_class.delete(uploaded_file, context.merge(phase: phase))
         end
 
         def default_url(**options)

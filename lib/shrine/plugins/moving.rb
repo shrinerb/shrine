@@ -16,9 +16,14 @@ class Shrine
               super
               io.delete if io.respond_to?(:delete)
             end
+            io.instance_variable_set("@shrine_deleted", true)
           else
             super
           end
+        end
+
+        def remove(io, context)
+          super unless io.instance_variable_get("@shrine_deleted")
         end
 
         def movable?(io, context)

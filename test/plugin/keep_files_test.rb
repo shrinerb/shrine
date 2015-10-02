@@ -32,4 +32,35 @@ describe "keep_files plugin" do
       assert uploaded_file.exists?
     end
   end
+
+  describe ":cached" do
+    it "keeps cached files which were promoted" do
+      @attacher = attacher(cached: true)
+      cached_file = @attacher.set(fakeio)
+      @attacher.promote(cached_file)
+
+      refute_equal cached_file, @attacher.get
+      assert cached_file.exists?
+    end
+  end
+
+  it "works with background_delete plugin" do
+    @attacher = attacher(destroyed: true, replaced: true, cached: true)
+    @attacher.shrine_class.plugin :background_delete do |cached_file, context|
+      @attacher.shrine_class.delete(cached_file, context)
+    end
+
+    cached_file = @attacher.set(fakeio)
+    @attacher.promote(fakeio)
+    assert cached_file.exists?
+
+    replaced_file = @attacher.get
+    @attacher.set(fakeio)
+    @attacher.replace
+    assert replaced_file.exists?
+
+    destroyed_file = @attacher.get
+    @attacher.destroy
+    assert destroyed_file.exists?
+  end
 end

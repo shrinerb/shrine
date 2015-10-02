@@ -42,6 +42,17 @@ describe "moving plugin" do
     refute uploaded_file.exists?
   end
 
+  it "doesn't let promoting to try delete the file again" do
+    @shrine = shrine([:file_system])
+    record = Struct.new(:avatar_data).new
+    @attacher = @shrine::Attacher.new(record, :avatar, cache: :file_system, store: :file_system)
+
+    cached_file = @attacher.set(fakeio)
+    @attacher.promote(cached_file)
+
+    refute cached_file.exists?
+  end
+
   it "doesn't trip if IO doesn't respond to delete" do
     @uploader = shrine([:memory]).new(:memory)
     uploaded_file = @uploader.upload(fakeio)
