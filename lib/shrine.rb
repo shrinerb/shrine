@@ -257,6 +257,11 @@ class Shrine
           )
         end
 
+        def _delete(uploaded_file, context)
+          remove(uploaded_file, context)
+          uploaded_file
+        end
+
         def put(io, context)
           copy(io, context)
         end
@@ -267,11 +272,6 @@ class Shrine
 
         def move(io, context)
           storage.move(io, context[:location])
-        end
-
-        def _delete(uploaded_file, context)
-          remove(uploaded_file, context)
-          uploaded_file
         end
 
         def remove(uploaded_file, context)

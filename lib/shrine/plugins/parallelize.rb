@@ -20,7 +20,11 @@ class Shrine
 
         private
 
-        def put(io, context)
+        def copy(io, context)
+          context[:thread_pool].process { super }
+        end
+
+        def move(io, context)
           context[:thread_pool].process { super }
         end
 

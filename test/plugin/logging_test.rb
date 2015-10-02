@@ -41,7 +41,7 @@ describe "logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio) }
 
-    assert_match /UPLOAD \S+ 1 file \(0.00s\)$/, stdout
+    assert_match /STORE \S+ 1 file \(0.00s\)$/, stdout
   end
 
   it "logs deleting" do
@@ -68,7 +68,7 @@ describe "logging plugin" do
     end
 
     assert_match /PROCESS\[endpoint\] \S+\[:avatar\] 1 file => 1 file \(0.00s\)$/, stdout
-    assert_match /UPLOAD\[endpoint\] \S+\[:avatar\] 1 file \(0.00s\)$/, stdout
+    assert_match /STORE\[endpoint\] \S+\[:avatar\] 1 file \(0.00s\)$/, stdout
     assert_match /DELETE\[destroy\] \S+\[:avatar\] 1 file \(0.00s\)$/, stdout
   end
 end
