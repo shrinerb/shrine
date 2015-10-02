@@ -14,7 +14,7 @@ class Shrine
   end
 
   module Storage
-    class Lint
+    class Linter
       def self.call(storage)
         new(storage).call
       end

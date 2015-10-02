@@ -1,7 +1,7 @@
 require "test_helper"
 
 require "shrine/storage/file_system"
-require "shrine/storage"
+require "shrine/storage/linter"
 
 require "down"
 require "fileutils"
@@ -29,8 +29,8 @@ describe Shrine::Storage::FileSystem do
   end
 
   it "passes the lint" do
-    Shrine::Storage::Lint.call(file_system(root))
-    Shrine::Storage::Lint.call(file_system(root, subdirectory: "uploads"))
+    Shrine::Storage::Linter.call(file_system(root))
+    Shrine::Storage::Linter.call(file_system(root, subdirectory: "uploads"))
   end
 
   describe "#initialize" do
