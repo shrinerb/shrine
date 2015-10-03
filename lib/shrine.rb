@@ -504,7 +504,7 @@ class Shrine
         end
 
         def rewind
-          @io = nil
+          io.rewind
         end
 
         def url(**options)
