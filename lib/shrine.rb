@@ -407,7 +407,7 @@ class Shrine
 
         def validate
           errors.clear
-          instance_exec(&validate_block) if validate_block && get
+          instance_exec(record, name, &validate_block) if validate_block && get
         end
 
         def shrine_class
@@ -476,6 +476,11 @@ class Shrine
 
         def original_filename
           metadata.fetch("filename")
+        end
+
+        def extension
+          extname = File.extname(id)
+          extname[1..-1] unless extname.empty?
         end
 
         def size
