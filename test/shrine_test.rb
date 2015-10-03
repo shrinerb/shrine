@@ -109,11 +109,9 @@ describe Shrine do
 
     it "yields the converted file" do
       uploaded_file = @uploader.upload(fakeio)
-      yielded = nil
+      @uploader.class.uploaded_file(uploaded_file.data) { |o| @yielded = o }
 
-      @uploader.class.uploaded_file(uploaded_file.data) { |o| yielded = o }
-
-      assert_equal uploaded_file, yielded
+      assert_equal uploaded_file, @yielded
     end
 
     it "raises an error on invalid input" do

@@ -24,11 +24,11 @@ class Shrine
           hash.select { |name, version| version?(name) }
         end
 
-        def uploaded_file(object)
+        def uploaded_file(object, &block)
           if object.is_a?(Hash) && !object.key?("storage")
-            result = {}
-            versions(object).each { |name, data| result[name.to_sym] = super(data) }
-            result
+            versions(object).inject({}) do |result, (name, data)|
+              result.update(name.to_sym => uploaded_file(data, &block))
+            end
           else
             super
           end
@@ -38,7 +38,7 @@ class Shrine
       module InstanceMethods
         def uploaded?(uploaded_file)
           if (hash = uploaded_file).is_a?(Hash)
-            hash.all? { |name, version| super(version) }
+            hash.all? { |name, version| uploaded?(version) }
           else
             super
           end
@@ -49,7 +49,7 @@ class Shrine
         def _store(io, context)
           if (hash = io).is_a?(Hash)
             self.class.versions!(hash).inject({}) do |result, (name, version)|
-              result.update(name => super(version, version: name, **context))
+              result.update(name => _store(version, version: name, **context))
             end
           else
             super
@@ -58,7 +58,7 @@ class Shrine
 
         def _delete(uploaded_file, context)
           if (versions = uploaded_file).is_a?(Hash)
-            super(versions.values, context)
+            _delete(versions.values, context)
             versions
           else
             super
