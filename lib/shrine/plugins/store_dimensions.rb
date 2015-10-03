@@ -15,10 +15,10 @@ class Shrine
         def extract_metadata(io, context)
           width, height = extract_dimensions(io)
 
-          metadata = super
-          metadata["width"] = width
-          metadata["height"] = height
-          metadata
+          super.update(
+            "width"  => width,
+            "height" => height,
+          )
         end
 
         def extract_dimensions(io)

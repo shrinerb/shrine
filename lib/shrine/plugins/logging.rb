@@ -31,13 +31,6 @@ class Shrine
       end
 
       module InstanceMethods
-        def processed(input, context = {})
-          output, duration = benchmark { super }
-          log("#{files(input)} => #{files(output)}",
-              action: "process", duration: duration, context: context) if output
-          output
-        end
-
         def store(io, context = {})
           result, duration = benchmark { super }
           log("#{files(result)}",
@@ -53,6 +46,13 @@ class Shrine
         end
 
         private
+
+        def processed(input, context = {})
+          output, duration = benchmark { super }
+          log("#{files(input)} => #{files(output)}",
+              action: "process", duration: duration, context: context) if output
+          output
+        end
 
         def log(message, action:, duration:, context:)
           components = []
