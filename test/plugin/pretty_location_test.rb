@@ -16,15 +16,4 @@ describe "pretty_location plugin" do
     uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), version: :thumb)
     assert_match %r{^thumb-[\w-]+.jpg$}, uploaded_file.id
   end
-
-  it "works with preserve_filename" do
-    @uploader = uploader do
-      plugin :preserve_filename
-      plugin :pretty_location
-    end
-
-    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), version: :thumb, name: :avatar)
-
-    assert_match %r{^avatar/[\w-]+/thumb-foo\.jpg$}, uploaded_file.id
-  end
 end
