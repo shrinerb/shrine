@@ -3,6 +3,10 @@ require "test_helper"
 describe "remote_url plugin" do
   include TestHelpers::Interactions
 
+  def cassette
+    "interactions"
+  end
+
   def uploader(**options)
     super() { plugin :remote_url, error_message: "Download failed", **options }
   end

@@ -61,7 +61,7 @@ module TestHelpers
     end
 
     def around
-      VCR.use_cassette("interactions") { super }
+      VCR.use_cassette(cassette) { super }
     end
   end
 
