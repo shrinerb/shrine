@@ -207,7 +207,7 @@ class Shrine
 
         def generate_location(io, context = {})
           extension = File.extname(extract_filename(io).to_s)
-          basename  = generate_uid
+          basename  = generate_uid(io)
 
           basename + extension
         end
@@ -292,7 +292,7 @@ class Shrine
           self.class.io!(io)
         end
 
-        def generate_uid
+        def generate_uid(io)
           SecureRandom.uuid
         end
       end
