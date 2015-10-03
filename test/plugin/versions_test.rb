@@ -60,9 +60,10 @@ describe "versions plugin" do
 
   it "enables deleting versions" do
     versions = @uploader.upload(thumb: fakeio)
-    @uploader.delete(versions)
+    deleted_versions = @uploader.delete(versions)
 
-    refute versions[:thumb].exists?
+    assert_equal versions, deleted_versions
+    refute deleted_versions[:thumb].exists?
   end
 
   describe "Attacher#url" do

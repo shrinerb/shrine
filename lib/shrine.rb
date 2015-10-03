@@ -260,7 +260,11 @@ class Shrine
         end
 
         def _delete(uploaded_file, context)
-          remove(uploaded_file, context)
+          if uploaded_file.is_a?(Array) && storage.respond_to?(:multi_delete)
+            storage.multi_delete(uploaded_file.map(&:id))
+          else
+            Array(uploaded_file).each { |file| remove(file, context) }
+          end
           uploaded_file
         end
 
