@@ -8,7 +8,7 @@ class Shrine
         @store = store
       end
 
-      def upload(io, id)
+      def upload(io, id, metadata = {})
         @store[id] = io.read
         io.rewind
       end

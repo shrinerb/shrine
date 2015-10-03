@@ -10,6 +10,7 @@ class Shrine
 
     def initialize(errors)
       @errors = errors
+      super(errors.to_s)
     end
   end
 
@@ -27,7 +28,7 @@ class Shrine
       def call
         fakeio = FakeIO.new("image")
 
-        storage.upload(fakeio, "foo.jpg")
+        storage.upload(fakeio, "foo.jpg", {"content_type" => "image/jpeg"})
         error! "#upload doesn't rewind the file" if !(fakeio.read == "image")
 
         file = storage.download("foo.jpg")
@@ -37,7 +38,7 @@ class Shrine
         if storage.respond_to?(:move)
           if storage.respond_to?(:movable?)
             error! "#movable? doesn't accept 2 arguments" if !(storage.method(:movable?).arity == 2)
-            error! "#move doesn't accept 2 arguments" if !(storage.method(:move).arity == 2)
+            error! "#move doesn't accept 3 arguments" if !(storage.method(:move).arity == -3)
           else
             error! "doesn't respond to #movable?" if !storage.respond_to?(:movable?)
           end
@@ -62,7 +63,7 @@ class Shrine
         rescue Shrine::Confirm
         end
 
-        storage.upload(FakeIO.new("image"), "foo.jpg")
+        storage.upload(FakeIO.new("image"), "foo.jpg", {"content_type" => "image/jpeg"})
         storage.clear!(:confirm)
         error! "a file still #exists? after #clear! was called" if storage.exists?("foo.jpg")
 
@@ -72,7 +73,6 @@ class Shrine
       private
 
       def error!(message)
-        warn "Lint: #{message}"
         @errors << message
       end
 

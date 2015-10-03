@@ -3,7 +3,7 @@ require "test_helper"
 describe "retry plugin" do
   it "retries upload" do
     storage = Class.new(Shrine::Storage::Memory) do
-      def upload(io, location)
+      def upload(io, location, metadata = {})
         if @raised
           super
         else
@@ -20,7 +20,7 @@ describe "retry plugin" do
 
   it "retries specified number of times" do
     storage = Class.new(Shrine::Storage::Memory) do
-      def upload(io, location)
+      def upload(io, location, metadata = {})
         @counter ||= 1
 
         if @counter == 3

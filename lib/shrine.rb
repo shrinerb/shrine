@@ -250,7 +250,7 @@ class Shrine
           location = context[:location] || generate_location(io, context)
           metadata = extract_metadata(io, context)
 
-          put(io, context.merge(location: location))
+          put(io, context.merge(location: location, metadata: metadata))
 
           self.class::UploadedFile.new(
             "id"       => location,
@@ -269,11 +269,11 @@ class Shrine
         end
 
         def copy(io, context)
-          storage.upload(io, context[:location])
+          storage.upload(io, context[:location], context[:metadata])
         end
 
         def move(io, context)
-          storage.move(io, context[:location])
+          storage.move(io, context[:location], context[:metadata])
         end
 
         def remove(uploaded_file, context)

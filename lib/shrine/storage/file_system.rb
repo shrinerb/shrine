@@ -24,7 +24,7 @@ class Shrine
         @directory.chmod(permissions) if permissions
       end
 
-      def upload(io, id)
+      def upload(io, id, metadata = {})
         IO.copy_stream(io, path!(id)); io.rewind
         path(id).chmod(permissions) if permissions
       end
@@ -33,7 +33,7 @@ class Shrine
         Down.copy_to_tempfile(id, open(id))
       end
 
-      def move(io, id)
+      def move(io, id, metadata = {})
         if io.respond_to?(:path)
           FileUtils.mv io.path, path!(id)
         else
