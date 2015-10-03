@@ -7,7 +7,7 @@ class Shrine
         end
       end
 
-      def self.configure(uploader, downloader: :open_uri, error_message:, max_size: nil)
+      def self.configure(uploader, downloader: :open_uri, error_message:, max_size:)
         uploader.opts[:remote_url_downloader] = downloader
         uploader.opts[:remote_url_error_message] = error_message
         uploader.opts[:remote_url_max_size] = max_size
