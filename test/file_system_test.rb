@@ -28,7 +28,7 @@ describe Shrine::Storage::FileSystem do
     FileUtils.rm_rf(root)
   end
 
-  it "passes the lint" do
+  it "passes the linter" do
     Shrine::Storage::Linter.call(file_system(root))
     Shrine::Storage::Linter.call(file_system(root, subdirectory: "uploads"))
   end

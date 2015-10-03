@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "vcr", "~> 2.9"
   gem.add_development_dependency "webmock"
   gem.add_development_dependency "rack-test"
+  gem.add_development_dependency "dotenv"
 
   gem.add_development_dependency "roda"
   gem.add_development_dependency "ruby-filemagic"
@@ -31,6 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "thread"
+  gem.add_development_dependency "aws-sdk"
 
   gem.add_development_dependency "sequel"
   gem.add_development_dependency "activerecord"
