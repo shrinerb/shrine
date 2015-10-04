@@ -293,7 +293,7 @@ class Shrine
         end
 
         def generate_uid(io)
-          SecureRandom.uuid
+          SecureRandom.hex(30)
         end
       end
 
