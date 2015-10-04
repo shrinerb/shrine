@@ -13,11 +13,12 @@ class Shrine
       end
 
       def upload(io, id, metadata = {})
+        content_type = metadata["mime_type"]
+
         if copyable?(io)
-          source_location = [io.storage.bucket.name, io.storage.object(io.id).key].join("/")
-          object(id).copy_from(copy_source: source_location, content_type: metadata["mime_type"])
+          object(id).copy_from(io.storage.object(io.id), content_type: content_type)
         else
-          object(id).put(body: io, content_type: metadata["mime_type"])
+          object(id).put(body: io, content_type: content_type)
           io.rewind
         end
       end

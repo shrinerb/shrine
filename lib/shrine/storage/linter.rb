@@ -28,7 +28,7 @@ class Shrine
       def call
         fakeio = FakeIO.new("image")
 
-        storage.upload(fakeio, "foo.jpg", {"content_type" => "image/jpeg"})
+        storage.upload(fakeio, "foo.jpg", {"mime_type" => "image/jpeg"})
         error! "#upload doesn't rewind the file" if !(fakeio.read == "image")
 
         file = storage.download("foo.jpg")
@@ -63,7 +63,7 @@ class Shrine
         rescue Shrine::Confirm
         end
 
-        storage.upload(FakeIO.new("image"), "foo.jpg", {"content_type" => "image/jpeg"})
+        storage.upload(FakeIO.new("image"), "foo.jpg", {"mime_type" => "image/jpeg"})
         storage.clear!(:confirm)
         error! "a file still #exists? after #clear! was called" if storage.exists?("foo.jpg")
 
