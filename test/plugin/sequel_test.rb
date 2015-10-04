@@ -28,7 +28,7 @@ describe "sequel plugin" do
     @user.avatar = fakeio
 
     refute @user.valid?
-    assert_equal ["Foo"], @user.errors[:avatar]
+    assert_equal Hash[avatar: ["Foo"]], @user.errors
   end
 
   it "triggers save functionality" do
@@ -50,8 +50,8 @@ describe "sequel plugin" do
   end
 
   it "accepts custom promoting" do
-    @uploader.class.plugin :sequel, promote: ->(record, name, uploaded_file) do
-      record.avatar = nil
+    @uploader.class.plugin :sequel, promote: ->(io, context) do
+      context[:record].avatar = nil
     end
     @user.avatar = fakeio
     @user.save

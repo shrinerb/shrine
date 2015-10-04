@@ -268,10 +268,10 @@ describe Shrine::Attacher do
     end
 
     it "yields the record and the name of the attachment" do
-      @attacher.shrine_class.validate { |record, name| errors << "#{record.class.superclass} #{name}" }
+      @attacher.shrine_class.validate { |io, context| errors << "#{io.size} #{context.keys}" }
       @attacher.set(fakeio("image"))
 
-      assert_equal "Struct avatar", @attacher.errors.first
+      assert_equal "5 [:name, :record]", @attacher.errors.first
     end
 
     it "doesn't run validations when there is no attachment" do

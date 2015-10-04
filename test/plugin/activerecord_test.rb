@@ -34,7 +34,7 @@ describe "activerecord plugin" do
     @user.avatar = fakeio
 
     refute @user.valid?
-    assert_equal ["Foo"], @user.errors[:avatar]
+    assert_equal Hash[avatar: ["Foo"]], @user.errors.to_hash
   end
 
   it "triggers save functionality" do
@@ -56,8 +56,8 @@ describe "activerecord plugin" do
   end
 
   it "accepts custom promoting" do
-    @uploader.class.plugin :activerecord, promote: ->(record, name, uploaded_file) do
-      record.avatar = nil
+    @uploader.class.plugin :activerecord, promote: ->(io, context) do
+      context[:record].avatar = nil
     end
     @user.avatar = fakeio
     @user.save

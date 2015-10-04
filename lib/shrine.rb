@@ -411,7 +411,7 @@ class Shrine
 
         def validate
           errors.clear
-          instance_exec(record, name, &validate_block) if validate_block && get
+          instance_exec(get, context, &validate_block) if validate_block && get
         end
 
         def shrine_class
