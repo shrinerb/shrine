@@ -368,7 +368,7 @@ class Shrine
               cache!(value, phase: :assign)
             end
 
-          @old_attachment = get
+          @old_attachment = get unless get == uploaded_file
           _set(uploaded_file)
           validate
 

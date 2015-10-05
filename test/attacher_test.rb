@@ -40,6 +40,16 @@ describe Shrine::Attacher do
       assert_equal uploaded_file, @attacher.get
     end
 
+    it "recognizes when the attachment didn't change" do
+      uploaded_file = @attacher.set(fakeio)
+      @attacher.set(uploaded_file.data)
+      @attacher.set(uploaded_file.data)
+
+      @attacher.replace
+
+      assert uploaded_file.exists?
+    end
+
     it "writes to record's data attribute" do
       @attacher.set(fakeio("image"))
 
