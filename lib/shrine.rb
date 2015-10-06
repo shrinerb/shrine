@@ -388,7 +388,7 @@ class Shrine
 
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :promote)
-          _set(stored_file) unless get != cached_file
+          _set(stored_file) unless changed?(cached_file)
           delete!(cached_file, phase: :promote)
         end
 
@@ -438,6 +438,10 @@ class Shrine
 
         def validate_block
           shrine_class.validate_block
+        end
+
+        def changed?(uploaded_file)
+          get != uploaded_file
         end
 
         def _set(uploaded_file)

@@ -22,12 +22,7 @@ describe "activerecord plugin" do
     @user = user_class.new
   end
 
-  around do |&block|
-    ActiveRecord::Base.transaction do
-      super(&block)
-      raise ActiveRecord::Rollback
-    end
-  end
+  after { ActiveRecord::Base.connection.execute "DELETE FROM users" }
 
   it "sets validation errors on the record" do
     @uploader.class.validate { errors << "Foo" }
@@ -56,13 +51,15 @@ describe "activerecord plugin" do
   end
 
   it "accepts custom promoting" do
-    @uploader.class.plugin :activerecord, promote: ->(io, context) do
-      context[:record].avatar = nil
+    @uploader.class.plugin :activerecord, promote: ->(cached_file, record:, name:) do
+      @fiber = Fiber.new { record.send("#{name}_attacher").promote(cached_file) }
     end
     @user.avatar = fakeio
     @user.save
 
-    assert_equal nil, @user.avatar
+    assert_equal "cache", @user.avatar.storage_key
+    @fiber.resume
+    assert_equal "store", @user.avatar.storage_key
   end
 
   it "replaces after saving" do

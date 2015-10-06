@@ -41,11 +41,22 @@ class Shrine
         def _promote
           if promote?(get)
             if shrine_class.opts[:promote]
-              shrine_class.opts[:promote].call(record, name, get)
+              shrine_class.opts[:promote].call(get, context)
             else
               promote(get)
             end
           end
+        end
+
+        private
+
+        def changed?(uploaded_file)
+          record.reload unless in_transaction?
+          super
+        end
+
+        def in_transaction?
+          record.class.db.in_transaction?
         end
       end
     end

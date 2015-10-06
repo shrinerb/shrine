@@ -19,9 +19,7 @@ describe "sequel plugin" do
     @user = user_class.new
   end
 
-  around do |&block|
-    DB.transaction(rollback: :always) { super(&block) }
-  end
+  after { DB[:users].delete }
 
   it "sets validation errors on the record" do
     @uploader.class.validate { errors << "Foo" }
@@ -50,13 +48,15 @@ describe "sequel plugin" do
   end
 
   it "accepts custom promoting" do
-    @uploader.class.plugin :sequel, promote: ->(io, context) do
-      context[:record].avatar = nil
+    @uploader.class.plugin :sequel, promote: ->(cached_file, record:, name:) do
+      @fiber = Fiber.new { record.send("#{name}_attacher").promote(cached_file) }
     end
     @user.avatar = fakeio
     @user.save
 
-    assert_equal nil, @user.avatar
+    assert_equal "cache", @user.avatar.storage_key
+    @fiber.resume
+    assert_equal "store", @user.avatar.storage_key
   end
 
   it "replaces after saving" do
