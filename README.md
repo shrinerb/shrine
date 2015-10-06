@@ -205,6 +205,11 @@ class ImageUploader < Shrine
   end
 end
 ```
+```rb
+class User < ActiveRecord::Base
+  include ImageUploader[:avatar]
+end
+```
 
 The `io` is the file being uploaded, and `context` we'll leave for later.  You
 may be wondering why we need this conditional. Well, when an attachment is
@@ -289,7 +294,7 @@ user.avatar #=>
 #   small:  #<Shrine::UploadedFile>,
 # }
 
-# If you loaded the store_dimensions plugin
+# With the store_dimensions plugin
 user.avatar[:large].width  #=> 700
 user.avatar[:medium].width #=> 500
 user.avatar[:small].width  #=> 300
@@ -309,11 +314,8 @@ class ImageUploader < Shrine
     puts context
   end
 end
-
-class User < ActiveRecord::Base
-  include ImageUploader[:avatar]
-end
-
+```
+```rb
 user = User.new
 user.avatar = File.open("avatar.jpg")  # "assign"
 user.save                              # "promote"
@@ -435,7 +437,7 @@ record has its own directory, you can use the `pretty_location` plugin:
 ```rb
 Shrine.plugin :pretty_location
 ```
-```
+```rb
 user = User.create(avatar: File.open("avatar.jpg"))
 user.avatar.id #=> "user/34/avatar/34krtreds2df.jpg"
 ```
@@ -517,8 +519,8 @@ you could implement background promoting using Sidekiq:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :activerecord, promote: -> (file, record:, name:) do
-    UploadWorker.perform_async(file.to_json, record.id, name)
+  plugin :activerecord, promote: -> (cached_file, record:, name:) do
+    UploadWorker.perform_async(cached_file.to_json, record.id, name)
   end
 end
 ```
@@ -526,11 +528,11 @@ end
 class UploadWorker
   include Sidekiq::Worker
 
-  def perform(file_json, id, name)
+  def perform(cached_file, id, name)
     user = User.find(id)
-    file = JSON.parse(file_json)
+    cached_file = JSON.parse(cached_file)
 
-    user.send("#{name}_attacher").promote(file)
+    user.send("#{name}_attacher").promote(cached_file)
     user.save
   end
 end
@@ -544,20 +546,19 @@ other uploading libraries.
 
 After the user submits the form, promoting will be kicked off into a background
 job, and the record will be saved with the cached image. This means that, if
-you have your `:cache` in the public/ folder, the end user will immediately see
-their uploaded file, because the URL will at this moment point to the cached
-version.
+you have your `:cache` in the "public/" folder, the end user will immediately see
+their uploaded file, because the URL will point to the cached version.
 
 In the meanwhile, what `#promote` does is it uploads the cached file `:store`,
-and writes the stored file to the column. What's great is that, when the record
-gets saved, the end user won't even notice that the URL has updated from
-filesystem to S3, because they still see the same image.
+and writes the stored file to the column. When the record gets saved, the end
+user won't even notice that the URL has updated from filesystem to S3, because
+they still see the same image.
 
 ### Safety
 
-It is possible that, before the background job finishes, the user changes their
-mind and reuploads a new file. This can happen either if the user was too
-quick, or the background job was too slow.
+It is possible that the user changes their mind and reuploads a new file, but
+before the background job finished promoting.  This can happen either if the
+user was too quick, or the background job was too slow.
 
 Normally what would happen in that case is that the old job would finish
 running, and replace the new file with the old one. It would probably turn out
@@ -566,11 +567,12 @@ attachment would eventually replace the old one again. However, there would be
 a period where the user would see an old image *after* they uploaded a new one,
 which can be upsetting.
 
-Shrine handles this gracefully. After the cached file is uploaded to `:store`,
-`#promote` checks if the cached file still matches the file in the record
+Shrine handles this gracefully. After `#promote` uploads the cached file to
+`:store`, it checks if the cached file still matches the file in the record
 column. If the files are different, that means the user reuploaded the
-attachment, and Shrine won't do the replacement. Additionally this job is
-idempotent, meaning it can be safely repeated in case of failure.
+attachment, and Shrine won't do the replacement (that's why you have to pass
+the argument). Additionally this job is idempotent, meaning it can be safely
+repeated in case of failure.
 
 ## Clearing cache
 
