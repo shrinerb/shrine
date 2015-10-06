@@ -72,7 +72,7 @@ describe Shrine::UploadedFile do
                   uploaded_file.to_json
 
     assert_equal '{"thumb":{"id":"123","storage":"store","metadata":{}}}',
-                  JSON.dump({thumb: uploaded_file})
+                  {thumb: uploaded_file}.to_json
   end
 
   it "implements equality" do

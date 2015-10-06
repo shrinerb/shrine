@@ -36,7 +36,7 @@ describe "versions plugin" do
 
   it "makes #uploaded_file recognize versions" do
     versions = @uploader.upload(thumb: fakeio)
-    retrieved = @uploader.class.uploaded_file(JSON.dump(versions))
+    retrieved = @uploader.class.uploaded_file(versions.to_json)
 
     assert_equal versions, retrieved
   end

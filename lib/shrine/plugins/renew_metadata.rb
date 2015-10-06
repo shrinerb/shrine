@@ -12,7 +12,7 @@ class Shrine
               file.metadata.update(real_metadata)
             end
 
-            super JSON.dump(uploaded_file)
+            super uploaded_file.to_json
           else
             super
           end

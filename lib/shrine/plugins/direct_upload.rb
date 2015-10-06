@@ -43,7 +43,7 @@ class Shrine
         end
 
         def json(object)
-          JSON.dump(object)
+          object.to_json
         end
 
         def allow_storage!(storage)

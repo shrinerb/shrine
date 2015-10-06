@@ -539,6 +539,10 @@ class Shrine
           data.to_json(*args)
         end
 
+        def as_json(*args)
+          data
+        end
+
         def ==(other)
           other.is_a?(self.class) &&
           self.id == other.id &&
