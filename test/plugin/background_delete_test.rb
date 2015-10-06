@@ -5,22 +5,29 @@ describe "background_delete plugin" do
     super() { plugin :background_delete, &block }
   end
 
-  it "calls the block when replacing" do
-    called = false
-    @attacher = attacher { |uploaded_file, context| called = true }
-    @attacher.set(fakeio)
+  it "enables background deleting when replacing" do
+    @attacher = attacher do |uploaded_file, context|
+      @fiber = Fiber.new { uploaded_file.delete }
+    end
+    uploaded_file = @attacher.set(fakeio)
     @attacher.set(fakeio)
     @attacher.replace
 
-    assert called
+    assert uploaded_file.exists?
+    @fiber.resume
+    refute uploaded_file.exists?
   end
 
-  it "calls the block when destroying" do
-    called = false
-    @attacher = attacher { |uploaded_file, context| called = true }
-    @attacher.set(fakeio)
+  it "enables background deleting when destroying" do
+    @attacher = attacher do |uploaded_file, context|
+      @fiber = Fiber.new { uploaded_file.delete }
+    end
+    uploaded_file = @attacher.set(fakeio)
     @attacher.destroy
+    @attacher.replace
 
-    assert called
+    assert uploaded_file.exists?
+    @fiber.resume
+    refute uploaded_file.exists?
   end
 end
