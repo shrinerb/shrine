@@ -6,8 +6,8 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = ">= 2.1"
 
-  gem.summary      = "Toolkit for file uploads in Ruby applications"
-  gem.description  = "Toolkit for file uploads in Ruby applications"
+  gem.summary      = "Toolkit for file uploads in Ruby"
+  gem.description  = "Toolkit for file uploads in Ruby"
   gem.homepage     = "https://github.com/janko-m/shrine"
   gem.authors      = ["Janko Marohnić"]
   gem.email        = ["janko.marohnic@gmail.com"]

@@ -1,3 +1,4 @@
 Gemfile.lock
 pkg/
 .env
+.rdoc

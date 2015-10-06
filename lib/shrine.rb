@@ -6,6 +6,7 @@ require "json"
 class Shrine
   class Error < StandardError; end
 
+  # Raised when a file was not a valid IO.
   class InvalidFile < Error
     def initialize(io, missing_methods)
       @io, @missing_methods = io, missing_methods
@@ -22,6 +23,7 @@ class Shrine
     end
   end
 
+  # Raised by storages in method `#clear!` when confirmation wasn't passed in.
   class Confirm < Error
     def message
       "Are you sure you want to delete all files from the storage? (confirm with `clear!(:confirm)`)"
@@ -29,7 +31,7 @@ class Shrine
   end
 
   # Methods which an object has to respond to in order to be considered
-  # an IO object.
+  # an IO object.  Keys are method names, and values are arguments.
   IO_METHODS = {
     :read   => [:length, :outbuf],
     :eof?   => [],
@@ -38,14 +40,24 @@ class Shrine
     :close  => [],
   }
 
+  # Core class that represents a file uploaded to a storage.  The instance
+  # methods for this class are added by Shrine::Plugins::Base::FileMethods, the
+  # class methods are added by Shrine::Plugins::Base::FileClassMethods.
   class UploadedFile
     @shrine_class = ::Shrine
   end
 
+  # Core class which generates attachment-specific modules that are included in
+  # model classes.  The instance methods for this class are added by
+  # Shrine::Plugins::Base::AttachmentMethods, the class methods are added by
+  # Shrine::Plugins::Base::AttachmentClassMethods.
   class Attachment < Module
     @shrine_class = ::Shrine
   end
 
+  # Core class which handles attaching files on records.  The instance methods
+  # for this class are added by Shrine::Plugins::Base::AttachmentMethods, the
+  # class methods are added by Shrine::Plugins::Base::AttachmentClassMethods.
   class Attacher
     @shrine_class = ::Shrine
   end
@@ -53,6 +65,8 @@ class Shrine
   @opts = {}
   @storages = {}
 
+  # Module in which all Shrine plugins should be stored. Also contains logic
+  # for registering and loading plugins.
   module Plugins
     @plugins = {}
 
@@ -69,23 +83,29 @@ class Shrine
     end
 
     # Register the given plugin with Shrine, so that it can be loaded using
-    # #plugin with a symbol.  Should be used by plugin files. Example:
+    # `Shrine.plugin` with a symbol.  Should be used by plugin files. Example:
     #
-    #   Shrine::Plugins.register_plugin(:plugin_name, PluginModule)
+    #     Shrine::Plugins.register_plugin(:plugin_name, PluginModule)
     def self.register_plugin(name, mod)
       @plugins[name] = mod
     end
 
+    # The base plugin for Shrine, implementing all default functionality.
+    # Methods are put into a plugin so future plugins can easily override
+    # them and call `super` to get the default behavior.
     module Base
       module ClassMethods
+        # Generic options for this class, plugins store their options here.
         attr_reader :opts
 
+        # A block that is saved by .validate and run on validations.
         attr_reader :validate_block
 
+        # A hash of storages and their symbol identifiers.
         attr_accessor :storages
 
-        # When inheriting Shrine, copy the shared data into the subclass,
-        # and setup the manager and proxy subclasses.
+        # When inheriting Shrine, copy the instance variables into the subclass,
+        # and setup the subclasses for core classes.
         def inherited(subclass)
           subclass.instance_variable_set(:@opts, opts.dup)
           subclass.opts.each do |key, value|
@@ -113,8 +133,8 @@ class Shrine
         # which is used directly, or a symbol represented a registered plugin
         # which will be required and then used. Returns nil.
         #
-        #   Shrine.plugin PluginModule
-        #   Shrine.plugin :basic_authentication
+        #     Shrine.plugin PluginModule
+        #     Shrine.plugin :basic_authentication
         def plugin(plugin, *args, &block)
           plugin = Plugins.load_plugin(plugin) if plugin.is_a?(Symbol)
           plugin.load_dependencies(self, *args, &block) if plugin.respond_to?(:load_dependencies)
@@ -130,20 +150,44 @@ class Shrine
           nil
         end
 
+        # Retrieves the storage specifies by the symbol/string, and raises an
+        # appropriate error if the storage is missing
         def storage(name)
           storages.each { |key, value| return value if key.to_s == name.to_s }
-          raise Error, "#{self} doesn't have storage #{name.inspect}"
+          raise Error, "storage #{name.inspect} isn't registered on #{self}"
         end
 
-        def attachment(*args)
-          self::Attachment.new(*args)
+        # Generates an instance of Shrine::Attachment to be included in the
+        # model class.  Example:
+        #
+        #     class User
+        #       include Shrine[:avatar] # alias for `Shrine.attachment[:avatar]`
+        #     end
+        def attachment(name, *args)
+          self::Attachment.new(name, *args)
         end
         alias [] attachment
 
+        # Block that is executed in context of Shrine::Attacher during
+        # validation.  Example:
+        #
+        #     Shrine.validate do |record, name|
+        #       if record.send(name).size > 5.megabytes
+        #         errors << "is too big (max is 5 MB)"
+        #       end
+        #     end
         def validate(&block)
           @validate_block = block
         end
 
+        # Instantiates a Shrine::UploadedFile from a JSON string or a hash, and
+        # optionally yields the returned objects (useful with versions).  This
+        # is used internally by Shrine::Attacher, but it's also useful when you
+        # need to serialize the uploaded file in background jobs.
+        #
+        #     uploaded_file #=> #<Shrine::UploadedFile>
+        #     json = uploaded_file.to_json #=> '{"storage":"cache","id":"...","metadata":{...}}'
+        #     Shrine.uploaded_file(json) #=> #<Shrine::UploadedFile>
         def uploaded_file(object, &block)
           case object
           when String
@@ -155,10 +199,19 @@ class Shrine
           end
         end
 
+        # Deletes one or more Shrine::UploadedFile's.  In case of one file it
+        # just calls Shrine::UploadedFile#delete, but with multiple files it
+        # uses storage's multi-delete capabilities if present.
+        #
+        #     Shrine.delete(uploaded_file)
+        #     Shrine.delete([uploaded_file])
         def delete(uploaded_file, context = {})
           uploader_for(uploaded_file).delete(uploaded_file, context)
         end
 
+        # Checks if the object is a valid IO by checking that it responds to
+        # `#read`, `#eof?`, `#rewind`, `#size` and `#close`, otherwise raises
+        # Shrine::InvalidFile.
         def io!(io)
           missing_methods = IO_METHODS.reject do |m, a|
             io.respond_to?(m) && [a.count, -1].include?(io.method(m).arity)
@@ -167,6 +220,7 @@ class Shrine
           raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 
+        # Instantiates the Shrine uploader instance for this file.
         def uploader_for(uploaded_file)
           uploaders = storages.keys.map { |key| new(key) }
           uploaders.find { |uploader| uploader.uploaded?(uploaded_file) }
@@ -174,37 +228,69 @@ class Shrine
       end
 
       module InstanceMethods
-        attr_reader :storage_key, :storage
+        # The symbol that identifies the storage.
+        attr_reader :storage_key
 
+        # The storage object identified by #storage_key.
+        attr_reader :storage
+
+        # Accepts a storage symbol registered in `Shrine.storages`.
         def initialize(storage_key)
           @storage = self.class.storage(storage_key)
           @storage_key = storage_key.to_sym
         end
 
+        # The class-level options hash.  This should probably not be modified
+        # at the instance level.
         def opts
           self.class.opts
         end
 
+        # The main method for uploading files.  Takes in an IO object and an
+        # optional context (used internally by Shrine::Attacher).  It calls
+        # user-defined #process, and aferwards it calls #store.
         def upload(io, context = {})
           io = processed(io, context) || io
           store(io, context)
         end
 
+        # User is expected to perform processing inside of this method, and
+        # return the processed files. Returning nil signals that no proccessing
+        # has been done and that the original file should be used.  When used
+        # with Shrine::Attachment, the context variable will hold the record,
+        # name of the attachment and the phase.
+        #
+        #     class ImageUploader < Shrine
+        #       def process(io, context)
+        #         case context[:phase]
+        #         when :assign
+        #           # do processing
+        #         when :promote
+        #           # do processing
+        #         end
+        #       end
+        #     end
         def process(io, context = {})
         end
 
+        # Uploads the file and returns an instance of Shrine::UploadedFile.
         def store(io, context = {})
           _store(io, context)
         end
 
+        # Checks if the storage identified with this instance uploaded the
+        # given file.
         def uploaded?(uploaded_file)
           uploaded_file.storage_key == storage_key.to_s
         end
 
+        # Called by `Shrine.delete`.
         def delete(uploaded_file, context = {})
           _delete(uploaded_file, context)
         end
 
+        # Generates a unique location for the uploaded file, and preserves an
+        # optional extension.
         def generate_location(io, context = {})
           extension = File.extname(extract_filename(io).to_s)
           basename  = generate_uid(io)
@@ -212,6 +298,9 @@ class Shrine
           basename + extension
         end
 
+        # Extracts filename, size and MIME type from the file, which is later
+        # accessible through `UploadedFile#metadata`. When the uploaded file
+        # is later promoted, this metadata is simply copied over.
         def extract_metadata(io, context = {})
           {
             "filename"  => extract_filename(io),
@@ -220,11 +309,14 @@ class Shrine
           }
         end
 
+        # User-defined default URL for when a file is missing (called by
+        # `Attacher#url`).
         def default_url(context)
         end
 
         private
 
+        # Extracts the filename from the IO using smart heuristics.
         def extract_filename(io)
           if io.respond_to?(:original_filename)
             io.original_filename
@@ -233,6 +325,7 @@ class Shrine
           end
         end
 
+        # Extracts the MIME type from the IO using smart heuristics.
         def extract_mime_type(io)
           if io.respond_to?(:mime_type)
             io.mime_type
@@ -241,10 +334,14 @@ class Shrine
           end
         end
 
+        # Extracts the filesize from the IO.
         def extract_size(io)
           io.size
         end
 
+        # Called by #store.  It first generates the location if it wasn't
+        # already provided with the `:location` option.  Afterwards it extracts
+        # the metadata, stores the file, and returns a Shrine::UploadedFile.
         def _store(io, context)
           _enforce_io(io)
           location = context[:location] || generate_location(io, context)
@@ -259,6 +356,10 @@ class Shrine
           )
         end
 
+        # Called by `Shrine.delete`.  If an array of uploaded files was passed
+        # in, it will try to use storage-specific multi-delete capabilities
+        # (S3 has one), otherwise it will iterate over files and call `#delete`
+        # on them.  It returns the deleted files.
         def _delete(uploaded_file, context)
           if uploaded_file.is_a?(Array) && storage.respond_to?(:multi_delete)
             storage.multi_delete(uploaded_file.map(&:id))
@@ -268,47 +369,66 @@ class Shrine
           uploaded_file
         end
 
+        # Copies the file to the storage.
         def put(io, context)
           copy(io, context)
         end
 
+        # Does the actual uploading, calling `#upload` on the storage.
         def copy(io, context)
           storage.upload(io, context[:location], context[:metadata])
         end
 
+        # Some storages support moving, so we provide this method for plugins
+        # to use, but by default the file will be copied.
         def move(io, context)
           storage.move(io, context[:location], context[:metadata])
         end
 
+        # Does the actual deletion, calls `UploadedFile#delete`.
         def remove(uploaded_file, context)
           uploaded_file.delete
         end
 
+        # Calls #process and returns the processed files.
         def processed(io, context)
           process(io, context)
         end
 
+        # Calls `Shrine#io!`.
         def _enforce_io(io)
           self.class.io!(io)
         end
 
+        # Generates a UID to use in location for uploaded files.
         def generate_uid(io)
           SecureRandom.hex(30)
         end
       end
 
       module AttachmentClassMethods
+        # Reference to the Shrine class related to this attachment class.
         attr_accessor :shrine_class
 
+        # Since Attachment is anonymously subclassed when Shrine is subclassed,
+        # and then assigned to a constant of the Shrine subclass, make inspect
+        # reflect the likely name for the class.
         def inspect
           "#{shrine_class.inspect}::Attachment"
         end
       end
 
       module AttachmentMethods
+        # Since Shrine::Attachment is a subclass of `Module`, this method
+        # generates a module, which should be included in a model class.
         def initialize(name, **options)
           @name = name
 
+          # We store the attacher class so that it can be retrieved by the model
+          # at the instance level when instantiating the attacher.  We use a
+          # class variable because (a) it can be accessed from the instance
+          # level without needing to create a class-level reader, and (b) we
+          # want it to be inherited when subclassing the model
           class_variable_set(:"@@#{name}_attacher_class", shrine_class::Attacher)
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
@@ -330,18 +450,26 @@ class Shrine
           RUBY
         end
 
+        # Displays the attachment name.
+        #
+        #     Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
         def inspect
           "#<#{self.class.inspect}(#{@name})>"
         end
 
+        # Returns the Shrine class related to this attachment.
         def shrine_class
           self.class.shrine_class
         end
       end
 
       module AttacherClassMethods
+        # Reference to the Shrine class related to this attacher class.
         attr_accessor :shrine_class
 
+        # Since Attacher is anonymously subclassed when Shrine is subclassed,
+        # and then assigned to a constant of the Shrine subclass, make inspect
+        # reflect the likely name for the class.
         def inspect
           "#{shrine_class.inspect}::Attacher"
         end
@@ -358,6 +486,11 @@ class Shrine
           @errors = []
         end
 
+        # Receives the attachment value from the form.  If it receives a JSON
+        # string or a hash, it will assume this refrences an already uploaded
+        # file (e.g. cached file that persisted after validation errors).
+        # Otherwise it assumes that it's an IO object and caches it.
+        # Afterwards it runs #validate.
         def set(value)
           return if value == ""
 
@@ -375,32 +508,49 @@ class Shrine
           get
         end
 
+        # Retrieves the uploaded file from the record column.
         def get
           shrine_class.uploaded_file(read) if read
         end
 
+        # Plugins can override this if they want something to be done on save.
         def save
         end
 
+        # Returns true if uploaded_file exists and is cached.  If it's true,
+        # \#promote will be called.
         def promote?(uploaded_file)
           uploaded_file && cache.uploaded?(uploaded_file)
         end
 
+        # Promotes a cached file to store, afterwards deleting the cached file.
+        # It does the promoting only if the cached file matches the current
+        # one. This check is done so that it can safely be used in background
+        # jobs in case the user quickly changes their mind and replaces the
+        # attachment before the old one was finished promoting.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :promote)
           _set(stored_file) unless changed?(cached_file)
           delete!(cached_file, phase: :promote)
         end
 
+        # Deletes the attachment that was replaced.  Typically this should be
+        # called after saving, to ensure that the file is deleted only after
+        # the record has been successfuly saved.
         def replace
           delete!(@old_attachment, phase: :replace) if @old_attachment
           @old_attachment = nil
         end
 
+        # Deletes the attachment. Typically this should be called after
+        # destroying a record.
         def destroy
           delete!(get, phase: :destroy) if get
         end
 
+        # Returns the URL to the attached file (internally calls `#url` on the
+        # storage).  If the attachment is missing, it calls
+        # `Shrine#default_url`.  Forwards any URL options to the storage.
         def url(**options)
           if uploaded_file = get
             uploaded_file.url(**options)
@@ -409,69 +559,97 @@ class Shrine
           end
         end
 
+        # Runs the validations defined by `Shrine.validate`.
         def validate
           errors.clear
           instance_exec(get, context, &validate_block) if validate_block && get
         end
 
+        # Returns the Shrine class related to this attacher.
         def shrine_class
           self.class.shrine_class
         end
 
         private
 
+        # Uploads the file to cache (calls `Shrine#upload`).
         def cache!(io, phase:)
           cache.upload(io, context.merge(phase: phase))
         end
 
+        # Uploads the file to store (calls `Shrine#upload`).
         def store!(io, phase:)
           store.upload(io, context.merge(phase: phase))
         end
 
+        # Deletes the file (calls `Shrine.delete`).
         def delete!(uploaded_file, phase:)
           shrine_class.delete(uploaded_file, context.merge(phase: phase))
         end
 
+        # Delegates to `Shrine#default_url`.
         def default_url(**options)
           store.default_url(options.merge(context))
         end
 
+        # The validation block provided by `Shrine.validate`.
         def validate_block
           shrine_class.validate_block
         end
 
+        # Checks if the uploaded file matches the written one.
         def changed?(uploaded_file)
           get != uploaded_file
         end
 
+        # It dumps the UploadedFile to JSON and writes the result to the column.
         def _set(uploaded_file)
-          write(uploaded_file ? JSON.dump(uploaded_file) : nil)
+          write(uploaded_file ? uploaded_file.to_json : nil)
         end
 
+        # It writes to record's `<attachment>_data` column.
         def write(value)
           record.send("#{name}_data=", value)
         end
 
+        # It reads from the record's `<attachment>_data` column.
         def read
           value = record.send("#{name}_data")
           value unless value.nil? || value.empty?
         end
 
+        # The context that's sent to Shrine on upload and delete. It holds the
+        # record and the name of the attachment.
         def context
           @context ||= {name: name, record: record}.freeze
         end
       end
 
       module FileClassMethods
+        # Reference to the Shrine class related to this uploaded file class.
         attr_accessor :shrine_class
 
+        # Since UploadedFile is anonymously subclassed when Shrine is subclassed,
+        # and then assigned to a constant of the Shrine subclass, make inspect
+        # reflect the likely name for the class.
         def inspect
           "#{shrine_class.inspect}::UploadedFile"
         end
       end
 
       module FileMethods
-        attr_reader :data, :id, :storage_key, :metadata
+        # The ID of the uploaded file, which holds the location of the actual
+        # file on the storage
+        attr_reader :id
+
+        # The storage key as a string.
+        attr_reader :storage_key
+
+        # A hash of metadata, returned from `Shrine#extract_metadata`.
+        attr_reader :metadata
+
+        # The entire data hash which identifies this uploaded file.
+        attr_reader :data
 
         def initialize(data)
           @data        = data
@@ -482,67 +660,89 @@ class Shrine
           storage # ensure storage exists
         end
 
+        # The filename that was extracted from the original file.
         def original_filename
           metadata.fetch("filename")
         end
 
+        # The extension derived from `#original_filename`.
         def extension
           extname = File.extname(id)
           extname[1..-1] unless extname.empty?
         end
 
+        # The filesize of the original file.
         def size
           metadata.fetch("size")
         end
 
+        # The MIME type of the original file.
         def mime_type
           metadata.fetch("mime_type")
         end
 
+        # Part of Shrine::UploadedFile's complying to the IO interface.  It
+        # delegates to the internally downloaded file.
         def read(*args)
           io.read(*args)
         end
 
+        # Part of Shrine::UploadedFile's complying to the IO interface.  It
+        # delegates to the internally downloaded file.
         def eof?
           io.eof?
         end
 
+        # Part of Shrine::UploadedFile's complying to the IO interface.  It
+        # delegates to the internally downloaded file.
         def close
           io.close
         end
 
+        # Part of Shrine::UploadedFile's complying to the IO interface.  It
+        # delegates to the internally downloaded file.
         def rewind
           io.rewind
         end
 
+        # Calls `#url` on the storage, forwarding any options.
         def url(**options)
           storage.url(id, **options)
         end
 
+        # Calls `#exists?` on the storage, which checks that the file exists.
         def exists?
           storage.exists?(id)
         end
 
+        # Calls `#download` on the storage, which downloads the file to disk.
         def download
           storage.download(id)
         end
 
+        # Calls `#delete` on the storage, which deletes the remote file.
         def delete
           storage.delete(id)
         end
 
+        # Added as a Ruby conversion method. It typically downloads the file.
         def to_io
           io
         end
 
+        # Serializes the uploaded file to JSON, suitable for storing in the
+        # column or passing to a background job.
         def to_json(*args)
           data.to_json(*args)
         end
 
+        # Conform to ActiveSupport's JSON interface.
         def as_json(*args)
           data
         end
 
+        # Two uploaded files are equal if they're uploaded to the same storage
+        # and they have the same #id.
         def ==(other)
           other.is_a?(self.class) &&
           self.id == other.id &&
@@ -554,10 +754,12 @@ class Shrine
           [id, storage_key].hash
         end
 
+        # The storage object this file was uploaded to.
         def storage
           @storage ||= shrine_class.storage(storage_key)
         end
 
+        # Returns the Shrine class related to this uploaded file.
         def shrine_class
           self.class.shrine_class
         end
