@@ -107,6 +107,13 @@ describe Shrine do
       assert_equal uploaded_file, retrieved
     end
 
+    it "accepts an UploadedFile" do
+      uploaded_file = @uploader.upload(fakeio)
+      retrieved = @uploader.class.uploaded_file(uploaded_file)
+
+      assert_equal uploaded_file, retrieved
+    end
+
     it "yields the converted file" do
       uploaded_file = @uploader.upload(fakeio)
       @uploader.class.uploaded_file(uploaded_file.data) { |o| @yielded = o }

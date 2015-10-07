@@ -193,9 +193,11 @@ class Shrine
           when String
             uploaded_file(JSON.parse(object), &block)
           when Hash
-            self::UploadedFile.new(object).tap { |f| yield(f) if block_given? }
+            uploaded_file(self::UploadedFile.new(object), &block)
+          when self::UploadedFile
+            object.tap { |f| yield(f) if block_given? }
           else
-            raise Error, "#{object.inspect} cannot be converted to an UploadedFile"
+            raise Error, "cannot convert #{object.inspect} to a #{self}::UploadedFile"
           end
         end
 
@@ -496,7 +498,7 @@ class Shrine
 
           uploaded_file =
             if value.is_a?(String) || value.is_a?(Hash)
-              shrine_class.uploaded_file(value)
+              uploaded_file(value)
             elsif value
               cache!(value, phase: :assign)
             end
@@ -510,7 +512,7 @@ class Shrine
 
         # Retrieves the uploaded file from the record column.
         def get
-          shrine_class.uploaded_file(read) if read
+          uploaded_file(read) if read
         end
 
         # Plugins can override this if they want something to be done on save.
@@ -563,6 +565,10 @@ class Shrine
         def validate
           errors.clear
           instance_exec(get, context, &validate_block) if validate_block && get
+        end
+
+        def uploaded_file(*args)
+          shrine_class.uploaded_file(*args)
         end
 
         # Returns the Shrine class related to this attacher.
