@@ -5,6 +5,7 @@ require "stringio"
 require "tempfile"
 
 class Shrine
+  # Error which is thrown when Storage::Linter fails.
   class LintError < Error
     attr_reader :errors
 
@@ -15,6 +16,8 @@ class Shrine
   end
 
   module Storage
+    # Checks if the storage conforms to Shrine's specification. If the check
+    # fails a LintError is raised.
     class Linter
       def self.call(storage)
         new(storage).call
