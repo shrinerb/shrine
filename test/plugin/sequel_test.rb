@@ -22,7 +22,7 @@ describe "sequel plugin" do
   after { DB[:users].delete }
 
   it "sets validation errors on the record" do
-    @uploader.class.validate { errors << "Foo" }
+    @user.avatar_attacher.class.validate { errors << "Foo" }
     @user.avatar = fakeio
 
     refute @user.valid?

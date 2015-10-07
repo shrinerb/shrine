@@ -25,7 +25,7 @@ describe "activerecord plugin" do
   after { ActiveRecord::Base.connection.execute "DELETE FROM users" }
 
   it "sets validation errors on the record" do
-    @uploader.class.validate { errors << "Foo" }
+    @user.avatar_attacher.class.validate { errors << "Foo" }
     @user.avatar = fakeio
 
     refute @user.valid?

@@ -335,17 +335,17 @@ Context is really useful for doing conditional processing and validations based
 on the name of the attachment and column values. In general the context is
 saturated through the whole stack and is used by a lot of plugins.
 
-## Validations
+## Validation
 
-You register validations with `Shrine.validate`. Validations are best done with
-the `validation_helpers` plugin:
+Validations are registered by calling `Shrine::Attacher.validate`, and are best
+done with the `validation_helpers` plugin:
 
 ```rb
 class ImageUploader < Shrine
   plugin :validation_helpers
 
-  validate do |io, context|
-    if (user = context[:record]) && user.guest?
+  Attacher.validate do # Evaluated inside an instance of ImageUploader::Attacher.
+    if record.guest?
       validate_max_size 2.megabytes, message: "is too large (max is 2 MB)"
     end
   end
@@ -454,7 +454,7 @@ end
 ```
 
 Note that the location should always be unique, otherwise dirty tracking won't
-be detected properly.
+be detected properly (you can use `Shrine#generate_uid`).
 
 When you're using `Shrine` directly, if you want to upload a file to a specific
 location, you can pass the `:location` parameter (which bypasses

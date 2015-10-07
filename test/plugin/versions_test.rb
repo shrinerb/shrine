@@ -147,7 +147,7 @@ describe "versions plugin" do
   end
 
   it "doesn't allow validating versions" do
-    @uploader.class.validate {}
+    @attacher.class.validate {}
     uploaded_file = @uploader.upload(fakeio)
 
     assert_raises(Shrine::Error) { @attacher.set("thumb" => uploaded_file.data) }

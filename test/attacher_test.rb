@@ -84,7 +84,7 @@ describe Shrine::Attacher do
     end
 
     it "runs validations" do
-      @attacher.shrine_class.validate { errors << :foo }
+      @attacher.class.validate { errors << :foo }
       @attacher.set(fakeio)
 
       refute_empty @attacher.errors
@@ -271,21 +271,14 @@ describe Shrine::Attacher do
 
   describe "#validate" do
     it "instance exec's the validation block" do
-      @attacher.shrine_class.validate { errors << get.read }
+      @attacher.class.validate { errors << get.read }
       @attacher.set(fakeio("image"))
 
       assert_equal "image", @attacher.errors.first
     end
 
-    it "yields the record and the name of the attachment" do
-      @attacher.shrine_class.validate { |io, context| errors << "#{io.size} #{context.keys}" }
-      @attacher.set(fakeio("image"))
-
-      assert_equal "5 [:name, :record]", @attacher.errors.first
-    end
-
     it "doesn't run validations when there is no attachment" do
-      @attacher.shrine_class.validate { errors << :foo }
+      @attacher.class.validate { errors << :foo }
       @attacher.validate
 
       assert_empty @attacher.errors

@@ -50,15 +50,6 @@ describe Shrine do
       assert_equal "foo", uploader.storages[:foo]
     end
 
-    it "duplicates validation block" do
-      uploader = Class.new(Shrine)
-      uploader.validate {}
-
-      subclass = Class.new(uploader)
-
-      refute_equal nil, subclass.validate_block
-    end
-
     it "duplicates core classes" do
       uploader = Class.new(Shrine)
 
@@ -80,15 +71,6 @@ describe Shrine do
 
       assert_instance_of uploader::Attachment, uploader.attachment(:avatar)
       assert_instance_of uploader::Attachment, uploader[:avatar]
-    end
-  end
-
-  describe ".validate" do
-    it "saves the block to .validate_block" do
-      uploader = Class.new(Shrine)
-      uploader.validate {}
-
-      assert_instance_of Proc, uploader.validate_block
     end
   end
 

@@ -98,9 +98,6 @@ class Shrine
         # Generic options for this class, plugins store their options here.
         attr_reader :opts
 
-        # A block that is saved by .validate and run on validations.
-        attr_reader :validate_block
-
         # A hash of storages and their symbol identifiers.
         attr_accessor :storages
 
@@ -114,7 +111,6 @@ class Shrine
             end
           end
           subclass.instance_variable_set(:@storages, storages.dup)
-          subclass.instance_variable_set(:@validate_block, validate_block)
 
           file_class = Class.new(self::UploadedFile)
           file_class.shrine_class = subclass
@@ -167,18 +163,6 @@ class Shrine
           self::Attachment.new(name, *args)
         end
         alias [] attachment
-
-        # Block that is executed in context of Shrine::Attacher during
-        # validation.  Example:
-        #
-        #     Shrine.validate do |record, name|
-        #       if record.send(name).size > 5.megabytes
-        #         errors << "is too big (max is 5 MB)"
-        #       end
-        #     end
-        def validate(&block)
-          @validate_block = block
-        end
 
         # Instantiates a Shrine::UploadedFile from a JSON string or a hash, and
         # optionally yields the returned objects (useful with versions).  This
@@ -475,6 +459,18 @@ class Shrine
         def inspect
           "#{shrine_class.inspect}::Attacher"
         end
+
+        # Block that is executed in context of Shrine::Attacher during
+        # validation.  Example:
+        #
+        #     Shrine::Attacher.validate do
+        #       if get.size > 5.megabytes
+        #         errors << "is too big (max is 5 MB)"
+        #       end
+        #     end
+        def validate(&block)
+          shrine_class.opts[:validate] = block
+        end
       end
 
       module AttacherMethods
@@ -564,7 +560,7 @@ class Shrine
         # Runs the validations defined by `Shrine.validate`.
         def validate
           errors.clear
-          instance_exec(get, context, &validate_block) if validate_block && get
+          instance_exec(&validate_block) if validate_block && get
         end
 
         def uploaded_file(*args)
@@ -600,7 +596,7 @@ class Shrine
 
         # The validation block provided by `Shrine.validate`.
         def validate_block
-          shrine_class.validate_block
+          shrine_class.opts[:validate]
         end
 
         # Checks if the uploaded file matches the written one.
