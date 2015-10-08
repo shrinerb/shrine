@@ -13,7 +13,7 @@ describe "direct_upload plugin" do
   end
 
   def setup
-    @uploader = uploader(:cache) { plugin :direct_upload }
+    @uploader = uploader(:cache) { plugin :direct_upload, max_size: nil }
   end
 
   it "returns a JSON response" do

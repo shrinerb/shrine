@@ -5,7 +5,7 @@ require "forwardable"
 class Shrine
   module Plugins
     module DirectUpload
-      def self.configure(uploader, allowed_storages: [:cache], max_size: nil)
+      def self.configure(uploader, allowed_storages: [:cache], max_size:)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_max_size] = max_size
       end
