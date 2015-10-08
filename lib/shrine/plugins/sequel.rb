@@ -2,6 +2,32 @@ require "sequel"
 
 class Shrine
   module Plugins
+    # The sequel plugin extends the "attachment" interface with support for
+    # Sequel.
+    #
+    #     class ImageUploader < Shrine
+    #       plugin :sequel
+    #     end
+    #
+    # Now when an "attachment" module is included, additional callbacks are
+    # added to the model:
+    #
+    # * `before_save` -- Promotes the attachment from `:cache` to `:store`.
+    # * `after_save` -- Deletes a replaced attachment.
+    # * `after_destroy` -- Destroys the attachment.
+    #
+    # Additionally, any validation errors will be written to the attachment
+    # column. Presence validations are not part of file validations, instead
+    # they're meant to be added directly to the column.
+    #
+    #     class User < Sequel::Model
+    #       include ImageUploader[:avatar]
+    #
+    #       def validate
+    #         super # here we call any file validations
+    #         validates_presence :avatar
+    #       end
+    #     end
     module Sequel
       module AttachmentMethods
         def initialize(name, *args)
@@ -36,11 +62,16 @@ class Shrine
       module AttacherMethods
         private
 
+        # If we're in a transaction, then promoting is happening inline. If
+        # we're not, then this is happening in a background job. In that case
+        # when we're checking that the attachment changed during storing, we
+        # need to first reload the record to pick up new columns.
         def changed?(uploaded_file)
           record.reload unless in_transaction?
           super
         end
 
+        # Returns true if we are currently inside a transaction.
         def in_transaction?
           record.class.db.in_transaction?
         end
