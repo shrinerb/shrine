@@ -7,9 +7,8 @@ class Shrine
     #
     #     plugin :data_uri
     #
-    # If you're attachment is called "avatar", this plugin will add
-    # `#avatar_data_uri` and `#avatar_data_uri=` methods to your model, to
-    # which you can assign data URIs.
+    # If your attachment is called "avatar", this plugin will add
+    # `#avatar_data_uri` and `#avatar_data_uri=` methods to your model.
     #
     #     user.avatar #=> nil
     #     user.avatar_data_uri = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
@@ -23,7 +22,7 @@ class Shrine
     # the attachment column. You can change the default error message:
     #
     #     plugin :data_uri, error_message: "data URI was invalid"
-    #     plugin :data_uri, error_message: ->(uri) { "data URI was invalid" }
+    #     plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
     #
     # [data URIs]: https://tools.ietf.org/html/rfc2397
     # [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
