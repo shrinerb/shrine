@@ -15,6 +15,12 @@ describe "logging plugin" do
 
   before do
     $out = StringIO.new
+    @context = {name: :avatar, phase: :promote}
+    @context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
+  end
+
+  after do
+    Object.send(:remove_const, "User")
   end
 
   it "logs processing" do
@@ -33,7 +39,7 @@ describe "logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio) }
 
-    assert_match /PROCESS \S+ 1 file => 2 files \(0.00s\)$/, stdout
+    assert_match /PROCESS \S+ 2 files \(0.0s\)$/, stdout
   end
 
   it "logs storing" do
@@ -41,7 +47,7 @@ describe "logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio) }
 
-    assert_match /STORE \S+ 1 file \(0.00s\)$/, stdout
+    assert_match /STORE \S+ 1 file \(0.0s\)$/, stdout
   end
 
   it "logs deleting" do
@@ -50,7 +56,7 @@ describe "logging plugin" do
 
     stdout = capture { @uploader.delete(uploaded_file) }
 
-    assert_match /DELETE \S+ 1 file \(0.00s\)$/, stdout
+    assert_match /DELETE \S+ 1 file \(0.0s\)$/, stdout
   end
 
   it "outputs context data" do
@@ -62,18 +68,29 @@ describe "logging plugin" do
       end
     end
 
-    context = {name: :avatar, phase: :promote}
-    context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
-
     stdout = capture do
-      uploaded_file = @uploader.upload(fakeio, context)
-      @uploader.delete(uploaded_file, context)
+      uploaded_file = @uploader.upload(fakeio, @context)
+      @uploader.delete(uploaded_file, @context)
     end
 
-    assert_match /PROCESS\[promote\] \S+\[:avatar\] User\[16\] 1 file => 1 file \(0.00s\)$/, stdout
-    assert_match /STORE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.00s\)$/, stdout
-    assert_match /DELETE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.00s\)$/, stdout
+    assert_match /PROCESS\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+    assert_match /STORE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+    assert_match /DELETE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+  end
 
-    Object.send(:remove_const, "User")
+  it "supports JSON format" do
+    @uploader = uploader(format: :json)
+
+    stdout = capture { @uploader.upload(fakeio, @context) }
+
+    JSON.parse(stdout.match(/: /).post_match)
+  end
+
+  it "supports Heroku-style format" do
+    @uploader = uploader(format: :heroku)
+
+    stdout = capture { @uploader.upload(fakeio, @context) }
+
+    assert_match "action=store phase=promote", stdout
   end
 end

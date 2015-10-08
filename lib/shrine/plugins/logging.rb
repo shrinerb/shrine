@@ -1,12 +1,14 @@
 require "logger"
 require "benchmark"
+require "json"
 
 class Shrine
   module Plugins
     module Logging
-      def self.configure(uploader, logger: nil, stream: $stdout)
+      def self.configure(uploader, logger: nil, stream: $stdout, format: :human)
         uploader.logger = logger if logger
         uploader.opts[:logging_stream] = stream
+        uploader.opts[:logging_format] = format
       end
 
       FORMATTER = proc do |severity, time, program_name, message|
@@ -32,44 +34,59 @@ class Shrine
 
       module InstanceMethods
         def store(io, context = {})
-          result, duration = benchmark { super }
-          log("#{files(result)}",
-              action: "store", duration: duration, context: context)
-          result
+          log("store", context) { super }
         end
 
         def delete(uploaded_file, context = {})
-          result, duration = benchmark { super }
-          log("#{files(result)}",
-              action: "delete", duration: duration, context: context)
-          result
+          log("delete", context) { super }
         end
 
         private
 
-        def processed(input, context = {})
-          output, duration = benchmark { super }
-          log("#{files(input)} => #{files(output)}",
-              action: "process", duration: duration, context: context) if output
-          output
+        def processed(io, context = {})
+          log("process", context) { super }
         end
 
-        def log(message, action:, duration:, context:)
+        def log(action, context)
+          result, duration = benchmark { yield }
+
+          _log(
+            action:       action,
+            phase:        context[:phase],
+            uploader:     self.class,
+            attachment:   context[:name],
+            record_class: (context[:record].class if context[:record]),
+            record_id:    (context[:record].id if context[:record]),
+            files:        count(result),
+            duration:     ("%.2f" % duration).to_f,
+          ) unless result.nil?
+
+          result
+        end
+
+        def _log(data)
+          message = send("_log_message_#{opts[:logging_format]}", data)
+          self.class.logger.info(message)
+        end
+
+        def _log_message_human(data)
           components = []
-          components << "#{action.upcase}"
-          components.last << "[#{context[:phase]}]" if context[:phase]
-          components << "#{self.class}"
-          components.last << "[:#{context[:name]}]" if context[:name]
-          components << "#{context[:record].class}[#{context[:record].id}]" if context[:record]
-          components << message
-          components << "(%.2fs)" % duration
-
-          self.class.logger.info components.join(" ")
+          components << "#{data[:action].upcase}"
+          components.last << "[#{data[:phase]}]" if data[:phase]
+          components << "#{data[:uploader]}"
+          components.last << "[:#{data[:attachment]}]" if data[:attachment]
+          components << "#{data[:record_class]}[#{data[:record_id]}]" if data[:record_class]
+          components << (data[:files] > 1 ? "#{data[:files]} files" : "#{data[:files]} file")
+          components << "(#{data[:duration]}s)"
+          components.join(" ")
         end
 
-        def files(object)
-          count = count(object)
-          count > 1 ? "#{count} files" : "#{count} file"
+        def _log_message_json(data)
+          data.to_json
+        end
+
+        def _log_message_heroku(data)
+          data.map { |key, value| "#{key}=#{value}" }.join(" ")
         end
 
         def count(object)
