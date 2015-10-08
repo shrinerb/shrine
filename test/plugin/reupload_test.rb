@@ -1,14 +1,14 @@
 require "test_helper"
 
-describe "recache plugin" do
+describe "reupload plugin" do
   def setup
-    @attacher = attacher { plugin :recache }
+    @attacher = attacher { plugin :reupload }
   end
 
-  it "recaches cached files" do
+  it "reuploads cached files" do
     @attacher.shrine_class.class_eval do
       def process(io, context)
-        FakeIO.new(io.read.reverse) if context[:phase] == :recache
+        FakeIO.new(io.read.reverse) if context[:phase] == :reupload
       end
     end
 
@@ -19,10 +19,10 @@ describe "recache plugin" do
     assert_equal "lanigiro", @attacher.get.read
   end
 
-  it "recaches stored files" do
+  it "reuploads stored files" do
     @attacher.shrine_class.class_eval do
       def process(io, context)
-        FakeIO.new(io.read.reverse) if context[:phase] == :recache
+        FakeIO.new(io.read.reverse) if context[:phase] == :reupload
       end
     end
 
@@ -33,10 +33,10 @@ describe "recache plugin" do
     assert_equal "lanigiro", @attacher.get.read
   end
 
-  it "recaches only if the attachment was assigned" do
+  it "reuploads only if the attachment was assigned" do
     @attacher.shrine_class.class_eval do
       def process(io, context)
-        FakeIO.new(io.read.reverse) if context[:phase] == :recache
+        FakeIO.new(io.read.reverse) if context[:phase] == :reupload
       end
     end
 
@@ -47,7 +47,7 @@ describe "recache plugin" do
     assert_equal "original", @attacher.get.read
   end
 
-  it "doesn't recache if attachment is missing" do
+  it "doesn't reupload if attachment is missing" do
     @attacher.save
   end
 end
