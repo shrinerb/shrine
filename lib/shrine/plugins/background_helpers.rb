@@ -71,6 +71,10 @@ class Shrine
     # Note that we're passing the context in order to imitate the flow how it
     # would look like if we didn't intercept it. For example, this gives the
     # logging plugin relevant context.
+    #
+    # If you would like to speed up your uploads and deletes, but you don't
+    # want to involve background jobs, the parallelize plugin may be what you
+    # want.
     module BackgroundHelpers
       module AttacherClassMethods
         def promote(&block)

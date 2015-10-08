@@ -4,6 +4,21 @@ Thread::Pool.abort_on_exception = true
 
 class Shrine
   module Plugins
+    # The parallelize plugin allows you to parallelize your uploads and
+    # deletes using the [thread] gem.
+    #
+    #     plugin :parallelize
+    #
+    # This plugin is generally only useful as the addition to the versions
+    # plugin, which takes advantage of it when versions are supposed to be
+    # uploaded or deleted. Note that it's not possible for this plugin to
+    # parallelize processing, but it should be easy to do it manually.
+    #
+    # By default a pool of 3 threads will be used, but you can change that:
+    #
+    #     plugin :parallelize, threads: 5
+    #
+    # [thread]: https://github.com/meh/ruby-thread
     module Parallelize
       def self.configure(uploader, threads: 3)
         uploader.opts[:parallelize_threads] = threads
