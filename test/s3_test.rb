@@ -1,4 +1,4 @@
-exit unless ENV["SLOW"]
+exit unless ARGV == ["test/s3_test.rb"]
 
 require "test_helper"
 
@@ -32,7 +32,7 @@ describe Shrine::Storage::S3 do
 
   it "passes the linter" do
     Shrine::Storage::Linter.call(s3)
-    Shrine::Storage::Linter.call(s3(directory: "store"))
+    Shrine::Storage::Linter.call(s3(prefix: "store"))
   end
 
   describe "#upload" do

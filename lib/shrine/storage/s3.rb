@@ -4,7 +4,7 @@ require "down"
 class Shrine
   module Storage
     class S3
-      attr_reader :directory, :bucket, :s3
+      attr_reader :prefix, :bucket, :s3
 
       # Example:
       #
@@ -13,13 +13,13 @@ class Shrine
       #       secret_access_key: "abc",
       #       region: "eu-west-1"
       #       bucket: "my-app",
-      #       directory: "cache",
+      #       prefix: "cache",
       #     )
       #
       # The above storage will store file into the "my-app" bucket in the
-      # "cache/" directory.
-      def initialize(bucket:, directory: nil, **s3_options)
-        @directory = directory
+      # "cache" directory.
+      def initialize(bucket:, prefix: nil, **s3_options)
+        @prefix = prefix
         @s3 = Aws::S3::Resource.new(s3_options)
         @bucket = @s3.bucket(bucket)
       end
@@ -86,7 +86,7 @@ class Shrine
 
       # Returns the S3 object.
       def object(id)
-        @bucket.object([*@directory, id].join("/"))
+        @bucket.object([*prefix, id].join("/"))
       end
 
       # This is used to check whether an S3 file is copyable.
