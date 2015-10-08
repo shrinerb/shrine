@@ -611,12 +611,12 @@ see [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-confi
 
 Shrine has a small core which provides only the essential functionality.
 However, it comes with a lot of additional features which can be loaded via
-plugins. In my opinion this gives the best of both worlds, because if you just
-want something simple, you can only use the core, and whenever you need an
-additional feature, you just load the corresponding plugin.
+plugins. This way you can choose exactly how much Shrine does for you. Shrine
+itself ships with over 20 plugins, but it's also easy to make your own ([see
+the guide](...)).
 
-The plugin system respects inheritance, so you can choose which uploaders
-will have which plugins:
+The plugin system respects inheritance, so you can choose which plugins will
+be applied to which uploaders:
 
 ```rb
 Shrine.plugin :logging # enables logging for all uploaders
