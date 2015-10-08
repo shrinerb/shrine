@@ -2,9 +2,38 @@ require "base64"
 
 class Shrine
   module Plugins
+    # The data_uri plugin enables you to upload files in form of [data URIs],
+    # which are for example produced by [HTML5 Canvas].
+    #
+    #     plugin :data_uri
+    #
+    # If you're attachment is called "avatar", this plugin will add
+    # `#avatar_data_uri` and `#avatar_data_uri=` methods to your model, to
+    # which you can assign data URIs.
+    #
+    #     user.avatar #=> nil
+    #     user.avatar_data_uri = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    #     user.avatar #=> #<Shrine::UploadedFile>
+    #
+    #     user.avatar.mime_type         #=> "image/jpeg"
+    #     user.avatar.size              #=> 43423
+    #     user.avatar.original_filename #=> nil
+    #
+    # If the data URI wasn't correctly parsed, an error message will added to
+    # the attachment column. You can change the default error message:
+    #
+    #     plugin :data_uri, error_message: "data URI was invalid"
+    #     plugin :data_uri, error_message: ->(uri) { "data URI was invalid" }
+    #
+    # [data URIs]: https://tools.ietf.org/html/rfc2397
+    # [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
     module DataUri
-      def self.configure(uploader, error_message:)
-        uploader.opts[:data_uri_error_message] = error_message
+      DEFAULT_ERROR_MESSAGE = "data URI was invalid"
+      DEFAULT_CONTENT_TYPE = "text/plain"
+      DATA_URI_REGEXP = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
+
+      def self.configure(uploader, error_message: nil)
+        uploader.opts[:data_uri_error_message] = error_message || DEFAULT_ERROR_MESSAGE
       end
 
       module AttachmentMethods
@@ -24,13 +53,11 @@ class Shrine
       end
 
       module AttacherMethods
-        REGEXP = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
-
         def data_uri=(uri)
           return if uri == ""
 
-          if match = uri.match(REGEXP)
-            content_type = match[1] || "text/plain"
+          if match = uri.match(DATA_URI_REGEXP)
+            content_type = match[1] || DEFAULT_CONTENT_TYPE
             content      = Base64.decode64(match[2])
 
             set DataFile.new(content, content_type: content_type)

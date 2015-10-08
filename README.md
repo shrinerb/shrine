@@ -19,7 +19,7 @@ Shrine.storages = {file_system: Shrine::Storage::FileSystem.new("uploads")}
 uploader = Shrine.new(:file_system)
 
 uploaded_file = uploader.upload(File.open("avatar.jpg"))
-uploaded_file      #=> Shrine::UploadedFile
+uploaded_file      #=> #<Shrine::UploadedFile>
 uploaded_file.url  #=> "uploads/9260ea09d8effd.jpg"
 uploaded_file.data #=>
 # {
