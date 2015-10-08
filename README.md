@@ -354,7 +354,8 @@ done with the `validation_helpers` plugin:
 class ImageUploader < Shrine
   plugin :validation_helpers
 
-  Attacher.validate do # Evaluated inside an instance of ImageUploader::Attacher.
+  Attacher.validate do
+    # Evaluated inside an instance of Shrine::Attacher.
     if record.guest?
       validate_max_size 2.megabytes, message: "is too large (max is 2 MB)"
     end
@@ -531,8 +532,9 @@ you could implement background promoting with Sidekiq:
 class ImageUploader < Shrine
   plugin :background_helpers
 
-  Attacher.promote do |cached_file| # Evaluated inside an instance of Shrine::Attacher.
-    UploadWorker.perform_async(record.class, record.id, name, cached_file)
+  Attacher.promote do |cached_file|
+    # Evaluated inside an instance of Shrine::Attacher.
+    UploadWorker.perform_async(cached_file, record.class, record.id, name)
   end
 end
 ```
@@ -540,10 +542,11 @@ end
 class UploadWorker
   include Sidekiq::Worker
 
-  def perform(record_class, record_id, name, cached_file_json)
+  def perform(cached_file_json, record_class, record_id, name)
     record = Object.const_get(record_class).find(record_id)
     attacher = record.send("#{name}_attacher")
     cached_file = attacher.uploaded_file(cached_file_json)
+
     attacher.promote(cached_file)
     record.save
   end
