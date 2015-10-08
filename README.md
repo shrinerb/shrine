@@ -75,18 +75,29 @@ Shrine.storages = {
 }
 ```
 
-Now let's generate and include an "avatar" attachment module to our User model:
+Next we should create an uploader specific to the type of files we're
+uploading:
+
+```rb
+class ImageUploader < Shrine
+  # here goes your uploading logic
+end
+```
+
+Now if we for example want our Users to have avatars, we can generate and
+include an "avatar" attachment module:
 
 ```rb
 class User
   attr_accessor :avatar_data
 
-  include Shrine[:avatar]
+  include ImageUploader[:avatar]
 end
-
+```
+```rb
 user = User.new
 user.avatar = File.open("avatar.jpg") # uploads the file to `:cache`
-user.avatar      #=> Shrine::UploadedFile
+user.avatar      #=> #<Shrine::UploadedFile>
 user.avatar_url  #=> "/uploads/9260ea09d8effd.jpg"
 user.avatar_data #=>
 # {
@@ -97,8 +108,8 @@ user.avatar_data #=>
 ```
 
 Notice that the attachment module added `#avatar`, `#avatar=` and `#avatar_url`
-methods to User. `Shrine[:avatar]` generated a module with these methods, which
-when included to our User model.
+methods to User. `ImageUploader[:avatar]` generated a module with these
+methods, which when included to our User model.
 
 ```rb
 Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
@@ -132,7 +143,7 @@ Shrine.plugin :activerecord
 ```
 ```rb
 class User < ActiveRecord::Base
-  include Shrine[:avatar]
+  include ImageUploader[:avatar]
 end
 ```
 
@@ -170,12 +181,12 @@ Shrine.plugin :direct_upload
 ```
 ```rb
 Rails.application.routes.draw do
-  # adds a `/attachments/:storage/:name` route
-  mount Shrine.direct_endpoint => "/attachments"
+  # adds a `/attachments/images/:storage/:name` route
+  mount ImageUploader.direct_endpoint => "/attachments/images"
 end
 ```
 ```sh
-$ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/cache/avatar
+$ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/avatar
 # {"id":"43kewit94.jpg","storage":"cache","metadata":{...}}
 ```
 
@@ -184,7 +195,7 @@ this is how we use [jQuery-File-Upload] for direct uploads to our endpoint:
 
 ```js
 $('[type="file"]').fileupload({
-  url '/attachments/cache/avatar',
+  url '/attachments/images/cache/avatar',
   paramName: 'file', // we send the file in a "file" query parameter
   done: function(e, data) { $(this).prev().value(data.result) }
 });
@@ -193,8 +204,7 @@ $('[type="file"]').fileupload({
 ## Processing
 
 Whenever a file is uploaded, `Shrine#process` is called, and this is where
-you're expected to define your processing. At this point you'll want to
-subclass `Shrine`, which is also the idiomatic way to use Shrine:
+you're expected to define your processing.
 
 ```rb
 class ImageUploader < Shrine
@@ -335,7 +345,7 @@ Context is really useful for doing conditional processing and validations based
 on the name of the attachment and column values. In general the context is
 saturated through the whole stack and is used by a lot of plugins.
 
-## Validation
+## Validations
 
 Validations are registered by calling `Shrine::Attacher.validate`, and are best
 done with the `validation_helpers` plugin:
@@ -394,7 +404,7 @@ To help with that Shrine provides the `extract_mime_type` plugin, which by
 deafult uses the UNIX [file] utility to determine the actual MIME type:
 
 ```rb
-Shrine.plugin :extract_mime_type
+ImageUploader.plugin :extract_mime_type
 
 user = User.create(avatar: File.open("image.mp4")) # image with a .mp4 extension
 user.avatar.mime_type #=> "image/png"
@@ -406,7 +416,7 @@ Shrine ships with the `store_dimensions` plugin which extracts dimensions
 using the [fastimage] gem.
 
 ```rb
-Shrine.plugin :store_dimensions
+ImageUploader.plugin :store_dimensions
 
 user = User.create(avatar: File.open("image.jpg"))
 user.avatar.width  #=> 400
@@ -518,10 +528,12 @@ it's designed in a way to make it as easy as possible. Here's an example how
 you could implement background promoting with Sidekiq:
 
 ```rb
-Shrine.plugin :background_helpers
+class ImageUploader < Shrine
+  plugin :background_helpers
 
-Shrine::Attacher.promote do |cached_file| # Evaluated inside an instance of Shrine::Attacher.
-  UploadWorker.perform_async(record.class, record.id, name, cached_file)
+  Attacher.promote do |cached_file| # Evaluated inside an instance of Shrine::Attacher.
+    UploadWorker.perform_async(record.class, record.id, name, cached_file)
+  end
 end
 ```
 ```rb
@@ -602,6 +614,17 @@ However, it comes with a lot of additional features which can be loaded via
 plugins. In my opinion this gives the best of both worlds, because if you just
 want something simple, you can only use the core, and whenever you need an
 additional feature, you just load the corresponding plugin.
+
+The plugin system respects inheritance, so you can choose which uploaders
+will have which plugins:
+
+```rb
+Shrine.plugin :logging # enables logging for all uploaders
+
+class ImageUploader < Shrine
+  plugin :store_dimensions # stores dimensions only for this uploader
+end
+```
 
 ## Inspiration
 
