@@ -44,14 +44,16 @@ describe "keep_files plugin" do
     end
   end
 
-  it "works with background_delete plugin" do
+  it "works with background_helpers plugin" do
     @attacher = attacher(destroyed: true, replaced: true, cached: true)
-    @attacher.shrine_class.plugin :background_delete do |cached_file, context|
-      @attacher.shrine_class.delete(cached_file, context)
+    @attacher.shrine_class.plugin :background_helpers
+    @attacher.class.delete do |uploaded_file, phase:|
+      shrine_class.delete(uploaded_file, context.merge(phase: phase))
     end
+    @attacher.class.promote { promote(get) }
 
     cached_file = @attacher.set(fakeio)
-    @attacher.promote(fakeio)
+    @attacher._promote
     assert cached_file.exists?
 
     replaced_file = @attacher.get

@@ -3,10 +3,6 @@ require "sequel"
 class Shrine
   module Plugins
     module Sequel
-      def self.configure(uploader, promote: nil)
-        uploader.opts[:promote] = promote
-      end
-
       module AttachmentMethods
         def initialize(name, *args)
           super
@@ -38,16 +34,6 @@ class Shrine
       end
 
       module AttacherMethods
-        def _promote
-          if promote?(get)
-            if shrine_class.opts[:promote]
-              shrine_class.opts[:promote].call(get, context)
-            else
-              promote(get)
-            end
-          end
-        end
-
         private
 
         def changed?(uploaded_file)

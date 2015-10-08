@@ -515,30 +515,30 @@ uploader.delete(multiple_files) # single HTTP request on S3
 
 Shrine doesn't ship with an out-of-the-box solution for background jobs, but
 it's designed in a way to make it as easy as possible. Here's an example how
-you could implement background promoting using Sidekiq:
+you could implement background promoting with Sidekiq:
 
 ```rb
-class ImageUploader < Shrine
-  plugin :activerecord, promote: -> (cached_file, record:, name:) do
-    UploadWorker.perform_async(cached_file.to_json, record.id, name)
-  end
+Shrine.plugin :background_helpers
+
+Shrine::Attacher.promote do |cached_file| # Evaluated inside an instance of Shrine::Attacher.
+  UploadWorker.perform_async(record.class, record.id, name, cached_file)
 end
 ```
 ```rb
 class UploadWorker
   include Sidekiq::Worker
 
-  def perform(cached_file, id, name)
-    user = User.find(id)
-    cached_file = JSON.parse(cached_file)
-
-    user.send("#{name}_attacher").promote(cached_file)
-    user.save
+  def perform(record_class, record_id, name, cached_file_json)
+    record = Object.const_get(record_class).find(record_id)
+    attacher = record.send("#{name}_attacher")
+    cached_file = attacher.uploaded_file(cached_file_json)
+    attacher.promote(cached_file)
+    record.save
   end
 end
 ```
 
-Pretty simple, right? This actually works surprisingly well, I would even
+Not the complicated, is it? This actually works surprisingly well, I would even
 argue that it works better than any existing "out-of-the-box" solution for
 other uploading libraries.
 
@@ -546,13 +546,21 @@ other uploading libraries.
 
 After the user submits the form, promoting will be kicked off into a background
 job, and the record will be saved with the cached image. This means that, if
-you have your `:cache` in the "public/" folder, the end user will immediately see
-their uploaded file, because the URL will point to the cached version.
+you have your `:cache` in the "public" folder, the end user will be able to
+immediately see their uploaded file, because the URL will point to the cached
+version.
 
 In the meanwhile, what `#promote` does is it uploads the cached file `:store`,
 and writes the stored file to the column. When the record gets saved, the end
 user won't even notice that the URL has updated from filesystem to S3, because
 they still see the same image.
+
+### Generality
+
+This worker is completely agnostic about what kind of attachment it is
+uploading, and for which model. This means that if you ever add different
+attachments to other models, you can still use the same worker for all the
+promoting.
 
 ### Safety
 
@@ -561,30 +569,31 @@ before the background job finished promoting.  This can happen either if the
 user was too quick, or the background job was too slow.
 
 Normally what would happen in that case is that the old job would finish
-running, and replace the new file with the old one. It would probably turn out
-fine at the end, because the job that's currently running for the new
-attachment would eventually replace the old one again. However, there would be
-a period where the user would see an old image *after* they uploaded a new one,
-which can be upsetting.
+running, and replace the new file with the old one. At the end it would
+probably turn out fine, because the job that's running for the new attachment
+would eventually replace the old one again. However, there would be a period
+where the user would see an old image *after* they uploaded a new one, which
+can be upsetting.
 
 Shrine handles this gracefully. After `#promote` uploads the cached file to
 `:store`, it checks if the cached file still matches the file in the record
 column. If the files are different, that means the user reuploaded the
-attachment, and Shrine won't do the replacement (that's why you have to pass
-the argument). Additionally this job is idempotent, meaning it can be safely
-repeated in case of failure.
+attachment, and Shrine won't do the replacement. Additionally, this job is
+idempotent, meaning it can be safely repeated in case of failure.
 
 ## Clearing cache
 
 Your `:cache` storage will grow over time, so you'll want to periodically clean
-it. For S3 Amazon already provides settings for automatic cache clearing, see
-[this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html).
-For FileSystem storage you can put something like this in a scheduled job:
+it. If you're using FileSystem as your `:cache`, you can put this in a
+scheduled job:
 
 ```rb
 file_system = Shrine.storages[:cache]
-file_system.clear!(older_than: 1.week.ago)
+file_system.clear!(older_than: 1.week.ago) # adjust the time
 ```
+
+If your `:cache` is S3, Amazon provides settings for automatic cache clearing,
+see [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html).
 
 ## Plugins
 
@@ -617,4 +626,4 @@ The gem is available as open source under the terms of the [MIT License].
 [Roda]: https://github.com/jeremyevans/roda
 [Refile]: https://github.com/refile/refile
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
-[MIT license]: http://opensource.org/licenses/MIT
+[MIT License]: http://opensource.org/licenses/MIT

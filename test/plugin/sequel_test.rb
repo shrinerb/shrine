@@ -47,16 +47,31 @@ describe "sequel plugin" do
     assert_equal "store", @user.avatar.storage_key
   end
 
-  it "accepts custom promoting" do
-    @uploader.class.plugin :sequel, promote: ->(cached_file, record:, name:) do
-      @fiber = Fiber.new { record.send("#{name}_attacher").promote(cached_file) }
+  it "works with background promoting" do
+    @uploader.class.plugin :background_helpers
+    @user.avatar_attacher.class.promote do |cached_file|
+      @fiber = Fiber.new { promote(cached_file); record.save }
     end
     @user.avatar = fakeio
     @user.save
 
-    assert_equal "cache", @user.avatar.storage_key
-    @fiber.resume
-    assert_equal "store", @user.avatar.storage_key
+    assert_equal "cache", @user.reload.avatar.storage_key
+    @user.avatar_attacher.instance_variable_get("@fiber").resume
+    assert_equal "store", @user.reload.avatar.storage_key
+  end
+
+  it "bails on promoting if the record attachment" do
+    @uploader.class.plugin :background_helpers
+    @user.avatar_attacher.class.promote do |cached_file|
+      @fiber = Fiber.new { promote(cached_file); record.save }
+    end
+    @user.avatar = fakeio
+    @user.save
+    @user.class.dataset.update(avatar_data: nil)
+
+    assert_equal nil, @user.class.first.avatar
+    @user.avatar_attacher.instance_variable_get("@fiber").resume
+    assert_equal nil, @user.class.first.avatar
   end
 
   it "replaces after saving" do

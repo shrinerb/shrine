@@ -532,6 +532,11 @@ class Shrine
           delete!(cached_file, phase: :promote)
         end
 
+        # Calls #promote if attached file is cached.
+        def _promote
+          promote(get) if promote?(get)
+        end
+
         # Deletes the attachment that was replaced.  Typically this should be
         # called after saving, to ensure that the file is deleted only after
         # the record has been successfuly saved.
