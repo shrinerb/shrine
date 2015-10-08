@@ -1,16 +1,16 @@
 class Shrine
   module Plugins
-    # The delete_invalid plugin allows you to delete the assigned attachment if
-    # it was invalid.
+    # The delete_invalid plugin deletes assigned attachments that failed
+    # validation.
     #
     #     plugin :delete_invalid
     #
-    # By default the attachments is always cached before they're validated. This
-    # way the attachment will persist when the form is resubmitted, like the
-    # other fields in the form do.
+    # By default an attachment is always cached before it's validated. This
+    # way the attachment will persist when the form is resubmitted, which is
+    # consistent with the other fileds in the form.
     #
-    # If you would prefer that invalid attachments don't stay in your cache,
-    # you can use this plugin.
+    # You can use this plugin if you prefer that invalid attachments are
+    # immediately deleted.
     module DeleteInvalid
       module AttacherMethods
         def validate

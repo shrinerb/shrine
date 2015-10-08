@@ -2,8 +2,8 @@ require "active_record"
 
 class Shrine
   module Plugins
-    # The activerecord plugin extends the "attachment" interface with support for
-    # ActiveRecord.
+    # The activerecord plugin extends the "attachment" interface with support
+    # for ActiveRecord.
     #
     #     class ImageUploader < Shrine
     #       plugin :activerecord

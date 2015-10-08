@@ -23,7 +23,7 @@ class Shrine
     #
     # Now if a file that is bigger than 20MB is assigned, Shrine will terminate
     # the download as soon as it gets the "Content-Length" header, or the
-    # current buffer size surpasses the maximum size.
+    # buffer size surpasses the maximum size.
     #
     # It's generally good to limit the maximum size, to prevent DoS attacks.
     # If you're expecting big files, or for whatever reason you don't want to
@@ -31,14 +31,14 @@ class Shrine
     #
     #     plugin :remote_url, max_size: nil
     #
-    # If the download fails, either because the remote file wasn't found,
-    # was too large, or the request redirected, an error will be added to the
+    # If download fails, either because the remote file wasn't found, was too
+    # large, or the request redirected, an error will be added to the
     # attachment. You can change the default error message:
     #
     #     plugin :remote_url, error_message: "download failed"
     #     plugin :remote_url, error_message: ->(url) { I18n.t("errors.download_failed") }
     #
-    # Finally, you can choose to override how the file is downloaded:
+    # Finally, if you really need to you can override how the file is downloaded:
     #
     #     plugin :remote_url, downloader: ->(url) do
     #       request = RestClient::Request.new(method: :get, url: url, raw_response: true)
@@ -46,7 +46,7 @@ class Shrine
     #       response.file
     #     end
     module RemoteUrl
-      DEFAULT_ERROR_MESSAGE = "file was not found, was too large, or the request redirected"
+      DEFAULT_ERROR_MESSAGE = "file was not found or was too large"
 
       def self.load_dependencies(uploader, downloader: :open_uri, **)
         case downloader

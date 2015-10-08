@@ -1,7 +1,7 @@
 class Shrine
   module Plugins
     # The background_helpers plugin enables you to intercept phases of
-    # uploading, in order to put them in a background job.
+    # uploading in order to put them in background jobs.
     #
     #     plugin :background_helpers
     #
@@ -74,7 +74,7 @@ class Shrine
     #
     # If you would like to speed up your uploads and deletes, but you don't
     # want to involve background jobs, the parallelize plugin may be what you
-    # want.
+    # want. You can also combine these two.
     module BackgroundHelpers
       module AttacherClassMethods
         def promote(&block)

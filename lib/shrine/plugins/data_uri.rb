@@ -2,8 +2,8 @@ require "base64"
 
 class Shrine
   module Plugins
-    # The data_uri plugin enables you to upload files in form of [data URIs],
-    # which are for example produced by [HTML5 Canvas].
+    # The data_uri plugin enables you to upload files in form of [data URIs].
+    # This plugin is useful if the application is using [HTML5 Canvas].
     #
     #     plugin :data_uri
     #
