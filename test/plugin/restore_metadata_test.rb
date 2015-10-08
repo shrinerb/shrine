@@ -1,8 +1,8 @@
 require "test_helper"
 
-describe "renew_metadata test" do
+describe "restore_metadata test" do
   before do
-    @attacher = attacher { plugin :renew_metadata }
+    @attacher = attacher { plugin :restore_metadata }
   end
 
   it "reextracts metadata on attacher set" do

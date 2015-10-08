@@ -2,7 +2,7 @@ require "json"
 
 class Shrine
   module Plugins
-    module RenewMetadata
+    module RestoreMetadata
       module AttacherMethods
         def set(value)
           if value.is_a?(Hash) || value.is_a?(String) && !value.empty?
@@ -20,6 +20,6 @@ class Shrine
       end
     end
 
-    register_plugin(:renew_metadata, RenewMetadata)
+    register_plugin(:restore_metadata, RestoreMetadata)
   end
 end
