@@ -3,7 +3,6 @@ class Shrine
     module Reupload
       module AttacherMethods
         def save
-          super
           if get && defined?(@old_attachment) # new file was assigned
             if cache.uploaded?(get)
               _set cache!(get, phase: :reupload)
@@ -11,6 +10,7 @@ class Shrine
               _set store!(get, phase: :reupload)
             end
           end
+          super
         end
       end
     end

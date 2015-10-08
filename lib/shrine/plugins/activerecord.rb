@@ -38,7 +38,6 @@ class Shrine
 
             before_save do
               #{@name}_attacher.save
-              #{@name}_attacher._promote
             end
 
             after_save do
