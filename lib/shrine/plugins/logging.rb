@@ -60,6 +60,7 @@ class Shrine
           components.last << "[#{context[:phase]}]" if context[:phase]
           components << "#{self.class}"
           components.last << "[:#{context[:name]}]" if context[:name]
+          components << "#{context[:record].class}[#{context[:record].id}]" if context[:record]
           components << message
           components << "(%.2fs)" % duration
 

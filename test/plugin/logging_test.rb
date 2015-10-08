@@ -53,7 +53,7 @@ describe "logging plugin" do
     assert_match /DELETE \S+ 1 file \(0.00s\)$/, stdout
   end
 
-  it "outputs :phase and :name" do
+  it "outputs context data" do
     @uploader = uploader
 
     @uploader.singleton_class.class_eval do
@@ -62,13 +62,18 @@ describe "logging plugin" do
       end
     end
 
+    context = {name: :avatar, phase: :promote}
+    context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
+
     stdout = capture do
-      uploaded_file = @uploader.upload(fakeio, name: :avatar, phase: :endpoint)
-      @uploader.delete(uploaded_file, name: :avatar, phase: :destroy)
+      uploaded_file = @uploader.upload(fakeio, context)
+      @uploader.delete(uploaded_file, context)
     end
 
-    assert_match /PROCESS\[endpoint\] \S+\[:avatar\] 1 file => 1 file \(0.00s\)$/, stdout
-    assert_match /STORE\[endpoint\] \S+\[:avatar\] 1 file \(0.00s\)$/, stdout
-    assert_match /DELETE\[destroy\] \S+\[:avatar\] 1 file \(0.00s\)$/, stdout
+    assert_match /PROCESS\[promote\] \S+\[:avatar\] User\[16\] 1 file => 1 file \(0.00s\)$/, stdout
+    assert_match /STORE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.00s\)$/, stdout
+    assert_match /DELETE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.00s\)$/, stdout
+
+    Object.send(:remove_const, "User")
   end
 end
