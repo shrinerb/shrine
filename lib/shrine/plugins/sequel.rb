@@ -5,9 +5,7 @@ class Shrine
     # The sequel plugin extends the "attachment" interface with support for
     # Sequel.
     #
-    #     class ImageUploader < Shrine
-    #       plugin :sequel
-    #     end
+    #     plugin :sequel
     #
     # Now when an "attachment" module is included, additional callbacks are
     # added to the model:

@@ -5,9 +5,7 @@ class Shrine
     # The activerecord plugin extends the "attachment" interface with support
     # for ActiveRecord.
     #
-    #     class ImageUploader < Shrine
-    #       plugin :activerecord
-    #     end
+    #     plugin :activerecord
     #
     # Now when an "attachment" module is included, additional callbacks are
     # added to the model:

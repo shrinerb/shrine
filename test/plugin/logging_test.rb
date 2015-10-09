@@ -93,4 +93,10 @@ describe "logging plugin" do
 
     assert_match "action=store phase=promote", stdout
   end
+
+  it "accepts a custom logger" do
+    @uploader = uploader(logger: :foo)
+
+    assert_equal :foo, @uploader.class.logger
+  end
 end
