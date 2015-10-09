@@ -7,7 +7,7 @@ class Shrine
     #
     #     plugin :data_uri
     #
-    # If your attachment is called "avatar", this plugin will add
+    # If for example your attachment is called "avatar", this plugin will add
     # `#avatar_data_uri` and `#avatar_data_uri=` methods to your model.
     #
     #     user.avatar #=> nil

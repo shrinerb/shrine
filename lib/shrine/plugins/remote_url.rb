@@ -4,7 +4,7 @@ class Shrine
     #
     #     plugin :remote_url, max_size: 20*1024*1024
     #
-    # If your attachment is called "avatar", this plugin will add
+    # If for example your attachment is called "avatar", this plugin will add
     # `#avatar_remote_url` and `#avatar_remote_url=` methods to your model.
     #
     #     user.avatar #=> nil

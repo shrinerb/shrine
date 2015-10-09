@@ -1,5 +1,22 @@
 class Shrine
   module Plugins
+    # The remove_attachment plugin allows you to delete attachments by adding
+    # a checkbox to your web form.
+    #
+    #     plugin :remove_attachment
+    #
+    # If for example your attachment is called "avatar", this plugin will add
+    # `#remove_avatar` and `#remove_avatar=` methods to your model. This allows
+    # you to easily enable deleting attached files through the form:
+    #
+    #     <%= form_for @user do |f| %>
+    #       <%= f.hidden_field :avatar, value: @user.avatar_data %>
+    #       <%= f.file_field :avatar %>
+    #       Remove attachment: <%= f.check_box :remove_avatar %>
+    #     <% end %>
+    #
+    # Now when the checkbox is ticked and the form is submitted, the attached
+    # file will be removed.
     module RemoveAttachment
       module AttachmentMethods
         def initialize(name, *args)
@@ -18,6 +35,7 @@ class Shrine
       end
 
       module AttacherMethods
+        # We remove the attachment if the value evaluates to true.
         def remove=(value)
           @remove = value
           set(nil) if remove?
@@ -29,6 +47,7 @@ class Shrine
 
         private
 
+        # Rails sends "0" or "false" if the checkbox hasn't been ticked.
         def remove?
           remove && remove != "" && remove !~ /\A0|false$\z/
         end

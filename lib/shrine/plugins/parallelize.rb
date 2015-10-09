@@ -47,6 +47,7 @@ class Shrine
           context[:thread_pool].process { super }
         end
 
+        # We initialize a thread pool with configured number of threads.
         def with_pool
           pool = Thread.pool(opts[:parallelize_threads])
           result = yield pool
