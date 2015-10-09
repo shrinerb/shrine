@@ -167,7 +167,7 @@ class Shrine
         # Instantiates a Shrine::UploadedFile from a JSON string or a hash, and
         # optionally yields the returned objects (useful with versions).  This
         # is used internally by Shrine::Attacher, but it's also useful when you
-        # need to serialize the uploaded file in background jobs.
+        # need to deserialize the uploaded file in background jobs.
         #
         #     uploaded_file #=> #<Shrine::UploadedFile>
         #     json = uploaded_file.to_json #=> '{"storage":"cache","id":"...","metadata":{...}}'

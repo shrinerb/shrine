@@ -77,6 +77,9 @@ class Shrine
       end
 
       module AttacherMethods
+        # Downloads the remote file and assigns it. If download failed, sets
+        # the error message and assigns the url to an instance variable so that
+        # it shows up in the form.
         def remote_url=(url)
           return if url == ""
 
@@ -90,12 +93,16 @@ class Shrine
           end
         end
 
+        # Form builders require the reader as well.
         def remote_url
           @remote_url
         end
 
         private
 
+        # Downloads the file using the "down" gem or a custom downloader.
+        # Checks the file size and terminates the download early if the file
+        # is too big.
         def download(url)
           downloader = shrine_class.opts[:remote_url_downloader]
           max_size = shrine_class.opts[:remote_url_max_size]
@@ -107,6 +114,8 @@ class Shrine
           end
         end
 
+        # We silence any download errors, because for the user's point of view
+        # the download simply failed.
         def download_with_open_uri(url, max_size:)
           Down.download(url, max_size: max_size)
         rescue Down::Error

@@ -23,9 +23,8 @@ class Shrine
     #
     # :mime_types
     # : Uses the [mime-types] gem to determine the MIME type from the file
-    #   extension. Unlike other solutions, this is not guaranteed to return
-    #   the actual MIME type, since the attacker can just upload a video with
-    #   the .jpg extension.
+    #   *extension*. Unlike other solutions, this analyser is not guaranteed to
+    #   return the actual MIME type of the file.
     #
     # By default the UNIX [file] utility is used to detrmine the MIME type, but
     # you can change it:
@@ -66,6 +65,9 @@ class Shrine
       end
 
       module InstanceMethods
+        # If a Shrine::UploadedFile was given, it returns its MIME type, since
+        # that value was already determined by this analyser. Otherwise it calls
+        # a built-in analyser or a custom one.
         def extract_mime_type(io)
           analyser = opts[:mime_type_analyser]
 
@@ -80,6 +82,9 @@ class Shrine
 
         private
 
+        # Uses the UNIX file utility to extract the MIME type. It does so only
+        # if it's a file, because even though the utility accepts standard
+        # input, it would mean that we have to read the whole file in memory.
         def _extract_mime_type_with_file(io)
           if io.respond_to?(:path)
             mime_type, _ = Open3.capture2("file", "-b", "--mime-type", io.path)
@@ -87,16 +92,19 @@ class Shrine
           end
         end
 
+        # Uses the ruby-filemagic gem to magically extract the MIME type.
         def _extract_mime_type_with_filemagic(io)
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
           data = io.read(1024); io.rewind
           filemagic.buffer(data)
         end
 
+        # Uses the mimemagic gem to extract the MIME type.
         def _extract_mime_type_with_mimemagic(io)
           MimeMagic.by_magic(io).type
         end
 
+        # Uses the mime-types gem to determine MIME type from file extension.
         def _extract_mime_type_with_mime_types(io)
           if filename = extract_filename(io)
             mime_type = MIME::Types.of(filename).first

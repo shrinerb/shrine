@@ -77,16 +77,19 @@ class Shrine
     # want. You can also combine these two.
     module BackgroundHelpers
       module AttacherClassMethods
+        # Saves the promoting block to be called later.
         def promote(&block)
           shrine_class.opts[:background_promote] = block
         end
 
+        # Saves the deleting block to be called later.
         def delete(&block)
           shrine_class.opts[:background_delete] = block
         end
       end
 
       module AttacherMethods
+        # Calls the promoting block if it's been registered.
         def _promote
           if background_promote = shrine_class.opts[:background_promote]
             instance_exec(get, &background_promote) if promote?(get)
@@ -97,6 +100,7 @@ class Shrine
 
         private
 
+        # Calls the deleting block if it's been registered.
         def delete!(uploaded_file, phase:)
           if background_delete = shrine_class.opts[:background_delete]
             instance_exec(uploaded_file, phase: phase, &background_delete)

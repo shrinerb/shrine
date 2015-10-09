@@ -13,6 +13,7 @@ class Shrine
     # immediately deleted.
     module DeleteInvalid
       module AttacherMethods
+        # Delete the assigned uploaded file if it was invalid.
         def validate
           super
         ensure

@@ -31,8 +31,8 @@ class Shrine
       DEFAULT_CONTENT_TYPE = "text/plain"
       DATA_URI_REGEXP = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
 
-      def self.configure(uploader, error_message: nil)
-        uploader.opts[:data_uri_error_message] = error_message || DEFAULT_ERROR_MESSAGE
+      def self.configure(uploader, error_message: DEFAULT_ERROR_MESSAGE)
+        uploader.opts[:data_uri_error_message] = error_message
       end
 
       module AttachmentMethods
@@ -52,6 +52,10 @@ class Shrine
       end
 
       module AttacherMethods
+        # Handles assignment of a data URI. If the regexp matches, it extracts
+        # the content type, decodes it, wrappes it in a StringIO and assigns it.
+        # If it fails, it sets the error message and assigns the uri in an
+        # instance variable so that it shows up on the UI.
         def data_uri=(uri)
           return if uri == ""
 
@@ -68,6 +72,7 @@ class Shrine
           end
         end
 
+        # Form builders require the reader as well.
         def data_uri
           @data_uri
         end

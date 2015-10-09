@@ -69,12 +69,14 @@ class Shrine
       end
 
       module ClassMethods
+        # Return the cached Roda endpoint.
         def direct_endpoint
           @direct_endpoint ||= build_direct_endpoint
         end
 
         private
 
+        # Builds the endpoint and assigns it the current Shrine class.
         def build_direct_endpoint
           app = Class.new(App)
           app.opts[:shrine_class] = self
@@ -86,6 +88,9 @@ class Shrine
         plugin :default_headers, "Content-Type"=>"application/json"
         plugin :halt
 
+        # Routes incoming requests. We first check if the storage is allowed,
+        # then proceed further with the upload, returning the uploaded file
+        # as JSON.
         route do |r|
           r.on ":storage" do |storage_key|
             allow_storage!(storage_key)
@@ -104,12 +109,15 @@ class Shrine
           object.to_json
         end
 
+        # Halts the request if storage is not allowed.
         def allow_storage!(storage)
           if !allowed_storages.map(&:to_s).include?(storage)
             error! 403, "Storage #{storage.inspect} is not allowed."
           end
         end
 
+        # Returns the Rack file wrapped in an IO-like object. If "file" is
+        # missing or is too big, the request is halted.
         def get_file
           file = require_param!("file")
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
@@ -118,6 +126,7 @@ class Shrine
           RackFile.new(file)
         end
 
+        # If the file is too big, deletes the file and halts the request.
         def check_filesize!(file)
           if file.size > max_size
             file.delete
@@ -126,12 +135,14 @@ class Shrine
           end
         end
 
+        # Loudly requires the param.
         def require_param!(name)
           request.params.fetch(name)
         rescue KeyError
           error! 400, "Missing query parameter: #{name.inspect}"
         end
 
+        # Halts the request with the error message.
         def error!(status, message)
           request.halt status, {error: message}.to_json
         end
@@ -149,6 +160,8 @@ class Shrine
         end
       end
 
+      # This is used to wrap the Rack hash into an IO-like object which Shrine
+      # can upload.
       class RackFile
         attr_reader :original_filename, :content_type
         attr_accessor :tempfile
