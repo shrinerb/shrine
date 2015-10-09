@@ -1,5 +1,50 @@
 class Shrine
   module Plugins
+    # The determine_mime_type gives you the ability to determine (and save) the
+    # actual MIME type of the file being uploaded.
+    #
+    #     plugin :determine_mime_type
+    #
+    # The plugin accepts the following analysers:
+    #
+    # `:file` (default)
+    # : Uses the UNIX [file] utility to determine the MIME type from file contents.
+    #
+    # `:filemagic`
+    # : Uses the [ruby-filemagic] gem to determine the MIME type from file
+    #   contents, using a similar MIME database as the `file` utility. However,
+    #   unlike the `file` utility, ruby-filemagic should work on Windows.
+    #
+    # `:mimemagic`
+    # : Uses the [mimemagic] gem to determine the MIME type from file contents.
+    #   Unlike ruby-filemagic, mimemagic is a pure-ruby solution, so it will
+    #   work on all Ruby implementations.
+    #
+    # `:mime_types`
+    # : Uses the [mime-types] gem to determine the MIME type from the file
+    #   extension. Unlike other solutions, this is not guaranteed to return
+    #   the actual MIME type, since the attacker can just upload a video with
+    #   the .jpg extension.
+    #
+    # By default the UNIX [file] utility is used to detrmine the MIME type, but
+    # you can change it:
+    #
+    #     plugin :determine_mime_type, analyser: :filemagic
+    #
+    # If none of these quite suit your needs, you can use a custom analyser:
+    #
+    #     plugin :determine_mime_type, analyser: ->(io) do
+    #       if io.path.end_with?(".odt")
+    #         "application/vnd.oasis.opendocument.text"
+    #       else
+    #         MimeMagic.by_magic(io).type
+    #       end
+    #     end
+    #
+    # [file]: http://linux.die.net/man/1/file
+    # [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic
+    # [mimemagic]: https://github.com/minad/mimemagic
+    # [mime-types]: https://github.com/mime-types/ruby-mime-types
     module DetermineMimeType
       def self.load_dependencies(uploader, analyser: :file)
         case analyser
