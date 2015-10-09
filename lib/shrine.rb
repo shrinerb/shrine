@@ -492,12 +492,11 @@ class Shrine
         def set(value)
           return if value == ""
 
-          uploaded_file =
-            if value.is_a?(String) || value.is_a?(Hash)
-              uploaded_file(value)
-            elsif value
-              cache!(value, phase: :assign)
-            end
+          if value.is_a?(String) || value.is_a?(Hash)
+            uploaded_file = retrieve(value)
+          elsif value
+            uploaded_file = cache!(value, phase: :assign)
+          end
 
           @old_attachment = get unless get == uploaded_file
           _set(uploaded_file)
@@ -569,8 +568,8 @@ class Shrine
           instance_exec(&validate_block) if validate_block && get
         end
 
-        def uploaded_file(*args)
-          shrine_class.uploaded_file(*args)
+        def uploaded_file(*args, &block)
+          shrine_class.uploaded_file(*args, &block)
         end
 
         # Returns the Shrine class related to this attacher.
@@ -579,6 +578,12 @@ class Shrine
         end
 
         private
+
+        # Retrieves the stored file.
+        def retrieve(value, &block)
+          return get if get == uploaded_file(value)
+          uploaded_file(value, &block)
+        end
 
         # Uploads the file to cache (calls `Shrine#upload`).
         def cache!(io, phase:)

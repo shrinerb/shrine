@@ -40,7 +40,7 @@ describe Shrine::Attacher do
       assert_equal uploaded_file, @attacher.get
     end
 
-    it "recognizes when the attachment didn't change" do
+    it "it doesn't replace when the attachment didn't change" do
       uploaded_file = @attacher.set(fakeio)
       @attacher.set(uploaded_file.data)
       @attacher.set(uploaded_file.data)
@@ -48,6 +48,15 @@ describe Shrine::Attacher do
       @attacher.replace
 
       assert uploaded_file.exists?
+    end
+
+    it "it doesn't set the file if it's the same" do
+      uploaded_file = @attacher.set(fakeio("image"))
+      uploaded_file.metadata["size"] = 24354535
+
+      restored_file = @attacher.set(uploaded_file.to_json)
+
+      assert_equal 5, restored_file.metadata["size"]
     end
 
     it "writes to record's data attribute" do

@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/mini_test"
 
 describe "restore_metadata test" do
   before do
@@ -9,9 +10,19 @@ describe "restore_metadata test" do
     uploaded_file = @attacher.cache.upload(fakeio("image"))
     uploaded_file.metadata["size"] = 24354535
 
-    recached_file = @attacher.set(uploaded_file.to_json)
+    restored_file = @attacher.set(uploaded_file.to_json)
 
-    assert_equal 5, recached_file.metadata["size"]
+    assert_equal 5, restored_file.metadata["size"]
+  end
+
+  it "doesn't bother reextracting if the same file is already assigned" do
+    uploaded_file = @attacher.set(fakeio("image"))
+    uploaded_file.metadata["size"] = 24354535
+    Shrine.any_instance.expects(:extract_metadata).never
+
+    restored_file = @attacher.set(uploaded_file.to_json)
+
+    assert_equal 5, restored_file.metadata["size"]
   end
 
   it "works with versions" do
