@@ -35,11 +35,11 @@ class Shrine
     # The default format is probably easier to read, but may not be that easy
     # to grep. If this is important to you, you can switch to another format:
     #
-    #    plugin :logging, format: :json
-    #    # {"action":"upload","phase":"direct","uploader":"ImageUploader",...}
+    #     plugin :logging, format: :json
+    #     # {"action":"upload","phase":"direct","uploader":"ImageUploader",...}
     #
-    #    plugin :logging, format: :heroku
-    #    # action=upload phase=direct uploader=imageUploader attachment=avatar ...
+    #     plugin :logging, format: :heroku
+    #     # action=upload phase=direct uploader=imageUploader attachment=avatar ...
     #
     # Logging is by default disabled in tests, but you can enable it by setting
     # `Shrine.logger.level = Logger::INFO`.
