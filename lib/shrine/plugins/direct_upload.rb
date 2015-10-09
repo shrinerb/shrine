@@ -4,6 +4,64 @@ require "forwardable"
 
 class Shrine
   module Plugins
+    # The direct_upload plugin gives you a Rack endpoint (implemented in
+    # [Roda]) which you can use to implement AJAX uploads.
+    #
+    #     plugin :direct_upload, max_size: 20*1024*1024
+    #
+    # This is how you could mount the endpoint in a Rails application:
+    #
+    #     Rails.application.routes.draw do
+    #       mount ImageUploader.direct_endpoint => "/attachments/images"
+    #     end
+    #
+    # Note that you should mount a separate endpoint for each uploader that you
+    # want to use it with. This now gives your Ruby application a
+    # `/attachments/images/:storage/:name` route, which accepts POST requests
+    # with a "file" query parameter:
+    #
+    #     $ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/avatar
+    #     # {"id":"43kewit94.jpg","storage":"cache","metadata":{...}}
+    #
+    # The endpoint returns all responses in JSON format. This endpoint is
+    # typically useful for implementing AJAX uploads. There are many great
+    # JavaScript libraries for AJAX file uploads, so for example if we have
+    # this form:
+    #
+    #     <%= form_for @user do |f| %>
+    #       <%= f.hidden_field :avatar, value: @user.avatar_data %>
+    #       <%= f.file_field :avatar %>
+    #     <% end %>
+    #
+    # this is how we could use [jQuery-File-Upload] to enable direct AJAX
+    # uploads:
+    #
+    #     $('[type="file"]').fileupload({
+    #       url '/attachments/images/cache/avatar',
+    #       paramName: 'file',
+    #       done: function(e, data) { $(this).prev().value(data.result) }
+    #     });
+    #
+    # Now whenever a file gets chosen, the upload will automatically start in
+    # the background. It's typically good to show a progress bar to the user,
+    # which jQuery-File-Upload supports. After the upload has finished, the
+    # uploaded file JSON is written to the hidden field, and will be sent on
+    # form submit.
+    #
+    # The `:storage` is typically "cache", but you can also use it with
+    # "store", you just need to first add it to allowed storages:
+    #
+    #     plugin :direct_upload, allowed_storages: [:cache, :store]
+    #
+    # It's typically good to limit the file size using the `:max_size` option,
+    # so if the file is too big, the endpoint will automatically delete the
+    # file and return a 413 response. However, if for whatever reason you don't
+    # want to impose a limit on filesize, you can set the option to nil.
+    #
+    #     plugin :direct_upload, max_size: nil
+    #
+    # [Roda]: https://github.com/jeremyevans/roda
+    # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
     module DirectUpload
       def self.configure(uploader, allowed_storages: [:cache], max_size:)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages

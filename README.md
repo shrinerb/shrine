@@ -171,7 +171,7 @@ In Rails this is how you would typically create the form for a `@user`:
 The `file_field` is for file upload, and the `hidden_field` is to make the
 file persist in case of validation errors.
 
-## Direct upload
+## Direct uploads
 
 Shrine comes with a `direct_upload` plugin which provides an endpoint
 (implemented in [Roda]) that can be used for AJAX uploads.
@@ -181,7 +181,7 @@ Shrine.plugin :direct_upload
 ```
 ```rb
 Rails.application.routes.draw do
-  # adds a `/attachments/images/:storage/:name` route
+  # adds a `POST /attachments/images/:storage/:name` route
   mount ImageUploader.direct_endpoint => "/attachments/images"
 end
 ```
@@ -191,7 +191,7 @@ $ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/av
 ```
 
 There are many great JavaScript libraries for AJAX file uploads, for example
-this is how we use [jQuery-File-Upload] for direct uploads to our endpoint:
+this is how we could use [jQuery-File-Upload] for direct uploads to our endpoint:
 
 ```js
 $('[type="file"]').fileupload({
@@ -645,8 +645,6 @@ The gem is available as open source under the terms of the [MIT License].
 [fastimage]: https://github.com/sdsykes/fastimage
 [file]: http://linux.die.net/man/1/file
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
-[Shrine::Storage::FileSystem]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/file_system.rb
-[Shrine::Storage::S3]: https://github.com/janko-m/shrine/blob/master/lib/shrine/storage/s3.rb
 [aws-sdk]: https://github.com/aws/aws-sdk-ruby
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Roda]: https://github.com/jeremyevans/roda

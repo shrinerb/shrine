@@ -7,20 +7,21 @@ class Shrine
     #
     # The plugin accepts the following analysers:
     #
-    # `:file` (default)
-    # : Uses the UNIX [file] utility to determine the MIME type from file contents.
+    # :file
+    # : (Default). Uses the UNIX [file] utility to determine the MIME type
+    #   from file contents.
     #
-    # `:filemagic`
+    # :filemagic
     # : Uses the [ruby-filemagic] gem to determine the MIME type from file
     #   contents, using a similar MIME database as the `file` utility. However,
     #   unlike the `file` utility, ruby-filemagic should work on Windows.
     #
-    # `:mimemagic`
+    # :mimemagic
     # : Uses the [mimemagic] gem to determine the MIME type from file contents.
     #   Unlike ruby-filemagic, mimemagic is a pure-ruby solution, so it will
     #   work on all Ruby implementations.
     #
-    # `:mime_types`
+    # :mime_types
     # : Uses the [mime-types] gem to determine the MIME type from the file
     #   extension. Unlike other solutions, this is not guaranteed to return
     #   the actual MIME type, since the attacker can just upload a video with
