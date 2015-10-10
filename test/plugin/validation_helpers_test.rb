@@ -219,6 +219,13 @@ describe "the validation_helpers plugin" do
     end
   end
 
+  it "anchors the regexes of the converted strings" do
+    @attacher.assign(fakeio(filename: "video.mp4foobar"))
+    @attacher.validate_extension_inclusion ["mp4"]
+
+    refute_empty @attacher.errors
+  end
+
   it "uses the default error messages" do
     @attacher.assign(fakeio)
     @attacher.validate_min_size 2*1024*1024
