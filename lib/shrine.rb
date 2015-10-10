@@ -485,23 +485,20 @@ class Shrine
         end
 
         # Receives the attachment value from the form.  If it receives a JSON
-        # string or a hash, it will assume this refrences an already uploaded
-        # file (e.g. cached file that persisted after validation errors).
+        # string or a hash, it will assume this refrences an already cached
+        # file (e.g. when it persisted after validation errors).
         # Otherwise it assumes that it's an IO object and caches it.
-        # Afterwards it runs #validate.
         def assign(value)
-          return if value == ""
-
-          uploaded_file =
-            if value.is_a?(String) || value.is_a?(Hash)
-              retrieve(value)
-            elsif value
-              cache!(value, phase: :assign)
-            end
-
-          set(uploaded_file)
+          if value.is_a?(String) || value.is_a?(Hash)
+            assign_cached(value) unless value == ""
+          else
+            uploaded_file = cache!(value, phase: :assign) if value
+            set(uploaded_file)
+          end
         end
 
+        # Assigns a Shrine::UploadedFile, runs validation and schedules the
+        # old file for deletion.
         def set(uploaded_file)
           @old_attachment = get unless get == uploaded_file
           _set(uploaded_file)
@@ -584,10 +581,10 @@ class Shrine
 
         private
 
-        # Retrieves the stored file.
-        def retrieve(value, &block)
-          return get if get == uploaded_file(value)
-          uploaded_file(value, &block)
+        # Retrieves the cached file.
+        def assign_cached(value)
+          uploaded_file = uploaded_file(value)
+          set(uploaded_file) if cache.uploaded?(uploaded_file)
         end
 
         # Uploads the file to cache (calls `Shrine#upload`).

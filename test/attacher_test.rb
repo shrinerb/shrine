@@ -60,13 +60,11 @@ describe Shrine::Attacher do
       assert_kind_of Shrine::UploadedFile, @attacher.get
     end
 
-    it "doesn't allow tampering" do
-      uploaded_file = @attacher.assign(fakeio("image"))
-      uploaded_file.metadata["size"] = 24354535
+    it "doesn't accept stored files" do
+      stored_file = @attacher.store.upload(fakeio)
+      @attacher.assign(stored_file.to_json)
 
-      @attacher.assign(uploaded_file.to_json)
-
-      assert_equal 5, @attacher.get.size
+      assert_equal nil, @attacher.get
     end
   end
 
@@ -100,6 +98,13 @@ describe Shrine::Attacher do
       @attacher.replace
 
       assert uploaded_file.exists?
+    end
+
+    it "allows setting stored files" do
+      stored_file = @attacher.store.upload(fakeio)
+      @attacher.set(stored_file)
+
+      assert_kind_of Shrine::UploadedFile, @attacher.get
     end
   end
 
