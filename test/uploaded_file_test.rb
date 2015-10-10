@@ -25,6 +25,7 @@ describe Shrine::UploadedFile do
     uploaded_file = @uploader.upload(io)
 
     assert_equal "foo.jpg", uploaded_file.original_filename
+    assert_equal "jpg", uploaded_file.extension
     assert_equal 5, uploaded_file.size
     assert_equal "image/jpeg", uploaded_file.mime_type
   end

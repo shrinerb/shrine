@@ -670,6 +670,12 @@ class Shrine
           metadata.fetch("filename")
         end
 
+        # The extension derived from `#original_filename`.
+        def extension
+          extname = File.extname(id)
+          extname[1..-1] unless extname.empty?
+        end
+
         # The filesize of the original file.
         def size
           metadata.fetch("size")
