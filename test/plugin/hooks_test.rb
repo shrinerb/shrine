@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "hooks plugin" do
+describe "the hooks plugin" do
   before do
     @uploader = uploader { plugin :hooks }
   end

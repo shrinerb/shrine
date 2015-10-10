@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "remote_url plugin" do
+describe "the remote_url plugin" do
   include TestHelpers::Interactions
 
   def cassette

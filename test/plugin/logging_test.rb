@@ -1,7 +1,7 @@
 require "test_helper"
 require "stringio"
 
-describe "logging plugin" do
+describe "the logging plugin" do
   def uploader(**options)
     super() { plugin :logging, stream: $out, **options }
   end

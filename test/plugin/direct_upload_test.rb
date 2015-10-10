@@ -1,7 +1,7 @@
 require "test_helper"
 require "json"
 
-describe "direct_upload plugin" do
+describe "the direct_upload plugin" do
   include TestHelpers::Rack
 
   def app

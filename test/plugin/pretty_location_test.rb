@@ -1,7 +1,7 @@
 require "test_helper"
 require "ostruct"
 
-describe "pretty_location plugin" do
+describe "the pretty_location plugin" do
   before do
     @uploader = uploader { plugin :pretty_location }
   end

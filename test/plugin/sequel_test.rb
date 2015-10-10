@@ -9,7 +9,7 @@ end
 
 Sequel.cache_anonymous_models = false
 
-describe "sequel plugin" do
+describe "the sequel plugin" do
   before do
     @uploader = uploader { plugin :sequel }
 

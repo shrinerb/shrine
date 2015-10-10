@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "data_uri plugin" do
+describe "the data_uri plugin" do
   def setup
     @attacher = attacher { plugin :data_uri, error_message: ->(uri) { "Data URI failed" } }
     @user = @attacher.record

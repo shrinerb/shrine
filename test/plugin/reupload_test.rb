@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "reupload plugin" do
+describe "the reupload plugin" do
   def setup
     @attacher = attacher { plugin :reupload }
   end

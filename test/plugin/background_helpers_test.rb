@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "background_helpers plugin" do
+describe "the background_helpers plugin" do
   before do
     @attacher = attacher { plugin :background_helpers }
   end

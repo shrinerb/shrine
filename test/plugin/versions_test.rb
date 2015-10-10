@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "versions plugin" do
+describe "the versions plugin" do
   before do
     @attacher = attacher { plugin :versions, names: [:thumb] }
     @uploader = @attacher.store

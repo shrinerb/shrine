@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "remove_attachment plugin" do
+describe "the remove_attachment plugin" do
   before do
     @attacher = attacher { plugin :remove_attachment }
     @user = @attacher.record

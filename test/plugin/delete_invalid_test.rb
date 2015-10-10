@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "delete_invalid plugin" do
+describe "the delete_invalid plugin" do
   def setup
     @attacher = attacher { plugin :delete_invalid }
   end

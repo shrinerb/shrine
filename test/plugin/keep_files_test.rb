@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "keep_files plugin" do
+describe "the keep_files plugin" do
   def attacher(options = {})
     super() { plugin :keep_files, options }
   end

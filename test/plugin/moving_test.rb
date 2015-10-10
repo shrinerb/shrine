@@ -2,7 +2,7 @@ require "test_helper"
 require "shrine/storage/file_system"
 require "down"
 
-describe "moving plugin" do
+describe "the moving plugin" do
   def shrine(storages)
     shrine = Class.new(Shrine)
     shrine.storages = {

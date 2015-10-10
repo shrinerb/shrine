@@ -10,7 +10,7 @@ ActiveRecord::Migration.class_eval do
   end
 end
 
-describe "activerecord plugin" do
+describe "the activerecord plugin" do
   before do
     @uploader = uploader { plugin :activerecord }
 

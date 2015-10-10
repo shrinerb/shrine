@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "validation_helpers plugin" do
+describe "the validation_helpers plugin" do
   before do
     @attacher = attacher { plugin :validation_helpers }
   end

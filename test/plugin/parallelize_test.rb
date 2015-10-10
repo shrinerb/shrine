@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "parallelize plugin" do
+describe "the parallelize plugin" do
   before do
     @uploader = uploader do
       plugin :versions, names: [:large, :medium, :small]

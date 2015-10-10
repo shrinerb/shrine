@@ -1,7 +1,7 @@
 require "test_helper"
 require "mocha/mini_test"
 
-describe "restore_metadata test" do
+describe "the restore_metadata test" do
   before do
     @attacher = attacher { plugin :restore_metadata }
   end

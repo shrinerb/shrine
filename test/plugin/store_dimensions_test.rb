@@ -1,6 +1,6 @@
 require "test_helper"
 
-describe "store_dimensions plugin" do
+describe "the store_dimensions plugin" do
   def uploader(analyser)
     super() { plugin :store_dimensions, analyser: analyser }
   end
