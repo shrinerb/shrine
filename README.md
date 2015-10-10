@@ -514,13 +514,8 @@ user.avatar.url #=> "https://s3-sa-east-1.amazonaws.com/my-bucket/0943sf8gfk13.j
 
 If you're using S3 for both `:cache` and `:store`, saving the record will
 execute an S3 COPY command if possible, which avoids reuploading the file.
-Also, whenever multiple files are being deleted at once (e.g. versions get
-deleted this way), instead of deleting each file individually, S3 will execute
-a single MULTI DELETE command.
-
-```rb
-uploader.delete(multiple_files) # single HTTP request on S3
-```
+Also, the `versions` plugin uses S3's MULTI DELETE capabilities, so versions
+are deleted with a single HTTP request.
 
 ## Background jobs
 

@@ -1,5 +1,4 @@
 require "test_helper"
-require "mocha/mini_test"
 
 describe Shrine do
   before do
@@ -219,23 +218,6 @@ describe Shrine do
 
       assert_equal uploaded_file, deleted_file
       refute deleted_file.exists?
-    end
-
-    it "deletes multiple files" do
-      uploaded_file = @uploader.upload(fakeio)
-      deleted_files = @uploader.delete([uploaded_file])
-
-      assert_equal [uploaded_file], deleted_files
-      refute deleted_files[0].exists?
-    end
-
-    it "calls multi_delete if storage supports it" do
-      @uploader.storage.expects(:multi_delete).with(["foo"])
-
-      uploaded_file = @uploader.upload(fakeio, location: "foo")
-      deleted_files = @uploader.delete([uploaded_file])
-
-      assert_equal [uploaded_file], deleted_files
     end
   end
 

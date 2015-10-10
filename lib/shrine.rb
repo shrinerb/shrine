@@ -185,12 +185,9 @@ class Shrine
           end
         end
 
-        # Deletes one or more Shrine::UploadedFile's.  In case of one file it
-        # just calls Shrine::UploadedFile#delete, but with multiple files it
-        # uses storage's multi-delete capabilities if present.
+        # Delete a Shrine::UploadedFile.
         #
         #     Shrine.delete(uploaded_file)
-        #     Shrine.delete([uploaded_file])
         def delete(uploaded_file, context = {})
           uploader_for(uploaded_file).delete(uploaded_file, context)
         end
@@ -273,6 +270,7 @@ class Shrine
         # Called by `Shrine.delete`.
         def delete(uploaded_file, context = {})
           _delete(uploaded_file, context)
+          uploaded_file
         end
 
         # Generates a unique location for the uploaded file, and preserves an
@@ -342,17 +340,9 @@ class Shrine
           )
         end
 
-        # Called by `Shrine.delete`.  If an array of uploaded files was passed
-        # in, it will try to use storage-specific multi-delete capabilities
-        # (S3 has one), otherwise it will iterate over files and call `#delete`
-        # on them.  It returns the deleted files.
+        # Removes the file. Called by `Shrine.delete`.
         def _delete(uploaded_file, context)
-          if uploaded_file.is_a?(Array) && storage.respond_to?(:multi_delete)
-            storage.multi_delete(uploaded_file.map(&:id))
-          else
-            Array(uploaded_file).each { |file| remove(file, context) }
-          end
-          uploaded_file
+          remove(uploaded_file, context)
         end
 
         # Copies the file to the storage.
@@ -581,7 +571,7 @@ class Shrine
 
         private
 
-        # Retrieves the cached file.
+        # Assigns a cached file (refuses if the file is stored).
         def assign_cached(value)
           uploaded_file = uploaded_file(value)
           set(uploaded_file) if cache.uploaded?(uploaded_file)
