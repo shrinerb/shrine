@@ -1,5 +1,28 @@
 class Shrine
   module Plugins
+    # The store_dimensions plugin extracts and stores dimensions of the
+    # uploaded image using the [fastimage] gem.
+    #
+    #     plugin :store_dimensions
+    #
+    # You can access the dimensions through `#width` and `#height` methods:
+    #
+    #     uploader = Shrine.new(:store)
+    #     uploaded_file = uploader.upload(File.open("image.jpg"))
+    #
+    #     uploaded_file.width  #=> 300
+    #     uploaded_file.height #=> 500
+    #
+    # The fastimage gem has built-in protection against [image bombs]. However,
+    # if you would like to use another analyzer, you can provide a block to
+    # `:analyzer`:
+    #
+    #     plugin :store_dimensions, analyzer: ->(io) do
+    #       MiniMagick::Image.new(io).dimensions #=> [300, 500]
+    #     end
+    #
+    # [fastimage]: https://github.com/sdsykes/fastimage
+    # [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
     module StoreDimensions
       def self.load_dependencies(uploader, analyzer: :fastimage)
         case analyzer
@@ -12,6 +35,7 @@ class Shrine
       end
 
       module InstanceMethods
+        # We update the metadata with "width" and "height".
         def extract_metadata(io, context)
           width, height = extract_dimensions(io)
 
@@ -21,6 +45,8 @@ class Shrine
           )
         end
 
+        # If the `io` is an uploaded file, copies its dimensions, otherwise
+        # calls the predefined or custom analyzer.
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
 
