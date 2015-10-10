@@ -1,14 +1,14 @@
 class Shrine
   module Plugins
     module StoreDimensions
-      def self.load_dependencies(uploader, analyser: :fastimage)
-        case analyser
+      def self.load_dependencies(uploader, analyzer: :fastimage)
+        case analyzer
         when :fastimage then require "fastimage"
         end
       end
 
-      def self.configure(uploader, analyser: :fastimage)
-        uploader.opts[:dimensions_analyser] = analyser
+      def self.configure(uploader, analyzer: :fastimage)
+        uploader.opts[:dimensions_analyzer] = analyzer
       end
 
       module InstanceMethods
@@ -22,14 +22,14 @@ class Shrine
         end
 
         def extract_dimensions(io)
-          analyser = opts[:dimensions_analyser]
+          analyzer = opts[:dimensions_analyzer]
 
           if io.respond_to?(:width) && io.respond_to?(:height)
             [io.width, io.height]
-          elsif analyser.is_a?(Symbol)
-            send(:"_extract_dimensions_with_#{analyser}", io)
+          elsif analyzer.is_a?(Symbol)
+            send(:"_extract_dimensions_with_#{analyzer}", io)
           else
-            analyser.call(io)
+            analyzer.call(io)
           end
         end
 

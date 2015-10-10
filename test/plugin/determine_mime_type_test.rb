@@ -2,8 +2,8 @@ require "test_helper"
 require "stringio"
 
 describe "the determine_mime_type plugin" do
-  def uploader(analyser)
-    super() { plugin :determine_mime_type, analyser: analyser }
+  def uploader(analyzer)
+    super() { plugin :determine_mime_type, analyzer: analyzer }
   end
 
   describe ":filemagic" do

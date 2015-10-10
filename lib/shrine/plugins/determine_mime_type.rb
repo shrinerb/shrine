@@ -5,7 +5,7 @@ class Shrine
     #
     #     plugin :determine_mime_type
     #
-    # The plugin accepts the following analysers:
+    # The plugin accepts the following analyzers:
     #
     # :file
     # : (Default). Uses the UNIX [file] utility to determine the MIME type
@@ -23,17 +23,17 @@ class Shrine
     #
     # :mime_types
     # : Uses the [mime-types] gem to determine the MIME type from the file
-    #   *extension*. Unlike other solutions, this analyser is not guaranteed to
+    #   *extension*. Unlike other solutions, this analyzer is not guaranteed to
     #   return the actual MIME type of the file.
     #
     # By default the UNIX [file] utility is used to detrmine the MIME type, but
     # you can change it:
     #
-    #     plugin :determine_mime_type, analyser: :filemagic
+    #     plugin :determine_mime_type, analyzer: :filemagic
     #
-    # If none of these quite suit your needs, you can use a custom analyser:
+    # If none of these quite suit your needs, you can use a custom analyzer:
     #
-    #     plugin :determine_mime_type, analyser: ->(io) do
+    #     plugin :determine_mime_type, analyzer: ->(io) do
     #       if io.path.end_with?(".odt")
     #         "application/vnd.oasis.opendocument.text"
     #       else
@@ -46,8 +46,8 @@ class Shrine
     # [mimemagic]: https://github.com/minad/mimemagic
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
     module DetermineMimeType
-      def self.load_dependencies(uploader, analyser: :file)
-        case analyser
+      def self.load_dependencies(uploader, analyzer: :file)
+        case analyzer
         when :file      then require "open3"
         when :filemagic then require "filemagic"
         when :mimemagic then require "mimemagic"
@@ -60,23 +60,23 @@ class Shrine
         end
       end
 
-      def self.configure(uploader, analyser: :file)
-        uploader.opts[:mime_type_analyser] = analyser
+      def self.configure(uploader, analyzer: :file)
+        uploader.opts[:mime_type_analyzer] = analyzer
       end
 
       module InstanceMethods
         # If a Shrine::UploadedFile was given, it returns its MIME type, since
-        # that value was already determined by this analyser. Otherwise it calls
-        # a built-in analyser or a custom one.
+        # that value was already determined by this analyzer. Otherwise it calls
+        # a built-in analyzer or a custom one.
         def extract_mime_type(io)
-          analyser = opts[:mime_type_analyser]
+          analyzer = opts[:mime_type_analyzer]
 
           if io.respond_to?(:mime_type)
             io.mime_type
-          elsif analyser.is_a?(Symbol)
-            send(:"_extract_mime_type_with_#{analyser}", io)
+          elsif analyzer.is_a?(Symbol)
+            send(:"_extract_mime_type_with_#{analyzer}", io)
           else
-            analyser.call(io)
+            analyzer.call(io)
           end
         end
 
