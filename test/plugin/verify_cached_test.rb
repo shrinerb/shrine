@@ -1,9 +1,26 @@
 require "test_helper"
 require "mocha/mini_test"
 
-describe "the restore_metadata test" do
+describe "the verify_cached test" do
   before do
-    @attacher = attacher { plugin :restore_metadata }
+    @attacher = attacher { plugin :verify_cached }
+  end
+
+  it "checks that the file exists" do
+    cached_file = @attacher.cache.upload(fakeio("image"))
+    cached_file.data["id"] = "nonexistent"
+
+    @attacher.assign(cached_file.to_json)
+
+    assert_equal nil, @attacher.get
+  end
+
+  it "checks that the file exists only if it's cached" do
+    stored_file = @attacher.store.upload(fakeio("image"))
+    stored_file.data["id"] = "nonexistent"
+
+    Shrine::UploadedFile.any_instance.expects(:exists?).never
+    @attacher.assign(stored_file.to_json)
   end
 
   it "reextracts metadata of set cached files" do
@@ -15,7 +32,7 @@ describe "the restore_metadata test" do
     assert_equal 5, restored_file.metadata["size"]
   end
 
-  it "doesn't trigger extracting if the file is from :store" do
+  it "skips extracting if the file is from :store" do
     stored_file = @attacher.store.upload(fakeio("image"))
     stored_file.metadata["size"] = 24354535
 
