@@ -53,7 +53,7 @@ describe "remote_url plugin" do
   end
 
   it "doesn't nullify the existing attachment on download error" do
-    @attacher.set(fakeio)
+    @attacher.assign(fakeio)
     @attacher.record.avatar_remote_url = invalid_url
 
     refute_equal nil, @attacher.record.avatar

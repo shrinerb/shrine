@@ -63,7 +63,7 @@ class Shrine
             content_type = match[1] || DEFAULT_CONTENT_TYPE
             content      = Base64.decode64(match[2])
 
-            set DataFile.new(content, content_type: content_type)
+            assign DataFile.new(content, content_type: content_type)
           else
             message = shrine_class.opts[:data_uri_error_message]
             message = message.call(uri) if message.respond_to?(:call)

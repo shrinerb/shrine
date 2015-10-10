@@ -6,103 +6,106 @@ describe Shrine::Attacher do
     @attacher = attacher
   end
 
-  describe "#set" do
+  describe "#assign" do
     it "caches the object if it's an IO" do
-      uploaded_file = @attacher.set(fakeio("image"))
+      uploaded_file = @attacher.assign(fakeio("image"))
 
       assert_instance_of @attacher.shrine_class::UploadedFile, uploaded_file
       assert_equal "cache", uploaded_file.data["storage"]
       assert_equal "image", uploaded_file.read
     end
 
-    it "sets phase: :assign during caching" do
+    it "sets context during caching" do
       @attacher.cache.instance_eval do
         def process(io, context)
           FakeIO.new(context[:phase].to_s)
         end
+
+        def generate_location(io, context)
+          "#{context[:name]}/#{context[:record].class.superclass}"
+        end
       end
-      uploaded_file = @attacher.set(fakeio("image"))
+
+      uploaded_file = @attacher.assign(fakeio("image"))
 
       assert_equal "assign", uploaded_file.read
+      assert_equal "avatar/Struct", uploaded_file.id
     end
 
     it "accepts already uploaded files via a JSON string" do
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set(uploaded_file.data.to_json)
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(uploaded_file.data.to_json)
 
       assert_equal uploaded_file, @attacher.get
     end
 
     it "accepts already uploaded files via a Hash of data" do
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set(uploaded_file.data)
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(uploaded_file.data)
 
       assert_equal uploaded_file, @attacher.get
     end
 
-    it "it doesn't replace when the attachment didn't change" do
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set(uploaded_file.data)
-      @attacher.set(uploaded_file.data)
+    it "allows setting nil" do
+      @attacher.assign(fakeio)
+      @attacher.assign(nil)
 
-      @attacher.replace
-
-      assert uploaded_file.exists?
+      assert_equal nil, @attacher.get
     end
 
-    it "it doesn't set the file if it's the same" do
-      uploaded_file = @attacher.set(fakeio("image"))
+    it "does nothing if an empty string is passed in" do
+      @attacher.assign(fakeio)
+      @attacher.assign("")
+
+      assert_kind_of Shrine::UploadedFile, @attacher.get
+    end
+
+    it "doesn't allow tampering" do
+      uploaded_file = @attacher.assign(fakeio("image"))
       uploaded_file.metadata["size"] = 24354535
 
-      restored_file = @attacher.set(uploaded_file.to_json)
+      @attacher.assign(uploaded_file.to_json)
 
-      assert_equal 5, restored_file.metadata["size"]
+      assert_equal 5, @attacher.get.size
     end
+  end
 
+  describe "#set" do
     it "writes to record's data attribute" do
-      @attacher.set(fakeio("image"))
+      @attacher.assign(fakeio("image"))
 
       JSON.parse @attacher.record.avatar_data
     end
 
+    it "runs validations" do
+      @attacher.class.validate { errors << :foo }
+      @attacher.assign(fakeio)
+
+      refute_empty @attacher.errors
+    end
+
     it "nullifies the attachment if nil is passed in" do
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
       @attacher.set(nil)
 
       assert_equal nil, @attacher.get
       assert_equal nil, @attacher.record.avatar_data
     end
 
-    it "does nothing if an empty string is passed in" do
-      @attacher.set(fakeio)
-      @attacher.set("")
+    it "doesn't schedule for replacing if attachment didn't change" do
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.set(uploaded_file)
+      @attacher.set(uploaded_file)
 
-      assert_kind_of Shrine::UploadedFile, @attacher.get
-    end
+      @attacher.replace
 
-    it "passes :name and :record to cache" do
-      @attacher.cache.instance_eval do
-        def generate_location(io, context)
-          "#{context[:name]}/#{context[:record].class.superclass}"
-        end
-      end
-
-      @attacher.set(fakeio)
-
-      assert_equal "avatar/Struct", @attacher.get.id
-    end
-
-    it "runs validations" do
-      @attacher.class.validate { errors << :foo }
-      @attacher.set(fakeio)
-
-      refute_empty @attacher.errors
+      assert uploaded_file.exists?
     end
   end
 
   describe "#get" do
     it "reads from the database column" do
-      uploaded_file = @attacher.set(fakeio)
+      uploaded_file = @attacher.assign(fakeio)
 
       @attacher.record.avatar_data = uploaded_file.data.to_json
       assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
@@ -122,50 +125,43 @@ describe Shrine::Attacher do
 
   describe "#promote" do
     it "uploads the cached file to store" do
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
       @attacher.promote(@attacher.get)
 
       assert_equal "store", @attacher.get.storage_key
     end
 
     it "deletes the cached file" do
-      cached_file = @attacher.set(fakeio)
+      cached_file = @attacher.assign(fakeio)
       @attacher.promote(cached_file)
 
       refute cached_file.exists?
     end
 
     it "doesn't assign stored file if cached files don't match" do
-      cached_file = @attacher.set(fakeio)
-      another_cached_file = @attacher.set(fakeio)
+      cached_file = @attacher.assign(fakeio)
+      another_cached_file = @attacher.assign(fakeio)
       @attacher.promote(cached_file)
 
       assert another_cached_file, @attacher.get
     end
 
-    it "passes :name and :record to store" do
+    it "passes the context through" do
       @attacher.store.instance_eval do
+        def process(io, context)
+          FakeIO.new(context[:phase].to_s)
+        end
+
         def generate_location(io, context)
           "#{context[:name]}/#{context[:record].class.superclass}"
         end
       end
 
-      cached_file = @attacher.set(fakeio)
+      cached_file = @attacher.assign(fakeio)
       @attacher.promote(cached_file)
 
-      assert_equal "avatar/Struct", @attacher.get.id
-    end
-
-    it "sets :phase to :promote" do
-      @attacher.store.instance_eval do
-        def process(io, context)
-          FakeIO.new(context[:phase].to_s)
-        end
-      end
-      @attacher.set(fakeio)
-      @attacher.promote(@attacher.get)
-
       assert_equal "promote", @attacher.get.read
+      assert_equal "avatar/Struct", @attacher.get.id
     end
   end
 
@@ -179,29 +175,29 @@ describe Shrine::Attacher do
 
   describe "#replace" do
     it "deletes removed files" do
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set(nil)
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(nil)
       @attacher.replace
 
       refute uploaded_file.exists?
     end
 
     it "deletes replaced files" do
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set(fakeio)
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(fakeio)
       @attacher.replace
 
       refute uploaded_file.exists?
     end
 
     it "doesn't trip if there was no previous file" do
-      @attacher.set(nil)
+      @attacher.assign(nil)
       @attacher.replace
     end
 
     it "doesn't try to delete the same file twice" do
-      @attacher.set(fakeio)
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
+      @attacher.assign(fakeio)
       refute_equal nil, @attacher.instance_variable_get("@old_attachment")
 
       @attacher.replace
@@ -217,15 +213,15 @@ describe Shrine::Attacher do
         end
       end
 
-      @attacher.set(fakeio)
-      @attacher.set(nil)
+      @attacher.assign(fakeio)
+      @attacher.assign(nil)
       @attacher.replace
     end
   end
 
   describe "#destroy" do
     it "deletes the attached file" do
-      uploaded_file = @attacher.set(fakeio)
+      uploaded_file = @attacher.assign(fakeio)
       @attacher.destroy
 
       refute uploaded_file.exists?
@@ -242,14 +238,14 @@ describe Shrine::Attacher do
         end
       end
 
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
       @attacher.destroy
     end
   end
 
   describe "#url" do
     it "calls storage's #url" do
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
 
       assert_match %r{^memory://}, @attacher.url
     end
@@ -272,7 +268,7 @@ describe Shrine::Attacher do
           options.to_json
         end
       end
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
 
       assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
     end
@@ -281,7 +277,7 @@ describe Shrine::Attacher do
   describe "#validate" do
     it "instance exec's the validation block" do
       @attacher.class.validate { errors << get.read }
-      @attacher.set(fakeio("image"))
+      @attacher.assign(fakeio("image"))
 
       assert_equal "image", @attacher.errors.first
     end

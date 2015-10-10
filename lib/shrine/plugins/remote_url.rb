@@ -84,7 +84,7 @@ class Shrine
           return if url == ""
 
           if downloaded_file = download(url)
-            set(downloaded_file)
+            assign(downloaded_file)
           else
             message = shrine_class.opts[:remote_url_error_message]
             message = message.call(url) if message.respond_to?(:call)

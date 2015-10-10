@@ -8,7 +8,7 @@ describe "keep_files plugin" do
   describe ":destroyed" do
     it "keeps files which are deleted on destroy" do
       @attacher = attacher(destroyed: true)
-      uploaded_file = @attacher.set(fakeio)
+      uploaded_file = @attacher.assign(fakeio)
 
       @attacher.destroy
 
@@ -19,14 +19,14 @@ describe "keep_files plugin" do
   describe ":replaced" do
     it "keeps files which were replaced during saving" do
       @attacher = attacher(replaced: true)
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set(fakeio)
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(fakeio)
       @attacher.replace
 
       assert uploaded_file.exists?
 
       uploaded_file = @attacher.get
-      @attacher.set(nil)
+      @attacher.assign(nil)
       @attacher.replace
 
       assert uploaded_file.exists?
@@ -36,7 +36,7 @@ describe "keep_files plugin" do
   describe ":cached" do
     it "keeps cached files which were promoted" do
       @attacher = attacher(cached: true)
-      cached_file = @attacher.set(fakeio)
+      cached_file = @attacher.assign(fakeio)
       @attacher.promote(cached_file)
 
       refute_equal cached_file, @attacher.get
@@ -52,12 +52,12 @@ describe "keep_files plugin" do
     end
     @attacher.class.promote { promote(get) }
 
-    cached_file = @attacher.set(fakeio)
+    cached_file = @attacher.assign(fakeio)
     @attacher._promote
     assert cached_file.exists?
 
     replaced_file = @attacher.get
-    @attacher.set(fakeio)
+    @attacher.assign(fakeio)
     @attacher.replace
     assert replaced_file.exists?
 

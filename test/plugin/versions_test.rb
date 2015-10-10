@@ -68,10 +68,9 @@ describe "versions plugin" do
 
   describe "Attacher#url" do
     it "accepts a version name" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
+      @attacher.set(thumb: @uploader.upload(fakeio))
 
-      assert_equal uploaded_file.url, @attacher.url(:thumb)
+      assert_equal @attacher.get[:thumb].url, @attacher.url(:thumb)
     end
 
     it "returns nil when a attachment doesn't exist" do
@@ -79,8 +78,7 @@ describe "versions plugin" do
     end
 
     it "fails explicity when version isn't registered" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
+      @attacher.set(thumb: @uploader.upload(fakeio))
 
       assert_raises(Shrine::Error) { @attacher.url(:unknown) }
     end
@@ -97,14 +95,13 @@ describe "versions plugin" do
     end
 
     it "returns raw file URL if versions haven't been generated" do
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
 
       assert_equal @attacher.url, @attacher.url(:thumb)
     end
 
     it "doesn't allow no argument when attachment is versioned" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
+      @attacher.set(thumb: @uploader.upload(fakeio))
 
       assert_raises(Shrine::Error) { @attacher.url }
     end
@@ -131,11 +128,10 @@ describe "versions plugin" do
         end
       end
 
-      uploaded_file = @attacher.set(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
+      @attacher.set(thumb: @attacher.cache.upload(fakeio))
       assert_equal Hash[foo: "foo"], @attacher.url(:thumb, foo: "foo")
 
-      @attacher.set(fakeio)
+      @attacher.assign(fakeio)
       assert_equal Hash[foo: "foo"], @attacher.url(:thumb, foo: "foo")
 
       @attacher.set(nil)
@@ -148,48 +144,40 @@ describe "versions plugin" do
 
   it "doesn't allow validating versions" do
     @attacher.class.validate {}
-    uploaded_file = @uploader.upload(fakeio)
 
-    assert_raises(Shrine::Error) { @attacher.set("thumb" => uploaded_file.data) }
+    assert_raises(Shrine::Error) { @attacher.set(thumb: @uploader.upload(fakeio)) }
   end
 
   describe "Attacher" do
     it "returns a hash of versions" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
+      @attacher.set(thumb: @uploader.upload(fakeio))
 
       assert_kind_of Shrine::UploadedFile, @attacher.get.fetch(:thumb)
     end
 
     it "destroys versions successfully" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
-
+      @attacher.set(thumb: @uploader.upload(fakeio))
       @attacher.destroy
 
-      refute uploaded_file.exists?
+      refute @attacher.get[:thumb].exists?
     end
 
     it "replaces versions sucessfully" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data)
-
-      @attacher.set("thumb" => @uploader.upload(fakeio).data)
+      original = @attacher.set(thumb: @uploader.upload(fakeio))
+      @attacher.set(thumb: @uploader.upload(fakeio))
       @attacher.replace
 
-      refute uploaded_file.exists?
+      refute original[:thumb].exists?
     end
 
     it "promotes versions successfully" do
-      cached_file = @attacher.set("thumb" => @uploader.upload(fakeio).data)
-      @attacher.promote(cached_file)
+      @attacher.set(thumb: @uploader.upload(fakeio))
 
       assert @attacher.store.uploaded?(@attacher.get[:thumb])
     end
 
     it "filters the hash to only registered version" do
-      uploaded_file = @uploader.upload(fakeio)
-      @attacher.set("thumb" => uploaded_file.data, "malicious" => uploaded_file.data)
+      @attacher.set(thumb: @uploader.upload(fakeio), malicious: @uploader.upload(fakeio))
 
       assert_equal [:thumb], @attacher.get.keys
     end

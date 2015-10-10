@@ -9,7 +9,7 @@ describe "background_helpers plugin" do
     @attacher.class.promote do |cached_file|
       @fiber = Fiber.new { promote(cached_file) }
     end
-    @attacher.set(fakeio)
+    @attacher.assign(fakeio)
     @attacher._promote
 
     assert_equal "cache", @attacher.get.storage_key
@@ -18,7 +18,7 @@ describe "background_helpers plugin" do
   end
 
   it "doesn't call promoting block when there is nothing to promote" do
-    @attacher.set(fakeio)
+    @attacher.assign(fakeio)
     @attacher._promote
     @attacher.class.promote do
       @fiber = Fiber.new { promote(get) }
@@ -34,8 +34,8 @@ describe "background_helpers plugin" do
         shrine_class.delete(uploaded_file, context.merge(phase: phase))
       }
     end
-    uploaded_file = @attacher.set(fakeio)
-    @attacher.set(fakeio)
+    uploaded_file = @attacher.assign(fakeio)
+    @attacher.assign(fakeio)
     @attacher.replace
 
     assert uploaded_file.exists?
@@ -49,7 +49,7 @@ describe "background_helpers plugin" do
         shrine_class.delete(uploaded_file, context.merge(phase: phase))
       }
     end
-    uploaded_file = @attacher.set(fakeio)
+    uploaded_file = @attacher.assign(fakeio)
     @attacher.destroy
     @attacher.replace
 

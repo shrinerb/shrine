@@ -12,8 +12,7 @@ describe "reupload plugin" do
       end
     end
 
-    cached_file = @attacher.cache.upload(fakeio("original"))
-    @attacher.set(cached_file.to_json)
+    @attacher.assign(fakeio("original"))
     @attacher.save
 
     assert_equal "lanigiro", @attacher.get.read
@@ -26,8 +25,7 @@ describe "reupload plugin" do
       end
     end
 
-    cached_file = @attacher.store.upload(fakeio("original"))
-    @attacher.set(cached_file.to_json)
+    @attacher.assign(fakeio("original"))
     @attacher.save
 
     assert_equal "lanigiro", @attacher.get.read

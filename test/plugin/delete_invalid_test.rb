@@ -6,17 +6,17 @@ describe "delete_invalid plugin" do
   end
 
   it "deletes the cached file if it was invalid" do
-    @attacher.set(fakeio)
+    @attacher.assign(fakeio)
     assert @attacher.get.exists?
 
     @attacher.class.validate { errors << :foo }
-    @attacher.set(fakeio)
+    @attacher.assign(fakeio)
     refute @attacher.get.exists?
   end
 
   it "deletes the cached file if validation errors are raised" do
     @attacher.class.validate { errors << :foo; raise }
-    @attacher.set(fakeio) rescue nil
+    @attacher.assign(fakeio) rescue nil
 
     refute @attacher.get.exists?
   end

@@ -47,7 +47,7 @@ describe "moving plugin" do
     record = Struct.new(:avatar_data).new
     @attacher = @shrine::Attacher.new(record, :avatar, cache: :file_system, store: :file_system)
 
-    cached_file = @attacher.set(fakeio)
+    cached_file = @attacher.assign(fakeio)
     @attacher.promote(cached_file)
 
     refute cached_file.exists?

@@ -423,7 +423,7 @@ class Shrine
             end
 
             def #{name}=(value)
-              #{name}_attacher.set(value)
+              #{name}_attacher.assign(value)
             end
 
             def #{name}
@@ -489,15 +489,20 @@ class Shrine
         # file (e.g. cached file that persisted after validation errors).
         # Otherwise it assumes that it's an IO object and caches it.
         # Afterwards it runs #validate.
-        def set(value)
+        def assign(value)
           return if value == ""
 
-          if value.is_a?(String) || value.is_a?(Hash)
-            uploaded_file = retrieve(value)
-          elsif value
-            uploaded_file = cache!(value, phase: :assign)
-          end
+          uploaded_file =
+            if value.is_a?(String) || value.is_a?(Hash)
+              retrieve(value)
+            elsif value
+              cache!(value, phase: :assign)
+            end
 
+          set(uploaded_file)
+        end
+
+        def set(uploaded_file)
           @old_attachment = get unless get == uploaded_file
           _set(uploaded_file)
           validate
