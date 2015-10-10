@@ -1,5 +1,70 @@
 class Shrine
   module Plugins
+    # The versions plugin enables your uploader to deal with versions. To
+    # generate versions, you simply return a hash of versions in `Shrine#process`:
+    #
+    #     class ImageUploader < Shrine
+    #       plugin :versions, names: [:large, :medium, :small]
+    #
+    #       def process(io, context)
+    #         if context[:phase] == :promote
+    #           size_700 = process_to_limit!(io.download, 700, 700)
+    #           size_500 = process_to_limit!(size_700,    500, 500)
+    #           size_300 = process_to_limit!(size_500,    300, 300)
+    #
+    #           {large: size_700, medium: size_500, small: size_300}
+    #         end
+    #       end
+    #     end
+    #
+    # Now when you access the attachment through the model, a hash of uploaded
+    # files will be returned:
+    #
+    #     user.avatar #=>
+    #     # {
+    #     #   large:  #<Shrine::UploadedFile>,
+    #     #   medium: #<Shrine::UploadedFile>,
+    #     #   small:  #<Shrine::UploadedFile>,
+    #     # }
+    #     user.avatar.class #=> Hash
+    #
+    #     # With the store_dimensions plugin
+    #     user.avatar[:large].width  #=> 700
+    #     user.avatar[:medium].width #=> 500
+    #     user.avatar[:small].width  #=> 300
+    #
+    # The plugin also extends the `avatar_url` method to accept versions:
+    #
+    #     user.avatar_url(:medium)
+    #
+    # If you decide to put generating versions in a background job, you don't
+    # have to change the above code. If the versions haven't been generated
+    # yet, the `avatar_url` will point to the existing cached file:
+    #
+    #     user.avatar #=> #<Shrine::UploadedFile>
+    #     user.avatar_url(:medium) #=> "http://example.com/original.jpg"
+    #
+    #     # the versions have finished generating
+    #
+    #     user.avatar_url(:medium) #=> "http://example.com/medium.jpg"
+    #
+    # Any additional options will be properly forwarded to the underlying
+    # storage:
+    #
+    #     user.avatar_url(:medium, download: true)
+    #
+    # You can also easily generate default URLs for specific versions, since
+    # the `context` will include the version name:
+    #
+    #     class ImageUploader
+    #       def default_url(io, context)
+    #         "/images/defaults/#{context[:version]}.jpg"
+    #       end
+    #     end
+    #
+    # When deleting versions, if you're using a storage like Storage::S3 which
+    # supports multi deletes, this plugin will use that. This means that in
+    # that case versions will be deleted in a single HTTP request.
     module Versions
       def self.load_dependencies(uploader, *)
         uploader.plugin :multi_delete
@@ -14,20 +79,24 @@ class Shrine
           opts[:version_names]
         end
 
+        # Checks that the identifier is a registered version.
         def version?(name)
           version_names.map(&:to_s).include?(name.to_s)
         end
 
+        # Asserts that the hash doesn't contain any unknown versions.
         def versions!(hash)
           hash.select do |name, version|
             version?(name) or raise Error, "unknown version: #{name.inspect}"
           end
         end
 
+        # Filters the hash to contain only the registered versions.
         def versions(hash)
           hash.select { |name, version| version?(name) }
         end
 
+        # Converts a hash of data into a hash of versions.
         def uploaded_file(object, &block)
           if object.is_a?(Hash) && !object.key?("storage")
             versions(object).inject({}) do |result, (name, data)|
@@ -40,6 +109,7 @@ class Shrine
       end
 
       module InstanceMethods
+        # Checks whether all versions are uploaded by this uploader.
         def uploaded?(uploaded_file)
           if (hash = uploaded_file).is_a?(Hash)
             hash.all? { |name, version| super(version) }
@@ -50,6 +120,10 @@ class Shrine
 
         private
 
+        # Stores each version individually. It asserts that all versions are
+        # known, because later the versions will be silently filtered, so
+        # we want to let the user know that they forgot to register a new
+        # version.
         def _store(io, context)
           if (hash = io).is_a?(Hash)
             self.class.versions!(hash).inject({}) do |result, (name, version)|
@@ -60,6 +134,8 @@ class Shrine
           end
         end
 
+        # Deletes each file individually, but uses S3's multi delete
+        # capabilities.
         def _delete(uploaded_file, context)
           if (versions = uploaded_file).is_a?(Hash)
             super(versions.values, context)
@@ -71,6 +147,8 @@ class Shrine
       end
 
       module AttacherMethods
+        # Smart versioned URLs, which include the version name in the default
+        # URL, and properly forwards any options to the underlying storage.
         def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
@@ -89,14 +167,6 @@ class Shrine
             else
               default_url(options.merge(version: version))
             end
-          end
-        end
-
-        def validate
-          if validate_block && get.is_a?(Hash)
-            raise Error, "cannot validate versions"
-          else
-            super
           end
         end
       end

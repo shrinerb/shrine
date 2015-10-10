@@ -70,7 +70,8 @@ class Shrine
     #
     # Note that we're passing the context in order to imitate the flow how it
     # would look like if we didn't intercept it. For example, this gives the
-    # logging plugin relevant context.
+    # logging plugin relevant context. Both jobs written like this will
+    # automatically work with the versions plugin.
     #
     # If you would like to speed up your uploads and deletes, but you don't
     # want to involve background jobs, the parallelize plugin may be what you

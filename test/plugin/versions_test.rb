@@ -142,12 +142,6 @@ describe "the versions plugin" do
     end
   end
 
-  it "doesn't allow validating versions" do
-    @attacher.class.validate {}
-
-    assert_raises(Shrine::Error) { @attacher.set(thumb: @uploader.upload(fakeio)) }
-  end
-
   describe "Attacher" do
     it "returns a hash of versions" do
       @attacher.set(thumb: @uploader.upload(fakeio))
