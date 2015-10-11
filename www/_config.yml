@@ -1,0 +1,15 @@
+title: Shrine
+description: File upload toolkit for Ruby applications.
+baseurl: ""
+url: shrinerb.com
+markdown: kramdown
+destination: build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+defaults:
+  -
+    scope:
+      type: pages
+    values:
+      layout: default

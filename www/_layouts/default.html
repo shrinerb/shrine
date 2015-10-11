@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ site.title }}</title>
+    <meta name="description" content="{{ site.description }}">
+    <link rel="canonical" href="{{ page.url | remove:'index.html' | prepend: site.baseurl | prepend: site.url }}">
+    <link rel="stylesheet" href="{{ '/styles/main.css' | prepend: site.baseurl }}">
+  </head>
+  <body>
+
+    {{ content }}
+
+  </body>
+</html>

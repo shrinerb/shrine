@@ -1,0 +1,9 @@
+@mixin font-smoothing($type: antialiased) {
+  -webkit-font-smoothing: $type;
+
+  @if $type == antialiased {
+    -moz-osx-font-smoothing: grayscale;
+  } @else {
+    -moz-osx-font-smoothing: $type;
+  }
+}
