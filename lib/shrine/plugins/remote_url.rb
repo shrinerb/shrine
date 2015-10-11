@@ -23,11 +23,9 @@ class Shrine
     #
     # Now if a file that is bigger than 20MB is assigned, Shrine will terminate
     # the download as soon as it gets the "Content-Length" header, or the
-    # buffer size surpasses the maximum size.
-    #
-    # It's generally good to limit the maximum size, to prevent DoS attacks.
-    # If you're expecting big files, or for whatever reason you don't want to
-    # limit the maximum size, you can set `:max_size` to nil:
+    # buffer size surpasses the maximum size. However, if for whatever reason
+    # you don't want to limit the maximum file size, you can set `:max_size` to
+    # nil:
     #
     #     plugin :remote_url, max_size: nil
     #
@@ -38,7 +36,8 @@ class Shrine
     #     plugin :remote_url, error_message: "download failed"
     #     plugin :remote_url, error_message: ->(url) { I18n.t("errors.download_failed") }
     #
-    # Finally, if you really need to you can override how the file is downloaded:
+    # Finally, if for some reason the way the file is downloaded doesn't suit
+    # your needs, you can provide a custom downloader:
     #
     #     plugin :remote_url, downloader: ->(url) do
     #       request = RestClient::Request.new(method: :get, url: url, raw_response: true)

@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The hooks plugin allows you to trigger some code before/after/around
+    # The hooks plugin allows you to trigger some code around
     # processing/storing/deleting of each file.
     #
     #     plugin :hooks
@@ -54,8 +54,8 @@ class Shrine
     #       end
     #     end
     #
-    # Note that in that case you should always somehow mark this key as private
-    # (for example with an underscore) so that it doesn't clash with any
+    # In that case you should always somehow mark this key as private (for
+    # example with an underscore) so that it doesn't clash with any
     # existing keys.
     module Hooks
       module InstanceMethods

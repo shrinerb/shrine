@@ -4,27 +4,27 @@ require "forwardable"
 
 class Shrine
   module Plugins
-    # The direct_upload plugin gives you a Rack endpoint (implemented in
-    # [Roda]) which you can use to implement AJAX uploads.
+    # The direct_upload plugin provides a Rack endpoint (implemented in [Roda])
+    # which you can use to implement AJAX uploads.
     #
     #     plugin :direct_upload, max_size: 20*1024*1024
     #
     # This is how you could mount the endpoint in a Rails application:
     #
     #     Rails.application.routes.draw do
+    #       # adds `POST /attachments/images/:storage/:name`
     #       mount ImageUploader.direct_endpoint => "/attachments/images"
     #     end
     #
     # Note that you should mount a separate endpoint for each uploader that you
     # want to use it with. This now gives your Ruby application a
-    # `/attachments/images/:storage/:name` route, which accepts POST requests
-    # with a "file" query parameter:
+    # `POST /attachments/images/:storage/:name` route, which accepts a "file"
+    # query parameter:
     #
     #     $ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/avatar
     #     # {"id":"43kewit94.jpg","storage":"cache","metadata":{...}}
     #
-    # The endpoint returns all responses in JSON format. This endpoint is
-    # typically useful for implementing AJAX uploads. There are many great
+    # The endpoint returns all responses in JSON format. There are many great
     # JavaScript libraries for AJAX file uploads, so for example if we have
     # this form:
     #
@@ -33,8 +33,8 @@ class Shrine
     #       <%= f.file_field :avatar %>
     #     <% end %>
     #
-    # this is how we could use [jQuery-File-Upload] to enable direct AJAX
-    # uploads:
+    # this is how we could hook up [jQuery-File-Upload] to our direct upload
+    # endpoint:
     #
     #     $('[type="file"]').fileupload({
     #       url '/attachments/images/cache/avatar',
@@ -44,24 +44,43 @@ class Shrine
     #
     # Now whenever a file gets chosen, the upload will automatically start in
     # the background. It's typically good to show a progress bar to the user,
-    # which jQuery-File-Upload supports. After the upload has finished, the
+    # which jQuery-File-Upload [supports]. After the upload has finished, the
     # uploaded file JSON is written to the hidden field, and will be sent on
     # form submit.
     #
-    # The `:storage` is typically "cache", but you can also use it with
-    # "store", you just need to first add it to allowed storages:
+    # While Shrine only accepts cached attachments on form submits (for security
+    # reasons), you can use this endpoint to upload files to any storage, just
+    # add it do allowed storages:
     #
     #     plugin :direct_upload, allowed_storages: [:cache, :store]
     #
-    # It's typically good to limit the file size using the `:max_size` option,
-    # so if the file is too big, the endpoint will automatically delete the
-    # file and return a 413 response. However, if for whatever reason you don't
-    # want to impose a limit on filesize, you can set the option to nil.
+    # Note that the direct upload doesn't run validations, they are only run
+    # when attached to the record. If you want to limit the MIME type of files,
+    # you could add an ["accept" attribute] to your file field. You could also
+    # add client side validations for the maximum file size.
+    #
+    # It's also encouarged that you set the `:max_size` option for the
+    # endpoint.  Once set, when a file that is too big is uploaded, the
+    # endpoint will automatically delete the file and return a 413 response.
+    # However, if for whatever reason you don't want to impose a limit on
+    # filesize, you can set the option to nil:
     #
     #     plugin :direct_upload, max_size: nil
     #
+    # If you want to authenticate the endpoint, you should be able to do it
+    # easily if your web framework has a good enough router. For example, in
+    # Rails you could add a `constraints` directive:
+    #
+    #     Rails.application.routes.draw do
+    #       constraints(->(r){r.env["warden"].authenticate!}) do
+    #         mount ImageUploader.direct_endpoint => "/attachments/images"
+    #       end
+    #     end
+    #
     # [Roda]: https://github.com/jeremyevans/roda
     # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+    # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
+    # ["accept" attribute]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
     module DirectUpload
       def self.configure(uploader, allowed_storages: [:cache], max_size:)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages

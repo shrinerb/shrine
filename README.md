@@ -1,6 +1,6 @@
 # Shrine
 
-Shrine is a toolkit for file uploads in Ruby.
+Shrine is a toolkit for file uploads in Ruby applications.
 
 ## Installation
 
@@ -10,11 +10,13 @@ gem "shrine"
 
 ## Basics
 
+Here's a basic example showing how the file upload works:
+
 ```rb
 require "shrine"
 require "shrine/storage/file_system"
 
-Shrine.storages = {file_system: Shrine::Storage::FileSystem.new("uploads")}
+Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
 
 uploader = Shrine.new(:file_system)
 
@@ -30,29 +32,28 @@ uploaded_file.data #=>
 ```
 
 First we add the storage we want to use to Shrine's registry. Storages are
-simply Ruby classes which perform the actual uploads. We instantiate a `Shrine`
-instance which wraps the storage, and when we call `Shrine#upload` the
-following happens:
+simple Ruby classes which perform the actual uploads. We instantiate a `Shrine`
+with the storage name, and when we call `Shrine#upload` the following happens:
 
 * a unique location is generated for the file
 * metadata is extracted from the file
 * the underlying storage is called to store the file
-* a `Shrine::UploadedFile` is returned with data filled in
+* a `Shrine::UploadedFile` is returned with these data
 
-The argument to `Shrine#upload` needs to be an IO object. So `File`, `Tempfile`
-and `StringIO` are all valid arguments. But the object doesn't have to be an
-actual IO, it's enough that it responds to these 5 methods: `#read(*args)`,
-`#size`, `#eof?`, `#rewind` and `#close`.  `ActionDispatch::Http::UploadedFile`
-is one such object, but you can also make your own.
+The argument to `Shrine#upload` needs to be an IO-like object. So, `File`,
+`Tempfile` and `StringIO` are all valid arguments. But the object doesn't have
+to be an actual IO, it's enough that it responds to these 5 methods:
+`#read(*args)`, `#size`, `#eof?`, `#rewind` and `#close`.
+`ActionDispatch::Http::UploadedFile` is one such object.
 
-You can now download the uploaded file from the storage:
+Now that we've uploaded the file to the underlying storage, we can download it:
 
 ```rb
 file = uploaded_file.download
 file #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf>
 ```
 
-When you're done, you can delete the file:
+When we're done, we can delete the file:
 
 ```rb
 uploader.delete(uploaded_file)
@@ -61,10 +62,9 @@ uploaded_file.exists? #=> false
 
 ## Attachment
 
-Ok, so far we've seen the low-level interface, which is very useful when you
-need to work with files directly, but isn't that convenient when you want to
-attach these files to models.  For that Shrine provides a high-level interface
-using "attachment" modules.
+In web applications, instead of managing files directly, we want to treat them
+as "attachments" to models and to tie them to the lifecycle of records. Shrine
+does this by generating and including "attachment" modules.
 
 Firstly we need to assign the special `:cache` and `:store` storages:
 
@@ -84,8 +84,8 @@ class ImageUploader < Shrine
 end
 ```
 
-Now if we for example want our Users to have avatars, we can generate and
-include an "avatar" attachment module:
+Now if we assume that we have a "User" model, and we want our users to have an
+"avatar", we can generate and include an "attachment" module:
 
 ```rb
 class User
@@ -94,6 +94,9 @@ class User
   include ImageUploader[:avatar]
 end
 ```
+
+Now our model has gained special methods for attaching avatars:
+
 ```rb
 user = User.new
 user.avatar = File.open("avatar.jpg") # uploads the file to `:cache`
@@ -107,9 +110,8 @@ user.avatar_data #=>
 # }
 ```
 
-Notice that the attachment module added `#avatar`, `#avatar=` and `#avatar_url`
-methods to User. `ImageUploader[:avatar]` generated a module with these
-methods, which when included to our User model.
+The attachment module has added `#avatar`, `#avatar=` and `#avatar_url`
+methods to our User. This is what's happening:
 
 ```rb
 Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
@@ -132,8 +134,8 @@ returns a `Shrine::UploadedFile`. The url method (`#avatar_url`) calls
 ### ORM
 
 Your models probably won't be POROs, so Shrine ships with plugins for
-ActiveRecord and Sequel ORMs. First, we need to add a "data" column for our
-attachment:
+ActiveRecord and Sequel ORMs. Shrine uses the "\<attachment\>\_data" column
+for storing attachments, so we need to add a migration.
 
 ```rb
 add_column :users, :avatar_data, :text
@@ -147,8 +149,8 @@ class User < ActiveRecord::Base
 end
 ```
 
-Along with getters and setters, this now also adds appropriate
-`before/after_save` and `after_destroy` hooks:
+Along with getters and setters, the plugin adds appropriate `before/after_save`
+and `after_destroy` hooks:
 
 ```rb
 user.avatar = File.open("avatar.jpg")
@@ -168,8 +170,8 @@ In Rails this is how you would typically create the form for a `@user`:
 <% end %>
 ```
 
-The `file_field` is for file upload, and the `hidden_field` is to make the
-file persist in case of validation errors.
+The `file_field` is for file upload, while the `hidden_field` is to make the
+file persist in case of validation errors, and for direct uploads.
 
 ## Direct uploads
 
@@ -177,11 +179,11 @@ Shrine comes with a `direct_upload` plugin which provides an endpoint
 (implemented in [Roda]) that can be used for AJAX uploads.
 
 ```rb
-Shrine.plugin :direct_upload
+Shrine.plugin :direct_upload # Exposes a Roda endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  # adds a `POST /attachments/images/:storage/:name` route
+  # adds `POST /attachments/images/:storage/:name`
   mount ImageUploader.direct_endpoint => "/attachments/images"
 end
 ```
@@ -191,7 +193,7 @@ $ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/av
 ```
 
 There are many great JavaScript libraries for AJAX file uploads, for example
-this is how we could use [jQuery-File-Upload] for direct uploads to our endpoint:
+this is how we could hook up [jQuery-File-Upload] to our endpoint:
 
 ```js
 $('[type="file"]').fileupload({
@@ -215,11 +217,6 @@ class ImageUploader < Shrine
   end
 end
 ```
-```rb
-class User < ActiveRecord::Base
-  include ImageUploader[:avatar]
-end
-```
 
 The `io` is the file being uploaded, and `context` we'll leave for later.  You
 may be wondering why we need this conditional. Well, when an attachment is
@@ -227,10 +224,10 @@ assigned and saved, an "upload" actually happens two times. Firstly the file
 is "uploaded" to `:cache` on assignment, and then the cached file is reuploaded
 to `:store` on save.
 
-Now that we got that out of the way, how do we do the actual processing? Well,
-Shrine actually doesn't ship with any image processing functionality, because
-that is a generic problem that belongs in a separate gem. So, I created the
-[image_processing] gem which you can use with Shrine:
+Ok, now how do we do the actual processing? Well, Shrine actually doesn't ship
+with any image processing functionality, because that is a generic problem that
+belongs in a separate gem. So, I created the [image_processing] gem which you
+can use with Shrine:
 
 ```rb
 require "image_processing/mini_magick"
@@ -257,15 +254,14 @@ its files on disk, we still pretend that we `#download` it to respect the
 abstraction.
 
 In general, processing works in a way that if `#process` returns a file, Shrine
-assumes that this is a processed file and continues storing that file.  If
-`#process` however returns nil, that signals to Shrine to continue uploading
+continues storing that file, and if nil is returned, Shrine continues storing
 the original file.
 
 ### Versions
 
-Often you'll want to also store various thumbnails alongside your original
-image. Shrine's `versions` plugin introduces your uploader to the concept of
-versions, and gives you the ability to return a Hash in `Shrine#process`:
+Often you'll want to store various thumbnails alongside your original image.
+For that you just need to load the `versions` plugin, and now in `#process`
+you can return a Hash of versions:
 
 ```rb
 require "image_processing/mini_magick"
@@ -287,13 +283,13 @@ end
 ```
 
 As you see, instead of a complex class-level DSL, Shrine provides a very simple
-instance-level interface where you're in complete control over processing.  The
-processed files are Ruby's Tempfiles, so they should eventually get deleted by
-themselves. But if you're concerned about this, you can use the `moving`
-plugin, which will delete the processed files as soon as they're uploaded.
+instance-level interface where you're in complete control over processing. The
+processed files are Ruby's Tempfiles and they should eventually get deleted by
+themselves, but you can also use the `moving` plugin to delete them immediately
+after upload.
 
-Now when you access your stored attachments, a Hash of versions will be
-returned instead:
+Now when you access the stored attachment, a Hash of versions will be returned
+instead:
 
 ```rb
 user.avatar #=>
@@ -336,14 +332,14 @@ user.save                              # "promote"
 ```
 
 The `:name` is the name of the attachment, in this case "avatar". The `:record`
-is the model instance, in this case a `User`. As for `:phase`, in web
+is the model instance, in this case instance of `User`. As for `:phase`, in web
 applications a file upload isn't an event that happens at once, it's a process
-that happens in *phases*. The base functionality only has 2 phases, "assign"
-and "promote", but there are plugins which add more of them.
+that happens in *phases*. By default there are only 2 phases, "assign" and
+"promote", other plugins add more of them.
 
-Context is really useful for doing conditional processing and validations based
-on the name of the attachment and column values. In general the context is
-saturated through the whole stack and is used by a lot of plugins.
+Context is really useful for doing conditional processing and validation, since
+we have access to the record and attachment name. In general the context is
+used deeply in Shrine for various purposes.
 
 ## Validations
 
@@ -361,12 +357,11 @@ class ImageUploader < Shrine
     end
   end
 end
+```
 
-class User < ActiveRecord::Base
-  include ImageUploader[:avatar]
-end
-
-user = User.new(avatar: File.open("big_image.jpg"))
+```rb
+user = User.new
+user.avatar = File.open("big_image.jpg")
 user.valid? #=> false
 user.errors.to_hash #=> {avatar: ["is too large (max is 2 MB)"]}
 ```
@@ -446,7 +441,7 @@ By default files will all be put in the same folder. If you want that each
 record has its own directory, you can use the `pretty_location` plugin:
 
 ```rb
-Shrine.plugin :pretty_location
+ImageUploader.plugin :pretty_location
 ```
 ```rb
 user = User.create(avatar: File.open("avatar.jpg"))
@@ -464,12 +459,12 @@ class ImageUploader < Shrine
 end
 ```
 
-Note that the location should always be unique, otherwise dirty tracking won't
-be detected properly (you can use `Shrine#generate_uid`).
+Note that in this case should be careful to make the locations unique,
+otherwise dirty tracking won't be detected properly (you can use
+`Shrine#generate_uid`).
 
-When you're using `Shrine` directly, if you want to upload a file to a specific
-location, you can pass the `:location` parameter (which bypasses
-`#generate_location`):
+When using `Shrine` directly you can bypass `#generate_location` by passing in
+`:location`
 
 ```rb
 file = File.open("avatar.jpg")
@@ -514,14 +509,15 @@ user.avatar.url #=> "https://s3-sa-east-1.amazonaws.com/my-bucket/0943sf8gfk13.j
 
 If you're using S3 for both `:cache` and `:store`, saving the record will
 execute an S3 COPY command if possible, which avoids reuploading the file.
-Also, the `versions` plugin uses S3's MULTI DELETE capabilities, so versions
-are deleted with a single HTTP request.
+Also, the `versions` plugin takes advantage of S3's MULTI DELETE capabilities,
+so versions are deleted with a single HTTP request.
 
 ## Background jobs
 
-Shrine doesn't ship with an out-of-the-box solution for background jobs, but
-it's designed in a way to make it as easy as possible. Here's an example how
-you could implement background promoting with Sidekiq:
+Although Shrine doesn't ship with an out-of-the-box solution for background
+jobs, it's specifically designed with this in mind, so that adding it is as
+easy as possible. Here is how you could put promoting in the background using
+Sidekiq:
 
 ```rb
 class ImageUploader < Shrine
@@ -529,12 +525,12 @@ class ImageUploader < Shrine
 
   Attacher.promote do |cached_file|
     # Evaluated inside an instance of Shrine::Attacher.
-    UploadWorker.perform_async(cached_file, record.class, record.id, name)
+    UploadJob.perform_async(cached_file, record.class, record.id, name)
   end
 end
 ```
 ```rb
-class UploadWorker
+class UploadJob
   include Sidekiq::Worker
 
   def perform(cached_file_json, record_class, record_id, name)
@@ -554,40 +550,35 @@ other uploading libraries.
 
 ### Seamless user experience
 
-After the user submits the form, promoting will be kicked off into a background
-job, and the record will be saved with the cached image. This means that, if
-you have your `:cache` in the "public" folder, the end user will be able to
-immediately see their uploaded file, because the URL will point to the cached
-version.
+In combination with direct upload for caching, this provides a completely
+seamless user experience. First the user ansynchronosuly caches the file and
+hopefully sees a nice progress bar. After this is finishes and user submits the
+form, promoting will be kicked off into a background job, and the record will
+be saved with the cached image. If your cache is public (e.g. in the "public"
+folder), the end user will immediately see their uploaded file, because the URL
+will point to the cached version.
 
 In the meanwhile, what `#promote` does is it uploads the cached file `:store`,
-and writes the stored file to the column. When the record gets saved, the end
-user won't even notice that the URL has updated from filesystem to S3, because
-they still see the same image.
+and writes the stored file to the column. When the record gets saved, the URL
+will switch from filesystem to S3, but the user won't even notice that
+something happened, because they will still see the same image.
 
 ### Generality
 
 This worker is completely agnostic about what kind of attachment it is
-uploading, and for which model. This means that if you ever add different
-attachments to other models, you can still use the same worker for all the
-promoting.
+uploading, and for which model. This means that all attachments can use this
+same worker.
 
 ### Safety
 
-It is possible that the user changes their mind and reuploads a new file, but
-before the background job finished promoting.  This can happen either if the
-user was too quick, or the background job was too slow.
-
-Normally what would happen in that case is that the old job would finish
-running, and replace the new file with the old one. At the end it would
-probably turn out fine, because the job that's running for the new attachment
-would eventually replace the old one again. However, there would be a period
-where the user would see an old image *after* they uploaded a new one, which
-can be upsetting.
+It is possible that the user changes their mind and reuploads a new file before
+the background job finished promoting. With a naive implementation, this means
+that after uploading a new file, there can happen a brief moment where the user
+sees the old file again, which can be upsetting.
 
 Shrine handles this gracefully. After `#promote` uploads the cached file to
 `:store`, it checks if the cached file still matches the file in the record
-column. If the files are different, that means the user reuploaded the
+column. If the files are different, that means the user uploaded a new
 attachment, and Shrine won't do the replacement. Additionally, this job is
 idempotent, meaning it can be safely repeated in case of failure.
 
@@ -607,11 +598,10 @@ see [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-confi
 
 ## Plugins
 
-Shrine has a small core which provides only the essential functionality.
+Shrine comes with a small core which provides only the essential functionality.
 However, it comes with a lot of additional features which can be loaded via
 plugins. This way you can choose exactly how much Shrine does for you. Shrine
-itself ships with over 20 plugins, but it's also easy to create your own ([see
-the guide](...)).
+itself ships with over 20 plugins, but it's also easy to create your own.
 
 The plugin system respects inheritance, so you can choose which plugins will
 be applied to which uploaders:

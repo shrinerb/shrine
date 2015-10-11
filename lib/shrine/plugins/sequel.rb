@@ -7,16 +7,19 @@ class Shrine
     #
     #     plugin :sequel
     #
-    # Now when an "attachment" module is included, additional callbacks are
+    # Now whenever an "attachment" module is included, additional callbacks are
     # added to the model:
     #
     # * `before_save` -- Promotes the attachment from `:cache` to `:store`.
     # * `after_save` -- Deletes a replaced attachment.
     # * `after_destroy` -- Destroys the attachment.
     #
-    # Additionally, any validation errors will be written to the attachment
-    # column. Presence validations are not part of file validations, instead
-    # they're meant to be added directly to the column.
+    # If you want to put some parts of this lifecycle in a background job, see
+    # the background_helpers plugin.
+    #
+    # Additionally, any Shrine validation errors will added to Sequel's
+    # errors upon validation. Note that if you want to validate presence of the
+    # attachment, you can do it directly on the model.
     #
     #     class User < Sequel::Model
     #       include ImageUploader[:avatar]

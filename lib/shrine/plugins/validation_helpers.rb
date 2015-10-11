@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The validation_helpers plugin provides helper methods for validation of
+    # The validation_helpers plugin provides helper methods for validating
     # attached files.
     #
     #     class ImageUploader < Shrine
@@ -15,7 +15,7 @@ class Shrine
     #
     # The validation methods are instance-level, the `Attacher.validate` block
     # is evaluated in context of an instance of `Shrine::Attacher`, so you can
-    # access any of its methods, like the `record`.
+    # easily to conditional validation.
     #
     # If you would like to change default validation error messages, you can
     # pass in the `:default_messages` option to the plugin:
@@ -26,7 +26,7 @@ class Shrine
     #     }
     #
     # If you would like to change the error message inline, you can pass the
-    # `:message` option to the validation method:
+    # `:message` option to any validation method:
     #
     #     validate_mime_type_inclusion [/^image/], message: "is not an image"
     #

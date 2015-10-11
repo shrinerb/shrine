@@ -1,6 +1,7 @@
 class Shrine
   module Plugins
-    # The keep_files plugin allows you to prevent files from being deleted.
+    # The keep_files plugin gives you the ability to prevent files from being
+    # deleted.
     #
     #     plugin :keep_files
     #

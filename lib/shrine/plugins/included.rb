@@ -1,7 +1,8 @@
 class Shrine
   module Plugins
     # The included plugin allows you to hook up to the `.included` hook when
-    # adding an attachment to a model.
+    # of the "attachment" module. This allows you to add additonal methods to
+    # the model whenever an attachment is included.
     #
     #     plugin :included do |name|
     #       define_method("#{name}_width") do
@@ -13,10 +14,10 @@ class Shrine
     #       end
     #     end
     #
-    # The block is evaluated in the context of the model. However, note that
-    # you cannot use keywords like `def`, instead use the metaprogramming
-    # methods like `define_method`. Now when an attachment is included to a
-    # model, it will receive the appropriate methods:
+    # The block is evaluated in the context of the model, but note that you
+    # cannot use keywords like `def`, instead you should use the
+    # metaprogramming equivalents like `define_method`. Now when an attachment
+    # is included to a model, it will receive the appropriate methods:
     #
     #     class User
     #       include ImageUploader[:avatar]

@@ -37,9 +37,9 @@ class Shrine
     #
     #     user.avatar_url(:medium)
     #
-    # If you decide to put generating versions in a background job, you don't
-    # have to change the above code. If the versions haven't been generated
-    # yet, the `avatar_url` will point to the existing cached file:
+    # This method plays nice when generating versions in a background job,
+    # since it will just point to the original cached file until the versions
+    # are done processing:
     #
     #     user.avatar #=> #<Shrine::UploadedFile>
     #     user.avatar_url(:medium) #=> "http://example.com/original.jpg"
@@ -62,9 +62,9 @@ class Shrine
     #       end
     #     end
     #
-    # When deleting versions, if you're using a storage like Storage::S3 which
-    # supports multi deletes, this plugin will use that. This means that in
-    # that case versions will be deleted in a single HTTP request.
+    # When deleting versions, any multi delete capabilities will be leveraged,
+    # so when usingStorage::S3, deleting versions will issue only a single HTTP
+    # request.
     module Versions
       def self.load_dependencies(uploader, *)
         uploader.plugin :multi_delete

@@ -1,26 +1,28 @@
 class Shrine
   module Plugins
-    # The moving plugin enables you to move files into specified storages.
+    # The moving plugin enables you to move files to specified storages. On
+    # the filesystem moving is istantaneous, since the OS only changes the
+    # pointer, so this plugin is useful when dealing with large files.
+    #
+    # This plugin is also recommended if you're doing processing, since by
+    # default temporary files won't immediately get deleted (Ruby's Tempfiles
+    # usually get deleted only when the process ends).
     #
     #     plugin :moving, storages: [:cache]
     #
-    # This plugin is recommended if you're dealing with larger files. It's also
-    # recommended if you're doing processing, since by default temporary files
-    # won't get deleted (they will eventually, but if you're doing a lot of
-    # uploads files may not be deleted quickly enough).
-    #
     # The `:storages` option specifies which storages the file will be moved
-    # to. For example, the following will move files uploaded to `:cache`, and
-    # (cached) files uploaded to `:store`:
+    # to. The above will move Rails's uploaded files to cache (without this
+    # plugin it's simply copied over). However, you may want to move cached
+    # files to `:store` as well:
     #
     #     plugin :moving, storages: [:cache, :store]
     #
-    # What exactly means "moving"? Normally, this means that the file which is
+    # What exactly means "moving"? Usually this means that the file which is
     # being uploaded will be deleted afterwards. However, if both the file
     # being uploaded and the destination are on the filesystem, a `mv` command
-    # will be executed instead (convenient for larger files). Some other
-    # storages may implement moving as well, usually if both the `:cache` and
-    # `:store` are using the same storage.
+    # will be executed instead. Some other storages may implement moving as
+    # well, usually if also both the `:cache` and `:store` are using the same
+    # storage.
     module Moving
       def self.configure(uploader, storages:)
         uploader.opts[:move_files_to_storages] = storages

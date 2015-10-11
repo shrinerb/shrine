@@ -14,7 +14,7 @@ class Shrine
     #     uploaded_file.height #=> 500
     #
     # The fastimage gem has built-in protection against [image bombs]. However,
-    # if you would like to use another analyzer, you can provide a block to
+    # if for some reason it doesn't suit your needs, you can provide a custom
     # `:analyzer`:
     #
     #     plugin :store_dimensions, analyzer: ->(io) do

@@ -16,8 +16,8 @@ class Shrine
     #     <% end %>
     #
     # Additionally, the hidden field will only be set when the attachment is
-    # cached (as opposed to the default where it will be assigned even if it's
-    # already stored). This makes Rails logs slightly cleaner.
+    # cached (as opposed to the default where `user.avatar_data` will return
+    # both cached and stored files). This keeps Rails logs cleaner.
     module CachedAttachmentData
       module AttachmentMethods
         def initialize(name, *args)

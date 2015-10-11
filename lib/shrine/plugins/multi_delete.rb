@@ -9,7 +9,7 @@ class Shrine
     #
     #     Shrine.delete([file1, file2, file3])
     #
-    # If you're using Storage::S3, deleting an array of files will issue a
+    # Now if you're using Storage::S3, deleting an array of files will issue a
     # single HTTP request. Some other storages may support multi deletes as
     # well. The versions plugin uses this plugin for deleting multiple versions
     # at once.

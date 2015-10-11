@@ -32,14 +32,14 @@ class Shrine
     #    in Rails applications, where you might want to assign this option to
     #    `Rails.logger`.
     #
-    # The default format is probably easier to read, but may not be that easy
-    # to grep. If this is important to you, you can switch to another format:
+    # The default format is probably easiest to read, but may not be easiest to
+    # grep. If this is important to you, you can switch to another format:
     #
     #     plugin :logging, format: :json
-    #     # {"action":"upload","phase":"direct","uploader":"ImageUploader",...}
+    #     # {"action":"upload","phase":"direct","uploader":"ImageUploader","attachment":"avatar",...}
     #
     #     plugin :logging, format: :heroku
-    #     # action=upload phase=direct uploader=imageUploader attachment=avatar ...
+    #     # action=upload phase=direct uploader=ImageUploader attachment=avatar record_class=User ...
     #
     # Logging is by default disabled in tests, but you can enable it by setting
     # `Shrine.logger.level = Logger::INFO`.

@@ -1,7 +1,7 @@
 class Shrine
   module Plugins
     # The background_helpers plugin enables you to intercept phases of
-    # uploading in order to put them in background jobs.
+    # uploading and put them in background jobs.
     #
     #     plugin :background_helpers
     #
@@ -10,7 +10,7 @@ class Shrine
     #
     # If you're doing processing, or your `:store` is something other than
     # Storage::FileSystem, you may want to put promoting in a background job.
-    # You can do that by calling `Shrine::Attacher.promote`:
+    # This plugin allows you to do that by calling `Shrine::Attacher.promote`:
     #
     #     class ImageUploader
     #       plugin :background_helpers
@@ -37,12 +37,12 @@ class Shrine
     #     end
     #
     # Shrine will automatically eliminate all concurrency issues. For example,
-    # it will terminate promoting if in the meanwhile the user has reuploaded
-    # attachment.
+    # it will terminate promoting if in the meanwhile the user has uploaded a
+    # new attachment.
     #
     # If your `:store` is something other than Storage::FileSystem, you may
-    # want to put deleting of your files in a backgoround job. You can do that
-    # by calling `Shrine::Attacher.delete`:
+    # want to put deleting of your files in a backgoround job. This plugin
+    # allows you to do that by calling `Shrine::Attacher.delete`:
     #
     #     class ImageUploader
     #       plugin :background_helpers
@@ -70,12 +70,12 @@ class Shrine
     #
     # Note that we're passing the context in order to imitate the flow how it
     # would look like if we didn't intercept it. For example, this gives the
-    # logging plugin relevant context. Both jobs written like this will
-    # automatically work with the versions plugin.
+    # logging plugin relevant context. Note that both jobs written like this
+    # will automatically work with the versions plugin.
     #
-    # If you would like to speed up your uploads and deletes, but you don't
-    # want to involve background jobs, the parallelize plugin may be what you
-    # want. You can also combine these two.
+    # If you would like to speed up your uploads and deletes, you can use the
+    # parallelize plugin, either as a replacement or an addition to background
+    # jobs.
     module BackgroundHelpers
       module AttacherClassMethods
         # Saves the promoting block to be called later.

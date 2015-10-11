@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The determine_mime_type plugin helps you store the actual MIME type of the
+    # The determine_mime_type plugin stores the actual MIME type of the
     # uploaded file.
     #
     #     plugin :determine_mime_type
@@ -13,18 +13,18 @@ class Shrine
     #
     # :filemagic
     # : Uses the [ruby-filemagic] gem to determine the MIME type from file
-    #   contents, using a similar MIME database as the `file` utility. However,
-    #   unlike the `file` utility, ruby-filemagic should work on Windows.
+    #   contents, using a similar MIME database as the `file` utility.
+    #   Unlike the `file` utility, ruby-filemagic should work on Windows.
     #
     # :mimemagic
     # : Uses the [mimemagic] gem to determine the MIME type from file contents.
     #   Unlike ruby-filemagic, mimemagic is a pure-ruby solution, so it will
-    #   work on all Ruby implementations.
+    #   work across all Ruby implementations.
     #
     # :mime_types
     # : Uses the [mime-types] gem to determine the MIME type from the file
-    #   *extension*. Unlike other solutions, this analyzer is not guaranteed to
-    #   return the actual MIME type of the file.
+    #   *extension*. Note that unlike other solutions, this analyzer is not
+    #   guaranteed to return the actual MIME type of the file.
     #
     # By default the UNIX [file] utility is used to detrmine the MIME type, but
     # you can change it:

@@ -1,7 +1,7 @@
 class Shrine
   module Plugins
-    # The remove_attachment plugin allows you to delete attachments by adding
-    # a checkbox to your web form.
+    # The remove_attachment plugin allows you to delete attachments through
+    # checkboxes on the web form.
     #
     #     plugin :remove_attachment
     #
