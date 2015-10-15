@@ -48,4 +48,14 @@ describe "the store_dimensions plugin" do
     assert_equal uploaded_file.metadata["width"], uploaded_file.width
     assert_equal uploaded_file.metadata["height"], uploaded_file.height
   end
+
+  it "coerces the dimensions to integer" do
+    @uploader = uploader(:fastimage)
+    uploaded_file = @uploader.upload(image)
+    uploaded_file.metadata["width"] = "48"
+    uploaded_file.metadata["height"] = "52"
+
+    assert_equal 48, uploaded_file.width
+    assert_equal 52, uploaded_file.height
+  end
 end

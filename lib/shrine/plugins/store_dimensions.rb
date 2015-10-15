@@ -68,11 +68,11 @@ class Shrine
 
       module FileMethods
         def width
-          metadata.fetch("width")
+          Integer(metadata.fetch("width"))
         end
 
         def height
-          metadata.fetch("height")
+          Integer(metadata.fetch("height"))
         end
       end
     end

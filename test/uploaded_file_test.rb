@@ -11,7 +11,7 @@ describe Shrine::UploadedFile do
     Shrine.io! @uploader.upload(fakeio)
   end
 
-  it "has data readers" do
+  it "exposes data readers" do
     uploaded_file = @uploader.upload(fakeio, location: "key")
 
     assert_instance_of Hash, uploaded_file.data
@@ -25,9 +25,26 @@ describe Shrine::UploadedFile do
     uploaded_file = @uploader.upload(io)
 
     assert_equal "foo.jpg", uploaded_file.original_filename
-    assert_equal "jpg", uploaded_file.extension
     assert_equal 5, uploaded_file.size
     assert_equal "image/jpeg", uploaded_file.mime_type
+  end
+
+  it "exposes the extension" do
+    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
+    assert_equal "jpg", uploaded_file.extension
+
+    uploaded_file = @uploader.upload(fakeio(filename: "foo"))
+    assert_equal nil, uploaded_file.extension
+
+    uploaded_file = @uploader.upload(fakeio)
+    assert_equal nil, uploaded_file.extension
+  end
+
+  it "coerces the size to integer" do
+    uploaded_file = @uploader.upload(fakeio)
+    uploaded_file.metadata["size"] = "13"
+
+    assert_equal 13, uploaded_file.size
   end
 
   it "has IO-related methods" do

@@ -678,7 +678,7 @@ class Shrine
 
         # The filesize of the original file.
         def size
-          metadata.fetch("size")
+          Integer(metadata.fetch("size"))
         end
 
         # The MIME type of the original file.
