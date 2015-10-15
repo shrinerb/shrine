@@ -70,7 +70,7 @@ class Shrine
         # doesn't output timestamps if on Heroku.
         def pretty_formatter
           proc do |severity, time, program_name, message|
-            output = "##{Process.pid}: #{message}\n"
+            output = "#{Process.pid}: #{message}\n"
             output.prepend "#{time.utc.iso8601(3)} " unless ENV["DYNO"]
             output
           end
