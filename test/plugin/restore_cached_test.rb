@@ -1,9 +1,9 @@
 require "test_helper"
 require "mocha/mini_test"
 
-describe "the verify_cached test" do
+describe "the restore_cached plugin" do
   before do
-    @attacher = attacher { plugin :verify_cached }
+    @attacher = attacher { plugin :restore_cached }
   end
 
   it "checks that the file exists" do
