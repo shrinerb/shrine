@@ -514,39 +514,35 @@ so versions are deleted with a single HTTP request.
 
 ## Background jobs
 
-Although Shrine doesn't ship with an out-of-the-box solution for background
-jobs, it's specifically designed with this in mind, so that adding it is as
-easy as possible. Here is how you could put promoting in the background using
-Sidekiq:
+Unlike other uploading libraries, Shrine embraces that putting phases of file
+upload into background jobs is essential for scaling and good user experience,
+and it ships with `background_helpers` plugin which makes it really easy:
 
 ```rb
-class ImageUploader < Shrine
-  plugin :background_helpers
-
-  Attacher.promote do |cached_file|
-    # Evaluated inside an instance of Shrine::Attacher.
-    UploadJob.perform_async(cached_file, record.class, record.id, name)
-  end
-end
+Shrine.plugin :background_helpers
+Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
+Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
 ```
 ```rb
 class UploadJob
   include Sidekiq::Worker
-
-  def perform(cached_file_json, record_class, record_id, name)
-    record = Object.const_get(record_class).find(record_id)
-    attacher = record.send("#{name}_attacher")
-    cached_file = attacher.uploaded_file(cached_file_json)
-
-    attacher.promote(cached_file)
-    record.save
+  def perform(data)
+    Shrine::Attacher.promote(data)
+  end
+end
+```
+```rb
+class DeleteJob
+  include Sidekiq::Worker
+  def perform(data)
+    Shrine::Attacher.delete(data)
   end
 end
 ```
 
-Not the complicated, is it? This actually works surprisingly well, I would even
-argue that it works better than any existing "out-of-the-box" solution for
-other uploading libraries.
+The above puts all promoting (moving to store) and deleting of files into a
+background Sidekiq job. Obviously instead of Sidekiq you can just as well use
+any other backgrounding library.
 
 ### Seamless user experience
 
@@ -565,9 +561,9 @@ something happened, because they will still see the same image.
 
 ### Generality
 
-This worker is completely agnostic about what kind of attachment it is
-uploading, and for which model. This means that all attachments can use this
-same worker.
+This solution is completely agnostic about what kind of attachment it is
+uploading/deleting, and for which model. This means that all attachments can
+use this same worker. Also, there is no need for any extra columns.
 
 ### Safety
 

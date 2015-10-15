@@ -504,7 +504,6 @@ class Shrine
 
         # Plugins can override this if they want something to be done on save.
         def save
-          _promote
         end
 
         # Returns true if uploaded_file exists and is cached.  If it's true,

@@ -9,20 +9,25 @@ ActiveRecord::Migration.class_eval do
     t.text :avatar_data
   end
 end
+# Get rid of deprecation warnings.
+ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 describe "the activerecord plugin" do
   before do
     @uploader = uploader { plugin :activerecord }
 
-    user_class = Class.new(ActiveRecord::Base)
+    user_class = Object.const_set("User", Class.new(ActiveRecord::Base))
     user_class.table_name = :users
-    def user_class.model_name; ActiveModel::Name.new(self, nil, "User"); end
     user_class.include @uploader.class[:avatar]
 
     @user = user_class.new
+    @attacher = @user.avatar_attacher
   end
 
-  after { ActiveRecord::Base.connection.execute "DELETE FROM users" }
+  after do
+    Object.send(:remove_const, "User")
+    ActiveRecord::Base.connection.execute "DELETE FROM users"
+  end
 
   it "sets validation errors on the record" do
     @user.avatar_attacher.class.validate { errors << "Foo" }
@@ -50,31 +55,16 @@ describe "the activerecord plugin" do
     assert_equal "store", @user.avatar.storage_key
   end
 
-  it "works with background promoting" do
+  it "works with background_helpers plugin" do
     @uploader.class.plugin :background_helpers
-    @user.avatar_attacher.class.promote do |cached_file|
-      @fiber = Fiber.new { promote(cached_file); record.save }
-    end
-    @user.avatar = fakeio
-    @user.save
+    @attacher.class.promote { |data| self.class.promote(data) }
+    @attacher.class.delete { |data| self.class.delete(data) }
 
-    assert_equal "cache", @user.reload.avatar.storage_key
-    @user.avatar_attacher.instance_variable_get("@fiber").resume
+    @user.update(avatar: fakeio)
     assert_equal "store", @user.reload.avatar.storage_key
-  end
 
-  it "bails on promoting if the record attachment" do
-    @uploader.class.plugin :background_helpers
-    @user.avatar_attacher.class.promote do |cached_file|
-      @fiber = Fiber.new { promote(cached_file); record.save }
-    end
-    @user.avatar = fakeio
-    @user.save
-    @user.class.update_all(avatar_data: nil)
-
-    assert_equal nil, @user.class.first.avatar
-    @user.avatar_attacher.instance_variable_get("@fiber").resume
-    assert_equal nil, @user.class.first.avatar
+    @user.destroy
+    refute @user.avatar.exists?
   end
 
   it "replaces after saving" do

@@ -13,9 +13,15 @@ module TestHelpers
 
     def attacher(*args, &block)
       uploader = uploader(*args, &block)
-      user = Struct.new(:avatar_data).new
-      user.class.include uploader.class[:avatar]
-      user.avatar_attacher
+      Object.send(:remove_const, "User") if defined?(User) # for warnings
+      user_class = Object.const_set("User", Struct.new(:avatar_data, :id))
+      user_class.include uploader.class[:avatar]
+      user_class.new.avatar_attacher
+    end
+
+    def teardown
+      super
+      Object.send(:remove_const, "User") if defined?(User)
     end
 
     def fakeio(content = "file", **options)

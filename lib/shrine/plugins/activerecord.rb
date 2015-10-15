@@ -10,11 +10,15 @@ class Shrine
     # Now whenever an "attachment" module is included, additional callbacks are
     # added to the model:
     #
-    # * `before_save` -- Promotes the attachment from `:cache` to `:store`.
-    # * `after_save` -- Deletes a replaced attachment.
-    # * `after_destroy` -- Deletes the attachment.
+    # * `before_save` -- Currently only used by the recache plugin.
+    # * `after_commit on: [:create, :update]` -- Promote the attachment and deletes the previous one.
+    # * `after_commit on: [:destroy]` -- Deletes the attachment.
     #
-    # If you want to put some parts of this lifecycle in a background job, see
+    # Note that if your tests are wrapped in transactions, the `after_commit`
+    # callbacks won't get called, so in order to test uploading you should first
+    # disable these transactions for those tests.
+    #
+    # If you want to put some parts of this lifecycle into a background job, see
     # the background_helpers plugin.
     #
     # Additionally, any Shrine validation errors will added to ActiveRecord's
@@ -41,18 +45,32 @@ class Shrine
               #{@name}_attacher.save
             end
 
-            after_save do
+            after_commit on: [:create, :update] do
               #{@name}_attacher.replace
+              #{@name}_attacher._promote
             end
 
-            after_destroy do
+            after_commit on: :destroy do
               #{@name}_attacher.destroy
             end
           RUBY
         end
       end
 
+      module AttacherClassMethods
+        # Needed by the background_helpers plugin.
+        def find_record(record_class, record_id)
+          record_class.find(record_id)
+        end
+      end
+
       module AttacherMethods
+        # We save the record after promoting, raising any validation errors.
+        def promote(cached_file)
+          super
+          record.save!
+        end
+
         private
 
         # If we're in a transaction, then promoting is happening inline. If
@@ -60,13 +78,8 @@ class Shrine
         # when we're checking that the attachment changed during storing, we
         # need to first reload the record to pick up new columns.
         def changed?(uploaded_file)
-          record.reload unless in_transaction?
+          record.reload
           super
-        end
-
-        # Returns true if we are currently inside a transaction.
-        def in_transaction?
-          record.class.connection.transaction_open?
         end
       end
     end

@@ -1,99 +1,124 @@
 class Shrine
   module Plugins
     # The background_helpers plugin enables you to intercept phases of
-    # uploading and put them in background jobs.
+    # uploading and put them into background jobs. This doesn't require any
+    # additional columns.
     #
     #     plugin :background_helpers
     #
-    # The examples will use Sidekiq, but you can just as well use any other
-    # backgrounding library.
+    # ## Promoting
     #
     # If you're doing processing, or your `:store` is something other than
-    # Storage::FileSystem, you may want to put promoting in a background job.
-    # This plugin allows you to do that by calling `Shrine::Attacher.promote`:
+    # Storage::FileSystem, it's recommended to put promoting (moving to store)
+    # into a background job. This plugin allows you to do that by calling
+    # `Shrine::Attacher.promote`:
     #
-    #     class ImageUploader
-    #       plugin :background_helpers
+    #     Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
     #
-    #       Attacher.promote do |cached_file|
-    #         # Evaluated inside an instance of Shrine::Attacher.
-    #         UploadJob.perform_async(cached_file, record.class, record.id, name)
-    #       end
-    #     end
-    #
-    # And then the promoting job can look like this:
+    # When you call `Shrine::Attacher.promote` with a block, it will save the
+    # block and call it on every promotion. Then in your background job you can
+    # again call `Shrine::Attacher.promote` with the data, and internally it
+    # will resolve all necessary objects, do the promoting and update the
+    # record.
     #
     #     class UploadJob
     #       include Sidekiq::Worker
     #
-    #       def perform(cached_file_json, record_class, record_id, name)
-    #         record = Object.const_get(record_class).find(record_id)
-    #         attacher = record.send("#{name}_attacher")
-    #         cached_file = attacher.uploaded_file(cached_file_json)
-    #
-    #         attacher.promote(cached_file)
-    #         record.save
+    #       def perform(data)
+    #         Shrine::Attacher.promote(data)
     #       end
     #     end
     #
-    # Shrine will automatically eliminate all concurrency issues. For example,
-    # it will terminate promoting if in the meanwhile the user has uploaded a
-    # new attachment.
+    # Shrine automatically handles all concurrency issues, such as cancalling
+    # promoting if in the meanwhile the attachment has changed.
     #
-    # If your `:store` is something other than Storage::FileSystem, you may
-    # want to put deleting of your files in a backgoround job. This plugin
+    # ## Deleting
+    #
+    # If your `:store` is something other than Storage::FileSystem, it's
+    # recommended to put deleting files into a background job. This plugin
     # allows you to do that by calling `Shrine::Attacher.delete`:
     #
-    #     class ImageUploader
-    #       plugin :background_helpers
+    #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
     #
-    #       Attacher.delete do |uploaded_file, phase:|
-    #         # Evaluated inside an instance of Shrine::Attacher.
-    #         DeleteJob.perform_async(uploaded_file, record.class, record.id, name, phase)
-    #       end
-    #     end
-    #
-    # And then the deleting job can look like this:
+    # When you call `Shrine::Attacher.delete` with a block, it will save the
+    # block and call it on every delete. Then in your background job you can
+    # again call `Shrine::Attacher.delete` with the data, and internally it
+    # will resolve all necessary objects, and delete the file.
     #
     #     class DeleteJob
     #       include Sidekiq::Worker
     #
-    #       def perform(uploaded_file_json, shrine_class, record_class, record_id, name, phase)
-    #         record = Object.const_get(record_class).find(record_id)
-    #         shrine_class = record.send("#{name}_attacher").shrine_class
-    #         uploaded_file = shrine_class.uploaded_file(uploaded_file_json)
-    #         context = {record: record, name: name.to_sym, promote: promote.to_sym}
-    #
-    #         shrine_class.delete(uploaded_file, context)
+    #       def perform(data)
+    #         Shrine::Attacher.delete(data)
     #       end
     #     end
     #
-    # Note that we're passing the context in order to imitate the flow how it
-    # would look like if we didn't intercept it. For example, this gives the
-    # logging plugin relevant context. Note that both jobs written like this
-    # will automatically work with the versions plugin.
+    # ## Conclusion
+    #
+    # The examples above used Sidekiq, but obviously you can just as well use
+    # any other backgrounding library. Also, if you want you can use
+    # backgrounding only for specific uploaders:
+    #
+    #     class ImageUploader < Shrine
+    #       plugin :background_helpers
+    #       Attacher.promote { ... }
+    #       Attacher.delete { ... }
+    #     end
     #
     # If you would like to speed up your uploads and deletes, you can use the
-    # parallelize plugin, either as a replacement or an addition to background
-    # jobs.
+    # parallelize plugin, either as a replacement or an addition to
+    # background_helpers.
     module BackgroundHelpers
       module AttacherClassMethods
-        # Saves the promoting block to be called later.
-        def promote(&block)
-          shrine_class.opts[:background_promote] = block
+        # If block is passed in, stores it to be called on promotion. Otherwise
+        # resolves data into objects and calls Attacher#promote.
+        def promote(data = nil, &block)
+          if block
+            shrine_class.opts[:background_promote] = block
+          else
+            record_class, record_id = data["record"]
+            record_class = Object.const_get(record_class)
+            record = find_record(record_class, record_id)
+
+            name = data["attachment"]
+            attacher = record.send("#{name}_attacher")
+            cached_file = attacher.uploaded_file(data["uploaded_file"])
+
+            attacher.promote(cached_file)
+          end
         end
 
-        # Saves the deleting block to be called later.
-        def delete(&block)
-          shrine_class.opts[:background_delete] = block
+        # If block is passed in, stores it to be called on deletion. Otherwise
+        # resolves data into objects and calls Shrine.delete.
+        def delete(data = nil, &block)
+          if block
+            shrine_class.opts[:background_delete] = block
+          else
+            record_class, record_id = data["record"]
+            record = Object.const_get(record_class).new
+            record.id = record_id
+
+            name, phase = data["attachment"], data["phase"]
+            shrine_class = record.send("#{name}_attacher").shrine_class
+            uploaded_file = shrine_class.uploaded_file(data["uploaded_file"])
+            context = {name: name.to_sym, record: record, phase: phase.to_sym}
+
+            shrine_class.delete(uploaded_file, context)
+          end
         end
       end
 
       module AttacherMethods
-        # Calls the promoting block if it's been registered.
+        # Calls the promoting block with the data if it's been registered.
         def _promote
           if background_promote = shrine_class.opts[:background_promote]
-            instance_exec(get, &background_promote) if promote?(get)
+            data = {
+              "uploaded_file" => get.to_json,
+              "record"        => [record.class.to_s, record.id],
+              "attachment"    => name,
+            }
+
+            instance_exec(data, &background_promote) if promote?(get)
           else
             super
           end
@@ -101,10 +126,17 @@ class Shrine
 
         private
 
-        # Calls the deleting block if it's been registered.
+        # Calls the deleting block with the data if it's been registered.
         def delete!(uploaded_file, phase:)
           if background_delete = shrine_class.opts[:background_delete]
-            instance_exec(uploaded_file, phase: phase, &background_delete)
+            data = {
+              "uploaded_file" => uploaded_file.to_json,
+              "record"        => [record.class.to_s, record.id],
+              "attachment"    => name,
+              "phase"         => phase,
+            }
+
+            instance_exec(data, &background_delete)
           else
             super
           end
