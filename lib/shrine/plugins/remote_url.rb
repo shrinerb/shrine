@@ -60,7 +60,7 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(name, *args)
+        def initialize(name)
           super
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1

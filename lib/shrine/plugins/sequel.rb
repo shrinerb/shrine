@@ -32,7 +32,7 @@ class Shrine
     #     end
     module Sequel
       module AttachmentMethods
-        def initialize(name, *args)
+        def initialize(name)
           super
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def validate

@@ -148,7 +148,7 @@ class Shrine
 
         # Retrieves the storage specifies by the symbol/string, and raises an
         # appropriate error if the storage is missing
-        def storage(name)
+        def find_storage(name)
           storages.each { |key, value| return value if key.to_s == name.to_s }
           raise Error, "storage #{name.inspect} isn't registered on #{self}"
         end
@@ -159,8 +159,8 @@ class Shrine
         #     class User
         #       include Shrine[:avatar] # alias for `Shrine.attachment[:avatar]`
         #     end
-        def attachment(name, *args)
-          self::Attachment.new(name, *args)
+        def attachment(name)
+          self::Attachment.new(name)
         end
         alias [] attachment
 
@@ -219,7 +219,7 @@ class Shrine
 
         # Accepts a storage symbol registered in `Shrine.storages`.
         def initialize(storage_key)
-          @storage = self.class.storage(storage_key)
+          @storage = self.class.find_storage(storage_key)
           @storage_key = storage_key.to_sym
         end
 
@@ -397,7 +397,7 @@ class Shrine
       module AttachmentMethods
         # Since Shrine::Attachment is a subclass of `Module`, this method
         # generates a module, which should be included in a model class.
-        def initialize(name, **options)
+        def initialize(name)
           @name = name
 
           # We store the attacher class so that it can be retrieved by the model
@@ -409,7 +409,7 @@ class Shrine
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}_attacher
-              @#{name}_attacher ||= @@#{name}_attacher_class.new(self, :#{name}, #{options})
+              @#{name}_attacher ||= @@#{name}_attacher_class.new(self, :#{name})
             end
 
             def #{name}=(value)
@@ -760,7 +760,7 @@ class Shrine
 
         # The storage object this file was uploaded to.
         def storage
-          @storage ||= shrine_class.storage(storage_key)
+          @storage ||= shrine_class.find_storage(storage_key)
         end
 
         # Returns the Shrine class related to this uploaded file.

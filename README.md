@@ -596,7 +596,8 @@ see [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-confi
 Shrine comes with a small core which provides only the essential functionality.
 However, it comes with a lot of additional features which can be loaded via
 plugins. This way you can choose exactly how much Shrine does for you. Shrine
-itself ships with over 20 plugins, but it's also easy to create your own.
+itself ships with over 20 plugins, most of them I haven't managed to cover
+here.
 
 The plugin system respects inheritance, so you can choose which plugins will
 be applied to which uploaders:
