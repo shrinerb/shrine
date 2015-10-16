@@ -59,11 +59,11 @@ class Shrine
     # you could add an ["accept" attribute] to your file field. You could also
     # add client side validations for the maximum file size.
     #
-    # It's also encouarged that you set the `:max_size` option for the
-    # endpoint.  Once set, when a file that is too big is uploaded, the
-    # endpoint will automatically delete the file and return a 413 response.
-    # However, if for whatever reason you don't want to impose a limit on
-    # filesize, you can set the option to nil:
+    # It's encouraged that you set the `:max_size` option for the endpoint.
+    # Once set, when a file that is too big is uploaded, the endpoint will
+    # automatically delete the file and return a 413 response.  However, if for
+    # whatever reason you don't want to impose a limit on filesize, you can set
+    # the option to nil:
     #
     #     plugin :direct_upload, max_size: nil
     #

@@ -29,8 +29,8 @@ class Shrine
     #       end
     #     end
     #
-    # Shrine automatically handles all concurrency issues, such as cancalling
-    # promoting if in the meanwhile the attachment has changed.
+    # Shrine automatically handles all concurrency issues, such as canceling
+    # promoting if the attachment has changed in the meanwhile.
     #
     # ## Deleting
     #
@@ -57,12 +57,11 @@ class Shrine
     #
     # The examples above used Sidekiq, but obviously you can just as well use
     # any other backgrounding library. Also, if you want you can use
-    # backgrounding only for specific uploaders:
+    # backgrounding just for certain uploaders:
     #
     #     class ImageUploader < Shrine
-    #       plugin :background_helpers
-    #       Attacher.promote { ... }
-    #       Attacher.delete { ... }
+    #       Attacher.promote { |data| UploadJob.perform_async(data) }
+    #       Attacher.delete { |data| DeleteJob.perform_async(data) }
     #     end
     #
     # If you would like to speed up your uploads and deletes, you can use the

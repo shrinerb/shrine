@@ -1,12 +1,10 @@
 class Shrine
   module Plugins
     # The keep_files plugin gives you the ability to prevent files from being
-    # deleted.
+    # deleted. This functionality is useful when implementing soft deletes, or
+    # when implementing some kind of [event store] where you need to track
+    # history.
     #
-    #     plugin :keep_files
-    #
-    # This functionality is useful when implementing soft deletes, or when
-    # implementing some kind of [event store] where you need to track history.
     # The plugin accepts the following options:
     #
     # :destroyed
@@ -19,6 +17,10 @@ class Shrine
     # :cached
     # :  If set to `true`, cached files that are uploaded to store won't be
     #    deleted.
+    #
+    # For example, the following will keep destroyed and replaced files:
+    #
+    #     plugin :keep_files, destroyed: true, :replaced: true
     #
     # [event store]: http://docs.geteventstore.com/introduction/event-sourcing-basics/
     module KeepFiles

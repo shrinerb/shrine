@@ -134,23 +134,23 @@ returns a `Shrine::UploadedFile`. The url method (`#avatar_url`) calls
 ### ORM
 
 Your models probably won't be POROs, so Shrine ships with plugins for
-ActiveRecord and Sequel ORMs. Shrine uses the "\<attachment\>\_data" column
-for storing attachments, so we need to add a migration.
+Sequel and ActiveRecord ORMs. Shrine uses the "\<attachment\>\_data" column
+for storing attachments, so you'll need to add it in a migration:
 
 ```rb
 add_column :users, :avatar_data, :text
 ```
 ```rb
-Shrine.plugin :activerecord
+Shrine.plugin :sequel
 ```
 ```rb
-class User < ActiveRecord::Base
+class User < Sequel::Model
   include ImageUploader[:avatar]
 end
 ```
 
-Along with getters and setters, the plugin adds appropriate `before/after_save`
-and `after_destroy` hooks:
+In addition to getters and setters, the ORM plugins add the appropriate
+callbacks:
 
 ```rb
 user.avatar = File.open("avatar.jpg")
@@ -161,16 +161,16 @@ user.destroy
 user.avatar.exists? #=> false
 ```
 
-In Rails this is how you would typically create the form for a `@user`:
+This is how you would typically create the form for a `@user`:
 
 ```erb
-<%= form_for @user do |f| %>
-  <%= f.hidden_field :avatar, value: @user.avatar_data %>
-  <%= f.file_field :avatar %>
-<% end %>
+<form action="/users" method="post" enctype="multipart/form-data">
+  <input name="user[avatar]" type="hidden" value="<%= @user.avatar_data %>">
+  <input name="user[avatar]" type="file">
+</form>
 ```
 
-The `file_field` is for file upload, while the `hidden_field` is to make the
+The "file" field is for file upload, while the "hidden" field is to make the
 file persist in case of validation errors, and for direct uploads.
 
 ## Direct uploads
@@ -198,7 +198,7 @@ this is how we could hook up [jQuery-File-Upload] to our endpoint:
 ```js
 $('[type="file"]').fileupload({
   url '/attachments/images/cache/avatar',
-  paramName: 'file', // we send the file in a "file" query parameter
+  paramName: 'file',
   done: function(e, data) { $(this).prev().value(data.result) }
 });
 ```
@@ -220,9 +220,9 @@ end
 
 The `io` is the file being uploaded, and `context` we'll leave for later.  You
 may be wondering why we need this conditional. Well, when an attachment is
-assigned and saved, an "upload" actually happens two times. Firstly the file
-is "uploaded" to `:cache` on assignment, and then the cached file is reuploaded
-to `:store` on save.
+assigned and saved, an "upload" actually happens two times. First the file is
+"uploaded" to `:cache` on assignment, and then the cached file is reuploaded to
+`:store` on save.
 
 Ok, now how do we do the actual processing? Well, Shrine actually doesn't ship
 with any image processing functionality, because that is a generic problem that
@@ -248,14 +248,9 @@ was already stored to `:cache`, and now this cached file is being uploaded to
 `:store`. The cached file is an instance of `Shrine::UploadedFile`, but for
 processing we need to work with actual files, so we first need to download it.
 
-Keep in mind that `Shrine::UploadedFile` respresents a file uploaded to an
-abstract storage. Even though `Shrine::Storage::FileSystem` happens to store
-its files on disk, we still pretend that we `#download` it to respect the
-abstraction.
-
 In general, processing works in a way that if `#process` returns a file, Shrine
-continues storing that file, and if nil is returned, Shrine continues storing
-the original file.
+continues storing that file, otherwise if nil is returned, Shrine continues
+storing the original file.
 
 ### Versions
 
@@ -284,7 +279,7 @@ end
 
 As you see, instead of a complex class-level DSL, Shrine provides a very simple
 instance-level interface where you're in complete control over processing. The
-processed files are Ruby's Tempfiles and they should eventually get deleted by
+processed files are Ruby Tempfiles and they should eventually get deleted by
 themselves, but you can also use the `moving` plugin to delete them immediately
 after upload.
 
@@ -305,6 +300,7 @@ user.avatar[:large].width  #=> 700
 user.avatar[:medium].width #=> 500
 user.avatar[:small].width  #=> 300
 
+# The plugin expands this method to accept version names.
 user.avatar_url(:large) #=> "..."
 ```
 
@@ -400,8 +396,9 @@ To help with that Shrine provides the `extract_mime_type` plugin, which by
 deafult uses the UNIX [file] utility to determine the actual MIME type:
 
 ```rb
-ImageUploader.plugin :extract_mime_type
-
+Shrine.plugin :extract_mime_type
+```
+```rb
 user = User.create(avatar: File.open("image.mp4")) # image with a .mp4 extension
 user.avatar.mime_type #=> "image/png"
 ```
@@ -413,7 +410,8 @@ using the [fastimage] gem.
 
 ```rb
 ImageUploader.plugin :store_dimensions
-
+```
+```rb
 user = User.create(avatar: File.open("image.jpg"))
 user.avatar.width  #=> 400
 user.avatar.height #=> 500
@@ -441,7 +439,7 @@ By default files will all be put in the same folder. If you want that each
 record has its own directory, you can use the `pretty_location` plugin:
 
 ```rb
-ImageUploader.plugin :pretty_location
+Shrine.plugin :pretty_location
 ```
 ```rb
 user = User.create(avatar: File.open("avatar.jpg"))
@@ -474,7 +472,7 @@ Shrine.new(:store).upload(file, location: "a/specific/location.jpg")
 ## Amazon S3
 
 So far in the examples we've only used the FileSystem storage. However, Shrine
-also ships with S3 storage, which internally uses the [aws-sdk] gem.
+also ships with S3 storage (which internally uses the [aws-sdk] gem).
 
 ```
 gem "aws-sdk", "~> 2.1"
@@ -516,7 +514,8 @@ so versions are deleted with a single HTTP request.
 
 Unlike other uploading libraries, Shrine embraces that putting phases of file
 upload into background jobs is essential for scaling and good user experience,
-and it ships with `background_helpers` plugin which makes it really easy:
+so it ships with `background_helpers` plugin which makes backgrounding really
+easy:
 
 ```rb
 Shrine.plugin :background_helpers

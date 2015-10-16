@@ -12,7 +12,7 @@ class Shrine
     # cached file exists, the metadata is reextracted from the original file
     # and replaced with the potentially tampered with ones.
     #
-    # plugin :restore_cached
+    #     plugin :restore_cached
     module RestoreCached
       module AttacherMethods
         private

@@ -11,7 +11,7 @@ class Shrine
     # added to the model:
     #
     # * `before_save` -- Currently only used by the recache plugin.
-    # * `after_commit` -- Promote the attachment and deletes the previous one.
+    # * `after_commit` -- Promotes the attachment, deletes replaced ones.
     # * `after_destroy_commit` -- Deletes the attachment.
     #
     # Note that if your tests are wrapped in transactions, the `after_commit`
