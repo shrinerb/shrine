@@ -520,7 +520,7 @@ class Shrine
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :promote)
           _set(stored_file) unless changed?(cached_file)
-          delete!(cached_file, phase: :promote)
+          delete!(cached_file, phase: :cached)
         end
 
         # Calls #promote if attached file is cached.
@@ -532,14 +532,14 @@ class Shrine
         # called after saving, to ensure that the file is deleted only after
         # the record has been successfuly saved.
         def replace
-          delete!(@old_attachment, phase: :replace) if @old_attachment
+          delete!(@old_attachment, phase: :replaced) if @old_attachment
           @old_attachment = nil
         end
 
         # Deletes the attachment. Typically this should be called after
         # destroying a record.
         def destroy
-          delete!(get, phase: :destroy) if get
+          delete!(get, phase: :destroyed) if get
         end
 
         # Returns the URL to the attached file (internally calls `#url` on the

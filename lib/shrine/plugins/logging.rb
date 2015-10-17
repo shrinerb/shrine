@@ -14,7 +14,7 @@ class Shrine
     #
     #     2015-10-09T20:06:06.676Z #25602: UPLOAD[direct] ImageUploader[:avatar] User[29543] 1 file (0.1s)
     #     2015-10-09T20:06:06.854Z #25602: PROCESS[promote]: ImageUploader[:avatar] User[29543] 3 files (0.22s)
-    #     2015-10-09T20:06:07.133Z #25602: DELETE[destroy]: ImageUploader[:avatar] User[29543] 3 files (0.07s)
+    #     2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)
     #
     # The plugin accepts the following options:
     #

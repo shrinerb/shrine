@@ -39,9 +39,9 @@ class Shrine
         # We hook to the generic deleting, and check the appropriate phases.
         def delete(io, context)
           case context[:phase]
-          when :promote then super unless keep?(:cached)
-          when :replace then super unless keep?(:replaced)
-          when :destroy then super unless keep?(:destroyed)
+          when :cached then super unless keep?(:cached)
+          when :replaced then super unless keep?(:replaced)
+          when :destroyed then super unless keep?(:destroyed)
           else
             super
           end
