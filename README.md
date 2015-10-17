@@ -197,7 +197,7 @@ this is how we could hook up [jQuery-File-Upload] to our endpoint:
 
 ```js
 $('[type="file"]').fileupload({
-  url '/attachments/images/cache/avatar',
+  url: '/attachments/images/cache/avatar',
   paramName: 'file',
   done: function(e, data) { $(this).prev().value(data.result) }
 });

@@ -37,7 +37,7 @@ class Shrine
     # endpoint:
     #
     #     $('[type="file"]').fileupload({
-    #       url '/attachments/images/cache/avatar',
+    #       url: '/attachments/images/cache/avatar',
     #       paramName: 'file',
     #       done: function(e, data) { $(this).prev().value(data.result) }
     #     });
