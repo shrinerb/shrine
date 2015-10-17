@@ -5,6 +5,7 @@ require "test_helper"
 require "shrine/storage/s3"
 require "shrine/storage/linter"
 require "down"
+require "image_processing/mini_magick"
 
 require "dotenv"
 Dotenv.load!
@@ -55,6 +56,12 @@ describe Shrine::Storage::S3 do
       tempfile = @s3.download("bar")
 
       assert_equal "foo/bar", tempfile.content_type
+    end
+
+    it "works with processed files from image_processing" do
+      tempfile = ImageProcessing::MiniMagick.resize_to_limit(image, 200, 200)
+
+      @s3.upload(tempfile, "foo")
     end
   end
 
