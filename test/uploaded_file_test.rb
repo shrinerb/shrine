@@ -65,6 +65,18 @@ describe Shrine::UploadedFile do
     assert_instance_of Tempfile, uploaded_file.download
     uploaded_file.delete
     assert_equal false, uploaded_file.exists?
+
+    assert_instance_of Shrine::Storage::Memory, uploaded_file.storage
+    assert_instance_of @uploader.class, uploaded_file.uploader
+  end
+
+  it "can be replaced with another file" do
+    uploaded_file = @uploader.upload(fakeio("image"), location: "key")
+
+    replaced = uploaded_file.replace(fakeio("replaced"))
+
+    assert_equal 8, replaced.size
+    assert_equal "replaced", replaced.read
   end
 
   it "forwards url arguments to storage" do

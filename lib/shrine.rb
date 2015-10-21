@@ -724,6 +724,11 @@ class Shrine
           storage.download(id)
         end
 
+        # Uploads a new file to this file's location and returns it.
+        def replace(io, context = {})
+          uploader.upload(io, context.merge(location: id))
+        end
+
         # Calls `#delete` on the storage, which deletes the remote file.
         def delete
           storage.delete(id)
@@ -758,9 +763,14 @@ class Shrine
           [id, storage_key].hash
         end
 
-        # The storage object this file was uploaded to.
+        # The instance of `Shrine` with the corresponding storage.
+        def uploader
+          @uploader ||= shrine_class.new(storage_key)
+        end
+
+        # The storage class this file was uploaded to.
         def storage
-          @storage ||= shrine_class.find_storage(storage_key)
+          uploader.storage
         end
 
         # Returns the Shrine class related to this uploaded file.
