@@ -32,7 +32,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "thread"
-  gem.add_development_dependency "aws-sdk"
+  gem.add_development_dependency "aws-sdk", "~> 2.1"
   gem.add_development_dependency "image_processing", ">= 0.2.3"
   gem.add_development_dependency "mini_magick", ">= 4.3.5"
 
