@@ -170,14 +170,6 @@ describe Shrine::Attacher do
     end
   end
 
-  describe "#promote?" do
-    it "returns true if uploaded file is present and cached" do
-      refute @attacher.promote?(nil)
-      refute @attacher.promote?(@attacher.store.upload(fakeio))
-      assert @attacher.promote?(@attacher.cache.upload(fakeio))
-    end
-  end
-
   describe "#replace" do
     it "deletes removed files" do
       uploaded_file = @attacher.assign(fakeio)

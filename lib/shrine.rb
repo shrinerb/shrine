@@ -506,10 +506,9 @@ class Shrine
         def save
         end
 
-        # Returns true if uploaded_file exists and is cached.  If it's true,
-        # \#promote will be called.
-        def promote?(uploaded_file)
-          uploaded_file && cache.uploaded?(uploaded_file)
+        # Calls #promote if attached file is cached.
+        def _promote
+          promote(get) if promote?(get)
         end
 
         # Promotes a cached file to store, afterwards deleting the cached file.
@@ -519,13 +518,8 @@ class Shrine
         # attachment before the old one was finished promoting.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :promote)
-          _set(stored_file) unless changed?(cached_file)
+          update(stored_file) unless changed?(cached_file)
           delete!(cached_file, phase: :cached)
-        end
-
-        # Calls #promote if attached file is cached.
-        def _promote
-          promote(get) if promote?(get)
         end
 
         # Deletes the attachment that was replaced.  Typically this should be
@@ -574,6 +568,17 @@ class Shrine
         def assign_cached(value)
           uploaded_file = uploaded_file(value)
           set(uploaded_file) if cache.uploaded?(uploaded_file)
+        end
+
+        # Returns true if uploaded_file exists and is cached.  If it's true,
+        # #promote will be called.
+        def promote?(uploaded_file)
+          uploaded_file && cache.uploaded?(uploaded_file)
+        end
+
+        # Sets and saves the uploaded file.
+        def update(uploaded_file)
+          _set(uploaded_file)
         end
 
         # Uploads the file to cache (calls `Shrine#upload`).

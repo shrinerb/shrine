@@ -69,13 +69,13 @@ class Shrine
       end
 
       module AttacherMethods
-        # We save the record after promoting, raising any validation errors.
-        def promote(cached_file)
+        private
+
+        # We save the record after updating, raising any validation errors.
+        def update(uploaded_file)
           super
           record.save(raise_on_failure: true)
         end
-
-        private
 
         # If we're in a transaction, then promoting is happening inline. If
         # we're not, then this is happening in a background job. In that case
