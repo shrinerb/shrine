@@ -58,4 +58,14 @@ describe "the store_dimensions plugin" do
     assert_equal 48, uploaded_file.width
     assert_equal 52, uploaded_file.height
   end
+
+  it "allows dimensions to be missing or nil" do
+    @uploader = uploader(:fastimage)
+    uploaded_file = @uploader.upload(image)
+    uploaded_file.metadata["width"] = nil
+    uploaded_file.metadata.delete("height")
+
+    assert_equal nil, uploaded_file.width
+    assert_equal nil, uploaded_file.height
+  end
 end
