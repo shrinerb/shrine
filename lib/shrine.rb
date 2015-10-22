@@ -518,7 +518,11 @@ class Shrine
         # attachment before the old one was finished promoting.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :promote)
-          update(stored_file) unless changed?(cached_file)
+          unless changed?(cached_file)
+            update(stored_file)
+          else
+            delete!(stored_file, phase: :stored)
+          end
           delete!(cached_file, phase: :cached)
         end
 
