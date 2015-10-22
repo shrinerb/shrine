@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.email        = ["janko.marohnic@gmail.com"]
   gem.license      = "MIT"
 
-  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*", "shrine.gemspec"]
+  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
   gem.add_dependency "down", ">= 1.0.1"
@@ -33,7 +33,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "thread"
   gem.add_development_dependency "aws-sdk", "~> 2.1"
-  gem.add_development_dependency "image_processing", ">= 0.2.3"
+  gem.add_development_dependency "image_processing", ">= 0.2.4"
   gem.add_development_dependency "mini_magick", ">= 4.3.5"
 
   gem.add_development_dependency "sequel"

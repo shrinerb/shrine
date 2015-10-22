@@ -13,7 +13,8 @@ class Shrine
     #
     # The above example uses S3 storage where the bucket name depends on the
     # storage name suffix. For example, `:store_foo` will use S3 storage which
-    # saves files to the bucket "foo".
+    # saves files to the bucket "foo". The block is yielded an instance of
+    # `MatchData`.
     #
     # This can be useful in combination with the default_storage plugin.
     module DynamicStorage
