@@ -127,6 +127,8 @@ class Shrine
         end
       end
 
+      protected
+
       # Returns the full path to the file.
       def path(id)
         directory.join(relative(id))

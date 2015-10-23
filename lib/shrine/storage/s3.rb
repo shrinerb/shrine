@@ -84,6 +84,8 @@ class Shrine
         @bucket.clear!
       end
 
+      protected
+
       # Returns the S3 object.
       def object(id)
         @bucket.object([*prefix, id].join("/"))

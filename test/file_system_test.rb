@@ -65,7 +65,7 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root, permissions: 0755)
       @storage.upload(fakeio, "foo.jpg")
 
-      assert_permissions 0755, @storage.path("foo.jpg")
+      assert_permissions 0755, @storage.open("foo.jpg").path
     end
   end
 
@@ -118,7 +118,7 @@ describe Shrine::Storage::FileSystem do
       file = Down.copy_to_tempfile("", image)
       @storage.move(file, "bar.jpg")
 
-      assert_permissions 0755, @storage.path("bar.jpg")
+      assert_permissions 0755, @storage.open("bar.jpg").path
     end
   end
 
@@ -190,16 +190,14 @@ describe Shrine::Storage::FileSystem do
   describe "#clean" do
     it "deletes empty directories up the hierarchy" do
       @storage.upload(fakeio, "a/a/a/a.jpg")
-      File.delete(@storage.path("a/a/a/a.jpg"))
-      @storage.clean("a/a/a/a.jpg")
+      @storage.delete("a/a/a/a.jpg")
 
       refute @storage.exists?("a")
       assert File.exist?(@storage.directory)
 
       @storage.upload(fakeio, "a/a/a/a.jpg")
       @storage.upload(fakeio, "a/b.jpg")
-      File.delete(@storage.path("a/a/a/a.jpg"))
-      @storage.clean("a/a/a/a.jpg")
+      @storage.delete("a/a/a/a.jpg")
 
       refute @storage.exists?("a/a")
       assert @storage.exists?("a")
@@ -208,9 +206,10 @@ describe Shrine::Storage::FileSystem do
 
   it "accepts absolute pathnames" do
     @storage = file_system(root, subdirectory: "/uploads")
+    @storage.upload(fakeio, "/foo.jpg")
 
     assert_equal "tmp/uploads", @storage.directory.to_s
-    assert_equal "tmp/uploads/foo.jpg", @storage.path("/foo.jpg").to_s
+    assert_equal "tmp/uploads/foo.jpg", @storage.open("/foo.jpg").path
   end
 
   def assert_permissions(expected, path)
