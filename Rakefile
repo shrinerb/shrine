@@ -1,7 +1,6 @@
 require "bundler/gem_tasks"
 require "rake/testtask"
 require "rdoc/task"
-require "hanna-nouveau"
 
 Rake::TestTask.new do |t|
   t.libs << "test"
@@ -16,7 +15,7 @@ RDoc::Task.new do |t|
     "--line-numbers",
     "--title", "Shrine: Toolkit for file uploads",
     "--markup", "markdown",
-    "--format", "hanna",
+    "--format", "hanna", # requires the hanna-nouveau gem
     "--main", "README.md",
   ]
   t.rdoc_files.add Dir[

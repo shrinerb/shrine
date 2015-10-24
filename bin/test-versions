@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+test_versions() {
+  for version in $1; do
+    rbenv local $version
+    echo "======== Version $version ========"
+    bundle install -j3
+    bundle exec rake test
+  done
+
+  rm .ruby-version
+}
+
+test_versions "2.1.7 2.2.3 jruby-9.0.0.0"

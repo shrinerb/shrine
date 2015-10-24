@@ -1,4 +1,4 @@
-require_relative "lib/shrine/version"
+require "./lib/shrine/version"
 
 Gem::Specification.new do |gem|
   gem.name         = "shrine"
@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
-  gem.add_dependency "down", ">= 1.0.1"
+  gem.add_dependency "down", ">= 1.0.2"
 
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "minitest-hooks", "~> 1.3.0"
@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "dotenv"
 
   gem.add_development_dependency "roda"
-  gem.add_development_dependency "ruby-filemagic", "~> 0.7"
+  gem.add_development_dependency "ruby-filemagic", "~> 0.7" unless RUBY_ENGINE == "jruby"
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
@@ -38,5 +38,9 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency "sequel"
   gem.add_development_dependency "activerecord"
-  gem.add_development_dependency "sqlite3"
+  unless RUBY_ENGINE == "jruby"
+    gem.add_development_dependency "sqlite3"
+  else
+    gem.add_development_dependency "activerecord-jdbcsqlite3-adapter"
+  end
 end

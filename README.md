@@ -8,6 +8,8 @@ Shrine is a toolkit for file uploads in Ruby applications.
 gem "shrine"
 ```
 
+Shrine has been tested on MRI 2.1, MRI 2.2 and JRuby.
+
 ## Basics
 
 Here's a basic example showing how the file upload works:

@@ -1,7 +1,7 @@
 require "test_helper"
 require "sequel"
 
-db = Sequel.sqlite
+db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
 db.create_table :users do
   primary_key :id
   column :avatar_data, :text

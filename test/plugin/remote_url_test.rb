@@ -7,8 +7,10 @@ describe "the remote_url plugin" do
     "interactions"
   end
 
-  def uploader(**options)
-    super() { plugin :remote_url, error_message: "Download failed", max_size: nil, **options }
+  def attacher(**options)
+    options[:error_message] ||= "Download failed"
+    options[:max_size] ||= nil
+    super() { plugin :remote_url, **options }
   end
 
   before do
