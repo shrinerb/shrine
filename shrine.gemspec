@@ -27,11 +27,11 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "dotenv"
 
   gem.add_development_dependency "roda"
-  gem.add_development_dependency "ruby-filemagic"
+  gem.add_development_dependency "ruby-filemagic", "~> 0.7"
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
-  gem.add_development_dependency "thread"
+  gem.add_development_dependency "thread", "~> 0.2"
   gem.add_development_dependency "aws-sdk", "~> 2.1"
   gem.add_development_dependency "image_processing", ">= 0.2.4"
   gem.add_development_dependency "mini_magick", ">= 4.3.5"
