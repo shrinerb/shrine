@@ -1,6 +1,10 @@
 require "test_helper"
 require "json"
 
+require "shrine/storage/s3"
+require "dotenv"
+Dotenv.load!
+
 describe "the direct_upload plugin" do
   include TestHelpers::Rack
 
@@ -16,58 +20,144 @@ describe "the direct_upload plugin" do
     @uploader = uploader(:cache) { plugin :direct_upload, max_size: nil }
   end
 
-  it "returns a JSON response" do
-    post "/cache/avatar", file: image
+  describe "POST /:storage/:name" do
+    it "returns a JSON response" do
+      post "/cache/avatar", file: image
 
-    assert_equal 200, response.status
-    assert_equal "application/json", response.headers["Content-Type"]
-    JSON.parse(response.body)
-  end
-
-  it "uploads the given file" do
-    post "/cache/avatar", file: image
-
-    assert @uploader.storage.exists?(body["id"])
-  end
-
-  it "passes in :name and :phase parameters as context" do
-    @uploader.class.class_eval do
-      def generate_location(io, context)
-        context.to_json
-      end
+      assert_equal 200, response.status
+      assert_equal "application/json", response.headers["Content-Type"]
+      JSON.parse(response.body)
     end
 
-    post "/cache/avatar", file: image
+    it "uploads the given file" do
+      post "/cache/avatar", file: image
 
-    assert_equal '{"name":"avatar","phase":"direct"}', body['id']
+      assert @uploader.storage.exists?(body["id"])
+    end
+
+    it "passes in :name and :phase parameters as context" do
+      @uploader.class.class_eval do
+        def generate_location(io, context)
+          context.to_json
+        end
+      end
+
+      post "/cache/avatar", file: image
+
+      assert_equal '{"name":"avatar","phase":"direct"}', body['id']
+    end
+
+    it "assigns metadata" do
+      image = Rack::Test::UploadedFile.new("test/fixtures/image.jpg", "image/jpeg")
+      post "/cache/avatar", file: image
+
+      metadata = body.fetch('metadata')
+      assert_equal 'image.jpg', metadata['filename']
+      assert_equal 'image/jpeg', metadata['mime_type']
+      assert_kind_of Integer, metadata['size']
+    end
+
+    it "serializes uploaded hashes and arrays as well" do
+      uploaded_file = @uploader.upload(fakeio)
+
+      @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
+      post "/cache/avatar", file: image
+      refute_empty body.fetch('thumb')
+
+      @uploader.class.class_eval { define_method(:upload) { |*| Array[uploaded_file] } }
+      post "/cache/avatar", file: image
+      refute_empty body.fetch(0)
+    end
+
+    it "accepts only POST requests" do
+      put "/cache/avatar", file: image
+
+      assert_equal 404, response.status
+    end
+
+    it "returns appropriate error message for missing file" do
+      post "/cache/avatar"
+
+      assert_http_error 400
+    end
+
+    it "returns appropriate error message for invalid file" do
+      post "/cache/avatar", file: "foo"
+
+      assert_http_error 400
+    end
+
+    it "refuses files which are too big" do
+      @uploader.opts[:direct_upload_max_size] = 0
+      post "/cache/avatar", file: image
+      assert_http_error 413
+
+      @uploader.opts[:direct_upload_max_size] = 5 * 1024 * 1024
+      post "/cache/avatar", file: image
+      assert_equal 200, response.status
+    end
+
+    it "allows other errors to propagate" do
+      @uploader.class.class_eval do
+        def process(io, context)
+          raise
+        end
+      end
+
+      assert_raises(RuntimeError) { post "/cache/avatar", file: image }
+    end
+
+    it "doesn't exist if :presign was set" do
+      @uploader.opts[:direct_upload_presign] = true
+      post "/cache/avatar"
+
+      assert_equal 404, last_response.status
+    end
   end
 
-  it "assigns metadata" do
-    image = Rack::Test::UploadedFile.new("test/fixtures/image.jpg", "image/jpeg")
-    post "/cache/avatar", file: image
+  describe "GET /:storage/presign" do
+    before do
+      @uploader.class.storages[:cache] = Shrine::Storage::S3.new(
+        bucket:            ENV["S3_BUCKET"],
+        region:            ENV["S3_REGION"],
+        access_key_id:     ENV["S3_ACCESS_KEY_ID"],
+        secret_access_key: ENV["S3_SECRET_ACCESS_KEY"],
+      )
+      @uploader.opts[:direct_upload_presign] = true
+    end
 
-    metadata = body.fetch('metadata')
-    assert_equal 'image.jpg', metadata['filename']
-    assert_equal 'image/jpeg', metadata['mime_type']
-    assert_kind_of Integer, metadata['size']
-  end
+    it "returns a presign object" do
+      get "/cache/presign"
 
-  it "serializes uploaded hashes and arrays as well" do
-    uploaded_file = @uploader.upload(fakeio)
+      refute_empty body.fetch("url")
+      refute_empty body.fetch("fields")
+    end
 
-    @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
-    post "/cache/avatar", file: image
-    refute_empty body.fetch('thumb')
+    it "accepts a content type" do
+      get "/cache/presign?content_type=image/jpeg"
 
-    @uploader.class.class_eval { define_method(:upload) { |*| Array[uploaded_file] } }
-    post "/cache/avatar", file: image
-    refute_empty body.fetch(0)
-  end
+      assert_equal "image/jpeg", body["fields"].fetch("Content-Type")
+    end
 
-  it "accepts only POST requests" do
-    put "/cache/avatar", file: image
+    it "accepts an extension" do
+      get "/cache/presign?extension=.jpg"
 
-    assert_equal 404, response.status
+      assert_match /\.jpg$/, body["fields"].fetch("key")
+    end
+
+    it "assigns the maximum size" do
+      @uploader.opts[:direct_upload_max_size] = 5
+      get "/cache/presign"
+
+      # can't test the correctness
+    end
+
+    it "doesn't exist if :presign wasn't set" do
+      @uploader.opts[:direct_upload_presign] = false
+      get "cache/presign"
+
+      assert_equal 404, last_response.status
+    end
   end
 
   it "refuses storages which are not allowed" do
@@ -80,38 +170,6 @@ describe "the direct_upload plugin" do
     post "/nonexistent/avatar", file: image
 
     assert_http_error 403
-  end
-
-  it "returns appropriate error message for missing file" do
-    post "/cache/avatar"
-
-    assert_http_error 400
-  end
-
-  it "returns appropriate error message for invalid file" do
-    post "/cache/avatar", file: "foo"
-
-    assert_http_error 400
-  end
-
-  it "refuses files which are too big" do
-    @uploader = uploader(:cache) { plugin :direct_upload, max_size: 0 }
-    post "/cache/avatar", file: image
-    assert_http_error 413
-
-    @uploader.opts[:direct_upload_max_size] = 5 * 1024 * 1024
-    post "/cache/avatar", file: image
-    assert_equal 200, response.status
-  end
-
-  it "allows other errors to propagate" do
-    @uploader.class.class_eval do
-      def process(io, context)
-        raise
-      end
-    end
-
-    assert_raises(RuntimeError) { post "/cache/avatar", file: image }
   end
 
   it "memoizes the endpoint" do

@@ -1,6 +1,8 @@
 require "roda"
+
 require "json"
 require "forwardable"
+require "securerandom"
 
 class Shrine
   module Plugins
@@ -48,11 +50,48 @@ class Shrine
     # uploaded file JSON is written to the hidden field, and will be sent on
     # form submit.
     #
-    # While Shrine only accepts cached attachments on form submits (for security
-    # reasons), you can use this endpoint to upload files to any storage, just
-    # add it do allowed storages:
+    # ## Presigned
     #
-    #     plugin :direct_upload, allowed_storages: [:cache, :store]
+    # An alternative to the direct endpoint is doing direct uploads to the
+    # underlying storage. These uploads usually requires extra information
+    # from the server, and this plugin can provide an endpoint to it, which
+    # you can enable by passing in `presign: true`:
+    #
+    #     plugin :direct_upload, presign: true
+    #
+    # This will disable the default `POST /:storage/:name` route (for security
+    # reasons), and enable `GET /:storage/presign`. The response for that
+    # request looks something like this:
+    #
+    #     {
+    #       "url" => "https://shrine-testing.s3-eu-west-1.amazonaws.com",
+    #       "fields" => {
+    #         "key" => "b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
+    #         "policy" => "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19",
+    #         "x-amz-credential" => "AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request",
+    #         "x-amz-algorithm" => "AWS4-HMAC-SHA256",
+    #         "x-amz-date" => "20151024T001129Z",
+    #         "x-amz-signature" => "c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4"
+    #       }
+    #     }
+    #
+    # The `url` is where the file needs to be uploaded to, and `fields` is
+    # additional data that needs to be send on the upload. The `fields.key`
+    # attribute is the location where the file will be uploaded to, it is
+    # generated randomly. `GET /:storage/presign` accepts additional parameters:
+    #
+    # :extension
+    # : The extension of the file being uploaded (e.g ".jpg").
+    #
+    # :content_type
+    # : Sets the Content-Type header for the uploaded file on S3.
+    #
+    # Example:
+    #
+    #     GET /cache/presign?content_type=image/jpeg
+    #     GET /cache/presign?extension=.png
+    #
+    # ## Constraints
     #
     # Note that the direct upload doesn't run validations, they are only run
     # when attached to the record. If you want to limit the MIME type of files,
@@ -66,6 +105,16 @@ class Shrine
     # the option to nil:
     #
     #     plugin :direct_upload, max_size: nil
+    #
+    # ## Allowed storages
+    #
+    # While Shrine only accepts cached attachments on form submits (for security
+    # reasons), you can use this endpoint to upload files to any storage, just
+    # add it do allowed storages:
+    #
+    #     plugin :direct_upload, allowed_storages: [:cache, :store]
+    #
+    # ## Authentication
     #
     # If you want to authenticate the endpoint, you should be able to do it
     # easily if your web framework has a good enough router. For example, in
@@ -82,9 +131,10 @@ class Shrine
     # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
     # ["accept" attribute]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
     module DirectUpload
-      def self.configure(uploader, allowed_storages: [:cache], max_size:)
+      def self.configure(uploader, allowed_storages: [:cache], max_size:, presign: nil)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_max_size] = max_size
+        uploader.opts[:direct_upload_presign] = presign
       end
 
       module ClassMethods
@@ -120,7 +170,18 @@ class Shrine
               context = {name: name, phase: :direct}
 
               json @uploader.upload(file, context)
-            end
+            end unless presign?
+
+            r.get "presign" do
+              location = SecureRandom.hex(30).to_s + r.params["extension"].to_s
+              options = {}
+              options[:content_length_range] = 0..max_size if max_size
+              options[:content_type] = r.params["content_type"] if r.params["content_type"]
+
+              signature = @uploader.storage.presign(location, options)
+
+              json Hash[url: signature.url, fields: signature.fields]
+            end if presign?
           end
         end
 
@@ -176,6 +237,10 @@ class Shrine
 
         def max_size
           shrine_class.opts[:direct_upload_max_size]
+        end
+
+        def presign?
+          shrine_class.opts[:direct_upload_presign]
         end
       end
 

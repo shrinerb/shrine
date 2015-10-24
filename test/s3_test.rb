@@ -91,4 +91,19 @@ describe Shrine::Storage::S3 do
       assert_match "response-content-disposition=attachment", url
     end
   end
+
+  describe "#presign" do
+    it "returns a PresignedPost for the given id" do
+      presign = @s3.presign("foo")
+
+      refute_empty presign.url
+      assert_equal "foo", presign.fields["key"]
+    end
+
+    it "accepts additional options" do
+      presign = @s3.presign("foo", content_type: "image/jpeg")
+
+      assert_equal "image/jpeg", presign.fields["Content-Type"]
+    end
+  end
 end

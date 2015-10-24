@@ -203,6 +203,9 @@ $('[type="file"]').fileupload({
 });
 ```
 
+This plugin also provides a route for direct S3 uploads. See the [example app]
+for how you can do multiple uploads directly to S3.
+
 ## Processing
 
 Whenever a file is uploaded, `Shrine#process` is called, and this is where
@@ -632,3 +635,4 @@ The gem is available as open source under the terms of the [MIT License].
 [Refile]: https://github.com/refile/refile
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [MIT License]: http://opensource.org/licenses/MIT
+[example app]: https://github.com/janko-m/shrine-example

@@ -84,6 +84,15 @@ class Shrine
         @bucket.clear!
       end
 
+      # Returns a signature for direct uploads. Internally it calls
+      # [`Aws::S3::Bucket#presigned_post`], and forwards any additional options
+      # to it.
+      #
+      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
+      def presign(id, **options)
+        @bucket.presigned_post(key: object(id).key, **options)
+      end
+
       protected
 
       # Returns the S3 object.
