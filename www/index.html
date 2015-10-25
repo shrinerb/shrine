@@ -65,21 +65,21 @@
       </ul>
     </section>
 
-    <section>
-      <h2>Release notes</h2>
+    <!-- <section> -->
+    <!--   <h2>Release notes</h2> -->
 
-      <ul>
-        {% for major in site.data.versions %}
-        <li>
-          {% for version in major %}
-          <a href="http://{{ site.url }}/rdoc/files/doc/release_notes/{{ version }}.md">
-            {{ version }}
-          </a> {% unless forloop.last %}|{% endunless %}
-          {% endfor %}
-        </li>
-        {% endfor %}
-      </ul>
-    </section>
+    <!--   <ul> -->
+    <!--     {% for major in site.data.versions %} -->
+    <!--     <li> -->
+    <!--       {% for version in major %} -->
+    <!--       <a href="http://{{ site.url }}/rdoc/files/doc/release_notes/{{ version }}.md"> -->
+    <!--         {{ version }} -->
+    <!--       </a> {% unless forloop.last %}|{% endunless %} -->
+    <!--       {% endfor %} -->
+    <!--     </li> -->
+    <!--     {% endfor %} -->
+    <!--   </ul> -->
+    <!-- </section> -->
 
     <section>
       <h2>External</h2>
