@@ -1,0 +1,31 @@
+.header {
+  margin-bottom: 1em;
+
+  @include mq(sm) {
+    @include display(flex);
+    @include align-items(center);
+  }
+
+  &-inner {
+    margin: 1em 0;
+    padding: 1rem;
+    padding-right: 0;
+    text-shadow: none;
+
+    @include mq(md) {
+      padding-left: calc((100vw - 1024px) / 2 + 1rem);
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .btn {
+    margin-left: 1rem;
+
+    @include mq(sm) {
+      margin-left: 1em;
+    }
+  }
+}

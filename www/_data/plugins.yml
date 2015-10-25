@@ -1,0 +1,75 @@
+-
+  name: background_helpers
+  path: BackgroundHelpers.html
+-
+  name: cached_attachment_data
+  path: CachedAttachmentData.html
+-
+  name: data_uri
+  path: DataUri.html
+-
+  name: default_storage
+  path: DefaultStorage.html
+-
+  name: delete_invalid
+  path: DeleteInvalid.html
+-
+  name: determine_mime_type
+  path: DetermineMimeType.html
+-
+  name: direct_upload
+  path: DirectUpload.html
+-
+  name: dynamic_storage
+  path: DynamicStorage.html
+-
+  name: hooks
+  path: Hooks.html
+-
+  name: included
+  path: Included.html
+-
+  name: keep_files
+  path: KeepFiles.html
+-
+  name: logging
+  path: Logging.html
+-
+  name: migration_helpers
+  path: MigrationHelpers.html
+-
+  name: moving
+  path: Moving.html
+-
+  name: multi_delete
+  path: MultiDelete.html
+-
+  name: parallelize
+  path: Parallelize.html
+-
+  name: pretty_location
+  path: PrettyLocation.html
+-
+  name: recache
+  path: Recache.html
+-
+  name: remote_url
+  path: RemoteUrl.html
+-
+  name: remove_attachment
+  path: RemoveAttachment.html
+-
+  name: restore_cached
+  path: RestoreCached.html
+-
+  name: sequel
+  path: Sequel.html
+-
+  name: store_dimensions
+  path: StoreDimensions.html
+-
+  name: validation_helpers
+  path: ValidationHelpers.html
+-
+  name: versions
+  path: Versions.html

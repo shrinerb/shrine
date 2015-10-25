@@ -1,0 +1,82 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 10px;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+  padding-bottom: 2em;
+  background: #FCEDD8;
+  font-family: 'open sans', $helvetica;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #C0A788;
+}
+
+section {
+  margin-bottom: 2em;
+}
+
+.container {
+  max-width: 1024px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, blockquote, pre,
+dl, dd, ol, ul,
+form, fieldset, legend,
+table, th, td, caption,
+hr {
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'arbutus slab', $helvetica;
+  color: #80623E;
+}
+
+h1 {
+  font-weight: 400;
+}
+
+h2 {
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #98CABF;
+}
+
+a {
+  color: #AF9A95;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: #80623E;
+    text-decoration: underline;
+  }
+}
+
+ol, ul {
+  list-style: none;
+}
+
+img, svg, iframe {
+  vertical-align: middle;
+}
+
+// http://stackoverflow.com/questions/29814709/click-event-not-fired-on-button-with-svg-element-in-safari
+svg {
+  pointer-events: none;
+}
+
+label {
+  cursor: pointer;
+}

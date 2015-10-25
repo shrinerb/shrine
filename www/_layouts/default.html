@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ site.title }}</title>
+    <meta name="description" content="{{ site.description }}">
+    <link rel="canonical" href="{{ page.url | remove:'index.html' | prepend: site.baseurl | prepend: site.url }}">
+    <link rel="stylesheet" href="{{ '/styles/main.css' | prepend: site.baseurl }}">
+    <script>
+      WebFontConfig = {
+        google: { families: ['Arbutus+Slab::latin', 'Open+Sans:400,300,600,700,800:latin', 'Source+Sans+Pro:400,600,700,900,300:latin'] }
+      };
+
+      (function(d) {
+        var wf = d.createElement('script'), s = d.scripts[0];
+        wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+        s.parentNode.insertBefore(wf, s);
+      })(document);
+    </script>
+  </head>
+  <body>
+
+    {{ content }}
+
+  </body>
+</html>

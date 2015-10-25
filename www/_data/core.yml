@@ -1,0 +1,21 @@
+-
+  name: ClassMethods
+  path: Plugins/Base/ClassMethods.html
+-
+  name: InstanceMethods
+  path: Plugins/Base/InstanceMethods.html
+-
+  name: AttachmentMethods
+  path: Plugins/Base/AttachmentMethods.html
+-
+  name: AttacherMethods
+  path: Plugins/Base/AttacherMethods.html
+-
+  name: FileMethods
+  path: Plugins/Base/FileMethods.html
+-
+  name: S3
+  path: Storage/S3.html
+-
+  name: FileSystem
+  path: Storage/FileSystem.html

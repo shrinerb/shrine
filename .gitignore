@@ -1,4 +1,5 @@
 Gemfile.lock
 pkg/
 .env
+.sass-cache
 www/build

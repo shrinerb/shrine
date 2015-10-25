@@ -1,0 +1,15 @@
+-
+  name: Direct uploads to S3
+  path: direct_s3_md.html
+-
+  name: Migrating to another storage
+  path: migrating_storage_md.html
+-
+  name: Regenerating versions
+  path: regenerating_versions_md.html
+-
+  name: Creating a new plugin
+  path: creating_plugins_md.html
+-
+  name: Creating a new storage
+  path: creating_storages_md.html
