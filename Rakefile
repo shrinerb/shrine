@@ -10,7 +10,7 @@ end
 task :default => :test
 
 RDoc::Task.new do |t|
-  t.rdoc_dir = "rdoc"
+  t.rdoc_dir = "www/build/rdoc"
   t.options += [
     "--line-numbers",
     "--title", "Shrine: Toolkit for file uploads",
@@ -25,4 +25,17 @@ RDoc::Task.new do |t|
     "doc/*.md",
     "doc/release_notes/*.md",
   ]
+end
+
+namespace :website do
+  task :build do
+    sh "rm -rf www/build"
+    sh "mkdir -p www/build"
+    sh "cp www/index.html www/build/index.html"
+    sh "rake rdoc"
+  end
+
+  task :publish => :build do
+    sh "git subtree push --prefix www/build origin gh-pages"
+  end
 end
