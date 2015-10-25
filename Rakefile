@@ -29,9 +29,7 @@ end
 
 namespace :website do
   task :build do
-    sh "rm -rf www/build"
-    sh "mkdir -p www/build"
-    sh "cp www/index.html www/build/index.html"
+    sh "cd www; bundle exec jekyll build; cd .."
     sh "rake rdoc"
   end
 

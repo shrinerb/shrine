@@ -1,4 +1,7 @@
 -
+  name: activerecord
+  path: ActiveRecord.html
+-
   name: background_helpers
   path: BackgroundHelpers.html
 -
