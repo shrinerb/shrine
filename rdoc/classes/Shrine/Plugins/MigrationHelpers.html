@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::MigrationHelpers</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::MigrationHelpers
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/migration_helpers_rb.html">lib/shrine/plugins/migration_helpers.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <p>The migration_helpers plugin gives the model additional helper methods
+            which are convenient when doing attachment migrations.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">migration_helpers</span></pre>
+            
+            <p>If your attachment&#39;s name is “avatar”, the model will get
+            <code>#avatar_cache</code> and <code>#avatar_store</code> methods.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_cache</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:cache @storage=#&lt;Shrine::Storage::FileSystem @directory=public/uploads&gt;&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:store @storage=#&lt;Shrine::Storage::S3:0x007fb8343397c8 @bucket=#&lt;Aws::S3::Bucket name=&quot;foo&quot;&gt;&gt;&gt;</span></pre>
+            
+            <p>The model will also get <code>#update_avatar</code> method, which should be
+            used when doing attachment migrations. It will update the record&#39;s
+            attachment with the result of the passed in block.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_avatar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">avatar</span>) <span class="ruby-comment"># saved to the record</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>This will get triggered <em>only</em> if the attachment exists and is
+            stored. The result can be anything that responds to <code>#to_json</code>
+            and evaluates to uploaded files&#39; data.</p>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="MigrationHelpers/AttacherMethods.html">Shrine::Plugins::MigrationHelpers::AttacherMethods</a></li>
+              <li><a target="docwin" href="MigrationHelpers/AttachmentMethods.html">Shrine::Plugins::MigrationHelpers::AttachmentMethods</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

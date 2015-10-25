@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::Activerecord</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::Activerecord
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/activerecord_rb.html">lib/shrine/plugins/activerecord.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <p>The activerecord plugin extends the “attachment” interface with support for
+            ActiveRecord.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span></pre>
+            
+            <p>Now whenever an “attachment” module is included, additional callbacks are
+            added to the model:</p>
+            <ul><li>
+            <p><code>before_save</code> – Currently only used by the recache plugin.</p>
+            </li><li>
+            <p><code>after_commit on: [:create, :update]</code> – Promotes the attachment,
+            deletes replaced ones.</p>
+            </li><li>
+            <p><code>after_commit on: [:destroy]</code> – Deletes the attachment.</p>
+            </li></ul>
+            
+            <p>Note that if your tests are wrapped in transactions, the
+            <code>after_commit</code> callbacks won&#39;t get called, so in order to
+            test uploading you should first disable these transactions for those tests.</p>
+            
+            <p>If you want to put some parts of this lifecycle into a background job, see
+            the background_helpers plugin.</p>
+            
+            <p>Additionally, any <a href="../../Shrine.html">Shrine</a> validation errors
+            will added to ActiveRecord&#39;s errors upon validation. Note that if you
+            want to validate presence of the attachment, you can do it directly on the
+            model.</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;  <span class="ruby-identifier">validates_presence_of</span> :<span class="ruby-identifier">avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="Activerecord/AttacherClassMethods.html">Shrine::Plugins::Activerecord::AttacherClassMethods</a></li>
+              <li><a target="docwin" href="Activerecord/AttacherMethods.html">Shrine::Plugins::Activerecord::AttacherMethods</a></li>
+              <li><a target="docwin" href="Activerecord/AttachmentMethods.html">Shrine::Plugins::Activerecord::AttachmentMethods</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::KeepFiles</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::KeepFiles
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/keep_files_rb.html">lib/shrine/plugins/keep_files.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <p>The keep_files plugin gives you the ability to prevent files from being
+            deleted. This functionality is useful when implementing soft deletes, or
+            when implementing some kind of <a
+            href="http://docs.geteventstore.com/introduction/event-sourcing-basics/">event
+            store</a> where you need to track history.</p>
+            
+            <p>The plugin accepts the following options:</p>
+            <table class="rdoc-list note-list"><tbody><tr><td class='label'>:destroyed</td><td>
+            <p>If set to <code>true</code>, destroying the record won&#39;t delete the
+            associated  attachment.</p>
+            </td></tr><tr><td class='label'>:replaced</td><td>
+            <p>If set to <code>true</code>, uploading a new attachment won&#39;t delete
+            the old one.</p>
+            </td></tr><tr><td class='label'>:cached</td><td>
+            <p>If set to <code>true</code>, cached files that are uploaded to store
+            won&#39;t be  deleted.</p>
+            </td></tr></tbody></table>
+            
+            <p>For example, the following will keep destroyed and replaced files:</p>
+            
+            <pre>plugin :keep_files, destroyed: true, :replaced: true</pre>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Class</h3>
+            <ol>
+              <li><a target="docwin" href="#method-c-configure">configure</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="KeepFiles/ClassMethods.html">Shrine::Plugins::KeepFiles::ClassMethods</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-configure'>
+                <a name='method-c-configure'></a>
+                <div class='synopsis'>
+                  <span class='name'>configure</span>
+                  <span class='arguments'>(uploader, destroyed: nil, replaced: nil, cached: nil)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">replaced</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">cached</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] = []&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:destroyed</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroyed</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:replaced</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">replaced</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:cached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

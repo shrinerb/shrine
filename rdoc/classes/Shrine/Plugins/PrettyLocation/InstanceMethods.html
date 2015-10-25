@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::PrettyLocation::InstanceMethods</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::PrettyLocation::InstanceMethods
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../../files/lib/shrine/plugins/pretty_location_rb.html">lib/shrine/plugins/pretty_location.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'></div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Instance</h3>
+            <ol>
+              <li><a target="docwin" href="#method-i-generate_location">generate_location</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-generate_location'>
+                <a name='method-i-generate_location'></a>
+                <div class='synopsis'>
+                  <span class='name'>generate_location</span>
+                  <span class='arguments'>(io, context)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-generate_location-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-generate_location-source'><span class="ruby-comment"># File lib/shrine/plugins/pretty_location.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">type</span> = <span class="ruby-identifier">context</span>[<span class="ruby-value">:record</span>].<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">downcase</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:record</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:record</span>].<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>&#x000A;  <span class="ruby-identifier">id</span>   = <span class="ruby-identifier">context</span>[<span class="ruby-value">:record</span>].<span class="ruby-identifier">id</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:record</span>].<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:id</span>)&#x000A;  <span class="ruby-identifier">name</span> = <span class="ruby-identifier">context</span>[<span class="ruby-value">:name</span>]&#x000A;&#x000A;  <span class="ruby-identifier">dirname</span>, <span class="ruby-identifier">slash</span>, <span class="ruby-identifier">basename</span> = <span class="ruby-keyword">super</span>.<span class="ruby-identifier">rpartition</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;  <span class="ruby-identifier">basename</span> = <span class="ruby-node">&quot;#{context[:version]}-#{basename}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:version</span>]&#x000A;  <span class="ruby-identifier">original</span> = <span class="ruby-identifier">dirname</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">slash</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">basename</span>&#x000A;&#x000A;  [<span class="ruby-identifier">type</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">original</span>].<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

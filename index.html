@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shrine</title>
+    <meta name="description" content="File upload toolkit for Ruby.">
+    <link rel="canonical" href="shrinerb.com/">
+    <link rel="stylesheet" href="/styles/main.css">
+    <script>
+      WebFontConfig = {
+        google: { families: ['Arbutus+Slab::latin', 'Open+Sans:400,300:latin'] }
+      };
+
+      (function(d) {
+        var wf = d.createElement('script'), s = d.scripts[0];
+        wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+        s.parentNode.insertBefore(wf, s);
+      })(document);
+    </script>
+  </head>
+  <body>
+
+    <header class="header">
+  <div class="container">
+    <div>
+      <h1>
+        <span>Shrine ()</span>
+        <a href="https://github.com/janko-m/shrine">
+          <svg class="icon" viewBox="0 0 1024 1024" width="24" height="24">
+            <title>github</title>
+            <path fill="currentColor" d="M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512 512-229.23 512-512-229.23-512-512-512zM816.056 816.056c-39.518 39.516-85.512 70.532-136.708 92.186-13.006 5.5-26.214 10.328-39.6 14.492v-76.734c0-40.334-13.834-70-41.5-89 17.334-1.666 33.25-4 47.75-7s29.834-7.334 46-13 30.666-12.416 43.5-20.25 25.166-18 37-30.5 21.75-26.666 29.75-42.5 14.334-34.834 19-57 7-46.584 7-73.25c0-51.666-16.834-95.666-50.5-132 15.334-40 13.666-83.5-5-130.5l-12.5-1.5c-8.666-1-24.25 2.666-46.75 11s-47.75 22-75.75 41c-39.666-11-80.834-16.5-123.5-16.5-43 0-84 5.5-123 16.5-17.666-12-34.416-21.916-50.25-29.75s-28.5-13.166-38-16-18.334-4.584-26.5-5.25-13.416-0.834-15.75-0.5-4 0.666-5 1c-18.666 47.334-20.334 90.834-5 130.5-33.666 36.334-50.5 80.334-50.5 132 0 26.666 2.334 51.084 7 73.25s11 41.166 19 57 17.916 30 29.75 42.5 24.166 22.666 37 30.5 27.334 14.584 43.5 20.25 31.5 10 46 13 30.416 5.334 47.75 7c-27.334 18.666-41 48.334-41 89v78.23c-15.098-4.494-29.98-9.804-44.6-15.988-51.194-21.654-97.188-52.67-136.706-92.186-39.516-39.518-70.534-85.512-92.186-136.708-22.398-52.958-33.756-109.262-33.756-167.348s11.358-114.39 33.758-167.35c21.654-51.194 52.67-97.188 92.186-136.706s85.512-70.534 136.706-92.186c52.96-22.4 109.264-33.758 167.35-33.758s114.39 11.358 167.35 33.758c51.196 21.654 97.19 52.67 136.708 92.186 39.516 39.516 70.532 85.512 92.186 136.706 22.398 52.96 33.756 109.264 33.756 167.35s-11.358 114.39-33.758 167.35c-21.654 51.194-52.67 97.19-92.186 136.706z"></path>
+          </svg>
+        </a>
+      </h1>
+      <p>File upload toolkit for Ruby.</p>
+    </div>
+    <a class="btn" href="http://shrinerb.com/rdoc/files/README_md.html">README</a>
+  </div>
+</header>
+
+<main class="main">
+  <div class="container">
+    <section class="row">
+      <div class="col">
+        <h2>Core (RDoc)</h2>
+
+        <ul>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/ClassMethods.html">
+              ClassMethods
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/InstanceMethods.html">
+              InstanceMethods
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/AttachmentMethods.html">
+              AttachmentMethods
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/AttacherMethods.html">
+              AttacherMethods
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html">
+              FileMethods
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html">
+              S3
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html">
+              FileSystem
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="col">
+        <h2>Guides</h2>
+
+        <ul>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">
+              Direct uploads to S3
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/migrating_storage_md.html">
+              Migrating to another storage
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">
+              Regenerating versions
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/creating_plugins_md.html">
+              Creating a new plugin
+            </a>
+          </li>
+          
+          <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/creating_storages_md.html">
+              Creating a new storage
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+    </section>
+
+    <section class="plugins">
+      <h2 id="plugins">Plugins</h2>
+
+      <ul>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/ActiveRecord.html">
+            activerecord
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/BackgroundHelpers.html">
+            background_helpers
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/CachedAttachmentData.html">
+            cached_attachment_data
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DataUri.html">
+            data_uri
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DefaultStorage.html">
+            default_storage
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DeleteInvalid.html">
+            delete_invalid
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html">
+            determine_mime_type
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">
+            direct_upload
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DynamicStorage.html">
+            dynamic_storage
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Hooks.html">
+            hooks
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Included.html">
+            included
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/KeepFiles.html">
+            keep_files
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Logging.html">
+            logging
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MigrationHelpers.html">
+            migration_helpers
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Moving.html">
+            moving
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MultiDelete.html">
+            multi_delete
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Parallelize.html">
+            parallelize
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/PrettyLocation.html">
+            pretty_location
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Recache.html">
+            recache
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoteUrl.html">
+            remote_url
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoveAttachment.html">
+            remove_attachment
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RestoreCached.html">
+            restore_cached
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html">
+            sequel
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/StoreDimensions.html">
+            store_dimensions
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html">
+            validation_helpers
+          </a>
+        </li>
+        
+        <li>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Versions.html">
+            versions
+          </a>
+        </li>
+        
+      </ul>
+    </section>
+
+    <!-- <section> -->
+    <!--   <h2>Release notes</h2> -->
+
+    <!--   <ul> -->
+    <!--      -->
+    <!--   </ul> -->
+    <!-- </section> -->
+
+    <section>
+      <h2>External</h2>
+
+      <div class="row">
+        
+        <div class="col">
+          <h3>Blog posts</h3>
+          <ul>
+            
+            <li>
+              <a href="http://twin.github.io/introducing-shrine">
+                Introducing Shrine
+              </a>
+            </li>
+            
+          </ul>
+        </div>
+        
+        <div class="col">
+          <h3>Projects</h3>
+          <ul>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-example">
+                Example app
+              </a>
+            </li>
+            
+          </ul>
+        </div>
+        
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Coded with <img class='emoji' title=':heart:' alt=':heart:' src='https://assets.github.com/images/icons/emoji/unicode/2764.png' height='20' width='20' align='absmiddle' /> by <a href="https://github.com/janko-m">Janko Marohnić</a> and published under the <a href="https://github.com/janko-m/shrine/blob/master/LICENSE.txt">MIT license</a>.</p>
+  </div>
+</footer>
+
+
+  </body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::Hooks</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::Hooks
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/hooks_rb.html">lib/shrine/plugins/hooks.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <p>The hooks plugin allows you to trigger some code around
+            processing/storing/deleting of each file.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span></pre>
+            
+            <p><a href="../../Shrine.html">Shrine</a> uses instance methods for hooks. To
+            define a hook for an uploader, you just add an instance method to the
+            uploader:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">around_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">rescue</span>&#x000A;    <span class="ruby-constant">ExceptionNotifier</span>.<span class="ruby-identifier">processing_failed</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>Each hook will be called with 2 arguments, <code>io</code> and
+            <code>context</code>. It&#39;s generally good to always call super when
+            overriding a hook, especially if you&#39;re using inheritance with your
+            uploaders.</p>
+            
+            <p><a href="../../Shrine.html">Shrine</a> calls hooks in the following order
+            when uploading a file:</p>
+            <ul><li>
+            <p><code>around_process</code></p>
+            <ul><li>
+            <p><code>before_process</code></p>
+            </li><li>
+            <p>PROCESS</p>
+            </li><li>
+            <p><code>after_process</code></p>
+            </li></ul>
+            </li><li>
+            <p><code>around_store</code></p>
+            <ul><li>
+            <p><code>before_store</code></p>
+            </li><li>
+            <p>STORE</p>
+            </li><li>
+            <p><code>after_store</code></p>
+            </li></ul>
+            </li></ul>
+            
+            <p><a href="../../Shrine.html">Shrine</a> calls hooks in the following order
+            when deleting a file:</p>
+            <ul><li>
+            <p><code>around_delete</code></p>
+            <ul><li>
+            <p><code>before_delete</code></p>
+            </li><li>
+            <p>DELETE</p>
+            </li><li>
+            <p><code>after_delete</code></p>
+            </li></ul>
+            </li></ul>
+            
+            <p>It may be useful to know that you can realize some form of communication
+            between the hooks; whatever you save to the <code>context</code> hash will
+            be forwarded further down:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">_foo</span>] = <span class="ruby-string">&quot;bar&quot;</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">_foo</span>] <span class="ruby-comment">#=&gt; &quot;bar&quot;</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>In that case you should always somehow mark this key as private (for
+            example with an underscore) so that it doesn&#39;t clash with any existing
+            keys.</p>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="Hooks/InstanceMethods.html">Shrine::Plugins::Hooks::InstanceMethods</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

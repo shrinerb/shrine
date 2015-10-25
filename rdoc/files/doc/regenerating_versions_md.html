@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>regenerating_versions.md</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>regenerating_versions.md</h1>
+        <div class='paths'>
+          doc/regenerating_versions.md
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>2015-10-24 13:03:53 +0200</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <h1 id="label-Regenerating+versions">Regenerating versions<span><a href="#label-Regenerating+versions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            
+            <p>While your app is serving uploads in production, you may realize that you
+            want to change how your attachment&#39;s versions are generated. This means
+            that, in addition to changing you processing code, you also need to
+            reprocess the existing attachments. Depending on the magnitude and the
+            nature of the change, you can take different steps on doing that.</p>
+            
+            <h2 id="label-Regenerating+a+specific+version">Regenerating a specific version<span><a href="#label-Regenerating+a+specific+version">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>The simplest scenario is where you need to regenerate a specific version.
+            After you change your processing code, this is how you would regenerate a
+            specific version (in Sequel):</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">migration_helpers</span>&#x000A;&#x000A;<span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_avatar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">file</span> = <span class="ruby-identifier">some_processing</span>(<span class="ruby-identifier">avatar</span>[:<span class="ruby-identifier">thumb</span>].<span class="ruby-identifier">download</span>)&#x000A;    <span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">thumb</span><span class="ruby-operator">:</span> <span class="ruby-identifier">avatar</span>[:<span class="ruby-identifier">thumb</span>].<span class="ruby-identifier">replace</span>(<span class="ruby-identifier">file</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>In a similar way you would add a new version or remove an existing one.</p>
+            
+            <h2 id="label-Regenerating+all+versions">Regenerating all versions<span><a href="#label-Regenerating+all+versions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>If you made a lot of changes to versions, it might make sense to simply
+            regenerate all versions. You would typically use a “base” version to
+            regenerate the other versions from:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">avatar</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>[:<span class="ruby-identifier">original</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+          </div>
+          <div id='context'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

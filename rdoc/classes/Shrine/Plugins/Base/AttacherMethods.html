@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::Base::AttacherMethods</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::Base::AttacherMethods
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../../files/lib/shrine_rb.html">lib/shrine.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'></div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Class</h3>
+            <ol>
+              <li><a target="docwin" href="#method-c-new">new</a></li>
+            </ol>
+            <h3>Public Instance</h3>
+            <ol>
+              <li><a target="docwin" href="#method-i-_promote">_promote</a></li>
+              <li><a target="docwin" href="#method-i-assign">assign</a></li>
+              <li><a target="docwin" href="#attribute-i-cache">cache</a></li>
+              <li><a target="docwin" href="#method-i-destroy">destroy</a></li>
+              <li><a target="docwin" href="#attribute-i-errors">errors</a></li>
+              <li><a target="docwin" href="#method-i-get">get</a></li>
+              <li><a target="docwin" href="#attribute-i-name">name</a></li>
+              <li><a target="docwin" href="#method-i-promote">promote</a></li>
+              <li><a target="docwin" href="#attribute-i-record">record</a></li>
+              <li><a target="docwin" href="#method-i-replace">replace</a></li>
+              <li><a target="docwin" href="#method-i-save">save</a></li>
+              <li><a target="docwin" href="#method-i-set">set</a></li>
+              <li><a target="docwin" href="#method-i-shrine_class">shrine_class</a></li>
+              <li><a target="docwin" href="#attribute-i-store">store</a></li>
+              <li><a target="docwin" href="#method-i-uploaded_file">uploaded_file</a></li>
+              <li><a target="docwin" href="#method-i-url">url</a></li>
+              <li><a target="docwin" href="#method-i-validate">validate</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='section'>
+            <div id='attribute-list'>
+              <h2 class='section-bar'>Attributes</h2>
+              <div class='name-list'>
+                <table>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-cache'>cache</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-errors'>errors</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-name'>name</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-record'>record</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-store'>store</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div id='methods'>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-new'>
+                <a name='method-c-new'></a>
+                <div class='synopsis'>
+                  <span class='name'>new</span>
+                  <span class='arguments'>(record, name, cache: :cache, store: :store)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 474</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-value">:cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-value">:store</span>)&#x000A;  <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>&#x000A;  <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>&#x000A;  <span class="ruby-ivar">@cache</span>  = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache</span>)&#x000A;  <span class="ruby-ivar">@store</span>  = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store</span>)&#x000A;  <span class="ruby-ivar">@errors</span> = []&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-_promote'>
+                <a name='method-i-_promote'></a>
+                <div class='synopsis'>
+                  <span class='name'>_promote</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Calls <a href="AttacherMethods.html#method-i-promote">promote</a> if
+                  attached file is cached.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-_promote-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine.rb, line 515</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>&#x000A;  <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">get</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-assign'>
+                <a name='method-i-assign'></a>
+                <div class='synopsis'>
+                  <span class='name'>assign</span>
+                  <span class='arguments'>(value)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Receives the attachment value from the form. If it receives a JSON string
+                  or a hash, it will assume this refrences an already cached file (e.g. when
+                  it persisted after validation errors). Otherwise it assumes that it&#39;s
+                  an IO object and caches it.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-assign-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-assign-source'><span class="ruby-comment"># File lib/shrine.rb, line 486</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;    <span class="ruby-identifier">assign_cached</span>(<span class="ruby-identifier">value</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:cache</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>&#x000A;    <span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-destroy'>
+                <a name='method-i-destroy'></a>
+                <div class='synopsis'>
+                  <span class='name'>destroy</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Deletes the attachment. Typically this should be called after destroying a
+                  record.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-destroy-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine.rb, line 544</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>&#x000A;  <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">get</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:destroyed</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-get'>
+                <a name='method-i-get'></a>
+                <div class='synopsis'>
+                  <span class='name'>get</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Retrieves the uploaded file from the record column.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-get-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-get-source'><span class="ruby-comment"># File lib/shrine.rb, line 506</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">get</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">read</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-promote'>
+                <a name='method-i-promote'></a>
+                <div class='synopsis'>
+                  <span class='name'>promote</span>
+                  <span class='arguments'>(cached_file)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Promotes a cached file to store, afterwards deleting the cached file. It
+                  does the promoting only if the cached file matches the current one. This
+                  check is done so that it can safely be used in background jobs in case the
+                  user quickly changes their mind and replaces the attachment before the old
+                  one was finished promoting.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-promote-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine.rb, line 524</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">cached_file</span>)&#x000A;  <span class="ruby-identifier">stored_file</span> = <span class="ruby-identifier">store!</span>(<span class="ruby-identifier">cached_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:store</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">changed?</span>(<span class="ruby-identifier">cached_file</span>)&#x000A;    <span class="ruby-identifier">update</span>(<span class="ruby-identifier">stored_file</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">stored_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:stored</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">cached_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:cached</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-replace'>
+                <a name='method-i-replace'></a>
+                <div class='synopsis'>
+                  <span class='name'>replace</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Deletes the attachment that was replaced. Typically this should be called
+                  after saving, to ensure that the file is deleted only after the record has
+                  been successfuly saved.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-replace-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine.rb, line 537</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-identifier">delete!</span>(<span class="ruby-ivar">@old_attachment</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:replaced</span>) <span class="ruby-keyword">if</span> <span class="ruby-ivar">@old_attachment</span>&#x000A;  <span class="ruby-ivar">@old_attachment</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-save'>
+                <a name='method-i-save'></a>
+                <div class='synopsis'>
+                  <span class='name'>save</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p><a href="../../Plugins.html">Plugins</a> can override this if they want
+                  something to be done on save.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-save-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-save-source'><span class="ruby-comment"># File lib/shrine.rb, line 511</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">save</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-set'>
+                <a name='method-i-set'></a>
+                <div class='synopsis'>
+                  <span class='name'>set</span>
+                  <span class='arguments'>(uploaded_file)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Assigns a <a href="../../UploadedFile.html">Shrine::UploadedFile</a>, runs
+                  validation and schedules the old file for deletion.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-set-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-set-source'><span class="ruby-comment"># File lib/shrine.rb, line 497</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-ivar">@old_attachment</span> = <span class="ruby-identifier">get</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">get</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">uploaded_file</span>&#x000A;  <span class="ruby-identifier">_set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">validate</span>&#x000A;&#x000A;  <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-shrine_class'>
+                <a name='method-i-shrine_class'></a>
+                <div class='synopsis'>
+                  <span class='name'>shrine_class</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Returns the <a href="../../../Shrine.html">Shrine</a> class related to this
+                  attacher.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-shrine_class-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine.rb, line 570</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-uploaded_file'>
+                <a name='method-i-uploaded_file'></a>
+                <div class='synopsis'>
+                  <span class='name'>uploaded_file</span>
+                  <span class='arguments'>(*args, &block)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-uploaded_file-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-uploaded_file-source'><span class="ruby-comment"># File lib/shrine.rb, line 565</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-url'>
+                <a name='method-i-url'></a>
+                <div class='synopsis'>
+                  <span class='name'>url</span>
+                  <span class='arguments'>(**options)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Returns the URL to the attached file (internally calls <code>#url</code> on
+                  the storage). If the attachment is missing, it calls
+                  <code>Shrine#default_url</code>. Forwards any URL options to the storage.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-url-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine.rb, line 551</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">default_url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-validate'>
+                <a name='method-i-validate'></a>
+                <div class='synopsis'>
+                  <span class='name'>validate</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Runs the validations defined by <code>Shrine.validate</code>.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-validate-source'><span class="ruby-comment"># File lib/shrine.rb, line 560</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">validate</span>&#x000A;  <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span>&#x000A;  <span class="ruby-identifier">instance_exec</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">validate_block</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_block</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
