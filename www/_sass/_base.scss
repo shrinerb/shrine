@@ -14,7 +14,7 @@ body {
   font-size: 18px;
   font-weight: 300;
   line-height: 1.5;
-  color: #C0A788;
+  color: rgba(#80623E, 0.75);
 }
 
 section {
@@ -40,7 +40,8 @@ hr {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'arbutus slab', $helvetica;
+  font-family: 'arbutus slab', georgia, serif;
+  font-weight: normal;
   color: #80623E;
 }
 

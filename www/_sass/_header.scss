@@ -1,31 +1,13 @@
 .header {
+  padding: 1em 0;
   margin-bottom: 1em;
 
-  @include mq(sm) {
-    @include display(flex);
-    @include align-items(center);
-  }
-
-  &-inner {
-    margin: 1em 0;
-    padding: 1rem;
-    padding-right: 0;
-    text-shadow: none;
-
-    @include mq(md) {
-      padding-left: calc((100vw - 1024px) / 2 + 1rem);
-    }
+  h1 {
+    font-size: 2.5em;
   }
 
   p {
-    margin: 0;
-  }
-
-  .btn {
-    margin-left: 1rem;
-
-    @include mq(sm) {
-      margin-left: 1em;
-    }
+    margin-bottom: 1em;
+    font-size: 1.25em;
   }
 }

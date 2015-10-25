@@ -2,13 +2,13 @@
 ---
 
 <header class="header">
-  <div class="header-inner">
+  <div class="container">
     <div>
       <h1>{{ site.title }} ({{ site.data.versions | first | first }})</h1>
       <p>{{ site.description | delete:'.' }}</p>
     </div>
+    <a class="btn" href="http://{{ site.url }}/rdoc/files/README_md.html">Introduction</a>
   </div>
-  <a class="btn" href="http://{{ site.url }}/rdoc/files/README_md.html">Introduction</a>
 </header>
 
 <main class="main">
