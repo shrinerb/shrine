@@ -1,0 +1,14 @@
+.btn {
+  display: inline-block;
+  padding: 0.5em 1em;
+  background: #98CABF;
+  color: #fff;
+  text-shadow: none;
+
+  &:hover,
+  &:focus {
+    background: shade(#98CABF, 10%);
+    text-decoration: none;
+    color: #fff;
+  }
+}

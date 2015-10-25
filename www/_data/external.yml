@@ -1,0 +1,12 @@
+-
+  title: Blog posts
+  items: []
+-
+  title: Plugins
+  items: []
+-
+  title: Projects
+  items:
+    -
+      name: Example app
+      url: https://github.com/janko-m/shrine-example

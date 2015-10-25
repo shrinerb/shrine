@@ -1,0 +1,12 @@
+.row {
+  @include display(flex);
+}
+
+.col {
+  width: (100%/3);
+  margin-right: 1em;
+}
+
+.plugins ul {
+  @include columns(3);
+}

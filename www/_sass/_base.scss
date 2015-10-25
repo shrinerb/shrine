@@ -8,9 +8,17 @@ html {
 }
 
 body {
-  font-family: 'helvetica neue', helvetica, arial, sans-serif;
-  font-size: 16px;
+  padding-bottom: 2em;
+  background: #FCEDD8;
+  font-family: 'open sans', $helvetica;
+  font-size: 18px;
+  font-weight: 300;
   line-height: 1.5;
+  color: #C0A788;
+}
+
+section {
+  margin-bottom: 2em;
 }
 
 .container {
@@ -31,13 +39,27 @@ hr {
   padding: 0;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'arbutus slab', $helvetica;
+  color: #80623E;
+}
+
+h1 {
+  font-weight: 400;
+}
+
+h2 {
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #98CABF;
+}
+
 a {
-  color: color(primary);
+  color: #AF9A95;
   text-decoration: none;
 
   &:hover,
   &:focus {
-    color: shade(color(primary), 15%);
+    color: #80623E;
     text-decoration: underline;
   }
 }

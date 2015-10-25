@@ -7,3 +7,15 @@
     -moz-osx-font-smoothing: $type;
   }
 }
+
+@mixin mq($breakpoint, $type: min) {
+  $width: map-get($breakpoints, $breakpoint);
+
+  @if not $width {
+    $width: $breakpoint;
+  }
+
+  @media (#{$type}-width: if($type == min, $width, $width - 1px)) {
+    @content;
+  }
+};
