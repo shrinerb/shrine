@@ -361,7 +361,7 @@ class ImageUploader < Shrine
   Attacher.validate do
     # Evaluated inside an instance of Shrine::Attacher.
     if record.guest?
-      validate_max_size 2.megabytes, message: "is too large (max is 2 MB)"
+      validate_max_size 2*1024*1024, message: "is too large (max is 2 MB)"
     end
   end
 end
