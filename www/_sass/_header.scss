@@ -13,6 +13,15 @@
     @include mq(sm) {
       font-size: 2.5em;
     }
+
+    a {
+      display: inline-block;
+    }
+
+    .icon {
+      position: relative;
+      bottom: 3px;
+    }
   }
 
   p {
