@@ -2,6 +2,13 @@
 
 Shrine is a toolkit for file uploads in Ruby applications.
 
+## Resources
+
+* Documentation: [shrinerb.com](http://shrinerb.com)
+* Source: [github.com/janko-m/shrine](https://github.com/janko-m/shrine)
+* Bugs: [github.com/janko-m/shrine/issues](https://github.com/janko-m/shrine/issues)
+* Discussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
+
 ## Installation
 
 ```rb

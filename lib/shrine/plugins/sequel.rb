@@ -34,6 +34,7 @@ class Shrine
       module AttachmentMethods
         def initialize(name)
           super
+
           class_eval <<-RUBY, __FILE__, __LINE__ + 1
             def validate
               super
