@@ -8,17 +8,25 @@ html {
 }
 
 body {
-  padding-bottom: 2em;
+  padding-bottom: 1em;
   background: #FCEDD8;
   font-family: 'open sans', $helvetica;
   font-size: 18px;
   font-weight: 300;
   line-height: 1.5;
   color: rgba(#80623E, 0.75);
+
+  @include mq(sm) {
+    padding-bottom: 2em;
+  }
 }
 
 section {
-  margin-bottom: 2em;
+  margin-bottom: 1em;
+
+  @include mq(sm) {
+    margin-bottom: 2em;
+  }
 }
 
 .container {
@@ -50,8 +58,13 @@ h1 {
 }
 
 h2 {
+  font-size: 1.15em;
   margin-bottom: 0.5em;
   border-bottom: 1px solid #98CABF;
+
+  @include mq(sm) {
+    font-size: 1.5em;
+  }
 }
 
 a {

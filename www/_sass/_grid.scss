@@ -1,12 +1,21 @@
 .row {
-  @include display(flex);
+  @include mq(sm) {
+    @include display(flex);
+  }
 }
 
 .col {
-  width: (100%/3);
-  margin-right: 1em;
+  margin-bottom: 1em;
+
+  @include mq(sm) {
+    width: (100%/3);
+    margin-right: 1em;
+    margin-bottom: 0;
+  }
 }
 
 .plugins ul {
-  @include columns(3);
+  @include mq(sm) {
+    @include columns(3);
+  }
 }

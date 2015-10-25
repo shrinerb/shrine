@@ -1,13 +1,27 @@
 .header {
-  padding: 1em 0;
-  margin-bottom: 1em;
+  padding: 0.5em 0;
+  margin-bottom: 0.5em;
+
+  @include mq(sm) {
+    padding: 1em 0;
+    margin-bottom: 1em;
+  }
 
   h1 {
-    font-size: 2.5em;
+    font-size: 1.5em;
+
+    @include mq(sm) {
+      font-size: 2.5em;
+    }
   }
 
   p {
-    margin-bottom: 1em;
-    font-size: 1.25em;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+
+    @include mq(sm) {
+      margin-bottom: 1em;
+      font-size: 1.25em;
+    }
   }
 }
