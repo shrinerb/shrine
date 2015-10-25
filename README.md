@@ -601,7 +601,7 @@ see [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-confi
 Shrine comes with a small core which provides only the essential functionality.
 However, it comes with a lot of additional features which can be loaded via
 plugins. This way you can choose exactly how much Shrine does for you. Shrine
-itself ships with over 20 plugins, most of them I haven't managed to cover
+itself [ships with over 25 plugins], most of them I haven't managed to cover
 here.
 
 The plugin system respects inheritance, so you can choose which plugins will
@@ -638,3 +638,4 @@ The gem is available as open source under the terms of the [MIT License].
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [MIT License]: http://opensource.org/licenses/MIT
 [example app]: https://github.com/janko-m/shrine-example
+[ships with over 25 plugins]: http://shrinerb.com#plugins
