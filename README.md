@@ -431,6 +431,21 @@ user.avatar.height #=> 500
 
 The fastimage gem has built-in protection against [image bombs].
 
+### Custom metadata
+
+You can also extract and store custom metadata, by overriding
+`Shrine#extract_metadata`:
+
+```rb
+class ImageUploader < Shrine
+  def extract_metadata(io, context)
+    metadata = super
+    metadata["custom"] = extract_custom(io)
+    metadata
+  end
+end
+```
+
 ## Default URL
 
 When attachment is missing, `user.avatar_url` by default returns nil. This
