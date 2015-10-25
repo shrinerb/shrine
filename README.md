@@ -625,9 +625,9 @@ end
 ## Inspiration
 
 Shrine was heavily inspired by [Refile] and [Roda]. From Refile it borrows the
-idea of "backends" (here named "storages"), and the high-level idea of the
-attachment interface. From Roda it borrows the implementation of an extensible
-[plugin system].
+idea of "backends" (here named "storages"), attachment interface, and direct
+uploads. From Roda it borrows the implementation of an extensible [plugin
+system].
 
 ## License
 
