@@ -15,7 +15,7 @@ class Shrine
     #         case context[:phase]
     #         when :recache
     #           # generate cheap versions
-    #         when :promote
+    #         when :store
     #           # generate more expensive versions
     #         end
     #       end

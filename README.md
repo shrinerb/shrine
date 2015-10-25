@@ -223,7 +223,7 @@ you're expected to define your processing.
 ```rb
 class ImageUploader < Shrine
   def process(io, context)
-    if storage_key == :store
+    if context[:phase] == :store
       # processing...
     end
   end
@@ -248,7 +248,7 @@ class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
 
   def process(io, context)
-    if storage_key == :store
+    if context[:phase] == :store
       process_to_limit!(io.download, 700, 700)
     end
   end
@@ -278,7 +278,7 @@ class ImageUploader < Shrine
   plugin :versions, names: [:large, :medium, :small]
 
   def process(io, context)
-    if storage_key == :store
+    if context[:phase] == :store
       size_700 = process_to_limit!(io.download, 700, 700)
       size_500 = process_to_limit!(size_700,    500, 500)
       size_300 = process_to_limit!(size_500,    300, 300)
@@ -331,19 +331,19 @@ end
 ```
 ```rb
 user = User.new
-user.avatar = File.open("avatar.jpg")  # "assign"
-user.save                              # "promote"
+user.avatar = File.open("avatar.jpg")  # "cache"
+user.save                              # "store"
 ```
 ```
-{:name=>:avatar, :record=>#<User:0x007fe1627f1138>, :phase=>:assign}
-{:name=>:avatar, :record=>#<User:0x007fe1627f1138>, :phase=>:promote}
+{:name=>:avatar, :record=>#<User:0x007fe1627f1138>, :phase=>:cache}
+{:name=>:avatar, :record=>#<User:0x007fe1627f1138>, :phase=>:store}
 ```
 
 The `:name` is the name of the attachment, in this case "avatar". The `:record`
 is the model instance, in this case instance of `User`. As for `:phase`, in web
 applications a file upload isn't an event that happens at once, it's a process
-that happens in *phases*. By default there are only 2 phases, "assign" and
-"promote", other plugins add more of them.
+that happens in *phases*. By default there are only 2 phases, "cache" and
+"store", other plugins add more of them.
 
 Context is really useful for doing conditional processing and validation, since
 we have access to the record and attachment name. In general the context is

@@ -15,7 +15,7 @@ describe "the logging plugin" do
 
   before do
     $out = StringIO.new
-    @context = {name: :avatar, phase: :promote}
+    @context = {name: :avatar, phase: :store}
     @context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
   end
 
@@ -73,9 +73,9 @@ describe "the logging plugin" do
       @uploader.delete(uploaded_file, @context)
     end
 
-    assert_match /PROCESS\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
-    assert_match /STORE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
-    assert_match /DELETE\[promote\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+    assert_match /PROCESS\[store\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+    assert_match /STORE\[store\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+    assert_match /DELETE\[store\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
   end
 
   it "supports JSON format" do
@@ -91,7 +91,7 @@ describe "the logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio, @context) }
 
-    assert_match "action=store phase=promote", stdout
+    assert_match "action=store phase=store", stdout
   end
 
   it "accepts a custom logger" do

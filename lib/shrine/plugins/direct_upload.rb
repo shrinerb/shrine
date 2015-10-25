@@ -167,7 +167,7 @@ class Shrine
 
             r.post ":name" do |name|
               file = get_file
-              context = {name: name, phase: :direct}
+              context = {name: name, phase: :cache}
 
               json @uploader.upload(file, context)
             end unless presign?

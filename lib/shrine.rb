@@ -246,9 +246,9 @@ class Shrine
         #     class ImageUploader < Shrine
         #       def process(io, context)
         #         case context[:phase]
-        #         when :assign
+        #         when :cache
         #           # do processing
-        #         when :promote
+        #         when :store
         #           # do processing
         #         end
         #       end
@@ -487,7 +487,7 @@ class Shrine
           if value.is_a?(String) || value.is_a?(Hash)
             assign_cached(value) unless value == ""
           else
-            uploaded_file = cache!(value, phase: :assign) if value
+            uploaded_file = cache!(value, phase: :cache) if value
             set(uploaded_file)
           end
         end
@@ -522,7 +522,7 @@ class Shrine
         # jobs in case the user quickly changes their mind and replaces the
         # attachment before the old one was finished promoting.
         def promote(cached_file)
-          stored_file = store!(cached_file, phase: :promote)
+          stored_file = store!(cached_file, phase: :store)
           unless changed?(cached_file)
             update(stored_file)
           else

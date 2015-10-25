@@ -44,7 +44,7 @@ describe "the direct_upload plugin" do
 
       post "/cache/avatar", file: image
 
-      assert_equal '{"name":"avatar","phase":"direct"}', body['id']
+      assert_equal '{"name":"avatar","phase":"cache"}', body['id']
     end
 
     it "assigns metadata" do

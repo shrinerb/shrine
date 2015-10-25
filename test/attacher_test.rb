@@ -28,7 +28,7 @@ describe Shrine::Attacher do
 
       uploaded_file = @attacher.assign(fakeio("image"))
 
-      assert_equal "assign", uploaded_file.read
+      assert_equal "cache", uploaded_file.read
       assert_equal "avatar/Struct", uploaded_file.id
     end
 
@@ -165,7 +165,7 @@ describe Shrine::Attacher do
       cached_file = @attacher.assign(fakeio)
       @attacher.promote(cached_file)
 
-      assert_equal "promote", @attacher.get.read
+      assert_equal "store", @attacher.get.read
       assert_equal "avatar/Struct", @attacher.get.id
     end
   end

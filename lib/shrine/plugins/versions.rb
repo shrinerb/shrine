@@ -7,7 +7,7 @@ class Shrine
     #       plugin :versions, names: [:large, :medium, :small]
     #
     #       def process(io, context)
-    #         if context[:phase] == :promote
+    #         if context[:phase] == :store
     #           size_700 = process_to_limit!(io.download, 700, 700)
     #           size_500 = process_to_limit!(size_700,    500, 500)
     #           size_300 = process_to_limit!(size_500,    300, 300)
