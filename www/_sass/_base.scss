@@ -67,6 +67,15 @@ h2 {
   }
 }
 
+h3 {
+  margin-bottom: 0.5em;
+  font-size: 1em;
+
+  @include mq(sm) {
+    font-size: 1.17em;
+  }
+}
+
 a {
   color: #AF9A95;
   text-decoration: none;
