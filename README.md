@@ -10,7 +10,7 @@ explains the motivation behind Shrine.
 * Documentation: [shrinerb.com](http://shrinerb.com)
 * Source: [github.com/janko-m/shrine](https://github.com/janko-m/shrine)
 * Bugs: [github.com/janko-m/shrine/issues](https://github.com/janko-m/shrine/issues)
-* Discussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
+* Questions & Dicussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
 
 ## Installation
 
