@@ -1,9 +1,6 @@
 require "test_helper"
 require "json"
-
 require "shrine/storage/s3"
-require "dotenv"
-Dotenv.load!
 
 describe "the direct_upload plugin" do
   include TestHelpers::Rack
@@ -118,10 +115,10 @@ describe "the direct_upload plugin" do
   describe "GET /:storage/presign" do
     before do
       @uploader.class.storages[:cache] = Shrine::Storage::S3.new(
-        bucket:            ENV["S3_BUCKET"],
-        region:            ENV["S3_REGION"],
-        access_key_id:     ENV["S3_ACCESS_KEY_ID"],
-        secret_access_key: ENV["S3_SECRET_ACCESS_KEY"],
+        bucket:            "foo",
+        region:            "eu-west-1",
+        access_key_id:     "abc123",
+        secret_access_key: "xyz123",
       )
       @uploader.opts[:direct_upload_presign] = true
     end
