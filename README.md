@@ -2,7 +2,7 @@
 
 Shrine is a toolkit for file uploads in Ruby applications.
 
-If you're new, I encourage you to read the [introductory blog post], which
+If you're new, you're encouraged to read the [introductory blog post] which
 explains the motivation behind Shrine.
 
 ## Resources
