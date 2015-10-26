@@ -407,11 +407,11 @@ browser sets solely based on the extension of the uploaded file. This means
 that by default Shrine's "mime_type" is *not* guaranteed to hold the actual
 MIME type of the file.
 
-To help with that Shrine provides the `extract_mime_type` plugin, which by
+To help with that Shrine provides the `determine_mime_type` plugin, which by
 deafult uses the UNIX [file] utility to determine the actual MIME type:
 
 ```rb
-Shrine.plugin :extract_mime_type
+Shrine.plugin :determine_mime_type
 ```
 ```rb
 user = User.create(avatar: File.open("image.mp4")) # image with a .mp4 extension
