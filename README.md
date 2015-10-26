@@ -2,6 +2,9 @@
 
 Shrine is a toolkit for file uploads in Ruby applications.
 
+If you're new, I encourage you to read the [introductory blog post], which
+explains the motivation behind Shrine.
+
 ## Resources
 
 * Documentation: [shrinerb.com](http://shrinerb.com)
@@ -661,3 +664,4 @@ The gem is available as open source under the terms of the [MIT License].
 [MIT License]: http://opensource.org/licenses/MIT
 [example app]: https://github.com/janko-m/shrine-example
 [ships with over 25 plugins]: http://shrinerb.com#plugins
+[introductory blog post]: http://twin.github.io/introducing-shrine/
