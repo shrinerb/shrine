@@ -53,6 +53,9 @@
   name: pretty_location
   path: PrettyLocation.html
 -
+  name: rack_file
+  path: RackFile.html
+-
   name: recache
   path: Recache.html
 -
