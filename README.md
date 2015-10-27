@@ -34,7 +34,7 @@ uploader = Shrine.new(:file_system)
 
 uploaded_file = uploader.upload(File.open("avatar.jpg"))
 uploaded_file      #=> #<Shrine::UploadedFile>
-uploaded_file.url  #=> "uploads/9260ea09d8effd.jpg"
+uploaded_file.url  #=> "/uploads/9260ea09d8effd.jpg"
 uploaded_file.data #=>
 # {
 #   "storage"  => "file_system",
@@ -58,25 +58,30 @@ to be an actual IO, it's enough that it responds to these 5 methods:
 `#read(*args)`, `#size`, `#eof?`, `#rewind` and `#close`.
 `ActionDispatch::Http::UploadedFile` is one such object.
 
-Now that we've uploaded the file to the underlying storage, we can download it:
+The returned `Shrine::UploadedFile` represents the file that has been uploaded,
+and we can do a lot with it:
 
 ```rb
-file = uploaded_file.download
-file #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf>
+uploaded_file.url      #=> "/uploads/938kjsdf932.jpg"
+uploaded_file.read     #=> "..."
+uploaded_file.exists?  # asks underlying storage if the file exists
+uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf>
+uploaded_file.metadata #=> {...}
 ```
 
-When we're done, we can delete the file:
+To read about the metadata that is stored with the uploaded file, see the
+[metadata](#metadata) section. Once you're done with the file, you can delete
+it.
 
 ```rb
-uploader.delete(uploaded_file)
-uploaded_file.exists? #=> false
+uploaded_file.delete # tells underlying storage to delete the file
 ```
 
 ## Attachment
 
-In web applications, instead of managing files directly, we want to treat them
-as "attachments" to models and to tie them to the lifecycle of records. Shrine
-does this by generating and including "attachment" modules.
+In web applications, instead of managing files directly, we rather want to
+treat them as "attachments" to models and to tie them to the lifecycle of
+records. In Shrine we do this by generating and including "attachment" modules.
 
 Firstly we need to assign the special `:cache` and `:store` storages:
 
@@ -365,6 +370,7 @@ class ImageUploader < Shrine
     # Evaluated inside an instance of Shrine::Attacher.
     if record.guest?
       validate_max_size 2*1024*1024, message: "is too large (max is 2 MB)"
+      validate_mime_type_inclusion ["image/jpg", "image/png", "image/gif"]
     end
   end
 end
@@ -408,7 +414,7 @@ that by default Shrine's "mime_type" is *not* guaranteed to hold the actual
 MIME type of the file.
 
 To help with that Shrine provides the `determine_mime_type` plugin, which by
-deafult uses the UNIX [file] utility to determine the actual MIME type:
+default uses the UNIX [file] utility to determine the actual MIME type:
 
 ```rb
 Shrine.plugin :determine_mime_type
@@ -466,7 +472,7 @@ end
 ## Locations
 
 By default files will all be put in the same folder. If you want that each
-record has its own directory, you can use the `pretty_location` plugin:
+attachment has its own directory, you can use the `pretty_location` plugin:
 
 ```rb
 Shrine.plugin :pretty_location

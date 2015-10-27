@@ -459,7 +459,7 @@ class Shrine
         # validation.  Example:
         #
         #     Shrine::Attacher.validate do
-        #       if get.size > 5.megabytes
+        #       if get.size > 5*1024*1024
         #         errors << "is too big (max is 5 MB)"
         #       end
         #     end

@@ -64,7 +64,11 @@ class Shrine
     #
     # When deleting versions, any multi delete capabilities will be leveraged,
     # so when usingStorage::S3, deleting versions will issue only a single HTTP
-    # request.
+    # request. If you want to delete versions manually, you can use
+    # `Shrine.delete`:
+    #
+    #     versions.keys #=> [:small, :medium, :large]
+    #     ImageUploader.delete(versions) # deletes a hash of versions
     module Versions
       def self.load_dependencies(uploader, *)
         uploader.plugin :multi_delete
