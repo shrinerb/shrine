@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>carrierwave.md</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>carrierwave.md</h1>
+        <div class='paths'>
+          doc/carrierwave.md
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>2015-10-28 22:31:04 +0100</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <h1 id="label-Shrine+for+CarrierWave+Users"><a href="../../classes/Shrine.html">Shrine</a> for CarrierWave Users<span><a href="#label-Shrine+for+CarrierWave+Users">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            
+            <p>This guide is aimed at helping CarrierWave users transition to <a
+            href="../../classes/Shrine.html">Shrine</a>. We will first generally
+            mention what are the key differences. Afterwards there is an extensive
+            reference of CarrierWave&#39;s interface and what is the equivalent in <a
+            href="../../classes/Shrine.html">Shrine</a>.</p>
+            
+            <h2 id="label-Uploaders">Uploaders<span><a href="#label-Uploaders">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> has a concept of uploaders
+            similar to CarrierWave&#39;s, but instead of inheriting from
+            <code>CarrierWave::Uploader::Base</code>, you inherit from
+            <code>Shrine</code> directly:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>While in CarrierWave you choose a storages for uploaders directly, in <a
+            href="../../classes/Shrine.html">Shrine</a> you first register storages
+            globally (under a symbol name), and then you instantiate uploaders with a
+            specific storage.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
+            
+            <pre class="ruby"><span class="ruby-identifier">cache_uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-identifier">store_uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>)</pre>
+            
+            <p>CarrierWave uses symbols for referencing storages (<code>:file</code>,
+            <code>:fog</code>, …), but in <a
+            href="../../classes/Shrine.html">Shrine</a> you instantiate storages
+            directly. This makes storages much more flexible, because this way they can
+            have their own options that are specific to them.</p>
+            
+            <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> processing is done
+            instance-level in the <code>#process</code> method. To generate versions,
+            you simply return a hash, and also load the <code>versions</code> plugin to
+            make your uploader recognize versions:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span> <span class="ruby-comment"># part of the &quot;image_processing&quot; gem</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>, <span class="ruby-identifier">names</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">small</span>, :<span class="ruby-identifier">medium</span>, :<span class="ruby-identifier">large</span>]&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">phase</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-identifier">thumb</span> = <span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;      {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">thumb</span><span class="ruby-operator">:</span> <span class="ruby-identifier">thumb</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h2 id="label-Attachments">Attachments<span><a href="#label-Attachments">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>Like CarrierWave, <a href="../../classes/Shrine.html">Shrine</a> also
+            provides integrations with ORMs, it ships with plugins for both Sequel and
+            ActiveRecord (but it can also be used with simple PORO models).</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>       <span class="ruby-comment"># If you&#39;re using Sequel</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span> <span class="ruby-comment"># If you&#39;re using ActiveRecord</span></pre>
+            
+            <p>Instead of giving you class methods for “mounting” uploaders, in <a
+            href="../../classes/Shrine.html">Shrine</a> you generate “attachment
+            modules” which you include in your models:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>] <span class="ruby-comment"># adds `avatar`, `avatar=` and `avatar_url` methods</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>You models are required to have the <code>&lt;attachment&gt;_data</code>
+            column, in the above case <code>avatar_data</code>. It contains the storage
+            and location of the file, as well as additional metadata.</p>
+            
+            <h3 id="label-Multiple+uploads">Multiple uploads<span><a href="#label-Multiple+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t have support for
+            multiple uploads like CarrierWave does, instead it expects that you will
+            implement multiple uploads yourself using a separate model. This is a good
+            thing, because the implementation is specific to the ORM you&#39;re using,
+            and it&#39;s analogous to how you would implement adding items to any
+            dynamic one-to-many relationship. Take a look at the <a
+            href="https://github.com/janko-m/shrine-example">example app</a> which
+            demonstrates how easy it is to implement multiple uploads.</p>
+            
+            <h2 id="label-CarrierWave+to+Shrine+direct+mapping">CarrierWave to <a href="../../classes/Shrine.html">Shrine</a> direct mapping<span><a href="#label-CarrierWave+to+Shrine+direct+mapping">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <h3 id="label-CarrierWave-3A-3AUploader-3A-3ABase"><code>CarrierWave::Uploader::Base</code><span><a href="#label-CarrierWave-3A-3AUploader-3A-3ABase">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <h4 id="label-.storage"><code>.storage</code><span><a href="#label-.storage">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>When using models, by default all storages use <code>:cache</code> for
+            cache, and <code>:store</code> for store. If you want to change that, you
+            can use the <code>default_storage</code> plugin:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">dropbox</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Dropbox</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)</pre>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">dropbox</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-.process-2C+.version"><code>.process</code>, <code>.version</code><span><a href="#label-.process-2C+.version">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>As explained in the “Processing” section, processing is done by overriding
+            the <code>Shrine#process</code> method.</p>
+            
+            <h4 id="label-.before-2C+.after"><code>.before</code>, <code>.after</code><span><a href="#label-.before-2C+.after">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> you can get callbacks by
+            loading the <code>hooks</code> plugin. Unlike CarrierWave, and much like
+            Sequel, <a href="../../classes/Shrine.html">Shrine</a> implements callbacks
+            by overriding instance methods:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">after_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-comment"># do something</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-23store-21-2C+-23cache-21"><code>#store!</code>, <code>#cache!</code><span><a href="#label-23store-21-2C+-23cache-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> you store and cache files
+            by instantiating it with a corresponding storage, and calling
+            <code>#upload</code>:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">cache</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)</pre>
+            
+            <p>Note that in <a href="../../classes/Shrine.html">Shrine</a> you cannot pass
+            in a path to the file, you always have to pass an IO-like object, which is
+            required to respond to: <code>#read(*args)</code>, <code>#size</code>,
+            <code>#eof?</code>, <code>#rewind</code> and <code>#close</code>.</p>
+            
+            <h4 id="label-23retrieve_from_store-21+and+-23retrieve_from_cache-21"><code>#retrieve_from_store!</code> and <code>#retrieve_from_cache!</code><span><a href="#label-23retrieve_from_store-21+and+-23retrieve_from_cache-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> you simply call
+            <code>#download</code> on the uploaded file:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile&gt;</span></pre>
+            
+            <h4 id="label-23url"><code>#url</code><span><a href="#label-23url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> you call
+            <code>#url</code> on uploaded files:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;/uploads/398454ujedfggf.jpg&quot;</span></pre>
+            
+            <h4 id="label-23identifier"><code>#identifier</code><span><a href="#label-23identifier">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>This method corresponds to <code>#original_filename</code> on the uploaded
+            file:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;avatar.jpg&quot;</span></pre>
+            
+            <h4 id="label-23store_dir-2C+-23cache_dir"><code>#store_dir</code>, <code>#cache_dir</code><span><a href="#label-23store_dir-2C+-23cache_dir">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> here provides a
+            <code>#generate_location</code> method, which is triggered for all
+            storages:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">case</span> <span class="ruby-identifier">storage_key</span>&#x000A;    <span class="ruby-keyword">when</span> :<span class="ruby-identifier">cache</span> <span class="ruby-keyword">then</span> <span class="ruby-string">&quot;...&quot;</span>&#x000A;    <span class="ruby-keyword">when</span> :<span class="ruby-identifier">store</span> <span class="ruby-keyword">then</span> <span class="ruby-string">&quot;...&quot;</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>The <code>context</code> variable holds the additional data, like the
+            attacment name and the record instance. You might also want to use the
+            <code>pretty_location</code> plugin for automatically generating an
+            organized folder structure.</p>
+            
+            <h4 id="label-23default_url"><code>#default_url</code><span><a href="#label-23default_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>Similarly to CarrierWave, you also provide default URLs be overriding the
+            method:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">default_url</span>(<span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>The <code>context</code> variable holds the name of the attachment, record
+            instance and in some cases the <code>:version</code>.</p>
+            
+            <h4 id="label-23extension_white_list-2C+-23extension_black_list"><code>#extension_white_list</code>, <code>#extension_black_list</code><span><a href="#label-23extension_white_list-2C+-23extension_black_list">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> extension
+            whitelisting/blacklisting is a part of validations, and is provided by the
+            <code>validation_helpers</code> plugin:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>, <span class="ruby-string">&#39;png&#39;</span>] <span class="ruby-comment"># whitelist</span>&#x000A;    <span class="ruby-identifier">validate_extension_exclusion</span> [<span class="ruby-string">&#39;php&#39;</span>]          <span class="ruby-comment"># blacklist</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-23blacklist_mime_type_pattern-2C+-23whitelist_mime_type_pattern"><code>#blacklist_mime_type_pattern</code>, <code>#whitelist_mime_type_pattern</code><span><a href="#label-23blacklist_mime_type_pattern-2C+-23whitelist_mime_type_pattern">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> MIME type
+            whitelisting/blacklisting is part of validations, and is provided by the
+            <code>validation_helpers</code> plugin:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-regexp">/image/</span>] <span class="ruby-comment"># whitelist</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_exclusion</span> [<span class="ruby-regexp">/video/</span>] <span class="ruby-comment"># blacklist</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-23recreate_versions-21"><code>#recreate_versions!</code><span><a href="#label-23recreate_versions-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t provide an
+            automatic mechanism for recreating versions, because that is very
+            individual for different situations. For example, sometimes you want to
+            regenerate all versions and sometimes just one. However, I wrote a guide
+            “<a
+            href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Regenerating
+            versions</a>” that should help you out with that.</p>
+            
+            <h3 id="label-Models">Models<span><a href="#label-Models">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p>The only thing that <a href="../../classes/Shrine.html">Shrine</a> requires
+            from your models is a <code>&lt;attachment&gt;_data</code> column (e.g. if
+            your attachment is “avatar”, you need the <code>avatar_data</code> column).</p>
+            
+            <h4 id="label-.mount_uploader"><code>.mount_uploader</code><span><a href="#label-.mount_uploader">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> you make include
+            attachment modules directly:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span></pre>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-23-3Cattachment-3E-3D"><code>#&lt;attachment&gt;=</code><span><a href="#label-23-3Cattachment-3E-3D">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>The attachment module adds an attachment setter:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;avatar.jpg&quot;</span>)</pre>
+            
+            <p>Note that unlike CarrierWave, you cannot pass in file paths, the input
+            needs to be an IO-like object.</p>
+            
+            <h4 id="label-23-3Cattachment-3E"><code>#&lt;attachment&gt;</code><span><a href="#label-23-3Cattachment-3E">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>CarrierWave returns the uploader, but <a
+            href="../../classes/Shrine.html">Shrine</a> returns a
+            <code>Shrine::UploadedFile</code>, a representation of the file uploaded to
+            the storage:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">methods</span> <span class="ruby-comment">#=&gt; [:url, :download, :read, :exists?, :delete, ...]</span></pre>
+            
+            <p>If attachment is missing, nil is returned.</p>
+            
+            <h4 id="label-23-3Cattachment-3E_url"><code>#&lt;attachment&gt;_url</code><span><a href="#label-23-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>This method is simply a shorthand for “if attachment is present, call
+            <code>#url</code> on it, otherwise return nil”:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;avatar.jpg&quot;</span>)&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/uploads/ksdf934rt.jpg&quot;</span></pre>
+            
+            <p>The <code>versions</code> plugin extends this method to also accept a
+            version name as the argument (<code>user.avatar_url(:thumb)</code>).</p>
+            
+            <h4 id="label-23-3Cattachment-3E_cache"><code>#&lt;attachment&gt;_cache</code><span><a href="#label-23-3Cattachment-3E_cache">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t provide this
+            method, instead it expects to recieve the attachment through the accessor,
+            you can assign it <code>&lt;attachment&gt;_data</code>:</p>
+            
+            <pre>&lt;%= form_for @user do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :avatar, value: @user.avatar_data %&gt;&#x000A;  &lt;%= f.file_field :avatar %&gt;&#x000A;&lt;% end %&gt;</pre>
+            
+            <p>You might also want to look at the <code>cached_attachment_data</code>
+            plugin.</p>
+            
+            <h4 id="label-23remote_-3Cattachment-3E_url"><code>#remote_&lt;attachment&gt;_url</code><span><a href="#label-23remote_-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> this method is provided
+            by the <code>remote_url</code> plugin.</p>
+            
+            <h4 id="label-23remove_-3Cattachment-3E"><code>#remove_&lt;attachment&gt;</code><span><a href="#label-23remove_-3Cattachment-3E">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> this method is provided
+            by the <code>remove_attachment</code> plugin.</p>
+            
+            <h3 id="label-Configuration">Configuration<span><a href="#label-Configuration">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p>This section walks through various configuration options in CarrierWave,
+            and shows what are Shrine&#39;s equivalents.</p>
+            
+            <h4 id="label-root-2C+base_path-2C+permissions-2C+directory_permissions"><code>root</code>, <code>base_path</code>, <code>permissions</code>, <code>directory_permissions</code><span><a href="#label-root-2C+base_path-2C+permissions-2C+directory_permissions">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> these are configured on
+            the FileSystem storage directly.</p>
+            
+            <h4 id="label-storage-2C+storage_engines"><code>storage</code>, <code>storage_engines</code><span><a href="#label-storage-2C+storage_engines">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>As mentioned before, in <a href="../../classes/Shrine.html">Shrine</a> you
+            register storages through <code>Shrine.storages</code>, and the attachment
+            storages will automatically be <code>:cache</code> and <code>:store</code>,
+            but you can change this with the <code>default_storage</code> plugin.</p>
+            
+            <h4 id="label-fog_-2A"><code>fog_*</code><span><a href="#label-fog_-2A">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>These options will be set on the soon-to-be-released Fog storage for <a
+            href="../../classes/Shrine.html">Shrine</a>.</p>
+            
+            <h4 id="label-delete_tmp_file_after_storage-2C+remove_previously_stored_file_after_update"><code>delete_tmp_file_after_storage</code>, <code>remove_previously_stored_file_after_update</code><span><a href="#label-delete_tmp_file_after_storage-2C+remove_previously_stored_file_after_update">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>By default <a href="../../classes/Shrine.html">Shrine</a> deletes cached
+            and replaced files, but you can choose to keep those files by loading the
+            <code>keep_files</code> plugin:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_files</span>, <span class="ruby-identifier">cached</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">replaced</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span></pre>
+            
+            <h4 id="label-move_to_cache-2C+move_to_store"><code>move_to_cache</code>, <code>move_to_store</code><span><a href="#label-move_to_cache-2C+move_to_store">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> brings this functionality
+            through the <code>moving</code> plugin.</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>]</pre>
+            
+            <h4 id="label-validate_integrity-2C+ignore_integrity_errors"><code>validate_integrity</code>, <code>ignore_integrity_errors</code><span><a href="#label-validate_integrity-2C+ignore_integrity_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> does this with validation,
+            which are best done with the <code>validation_helpers</code> plugin:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># Evaluated inside an instance of Shrine::Attacher.</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">guest?</span>&#x000A;      <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">2</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;is too large (max is 2 MB)&quot;</span>&#x000A;      <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;image/jpg&quot;</span>, <span class="ruby-string">&quot;image/png&quot;</span>, <span class="ruby-string">&quot;image/gif&quot;</span>]&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-validate_download-2C+ignore_download_errors"><code>validate_download</code>, <code>ignore_download_errors</code><span><a href="#label-validate_download-2C+ignore_download_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>Shrine&#39;s <code>remote_url</code> plugin always rescues download errors
+            and transforms them to validation errors.</p>
+            
+            <h4 id="label-validate_processing-2C+ignore_processing_errors"><code>validate_processing</code>, <code>ignore_processing_errors</code><span><a href="#label-validate_processing-2C+ignore_processing_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t offer any
+            built-in ways of rescuing processing errors, because it completely depends
+            on how you do your processing. You can easily add your own rescuing:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># processing</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">SomeProcessingError</span>&#x000A;    <span class="ruby-comment"># handling</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h4 id="label-enable_processing"><code>enable_processing</code><span><a href="#label-enable_processing">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>You can just do conditionals inside if <code>Shrine#process</code>.</p>
+            
+            <h4 id="label-ensure_multipart_form"><code>ensure_multipart_form</code><span><a href="#label-ensure_multipart_form">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>No equivalent, it depends on your application whether you need the form to
+            be multipart or not.</p>
+          </div>
+          <div id='context'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
