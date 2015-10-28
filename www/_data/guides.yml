@@ -13,3 +13,6 @@
 -
   name: Creating a new storage
   path: creating_storages_md.html
+-
+  name: Shrine for CarrierWave Users
+  path: carrierwave_md.html

@@ -155,7 +155,7 @@ Sequel and ActiveRecord ORMs. Shrine uses the "\<attachment\>\_data" column
 for storing attachments, so you'll need to add it in a migration:
 
 ```rb
-add_column :users, :avatar_data, :text
+add_column :users, :avatar_data, :text # or a "jsonb" column if you need querying
 ```
 ```rb
 Shrine.plugin :sequel
