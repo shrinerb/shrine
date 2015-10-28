@@ -16,3 +16,6 @@
 -
   name: Shrine for CarrierWave Users
   path: carrierwave_md.html
+-
+  name: Shrine for Paperclip Users
+  path: paperclip_md.html

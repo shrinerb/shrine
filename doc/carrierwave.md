@@ -1,8 +1,8 @@
 # Shrine for CarrierWave Users
 
 This guide is aimed at helping CarrierWave users transition to Shrine. We will
-first generally mention what are the key differences. Afterwards there is a
-complete reference of CarrierWave's interface and what is the equivalent in
+first generally mention what are the key differences. Afterwards there is an
+extensive reference of CarrierWave's interface and what is the equivalent in
 Shrine.
 
 ## Uploaders
@@ -25,8 +25,8 @@ instantiate uploaders with a specific storage.
 require "shrine/storage/file_system"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("uploads", subdirectory: "cache"),
-  store: Shrine::Storage::FileSystem.new("uploads", subdirectory: "store"),
+  cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
+  store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/store"),
 }
 ```
 ```rb
@@ -38,6 +38,28 @@ CarrierWave uses symbols for referencing storages (`:file`, `:fog`, ...), but
 in Shrine you instantiate storages directly. This makes storages much more
 flexible, because this way they can have their own options that are specific to
 them.
+
+### Processing
+
+In Shrine processing is done instance-level in the `#process` method. To
+generate versions, you simply return a hash, and also load the `versions`
+plugin to make your uploader recognize versions:
+
+```rb
+require "image_processing/mini_magick" # part of the "image_processing" gem
+
+class ImageUploader < Shrine
+  include ImageProcessing::MiniMagick
+  plugin :versions, names: [:small, :medium, :large]
+
+  def process(io, context)
+    if context[:phase] == :store
+      thumb = resize_to_limit!(io.download, 300, 300)
+      {original: io, thumb: thumb}
+    end
+  end
+end
+```
 
 ## Attachments
 
@@ -60,7 +82,8 @@ end
 ```
 
 You models are required to have the `<attachment>_data` column, in the above
-case `avatar_data`.
+case `avatar_data`. It contains the storage and location of the file, as well
+as additional metadata.
 
 ### Multiple uploads
 
@@ -91,36 +114,10 @@ class ImageUploader
 end
 ```
 
-#### `.process`
+#### `.process`, `.version`
 
-In Shrine processing is done instance-level in the `#process` method:
-
-```rb
-class ImageUploader < Shrine
-  def process(io, context)
-    # processing
-  end
-end
-```
-
-For image processing helper methods you can use the [image_processing] gem.
-
-#### `.version`
-
-In Shrine versions are processed and returned as a Hash inside the `#process`
-method. It requires the `versions` plugin, and you're required to declare the
-names (for security reasons):
-
-```rb
-class ImageUploader < Shrine
-  plugin :versions, names: [:small, :medium, :large]
-
-  def process(io, context)
-    # processsing versions
-    {small: size_300, medium: size_500, large: size_800}
-  end
-end
-```
+As explained in the "Processing" section, processing is done by overriding the
+`Shrine#process` method.
 
 #### `.before`, `.after`
 

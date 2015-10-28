@@ -15,7 +15,7 @@ class Shrine
     #
     # The validation methods are instance-level, the `Attacher.validate` block
     # is evaluated in context of an instance of `Shrine::Attacher`, so you can
-    # easily to conditional validation.
+    # easily do conditional validation.
     #
     # If you would like to change default validation error messages, you can
     # pass in the `:default_messages` option to the plugin:
