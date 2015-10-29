@@ -17,6 +17,7 @@ RDoc::Task.new do |t|
     "--markup", "markdown",
     "--format", "hanna", # requires the hanna-nouveau gem
     "--main", "README.md",
+    "--visibility", "public",
   ]
   t.rdoc_files.add Dir[
     "README.md",
