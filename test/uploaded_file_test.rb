@@ -1,7 +1,6 @@
 require "test_helper"
 require "shrine/storage/file_system"
 require "set"
-require "mocha/mini_test"
 
 describe Shrine::UploadedFile do
   before do

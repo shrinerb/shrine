@@ -1,5 +1,4 @@
 require "test_helper"
-require "mocha/mini_test"
 
 describe "multi_delete plugin" do
   before do

@@ -1,5 +1,4 @@
 require "test_helper"
-require "mocha/mini_test"
 
 describe "the restore_cached plugin" do
   before do
