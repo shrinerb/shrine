@@ -15,7 +15,10 @@ class Shrine
         def validate
           super
         ensure
-          delete!(get, phase: :invalid) if !errors.empty?
+          if !errors.empty?
+            deleted = delete!(get, phase: :invalid)
+            write(deleted.to_json)
+          end
         end
       end
     end

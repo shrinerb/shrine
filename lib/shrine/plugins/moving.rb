@@ -43,20 +43,10 @@ class Shrine
               super
               io.delete if io.respond_to?(:delete)
             end
-            # Promoting cached files will by default always delete the cached
-            # file. But, if moving plugin is enabled we want the cached file to
-            # be moved instead. However, there is no good way of letting the
-            # Attacher know that it shouldn't attempt to delete the file, so we
-            # make this instance variable hack.
-            io.instance_variable_set("@shrine_deleted", true)
+            io.data["deleted"] = true if io.is_a?(UploadedFile)
           else
             super
           end
-        end
-
-        # Don't delete the file if it has been moved.
-        def remove(io, context)
-          super unless io.instance_variable_get("@shrine_deleted")
         end
 
         # Ask the storage if the given file is movable.

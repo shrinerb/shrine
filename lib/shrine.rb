@@ -745,7 +745,8 @@ class Shrine
 
         # Calls `#delete` on the storage, which deletes the remote file.
         def delete
-          storage.delete(id)
+          storage.delete(id) unless data["deleted"]
+          data["deleted"] = true
         end
 
         # Added as a Ruby conversion method. It typically downloads the file.

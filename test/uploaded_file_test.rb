@@ -1,6 +1,7 @@
 require "test_helper"
 require "shrine/storage/file_system"
 require "set"
+require "mocha/mini_test"
 
 describe Shrine::UploadedFile do
   before do
@@ -68,6 +69,14 @@ describe Shrine::UploadedFile do
 
     assert_instance_of Shrine::Storage::Memory, uploaded_file.storage
     assert_instance_of @uploader.class, uploaded_file.uploader
+  end
+
+  it "doesn't attempt to delete itself twice" do
+    uploaded_file = @uploader.upload(fakeio("image"))
+    uploaded_file.storage.expects(:delete).once
+
+    uploaded_file.delete
+    uploaded_file.delete
   end
 
   it "can be replaced with another file" do

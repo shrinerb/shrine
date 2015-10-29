@@ -1,4 +1,5 @@
 require "test_helper"
+require "mocha/mini_test"
 
 describe "the delete_invalid plugin" do
   def setup
@@ -19,5 +20,19 @@ describe "the delete_invalid plugin" do
     @attacher.assign(fakeio) rescue nil
 
     refute @attacher.get.exists?
+  end
+
+  it "doesn't attempt to delete if there is no file" do
+    @attacher.class.validate { errors << :foo }
+    @attacher.assign(nil)
+  end
+
+  it "doesn't delete the same file twice" do
+    @attacher.class.validate { errors << :foo }
+    @attacher.cache.storage.expects(:delete).once
+
+    @attacher.assign(fakeio)
+    assert_kind_of Shrine::UploadedFile, @attacher.get
+    @attacher.set(@attacher.get)
   end
 end
