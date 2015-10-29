@@ -57,12 +57,10 @@
       <dl>
         {% for item in site.data.plugins %}
         <dt>
-          <a href="http://{{ site.url }}/rdoc/classes/Shrine/Plugins/{{ item.path }}">
-            {{ item.name }}
-          </a>
+          <a href="http://{{ site.url }}/rdoc/classes/Shrine/Plugins/{{ item.path }}">{{ item.name }}</a>:
         </dt>
         <dd>
-          {{ item.description }}
+          <div>{{ item.description }}</div>
         </dd>
         {% endfor %}
       </dl>
