@@ -99,4 +99,13 @@ describe "the logging plugin" do
 
     assert_equal :foo, @uploader.class.logger
   end
+
+  it "accepts model instances without an #id" do
+    @uploader = uploader
+
+    @context[:record].instance_eval { undef id }
+    stdout = capture { @uploader.upload(fakeio, @context) }
+
+    assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(0.0s\)$/, stdout
+  end
 end

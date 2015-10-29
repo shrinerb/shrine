@@ -102,7 +102,7 @@ class Shrine
             uploader:     self.class,
             attachment:   context[:name],
             record_class: (context[:record].class if context[:record]),
-            record_id:    (context[:record].id if context[:record]),
+            record_id:    (context[:record].id if context[:record].respond_to?(:id)),
             files:        count(result),
             duration:     ("%.2f" % duration).to_f,
           ) unless result.nil?
@@ -121,7 +121,8 @@ class Shrine
           components.last << "[#{data[:phase]}]" if data[:phase]
           components << "#{data[:uploader]}"
           components.last << "[:#{data[:attachment]}]" if data[:attachment]
-          components << "#{data[:record_class]}[#{data[:record_id]}]" if data[:record_class]
+          components << "#{data[:record_class]}" if data[:record_class]
+          components.last << "[#{data[:record_id]}]" if data[:record_id]
           components << (data[:files] > 1 ? "#{data[:files]} files" : "#{data[:files]} file")
           components << "(#{data[:duration]}s)"
           components.join(" ")
