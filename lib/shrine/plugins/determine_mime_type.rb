@@ -64,6 +64,10 @@ class Shrine
         uploader.opts[:mime_type_analyzer] = analyzer
       end
 
+      # How many bytes we have to read to get the magic file header which
+      # contains the MIME type of the file.
+      MAGIC_NUMBER = 1024
+
       module InstanceMethods
         # If a Shrine::UploadedFile was given, it returns its MIME type, since
         # that value was already determined by this analyzer. Otherwise it calls
@@ -91,7 +95,7 @@ class Shrine
           if io.respond_to?(:path)
             mime_type, _ = Open3.capture2(*cmd, io.path)
           else
-            mime_type, _ = Open3.capture2(*cmd, "-", stdin_data: io.read(1024))
+            mime_type, _ = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER))
             io.rewind
           end
 
@@ -101,7 +105,7 @@ class Shrine
         # Uses the ruby-filemagic gem to magically extract the MIME type.
         def _extract_mime_type_with_filemagic(io)
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          data = io.read(1024); io.rewind
+          data = io.read(MAGIC_NUMBER); io.rewind
           filemagic.buffer(data)
         end
 
