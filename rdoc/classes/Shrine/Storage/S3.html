@@ -64,11 +64,6 @@
               <li><a target="docwin" href="#method-i-upload">upload</a></li>
               <li><a target="docwin" href="#method-i-url">url</a></li>
             </ol>
-            <h3>Protected Instance</h3>
-            <ol>
-              <li><a target="docwin" href="#method-i-access_key_id">access_key_id</a></li>
-              <li><a target="docwin" href="#method-i-object">object</a></li>
-            </ol>
           </div>
           <div id='context'>
           </div>
@@ -304,41 +299,6 @@
                     [show source]
                   </a>
                   <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 76</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">download</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">options</span>[<span class="ruby-value">:response_content_disposition</span>] = <span class="ruby-string">&quot;attachment&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">download</span>&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">presigned_url</span>(<span class="ruby-value">:get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <h2>Protected Instance methods</h2>
-              <div class='method protected-instance' id='method-method-i-access_key_id'>
-                <a name='method-i-access_key_id'></a>
-                <div class='synopsis'>
-                  <span class='name'>access_key_id</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>This is used to check whether an <a href="S3.html">S3</a> file is copyable.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-access_key_id-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-access_key_id-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 104</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">access_key_id</span>&#x000A;  <span class="ruby-ivar">@s3</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">config</span>.<span class="ruby-identifier">credentials</span>.<span class="ruby-identifier">access_key_id</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method protected-instance' id='method-method-i-object'>
-                <a name='method-i-object'></a>
-                <div class='synopsis'>
-                  <span class='name'>object</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Returns the <a href="S3.html">S3</a> object.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-object-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-object-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 99</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-ivar">@bucket</span>.<span class="ruby-identifier">object</span>([<span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">id</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

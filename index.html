@@ -26,7 +26,7 @@
   <div class="container">
     <div>
       <h1>
-        <span>Shrine <!-- ()--></span>
+        <span>Shrine<!-- ()--></span>
         <a href="https://github.com/janko-m/shrine">
           <svg class="icon" viewBox="0 0 1024 1024" width="24" height="24">
             <title>github</title>
@@ -147,165 +147,191 @@
     <section class="plugins">
       <h2 id="plugins">Plugins</h2>
 
-      <ul>
+      <dl>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Activerecord.html">
-            activerecord
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Activerecord.html">activerecord</a>:
+        </dt>
+        <dd>
+          <div>Provides ActiveRecord integration, adding callbacks and validations.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/BackgroundHelpers.html">
-            background_helpers
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/BackgroundHelpers.html">background_helpers</a>:
+        </dt>
+        <dd>
+          <div>Adds the ability to put storing and deleting into a background job.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/CachedAttachmentData.html">
-            cached_attachment_data
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/CachedAttachmentData.html">cached_attachment_data</a>:
+        </dt>
+        <dd>
+          <div>Adds a convenient model method for the hidden form cache field.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DataUri.html">
-            data_uri
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DataUri.html">data_uri</a>:
+        </dt>
+        <dd>
+          <div>Adds ability to upload files via a data URI.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DefaultStorage.html">
-            default_storage
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DefaultStorage.html">default_storage</a>:
+        </dt>
+        <dd>
+          <div>Allows you to choose different storages for different attachments.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DeleteInvalid.html">
-            delete_invalid
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DeleteInvalid.html">delete_invalid</a>:
+        </dt>
+        <dd>
+          <div>Deletes files that didn't pass file validation.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html">
-            determine_mime_type
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html">determine_mime_type</a>:
+        </dt>
+        <dd>
+          <div>Allows you to determine the actual MIME type from file contents.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">
-            direct_upload
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">direct_upload</a>:
+        </dt>
+        <dd>
+          <div>Provides a Rack endpoint convenient for direct AJAX uploads.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DynamicStorage.html">
-            dynamic_storage
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DynamicStorage.html">dynamic_storage</a>:
+        </dt>
+        <dd>
+          <div>Allows you to define storages dynamically based on their identifier.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Hooks.html">
-            hooks
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Hooks.html">hooks</a>:
+        </dt>
+        <dd>
+          <div>Allows you to specify actions that occur before/around/after process/store/delete.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Included.html">
-            included
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Included.html">included</a>:
+        </dt>
+        <dd>
+          <div>Allows the included attachments to define additional methods on the model.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/KeepFiles.html">
-            keep_files
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/KeepFiles.html">keep_files</a>:
+        </dt>
+        <dd>
+          <div>Allows you to keep files on the storage that would otherwise be deleted.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Logging.html">
-            logging
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Logging.html">logging</a>:
+        </dt>
+        <dd>
+          <div>Automatically logs processing, storing and deleting, with a configurable format.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MigrationHelpers.html">
-            migration_helpers
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MigrationHelpers.html">migration_helpers</a>:
+        </dt>
+        <dd>
+          <div>Provides a set of helper methods that are useful when doing file migrations.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Moving.html">
-            moving
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Moving.html">moving</a>:
+        </dt>
+        <dd>
+          <div>Allows you to move files to storages instead of copying them.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MultiDelete.html">
-            multi_delete
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MultiDelete.html">multi_delete</a>:
+        </dt>
+        <dd>
+          <div>Allows you to delete multiple files at once, which some storages optimize.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Parallelize.html">
-            parallelize
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Parallelize.html">parallelize</a>:
+        </dt>
+        <dd>
+          <div>Allows you to parallelize uploads and deletes when using versions.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/PrettyLocation.html">
-            pretty_location
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/PrettyLocation.html">pretty_location</a>:
+        </dt>
+        <dd>
+          <div>Attempts to generate a more organized folder structure on the storage.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Recache.html">
-            recache
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Recache.html">recache</a>:
+        </dt>
+        <dd>
+          <div>Allows you to do additional processing after validations, but before storing.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoteUrl.html">
-            remote_url
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoteUrl.html">remote_url</a>:
+        </dt>
+        <dd>
+          <div>Allows your models to accept attachments as remote URLs.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoveAttachment.html">
-            remove_attachment
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoveAttachment.html">remove_attachment</a>:
+        </dt>
+        <dd>
+          <div>Allows you to remove the attachment via a form field.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RestoreCached.html">
-            restore_cached
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RestoreCached.html">restore_cached</a>:
+        </dt>
+        <dd>
+          <div>Restores cached file's metadata on model assignment to prevent tampering.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html">
-            sequel
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html">sequel</a>:
+        </dt>
+        <dd>
+          <div>Provides Sequel integration, adding callbacks and validations.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/StoreDimensions.html">
-            store_dimensions
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/StoreDimensions.html">store_dimensions</a>:
+        </dt>
+        <dd>
+          <div>Allows you to store image dimensions as additional metadata.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html">
-            validation_helpers
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html">validation_helpers</a>:
+        </dt>
+        <dd>
+          <div>Gives you convenient methods for validating file's metadata.</div>
+        </dd>
         
-        <li>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Versions.html">
-            versions
-          </a>
-        </li>
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Versions.html">versions</a>:
+        </dt>
+        <dd>
+          <div>Gives uploader the ability to handle processed versions of a file.</div>
+        </dd>
         
-      </ul>
+      </dl>
     </section>
 
     <!-- <section> -->

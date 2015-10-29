@@ -65,12 +65,6 @@
               <li><a target="docwin" href="#method-i-upload">upload</a></li>
               <li><a target="docwin" href="#method-i-url">url</a></li>
             </ol>
-            <h3>Protected Instance</h3>
-            <ol>
-              <li><a target="docwin" href="#method-i-clean">clean</a></li>
-              <li><a target="docwin" href="#method-i-clean-3F">clean?</a></li>
-              <li><a target="docwin" href="#method-i-path">path</a></li>
-            </ol>
           </div>
           <div id='context'>
           </div>
@@ -332,57 +326,6 @@
                     [show source]
                   </a>
                   <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 102</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">subdirectory</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">host</span> <span class="ruby-operator">||</span> <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">subdirectory</span>, <span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">host</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">host</span>, <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>))&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">to_s</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <h2>Protected Instance methods</h2>
-              <div class='method protected-instance' id='method-method-i-clean'>
-                <a name='method-i-clean'></a>
-                <div class='synopsis'>
-                  <span class='name'>clean</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Cleans all empty subdirectories up the hierarchy.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-clean-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-clean-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 138</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">clean</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">dirname</span>.<span class="ruby-identifier">ascend</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">pathname</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">pathname</span>.<span class="ruby-identifier">children</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">pathname</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">directory</span>&#x000A;      <span class="ruby-identifier">pathname</span>.<span class="ruby-identifier">rmdir</span>&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-keyword">break</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method protected-instance' id='method-method-i-clean-3F'>
-                <a name='method-i-clean-3F'></a>
-                <div class='synopsis'>
-                  <span class='name'>clean?</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-clean-3F-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-clean-3F-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 148</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">clean?</span>&#x000A;  <span class="ruby-ivar">@clean</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method protected-instance' id='method-method-i-path'>
-                <a name='method-i-path'></a>
-                <div class='synopsis'>
-                  <span class='name'>path</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Returns the full path to the file.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-path-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-path-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 133</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">relative</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
