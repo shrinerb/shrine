@@ -30,12 +30,12 @@ describe "the determine_mime_type plugin" do
       assert_equal "image/jpeg", uploaded_file.mime_type
     end
 
-    it "returns nil when IO was not a file" do
+    it "is able to determine content type for non-files" do
       @uploader = uploader(:file)
       stringio = StringIO.new(image.read)
       uploaded_file = @uploader.upload(stringio)
 
-      assert_equal nil, uploaded_file.mime_type
+      assert_equal "image/jpeg", uploaded_file.mime_type
     end
   end
 
