@@ -54,15 +54,18 @@
     <section class="plugins">
       <h2 id="plugins">Plugins</h2>
 
-      <ul>
+      <dl>
         {% for item in site.data.plugins %}
-        <li>
+        <dt>
           <a href="http://{{ site.url }}/rdoc/classes/Shrine/Plugins/{{ item.path }}">
             {{ item.name }}
           </a>
-        </li>
+        </dt>
+        <dd>
+          {{ item.description }}
+        </dd>
         {% endfor %}
-      </ul>
+      </dl>
     </section>
 
     <!-- <section> -->
