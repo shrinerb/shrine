@@ -105,4 +105,4 @@
 -
   name: versions
   path: Versions.html
-  description: Gives uploader the ability to handle processed versions of a file.
+  description: Gives uploader class the ability to handle processed versions of a file.
