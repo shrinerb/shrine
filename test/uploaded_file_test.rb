@@ -128,6 +128,14 @@ describe Shrine::UploadedFile do
     assert_equal 1, Set.new([uploaded_file1, uploaded_file2]).count
   end
 
+  it "implements cleaner #inspect" do
+    uploaded_file = @uploader.class::UploadedFile.new(
+      "id" => "123", "storage" => "store", "metadata" => {})
+
+    p uploaded_file
+    assert_match /#<\S+ @data=\{"id"=>"123", "storage"=>"store", "metadata"=>{}\}>/, uploaded_file.inspect
+  end
+
   it "raises an error if invalid storage key is given" do
     assert_raises(Shrine::Error) do
       Shrine::UploadedFile.new("id" => "123", "storage" => "foo", "metadata" => {})

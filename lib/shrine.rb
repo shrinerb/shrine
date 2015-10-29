@@ -792,6 +792,11 @@ class Shrine
           self.class.shrine_class
         end
 
+        # Show only the data hash in inspect output.
+        def inspect
+          "#{to_s.chomp(">")} @data=#{data.inspect}>"
+        end
+
         private
 
         def io
