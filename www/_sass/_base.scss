@@ -77,18 +77,22 @@ h3 {
 }
 
 a {
-  color: #AF9A95;
+  color: shade(#98CABF, 20%);
   text-decoration: none;
 
   &:hover,
   &:focus {
-    color: #80623E;
+    color: shade(#98CABF, 50%);
     text-decoration: underline;
   }
 }
 
 ol, ul {
   list-style: none;
+}
+
+dd {
+  margin-bottom: 1em;
 }
 
 img, svg, iframe {
