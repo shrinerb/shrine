@@ -222,7 +222,7 @@ As explained in the "Processing" section, processing is done by overriding the
 
 #### `:default_url`
 
-In Shrine you achieve default URLs by definining the instance method on the
+In Shrine you achieve default URLs by defining the instance method on the
 uploader:
 
 ```rb
