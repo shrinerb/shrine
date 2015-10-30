@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix an encoding error in determine_mime_type when using `:file` with non-files (janko-m)
+
 * Make `UploadedFile` actually delete itself only once (janko-m)
 
 * Make `UploadedFile#inspect` cleaner by showing only the data hash (janko-m)

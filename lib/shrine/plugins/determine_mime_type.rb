@@ -95,7 +95,7 @@ class Shrine
           if io.respond_to?(:path)
             mime_type, _ = Open3.capture2(*cmd, io.path)
           else
-            mime_type, _ = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER))
+            mime_type, _ = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER), binmode: true)
             io.rewind
           end
 
