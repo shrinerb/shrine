@@ -7,7 +7,7 @@ test_versions() {
     rbenv local $version
     echo "======== Version $version ========"
     bundle install -j3
-    bundle exec rake test
+    rake test
   done
 
   rm .ruby-version
