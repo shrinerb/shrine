@@ -157,7 +157,7 @@ class Shrine
         # model class.  Example:
         #
         #     class User
-        #       include Shrine[:avatar] # alias for `Shrine.attachment[:avatar]`
+        #       include Shrine[:avatar] # alias for `Shrine.attachment(:avatar)`
         #     end
         def attachment(name)
           self::Attachment.new(name)
