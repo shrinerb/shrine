@@ -38,9 +38,10 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency "sequel"
   gem.add_development_dependency "activerecord"
-  unless RUBY_ENGINE == "jruby"
-    gem.add_development_dependency "sqlite3"
-  else
+
+  if RUBY_ENGINE == "jruby"
     gem.add_development_dependency "activerecord-jdbcsqlite3-adapter"
+  else
+    gem.add_development_dependency "sqlite3"
   end
 end
