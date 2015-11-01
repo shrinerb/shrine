@@ -91,25 +91,11 @@ ol, ul {
   list-style: none;
 }
 
-dl {
-  // @include display(flex);
-  // @include flex-wrap(wrap);
-}
-
 dt {
   @extend .cf;
   float: left;
   margin-right: 0.25em;
   // width: 240px;
-}
-
-dd {
-  // width: calc(100vh - 200px);
-  margin-bottom: 0.25em;
-
-  div {
-    // max-width: 400px;
-  }
 }
 
 img, svg, iframe {
@@ -123,4 +109,10 @@ svg {
 
 label {
   cursor: pointer;
+}
+
+.plugins {
+  dl { margin-left: 0.75em; }
+  li { margin-bottom: 0.25em; }
+  .category { font-weight: bold; }
 }

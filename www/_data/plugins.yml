@@ -1,108 +1,121 @@
--
-  name: activerecord
-  path: Activerecord.html
-  description: Provides ActiveRecord integration, adding callbacks and validations.
--
-  name: background_helpers
-  path: BackgroundHelpers.html
-  description: Adds the ability to put storing and deleting into a background job.
--
-  name: cached_attachment_data
-  path: CachedAttachmentData.html
-  description: Adds a convenient model method for the hidden form cache field.
--
-  name: data_uri
-  path: DataUri.html
-  description: Adds ability to upload files via a data URI.
--
-  name: default_storage
-  path: DefaultStorage.html
-  description: Allows you to choose different storages for different attachments.
--
-  name: delete_invalid
-  path: DeleteInvalid.html
-  description: Deletes files that didn't pass file validation.
--
-  name: determine_mime_type
-  path: DetermineMimeType.html
-  description: Allows you to determine the actual MIME type from file contents.
--
-  name: direct_upload
-  path: DirectUpload.html
-  description: Provides a Rack endpoint convenient for direct AJAX uploads.
--
-  name: dynamic_storage
-  path: DynamicStorage.html
-  description: Allows you to define storages dynamically based on their identifier.
--
-  name: hooks
-  path: Hooks.html
-  description: Allows you to specify actions that occur before/around/after process/store/delete.
--
-  name: included
-  path: Included.html
-  description: Allows the included attachments to define additional methods on the model.
--
-  name: keep_files
-  path: KeepFiles.html
-  description: Allows you to keep files on the storage that would otherwise be deleted.
--
-  name: logging
-  path: Logging.html
-  description: Automatically logs processing, storing and deleting, with a configurable format.
--
-  name: migration_helpers
-  path: MigrationHelpers.html
-  description: Provides a set of helper methods that are useful when doing file migrations.
--
-  name: moving
-  path: Moving.html
-  description: Allows you to move files to storages instead of copying them.
--
-  name: multi_delete
-  path: MultiDelete.html
-  description: Allows you to delete multiple files at once, which some storages optimize.
--
-  name: parallelize
-  path: Parallelize.html
-  description: Allows you to parallelize uploads and deletes when using versions.
--
-  name: pretty_location
-  path: PrettyLocation.html
-  description: Attempts to generate a more organized folder structure on the storage.
--
-  name: rack_file
-  path: RackFile.html
-  description: Allows you models to accept Rack uploaded file hashes as attachments.
--
-  name: recache
-  path: Recache.html
-  description: Allows you to do additional processing after validations, but before storing.
--
-  name: remote_url
-  path: RemoteUrl.html
-  description: Allows your models to accept attachments as remote URLs.
--
-  name: remove_attachment
-  path: RemoveAttachment.html
-  description: Allows you to remove the attachment via a form field.
--
-  name: restore_cached
-  path: RestoreCached.html
-  description: Restores cached file's metadata on model assignment to prevent tampering.
--
-  name: sequel
-  path: Sequel.html
-  description: Provides Sequel integration, adding callbacks and validations.
--
-  name: store_dimensions
-  path: StoreDimensions.html
-  description: Allows you to store image dimensions as additional metadata.
--
-  name: validation_helpers
-  path: ValidationHelpers.html
-  description: Gives you convenient methods for validating file's metadata.
--
-  name: versions
-  path: Versions.html
-  description: Gives uploader class the ability to handle processed versions of a file.
+ORMs:
+  -
+    name: activerecord
+    path: Activerecord.html
+    description: Provides ActiveRecord integration, adding callbacks and validations.
+  -
+    name: sequel
+    path: Sequel.html
+    description: Provides Sequel integration, adding callbacks and validations.
+
+Model:
+  -
+    name: background_helpers
+    path: BackgroundHelpers.html
+    description: Adds the ability to put storing and deleting into a background job.
+  -
+    name: cached_attachment_data
+    path: CachedAttachmentData.html
+    description: Adds a convenient model method for the hidden form cache field.
+  -
+    name: data_uri
+    path: DataUri.html
+    description: Adds ability to upload files via a data URI.
+  -
+    name: included
+    path: Included.html
+    description: Allows the included attachments to define additional methods on the model.
+  -
+    name: migration_helpers
+    path: MigrationHelpers.html
+    description: Provides a set of helper methods that are useful when doing file migrations.
+  -
+    name: rack_file
+    path: RackFile.html
+    description: Allows you models to accept Rack uploaded file hashes as attachments.
+  -
+    name: remote_url
+    path: RemoteUrl.html
+    description: Allows your models to accept attachments as remote URLs.
+  -
+    name: remove_attachment
+    path: RemoveAttachment.html
+    description: Allows you to remove the attachment via a form field.
+  -
+    name: validation_helpers
+    path: ValidationHelpers.html
+    description: Gives you convenient methods for validating file's metadata.
+
+Processing:
+  -
+    name: parallelize
+    path: Parallelize.html
+    description: Allows you to parallelize uploads and deletes when using versions.
+  -
+    name: recache
+    path: Recache.html
+    description: Allows you to do additional processing before the background job.
+  -
+    name: versions
+    path: Versions.html
+    description: Gives uploader class the ability to handle processed versions of a file.
+
+Metadata:
+  -
+    name: determine_mime_type
+    path: DetermineMimeType.html
+    description: Allows you to determine the actual MIME type from file contents.
+  -
+    name: restore_cached
+    path: RestoreCached.html
+    description: Restores cached file's metadata on model assignment to prevent tampering.
+  -
+    name: store_dimensions
+    path: StoreDimensions.html
+    description: Allows you to store image dimensions as additional metadata.
+
+Deleting:
+  -
+    name: delete_invalid
+    path: DeleteInvalid.html
+    description: Deletes files that didn't pass file validation.
+  -
+    name: keep_files
+    path: KeepFiles.html
+    description: Allows you to keep files on the storage that would otherwise be deleted.
+  -
+    name: multi_delete
+    path: MultiDelete.html
+    description: Allows you to delete multiple files at once, which some storages optimize.
+
+Storage:
+  -
+    name: default_storage
+    path: DefaultStorage.html
+    description: Allows you to choose different storages for different attachments.
+  -
+    name: dynamic_storage
+    path: DynamicStorage.html
+    description: Allows you to define storages dynamically based on their identifier.
+  -
+    name: moving
+    path: Moving.html
+    description: Allows you to move files to storages instead of copying them.
+  -
+    name: pretty_location
+    path: PrettyLocation.html
+    description: Attempts to generate a more organized folder structure on the storage.
+
+Other:
+  -
+    name: direct_upload
+    path: DirectUpload.html
+    description: Provides a Rack endpoint convenient for direct AJAX uploads.
+  -
+    name: hooks
+    path: Hooks.html
+    description: Allows you to specify actions that occur before/around/after process/store/delete.
+  -
+    name: logging
+    path: Logging.html
+    description: Automatically logs processing, storing and deleting, with a configurable format.
