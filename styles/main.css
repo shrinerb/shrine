@@ -431,9 +431,6 @@ dt {
   float: left;
   margin-right: 0.25em; }
 
-dd {
-  margin-bottom: 0.25em; }
-
 img, svg, iframe {
   vertical-align: middle; }
 
@@ -442,6 +439,13 @@ svg {
 
 label {
   cursor: pointer; }
+
+.plugins dl {
+  margin-left: 0.75em; }
+.plugins li {
+  margin-bottom: 0.25em; }
+.plugins .category {
+  font-weight: bold; }
 
 .btn {
   display: inline-block;
