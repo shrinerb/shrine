@@ -47,7 +47,7 @@ $ bin/test-versions
 Code of Conduct
 ===============
 
-Everyone interacting in the Bundler project’s codebases, issue trackers, chat
+Everyone interacting in the Shrine project’s codebases, issue trackers, chat
 rooms, and mailing lists is expected to follow the [Shrine code of conduct].
 
 [ruby-shrine]: https://groups.google.com/forum/#!forum/ruby-shrine
