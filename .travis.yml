@@ -1,0 +1,14 @@
+language: ruby
+
+sudo: false
+
+rvm:
+  - 2.1
+  - 2.2
+  - jruby
+  - rbx
+
+cache: bundler
+
+before_script:
+  - apt-get install libmagic-dev
