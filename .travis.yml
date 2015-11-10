@@ -5,10 +5,12 @@ sudo: false
 rvm:
   - 2.1
   - 2.2
-  - jruby
+  - jruby-9.0.0.0
   - rbx
 
 cache: bundler
 
-before_script:
-  - apt-get install libmagic-dev
+addons:
+  apt:
+    packages:
+    - libmagic-dev
