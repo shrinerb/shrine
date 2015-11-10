@@ -33,8 +33,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "thread", "~> 0.2"
   gem.add_development_dependency "aws-sdk", "~> 2.1"
-  gem.add_development_dependency "image_processing", ">= 0.2.4"
-  gem.add_development_dependency "mini_magick", ">= 4.3.5"
 
   gem.add_development_dependency "sequel"
   gem.add_development_dependency "activerecord"

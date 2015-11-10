@@ -25,7 +25,7 @@ Pull Request Guidelines
 Running tests
 =============
 
-The test suite requires that you have ImageMagick, libmagic and SQLite installed.
+The test suite requires that you have libmagic and SQLite installed.
 If you're using Homebrew, you can just run:
 
 ```sh
