@@ -1,5 +1,7 @@
 # Shrine
 
+[![Build Status](https://travis-ci.org/janko-m/shrine.svg?branch=master)](https://travis-ci.org/janko-m/shrine)
+
 Shrine is a toolkit for file uploads in Ruby applications.
 
 If you're new, you're encouraged to read the [introductory blog post] which
