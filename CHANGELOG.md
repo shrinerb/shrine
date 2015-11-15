@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't delete cached files anymore, as it can cause errors with backgrounding (janko-m)
+
 * Add a `:host` option to the S3 storage for specifying CDNs (janko-m)
 
 * Fix having the ability to promote the same attachment multiple times with backgrounding (janko-m)

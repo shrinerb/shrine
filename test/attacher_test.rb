@@ -136,13 +136,6 @@ describe Shrine::Attacher do
       assert_equal "store", @attacher.get.storage_key
     end
 
-    it "deletes the cached file" do
-      cached_file = @attacher.assign(fakeio)
-      @attacher.promote(cached_file)
-
-      refute cached_file.exists?
-    end
-
     it "doesn't assign stored file if cached files don't match" do
       cached_file = @attacher.assign(fakeio)
       another_cached_file = @attacher.assign(fakeio)
@@ -171,16 +164,10 @@ describe Shrine::Attacher do
   end
 
   describe "#replace" do
-    it "deletes removed files" do
-      uploaded_file = @attacher.assign(fakeio)
-      @attacher.assign(fakeio)
-      @attacher.replace
-
-      refute uploaded_file.exists?
-    end
-
     it "deletes replaced files" do
-      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(fakeio)
+      @attacher._promote
+      uploaded_file = @attacher.get
       @attacher.assign(fakeio)
       @attacher.replace
 
@@ -190,6 +177,14 @@ describe Shrine::Attacher do
     it "doesn't trip if there was no previous file" do
       @attacher.assign(fakeio)
       @attacher.replace
+    end
+
+    it "doesn't replace cached files" do
+      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(fakeio)
+      @attacher.replace
+
+      assert uploaded_file.exists?
     end
 
     it "sets :phase to :replace" do
@@ -207,10 +202,11 @@ describe Shrine::Attacher do
 
   describe "#destroy" do
     it "deletes the attached file" do
-      uploaded_file = @attacher.assign(fakeio)
+      @attacher.assign(fakeio)
+      @attacher._promote
       @attacher.destroy
 
-      refute uploaded_file.exists?
+      refute @attacher.get.exists?
     end
 
     it "doesn't trip if file doesn't exist" do
@@ -225,7 +221,15 @@ describe Shrine::Attacher do
       end
 
       @attacher.assign(fakeio)
+      @attacher._promote
       @attacher.destroy
+    end
+
+    it "doesn't delete cached files" do
+      @attacher.assign(fakeio)
+      @attacher.destroy
+
+      assert @attacher.get.exists?
     end
   end
 

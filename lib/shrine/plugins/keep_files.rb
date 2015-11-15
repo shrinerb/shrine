@@ -14,37 +14,22 @@ class Shrine
     # :replaced
     # :  If set to `true`, uploading a new attachment won't delete the old one.
     #
-    # :cached
-    # :  If set to `true`, cached files that are uploaded to store won't be
-    #    deleted.
-    #
     # For example, the following will keep destroyed and replaced files:
     #
     #     plugin :keep_files, destroyed: true, :replaced: true
     #
     # [event store]: http://docs.geteventstore.com/introduction/event-sourcing-basics/
     module KeepFiles
-      def self.configure(uploader, destroyed: nil, replaced: nil, cached: nil)
+      def self.configure(uploader, destroyed: nil, replaced: nil, **)
         uploader.opts[:keep_files] = []
         uploader.opts[:keep_files] << :destroyed if destroyed
         uploader.opts[:keep_files] << :replaced if replaced
-        uploader.opts[:keep_files] << :cached if cached
       end
 
       module ClassMethods
-        def keep?(type)
-          opts[:keep_files].include?(type)
-        end
-
         # We hook to the generic deleting, and check the appropriate phases.
         def delete(io, context)
-          case context[:phase]
-          when :cached then super unless keep?(:cached)
-          when :replaced then super unless keep?(:replaced)
-          when :destroyed then super unless keep?(:destroyed)
-          else
-            super
-          end
+          super unless opts[:keep_files].include?(context[:phase])
         end
       end
     end

@@ -495,7 +495,7 @@ class Shrine
         # Assigns a Shrine::UploadedFile, runs validation and schedules the
         # old file for deletion.
         def set(uploaded_file)
-          @old_attachment = get unless get == uploaded_file
+          @old = get unless get == uploaded_file
           _set(uploaded_file)
           validate
 
@@ -509,7 +509,7 @@ class Shrine
 
         # Returns true if a new file has been attached.
         def attached?
-          instance_variable_defined?("@old_attachment")
+          instance_variable_defined?("@old")
         end
 
         # Plugins can override this if they want something to be done on save.
@@ -538,21 +538,20 @@ class Shrine
           else
             delete!(stored_file, phase: :stored)
           end
-          delete!(cached_file, phase: :cached)
         end
 
         # Deletes the attachment that was replaced, and is called after saving
-        # by ORM integrations. If also removes `@old_attachment` so that
-        # #finalize doesn't get called for the current attachment anymore.
+        # by ORM integrations. If also removes `@old` so that #save and #finalize
+        # don't get called for the current attachment anymore.
         def replace
-          delete!(@old_attachment, phase: :replaced) if @old_attachment
-          remove_instance_variable("@old_attachment")
+          delete!(@old, phase: :replaced) if @old && !cache.uploaded?(@old)
+          remove_instance_variable("@old")
         end
 
         # Deletes the attachment. Typically this should be called after
         # destroying a record.
         def destroy
-          delete!(get, phase: :destroyed) if get
+          delete!(get, phase: :destroyed) if get && !cache.uploaded?(get)
         end
 
         # Returns the URL to the attached file (internally calls `#url` on the
@@ -755,8 +754,7 @@ class Shrine
 
         # Calls `#delete` on the storage, which deletes the remote file.
         def delete
-          storage.delete(id) unless data["deleted"]
-          data["deleted"] = true
+          storage.delete(id)
         end
 
         # Added as a Ruby conversion method. It typically downloads the file.

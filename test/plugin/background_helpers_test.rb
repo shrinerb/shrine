@@ -69,9 +69,9 @@ describe "the background_helpers plugin" do
       @user.avatar_attacher.class.delete do |data|
         @fiber = Fiber.new { self.class.delete(data) }
       end
-      uploaded_file = @attacher.assign(fakeio)
-      @attacher.assign(fakeio)
-      @attacher.replace
+      @user.update(avatar: fakeio)
+      uploaded_file = @user.avatar
+      @user.update(avatar: fakeio)
 
       assert uploaded_file.exists?
       @user.avatar_attacher.instance_variable_get("@fiber").resume
@@ -82,8 +82,9 @@ describe "the background_helpers plugin" do
       @attacher.class.delete do |data|
         @fiber = Fiber.new { self.class.delete(data) }
       end
-      uploaded_file = @attacher.assign(fakeio)
-      @attacher.destroy
+      @user.update(avatar: fakeio)
+      uploaded_file = @user.avatar
+      @user.destroy
 
       assert uploaded_file.exists?
       @attacher.instance_variable_get("@fiber").resume

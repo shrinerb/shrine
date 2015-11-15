@@ -43,7 +43,6 @@ class Shrine
               super
               io.delete if io.respond_to?(:delete)
             end
-            io.data["deleted"] = true if io.is_a?(UploadedFile)
           else
             super
           end

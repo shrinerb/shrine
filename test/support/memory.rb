@@ -18,11 +18,11 @@ class Shrine
       end
 
       def open(id)
-        StringIO.new(@store[id])
+        StringIO.new(@store.fetch(id))
       end
 
       def read(id)
-        @store[id].dup
+        @store.fetch(id).dup
       end
 
       def exists?(id)
@@ -30,7 +30,7 @@ class Shrine
       end
 
       def delete(id)
-        @store.delete(id)
+        @store.delete(id) or raise "file doesn't exist"
       end
 
       def url(id, **options)
