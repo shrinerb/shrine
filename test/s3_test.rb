@@ -1,11 +1,10 @@
-exit unless ARGV == ["test/s3_test.rb"]
+exit unless ARGV.select{|arg| File.exists?(arg)} == ["test/s3_test.rb"]
 
 require "test_helper"
 
 require "shrine/storage/s3"
 require "shrine/storage/linter"
 require "down"
-require "image_processing/mini_magick"
 
 require "dotenv"
 Dotenv.load!
@@ -17,7 +16,7 @@ describe Shrine::Storage::S3 do
     options[:access_key_id]     ||= ENV["S3_ACCESS_KEY_ID"]
     options[:secret_access_key] ||= ENV["S3_SECRET_ACCESS_KEY"]
 
-    Shrine::Storage::S3.new(options)
+    Shrine::Storage::S3.new(**options)
   end
 
   before do
@@ -83,6 +82,13 @@ describe Shrine::Storage::S3 do
       url = @s3.url("foo", download: true)
 
       assert_match "response-content-disposition=attachment", url
+    end
+
+    it "can provide a CDN url" do
+      @s3 = s3(host: "http://123.cloudfront.net")
+      url = @s3.url("foo")
+
+      assert_equal "http://123.cloudfront.net/foo", url
     end
   end
 

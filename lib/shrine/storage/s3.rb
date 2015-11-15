@@ -1,10 +1,11 @@
 require "aws-sdk"
 require "down"
+require "uri"
 
 class Shrine
   module Storage
     class S3
-      attr_reader :prefix, :bucket, :s3
+      attr_reader :prefix, :bucket, :s3, :host
 
       # Example:
       #
@@ -18,10 +19,11 @@ class Shrine
       #
       # The above storage will store file into the "my-app" bucket in the
       # "cache" directory.
-      def initialize(bucket:, prefix: nil, **s3_options)
+      def initialize(bucket:, prefix: nil, host: nil, **s3_options)
         @prefix = prefix
-        @s3 = Aws::S3::Resource.new(s3_options)
+        @s3 = Aws::S3::Resource.new(**s3_options)
         @bucket = @s3.bucket(bucket)
+        @host = host
       end
 
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
@@ -74,8 +76,12 @@ class Shrine
       # Returns the presigned URL to the file. If `download: true` is passed,
       # returns a forced download link.
       def url(id, download: nil, **options)
-        options[:response_content_disposition] = "attachment" if download
-        object(id).presigned_url(:get, **options)
+        if host.nil?
+          options[:response_content_disposition] = "attachment" if download
+          object(id).presigned_url(:get, **options)
+        else
+          URI.join(host, object(id).key).to_s
+        end
       end
 
       # Deletes all files from the storage (requires confirmation).
