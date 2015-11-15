@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove the delete_invalid plugin, as it could cause lame errors (janko-m)
+
 * Don't delete cached files anymore, as it can cause errors with backgrounding (janko-m)
 
 * Add a `:host` option to the S3 storage for specifying CDNs (janko-m)
