@@ -75,10 +75,14 @@ class Shrine
 
       # Returns the presigned URL to the file. If `download: true` is passed,
       # returns a forced download link.
-      def url(id, download: nil, **options)
+      def url(id, download: nil, public: nil, **options)
         if host.nil?
           options[:response_content_disposition] = "attachment" if download
-          object(id).presigned_url(:get, **options)
+          if public.nil?
+            object(id).presigned_url(:get, **options)
+          else
+            object(id).public_url(**options)
+          end
         else
           URI.join(host, object(id).key).to_s
         end

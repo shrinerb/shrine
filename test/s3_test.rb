@@ -90,6 +90,12 @@ describe Shrine::Storage::S3 do
 
       assert_equal "http://123.cloudfront.net/foo", url
     end
+
+    it "can provide a public url" do
+      url = @s3.url("foo", public: true)
+
+      assert_equal "https://#{@s3.bucket.name}.s3-eu-west-1.amazonaws.com/foo", url
+    end
   end
 
   describe "#presign" do

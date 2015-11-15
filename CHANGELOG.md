@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add the `:public` option to S3 storage for retrieving public URLs which aren't signed (janko-m)
+
 * Remove the delete_invalid plugin, as it could cause lame errors (janko-m)
 
 * Don't delete cached files anymore, as it can cause errors with backgrounding (janko-m)
