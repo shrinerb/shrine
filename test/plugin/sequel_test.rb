@@ -33,15 +33,18 @@ describe "the sequel plugin" do
     assert_equal Hash[avatar: ["Foo"]], @user.errors
   end
 
-  it "triggers save functionality" do
-    @user.avatar_attacher.singleton_class.class_eval do
+  it "triggers saving if file was attached" do
+    @user.avatar_attacher.instance_eval do
       def save
-        @saved = true
+        @save = true
       end
     end
-    @user.save
 
-    assert @user.avatar_attacher.instance_variable_get("@saved")
+    @user.save
+    refute @user.avatar_attacher.instance_variable_get("@save")
+
+    @user.update(avatar: fakeio)
+    assert @user.avatar_attacher.instance_variable_get("@save")
   end
 
   it "promotes on save" do

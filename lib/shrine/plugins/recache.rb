@@ -23,7 +23,7 @@ class Shrine
     module Recache
       module AttacherMethods
         def save
-          if get && defined?(@old_attachment) # new file was assigned
+          if get && cache.uploaded?(get)
             _set cache!(get, phase: :recache)
           end
           super

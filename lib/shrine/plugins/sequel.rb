@@ -45,13 +45,12 @@ class Shrine
 
             def before_save
               super
-              #{name}_attacher.save
+              #{name}_attacher.save if #{name}_attacher.attached?
             end
 
             def after_commit
               super
-              #{name}_attacher.replace
-              #{name}_attacher._promote
+              #{name}_attacher.finalize if #{name}_attacher.attached?
             end
 
             def after_destroy_commit

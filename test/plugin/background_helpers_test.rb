@@ -33,8 +33,8 @@ describe "the background_helpers plugin" do
       @user.avatar_attacher.class.promote do |data|
         @fiber = Fiber.new { self.class.promote(data) }
       end
-      @attacher.assign(fakeio)
-      @user.save
+
+      @user.update(avatar: fakeio)
 
       assert_equal "cache", @user.reload.avatar.storage_key
       @attacher.instance_variable_get("@fiber").resume
@@ -45,9 +45,22 @@ describe "the background_helpers plugin" do
       @user.avatar_attacher.class.promote do |data|
         @fiber = Fiber.new { self.class.promote(data) }
       end
-      @attacher._promote
+
+      @user.save
 
       refute @attacher.instance_variable_defined?("@fiber")
+    end
+
+    it "doesn't get triggered again if the record is saved" do
+      @user.avatar_attacher.class.promote do |data|
+        @fiber = Fiber.new { self.class.promote(data) }
+      end
+      @user.update(avatar: fakeio)
+      fiber = @attacher.instance_variable_get("@fiber")
+
+      @user.save
+
+      assert_equal fiber, @attacher.instance_variable_get("@fiber")
     end
   end
 

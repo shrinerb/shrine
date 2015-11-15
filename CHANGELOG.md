@@ -1,5 +1,9 @@
 ## HEAD
 
+* Fix having the ability to promote the same attachment multiple times with backgrounding (janko-m)
+
+* Fix recache plugin causing an infinite loop (janko-m)
+
 * Fix an encoding error in determine_mime_type when using `:file` with non-files (janko-m)
 
 * Make `UploadedFile` actually delete itself only once (janko-m)

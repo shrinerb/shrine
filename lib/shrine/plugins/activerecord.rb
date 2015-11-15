@@ -42,12 +42,11 @@ class Shrine
             end
 
             before_save do
-              #{@name}_attacher.save
+              #{@name}_attacher.save if #{@name}_attacher.attached?
             end
 
             after_commit on: [:create, :update] do
-              #{@name}_attacher.replace
-              #{@name}_attacher._promote
+              #{@name}_attacher.finalize if #{@name}_attacher.attached?
             end
 
             after_commit on: :destroy do

@@ -173,7 +173,7 @@ describe Shrine::Attacher do
   describe "#replace" do
     it "deletes removed files" do
       uploaded_file = @attacher.assign(fakeio)
-      @attacher.assign(nil)
+      @attacher.assign(fakeio)
       @attacher.replace
 
       refute uploaded_file.exists?
@@ -188,18 +188,7 @@ describe Shrine::Attacher do
     end
 
     it "doesn't trip if there was no previous file" do
-      @attacher.assign(nil)
-      @attacher.replace
-    end
-
-    it "doesn't try to delete the same file twice" do
       @attacher.assign(fakeio)
-      @attacher.assign(fakeio)
-      refute_equal nil, @attacher.instance_variable_get("@old_attachment")
-
-      @attacher.replace
-      assert_equal nil, @attacher.instance_variable_get("@old_attachment")
-
       @attacher.replace
     end
 

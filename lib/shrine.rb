@@ -507,8 +507,20 @@ class Shrine
           uploaded_file(read) if read
         end
 
+        # Returns true if a new file has been attached.
+        def attached?
+          instance_variable_defined?("@old_attachment")
+        end
+
         # Plugins can override this if they want something to be done on save.
         def save
+        end
+
+        # Deletes the old file and promotes the new one. Typically this should
+        # be called after saving.
+        def finalize
+          replace
+          _promote
         end
 
         # Calls #promote if attached file is cached.
@@ -516,11 +528,9 @@ class Shrine
           promote(get) if promote?(get)
         end
 
-        # Promotes a cached file to store, afterwards deleting the cached file.
-        # It does the promoting only if the cached file matches the current
-        # one. This check is done so that it can safely be used in background
-        # jobs in case the user quickly changes their mind and replaces the
-        # attachment before the old one was finished promoting.
+        # Promotes a cached file to store, taking into account to check whether
+        # the attachment has changed in the meanwhile. Afterwards the cached
+        # file is deleted.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :store)
           unless changed?(cached_file)
@@ -531,12 +541,12 @@ class Shrine
           delete!(cached_file, phase: :cached)
         end
 
-        # Deletes the attachment that was replaced.  Typically this should be
-        # called after saving, to ensure that the file is deleted only after
-        # the record has been successfuly saved.
+        # Deletes the attachment that was replaced, and is called after saving
+        # by ORM integrations. If also removes `@old_attachment` so that
+        # #finalize doesn't get called for the current attachment anymore.
         def replace
           delete!(@old_attachment, phase: :replaced) if @old_attachment
-          @old_attachment = nil
+          remove_instance_variable("@old_attachment")
         end
 
         # Deletes the attachment. Typically this should be called after
