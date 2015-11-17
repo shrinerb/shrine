@@ -51,7 +51,7 @@ class Shrine
           attachment = get
           return if attachment.nil? || cache.uploaded?(attachment)
           new_attachment = block.call(attachment)
-          update(new_attachment) unless changed?(get)
+          update(new_attachment) unless changed?(attachment)
         end
       end
     end

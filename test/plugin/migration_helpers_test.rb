@@ -35,20 +35,24 @@ describe "the migration_helpers plugin" do
       @attacher.assign(fakeio("original"))
 
       @user.update_avatar { fail }
-
-      assert_equal "original", @user.avatar.read
     end
 
     it "doesn't update attachment when current one is nil" do
-      @attacher.assign(fakeio("original"))
-
       @user.update_avatar { fail }
-
-      assert_equal "original", @user.avatar.read
     end
 
     it "doesn't update attachment when current one has changed" do
       @attacher.assign(fakeio("original"))
+      @attacher._promote
+
+      @user.update_avatar do
+        @attacher.assign(fakeio("new"))
+        @attacher._promote
+
+        @user.avatar_store.upload(fakeio("replaced"))
+      end
+
+      assert_equal "new", @user.avatar.read
     end
   end
 end
