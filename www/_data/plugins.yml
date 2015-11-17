@@ -76,10 +76,6 @@ Metadata:
 
 Deleting:
   -
-    name: delete_invalid
-    path: DeleteInvalid.html
-    description: Deletes files that didn't pass file validation.
-  -
     name: keep_files
     path: KeepFiles.html
     description: Allows you to keep files on the storage that would otherwise be deleted.
