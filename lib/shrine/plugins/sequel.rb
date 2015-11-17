@@ -86,6 +86,17 @@ class Shrine
           super
         end
       end
+
+      module ClassMethods
+        # Support Postgres JSON columns.
+        def uploaded_file(object, &block)
+          if object.respond_to?(:to_hash)
+            super(object.to_hash, &block)
+          else
+            super
+          end
+        end
+      end
     end
 
     register_plugin(:sequel, Sequel)

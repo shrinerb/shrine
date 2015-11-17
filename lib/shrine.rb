@@ -173,12 +173,12 @@ class Shrine
         #     json = uploaded_file.to_json #=> '{"storage":"cache","id":"...","metadata":{...}}'
         #     Shrine.uploaded_file(json) #=> #<Shrine::UploadedFile>
         def uploaded_file(object, &block)
-          case
-          when object.is_a?(String)
+          case object
+          when String
             uploaded_file(JSON.parse(object), &block)
-          when object.respond_to?(:to_hash)
-            uploaded_file(self::UploadedFile.new(object.to_hash), &block)
-          when object.is_a?(self::UploadedFile)
+          when Hash
+            uploaded_file(self::UploadedFile.new(object), &block)
+          when self::UploadedFile
             object.tap { |f| yield(f) if block_given? }
           else
             raise Error, "cannot convert #{object.inspect} to a #{self}::UploadedFile"

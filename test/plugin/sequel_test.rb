@@ -1,5 +1,6 @@
 require "test_helper"
 require "sequel"
+require "sequel/extensions/pg_json"
 
 db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
 db.create_table :users do
@@ -103,5 +104,14 @@ describe "the sequel plugin" do
     @user.destroy
 
     refute uploaded_file.exists?
+  end
+
+  it "adds support for Postgres JSON columns" do
+    @user.class.plugin :serialization, [
+      ->(value) { value },
+      ->(value) { Sequel::Postgres::JSONBHash.new(JSON.parse(value)) }
+    ], :avatar_data
+
+    @user.update(avatar: fakeio)
   end
 end
