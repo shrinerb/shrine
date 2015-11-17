@@ -108,6 +108,10 @@ Storage:
 
 Other:
   -
+    name: default_url_options
+    path: DefaultUrlOptions.html
+    description: Allows you to specify default URL options for uploaded files.
+  -
     name: direct_upload
     path: DirectUpload.html
     description: Provides a Rack endpoint convenient for direct AJAX uploads.
