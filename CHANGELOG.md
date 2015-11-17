@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add support for Sequel's Postgres JSON column support (janko-m)
+
 * Fix migration_helpers plugin not detecting when column changed (janko-m)
 
 * Add the `:public` option to S3 storage for retrieving public URLs which aren't signed (janko-m)

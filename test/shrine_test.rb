@@ -81,9 +81,11 @@ describe Shrine do
       assert_equal uploaded_file, retrieved
     end
 
-    it "accepts data as hash" do
+    it "accepts data as something that responds to #to_hash" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @uploader.class.uploaded_file(uploaded_file.data)
+      hash_like_object = Struct.new(:data) { alias to_hash data }.new
+      hash_like_object.data = uploaded_file.data
+      retrieved = @uploader.class.uploaded_file(hash_like_object)
 
       assert_equal uploaded_file, retrieved
     end
