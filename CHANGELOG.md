@@ -12,7 +12,7 @@
 
 * Add a `:host` option to the S3 storage for specifying CDNs (janko-m)
 
-* Fix having the ability to promote the same attachment multiple times with backgrounding (janko-m)
+* Don't allow same attachment to be promoted multiple times with backgrounding (janko-m)
 
 * Fix recache plugin causing an infinite loop (janko-m)
 
