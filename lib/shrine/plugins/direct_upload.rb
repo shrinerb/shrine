@@ -99,11 +99,9 @@ class Shrine
     #
     # It's encouraged that you set the `:max_size` option for the endpoint.
     # Once set, when a file that is too big is uploaded, the endpoint will
-    # automatically delete the file and return a 413 response.  However, if for
-    # whatever reason you don't want to impose a limit on filesize, you can set
-    # the option to nil:
-    #
-    #     plugin :direct_upload, max_size: nil
+    # automatically delete the file and return a 413 response. This option
+    # also works with presigned uploads, where S3 will reject files that are
+    # too big.
     #
     # ## Allowed storages
     #
@@ -134,7 +132,7 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], max_size:, presign: nil)
+      def self.configure(uploader, allowed_storages: [:cache], max_size: nil, presign: nil)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_max_size] = max_size
         uploader.opts[:direct_upload_presign] = presign
