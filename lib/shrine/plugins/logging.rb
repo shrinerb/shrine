@@ -110,6 +110,7 @@ class Shrine
           result
         end
 
+        # Determines format of logging and calls appropriate method.
         def _log(data)
           message = send("_log_message_#{opts[:logging_format]}", data)
           self.class.logger.info(message)

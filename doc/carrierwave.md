@@ -245,6 +245,23 @@ class ImageUploader < Shrine
 end
 ```
 
+#### `#size_range`
+
+In Shrine file size validations are typically done using the
+`validation_helpers` plugin:
+
+
+```rb
+class ImageUploader < Shrine
+  plugin :validation_helpers
+
+  Attacher.validate do
+    validate_min_size 0
+    validate_max_size 5*1024*1024 # 5 MB
+  end
+end
+```
+
 #### `#recreate_versions!`
 
 Shrine doesn't provide an automatic mechanism for recreating versions, because

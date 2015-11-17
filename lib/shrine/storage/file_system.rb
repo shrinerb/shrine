@@ -5,29 +5,74 @@ require "pathname"
 
 class Shrine
   module Storage
+    # The FileSystem storage handles uploads to the filesystem, and it is
+    # most commonly initialized with a "base" folder and a "subdirectory":
+    #
+    #     storage = Shrine::Storage::FileSystem.new("public", subdirectory: "uploads")
+    #     storage.url("image.jpg") #=> "/uploads/image.jpg"
+    #
+    # This storage will upload all files to "public/uploads", and the URLs
+    # of the uploaded files will start with "/uploads/*". This way you can
+    # use FileSystem for both cache and store, one having subdirectory
+    # "uploads/cache" and other "uploads/store".
+    #
+    # You can also initialize the storage just with the "base" directory, and
+    # then the FileSystem storage will generate absolute URLs to files:
+    #
+    #     storage = Shrine::Storage::FileSystem.new(Dir.tmpdir)
+    #     storage.url("image.jpg") #=> "/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/image.jpg"
+    #
+    # ## CDN
+    #
+    # It's generally a good idea to serve your files via a CDN, so an
+    # additional `:host` option can be provided:
+    #
+    #     storage = Shrine::Storage::FileSystem.new("public",
+    #       subdirectory: "uploads", host: "//abc123.cloudfront.net")
+    #     storage.url("image.jpg") #=> "//abc123.cloudfront.net/uploads/image.jpg"
+    #
+    # The `:host` option can also be used wihout `:subdirectory`, and is
+    # useful if you for example have files located on another server:
+    #
+    #     storage = Shrine::Storage::FileSystem.new("files", host: "943.23.43.1")
+    #     storage.url("image.jpg") #=> "943.23.43.1/files/image.jpg"
+    #
+    # ## Clearing cache
+    #
+    # If you're using FileSystem as cache, you will probably want to
+    # periodically delete old files which aren't used anymore. You can put
+    # the following in a periodic Rake task:
+    #
+    #     file_system = Shrine.storages[:cache]
+    #     file_system.clear!(older_than: 1.week.ago) # adjust the time
+    #
+    # ## Permissions
+    #
+    # If you want your files and folders to have certain permissions, you can
+    # pass the `:permissions` option:
+    #
+    #     Shrine::Storage::FileSystem.new("directory", permissions: 0755)
     class FileSystem
       attr_reader :directory, :subdirectory, :host, :permissions
 
-      # The `directory` is the root directory where uploaded files will be
-      # stored. In web applications this is typically the "public/" directory,
-      # to make the files available via URL.
+      # Initializes a storage for uploading to the filesystem.
       #
-      # If `:subdirectory` is given, #url will return a URL relative to
-      # `directory` (and include `:subdirectory`). So, `FileSystem.new('public',
-      # subdirectory: 'uploads')` will upload files to "public/uploads", and
-      # URLs will be "/uploads/*".
+      # :subdirectory
+      # :  The directory relative to `directory` to which files will be stored,
+      #    and it is included in the URL.
       #
-      # In applications it's common to serve files over CDN, so an additional
-      # `:host` option can be provided. This option can also be used without
-      # `:subdirectory`, if for example files are located on another server
-      # which requires an IP address.
+      # :host
+      # :  URLs will by default be relative if `:subdirectory` is set, and you
+      #    can use this option to set a CDN host (e.g. `//abc123.cloudfront.net`).
       #
-      # By default FileSystem will clean empty directories when files get
-      # deleted. However, if this puts too much load on the filesystem, it can
-      # be disabled with `clean: false`.
+      # :permissions
+      # :  The generated files and folders will have default UNIX permissions,
+      #    but if you want specific ones you can use this option (e.g. `0755`).
       #
-      # Optional folder and file permissions can be set through the
-      # `:permissions` option.
+      # :clean
+      # :  By default empty folders inside the directory are automatically
+      #    deleted, but if it happens that it causes too much load on the
+      #    filesystem, you can set this option to `false`.
       def initialize(directory, subdirectory: nil, host: nil, clean: true, permissions: nil)
         if subdirectory
           @subdirectory = Pathname(relative(subdirectory))

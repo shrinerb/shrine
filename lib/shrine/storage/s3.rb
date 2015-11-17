@@ -4,21 +4,56 @@ require "uri"
 
 class Shrine
   module Storage
+    # The S3 storage handles uploads to Amazon S3 service, and it is
+    # initialized with the following 4 required options:
+    #
+    #     Shrine::Storage::S3.new(
+    #       access_key_id: "xyz",
+    #       secret_access_key: "abc",
+    #       region: "eu-west-1",
+    #       bucket: "my-app",
+    #     )
+    #
+    # ## Prefix
+    #
+    # The `:prefix` option can be specified for uploading all files inside
+    # a specific S3 prefix (folder), which is useful when using S3 for both
+    # cache and store:
+    #
+    #     Shrine::Storage::S3.new(prefix: "cache", **s3_options)
+    #     Shrine::Storage::S3.new(prefix: "store", **s3_options)
+    #
+    # ## CDN
+    #
+    # If you're using a CDN with S3 like Amazon CloudFront, you can specify
+    # the `:host` option to have all your URLs use the CDN host:
+    #
+    #     Shrine::Storage::S3.new(host: "//abc123.cloudfront.net", **s3_options)
+    #
+    # ## Clearing cache
+    #
+    # If you're using S3 as a cache, you will probably want to periodically
+    # delete old files which aren't used anymore. S3 has a built-in way to do
+    # this, read [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
+    # for instructions.
     class S3
       attr_reader :prefix, :bucket, :s3, :host
 
-      # Example:
+      # Initializes a storage for uploading to S3.
       #
-      #     Shrine::Storage::S3.new(
-      #       access_key_id: "xyz",
-      #       secret_access_key: "abc",
-      #       region: "eu-west-1"
-      #       bucket: "my-app",
-      #       prefix: "cache",
-      #     )
+      # :access_key_id
+      # :secret_access_key
+      # :region
+      # :bucket
+      # :   Credentials required by the `aws-sdk` gem.
       #
-      # The above storage will store file into the "my-app" bucket in the
-      # "cache" directory.
+      # :prefix
+      # :   "Folder" name inside the bucket to store files into.
+      #
+      # :host
+      # :   This option is used for setting CDNs, e.g. it can be set to `//abc123.cloudfront.net`.
+      #
+      # All other options are forwarded to [`Aws::S3::Client#initialize`](http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method).
       def initialize(bucket:, prefix: nil, host: nil, **s3_options)
         @prefix = prefix
         @s3 = Aws::S3::Resource.new(**s3_options)
@@ -73,8 +108,26 @@ class Shrine
         bucket.delete_objects(delete: {objects: ids.map { |id| {key: id} }})
       end
 
-      # Returns the presigned URL to the file. If `download: true` is passed,
-      # returns a forced download link.
+      # Returns the presigned URL to the file.
+      #
+      # :download
+      # :  If set to `true`, creates a "forced download" link, which means that
+      #    the browser will never display the file and always ask the user to
+      #    download it.
+      #
+      # :public
+      # :  Creates an unsigned version of the URL (requires setting appropriate
+      #    permissions on the S3 bucket).
+      #
+      # options
+      # :  All other optione are forwarded to 
+      # If `download: true` is passed,
+      # returns a forced download link. If `public: true` is passed, it returns
+      # an unsigned S3 URL. All other options are forwarded to
+      # [`Aws::S3::Object#presigned_url`], so take a look there for the
+      # complete list of additional options.
+      #
+      # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
       def url(id, download: nil, public: nil, **options)
         if host.nil?
           options[:response_content_disposition] = "attachment" if download

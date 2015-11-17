@@ -4,9 +4,13 @@
     -
       name: Introducing Shrine
       url: http://twin.github.io/introducing-shrine
-# -
-#   title: Plugins
-#   items: []
+-
+  title: Plugins & Storages
+  items:
+    -
+      name: lotus-shrine
+      url: https://github.com/katafrakt/lotus-shrine
+
 -
   title: Projects
   items:

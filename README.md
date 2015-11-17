@@ -64,7 +64,7 @@ and we can do a lot with it:
 ```rb
 uploaded_file.url      #=> "/uploads/938kjsdf932.jpg"
 uploaded_file.read     #=> "..."
-uploaded_file.exists?  # asks underlying storage if the file exists
+uploaded_file.exists?  #=> true
 uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf>
 uploaded_file.metadata #=> {...}
 ```
@@ -74,7 +74,7 @@ To read about the metadata that is stored with the uploaded file, see the
 it.
 
 ```rb
-uploaded_file.delete # tells underlying storage to delete the file
+uploaded_file.delete
 ```
 
 ## Attachment
@@ -87,8 +87,8 @@ Firstly we need to assign the special `:cache` and `:store` storages:
 
 ```rb
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir),
-  store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads"),
+  cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
+  store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/store"),
 }
 ```
 
@@ -97,7 +97,7 @@ uploading:
 
 ```rb
 class ImageUploader < Shrine
-  # here goes your uploading logic
+  # logic for uploading images
 end
 ```
 
@@ -196,7 +196,7 @@ Shrine comes with a `direct_upload` plugin which provides an endpoint
 (implemented in [Roda]) that can be used for AJAX uploads.
 
 ```rb
-Shrine.plugin :direct_upload # Exposes a Roda endpoint
+Shrine.plugin :direct_upload # Provides a Roda endpoint
 ```
 ```rb
 Rails.application.routes.draw do
@@ -245,9 +245,9 @@ assigned and saved, an "upload" actually happens two times. First the file is
 `:store` on save.
 
 Ok, now how do we do the actual processing? Well, Shrine actually doesn't ship
-with any image processing functionality, because that is a generic problem that
-belongs in a separate gem. So, I created the [image_processing] gem which you
-can use with Shrine:
+with any file processing functionality, because that is a generic problem that
+belongs in a separate gem. If the type of files you're uploading are images, I
+created the [image_processing] gem which you can use with Shrine:
 
 ```rb
 require "image_processing/mini_magick"
@@ -274,9 +274,9 @@ storing the original file.
 
 ### Versions
 
-Often you'll want to store various thumbnails alongside your original image.
-For that you just need to load the `versions` plugin, and now in `#process`
-you can return a Hash of versions:
+If you're uploading images, often you'll want to store various thumbnails
+alongside your original image. For that you just need to load the `versions`
+plugin, and now in `#process` you can return a Hash of versions:
 
 ```rb
 require "image_processing/mini_magick"
@@ -363,14 +363,14 @@ Validations are registered by calling `Shrine::Attacher.validate`, and are best
 done with the `validation_helpers` plugin:
 
 ```rb
-class ImageUploader < Shrine
+class DocumentUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
     # Evaluated inside an instance of Shrine::Attacher.
     if record.guest?
-      validate_max_size 2*1024*1024, message: "is too large (max is 2 MB)"
-      validate_mime_type_inclusion ["image/jpg", "image/png", "image/gif"]
+      validate_max_size 10*1024*1024, message: "is too large (max is 10 MB)"
+      validate_mime_type_inclusion ["application/pdf"]
     end
   end
 end
@@ -378,9 +378,9 @@ end
 
 ```rb
 user = User.new
-user.avatar = File.open("big_image.jpg")
+user.resume = File.open("resume.pdf")
 user.valid? #=> false
-user.errors.to_hash #=> {avatar: ["is too large (max is 2 MB)"]}
+user.errors.to_hash #=> {resume: ["is too large (max is 2 MB)"]}
 ```
 
 ## Metadata
@@ -426,8 +426,8 @@ user.avatar.mime_type #=> "image/png"
 
 ### Dimensions
 
-Shrine ships with the `store_dimensions` plugin which extracts dimensions
-using the [fastimage] gem.
+If you're uploading images and you want to store dimensions, you can use the
+`store_dimensions` plugin which extracts dimensions using the [fastimage] gem.
 
 ```rb
 ImageUploader.plugin :store_dimensions
@@ -585,14 +585,14 @@ In combination with direct upload for caching, this provides a completely
 seamless user experience. First the user ansynchronosuly caches the file and
 hopefully sees a nice progress bar. After this is finishes and user submits the
 form, promoting will be kicked off into a background job, and the record will
-be saved with the cached image. If your cache is public (e.g. in the "public"
+be saved with the cached file If your cache is public (e.g. in the "public"
 folder), the end user will immediately see their uploaded file, because the URL
 will point to the cached version.
 
 In the meanwhile, what `#promote` does is it uploads the cached file `:store`,
 and writes the stored file to the column. When the record gets saved, the URL
 will switch from filesystem to S3, but the user won't even notice that
-something happened, because they will still see the same image.
+something happened, because they will still see the same file.
 
 ### Generality
 

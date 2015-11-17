@@ -20,9 +20,9 @@ class Shrine
     #       user.avatar_store.upload(avatar) # saved to the record
     #     end
     #
-    # This will get triggered _only_ if the attachment exists and is stored.
-    # The result can be anything that responds to `#to_json` and evaluates to
-    # uploaded files' data.
+    # This will get triggered _only_ if the attachment is not nil and is
+    # stored. The result can be anything that responds to `#to_json` and
+    # evaluates to uploaded files' data.
     module MigrationHelpers
       module AttachmentMethods
         def initialize(name)
