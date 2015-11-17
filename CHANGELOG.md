@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add module_include plugin for easily extending core classes for given uploader (janko-m)
+
 * Add support for Sequel's Postgres JSON column support (janko-m)
 
 * Fix migration_helpers plugin not detecting when column changed (janko-m)
