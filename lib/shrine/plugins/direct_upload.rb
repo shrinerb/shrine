@@ -179,6 +179,7 @@ class Shrine
               r.get "presign" do
                 location = SecureRandom.hex(30).to_s + r.params["extension"].to_s
                 options = {}
+                options.merge!(r.params["fields"].symbolize_keys) if r.params["fields"]
                 options[:content_length_range] = 0..max_size if max_size
                 options[:content_type] = r.params["content_type"] if r.params["content_type"]
 
