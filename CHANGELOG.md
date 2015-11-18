@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add ability to pass presign options to storages in the direct_upload plugin (janko-m)
+
 * Remove `Shrine.io!` because it was actually meant to be only for internal use (janko-m)
 
 * Remove `Shrine.delete` because of redundancy (janko-m)

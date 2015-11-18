@@ -120,16 +120,26 @@ describe "the direct_upload plugin" do
       refute_empty body.fetch("fields")
     end
 
-    it "accepts a content type" do
+    it "accepts an extension" do
+      get "/cache/presign?extension=.jpg"
+
+      assert_match /\.jpg$/, body["fields"].fetch("key")
+    end
+
+    it "applies options passed to configuration" do
+      @uploader.opts[:direct_upload_presign] = ->(r) do
+        {content_type: r.params["content_type"]}
+      end
       get "/cache/presign?content_type=image/jpeg"
 
       assert_equal "image/jpeg", body["fields"].fetch("Content-Type")
     end
 
-    it "accepts an extension" do
-      get "/cache/presign?extension=.jpg"
+    it "allows the configuration block to return nil" do
+      @uploader.opts[:direct_upload_presign] = ->(r) { nil }
+      get "/cache/presign"
 
-      assert_match /\.jpg$/, body["fields"].fetch("key")
+      assert_equal 200, last_response.status
     end
 
     it "doesn't exist if :presign wasn't set" do

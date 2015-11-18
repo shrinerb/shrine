@@ -77,20 +77,29 @@ class Shrine
     # The `url` is where the file needs to be uploaded to, and `fields` is
     # additional data that needs to be send on the upload. The `fields.key`
     # attribute is the location where the file will be uploaded to, it is
-    # generated randomly. `GET /:storage/presign` accepts additional parameters:
+    # generated randomly, but you can add an extension to it:
     #
-    # :extension
-    # : The extension of the file being uploaded (e.g ".jpg").
-    #
-    # :content_type
-    # : Sets the Content-Type header for the uploaded file on S3.
-    #
-    # Example:
-    #
-    #     GET /cache/presign?content_type=image/jpeg
     #     GET /cache/presign?extension=.png
     #
+    # If you want additional options to be passed to Storage::S3#presign, you
+    # can pass a block to `:presign` and return additional options:
     #
+    #     plugin :direct_upload, presign: ->(request) do
+    #       {
+    #         content_length_range: 0..(5*1024*1024), # limit the filesize to 5 MB
+    #         success_action_redirect: "http://example.com/webhook",
+    #       }
+    #     end
+    #
+    # The yielded object is an instance of [`Roda::RodaRequest`] (a subclass of
+    # `Rack::Request`), which allows you to pass different options depending on
+    # the request. For example, you could accept a `content_type` query
+    # parameter and add it to options:
+    #
+    #     plugin :direct_upload, presign: ->(request) do
+    #       {content_type: request.params["content_type"]} if request.params["content_type"]
+    #     end
+    #     # Now you can do `GET /cache/presign?content_type=image/jpeg`
     #
     # ## Allowed storages
     #
@@ -116,6 +125,7 @@ class Shrine
     # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
     # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
     # ["accept" attribute]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
+    # [`Roda::RodaRequest`]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
     module DirectUpload
       def self.load_dependencies(uploader, *)
         uploader.plugin :rack_file
@@ -154,7 +164,7 @@ class Shrine
             allow_storage!(storage_key)
             @uploader = shrine_class.new(storage_key.to_sym)
 
-            unless presign?
+            unless presign
               r.post ":name" do |name|
                 file = get_file
                 context = {name: name, phase: :cache}
@@ -164,10 +174,9 @@ class Shrine
             else
               r.get "presign" do
                 location = SecureRandom.hex(30).to_s + r.params["extension"].to_s
-                options = {}
-                options[:content_type] = r.params["content_type"] if r.params["content_type"]
+                options = presign.call(r) if presign.respond_to?(:call)
 
-                signature = @uploader.storage.presign(location, options)
+                signature = @uploader.storage.presign(location, options || {})
 
                 json Hash[url: signature.url, fields: signature.fields]
               end
@@ -215,7 +224,7 @@ class Shrine
           shrine_class.opts[:direct_upload_allowed_storages]
         end
 
-        def presign?
+        def presign
           shrine_class.opts[:direct_upload_presign]
         end
       end

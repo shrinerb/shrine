@@ -33,6 +33,16 @@ object, which has `#url` and `#fields`, which you could use like this:
 </form>
 ```
 
+You can also pass additional options to `#presign`:
+
+```rb
+Shrine.storages[:cache].presign(SecureRandom.hex.to_s,
+  content_length_range: 0..(5*1024*1024), # Limit of 5 MB
+  success_action_redirect: webhook_url,   # Tell S3 where to redirect
+  # ...
+)
+```
+
 ## Dynamic upload
 
 If the frontend is separate from the backend, or you want to do multiple file
@@ -63,6 +73,15 @@ presign object and returns it as JSON:
 You can use this data in a similar way as with static upload. See
 the [example app] for how multiple file upload to S3 can be done using
 [jQuery-File-Upload].
+
+If you want to pass additional options to `Storage::S3#presign`, you can pass
+a block to `:presign`:
+
+```rb
+plugin :direct_upload, presign: ->(request) do # yields a Roda request object
+  {success_action_redirect: "http://example.com/webhook"}
+end
+```
 
 ## File hash
 
