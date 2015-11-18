@@ -107,6 +107,20 @@ describe Shrine do
     end
   end
 
+  describe ".find_storage" do
+    it "finds by symbol names" do
+      assert_equal @uploader.storage, @uploader.class.find_storage(:store)
+    end
+
+    it "finds by string names" do
+      assert_equal @uploader.storage, @uploader.class.find_storage("store")
+    end
+
+    it "raises an error if storage wasn't found" do
+      assert_raises(Shrine::Error) { @uploader.class.find_storage(:foo) }
+    end
+  end
+
   describe "#initialize" do
     it "symbolizes storage key" do
       shrine = Class.new(Shrine)

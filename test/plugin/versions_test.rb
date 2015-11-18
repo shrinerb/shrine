@@ -184,6 +184,7 @@ describe "the versions plugin" do
       end
     end
 
-    assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
+    error = assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
+    assert_match /is not a valid IO object/, error.message
   end
 end

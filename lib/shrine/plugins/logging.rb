@@ -141,9 +141,12 @@ class Shrine
         # hashes.
         def count(object)
           case object
-          when Hash  then object.count
-          when Array then object.inject(0) { |sum, o| sum += count(o) }
-          else            1
+          when Hash
+            object.count
+          when Array
+            object.inject(0) { |sum, o| sum += count(o) }
+          else
+            1
           end
         end
 

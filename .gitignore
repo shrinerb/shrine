@@ -3,3 +3,4 @@ pkg/
 .env
 .sass-cache
 www/build
+coverage/
