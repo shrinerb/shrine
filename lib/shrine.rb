@@ -185,13 +185,6 @@ class Shrine
           end
         end
 
-        # Delete a Shrine::UploadedFile.
-        #
-        #     Shrine.delete(uploaded_file)
-        def delete(uploaded_file, context = {})
-          uploader_for(uploaded_file).delete(uploaded_file, context)
-        end
-
         # Checks if the object is a valid IO by checking that it responds to
         # `#read`, `#eof?`, `#rewind`, `#size` and `#close`, otherwise raises
         # Shrine::InvalidFile.
@@ -201,12 +194,6 @@ class Shrine
           end
 
           raise InvalidFile.new(io, missing_methods) if missing_methods.any?
-        end
-
-        # Instantiates the Shrine uploader instance for this file.
-        def uploader_for(uploaded_file)
-          uploaders = storages.keys.map { |key| new(key) }
-          uploaders.find { |uploader| uploader.uploaded?(uploaded_file) }
         end
       end
 
@@ -272,7 +259,7 @@ class Shrine
           uploaded_file.storage_key == storage_key.to_s
         end
 
-        # Called by `Shrine.delete`.
+        # Deletes the given uploaded file.
         def delete(uploaded_file, context = {})
           _delete(uploaded_file, context)
           uploaded_file
@@ -345,7 +332,7 @@ class Shrine
           )
         end
 
-        # Removes the file. Called by `Shrine.delete`.
+        # Removes the file. Called by #delete.
         def _delete(uploaded_file, context)
           remove(uploaded_file, context)
         end
@@ -609,9 +596,9 @@ class Shrine
           store.upload(io, context.merge(phase: phase))
         end
 
-        # Deletes the file (calls `Shrine.delete`).
+        # Deletes the file (calls `Shrine#delete`).
         def delete!(uploaded_file, phase:)
-          shrine_class.delete(uploaded_file, context.merge(phase: phase))
+          store.delete(uploaded_file, context.merge(phase: phase))
         end
 
         # Delegates to `Shrine#default_url`.

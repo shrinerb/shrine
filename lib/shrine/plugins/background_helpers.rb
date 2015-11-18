@@ -88,7 +88,7 @@ class Shrine
         end
 
         # If block is passed in, stores it to be called on deletion. Otherwise
-        # resolves data into objects and calls Shrine.delete.
+        # resolves data into objects and calls `Shrine#delete`.
         def delete(data = nil, &block)
           if block
             shrine_class.opts[:background_delete] = block
@@ -98,11 +98,11 @@ class Shrine
             record.id = record_id
 
             name, phase = data["attachment"], data["phase"]
-            shrine_class = record.send("#{name}_attacher").shrine_class
-            uploaded_file = shrine_class.uploaded_file(data["uploaded_file"])
+            attacher = record.send("#{name}_attacher")
+            uploaded_file = attacher.uploaded_file(data["uploaded_file"])
             context = {name: name.to_sym, record: record, phase: phase.to_sym}
 
-            shrine_class.delete(uploaded_file, context)
+            attacher.store.delete(uploaded_file, context)
           end
         end
       end

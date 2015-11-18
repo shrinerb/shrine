@@ -13,14 +13,6 @@ describe "multi_delete plugin" do
     refute deleted_files[0].exists?
   end
 
-  it "allows deleting multiple files at class level" do
-    uploaded_file = @uploader.upload(fakeio)
-    deleted_files = @uploader.class.delete([uploaded_file])
-
-    assert_equal [uploaded_file], deleted_files
-    refute deleted_files[0].exists?
-  end
-
   it "calls multi_delete if storage supports it" do
     @uploader.storage.expects(:multi_delete).with(["foo"])
 

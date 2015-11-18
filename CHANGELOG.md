@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove `Shrine.delete` because of redundancy (janko-m)
+
 * Add default_url_options plugin for specifiying default URL options for uploaded files (janko-m)
 
 * Add module_include plugin for easily extending core classes for given uploader (janko-m)

@@ -107,15 +107,6 @@ describe Shrine do
     end
   end
 
-  describe ".delete" do
-    it "deletes the uploaded file" do
-      uploaded_file = @uploader.upload(fakeio)
-      @uploader.class.delete(uploaded_file)
-
-      refute uploaded_file.exists?
-    end
-  end
-
   describe ".io!" do
     it "raises an error if given object is not an IO" do
       @uploader.class.io!(fakeio)

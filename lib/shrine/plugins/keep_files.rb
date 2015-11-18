@@ -26,7 +26,7 @@ class Shrine
         uploader.opts[:keep_files] << :replaced if replaced
       end
 
-      module ClassMethods
+      module InstanceMethods
         # We hook to the generic deleting, and check the appropriate phases.
         def delete(io, context)
           super unless opts[:keep_files].include?(context[:phase])

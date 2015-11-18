@@ -8,19 +8,19 @@ describe "the keep_files plugin" do
   describe ":destroyed" do
     it "keeps files which are deleted on destroy" do
       @attacher = attacher(destroyed: true)
-      uploaded_file = @attacher.assign(fakeio)
+      @attacher.set(@attacher.store.upload(fakeio))
 
       @attacher.destroy
 
-      assert uploaded_file.exists?
+      assert @attacher.get.exists?
     end
   end
 
   describe ":replaced" do
     it "keeps files which were replaced during saving" do
       @attacher = attacher(replaced: true)
-      uploaded_file = @attacher.assign(fakeio)
-      @attacher.assign(fakeio)
+      uploaded_file = @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store.upload(fakeio))
       @attacher.replace
 
       assert uploaded_file.exists?
@@ -33,29 +33,14 @@ describe "the keep_files plugin" do
     end
   end
 
-  describe ":cached" do
-    it "keeps cached files which were promoted" do
-      @attacher = attacher(cached: true)
-      cached_file = @attacher.assign(fakeio)
-      @attacher.promote(cached_file)
-
-      refute_equal cached_file, @attacher.get
-      assert cached_file.exists?
-    end
-  end
-
   it "works with background_helpers plugin" do
-    @attacher = attacher(destroyed: true, replaced: true, cached: true)
+    @attacher = attacher(destroyed: true, replaced: true)
     @attacher.shrine_class.plugin :background_helpers
     @attacher.class.delete { |data| self.class.delete(data)  }
     @attacher.class.promote { promote(get) }
 
-    cached_file = @attacher.assign(fakeio)
-    @attacher._promote
-    assert cached_file.exists?
-
-    replaced_file = @attacher.get
-    @attacher.assign(fakeio)
+    replaced_file = @attacher.set(@attacher.store.upload(fakeio))
+    @attacher.set(@attacher.store.upload(fakeio))
     @attacher.replace
     assert replaced_file.exists?
 
