@@ -23,7 +23,7 @@ upfront the fields necessary for direct S3 uploads using
 object, which has `#url` and `#fields`, which you could use like this:
 
 ```erb
-<% presign = Shrine.storages[:cache].presign(SecureRandom.hex.to_s) %>
+<% presign = Shrine.storages[:cache].presign(SecureRandom.hex) %>
 
 <form action="<%= presign.url %>" method="post" enctype="multipart/form-data">
   <input type="file" name="file">
@@ -36,7 +36,7 @@ object, which has `#url` and `#fields`, which you could use like this:
 You can also pass additional options to `#presign`:
 
 ```rb
-Shrine.storages[:cache].presign(SecureRandom.hex.to_s,
+Shrine.storages[:cache].presign(SecureRandom.hex,
   content_length_range: 0..(5*1024*1024), # Limit of 5 MB
   success_action_redirect: webhook_url,   # Tell S3 where to redirect
   # ...

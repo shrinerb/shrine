@@ -161,7 +161,7 @@ class Shrine
               end
             else
               r.get "presign" do
-                location = SecureRandom.hex(30).to_s + r.params["extension"].to_s
+                location = SecureRandom.hex(30) + r.params["extension"].to_s
                 options = presign.call(r) if presign.respond_to?(:call)
 
                 signature = @uploader.storage.presign(location, options || {})
