@@ -204,9 +204,17 @@ Rails.application.routes.draw do
   mount ImageUploader.direct_endpoint => "/attachments/images"
 end
 ```
-```sh
-$ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/avatar
-# {"id":"43kewit94.jpg","storage":"cache","metadata":{...}}
+```rb
+# POST /attachments/images/cache/avatar
+{
+  "id": "43kewit94.jpg",
+  "storage": "cache",
+  "metadata": {
+    "size": 384393,
+    "filename": "nature.jpg",
+    "mime_type": "image/jpeg"
+  }
+}
 ```
 
 There are many great JavaScript libraries for AJAX file uploads, for example
@@ -220,8 +228,10 @@ $('[type="file"]').fileupload({
 });
 ```
 
-This plugin also provides a route for direct S3 uploads. See the [example app]
-for how you can do multiple uploads directly to S3.
+This is an oversimplified implementation without any UX, it's just to show you
+how easy it is. The `direct_upload` plugin also provides a route for direct S3
+uploads, see the [example app] for how you can do multiple uploads directly to
+S3.
 
 ## Processing
 

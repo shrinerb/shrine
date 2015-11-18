@@ -19,35 +19,23 @@ class Shrine
     #
     # Note that you should mount a separate endpoint for each uploader that you
     # want to use it with. This now gives your Ruby application a
-    # `POST /attachments/images/:storage/:name` route, which accepts a "file"
-    # query parameter:
+    # `POST /attachments/images/:storage/:name` route, which accepts a `file`
+    # query parameter, and returns the uploaded file in JSON format:
     #
-    #     $ curl -F "file=@/path/to/avatar.jpg" localhost:3000/attachments/images/cache/avatar
-    #     # {"id":"43kewit94.jpg","storage":"cache","metadata":{...}}
+    #     # POST /attachments/images/cache/avatar
+    #     {
+    #       "id": "43kewit94.jpg",
+    #       "storage": "cache",
+    #       "metadata": {
+    #         "size": 384393,
+    #         "filename": "nature.jpg",
+    #         "mime_type": "image/jpeg"
+    #       }
+    #     }
     #
-    # The endpoint returns all responses in JSON format. There are many great
-    # JavaScript libraries for AJAX file uploads, so for example if we have
-    # this form:
-    #
-    #     <%= form_for @user do |f| %>
-    #       <%= f.hidden_field :avatar, value: @user.avatar_data %>
-    #       <%= f.file_field :avatar %>
-    #     <% end %>
-    #
-    # this is how we could hook up [jQuery-File-Upload] to our direct upload
-    # endpoint:
-    #
-    #     $('[type="file"]').fileupload({
-    #       url: '/attachments/images/cache/avatar',
-    #       paramName: 'file',
-    #       done: function(e, data) { $(this).prev().value(data.result) }
-    #     });
-    #
-    # Now whenever a file gets chosen, the upload will automatically start in
-    # the background. It's typically good to show a progress bar to the user,
-    # which jQuery-File-Upload [supports]. After the upload has finished, the
-    # uploaded file JSON is written to the hidden field, and will be sent on
-    # form submit.
+    # There are many great JavaScript libraries for AJAX file uploads which can
+    # be hooked up to this endpoint, [jQuery-File-Upload] being the most
+    # popular one.
     #
     # ## Presigned
     #
