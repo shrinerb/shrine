@@ -29,7 +29,7 @@ class Shrine
             options[:store] = store
           end
 
-          super
+          super(record, name, **options)
         end
       end
     end

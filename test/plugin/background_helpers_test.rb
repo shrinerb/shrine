@@ -90,5 +90,13 @@ describe "the background_helpers plugin" do
       @attacher.instance_variable_get("@fiber").resume
       refute uploaded_file.exists?
     end
+
+    it "does regular deleting if nothing was assigned" do
+      @user.update(avatar: fakeio)
+      uploaded_file = @user.avatar
+      @user.destroy
+
+      refute uploaded_file.exists?
+    end
   end
 end

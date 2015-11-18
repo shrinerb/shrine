@@ -1,5 +1,3 @@
-exit unless ARGV.select{|arg| File.exists?(arg)} == ["test/s3_test.rb"]
-
 require "test_helper"
 
 require "shrine/storage/s3"

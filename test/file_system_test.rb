@@ -182,6 +182,7 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "reestablishes directory permissions" do
+      @storage = file_system(root, permissions: 0755)
       @storage.clear!(:confirm)
       assert_permissions 0755, root
     end

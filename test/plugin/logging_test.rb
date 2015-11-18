@@ -1,5 +1,6 @@
 require "test_helper"
 require "stringio"
+require "logger"
 
 describe "the logging plugin" do
   def uploader(**options)
@@ -94,9 +95,9 @@ describe "the logging plugin" do
   end
 
   it "accepts a custom logger" do
-    @uploader = uploader(logger: :foo)
+    @uploader = uploader(logger: (logger = Logger.new(nil)))
 
-    assert_equal :foo, @uploader.class.logger
+    assert_equal logger, @uploader.class.logger
   end
 
   it "accepts model instances without an #id" do

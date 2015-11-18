@@ -132,7 +132,6 @@ describe Shrine::UploadedFile do
     uploaded_file = @uploader.class::UploadedFile.new(
       "id" => "123", "storage" => "store", "metadata" => {})
 
-    p uploaded_file
     assert_match /#<\S+ @data=\{"id"=>"123", "storage"=>"store", "metadata"=>{}\}>/, uploaded_file.inspect
   end
 

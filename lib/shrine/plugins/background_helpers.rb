@@ -137,7 +137,7 @@ class Shrine
 
             instance_exec(data, &background_delete)
           else
-            super
+            super(uploaded_file, phase: phase)
           end
         end
       end
