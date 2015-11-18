@@ -3,16 +3,14 @@ language: ruby
 sudo: false
 
 rvm:
-  - 2.1
-  - 2.2
-  - jruby-9.0.0.0
-  - rbx
+  - "2.1"
+  - "2.2"
+  - "jruby-9.0.4.0"
+  - "rbx-2.5.8"
 
 script: rake test
 
 cache: bundler
 
-addons:
-  apt:
-    packages:
-    - libmagic-dev
+env:
+  - "S3=1 RACK_ENV=development"
