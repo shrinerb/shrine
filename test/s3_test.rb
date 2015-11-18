@@ -2,10 +2,14 @@ require "test_helper"
 
 require "shrine/storage/s3"
 require "shrine/storage/linter"
-require "down"
 
-require "dotenv"
-Dotenv.load!
+require "down"
+require "securerandom"
+
+if ENV.keys.grep("S3").empty?
+  require "dotenv"
+  Dotenv.load!
+end
 
 describe Shrine::Storage::S3 do
   def s3(**options)
@@ -13,6 +17,7 @@ describe Shrine::Storage::S3 do
     options[:region]            ||= ENV["S3_REGION"]
     options[:access_key_id]     ||= ENV["S3_ACCESS_KEY_ID"]
     options[:secret_access_key] ||= ENV["S3_SECRET_ACCESS_KEY"]
+    options[:prefix]            ||= SecureRandom.hex
 
     Shrine::Storage::S3.new(**options)
   end
@@ -30,7 +35,6 @@ describe Shrine::Storage::S3 do
 
   it "passes the linter" do
     Shrine::Storage::Linter.call(s3)
-    Shrine::Storage::Linter.call(s3(prefix: "store"))
   end
 
   describe "#upload" do
@@ -86,13 +90,13 @@ describe Shrine::Storage::S3 do
       @s3 = s3(host: "http://123.cloudfront.net")
       url = @s3.url("foo")
 
-      assert_equal "http://123.cloudfront.net/foo", url
+      assert_equal "http://123.cloudfront.net/#{@s3.prefix}/foo", url
     end
 
     it "can provide a public url" do
       url = @s3.url("foo", public: true)
 
-      assert_equal "https://#{@s3.bucket.name}.s3-eu-west-1.amazonaws.com/foo", url
+      assert_equal "https://#{@s3.bucket.name}.s3-eu-west-1.amazonaws.com/#{@s3.prefix}/foo", url
     end
   end
 
@@ -101,7 +105,7 @@ describe Shrine::Storage::S3 do
       presign = @s3.presign("foo")
 
       refute_empty presign.url
-      assert_equal "foo", presign.fields["key"]
+      assert_equal "#{@s3.prefix}/foo", presign.fields["key"]
     end
 
     it "accepts additional options" do

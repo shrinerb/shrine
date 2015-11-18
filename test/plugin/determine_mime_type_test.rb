@@ -20,7 +20,7 @@ describe "the determine_mime_type plugin" do
 
       assert_equal "nature", file.read
     end
-  end unless RUBY_ENGINE == "jruby"
+  end unless RUBY_ENGINE == "jruby" || ENV["CI"]
 
   describe ":file" do
     it "determines content type from file contents" do
