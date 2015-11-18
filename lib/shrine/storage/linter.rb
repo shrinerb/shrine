@@ -47,9 +47,7 @@ class Shrine
           end
         end
 
-        begin
-          Shrine.io!(storage.open("foo.jpg"))
-        rescue Shrine::InvalidFile => error
+        if !io?(storage.open("foo.jpg"))
           error! "#open doesn't return a valid IO object"
         end
 
@@ -74,6 +72,13 @@ class Shrine
       end
 
       private
+
+      def io?(object)
+        missing_methods = IO_METHODS.reject do |m, a|
+          object.respond_to?(m) && [a.count, -1].include?(object.method(m).arity)
+        end
+        missing_methods.empty?
+      end
 
       def error!(message)
         @errors << message

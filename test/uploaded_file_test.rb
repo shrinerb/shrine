@@ -8,7 +8,7 @@ describe Shrine::UploadedFile do
   end
 
   it "is an IO" do
-    Shrine.io! @uploader.upload(fakeio)
+    assert io?(@uploader.upload(fakeio))
   end
 
   it "exposes data readers" do
@@ -50,7 +50,7 @@ describe Shrine::UploadedFile do
   it "has IO-related methods" do
     uploaded_file = @uploader.upload(fakeio("image"), location: "key")
 
-    Shrine.io!(uploaded_file.to_io)
+    assert io?(uploaded_file.to_io)
 
     assert_equal "image", uploaded_file.read
     assert_equal true, uploaded_file.eof?

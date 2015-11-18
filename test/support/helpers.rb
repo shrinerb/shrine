@@ -52,6 +52,13 @@ module TestHelpers
     def data_uri(content_type = "image/png")
       "data:#{content_type};base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
     end
+
+    def io?(object)
+      missing_methods = Shrine::IO_METHODS.reject do |m, a|
+        object.respond_to?(m) && [a.count, -1].include?(object.method(m).arity)
+      end
+      missing_methods.empty?
+    end
   end
 
   module Interactions

@@ -184,17 +184,6 @@ class Shrine
             raise Error, "cannot convert #{object.inspect} to a #{self}::UploadedFile"
           end
         end
-
-        # Checks if the object is a valid IO by checking that it responds to
-        # `#read`, `#eof?`, `#rewind`, `#size` and `#close`, otherwise raises
-        # Shrine::InvalidFile.
-        def io!(io)
-          missing_methods = IO_METHODS.reject do |m, a|
-            io.respond_to?(m) && [a.count, -1].include?(io.method(m).arity)
-          end
-
-          raise InvalidFile.new(io, missing_methods) if missing_methods.any?
-        end
       end
 
       module InstanceMethods
@@ -363,9 +352,15 @@ class Shrine
           process(io, context)
         end
 
-        # Calls `Shrine#io!`.
+        # Checks if the object is a valid IO by checking that it responds to
+        # `#read`, `#eof?`, `#rewind`, `#size` and `#close`, otherwise raises
+        # Shrine::InvalidFile.
         def _enforce_io(io)
-          self.class.io!(io)
+          missing_methods = IO_METHODS.reject do |m, a|
+            io.respond_to?(m) && [a.count, -1].include?(io.method(m).arity)
+          end
+
+          raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 
         # Generates a UID to use in location for uploaded files.

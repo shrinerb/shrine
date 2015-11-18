@@ -107,13 +107,6 @@ describe Shrine do
     end
   end
 
-  describe ".io!" do
-    it "raises an error if given object is not an IO" do
-      @uploader.class.io!(fakeio)
-      assert_raises(Shrine::InvalidFile) { @uploader.class.io!(:foo) }
-    end
-  end
-
   describe "#initialize" do
     it "symbolizes storage key" do
       shrine = Class.new(Shrine)

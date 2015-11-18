@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove `Shrine.io!` because it was actually meant to be only for internal use (janko-m)
+
 * Remove `Shrine.delete` because of redundancy (janko-m)
 
 * Add default_url_options plugin for specifiying default URL options for uploaded files (janko-m)
