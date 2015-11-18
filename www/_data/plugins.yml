@@ -30,10 +30,6 @@ Model:
     path: MigrationHelpers.html
     description: Provides a set of helper methods that are useful when doing file migrations.
   -
-    name: module_include
-    path: ModuleInclude.html
-    description: Allows easy extending of core classes for a given uploader.
-  -
     name: rack_file
     path: RackFile.html
     description: Allows you models to accept Rack uploaded file hashes as attachments.
@@ -123,3 +119,7 @@ Other:
     name: logging
     path: Logging.html
     description: Automatically logs processing, storing and deleting, with a configurable format.
+  -
+    name: module_include
+    path: ModuleInclude.html
+    description: Allows easy extending of core classes for a given uploader.
