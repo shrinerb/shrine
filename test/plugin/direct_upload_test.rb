@@ -84,16 +84,6 @@ describe "the direct_upload plugin" do
       assert_http_error 400
     end
 
-    it "refuses files which are too big" do
-      @uploader.opts[:direct_upload_max_size] = 0
-      post "/cache/avatar", file: image
-      assert_http_error 413
-
-      @uploader.opts[:direct_upload_max_size] = 5 * 1024 * 1024
-      post "/cache/avatar", file: image
-      assert_equal 200, response.status
-    end
-
     it "allows other errors to propagate" do
       @uploader.class.class_eval do
         def process(io, context)
@@ -140,13 +130,6 @@ describe "the direct_upload plugin" do
       get "/cache/presign?extension=.jpg"
 
       assert_match /\.jpg$/, body["fields"].fetch("key")
-    end
-
-    it "assigns the maximum size" do
-      @uploader.opts[:direct_upload_max_size] = 5
-      get "/cache/presign"
-
-      # can't test the correctness
     end
 
     it "doesn't exist if :presign wasn't set" do

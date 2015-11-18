@@ -8,7 +8,7 @@ class Shrine
     # The direct_upload plugin provides a Rack endpoint (implemented in [Roda])
     # which you can use to implement AJAX uploads.
     #
-    #     plugin :direct_upload, max_size: 20*1024*1024
+    #     plugin :direct_upload
     #
     # This is how you could mount the endpoint in a Rails application:
     #
@@ -90,18 +90,7 @@ class Shrine
     #     GET /cache/presign?content_type=image/jpeg
     #     GET /cache/presign?extension=.png
     #
-    # ## Constraints
     #
-    # Note that the direct upload doesn't run validations, they are only run
-    # when attached to the record. If you want to limit the MIME type of files,
-    # you could add an ["accept" attribute] to your file field. You could also
-    # add client side validations for the maximum file size.
-    #
-    # It's encouraged that you set the `:max_size` option for the endpoint.
-    # Once set, when a file that is too big is uploaded, the endpoint will
-    # automatically delete the file and return a 413 response. This option
-    # also works with presigned uploads, where S3 will reject files that are
-    # too big.
     #
     # ## Allowed storages
     #
@@ -132,9 +121,8 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], max_size: nil, presign: nil)
+      def self.configure(uploader, allowed_storages: [:cache], presign: nil, **)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
-        uploader.opts[:direct_upload_max_size] = max_size
         uploader.opts[:direct_upload_presign] = presign
       end
 
@@ -177,7 +165,6 @@ class Shrine
               r.get "presign" do
                 location = SecureRandom.hex(30).to_s + r.params["extension"].to_s
                 options = {}
-                options[:content_length_range] = 0..max_size if max_size
                 options[:content_type] = r.params["content_type"] if r.params["content_type"]
 
                 signature = @uploader.storage.presign(location, options)
@@ -204,18 +191,8 @@ class Shrine
         def get_file
           file = require_param!("file")
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
-          check_filesize!(file[:tempfile]) if max_size
 
           RackFile::UploadedFile.new(file)
-        end
-
-        # If the file is too big, deletes the file and halts the request.
-        def check_filesize!(file)
-          if file.size > max_size
-            file.delete
-            megabytes = max_size.to_f / 1024 / 1024
-            error! 413, "The file is too big (maximum size is #{megabytes} MB)."
-          end
         end
 
         # Loudly requires the param.
@@ -236,10 +213,6 @@ class Shrine
 
         def allowed_storages
           shrine_class.opts[:direct_upload_allowed_storages]
-        end
-
-        def max_size
-          shrine_class.opts[:direct_upload_max_size]
         end
 
         def presign?
