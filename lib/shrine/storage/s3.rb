@@ -105,7 +105,8 @@ class Shrine
       # This is called when multiple files are being deleted at once. Issues
       # a single MULTI DELETE command.
       def multi_delete(ids)
-        bucket.delete_objects(delete: {objects: ids.map { |id| {key: id} }})
+        objects = ids.map { |id| {key: object(id).key} }
+        bucket.delete_objects(delete: {objects: objects})
       end
 
       # Returns the presigned URL to the file.
@@ -144,7 +145,7 @@ class Shrine
       # Deletes all files from the storage (requires confirmation).
       def clear!(confirm = nil)
         raise Shrine::Confirm unless confirm == :confirm
-        @bucket.clear!
+        @bucket.object_versions(prefix: prefix).delete
       end
 
       # Returns a signature for direct uploads. Internally it calls
