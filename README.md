@@ -18,7 +18,7 @@ explains the motivation behind Shrine.
 gem "shrine"
 ```
 
-Shrine has been tested on MRI 2.1, MRI 2.2 and JRuby.
+Shrine has been tested on MRI 2.1, MRI 2.2, JRuby and Rubinius.
 
 ## Basics
 
