@@ -79,21 +79,21 @@ class Shrine
 
       module InstanceMethods
         def store(io, context = {})
-          log("store", context) { super }
+          log("store", io, context) { super }
         end
 
-        def delete(uploaded_file, context = {})
-          log("delete", context) { super }
+        def delete(io, context = {})
+          log("delete", io, context) { super }
         end
 
         private
 
         def processed(io, context = {})
-          log("process", context) { super }
+          log("process", io, context) { super }
         end
 
         # Collects the data and sends it for logging.
-        def log(action, context)
+        def log(action, io, context)
           result, duration = benchmark { yield }
 
           _log(
@@ -103,7 +103,7 @@ class Shrine
             attachment:   context[:name],
             record_class: (context[:record].class if context[:record]),
             record_id:    (context[:record].id if context[:record].respond_to?(:id)),
-            files:        count(result),
+            files:        count(io),
             duration:     ("%.2f" % duration).to_f,
           ) unless result.nil?
 

@@ -30,16 +30,15 @@ describe "the logging plugin" do
 
     refute_match /PROCESS/, stdout
 
-    @uploader.class.plugin :versions, names: [:original, :reverse]
     @uploader.singleton_class.class_eval do
       def process(io, context = {})
-        {original: io, reverse: FakeIO.new(io.read.reverse)}
+        FakeIO.new(io.read.reverse)
       end
     end
 
     stdout = capture { @uploader.upload(fakeio) }
 
-    assert_match /PROCESS \S+ 2 files \(0.0s\)$/, stdout
+    assert_match /PROCESS \S+ 1 file \(0.0s\)$/, stdout
   end
 
   it "logs storing" do
