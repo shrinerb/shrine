@@ -130,10 +130,10 @@ methods to our User. This is what's happening:
 ```rb
 Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
 Shrine[:avatar].class #=> Shrine::Attachment
-Shrine[:avatar].instance_methods #=> [:avatar=, :avatar, :avatar_url, ...]
+Shrine[:avatar].instance_methods #=> [:avatar_attacher, :avatar=, :avatar, :avatar_url]
 
 Shrine[:document] #=> #<Shrine::Attachment(document)>
-Shrine[:document].instance_methods #=> [:document=, :document, :document_url, ...]
+Shrine[:document].instance_methods #=> [:document_attacher, :document=, :document, :document_url]
 
 # If you prefer to be more explicit, you can use the expanded forms
 Shrine.attachment(:avatar)
