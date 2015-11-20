@@ -85,16 +85,12 @@ class Shrine
           record.reload
           super
         end
-      end
 
-      module ClassMethods
-        # Support Postgres JSON columns.
-        def uploaded_file(object, &block)
-          if object.respond_to?(:to_hash)
-            super(object.to_hash, &block)
-          else
-            super
-          end
+        # Support for Postgres JSON columns.
+        def read
+          value = super
+          value = value.to_hash if value.respond_to?(:to_hash)
+          value
         end
       end
     end
