@@ -121,12 +121,7 @@ user = User.new
 user.avatar = File.open("avatar.jpg") # uploads the file to `:cache`
 user.avatar      #=> #<Shrine::UploadedFile>
 user.avatar_url  #=> "/uploads/9260ea09d8effd.jpg"
-user.avatar_data #=>
-# {
-#   "storage"  => "cache",
-#   "id"       => "9260ea09d8effd.jpg",
-#   "metadata" => {...},
-# }
+user.avatar_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
 ```
 
 The attachment module has added `#avatar`, `#avatar=` and `#avatar_url`
