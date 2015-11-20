@@ -86,6 +86,8 @@ records. In Shrine we do this by generating and including "attachment" modules.
 Firstly we need to assign the special `:cache` and `:store` storages:
 
 ```rb
+require "shrine/storage/file_system"
+
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
   store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/store"),
