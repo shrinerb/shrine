@@ -6,17 +6,17 @@ require "shrine/storage/linter"
 require "down"
 require "securerandom"
 
-if ENV.keys.grep("S3").empty?
+if ENV.keys.grep(/S3_/).empty?
   require "dotenv"
   Dotenv.load!
 end
 
 describe Shrine::Storage::S3 do
   def s3(**options)
-    options[:bucket]            ||= ENV["S3_BUCKET"]
-    options[:region]            ||= ENV["S3_REGION"]
-    options[:access_key_id]     ||= ENV["S3_ACCESS_KEY_ID"]
-    options[:secret_access_key] ||= ENV["S3_SECRET_ACCESS_KEY"]
+    options[:bucket]            ||= ENV.fetch("S3_BUCKET")
+    options[:region]            ||= ENV.fetch("S3_REGION")
+    options[:access_key_id]     ||= ENV.fetch("S3_ACCESS_KEY_ID")
+    options[:secret_access_key] ||= ENV.fetch("S3_SECRET_ACCESS_KEY")
     options[:prefix]            ||= SecureRandom.hex
 
     Shrine::Storage::S3.new(**options)
