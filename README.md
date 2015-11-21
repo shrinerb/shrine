@@ -129,7 +129,7 @@ methods to our User. This is what's happening:
 
 ```rb
 Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
-Shrine[:avatar].class #=> Shrine::Attachment
+Shrine[:avatar].is_a?(Module) #=> true
 Shrine[:avatar].instance_methods #=> [:avatar=, :avatar, :avatar_url, :avatar_attacher]
 
 Shrine[:document] #=> #<Shrine::Attachment(document)>
