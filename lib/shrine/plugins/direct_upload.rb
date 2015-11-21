@@ -184,7 +184,7 @@ class Shrine
         end
 
         # Returns the Rack file wrapped in an IO-like object. If "file" is
-        # missing or is too big, the request is halted.
+        # missing, the request is halted.
         def get_file
           file = require_param!("file")
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
