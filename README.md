@@ -86,6 +86,8 @@ records. In Shrine we do this by generating and including "attachment" modules.
 Firstly we need to assign the special `:cache` and `:store` storages:
 
 ```rb
+require "shrine/storage/file_system"
+
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
   store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/store"),
@@ -117,26 +119,35 @@ Now our model has gained special methods for attaching avatars:
 ```rb
 user = User.new
 user.avatar = File.open("avatar.jpg") # uploads the file to `:cache`
-user.avatar      #=> #<Shrine::UploadedFile>
-user.avatar_url  #=> "/uploads/9260ea09d8effd.jpg"
-user.avatar_data #=>
-# {
-#   "storage"  => "cache",
-#   "id"       => "9260ea09d8effd.jpg",
-#   "metadata" => {...},
-# }
+
+user.avatar
+#=> #<Shrine::UploadedFile>
+
+user.avatar_url
+#=> "/uploads/9260ea09d8effd.jpg"
+
+user.avatar_data
+#=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
 ```
 
 The attachment module has added `#avatar`, `#avatar=` and `#avatar_url`
 methods to our User. This is what's happening:
 
 ```rb
-Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
-Shrine[:avatar].class #=> Module
-Shrine[:avatar].instance_methods #=> [:avatar=, :avatar, :avatar_url, ...]
+Shrine[:avatar]
+#=> #<Shrine::Attachment(avatar)>
 
-Shrine[:document] #=> #<Shrine::Attachment(document)>
-Shrine[:document].instance_methods #=> [:document=, :document, :document_url, ...]
+Shrine[:avatar].class
+#=> Shrine::Attachment
+
+Shrine[:avatar].instance_methods
+#=> [:avatar_attacher, :avatar=, :avatar, :avatar_url]
+
+Shrine[:document]
+#=> #<Shrine::Attachment(document)>
+
+Shrine[:document].instance_methods
+#=> [:document_attacher, :document=, :document, :document_url]
 
 # If you prefer to be more explicit, you can use the expanded forms
 Shrine.attachment(:avatar)
