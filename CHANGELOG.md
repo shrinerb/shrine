@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `(before|around|after)_upload` to the hooks plugin (janko-m)
+
 * Fix `S3#multi_delete` and `S3#clear!` not using the prefix (janko-m)
 
 * Add ability to pass presign options to storages in the direct_upload plugin (janko-m)

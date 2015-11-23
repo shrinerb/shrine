@@ -16,20 +16,23 @@ class Shrine
     #       end
     #     end
     #
-    # Each hook will be called with 2 arguments, `io` and `context`.  It's
-    # generally good to always call super when overriding a hook, especially if
-    # you're using inheritance with your uploaders.
+    # Each hook will be called with 2 arguments, `io` and `context`. You should
+    # always call `super` when overriding a hook, as other plugins may be using
+    # hooks internally, and without `super` they wouldn't get executed.
     #
     # Shrine calls hooks in the following order when uploading a file:
     #
-    # * `around_process`
-    #     * `before_process`
-    #     * PROCESS
-    #     * `after_process`
-    # * `around_store`
-    #     * `before_store`
-    #     * STORE
-    #     * `after_store`
+    # * `around_upload`
+    #     * `before_upload`
+    #     * `around_process`
+    #         * `before_process`
+    #         * PROCESS
+    #         * `after_process`
+    #     * `around_store`
+    #         * `before_store`
+    #         * STORE
+    #         * `after_store`
+    #     * `after_upload`
     #
     # Shrine calls hooks in the following order when deleting a file:
     #
@@ -59,6 +62,25 @@ class Shrine
     # existing keys.
     module Hooks
       module InstanceMethods
+        def upload(io, context = {})
+          result = nil
+          around_upload(io, context) { result = super }
+          result
+        end
+
+        def around_upload(*args)
+          before_upload(*args)
+          yield
+          after_upload(*args)
+        end
+
+        def before_upload(*)
+        end
+
+        def after_upload(*)
+        end
+
+
         def processed(io, context)
           result = nil
           around_process(io, context) { result = super }
