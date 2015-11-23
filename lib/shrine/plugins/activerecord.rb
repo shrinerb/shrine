@@ -14,9 +14,16 @@ class Shrine
     # * `after_commit on: [:create, :update]` -- Promotes the attachment, deletes replaced ones.
     # * `after_commit on: [:destroy]` -- Deletes the attachment.
     #
-    # Note that if your tests are wrapped in transactions, the `after_commit`
-    # callbacks won't get called, so in order to test uploading you should first
-    # disable these transactions for those tests.
+    # Note that ActiveRecord versions 3.x and 4.x have errors automatically
+    # silenced in hooks, which can make debugging more difficult, so it's
+    # recommended that you enable errors:
+    #
+    #     # This is the default in ActiveRecord 5
+    #     ActiveRecord::Base.raise_in_transactional_callbacks = true
+    #
+    # Also note that if your tests are wrapped in transactions, the
+    # `after_commit` callbacks won't get called, so in order to test uploading
+    # you should first disable these transactions for those tests.
     #
     # If you want to put some parts of this lifecycle into a background job, see
     # the background_helpers plugin.
