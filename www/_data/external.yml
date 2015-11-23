@@ -15,5 +15,8 @@
   title: Projects
   items:
     -
-      name: Example app
+      name: Roda example app (official)
       url: https://github.com/janko-m/shrine-example
+    -
+      name: Rails example app
+      url: https://github.com/erikdahlstrand/shrine-rails-example
