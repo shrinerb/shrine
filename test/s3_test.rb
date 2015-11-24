@@ -6,12 +6,10 @@ require "shrine/storage/linter"
 require "down"
 require "securerandom"
 
-if ENV.keys.grep(/S3_/).empty?
+describe Shrine::Storage::S3 do
   require "dotenv"
   Dotenv.load!
-end
 
-describe Shrine::Storage::S3 do
   def s3(**options)
     options[:bucket]            ||= ENV.fetch("S3_BUCKET")
     options[:region]            ||= ENV.fetch("S3_REGION")
@@ -34,7 +32,7 @@ describe Shrine::Storage::S3 do
   end
 
   it "passes the linter" do
-    Shrine::Storage::Linter.call(s3)
+    Shrine::Storage::Linter.call(@s3)
   end
 
   describe "#upload" do
@@ -114,4 +112,4 @@ describe Shrine::Storage::S3 do
       assert_equal "image/jpeg", presign.fields["Content-Type"]
     end
   end
-end
+end unless ENV["CI"]
