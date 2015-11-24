@@ -61,6 +61,12 @@ describe Shrine::Storage::FileSystem do
       assert_equal "image", input.read
     end
 
+    it "copies full file content" do
+      @storage.upload(input = fakeio("A" * 20_000), "foo.jpg")
+
+      assert_equal 20_000, @storage.open("foo.jpg").size
+   end
+
     it "sets file permissions" do
       @storage = file_system(root, permissions: 0755)
       @storage.upload(fakeio, "foo.jpg")
