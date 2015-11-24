@@ -22,7 +22,7 @@ class Shrine
           basename = "#{context[:version]}-#{basename}" if context[:version]
           original = dirname + slash + basename
 
-          [type, id, name, original].compact.join("/")
+          File.join(*[type, id, name, original].compact.map(&:to_s))
         end
       end
     end
