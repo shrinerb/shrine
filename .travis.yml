@@ -8,7 +8,7 @@ rvm:
   - "jruby-9.0.4.0"
   - "rbx-2.5.8"
 
-script: rake test
+script: bundle exec rake test
 
 cache: bundler
 
