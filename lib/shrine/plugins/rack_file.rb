@@ -26,7 +26,7 @@ class Shrine
         # hash in an IO-like object.
         def assign(value)
           if value.is_a?(Hash) && value.key?(:tempfile)
-            super(UploadedFile.new(value))
+            assign(UploadedFile.new(value))
           else
             super
           end

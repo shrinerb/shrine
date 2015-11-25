@@ -102,7 +102,7 @@ class Shrine
         def uploaded_file(object, &block)
           if object.is_a?(Hash) && !object.key?("storage")
             versions(object).inject({}) do |result, (name, data)|
-              result.update(name.to_sym => super(data, &block))
+              result.update(name.to_sym => uploaded_file(data, &block))
             end
           else
             super
@@ -114,7 +114,7 @@ class Shrine
         # Checks whether all versions are uploaded by this uploader.
         def uploaded?(uploaded_file)
           if (hash = uploaded_file).is_a?(Hash)
-            hash.all? { |name, version| super(version) }
+            hash.all? { |name, version| uploaded?(version) }
           else
             super
           end
@@ -129,7 +129,7 @@ class Shrine
         def _store(io, context)
           if (hash = io).is_a?(Hash)
             self.class.versions!(hash).inject({}) do |result, (name, version)|
-              result.update(name => super(version, version: name, **context))
+              result.update(name => _store(version, version: name, **context))
             end
           else
             super
@@ -140,7 +140,7 @@ class Shrine
         # capabilities.
         def _delete(uploaded_file, context)
           if (versions = uploaded_file).is_a?(Hash)
-            super(versions.values, context)
+            _delete(versions.values, context)
             versions
           else
             super

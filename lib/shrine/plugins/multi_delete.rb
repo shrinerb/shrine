@@ -24,7 +24,7 @@ class Shrine
             if storage.respond_to?(:multi_delete)
               storage.multi_delete(uploaded_file.map(&:id))
             else
-              uploaded_file.map { |file| super(file, context) }
+              uploaded_file.map { |file| _delete(file, context) }
             end
           else
             super
