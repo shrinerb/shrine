@@ -30,6 +30,10 @@ Model:
     path: MigrationHelpers.html
     description: Provides a set of helper methods that are useful when doing file migrations.
   -
+    name: parsed_json
+    path: ParsedJson.html
+    description: Allows assigning cached files as hashes/arrays (on top of JSON strings).
+  -
     name: rack_file
     path: RackFile.html
     description: Allows you models to accept Rack uploaded file hashes as attachments.

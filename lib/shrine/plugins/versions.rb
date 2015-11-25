@@ -90,14 +90,12 @@ class Shrine
 
         # Asserts that the hash doesn't contain any unknown versions.
         def versions!(hash)
-          hash.select do |name, version|
-            version?(name) or raise Error, "unknown version: #{name.inspect}"
-          end
+          hash.select { |name, _| version?(name) or raise Error, "unknown version: #{name.inspect}" }
         end
 
         # Filters the hash to contain only the registered versions.
         def versions(hash)
-          hash.select { |name, version| version?(name) }
+          hash.select { |name, _| version?(name) }
         end
 
         # Converts a hash of data into a hash of versions.

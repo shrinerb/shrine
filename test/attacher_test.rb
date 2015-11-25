@@ -39,13 +39,6 @@ describe Shrine::Attacher do
       assert_equal uploaded_file, @attacher.get
     end
 
-    it "accepts already uploaded files via a Hash of data" do
-      uploaded_file = @attacher.assign(fakeio)
-      @attacher.assign(uploaded_file.data)
-
-      assert_equal uploaded_file, @attacher.get
-    end
-
     it "allows setting nil" do
       @attacher.assign(fakeio)
       @attacher.assign(nil)

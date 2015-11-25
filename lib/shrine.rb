@@ -466,7 +466,7 @@ class Shrine
         # file (e.g. when it persisted after validation errors).
         # Otherwise it assumes that it's an IO object and caches it.
         def assign(value)
-          if value.is_a?(String) || value.is_a?(Hash)
+          if value.is_a?(String)
             assign_cached(value) unless value == ""
           else
             uploaded_file = cache!(value, phase: :cache) if value

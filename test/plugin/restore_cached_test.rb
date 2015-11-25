@@ -48,7 +48,7 @@ describe "the restore_cached plugin" do
     original.metadata["size"] = 244356859
     thumb.metadata["size"] = 349832598345
 
-    cached = @attacher.assign("original" => original.data, "thumb" => thumb.data)
+    cached = @attacher.assign({"original" => original.data, "thumb" => thumb.data}.to_json)
 
     assert_equal 8, cached[:original].metadata["size"]
     assert_equal 5, cached[:thumb].metadata["size"]

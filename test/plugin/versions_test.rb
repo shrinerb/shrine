@@ -143,8 +143,8 @@ describe "the versions plugin" do
   end
 
   describe "Attacher" do
-    it "returns a hash of versions" do
-      @attacher.set(thumb: @uploader.upload(fakeio))
+    it "enables assiging uploaded versions" do
+      @attacher.assign({thumb: @attacher.cache.upload(fakeio)}.to_json)
 
       assert_kind_of Shrine::UploadedFile, @attacher.get.fetch(:thumb)
     end
@@ -165,7 +165,8 @@ describe "the versions plugin" do
     end
 
     it "promotes versions successfully" do
-      @attacher.set(thumb: @uploader.upload(fakeio))
+      @attacher.set(thumb: @attacher.cache.upload(fakeio))
+      @attacher._promote
 
       assert @attacher.store.uploaded?(@attacher.get[:thumb])
     end

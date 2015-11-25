@@ -1,5 +1,7 @@
 ## HEAD
 
+* Extract assigning cached files by parsed JSON into a parsed_json plugin (janko-m)
+
 * Add `(before|around|after)_upload` to the hooks plugin (janko-m)
 
 * Fix `S3#multi_delete` and `S3#clear!` not using the prefix (janko-m)
