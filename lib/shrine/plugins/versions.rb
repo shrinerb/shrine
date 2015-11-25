@@ -1,9 +1,14 @@
 class Shrine
   module Plugins
     # The versions plugin enables your uploader to deal with versions. To
-    # generate versions, you simply return a hash of versions in `Shrine#process`:
+    # generate versions, you simply return a hash of versions in `Shrine#process`.
+    # Here is an example of processing image thumbnails using the
+    # [image_processing] gem:
+    #
+    #     require "image_processing/mini_magick"
     #
     #     class ImageUploader < Shrine
+    #       include ImageProcessing::MiniMagick
     #       plugin :versions, names: [:large, :medium, :small]
     #
     #       def process(io, context)
@@ -20,13 +25,19 @@ class Shrine
     # Now when you access the attachment through the model, a hash of uploaded
     # files will be returned:
     #
+    #     JSON.parse(user.avatar_data) #=>
+    #     # {
+    #     #   "large"  => {"id" => "lg043.jpg", "storage" => "store", "metadata" => {...}},
+    #     #   "medium" => {"id" => "kd9fk.jpg", "storage" => "store", "metadata" => {...}},
+    #     #   "small"  => {"id" => "932fl.jpg", "storage" => "store", "metadata" => {...}},
+    #     # }
+    #
     #     user.avatar #=>
     #     # {
-    #     #   large:  #<Shrine::UploadedFile>,
-    #     #   medium: #<Shrine::UploadedFile>,
-    #     #   small:  #<Shrine::UploadedFile>,
+    #     #   :large =>  #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
+    #     #   :medium => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
+    #     #   :small =>  #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
     #     # }
-    #     user.avatar.class #=> Hash
     #
     #     # With the store_dimensions plugin
     #     user.avatar[:large].width  #=> 700

@@ -314,12 +314,6 @@ Now when you access the stored attachment, a Hash of versions will be returned
 instead:
 
 ```rb
-user.avatar #=>
-# {
-#   large:  #<Shrine::UploadedFile>,
-#   medium: #<Shrine::UploadedFile>,
-#   small:  #<Shrine::UploadedFile>,
-# }
 user.avatar.class #=> Hash
 
 # With the store_dimensions plugin
