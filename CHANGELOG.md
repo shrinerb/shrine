@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix keep_files plugin requiring context for deleting files (janko-m)
+
 * Extract assigning cached files by parsed JSON into a parsed_json plugin (janko-m)
 
 * Add `(before|around|after)_upload` to the hooks plugin (janko-m)

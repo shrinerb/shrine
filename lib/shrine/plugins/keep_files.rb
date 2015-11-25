@@ -28,7 +28,7 @@ class Shrine
 
       module InstanceMethods
         # We hook to the generic deleting, and check the appropriate phases.
-        def delete(io, context)
+        def delete(io, context = {})
           super unless opts[:keep_files].include?(context[:phase])
         end
       end
