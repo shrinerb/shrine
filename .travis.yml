@@ -21,3 +21,8 @@ cache: bundler
 
 env:
   - "S3=1 RACK_ENV=development"
+
+addons:
+  apt:
+    packages:
+      - libtk8.5
