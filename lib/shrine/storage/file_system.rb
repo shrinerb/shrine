@@ -176,7 +176,7 @@ class Shrine
 
       # Returns the full path to the file.
       def path(id)
-        directory.join(relative(id))
+        directory.join(id)
       end
 
       # Cleans all empty subdirectories up the hierarchy.

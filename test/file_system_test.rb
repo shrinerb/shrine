@@ -213,10 +213,10 @@ describe Shrine::Storage::FileSystem do
 
   it "accepts absolute pathnames" do
     @storage = file_system(root, subdirectory: "/uploads")
-    @storage.upload(fakeio, "/foo.jpg")
+    @storage.upload(fakeio, "foo.jpg")
 
     assert_equal "tmp/uploads", @storage.directory.to_s
-    assert_equal "tmp/uploads/foo.jpg", @storage.open("/foo.jpg").path
+    assert_equal "tmp/uploads/foo.jpg", @storage.open("foo.jpg").path
   end
 
   def assert_permissions(expected, path)
