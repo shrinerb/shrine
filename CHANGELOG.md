@@ -1,5 +1,7 @@
 ## HEAD
 
+* Improve Windows compatibility in the FileSystem storage (janko-m)
+
 * Remove the ability for FileSystem storage to accept IDs starting with a slash (janko-m)
 
 * Fix keep_files plugin requiring context for deleting files (janko-m)
