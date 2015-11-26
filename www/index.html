@@ -5,7 +5,7 @@
   <div class="container">
     <div>
       <h1>
-        <span>{{ site.title }}<!-- ({{ site.data.versions | first | first }})--></span>
+        <span>{{ site.title }} (v{{ site.data.versions[0][0].name }})</span>
         <a href="https://github.com/janko-m/shrine">
           <svg class="icon" viewBox="0 0 1024 1024" width="24" height="24">
             <title>github</title>
@@ -72,21 +72,21 @@
         {% endfor %}
     </section>
 
-    <!-- <section> -->
-    <!--   <h2>Release notes</h2> -->
+    <section>
+      <h2>Release notes</h2>
 
-    <!--   <ul> -->
-    <!--     {% for major in site.data.versions %} -->
-    <!--     <li> -->
-    <!--       {% for version in major %} -->
-    <!--       <a href="http://{{ site.url }}/rdoc/files/doc/release_notes/{{ version }}.md"> -->
-    <!--         {{ version }} -->
-    <!--       </a> {% unless forloop.last %}|{% endunless %} -->
-    <!--       {% endfor %} -->
-    <!--     </li> -->
-    <!--     {% endfor %} -->
-    <!--   </ul> -->
-    <!-- </section> -->
+      <ul>
+        {% for major in site.data.versions %}
+        <li>
+          {% for version in major %}
+          <a href="http://{{ site.url }}/rdoc/files/doc/release_notes/{{ version.path }}">
+            {{ version.name }}
+          </a> {% unless forloop.last %}|{% endunless %}
+          {% endfor %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
 
     <section>
       <h2>External</h2>
