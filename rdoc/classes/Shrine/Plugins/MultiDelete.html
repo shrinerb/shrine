@@ -45,9 +45,9 @@
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">multi_delete</span></pre>
             
             <p>This plugin allows you pass an array of files to
-            <code>Shrine.delete</code>.</p>
+            <code>Shrine#delete</code>.</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">delete</span>([<span class="ruby-identifier">file1</span>, <span class="ruby-identifier">file2</span>, <span class="ruby-identifier">file3</span>])</pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">storage</span>).<span class="ruby-identifier">delete</span>([<span class="ruby-identifier">file1</span>, <span class="ruby-identifier">file2</span>, <span class="ruby-identifier">file3</span>])</pre>
             
             <p>Now if you&#39;re using <a href="../Storage/S3.html">Storage::S3</a>,
             deleting an array of files will issue a single HTTP request. Some other

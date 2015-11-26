@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::DeleteInvalid</title>
+    <title>Shrine::Plugins::ParsedJson</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::DeleteInvalid
+          Shrine::Plugins::ParsedJson
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../files/lib/shrine/plugins/delete_invalid_rb.html">lib/shrine/plugins/delete_invalid.rb</a>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/parsed_json_rb.html">lib/shrine/plugins/parsed_json.rb</a>
           </li>
         </ol>
       </div>
@@ -39,22 +39,18 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The delete_invalid plugin immediately deletes the assigned attachment if it
-            failed validation.</p>
+            <p>The parsed_json plugin is suitable for the case when your framework is
+            automatically parsing JSON query parameters, allowing you to assign cached
+            files with hashes/arrays.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_invalid</span></pre>
-            
-            <p>By default an attachment is always cached before it&#39;s validated. This
-            way the attachment will persist when the form is resubmitted, which is
-            consistent with the other fields in the form. However, if this is a
-            concern, you can load this plugin.</p>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">parsed_json</span></pre>
           </div>
           <div id='context'>
           </div>
           <div id='class-list'>
             <h2>Classes and Modules</h2>
             <ol>
-              <li><a target="docwin" href="DeleteInvalid/AttacherMethods.html">Shrine::Plugins::DeleteInvalid::AttacherMethods</a></li>
+              <li><a target="docwin" href="ParsedJson/AttacherMethods.html">Shrine::Plugins::ParsedJson::AttacherMethods</a></li>
             </ol>
           </div>
           <div id='section'>

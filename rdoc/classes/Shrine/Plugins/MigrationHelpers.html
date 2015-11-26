@@ -55,7 +55,7 @@
             
             <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_avatar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">avatar</span>) <span class="ruby-comment"># saved to the record</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>This will get triggered <em>only</em> if the attachment exists and is
+            <p>This will get triggered <em>only</em> if the attachment is not nil and is
             stored. The result can be anything that responds to <code>#to_json</code>
             and evaluates to uploaded files&#39; data.</p>
           </div>

@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2015-10-28 22:43:47 +0100</span>
+          <span class='datetime'>2015-11-26 03:11:44 +0100</span>
         </div>
       </div>
       <div id='content'>
@@ -66,7 +66,11 @@
             object, which has <code>#url</code> and <code>#fields</code>, which you
             could use like this:</p>
             
-            <pre>&lt;% presign = Shrine.storages[:cache].presign(SecureRandom.hex.to_s) %&gt;&#x000A;&lt;form action=&quot;&lt;%= presign.url %&gt;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;&#x000A;  &lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;&#x000A;  &lt;% presign.fields.each do |name, value| %&gt;&#x000A;    &lt;input type=&quot;hidden&quot; name=&quot;&lt;%= name %&gt;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x000A;  &lt;% end %&gt;&#x000A;&lt;/form&gt;</pre>
+            <pre>&lt;% presign = Shrine.storages[:cache].presign(SecureRandom.hex) %&gt;&#x000A;&lt;form action=&quot;&lt;%= presign.url %&gt;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;&#x000A;  &lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;&#x000A;  &lt;% presign.fields.each do |name, value| %&gt;&#x000A;    &lt;input type=&quot;hidden&quot; name=&quot;&lt;%= name %&gt;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x000A;  &lt;% end %&gt;&#x000A;&lt;/form&gt;</pre>
+            
+            <p>You can also pass additional options to <code>#presign</code>:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>].<span class="ruby-identifier">presign</span>(<span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span>,&#x000A;  <span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>), <span class="ruby-comment"># Limit of 5 MB</span>&#x000A;  <span class="ruby-identifier">success_action_redirect</span><span class="ruby-operator">:</span> <span class="ruby-identifier">webhook_url</span>,   <span class="ruby-comment"># Tell S3 where to redirect</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;)</pre>
             
             <h2 id="label-Dynamic+upload">Dynamic upload<span><a href="#label-Dynamic+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -85,6 +89,11 @@
             href="https://github.com/janko-m/shrine-example">example app</a> for how
             multiple file upload to S3 can be done using <a
             href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>.</p>
+            
+            <p>If you want to pass additional options to <code>Storage::S3#presign</code>,
+            you can pass a block to <code>:presign</code>:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span> <span class="ruby-comment"># yields a Roda request object</span>&#x000A;  {<span class="ruby-identifier">success_action_redirect</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://example.com/webhook&quot;</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-File+hash">File hash<span><a href="#label-File+hash">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

@@ -55,7 +55,13 @@
             <p><code>after_commit on: [:destroy]</code> – Deletes the attachment.</p>
             </li></ul>
             
-            <p>Note that if your tests are wrapped in transactions, the
+            <p>Note that ActiveRecord versions 3.x and 4.x have errors automatically
+            silenced in hooks, which can make debugging more difficult, so it&#39;s
+            recommended that you enable errors:</p>
+            
+            <pre class="ruby"><span class="ruby-comment"># This is the default in ActiveRecord 5</span>&#x000A;<span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">raise_in_transactional_callbacks</span> = <span class="ruby-keyword">true</span></pre>
+            
+            <p>Also note that if your tests are wrapped in transactions, the
             <code>after_commit</code> callbacks won&#39;t get called, so in order to
             test uploading you should first disable these transactions for those tests.</p>
             

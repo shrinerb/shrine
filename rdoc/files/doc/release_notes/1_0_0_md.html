@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>1.0.0.md</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>1.0.0.md</h1>
+        <div class='paths'>
+          doc/release_notes/1.0.0.md
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>2015-11-26 18:33:07 +0100</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The <code>delete_invalid</code> plugin was removed, because it was unstable
+            since next  form submission would cause errors of trying to delete the
+            cached file which  was already deleted.</p>
+            </li><li>
+            <p>The callback code has been changed, which means that any external ORM
+            plugins  should be updated (<code>sequel</code> and
+            <code>activerecord</code> plugins which ship with  <a
+            href="../../../classes/Shrine.html">Shrine</a> have been updated and
+            continue to work).</p>
+            </li><li>
+            <p>The <code>:max_size</code> option was removed from
+            <code>direct_upload</code> plugin. It was  redundant since it can still be
+            bypassed by uploading the file without the  plugin, the proper solution is
+            limiting the request body size in  (nginx/apache), or using the
+            <code>hooks</code> plugin to raise an error when file is  too big. For
+            presigned uploads you should limit the filesize by passing a  block to
+            <code>:presign</code>.</p>
+            </li><li>
+            <p>The <code>direct_upload</code> doesn&#39;t detect the
+            <code>content_type</code> query parameter anymore  with presigned uploads,
+            instead it should be implemented directly by passing  a block to
+            <code>:presign</code>.</p>
+            </li><li>
+            <p>The <code>Shrine.delete</code> method has been removed, as it was
+            redundant, instead  <code>Shrine#delete</code> should always be used.</p>
+            </li><li>
+            <p>The <code>Shrine.io!</code> method has been removed, as it was meant for
+            internal use  only.</p>
+            </li><li>
+            <p>Assigning cached files with parsed JSON hashes is now extracted into a 
+            <code>parsed_json</code> plugin, so now if your web framework parses JSON
+            query  parameters you should load this plugin.</p>
+            </li></ul>
+            
+            <h1 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>A <code>rack_file</code> plugin has been added, which gives models the
+            ability to accept  Rack&#39;s uploaded file hashes (useful in non-Rails web
+            frameworks):</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">rack_file</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">MyUploader</span>[:<span class="ruby-identifier">resume</span>]&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">rack_file</span> <span class="ruby-comment"># a Rack file received with the request</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   :tempfile =&gt; #&lt;File:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   :filename =&gt; &quot;resume.pdf&quot;,</span>&#x000A;<span class="ruby-comment">#   :type =&gt; &quot;application/pdf&quot;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span> = <span class="ruby-identifier">rack_file</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;resume.pdf&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">resume</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;application/pdf&quot;</span></pre>
+            <ul><li>
+            <p>A <code>module_include</code> plugin has been which adds the ability to
+            extend core  classes for the current uploader or all uploaders.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">module_include</span>&#x000A;&#x000A;  <span class="ruby-identifier">file_methods</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier">base64</span>&#x000A;      <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">read</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">storage</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">some_file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">base64</span> <span class="ruby-comment">#=&gt; &quot;sd93K4230sDfsk0POd9...&quot;</span></pre>
+            <ul><li>
+            <p>A <code>default_url_options</code> plugin has been added which allows you
+            to provide  default options for file URLs.</p>
+            </li></ul>
+            
+            <h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The <code>determine_mime_type</code> plugin can now accept IOs which are
+            not files when  used with the <code>:file</code> analyzer.</p>
+            </li><li>
+            <p>Added <code>:host</code> option to <code>Storage::S3#initialize</code> for
+            specifying CDNs.</p>
+            </li><li>
+            <p>Added <code>:public</code> option to <code>Storage::S3#url</code> for
+            returning an S3 URL stripped  of credential query parameters</p>
+            </li><li>
+            <p>The <code>direct_upload</code> plugin now accepts a block for the
+            <code>:presign</code> option,  which can be used to return additional
+            presign options (passed directly to  <code>Storage::S3#presign</code>):</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span> <span class="ruby-comment"># yields a Roda request object</span>&#x000A;  {<span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)} <span class="ruby-comment"># limit filesize to 5 MB</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <ul><li>
+            <p>Added the <code>(before|around|after)_upload</code> hook to the
+            <code>hooks</code> plugin, which  is wrapped around both processing and
+            storing.</p>
+            </li></ul>
+            
+            <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>Fixed the <code>recache</code> plugin not working at all when used with an
+            ORM plugin.</p>
+            </li><li>
+            <p>Fixed the <code>logging</code> plugin not working with PORO models (which
+            don&#39;t have an  <code>#id</code>).</p>
+            </li><li>
+            <p>The inspect output of <code>UploadedFile</code> is now cleaner and
+            doesn&#39;t show  duplicated info anymore.</p>
+            </li><li>
+            <p>Cached files aren&#39;t automatically deleted anymore. This removes issues
+            which  can happen with background promoting when cached file is deleted
+            while it&#39;s  being promoted, and it also required a monkey patch for the
+            <code>moving</code> plugin  to not attempt to delete the cached file twice.</p>
+            </li><li>
+            <p>Fixed a DoS vulnerability with background promoting where the job would get
+            triggered each time the record is saved with the cached attachment, until 
+            the first job finishes.</p>
+            </li><li>
+            <p>Fixed <code>migration_helpers</code> plugin to properly detect when
+            attachment has  changed while executing the block, and aborting the update
+            in that case.</p>
+            </li><li>
+            <p>Added the ability to use Postgres&#39; JSON/JSONB columns for the
+            attachment  column when using Sequel.</p>
+            </li><li>
+            <p>Fixed files with nested paths (generated either manually or using the 
+            <code>pretty_location</code> plugin) raising errors when trying to download
+            them.</p>
+            </li><li>
+            <p>Fixed downloading files not preserving the file extension.</p>
+            </li><li>
+            <p>The <code>logging</code> plugin now logs for processing the number of
+            <em>input</em> files  instead of output.</p>
+            </li><li>
+            <p>The gem should now work with Rubinius as well.</p>
+            </li><li>
+            <p>Fixed <code>Storage::S3#multi_delete</code> and
+            <code>Storage::S3#clear!</code> not using <code>:prefix</code>.</p>
+            </li><li>
+            <p>Fixed the <code>keep_files</code> pluing requiring context for
+            <code>Shrine#delete</code>.</p>
+            </li><li>
+            <p>Improved Windows compatibility with the FileSystem storage.</p>
+            </li></ul>
+          </div>
+          <div id='context'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

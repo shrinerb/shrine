@@ -26,7 +26,7 @@
   <div class="container">
     <div>
       <h1>
-        <span>Shrine<!-- ()--></span>
+        <span>Shrine (v1.0.0)</span>
         <a href="https://github.com/janko-m/shrine">
           <svg class="icon" viewBox="0 0 1024 1024" width="24" height="24">
             <title>github</title>
@@ -222,6 +222,24 @@
           
             <dl>
               <dt>
+                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/ParsedJson.html">parsed_json</a>:
+              </dt>
+              <dd>
+                <div>Allows assigning cached files as hashes/arrays (on top of JSON strings).</div>
+              </dd>
+            </dl>
+          
+            <dl>
+              <dt>
+                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html">rack_file</a>:
+              </dt>
+              <dd>
+                <div>Allows you models to accept Rack uploaded file hashes as attachments.</div>
+              </dd>
+            </dl>
+          
+            <dl>
+              <dt>
                 <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoteUrl.html">remote_url</a>:
               </dt>
               <dd>
@@ -318,15 +336,6 @@
           
             <dl>
               <dt>
-                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DeleteInvalid.html">delete_invalid</a>:
-              </dt>
-              <dd>
-                <div>Deletes files that didn't pass file validation.</div>
-              </dd>
-            </dl>
-          
-            <dl>
-              <dt>
                 <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/KeepFiles.html">keep_files</a>:
               </dt>
               <dd>
@@ -391,6 +400,15 @@
           
             <dl>
               <dt>
+                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DefaultUrlOptions.html">default_url_options</a>:
+              </dt>
+              <dd>
+                <div>Allows you to specify default URL options for uploaded files.</div>
+              </dd>
+            </dl>
+          
+            <dl>
+              <dt>
                 <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">direct_upload</a>:
               </dt>
               <dd>
@@ -416,17 +434,34 @@
               </dd>
             </dl>
           
+            <dl>
+              <dt>
+                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/ModuleInclude.html">module_include</a>:
+              </dt>
+              <dd>
+                <div>Allows easy extending of core classes for a given uploader.</div>
+              </dd>
+            </dl>
+          
         </li>
         
     </section>
 
-    <!-- <section> -->
-    <!--   <h2>Release notes</h2> -->
+    <section>
+      <h2>Release notes</h2>
 
-    <!--   <ul> -->
-    <!--      -->
-    <!--   </ul> -->
-    <!-- </section> -->
+      <ul>
+        
+        <li>
+          
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/1_0_0_md.html">
+            1.0.0
+          </a> 
+          
+        </li>
+        
+      </ul>
+    </section>
 
     <section>
       <h2>External</h2>
@@ -447,12 +482,31 @@
         </div>
         
         <div class="col">
+          <h3>Plugins & Storages</h3>
+          <ul>
+            
+            <li>
+              <a href="https://github.com/katafrakt/lotus-shrine">
+                lotus-shrine
+              </a>
+            </li>
+            
+          </ul>
+        </div>
+        
+        <div class="col">
           <h3>Projects</h3>
           <ul>
             
             <li>
               <a href="https://github.com/janko-m/shrine-example">
-                Example app
+                Roda example app (official)
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/erikdahlstrand/shrine-rails-example">
+                Rails example app
               </a>
             </li>
             

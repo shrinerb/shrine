@@ -41,7 +41,38 @@
       </div>
       <div id='content'>
         <div id='text'>
-          <div id='description'></div>
+          <div id='description'>
+            
+            <p>The <a href="S3.html">S3</a> storage handles uploads to Amazon <a
+            href="S3.html">S3</a> service, and it is initialized with the following 4
+            required options:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;xyz&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;abc&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;eu-west-1&quot;</span>,&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;my-app&quot;</span>,&#x000A;)</pre>
+            
+            <h2 id="class-Shrine::Storage::S3-label-Prefix">Prefix<span><a href="#class-Shrine::Storage::S3-label-Prefix">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>The <code>:prefix</code> option can be specified for uploading all files
+            inside a specific <a href="S3.html">S3</a> prefix (folder), which is useful
+            when using <a href="S3.html">S3</a> for both cache and store:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)</pre>
+            
+            <h2 id="class-Shrine::Storage::S3-label-CDN">CDN<span><a href="#class-Shrine::Storage::S3-label-CDN">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>If you&#39;re using a CDN with <a href="S3.html">S3</a> like Amazon
+            CloudFront, you can specify the <code>:host</code> option to have all your
+            URLs use the CDN host:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;//abc123.cloudfront.net&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)</pre>
+            
+            <h2 id="class-Shrine::Storage::S3-label-Clearing+cache">Clearing cache<span><a href="#class-Shrine::Storage::S3-label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>If you&#39;re using <a href="S3.html">S3</a> as a cache, you will probably
+            want to periodically delete old files which aren&#39;t used anymore. <a
+            href="S3.html">S3</a> has a built-in way to do this, read <a
+            href="http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html">this
+            article</a> for instructions.</p>
+          </div>
           <div id='method-list'>
             <h2>Methods</h2>
             <h3>Public Class</h3>
@@ -55,6 +86,7 @@
               <li><a target="docwin" href="#method-i-delete">delete</a></li>
               <li><a target="docwin" href="#method-i-download">download</a></li>
               <li><a target="docwin" href="#method-i-exists-3F">exists?</a></li>
+              <li><a target="docwin" href="#attribute-i-host">host</a></li>
               <li><a target="docwin" href="#method-i-multi_delete">multi_delete</a></li>
               <li><a target="docwin" href="#method-i-open">open</a></li>
               <li><a target="docwin" href="#attribute-i-prefix">prefix</a></li>
@@ -75,6 +107,13 @@
                   <tr class='top-aligned-row context-row'>
                     <td class='context-item-name'>
                       <a name='attribute-i-bucket'>bucket</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-host'>host</a>
                     </td>
                     <td class='context-item-value'>[R]</td>
                     <td class='context-item-desc'></td>
@@ -102,22 +141,28 @@
                 <a name='method-c-new'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
-                  <span class='arguments'>(bucket:, prefix: nil, **s3_options)</span>
+                  <span class='arguments'>(bucket:, prefix: nil, host: nil, **s3_options)</span>
                 </div>
                 <div class='description'>
                   
-                  <p>Example:</p>
+                  <p>Initializes a storage for uploading to <a href="S3.html">S3</a>.</p>
+                  <table class="rdoc-list note-list"><tbody><tr><td class='label'>:access_key_id<br />:secret_access_key<br />:region<br />:bucket</td><td>
+                  <p>Credentials required by the <code>aws-sdk</code> gem.</p>
+                  </td></tr><tr><td class='label'>:prefix</td><td>
+                  <p>“Folder” name inside the bucket to store files into.</p>
+                  </td></tr><tr><td class='label'>:host</td><td>
+                  <p>This option is used for setting CDNs, e.g. it can be set to
+                  <code>//abc123.cloudfront.net</code>.</p>
+                  </td></tr></tbody></table>
                   
-                  <pre>Shrine::Storage::S3.new(&#x000A;  access_key_id: &quot;xyz&quot;,&#x000A;  secret_access_key: &quot;abc&quot;,&#x000A;  region: &quot;eu-west-1&quot;&#x000A;  bucket: &quot;my-app&quot;,&#x000A;  prefix: &quot;cache&quot;,&#x000A;)</pre>
-                  
-                  <p>The above storage will store file into the “my-app” bucket in the “cache”
-                  directory.</p>
+                  <p>All other options are forwarded to <a
+                  href="http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method">Aws::S3::Client#initialize</a>.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">bucket</span>,, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;  <span class="ruby-ivar">@prefix</span> = <span class="ruby-identifier">prefix</span>&#x000A;  <span class="ruby-ivar">@s3</span> = <span class="ruby-constant">Aws</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span><span class="ruby-operator">::</span><span class="ruby-constant">Resource</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">s3_options</span>)&#x000A;  <span class="ruby-ivar">@bucket</span> = <span class="ruby-ivar">@s3</span>.<span class="ruby-identifier">bucket</span>(<span class="ruby-identifier">bucket</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 57</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">bucket</span>,, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;  <span class="ruby-ivar">@prefix</span> = <span class="ruby-identifier">prefix</span>&#x000A;  <span class="ruby-ivar">@s3</span> = <span class="ruby-constant">Aws</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span><span class="ruby-operator">::</span><span class="ruby-constant">Resource</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;  <span class="ruby-ivar">@bucket</span> = <span class="ruby-ivar">@s3</span>.<span class="ruby-identifier">bucket</span>(<span class="ruby-identifier">bucket</span>)&#x000A;  <span class="ruby-ivar">@host</span> = <span class="ruby-identifier">host</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <h2>Public Instance methods</h2>
@@ -135,7 +180,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-clear-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-clear-21-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 82</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">confirm</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Confirm</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">confirm</span> <span class="ruby-operator">==</span> <span class="ruby-value">:confirm</span>&#x000A;  <span class="ruby-ivar">@bucket</span>.<span class="ruby-identifier">clear!</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-clear-21-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 146</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">confirm</span> = <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Confirm</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">confirm</span> <span class="ruby-operator">==</span> <span class="ruby-value">:confirm</span>&#x000A;  <span class="ruby-ivar">@bucket</span>.<span class="ruby-identifier">object_versions</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-identifier">prefix</span>).<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-delete'>
@@ -152,7 +197,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 64</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 101</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-download'>
@@ -170,7 +215,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-download-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-download-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 44</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-constant">Down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-download-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 81</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-constant">Down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-exists-3F'>
@@ -187,7 +232,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-exists-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-exists-3F-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 59</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">exists?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-exists-3F-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 96</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">exists?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-multi_delete'>
@@ -205,7 +250,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-multi_delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-multi_delete-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 70</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">multi_delete</span>(<span class="ruby-identifier">ids</span>)&#x000A;  <span class="ruby-identifier">bucket</span>.<span class="ruby-identifier">delete_objects</span>(<span class="ruby-identifier">delete</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">objects</span><span class="ruby-operator">:</span> <span class="ruby-identifier">ids</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span> {<span class="ruby-identifier">key</span><span class="ruby-operator">:</span> <span class="ruby-identifier">id</span>} }})&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-multi_delete-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 107</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">multi_delete</span>(<span class="ruby-identifier">ids</span>)&#x000A;  <span class="ruby-identifier">objects</span> = <span class="ruby-identifier">ids</span>.<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">id</span><span class="ruby-operator">|</span> {<span class="ruby-identifier">key</span><span class="ruby-operator">:</span> <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">key</span>} }&#x000A;  <span class="ruby-identifier">bucket</span>.<span class="ruby-identifier">delete_objects</span>(<span class="ruby-identifier">delete</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">objects</span><span class="ruby-operator">:</span> <span class="ruby-identifier">objects</span>})&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-open'>
@@ -222,7 +267,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-open-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-open-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 49</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-open-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 86</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-presign'>
@@ -241,7 +286,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-presign-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-presign-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 92</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">presign</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-ivar">@bucket</span>.<span class="ruby-identifier">presigned_post</span>(<span class="ruby-identifier">key</span><span class="ruby-operator">:</span> <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-presign-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 156</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">presign</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-ivar">@bucket</span>.<span class="ruby-identifier">presigned_post</span>(<span class="ruby-identifier">key</span><span class="ruby-operator">:</span> <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-read'>
@@ -258,7 +303,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-read-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-read-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 54</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">get</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-read-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 91</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">get</span>.<span class="ruby-identifier">body</span>.<span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-upload'>
@@ -280,25 +325,39 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 32</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-identifier">options</span> = {<span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]}&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">copyable?</span>(<span class="ruby-identifier">io</span>)&#x000A;    <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">copy_from</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">object</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>), <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">put</span>(<span class="ruby-identifier">body</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 69</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-identifier">options</span> = {<span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]}&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">copyable?</span>(<span class="ruby-identifier">io</span>)&#x000A;    <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">copy_from</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">object</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>), <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">put</span>(<span class="ruby-identifier">body</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-url'>
                 <a name='method-i-url'></a>
                 <div class='synopsis'>
                   <span class='name'>url</span>
-                  <span class='arguments'>(id, download: nil, **options)</span>
+                  <span class='arguments'>(id, download: nil, public: nil, **options)</span>
                 </div>
                 <div class='description'>
                   
-                  <p>Returns the presigned URL to the file. If <code>download: true</code> is
-                  passed, returns a forced download link.</p>
+                  <p>Returns the presigned URL to the file.</p>
+                  <table class="rdoc-list note-list"><tbody><tr><td class='label'>:download</td><td>
+                  <p>If set to <code>true</code>, creates a “forced download” link, which means
+                  that  the browser will never display the file and always ask the user to 
+                  download it.</p>
+                  </td></tr><tr><td class='label'>:public</td><td>
+                  <p>Creates an unsigned version of the URL (requires setting appropriate 
+                  permissions on the <a href="S3.html">S3</a> bucket).</p>
+                  </td></tr><tr><td class='label'>options</td><td>
+                  <p>All other optione are forwarded to If <code>download: true</code> is
+                  passed, returns a forced download link. If <code>public: true</code> is
+                  passed, it returns an unsigned <a href="S3.html">S3</a> URL. All other
+                  options are forwarded to <a
+                  href="http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method">Aws::S3::Object#presigned_url</a>,
+                  so take a look there for the complete list of additional options.</p>
+                  </td></tr></tbody></table>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-url-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 76</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">download</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">options</span>[<span class="ruby-value">:response_content_disposition</span>] = <span class="ruby-string">&quot;attachment&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">download</span>&#x000A;  <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">presigned_url</span>(<span class="ruby-value">:get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/storage/s3.rb, line 132</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">download</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">public</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">host</span>.<span class="ruby-identifier">nil?</span>&#x000A;    <span class="ruby-identifier">options</span>[<span class="ruby-value">:response_content_disposition</span>] = <span class="ruby-string">&quot;attachment&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">download</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">public</span>.<span class="ruby-identifier">nil?</span>&#x000A;      <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">presigned_url</span>(<span class="ruby-value">:get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">public_url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-constant">URI</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">host</span>, <span class="ruby-identifier">object</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">key</span>).<span class="ruby-identifier">to_s</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

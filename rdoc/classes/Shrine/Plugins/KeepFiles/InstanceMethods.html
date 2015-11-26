@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::DeleteInvalid::AttacherMethods</title>
+    <title>Shrine::Plugins::KeepFiles::InstanceMethods</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::DeleteInvalid::AttacherMethods
+          Shrine::Plugins::KeepFiles::InstanceMethods
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../../files/lib/shrine/plugins/delete_invalid_rb.html">lib/shrine/plugins/delete_invalid.rb</a>
+            <a target="docwin" href="../../../../files/lib/shrine/plugins/keep_files_rb.html">lib/shrine/plugins/keep_files.rb</a>
           </li>
         </ol>
       </div>
@@ -42,7 +42,7 @@
             <h2>Methods</h2>
             <h3>Public Instance</h3>
             <ol>
-              <li><a target="docwin" href="#method-i-validate">validate</a></li>
+              <li><a target="docwin" href="#method-i-delete">delete</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -50,21 +50,21 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-validate'>
-                <a name='method-i-validate'></a>
+              <div class='method public-instance' id='method-method-i-delete'>
+                <a name='method-i-delete'></a>
                 <div class='synopsis'>
-                  <span class='name'>validate</span>
-                  <span class='arguments'>()</span>
+                  <span class='name'>delete</span>
+                  <span class='arguments'>(io, context = {})</span>
                 </div>
                 <div class='description'>
                   
-                  <p>Delete the assigned uploaded file if it was invalid.</p>
+                  <p>We hook to the generic deleting, and check the appropriate phases.</p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-validate-source'><span class="ruby-comment"># File lib/shrine/plugins/delete_invalid.rb, line 15</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">validate</span>&#x000A;  <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">ensure</span>&#x000A;  <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">get</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:invalid</span>) <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">errors</span>.<span class="ruby-identifier">empty?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[<span class="ruby-value">:phase</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

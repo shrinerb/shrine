@@ -31,12 +31,81 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2015-10-25 02:05:45 +0200</span>
+          <span class='datetime'>2015-11-26 03:11:44 +0100</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
-          <div id='description'></div>
+          <div id='description'>
+            
+            <h2 id="label-HEAD">HEAD<span><a href="#label-HEAD">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Improve Windows compatibility in the FileSystem storage (janko-m)</p>
+            </li><li>
+            <p>Remove the ability for FileSystem storage to accept IDs starting with a
+            slash (janko-m)</p>
+            </li><li>
+            <p>Fix keep_files plugin requiring context for deleting files (janko-m)</p>
+            </li><li>
+            <p>Extract assigning cached files by parsed JSON into a parsed_json plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Add <code>(before|around|after)_upload</code> to the hooks plugin (janko-m)</p>
+            </li><li>
+            <p>Fix <code>S3#multi_delete</code> and <code>S3#clear!</code> not using the
+            prefix (janko-m)</p>
+            </li><li>
+            <p>Add ability to pass presign options to storages in the direct_upload plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Remove <code>Shrine.io!</code> because it was actually meant to be only for
+            internal use (janko-m)</p>
+            </li><li>
+            <p>Remove <code>Shrine.delete</code> because of redundancy (janko-m)</p>
+            </li><li>
+            <p>Add default_url_options plugin for specifiying default URL options for
+            uploaded files (janko-m)</p>
+            </li><li>
+            <p>Add module_include plugin for easily extending core classes for given
+            uploader (janko-m)</p>
+            </li><li>
+            <p>Add support for Sequel&#39;s Postgres JSON column support (janko-m)</p>
+            </li><li>
+            <p>Fix migration_helpers plugin not detecting when column changed (janko-m)</p>
+            </li><li>
+            <p>Add the <code>:public</code> option to S3 storage for retrieving public
+            URLs which aren&#39;t signed (janko-m)</p>
+            </li><li>
+            <p>Remove the delete_invalid plugin, as it could cause lame errors (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t delete cached files anymore, as it can cause errors with
+            backgrounding (janko-m)</p>
+            </li><li>
+            <p>Add a <code>:host</code> option to the S3 storage for specifying CDNs
+            (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t allow same attachment to be promoted multiple times with
+            backgrounding (janko-m)</p>
+            </li><li>
+            <p>Fix recache plugin causing an infinite loop (janko-m)</p>
+            </li><li>
+            <p>Fix an encoding error in determine_mime_type when using <code>:file</code>
+            with non-files (janko-m)</p>
+            </li><li>
+            <p>Make <code>UploadedFile</code> actually delete itself only once (janko-m)</p>
+            </li><li>
+            <p>Make <code>UploadedFile#inspect</code> cleaner by showing only the data
+            hash (janko-m)</p>
+            </li><li>
+            <p>Make determine_mime_type able to accept non-files when using :file
+            (janko-m)</p>
+            </li><li>
+            <p>Make logging plugin accept PORO instance which don&#39;t have an id
+            (janko-m)</p>
+            </li><li>
+            <p>Add rack_file plugin for attaching Rack file hashes to models (janko-m)</p>
+            </li></ul>
+          </div>
           <div id='context'>
           </div>
         </div>

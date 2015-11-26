@@ -52,9 +52,6 @@
             </td></tr><tr><td class='label'>:replaced</td><td>
             <p>If set to <code>true</code>, uploading a new attachment won&#39;t delete
             the old one.</p>
-            </td></tr><tr><td class='label'>:cached</td><td>
-            <p>If set to <code>true</code>, cached files that are uploaded to store
-            won&#39;t be  deleted.</p>
             </td></tr></tbody></table>
             
             <p>For example, the following will keep destroyed and replaced files:</p>
@@ -73,7 +70,7 @@
           <div id='class-list'>
             <h2>Classes and Modules</h2>
             <ol>
-              <li><a target="docwin" href="KeepFiles/ClassMethods.html">Shrine::Plugins::KeepFiles::ClassMethods</a></li>
+              <li><a target="docwin" href="KeepFiles/InstanceMethods.html">Shrine::Plugins::KeepFiles::InstanceMethods</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -83,7 +80,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, destroyed: nil, replaced: nil, cached: nil)</span>
+                  <span class='arguments'>(uploader, destroyed: nil, replaced: nil, **)</span>
                 </div>
                 <div class='description'>
                   
@@ -92,7 +89,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">replaced</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">cached</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] = []&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:destroyed</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroyed</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:replaced</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">replaced</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:cached</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">replaced</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] = []&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:destroyed</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">destroyed</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:replaced</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">replaced</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

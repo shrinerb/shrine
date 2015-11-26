@@ -48,12 +48,10 @@
             <ol>
               <li><a target="docwin" href="#method-i-allow_storage-21">allow_storage!</a></li>
               <li><a target="docwin" href="#method-i-allowed_storages">allowed_storages</a></li>
-              <li><a target="docwin" href="#method-i-check_filesize-21">check_filesize!</a></li>
               <li><a target="docwin" href="#method-i-error-21">error!</a></li>
               <li><a target="docwin" href="#method-i-get_file">get_file</a></li>
               <li><a target="docwin" href="#method-i-json">json</a></li>
-              <li><a target="docwin" href="#method-i-max_size">max_size</a></li>
-              <li><a target="docwin" href="#method-i-presign-3F">presign?</a></li>
+              <li><a target="docwin" href="#method-i-presign">presign</a></li>
               <li><a target="docwin" href="#method-i-require_param-21">require_param!</a></li>
               <li><a target="docwin" href="#method-i-shrine_class">shrine_class</a></li>
             </ol>
@@ -77,7 +75,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-allow_storage-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-allow_storage-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 196</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">allow_storage!</span>(<span class="ruby-identifier">storage</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">allowed_storages</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_s</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">storage</span>)&#x000A;    <span class="ruby-identifier">error!</span> <span class="ruby-value">403</span>, <span class="ruby-node">&quot;Storage #{storage.inspect} is not allowed.&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-allow_storage-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 180</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">allow_storage!</span>(<span class="ruby-identifier">storage</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">allowed_storages</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_s</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">storage</span>)&#x000A;    <span class="ruby-identifier">error!</span> <span class="ruby-value">403</span>, <span class="ruby-node">&quot;Storage #{storage.inspect} is not allowed.&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-allowed_storages'>
@@ -93,24 +91,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-allowed_storages-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-allowed_storages-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 237</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">allowed_storages</span>&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_allowed_storages</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-check_filesize-21'>
-                <a name='method-i-check_filesize-21'></a>
-                <div class='synopsis'>
-                  <span class='name'>check_filesize!</span>
-                  <span class='arguments'>(file)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>If the file is too big, deletes the file and halts the request.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-check_filesize-21-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-check_filesize-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 213</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">check_filesize!</span>(<span class="ruby-identifier">file</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">max_size</span>&#x000A;    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">delete</span>&#x000A;    <span class="ruby-identifier">megabytes</span> = <span class="ruby-identifier">max_size</span>.<span class="ruby-identifier">to_f</span> <span class="ruby-operator">/</span> <span class="ruby-value">1024</span> <span class="ruby-operator">/</span> <span class="ruby-value">1024</span>&#x000A;    <span class="ruby-identifier">error!</span> <span class="ruby-value">413</span>, <span class="ruby-node">&quot;The file is too big (maximum size is #{megabytes} MB).&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-allowed_storages-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 211</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">allowed_storages</span>&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_allowed_storages</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-error-21'>
@@ -127,7 +108,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-error-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-error-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 229</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">error!</span>(<span class="ruby-identifier">status</span>, <span class="ruby-identifier">message</span>)&#x000A;  <span class="ruby-identifier">request</span>.<span class="ruby-identifier">halt</span> <span class="ruby-identifier">status</span>, {<span class="ruby-identifier">error</span><span class="ruby-operator">:</span> <span class="ruby-identifier">message</span>}.<span class="ruby-identifier">to_json</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-error-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 203</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">error!</span>(<span class="ruby-identifier">status</span>, <span class="ruby-identifier">message</span>)&#x000A;  <span class="ruby-identifier">request</span>.<span class="ruby-identifier">halt</span> <span class="ruby-identifier">status</span>, {<span class="ruby-identifier">error</span><span class="ruby-operator">:</span> <span class="ruby-identifier">message</span>}.<span class="ruby-identifier">to_json</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-get_file'>
@@ -145,7 +126,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-get_file-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-get_file-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 204</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_file</span>&#x000A;  <span class="ruby-identifier">file</span> = <span class="ruby-identifier">require_param!</span>(<span class="ruby-string">&quot;file&quot;</span>)&#x000A;  <span class="ruby-identifier">error!</span> <span class="ruby-value">400</span>, <span class="ruby-string">&quot;The \&quot;file\&quot; query parameter is not a file.&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:tempfile</span>))&#x000A;  <span class="ruby-identifier">check_filesize!</span>(<span class="ruby-identifier">file</span>[<span class="ruby-value">:tempfile</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">max_size</span>&#x000A;&#x000A;  <span class="ruby-constant">RackFile</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-get_file-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 188</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_file</span>&#x000A;  <span class="ruby-identifier">file</span> = <span class="ruby-identifier">require_param!</span>(<span class="ruby-string">&quot;file&quot;</span>)&#x000A;  <span class="ruby-identifier">error!</span> <span class="ruby-value">400</span>, <span class="ruby-string">&quot;The \&quot;file\&quot; query parameter is not a file.&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:tempfile</span>))&#x000A;&#x000A;  <span class="ruby-constant">RackFile</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-json'>
@@ -161,39 +142,23 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-json-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-json-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 191</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">json</span>(<span class="ruby-identifier">object</span>)&#x000A;  <span class="ruby-identifier">object</span>.<span class="ruby-identifier">to_json</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-json-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 175</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">json</span>(<span class="ruby-identifier">object</span>)&#x000A;  <span class="ruby-identifier">object</span>.<span class="ruby-identifier">to_json</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
-              <div class='method public-instance' id='method-method-i-max_size'>
-                <a name='method-i-max_size'></a>
+              <div class='method public-instance' id='method-method-i-presign'>
+                <a name='method-i-presign'></a>
                 <div class='synopsis'>
-                  <span class='name'>max_size</span>
+                  <span class='name'>presign</span>
                   <span class='arguments'>()</span>
                 </div>
                 <div class='description'>
                   
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-max_size-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-presign-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-max_size-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 241</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">max_size</span>&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_max_size</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-presign-3F'>
-                <a name='method-i-presign-3F'></a>
-                <div class='synopsis'>
-                  <span class='name'>presign?</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-presign-3F-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-presign-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 245</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">presign?</span>&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-presign-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 215</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">presign</span>&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-require_param-21'>
@@ -210,7 +175,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-require_param-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-require_param-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 222</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">require_param!</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="ruby-keyword">rescue</span> <span class="ruby-constant">KeyError</span>&#x000A;  <span class="ruby-identifier">error!</span> <span class="ruby-value">400</span>, <span class="ruby-node">&quot;Missing query parameter: #{name.inspect}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-require_param-21-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 196</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">require_param!</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="ruby-keyword">rescue</span> <span class="ruby-constant">KeyError</span>&#x000A;  <span class="ruby-identifier">error!</span> <span class="ruby-value">400</span>, <span class="ruby-node">&quot;Missing query parameter: #{name.inspect}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-shrine_class'>
@@ -226,7 +191,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-shrine_class-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 233</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 207</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

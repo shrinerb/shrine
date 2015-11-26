@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::ModuleInclude::ClassMethods</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::ModuleInclude::ClassMethods
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../../files/lib/shrine/plugins/module_include_rb.html">lib/shrine/plugins/module_include.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'></div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Instance</h3>
+            <ol>
+              <li><a target="docwin" href="#method-i-attacher_module">attacher_module</a></li>
+              <li><a target="docwin" href="#method-i-attachment_module">attachment_module</a></li>
+              <li><a target="docwin" href="#method-i-file_module">file_module</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-attacher_module'>
+                <a name='method-i-attacher_module'></a>
+                <div class='synopsis'>
+                  <span class='name'>attacher_module</span>
+                  <span class='arguments'>(mod = nil, &block)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-attacher_module-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-attacher_module-source'><span class="ruby-comment"># File lib/shrine/plugins/module_include.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">attacher_module</span>(<span class="ruby-identifier">mod</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">module_include</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>, <span class="ruby-identifier">mod</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-attachment_module'>
+                <a name='method-i-attachment_module'></a>
+                <div class='synopsis'>
+                  <span class='name'>attachment_module</span>
+                  <span class='arguments'>(mod = nil, &block)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-attachment_module-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-attachment_module-source'><span class="ruby-comment"># File lib/shrine/plugins/module_include.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">attachment_module</span>(<span class="ruby-identifier">mod</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">module_include</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>, <span class="ruby-identifier">mod</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-file_module'>
+                <a name='method-i-file_module'></a>
+                <div class='synopsis'>
+                  <span class='name'>file_module</span>
+                  <span class='arguments'>(mod = nil, &block)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-file_module-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-file_module-source'><span class="ruby-comment"># File lib/shrine/plugins/module_include.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">file_module</span>(<span class="ruby-identifier">mod</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">module_include</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>, <span class="ruby-identifier">mod</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
