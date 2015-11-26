@@ -527,6 +527,8 @@ s3_options = {
   secret_access_key: "<SECRET_ACCESS_KEY>",  # "abc"
   region:            "<REGION>",             # "eu-west-1"
   bucket:            "<BUCKET>",             # "my-app"
+  cache_control:     "public, max-age=#{30.days}",
+  acl:               "public-read"
 }
 
 Shrine.storages = {

@@ -26,9 +26,16 @@ class Shrine
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
-    # the `:host` option to have all your URLs use the CDN host:
+    # the `:host` option to have all your URLs use the CDN host and set the
+    # `:cache_control` to tell CloudFront how long to cache the file and the
+    # `:acl` option to allow CloudFront to read the file from S3.
     #
-    #     Shrine::Storage::S3.new(host: "//abc123.cloudfront.net", **s3_options)
+    #     Shrine::Storage::S3.new(
+    #       host: "//abc123.cloudfront.net",
+    #       cache_control: "public, max-age=#{30.days}",
+    #       acl: "public-read",
+    #       **s3_options
+    #     )
     #
     # ## Clearing cache
     #
@@ -37,7 +44,7 @@ class Shrine
     # this, read [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
     # for instructions.
     class S3
-      attr_reader :prefix, :bucket, :s3, :host
+      attr_reader :prefix, :bucket, :s3, :host, :cache_control, :acl
 
       # Initializes a storage for uploading to S3.
       #
@@ -53,12 +60,20 @@ class Shrine
       # :host
       # :   This option is used for setting CDNs, e.g. it can be set to `//abc123.cloudfront.net`.
       #
+      # :cache_control
+      # :   This option is used for setting permissions for CloudFront, e.g. it can be set to `public, max-age=#{30.days}`.
+      #
+      # :acl
+      # :   This option is used for setting permissions for CloudFront, e.g. it can be set to `public-read`.
+      #
       # All other options are forwarded to [`Aws::S3::Client#initialize`](http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method).
-      def initialize(bucket:, prefix: nil, host: nil, **s3_options)
+      def initialize(bucket:, prefix: nil, host: nil, cache_control: nil, acl: nil, **s3_options)
         @prefix = prefix
         @s3 = Aws::S3::Resource.new(**s3_options)
         @bucket = @s3.bucket(bucket)
         @host = host
+        @cache_control = cache_control
+        @acl = acl
       end
 
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
@@ -67,7 +82,11 @@ class Shrine
       # It assigns the correct "Content-Type" taken from the MIME type, because
       # by default S3 sets everything to "application/octet-stream".
       def upload(io, id, metadata = {})
-        options = {content_type: metadata["mime_type"]}
+        options = {
+          content_type: metadata["mime_type"],
+          cache_control: cache_control,
+          acl: acl
+        }
 
         if copyable?(io)
           object(id).copy_from(io.storage.object(io.id), **options)
