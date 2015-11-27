@@ -56,6 +56,18 @@ describe Shrine::Storage::S3 do
 
       assert_equal "foo/bar", tempfile.content_type
     end
+
+    it "applies upload options" do
+      @s3 = s3(upload_options: {content_type: "foo/bar"})
+      @s3.upload(fakeio, "foo")
+      tempfile = @s3.download("foo")
+      assert_equal "foo/bar", tempfile.content_type
+
+      @s3 = s3(upload_options: ->(io, metadata) { {content_type: "foo/bar"} })
+      @s3.upload(fakeio, "bar")
+      tempfile = @s3.download("bar")
+      assert_equal "foo/bar", tempfile.content_type
+    end
   end
 
   describe "#multi_delete" do

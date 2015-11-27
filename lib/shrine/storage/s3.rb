@@ -23,6 +23,24 @@ class Shrine
     #     Shrine::Storage::S3.new(prefix: "cache", **s3_options)
     #     Shrine::Storage::S3.new(prefix: "store", **s3_options)
     #
+    # ## Upload options
+    #
+    # Sometimes you'll want to add additional upload options to all S3 uploads.
+    # You can do that by passing the `:upload` option:
+    #
+    #     Shrine::Storage::S3.new(
+    #       upload_options: {acl: "public-read", cache_control: "public, max-age=3600"},
+    #       **s3_options
+    #     )
+    #
+    # If you want the options to be dynamic depending on the file being uploaded,
+    # you can use a block instead:
+    #
+    #     Shrine::Storage::S3.new(
+    #       upload_options: ->(io, metadata) { {expires: Time.now} },
+    #       **s3_options
+    #     )
+    #
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
@@ -37,7 +55,7 @@ class Shrine
     # this, read [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
     # for instructions.
     class S3
-      attr_reader :prefix, :bucket, :s3, :host
+      attr_reader :prefix, :bucket, :s3, :host, :upload_options
 
       # Initializes a storage for uploading to S3.
       #
@@ -51,14 +69,23 @@ class Shrine
       # :   "Folder" name inside the bucket to store files into.
       #
       # :host
-      # :   This option is used for setting CDNs, e.g. it can be set to `//abc123.cloudfront.net`.
+      # :   This option is used for setting CDNs, e.g. it can be set to
+      #      `//abc123.cloudfront.net`.
       #
-      # All other options are forwarded to [`Aws::S3::Client#initialize`](http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method).
-      def initialize(bucket:, prefix: nil, host: nil, **s3_options)
+      # :upload_options
+      # :   Additional options that will be used for uploading files (see
+      #     [`Aws::S3::Object#put`]). It can be a hash or a block.
+      #
+      # All other options are forwarded to [`Aws::S3::Client#initialize`].
+      #
+      # [`Aws::S3::Object#put`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
+      # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
+      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, **s3_options)
         @prefix = prefix
         @s3 = Aws::S3::Resource.new(**s3_options)
         @bucket = @s3.bucket(bucket)
         @host = host
+        @upload_options = upload_options
       end
 
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
@@ -68,6 +95,11 @@ class Shrine
       # by default S3 sets everything to "application/octet-stream".
       def upload(io, id, metadata = {})
         options = {content_type: metadata["mime_type"]}
+        if upload_options.is_a?(Hash)
+          options.update(upload_options)
+        else
+          options.update(upload_options.call(io, metadata))
+        end
 
         if copyable?(io)
           object(id).copy_from(io.storage.object(io.id), **options)
@@ -120,13 +152,7 @@ class Shrine
       # :  Creates an unsigned version of the URL (requires setting appropriate
       #    permissions on the S3 bucket).
       #
-      # options
-      # :  All other optione are forwarded to 
-      # If `download: true` is passed,
-      # returns a forced download link. If `public: true` is passed, it returns
-      # an unsigned S3 URL. All other options are forwarded to
-      # [`Aws::S3::Object#presigned_url`], so take a look there for the
-      # complete list of additional options.
+      # All other options are forwarded to [`Aws::S3::Object#presigned_url`].
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
       def url(id, download: nil, public: nil, **options)

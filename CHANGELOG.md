@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:upload_options` to S3 storage for applying additional options on upload (janko-m)
+
 * Reduce length of URLs generated with pretty_location plugin (gshaw)
 
 ## 1.0.0 (2015-11-27)
