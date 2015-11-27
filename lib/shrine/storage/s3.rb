@@ -102,6 +102,7 @@ class Shrine
         end
 
         if copyable?(io)
+          options.update(multipart_copy: true) if io.size >= 5*1024*1024*1024 # 5GB
           object(id).copy_from(io.storage.object(io.id), **options)
         else
           object(id).put(body: io, **options)

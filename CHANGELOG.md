@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix S3 storage to handle copying files that are larger than 5GB (janko-m)
+
 * Add `:upload_options` to S3 storage for applying additional options on upload (janko-m)
 
 * Reduce length of URLs generated with pretty_location plugin (gshaw)
