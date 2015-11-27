@@ -33,13 +33,8 @@ class Shrine
     #       **s3_options
     #     )
     #
-    # If you want the options to be dynamic depending on the file being uploaded,
-    # you can use a block instead:
-    #
-    #     Shrine::Storage::S3.new(
-    #       upload_options: ->(io, metadata) { {expires: Time.now} },
-    #       **s3_options
-    #     )
+    # These options will be passed to aws-sdk's methods for [uploading],
+    # [copying] and [presigning].
     #
     # ## CDN
     #
@@ -54,6 +49,10 @@ class Shrine
     # delete old files which aren't used anymore. S3 has a built-in way to do
     # this, read [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
     # for instructions.
+    #
+    # [uploading]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
+    # [copying]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
+    # [presigning]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
     class S3
       attr_reader :prefix, :bucket, :s3, :host, :upload_options
 
@@ -73,12 +72,15 @@ class Shrine
       #      `//abc123.cloudfront.net`.
       #
       # :upload_options
-      # :   Additional options that will be used for uploading files (see
-      #     [`Aws::S3::Object#put`]). It can be a hash or a block.
+      # :   Additional options that will be used for uploading files, they will
+      #     be passed to [`Aws::S3::Object#put`], [`Aws::S3::Object#copy_from`]
+      #     and [`Aws::S3::Bucket#presigned_post`].
       #
       # All other options are forwarded to [`Aws::S3::Client#initialize`].
       #
       # [`Aws::S3::Object#put`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
+      # [`Aws::S3::Object#copy_from`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
+      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, **s3_options)
         @prefix = prefix
@@ -95,18 +97,12 @@ class Shrine
       # by default S3 sets everything to "application/octet-stream".
       def upload(io, id, metadata = {})
         options = {content_type: metadata["mime_type"]}
-        if upload_options.is_a?(Hash)
-          options.update(upload_options)
-        else
-          options.update(upload_options.call(io, metadata))
-        end
+        options.update(upload_options)
 
         if copyable?(io)
-          options.update(multipart_copy: true) if io.size >= 5*1024*1024*1024 # 5GB
-          object(id).copy_from(io.storage.object(io.id), **options)
+          copy(io, id, **options)
         else
-          object(id).put(body: io, **options)
-          io.rewind
+          put(io, id, **options)
         end
       end
 
@@ -181,6 +177,7 @@ class Shrine
       #
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
       def presign(id, **options)
+        options.update(upload_options)
         @bucket.presigned_post(key: object(id).key, **options)
       end
 
@@ -197,6 +194,18 @@ class Shrine
       end
 
       private
+
+      # Copies an existing S3 object to a new location.
+      def copy(io, id, **options)
+        options.update(multipart_copy: true) if io.size >= 5*1024*1024*1024 # 5GB
+        object(id).copy_from(io.storage.object(io.id), **options)
+      end
+
+      # Uploads the file to S3.
+      def put(io, id, **options)
+        object(id).put(body: io, **options)
+        io.rewind
+      end
 
       # The file is copyable if it's on S3 and on the same Amazon account.
       def copyable?(io)

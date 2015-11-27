@@ -62,11 +62,6 @@ describe Shrine::Storage::S3 do
       @s3.upload(fakeio, "foo")
       tempfile = @s3.download("foo")
       assert_equal "foo/bar", tempfile.content_type
-
-      @s3 = s3(upload_options: ->(io, metadata) { {content_type: "foo/bar"} })
-      @s3.upload(fakeio, "bar")
-      tempfile = @s3.download("bar")
-      assert_equal "foo/bar", tempfile.content_type
     end
   end
 
@@ -120,6 +115,13 @@ describe Shrine::Storage::S3 do
 
     it "accepts additional options" do
       presign = @s3.presign("foo", content_type: "image/jpeg")
+
+      assert_equal "image/jpeg", presign.fields["Content-Type"]
+    end
+
+    it "applies upload options" do
+      @s3 = s3(upload_options: {content_type: "image/jpeg"})
+      presign = @s3.presign("foo")
 
       assert_equal "image/jpeg", presign.fields["Content-Type"]
     end
