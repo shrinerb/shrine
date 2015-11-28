@@ -1,4 +1,4 @@
-require "./lib/shrine/version"
+require File.expand_path("../lib/shrine/version", __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name         = "shrine"
