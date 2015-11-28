@@ -125,5 +125,12 @@ describe Shrine::Storage::S3 do
 
       assert_equal "image/jpeg", presign.fields["Content-Type"]
     end
+
+    it "gives higher precedence to options directly passed in" do
+      @s3 = s3(upload_options: {content_type: "image/jpeg"})
+      presign = @s3.presign("foo", content_type: "")
+
+      assert_equal "", presign.fields["Content-Type"]
+    end
   end
 end unless ENV["CI"]
