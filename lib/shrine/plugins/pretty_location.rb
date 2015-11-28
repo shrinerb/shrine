@@ -13,11 +13,6 @@ class Shrine
     #     # :model/:id/:attachment/:version-:uid.:extension
     module PrettyLocation
       module InstanceMethods
-        def generate_uid(_io)
-          length = 10
-          SecureRandom.random_number(36**length).to_s(36).ljust(length, "0")
-        end
-
         def generate_location(io, context)
           type = context[:record].class.name.downcase if context[:record] && context[:record].class.name
           id   = context[:record].id if context[:record].respond_to?(:id)
@@ -28,6 +23,12 @@ class Shrine
           original = dirname + slash + basename
 
           [type, id, name, original].compact.join("/")
+        end
+
+        private
+
+        def generate_uid(io)
+          SecureRandom.hex(5)
         end
       end
     end
