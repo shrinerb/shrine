@@ -25,11 +25,17 @@ class Shrine
         # Checks whether a file is a Rack file hash, and in that case wraps the
         # hash in an IO-like object.
         def assign(value)
-          if value.is_a?(Hash) && value.key?(:tempfile)
+          if value.is_a?(Hash) && rack_file?(value)
             assign(UploadedFile.new(value))
           else
             super
           end
+        end
+
+        private
+
+        def rack_file?(hash)
+          hash.key?(:tempfile)
         end
       end
 
