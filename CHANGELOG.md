@@ -2,6 +2,8 @@
 
 * Reduce length of URLs generated with pretty_location plugin (gshaw)
 
+* Add `cache_control` and `acl` parameters to S3 storage for CloudFront (gshaw)
+
 * Improve Windows compatibility in the FileSystem storage (janko-m)
 
 * Remove the ability for FileSystem storage to accept IDs starting with a slash (janko-m)
