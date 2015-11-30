@@ -74,9 +74,9 @@ end
 #### Regenerating versions
 
 Shrine doesn't have a built-in way of regenerating versions, because that's
-very individual and depends on what versions you want regenerated, what ORM
-are you using, how many records there are in your database etc. But I wrote
-a "[Regenerating versions]" guide that should give you useful guidelines.
+very individual and depends on what versions you want regenerated, what ORM are
+you using, how many records there are in your database etc. The [Regenerating
+versions] guide provides some useful tips on this task.
 
 ### Logging
 
@@ -301,8 +301,8 @@ user.avatar.id #=> "users/342/avatar/398543qjfdsf.jpg"
 
 #### `#reprocess!`
 
-Shrine doesn't have an equivalent to this, but there is a "[Regenerating
-versions]" that should give you some useful guidelines.
+Shrine doesn't have an equivalent to this, but the [Regenerating versions]
+guide provides some useful tips on how to do this.
 
 [file]: http://linux.die.net/man/1/file
 [Regenerating versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html

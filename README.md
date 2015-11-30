@@ -155,7 +155,7 @@ for storing attachments, so you'll need to add it in a migration:
 add_column :users, :avatar_data, :text # or a "jsonb" column if you need querying
 ```
 ```rb
-Shrine.plugin :sequel
+Shrine.plugin :sequel # Important!
 ```
 ```rb
 class User < Sequel::Model
@@ -225,10 +225,10 @@ $('[type="file"]').fileupload({
 });
 ```
 
-This is an oversimplified implementation without any UX, it's just to show you
-how easy it is. The `direct_upload` plugin also provides a route for direct S3
-uploads, see the [example app] for how you can do multiple uploads directly to
-S3.
+This is an oversimplified implementation without any UX, it's just to
+demonstrate how easy it is. The `direct_upload` plugin also provides a route
+for direct S3 uploads, see the [example app] for how you can do multiple
+uploads directly to S3.
 
 ## Processing
 

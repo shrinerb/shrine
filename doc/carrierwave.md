@@ -264,10 +264,10 @@ end
 
 #### `#recreate_versions!`
 
-Shrine doesn't provide an automatic mechanism for recreating versions, because
-that is very individual for different situations. For example, sometimes you want to
-regenerate all versions and sometimes just one. However, I wrote a guide
-"[Regenerating versions]" that should help you out with that.
+Shrine doesn't have a built-in way of regenerating versions, because that's
+very individual and depends on what versions you want regenerated, what ORM are
+you using, how many records there are in your database etc. The [Regenerating
+versions] guide provides some useful tips on this task.
 
 ### Models
 
