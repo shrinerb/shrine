@@ -1,4 +1,5 @@
 require "test_helper"
+require "tempfile"
 
 describe "the parallelize plugin" do
   before do
@@ -32,5 +33,27 @@ describe "the parallelize plugin" do
     refute versions[:large].exists?
     refute versions[:medium].exists?
     refute versions[:small].exists?
+  end
+
+  it "works with moving plugin" do
+    [
+      uploader do
+        plugin :parallelize
+        plugin :moving, storages: [:store]
+      end,
+      uploader do
+        plugin :moving, storages: [:store]
+        plugin :parallelize
+      end
+    ].each do |uploader|
+      @uploader = uploader
+      tempfile = Tempfile.new("")
+      path = tempfile.path
+
+      uploaded_file = @uploader.upload(tempfile)
+
+      assert uploaded_file.exists?
+      refute File.exist?(path)
+    end
   end
 end

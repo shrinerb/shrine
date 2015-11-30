@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix parallelize plugin to always work with the moving plugin (janko-m)
+
 * Fix S3 storage to handle copying files that are larger than 5GB (janko-m)
 
 * Add `:upload_options` to S3 storage for applying additional options on upload (janko-m)

@@ -31,11 +31,9 @@ class Shrine
       module InstanceMethods
         private
 
-        # If the file is movable (usually this means that both the file and
-        # the destination are on the filesystem), use the underlying storage's
-        # ability to move. Otherwise we "imitate" moving by deleting the file
-        # after it was uploaded.
-        def put(io, context)
+        # If the storage supports moving we use that, otherwise we do moving by
+        # copying and deleting.
+        def copy(io, context)
           if move?(io, context)
             if movable?(io, context)
               move(io, context)
@@ -48,7 +46,10 @@ class Shrine
           end
         end
 
-        # Ask the storage if the given file is movable.
+        def move(io, context)
+          storage.move(io, context[:location], context[:metadata])
+        end
+
         def movable?(io, context)
           storage.respond_to?(:move) && storage.movable?(io, context[:location])
         end

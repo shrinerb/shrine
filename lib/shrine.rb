@@ -336,12 +336,6 @@ class Shrine
           storage.upload(io, context[:location], context[:metadata])
         end
 
-        # Some storages support moving, so we provide this method for plugins
-        # to use, but by default the file will be copied.
-        def move(io, context)
-          storage.move(io, context[:location], context[:metadata])
-        end
-
         # Does the actual deletion, calls `UploadedFile#delete`.
         def remove(uploaded_file, context)
           uploaded_file.delete
