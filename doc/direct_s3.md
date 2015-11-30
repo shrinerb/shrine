@@ -111,6 +111,35 @@ user.avatar = '{"id":"43244656","storage":"cache",...}'
 
 In a form you can assign this to an appropriate "hidden" field.
 
+## Eventual consistency
+
+When uploading objects to Amazon S3, sometimes they may not be available
+immediately. This can be a problem when using direct S3 uploads, because
+usually in this case you're using S3 for both cache and store, so the S3 object
+is moved to store soon after caching.
+
+> Amazon S3 provides eventual consistency for some operations, so it is
+> possible that new data will not be available immediately after the upload,
+> which could result in an incomplete data load or loading stale data. COPY
+> operations where the cluster and the bucket are in different regions are
+> eventually consistent. All regions provide read-after-write consistency for
+> uploads of new objects with unique object keys. For more information about
+> data consistency, see [Amazon S3 Data Consistency Model] in the *Amazon Simple
+> Storage Service Developer Guide*.
+
+This means that in certain cases copying from cache to store can fail if it
+happens soon after uploading to cache. If you start noticing these errors, and
+you're using `background_helpers` plugin, you can tell your backgrounding
+library to perform the job with a delay:
+
+```rb
+Shrine.plugin :background_helpers
+Shrine::Attacher.promote do |data|
+  UploadJob.perform_in(60, data) # tells a Sidekiq worker to perform in 1 minute
+end
+```
+
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
 [example app]: https://github.com/janko-m/shrine-example
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+[Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
