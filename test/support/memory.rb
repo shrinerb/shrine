@@ -10,7 +10,6 @@ class Shrine
 
       def upload(io, id, metadata = {})
         @store[id] = io.read
-        io.rewind
       end
 
       def download(id)

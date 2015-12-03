@@ -91,7 +91,7 @@ class Shrine
 
       # Copies the file into the given location.
       def upload(io, id, metadata = {})
-        IO.copy_stream(io, path!(id)); io.rewind
+        IO.copy_stream(io, path!(id))
         path(id).chmod(permissions) if permissions
       end
 

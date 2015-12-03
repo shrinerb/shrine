@@ -32,7 +32,6 @@ class Shrine
         fakeio = FakeIO.new("image")
 
         storage.upload(fakeio, "foo.jpg", {"mime_type" => "image/jpeg"})
-        error! "#upload doesn't rewind the file" if !(fakeio.read == "image")
 
         file = storage.download("foo.jpg")
         error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)

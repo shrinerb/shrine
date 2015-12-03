@@ -334,6 +334,7 @@ class Shrine
         # Does the actual uploading, calling `#upload` on the storage.
         def copy(io, context)
           storage.upload(io, context[:location], context[:metadata])
+          io.rewind
         end
 
         # Does the actual deletion, calls `UploadedFile#delete`.

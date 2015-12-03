@@ -55,12 +55,6 @@ describe Shrine::Storage::FileSystem do
       assert @storage.exists?("a/a/a.jpg")
     end
 
-    it "rewinds the input file" do
-      @storage.upload(input = fakeio("image"), "foo.jpg")
-
-      assert_equal "image", input.read
-    end
-
     it "copies full file content" do
       @storage.upload(input = fakeio("A" * 20_000), "foo.jpg")
 
