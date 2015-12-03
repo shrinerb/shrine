@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make S3 presigns work when the `:endpoint` option is given (NetsoftHoldings)
+
 * Fix parallelize plugin to always work with the moving plugin (janko-m)
 
 * Fix S3 storage to handle copying files that are larger than 5GB (janko-m)

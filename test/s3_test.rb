@@ -132,5 +132,12 @@ describe Shrine::Storage::S3 do
 
       assert_equal "", presign.fields["Content-Type"]
     end
+
+    it "works with the :endpoint option" do
+      s3 = s3(endpoint: "http://foo.com")
+      presign = s3.presign("foo")
+
+      assert_equal "http://#{s3.bucket.name}.foo.com", presign.url
+    end
   end
 end unless ENV["CI"]
