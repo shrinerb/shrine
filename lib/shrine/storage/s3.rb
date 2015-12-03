@@ -178,7 +178,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
       def presign(id, **options)
         options = upload_options.merge(options)
-        @bucket.presigned_post(key: object(id).key, **options)
+        object(id).presigned_post(key: object(id).key, **options)
       end
 
       protected
