@@ -10,6 +10,9 @@
     -
       name: lotus-shrine
       url: https://github.com/katafrakt/lotus-shrine
+    -
+      name: shrine-fog
+      url: https://github.com/janko-m/shrine-fog
 
 -
   title: Projects
