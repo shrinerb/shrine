@@ -528,16 +528,14 @@ require "shrine"
 require "shrine/storage/file_system"
 require "shrine/storage/s3"
 
-s3_options = {
-  access_key_id:     "<ACCESS_KEY_ID>",      # "xyz"
-  secret_access_key: "<SECRET_ACCESS_KEY>",  # "abc"
-  region:            "<REGION>",             # "eu-west-1"
-  bucket:            "<BUCKET>",             # "my-app"
-}
-
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads"),
-  store: Shrine::Storage::S3.new(s3_options),
+  store: Shrine::Storage::S3.new(
+    access_key_id:     "<ACCESS_KEY_ID>",      # "xyz"
+    secret_access_key: "<SECRET_ACCESS_KEY>",  # "abc"
+    region:            "<REGION>",             # "eu-west-1"
+    bucket:            "<BUCKET>",             # "my-app"
+  )
 }
 ```
 
