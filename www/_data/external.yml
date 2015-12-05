@@ -13,6 +13,9 @@
     -
       name: shrine-fog
       url: https://github.com/janko-m/shrine-fog
+    -
+      name: shrine-imgix
+      url: https://github.com/janko-m/shrine-imgix
 
 -
   title: Projects
