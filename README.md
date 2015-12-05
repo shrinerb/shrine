@@ -145,6 +145,24 @@ column (`avatar_data`). The getter (`#avatar`) reads the "data" column and
 returns a `Shrine::UploadedFile`. The url method (`#avatar_url`) calls
 `avatar.url` if the attachment is present, otherwise returns nil.
 
+This is how you would typically create the form for a `@user`:
+
+```erb
+<form action="/users" method="post" enctype="multipart/form-data">
+  <input name="user[avatar]" type="hidden" value="<%= @user.avatar_data %>">
+  <input name="user[avatar]" type="file">
+</form>
+```
+
+The "file" field is for file upload, while the "hidden" field is to make the
+file persist in case of validation errors, and for direct uploads. This code
+works because `#avatar=` also accepts already cached files via their JSON
+representation:
+
+```rb
+user.avatar = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'
+```
+
 ### ORM
 
 Your models probably won't be POROs, so Shrine ships with plugins for
@@ -174,18 +192,6 @@ user.avatar.storage_key #=> "store"
 user.destroy
 user.avatar.exists? #=> false
 ```
-
-This is how you would typically create the form for a `@user`:
-
-```erb
-<form action="/users" method="post" enctype="multipart/form-data">
-  <input name="user[avatar]" type="hidden" value="<%= @user.avatar_data %>">
-  <input name="user[avatar]" type="file">
-</form>
-```
-
-The "file" field is for file upload, while the "hidden" field is to make the
-file persist in case of validation errors, and for direct uploads.
 
 ## Direct uploads
 
