@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add the backup plugin for backing up stored files (janko-m)
+
 * Storages don't need to rewind the files after upload anymore (janko-m)
 
 * Make S3 presigns work when the `:endpoint` option is given (NetsoftHoldings)

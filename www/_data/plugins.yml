@@ -90,6 +90,10 @@ Deleting:
 
 Storage:
   -
+    name: backup
+    path: Backup.html
+    description: Uploads stored files to an additional "backup" storage.
+  -
     name: default_storage
     path: DefaultStorage.html
     description: Allows you to choose different storages for different attachments.
