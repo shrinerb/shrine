@@ -13,8 +13,10 @@ First you need to change and deploy your updated processing code, and
 afterwards you can run a script like this on your production database:
 
 ```rb
-Shrine.plugin :migration_helpers
+Shrine.plugin :migration_helpers # before the model is loaded
+```
 
+```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
     thumb = some_processing(avatar[:original].download)
@@ -47,8 +49,10 @@ After you've deployed this change, you should run a script that will generate
 the new version for all existing records:
 
 ```rb
-Shrine.plugin :migration_helpers
+Shrine.plugin :migration_helpers # before the model is loaded
+```
 
+```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
     unless new = avatar[:new]
@@ -72,8 +76,10 @@ not to use the new version, and deploy that code. After you've done that, you
 can run a script which removes that version:
 
 ```rb
-Shrine.plugin :migration_helpers
+Shrine.plugin :migration_helpers # before the model is loaded
+```
 
+```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
     old_version = avatar.delete(:old_version)
@@ -93,8 +99,10 @@ regenerate all versions. After you've deployed the change in processing, you
 can run a script which updates existing records:
 
 ```rb
-Shrine.plugin :migration_helpers
+Shrine.plugin :migration_helpers # before the model is loaded
+```
 
+```rb
 User.paged_each do |user|
   if user.avatar && user.avatar_store.uploaded?(user.avatar)
     user.update(avatar: user.avatar[:original])
