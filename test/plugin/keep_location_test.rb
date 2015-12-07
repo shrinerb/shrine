@@ -41,10 +41,4 @@ describe "the keep_location plugin" do
 
     assert_equal stored_file.id, restored_file.id
   end
-
-  it "appends storages when loaded multiple times" do
-    @cache.class.plugin :keep_location, :cache => :cache
-
-    assert_equal Hash[:cache => [:store, :cache]], @cache.opts[:keep_location_mappings]
-  end
 end

@@ -15,10 +15,7 @@ class Shrine
     #     plugin :keep_location, :cache => [:storage1, :storage2]
     module KeepLocation
       def self.configure(uploader, mappings = {})
-        uploader.opts[:keep_location_mappings] ||= {}
-        uploader.opts[:keep_location_mappings].merge!(mappings) do |_, old, new|
-          Array(old) + Array(new)
-        end
+        uploader.opts[:keep_location_mappings] = mappings
       end
 
       module InstanceMethods

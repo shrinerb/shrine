@@ -70,7 +70,7 @@ class Shrine
     module BackgroundHelpers
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise
-        # resolves data into objects and calls Attacher#promote.
+        # resolves data into objects and calls `Attacher#promote`.
         def promote(data = nil, &block)
           if block
             shrine_class.opts[:background_promote] = block

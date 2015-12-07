@@ -10,10 +10,24 @@ describe "the backup plugin" do
     @attacher._promote
 
     assert @attacher.get.exists?
+    assert @attacher.backup_file(@attacher.get).exists?
+  end
 
-    backed_up_file = @attacher.get
-    backed_up_file.data["storage"] = "cache"
+  it "deletes the backed up file" do
+    @attacher.assign(fakeio)
+    @attacher._promote
+    @attacher.destroy
 
-    assert backed_up_file.exists?
+    refute @attacher.backup_file(@attacher.get).exists?
+  end
+
+  it "doesn't delete backed up file if :delete is set to false" do
+    @attacher.shrine_class.opts[:backup_delete] = false
+
+    @attacher.assign(fakeio)
+    @attacher._promote
+    @attacher.destroy
+
+    assert @attacher.backup_file(@attacher.get).exists?
   end
 end
