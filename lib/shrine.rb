@@ -309,7 +309,7 @@ class Shrine
         # the metadata, stores the file, and returns a Shrine::UploadedFile.
         def _store(io, context)
           _enforce_io(io)
-          location = context[:location] || generate_location(io, context)
+          location = get_location(io, context)
           metadata = extract_metadata(io, context)
 
           put(io, context.merge(location: location, metadata: metadata))
@@ -345,6 +345,12 @@ class Shrine
         # Calls #process and returns the processed files.
         def processed(io, context)
           process(io, context)
+        end
+
+        # Retrieves the location for the given io and context. First it looks
+        # for the `:location` option, otherwise it calls #generate_location.
+        def get_location(io, context)
+          context[:location] || generate_location(io, context)
         end
 
         # Checks if the object is a valid IO by checking that it responds to

@@ -102,6 +102,10 @@ Storage:
     path: DynamicStorage.html
     description: Allows you to define storages dynamically based on their identifier.
   -
+    name: keep_location
+    path: KeepLocation.html
+    description: Allows keeping the location of a file when it's transferred from one storage to another.
+  -
     name: moving
     path: Moving.html
     description: Allows you to move files to storages instead of copying them.

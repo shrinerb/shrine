@@ -175,13 +175,19 @@ describe Shrine do
       assert_equal "original", uploaded_file.read
     end
 
-    it "uses :location if available, even if #generate_location was overriden" do
+    it "uses :location if available" do
+      uploaded_file = @uploader.store(fakeio, location: "foo")
+
+      assert_equal "foo", uploaded_file.id
+    end
+
+    it "calls #generate_location if :location isn't provided" do
       @uploader.instance_eval do
         def generate_location(io, context)
-          "rainbows"
+          "foo"
         end
       end
-      uploaded_file = @uploader.store(fakeio, location: "foo")
+      uploaded_file = @uploader.store(fakeio)
 
       assert_equal "foo", uploaded_file.id
     end

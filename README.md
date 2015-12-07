@@ -495,7 +495,7 @@ If you want to generate your own locations, simply override
 ```rb
 class ImageUploader < Shrine
   def generate_location(io, context)
-    # your custom logic
+    "#{context[:record].class}/#{context[:record].id}/#{io.original_filename}"
   end
 end
 ```

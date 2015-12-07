@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add the keep_location plugin for easier debugging or backups (janko-m)
+
 * Add the backup plugin for backing up stored files (janko-m)
 
 * Storages don't need to rewind the files after upload anymore (janko-m)

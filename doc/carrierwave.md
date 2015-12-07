@@ -185,10 +185,7 @@ storages:
 ```rb
 class ImageUploader < Shrine
   def generate_location(io, context)
-    case storage_key
-    when :cache then "..."
-    when :store then "..."
-    end
+    "#{context[:record].class}/#{context[:record].id}/#{io.original_filename}"
   end
 end
 ```

@@ -11,9 +11,9 @@ class Shrine
     #     plugin :moving, storages: [:cache]
     #
     # The `:storages` option specifies which storages the file will be moved
-    # to. The above will move Rails's uploaded files to cache (without this
-    # plugin it's simply copied over). However, you may want to move cached
-    # files to `:store` as well:
+    # to. The above will move raw files to cache (without this plugin it's
+    # simply copied over). However, you may want to move cached files to
+    # `:store` as well:
     #
     #     plugin :moving, storages: [:cache, :store]
     #

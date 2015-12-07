@@ -37,7 +37,7 @@ describe Shrine::Storage::S3 do
 
   describe "#upload" do
     it "copies the file if it's from also S3" do
-      uploaded_file = @uploader.upload(fakeio, {location: "foo"})
+      uploaded_file = @uploader.upload(fakeio, location: "foo")
 
       assert @s3.send(:copyable?, uploaded_file)
 
