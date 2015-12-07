@@ -1,4 +1,4 @@
-# Regenerating versions
+# Reprocessing versions
 
 While your app is serving uploads in production, you may realize that you want
 to change how your attachment's versions are generated. This means that, in
@@ -6,7 +6,56 @@ addition to changing you processing code, you also need to reprocess the
 existing attachments. This guide is aimed to help doing this migration with
 zero downtime and no unused files left in the main storage.
 
-## Regenerating a specific version
+## Adding versions
+
+Most common scenario is when initially you're not doing any processing, but
+later decide that you want to generate versions. First you need to update your
+code to generate versions, and you also need to change your views to use those
+versions:
+
+```rb
+class ImageUploader < Shrine
+  plugin :versions, names: [:original, :thumb]
+
+  def process(io, context)
+    case context[:phase]
+    when :store
+      thumb = process_thumb(io.download) # replace with actual processing method
+      {original: io, thumb: thumb}
+    end
+  end
+end
+```
+```rb
+# In your views add the version name to all <attachment>_url calls.
+user.avatar_url(:thumb)
+```
+
+Note that you should deploy both of these changes at once, because the
+`<attachment>_url` method will fail if there are versions generated but no
+version name was passed in. If a version name was passed in but versions aren't
+generated yet (which will be the case here), it will just return the
+unprocessed file URL.
+
+Afterwards you should run a script which reprocesses the versions for existing
+files:
+
+```rb
+Shrine.plugin :migration_helpers # before the model is loaded
+```
+```rb
+User.paged_each do |user|
+  user.update_avatar do |avatar|
+    unless avatar.is_a?(Hash)
+      file = some_processing(avatar.download)
+      thumb = user.avatar_store.upload(file)
+      {original: avatar, thumb: thumb}
+    end
+  end
+end
+```
+
+## Reprocessing a single version
 
 The simplest scenario is where you need to regenerate an existing version.
 First you need to change and deploy your updated processing code, and
@@ -92,7 +141,7 @@ end
 After the script has finished, you should be able to safely remove the version
 name from the list.
 
-## Regenerating all versions
+## Reprocessing all versions
 
 If you made a lot of changes to versions, it might make sense to simply
 regenerate all versions. After you've deployed the change in processing, you

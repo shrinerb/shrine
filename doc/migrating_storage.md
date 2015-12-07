@@ -30,8 +30,9 @@ files to the new storage, and update the records. This is how you can do it
 if you're using Sequel:
 
 ```rb
-Shrine.plugin :migration_helpers
-
+Shrine.plugin :migration_helpers # before the model is loaded
+```
+```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
     user.avatar_store.upload(avatar)
@@ -64,11 +65,12 @@ Shrine.storages[:new_store] = Shrine.storages[:store]
 Sequel it would be something like:
 
 ```rb
-Shrine.plugin :migration_helpers
-
+Shrine.plugin :migration_helper # before the model is loaded
+```
+```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
-    avatar.to_json.gsub('new_store', 'store')
+    avatar.to_json.gsub('"new_store"', '"store"')
   end
 end
 
