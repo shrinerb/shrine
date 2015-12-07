@@ -1,5 +1,7 @@
 ## HEAD
 
+* Move `Shrine#default_url` to default_url plugin (janko-m)
+
 * Enable `S3#multi_delete` to delete more than 1000 objects by batching deletes (janko-m)
 
 * Add the keep_location plugin for easier debugging or backups (janko-m)

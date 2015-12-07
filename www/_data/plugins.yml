@@ -22,6 +22,10 @@ Model:
     path: DataUri.html
     description: Adds ability to upload files via a data URI.
   -
+    name: default_url
+    path: DefaultUrl.html
+    description: Allows setting the URL which will be returned on missing attachments.
+  -
     name: included
     path: Included.html
     description: Allows the included attachments to define additional methods on the model.
