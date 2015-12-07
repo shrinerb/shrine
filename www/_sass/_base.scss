@@ -102,11 +102,6 @@ img, svg, iframe {
   vertical-align: middle;
 }
 
-// http://stackoverflow.com/questions/29814709/click-event-not-fired-on-button-with-svg-element-in-safari
-svg {
-  pointer-events: none;
-}
-
 label {
   cursor: pointer;
 }
