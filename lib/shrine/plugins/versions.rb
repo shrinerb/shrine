@@ -139,6 +139,7 @@ class Shrine
         # version.
         def _store(io, context)
           if (hash = io).is_a?(Hash)
+            raise Error, ":location is not applicable to versions" if context.key?(:location)
             self.class.versions!(hash).inject({}) do |result, (name, version)|
               result.update(name => _store(version, version: name, **context))
             end

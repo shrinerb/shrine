@@ -188,4 +188,14 @@ describe "the versions plugin" do
     error = assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }
     assert_match /is not a valid IO object/, error.message
   end
+
+  it "doesn't allow :location" do
+    @uploader.instance_eval do
+      def process(io, context)
+        {thumb: FakeIO.new(io.read.reverse)}
+      end
+    end
+
+    assert_raises(Shrine::Error) { @uploader.upload(fakeio, location: "foobar") }
+  end
 end
