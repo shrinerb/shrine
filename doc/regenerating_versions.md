@@ -129,12 +129,19 @@ Shrine.plugin :migration_helpers # before the model is loaded
 ```
 
 ```rb
+removed_versions = []
+
 User.paged_each do |user|
   user.update_avatar do |avatar|
     old_version = avatar.delete(:old_version)
-    old_version.delete if old_version
+    removed_versions << old_version if old_version
     avatar
   end
+end
+
+if removed_versions.any?
+  uploader = removed_versions.first.uploader
+  uploader.delete(removed_versions)
 end
 ```
 
