@@ -54,6 +54,9 @@ class Shrine
     # [copying]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
     # [presigning]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
     class S3
+      # Maximum number of S3 objects that can be deleted with a single request.
+      BATCH_SIZE = 1000
+
       attr_reader :prefix, :bucket, :s3, :host, :upload_options
 
       # Initializes a storage for uploading to S3.
@@ -131,11 +134,15 @@ class Shrine
         object(id).delete
       end
 
-      # This is called when multiple files are being deleted at once. Issues
-      # a single MULTI DELETE command.
+      # This is called when multiple files are being deleted at once. Issues a
+      # single MULTI DELETE command for each 1000 objects (S3 delete limit).
       def multi_delete(ids)
-        objects = ids.map { |id| {key: object(id).key} }
-        bucket.delete_objects(delete: {objects: objects})
+        0.step do |n|
+          ids_batch = ids[n*BATCH_SIZE..((n+1)*BATCH_SIZE-1)]
+          break if ids_batch.nil? || ids_batch.empty?
+          objects = ids_batch.map { |id| {key: object(id).key} }
+          bucket.delete_objects(delete: {objects: objects})
+        end
       end
 
       # Returns the presigned URL to the file.
