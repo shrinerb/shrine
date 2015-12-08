@@ -37,6 +37,18 @@ class Shrine
     # be hooked up to this endpoint, [jQuery-File-Upload] being the most
     # popular one.
     #
+    # ## Limiting filesize
+    #
+    # It's a good idea to limit the filesize of files that are uploaded. This
+    # plugin provides a `:max_size` option, so if a file is uploaded which is
+    # too large, the file will get automatically deleted and the endpoint will
+    # return status 413.
+    #
+    #     plugin :direct_upload, max_size: 5*1024*1024 # 5 MB
+    #
+    # Note that this option doesn't affect presigned uploads, but there you can
+    # limit the filesize with storage options.
+    #
     # ## Presigned
     #
     # An alternative to the direct endpoint is doing direct uploads to the
@@ -119,9 +131,10 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], presign: nil, **)
+      def self.configure(uploader, allowed_storages: [:cache], presign: nil, max_size: nil)
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_presign] = presign
+        uploader.opts[:direct_upload_max_size] = max_size
       end
 
       module ClassMethods
@@ -188,8 +201,18 @@ class Shrine
         def get_file
           file = require_param!("file")
           error! 400, "The \"file\" query parameter is not a file." if !(file.is_a?(Hash) && file.key?(:tempfile))
+          check_filesize!(file[:tempfile]) if max_size
 
           RackFile::UploadedFile.new(file)
+        end
+
+        # If the file is too big, deletes the file and halts the request.
+        def check_filesize!(file)
+          if file.size > max_size
+            file.delete
+            megabytes = max_size.to_f / 1024 / 1024
+            error! 413, "The file is too big (maximum size is #{megabytes} MB)."
+          end
         end
 
         # Loudly requires the param.
@@ -214,6 +237,10 @@ class Shrine
 
         def presign
           shrine_class.opts[:direct_upload_presign]
+        end
+
+        def max_size
+          shrine_class.opts[:direct_upload_max_size]
         end
       end
     end

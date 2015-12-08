@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:max_size` option to the direct_upload plugin (janko-m)
+
 * Move `Shrine#default_url` to default_url plugin (janko-m)
 
 * Enable `S3#multi_delete` to delete more than 1000 objects by batching deletes (janko-m)

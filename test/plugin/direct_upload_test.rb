@@ -66,6 +66,16 @@ describe "the direct_upload plugin" do
       refute_empty body.fetch(0)
     end
 
+    it "refuses files which are too big" do
+      @uploader.opts[:direct_upload_max_size] = 0
+      post "/cache/avatar", file: image
+      assert_http_error 413
+
+      @uploader.opts[:direct_upload_max_size] = 5 * 1024 * 1024
+      post "/cache/avatar", file: image
+      assert_equal 200, response.status
+    end
+
     it "accepts only POST requests" do
       put "/cache/avatar", file: image
 
