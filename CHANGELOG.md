@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add remove_invalid plugin for automatically deleting and deassigning invalid cached files (janko-m)
+
 * Add `:max_size` option to the direct_upload plugin (janko-m)
 
 * Move `Shrine#default_url` to default_url plugin (janko-m)

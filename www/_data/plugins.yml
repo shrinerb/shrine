@@ -91,6 +91,10 @@ Deleting:
     name: multi_delete
     path: MultiDelete.html
     description: Allows you to delete multiple files at once, which some storages optimize.
+  -
+    name: remove_invalid
+    path: RemoveInvalid.html
+    description: Automatically deletes and deassigns cached files if they're invalid.
 
 Storage:
   -
