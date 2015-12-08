@@ -17,6 +17,9 @@
   name: Reprocessing versions
   path: regenerating_versions_md.html
 -
+  name: Securing uploads
+  path: securing_uploads_md.html
+-
   name: Shrine for CarrierWave Users
   path: carrierwave_md.html
 -
