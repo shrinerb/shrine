@@ -1,4 +1,4 @@
-# Creating a new plugin
+# Creating a New Plugin
 
 Shrine has a lot of plugins built-in, but you can also easily create your own.
 Simply put, a plugin is a module:

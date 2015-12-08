@@ -1,4 +1,4 @@
-# Reprocessing versions
+# Reprocessing Versions
 
 While your app is serving uploads in production, you may realize that you want
 to change how your attachment's versions are generated. This means that, in

@@ -1,4 +1,4 @@
-# Migrating to another storage
+# Migrating to Another Storage
 
 While your application is live in production and performing uploads, it may
 happen that you decide you want to change your storage (the `:store`). Shrine

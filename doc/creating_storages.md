@@ -1,4 +1,4 @@
-# Creating a new storage
+# Creating a New Storage
 
 Shrine ships with the FileSystem and S3 storages, but it's also easy to create
 your own. A storage is a class which has at least the following methods:

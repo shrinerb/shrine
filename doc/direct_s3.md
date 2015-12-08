@@ -1,4 +1,4 @@
-# Direct uploads to S3
+# Direct Uploads to S3
 
 Probably the best way to do file uploads is to upload them directly to S3, and
 afterwards do processing in a background job. Direct S3 uploads are a bit more

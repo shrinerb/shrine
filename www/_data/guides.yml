@@ -1,23 +1,23 @@
 -
-  name: Changing location of files
+  name: Changing Location of Files
   path: changing_location_md.html
 -
-  name: Creating a new plugin
+  name: Creating a New Plugin
   path: creating_plugins_md.html
 -
-  name: Creating a new storage
+  name: Creating a New Storage
   path: creating_storages_md.html
 -
-  name: Direct uploads to S3
+  name: Direct Uploads to S3
   path: direct_s3_md.html
 -
-  name: Migrating to another storage
+  name: Migrating to Another Storage
   path: migrating_storage_md.html
 -
-  name: Reprocessing versions
+  name: Reprocessing Versions
   path: regenerating_versions_md.html
 -
-  name: Securing uploads
+  name: Securing Uploads
   path: securing_uploads_md.html
 -
   name: Shrine for CarrierWave Users
