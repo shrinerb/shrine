@@ -19,19 +19,18 @@ class Shrine
     # Checks if the storage conforms to Shrine's specification. If the check
     # fails a LintError is raised.
     class Linter
-      def self.call(storage)
-        new(storage).call
+      def self.call(*args)
+        new(*args).call
       end
 
-      def initialize(storage)
+      def initialize(storage, io = FakeIO.new("image"))
         @storage = storage
-        @errors = []
+        @io      = io
+        @errors  = []
       end
 
       def call
-        fakeio = FakeIO.new("image")
-
-        storage.upload(fakeio, "foo.jpg", {"mime_type" => "image/jpeg"})
+        storage.upload(@io, "foo.jpg", {"mime_type" => "image/jpeg"})
 
         file = storage.download("foo.jpg")
         error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)
@@ -63,7 +62,7 @@ class Shrine
         rescue Shrine::Confirm
         end
 
-        storage.upload(FakeIO.new("image"), "foo.jpg", {"mime_type" => "image/jpeg"})
+        storage.upload(@io.tap(&:rewind), "foo.jpg", {"mime_type" => "image/jpeg"})
         storage.clear!(:confirm)
         error! "a file still #exists? after #clear! was called" if storage.exists?("foo.jpg")
 
