@@ -85,10 +85,8 @@ describe "the versions plugin" do
 
     it "doesn't fail if version is registered but missing" do
       @attacher.set({})
-      @attacher.singleton_class.class_eval do
-        def default_url(options)
-          "missing #{options[:version]}"
-        end
+      @attacher.shrine_class.plugin :default_url do |context|
+        "missing #{context[:version]}"
       end
 
       assert_equal "missing thumb", @attacher.url(:thumb)
@@ -107,10 +105,8 @@ describe "the versions plugin" do
     end
 
     it "passes in :version to the default url" do
-      @uploader.class.class_eval do
-        def default_url(context)
-          context.fetch(:version).to_s
-        end
+      @uploader.class.plugin :default_url do |context|
+        context.fetch(:version).to_s
       end
 
       assert_equal "thumb", @attacher.url(:thumb)
@@ -122,11 +118,7 @@ describe "the versions plugin" do
           options
         end
       end
-      @attacher.shrine_class.class_eval do
-        def default_url(context)
-          context
-        end
-      end
+      @attacher.shrine_class.plugin(:default_url) { |context| context }
 
       @attacher.set(thumb: @attacher.cache.upload(fakeio))
       assert_equal Hash[foo: "foo"], @attacher.url(:thumb, foo: "foo")

@@ -600,7 +600,7 @@ class Shrine
         # Delegates to `Shrine#default_url`.
         def default_url(**options)
           url = store.default_url(options.merge(context))
-          warn "Overriding Shrine#default_url is deprecated and will be removed in Shrine 2. You should use the default_url plugin."
+          warn "Overriding Shrine#default_url is deprecated and will be removed in Shrine 2. You should use the default_url plugin." if url
           url
         end
 

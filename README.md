@@ -464,13 +464,13 @@ end
 
 ## Default URL
 
-When attachment is missing, `user.avatar_url` by default returns nil. This
-because it internally calls `Shrine#default_url`, which returns nil unless
-overriden. For custom default URLs simply override the method:
+When attachment is missing, `user.avatar_url` by default returns nil. However,
+you can choose to instead return a placeholder image on missing attachments
+with the `default_url` plugin:
 
 ```rb
 class ImageUploader < Shrine
-  def default_url(context)
+  plugin :default_url do |context|
     "/images/fallback/#{context[:name]}.png"
   end
 end

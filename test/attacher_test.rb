@@ -235,11 +235,8 @@ describe Shrine::Attacher do
 
     it "calls #default_url when attachment is missing" do
       assert_equal nil, @attacher.url
-
-      @attacher.store.instance_eval do
-        def default_url(name:, record:, foo:)
-          "#{name}_default"
-        end
+      @attacher.shrine_class.plugin :default_url do |context|
+        "#{context[:name]}_default"
       end
 
       assert_equal "avatar_default", @attacher.url(foo: "bar")
