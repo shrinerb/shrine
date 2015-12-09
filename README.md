@@ -166,14 +166,14 @@ user.avatar = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'
 ### ORM
 
 Your models probably won't be POROs, so Shrine ships with plugins for
-Sequel and ActiveRecord ORMs. Shrine uses the "\<attachment\>\_data" column
+Sequel and ActiveRecord ORMs. Shrine uses the `<attachment>_data` column
 for storing attachments, so you'll need to add it in a migration:
 
 ```rb
 add_column :users, :avatar_data, :text # or a "jsonb" column if you need querying
 ```
 ```rb
-Shrine.plugin :sequel # Important!
+Shrine.plugin :sequel # or :activerecord
 ```
 ```rb
 class User < Sequel::Model
