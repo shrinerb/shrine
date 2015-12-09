@@ -204,7 +204,7 @@ class Shrine
 
       # Copies an existing S3 object to a new location.
       def copy(io, id, **options)
-        options.update(multipart_copy: true) if io.size >= 5*1024*1024*1024 # 5GB
+        options.update(multipart_copy: true) if large?(io)
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
@@ -218,6 +218,11 @@ class Shrine
         io.respond_to?(:storage) &&
         io.storage.is_a?(Storage::S3) &&
         io.storage.access_key_id == access_key_id
+      end
+
+      # Amazon requires multipart copy from S3 objects larger than 5 GB.
+      def large?(io)
+        io.size >= 5*1024*1024*1024 # 5GB
       end
     end
   end
