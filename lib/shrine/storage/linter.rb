@@ -37,22 +37,27 @@ class Shrine
         error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)
         error! "#download returns an empty file" if file.read.empty?
 
+        error! "#open doesn't return a valid IO object" if !io?(storage.open("foo.jpg"))
+        error! "#read returns an empty string" if storage.read("foo.jpg").empty?
+        error! "#exists? returns false for a file that was uploaded" if !storage.exists?("foo.jpg")
+        error! "#url doesn't return a string" if !storage.url("foo.jpg", {}).is_a?(String)
+
         if storage.respond_to?(:move)
           if storage.respond_to?(:movable?)
             error! "#movable? doesn't accept 2 arguments" if !(storage.method(:movable?).arity == 2)
             error! "#move doesn't accept 3 arguments" if !(storage.method(:move).arity == -3)
+
+            uploaded_file = uploader.upload(io_factory.call, location: "bar.jpg")
+
+            if storage.movable?(uploaded_file, "quux.jpg")
+              storage.move(uploaded_file, "quux.jpg")
+              error! "#exists? returns false for destination after #move" if !storage.exists?("quux.jpg")
+              error! "#exists? returns true for source after #move" if storage.exists?("bar.jpg")
+            end
           else
             error! "responds to #move but doesn't respond to #movable?" if !storage.respond_to?(:movable?)
           end
         end
-
-        if !io?(storage.open("foo.jpg"))
-          error! "#open doesn't return a valid IO object"
-        end
-
-        error! "#read returns an empty string" if storage.read("foo.jpg").empty?
-        error! "#exists? returns false for a file that was uploaded" if !storage.exists?("foo.jpg")
-        error! "#url doesn't return a string" if !storage.url("foo.jpg", {}).is_a?(String)
 
         storage.delete("foo.jpg")
         error! "#exists? returns true for a file that was deleted" if storage.exists?("foo.jpg")
@@ -71,6 +76,12 @@ class Shrine
       end
 
       private
+
+      def uploader
+        shrine = Class.new(Shrine)
+        shrine.storages[:storage] = storage
+        shrine.new(:storage)
+      end
 
       def io?(object)
         missing_methods = IO_METHODS.reject do |m, a|
