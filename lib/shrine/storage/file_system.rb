@@ -22,7 +22,7 @@ class Shrine
     #     storage = Shrine::Storage::FileSystem.new(Dir.tmpdir)
     #     storage.url("image.jpg") #=> "/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/image.jpg"
     #
-    # ## CDN
+    # ## Host
     #
     # It's generally a good idea to serve your files via a CDN, so an
     # additional `:host` option can be provided:
@@ -30,6 +30,9 @@ class Shrine
     #     storage = Shrine::Storage::FileSystem.new("public",
     #       subdirectory: "uploads", host: "//abc123.cloudfront.net")
     #     storage.url("image.jpg") #=> "//abc123.cloudfront.net/uploads/image.jpg"
+    #
+    # This option can be set to your application's domain, in order to get
+    # absolute file URLs.
     #
     # The `:host` option can also be used wihout `:subdirectory`, and is
     # useful if you for example have files located on another server:
