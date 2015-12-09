@@ -65,18 +65,6 @@ describe Shrine::Storage::S3 do
     end
   end
 
-  describe "#multi_delete" do
-    it "deletes multiple files at once" do
-      @s3.upload(fakeio, "foo")
-      @s3.upload(fakeio, "bar")
-
-      @s3.multi_delete(["foo", "bar"])
-
-      refute @s3.exists?("foo")
-      refute @s3.exists?("bar")
-    end
-  end
-
   describe "#url" do
     it "provides a download URL for the file" do
       @s3.upload(fakeio("image"), "foo")

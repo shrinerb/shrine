@@ -62,6 +62,13 @@ class Shrine
         storage.delete("foo.jpg")
         error! "#exists? returns true for a file that was deleted" if storage.exists?("foo.jpg")
 
+        if storage.respond_to?(:multi_delete)
+          storage.upload(io_factory.call, "foo.jpg")
+          storage.multi_delete(["foo.jpg"])
+
+          error! "#exists? returns true for a file that was multi-deleted" if storage.exists?("foo.jpg")
+        end
+
         begin
           storage.clear!
           error! "#clear! should raise Shrine::Confirm unless :confirm is passed in"
