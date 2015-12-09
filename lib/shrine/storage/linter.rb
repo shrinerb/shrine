@@ -17,31 +17,32 @@ class Shrine
 
   module Storage
     # Checks if the storage conforms to Shrine's specification. If the check
-    # fails a LintError is raised.
+    # fails, by default it raises a LintError, but you can also specify
+    # `action: :warn`.
     class Linter
       def self.call(*args)
         new(*args).call
       end
 
-      def initialize(storage, io = FakeIO.new("image"))
+      def initialize(storage, action: :error)
         @storage = storage
-        @io      = io
+        @action  = action
         @errors  = []
       end
 
-      def call
-        storage.upload(@io, "foo.jpg", {"mime_type" => "image/jpeg"})
+      def call(io_factory = ->{FakeIO.new("image")})
+        storage.upload(io_factory.call, "foo.jpg", {"mime_type" => "image/jpeg"})
 
         file = storage.download("foo.jpg")
         error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)
-        error! "#download doesn't return the uploaded file" if !(file.read == "image")
+        error! "#download returns an empty file" if file.read.empty?
 
         if storage.respond_to?(:move)
           if storage.respond_to?(:movable?)
             error! "#movable? doesn't accept 2 arguments" if !(storage.method(:movable?).arity == 2)
             error! "#move doesn't accept 3 arguments" if !(storage.method(:move).arity == -3)
           else
-            error! "doesn't respond to #movable?" if !storage.respond_to?(:movable?)
+            error! "responds to #move but doesn't respond to #movable?" if !storage.respond_to?(:movable?)
           end
         end
 
@@ -49,7 +50,7 @@ class Shrine
           error! "#open doesn't return a valid IO object"
         end
 
-        error! "#read doesn't return content of the uploaded file" if !(storage.read("foo.jpg") == "image")
+        error! "#read returns an empty string" if storage.read("foo.jpg").empty?
         error! "#exists? returns false for a file that was uploaded" if !storage.exists?("foo.jpg")
         error! "#url doesn't return a string" if !storage.url("foo.jpg", {}).is_a?(String)
 
@@ -62,11 +63,11 @@ class Shrine
         rescue Shrine::Confirm
         end
 
-        storage.upload(@io.tap(&:rewind), "foo.jpg", {"mime_type" => "image/jpeg"})
+        storage.upload(io_factory.call, "foo.jpg", {"mime_type" => "image/jpeg"})
         storage.clear!(:confirm)
-        error! "a file still #exists? after #clear! was called" if storage.exists?("foo.jpg")
+        error! "file still #exists? after #clear! was called" if storage.exists?("foo.jpg")
 
-        raise LintError.new(@errors) if @errors.any?
+        raise LintError.new(@errors) if @errors.any? && @action == :error
       end
 
       private
@@ -80,6 +81,7 @@ class Shrine
 
       def error!(message)
         @errors << message
+        warn(message) if @action.to_s.start_with?("warn")
       end
 
       attr_reader :storage
