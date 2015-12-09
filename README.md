@@ -514,10 +514,10 @@ Shrine.new(:store).upload(file, location: "a/specific/location.jpg")
 
 ## Amazon S3
 
-So far in the examples we've only used the FileSystem storage. However, Shrine
-also ships with S3 storage (which internally uses the [aws-sdk] gem).
+So far in the examples we've only used the [FileSystem] storage. However, Shrine
+also ships with [S3] storage (which internally uses the [aws-sdk] gem).
 
-```
+```rb
 gem "aws-sdk", "~> 2.1"
 ```
 
@@ -676,3 +676,5 @@ The gem is available as open source under the terms of the [MIT License].
 [example app]: https://github.com/janko-m/shrine-example
 [ships with over 25 plugins]: http://shrinerb.com#plugins
 [introductory blog post]: http://twin.github.io/introducing-shrine/
+[FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
+[S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
