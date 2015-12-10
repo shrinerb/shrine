@@ -29,10 +29,16 @@ describe "the data_uri plugin" do
     assert_equal "text/plain", @user.avatar.mime_type
   end
 
-  it "allows content types with dots in them" do
-    @user.avatar_data_uri = data_uri("image/vnd.microsoft.icon")
+  it "allows content types with dots and pluses in them" do
+    @user.avatar_data_uri = data_uri("application/vnd.api+json")
 
-    assert_equal "image/vnd.microsoft.icon", @user.avatar.mime_type
+    assert_equal "application/vnd.api+json", @user.avatar.mime_type
+  end
+
+  it "doesn't allow content types with other special characters" do
+    @user.avatar_data_uri = data_uri("application/vnd.api&json")
+
+    assert @user.avatar.nil?
   end
 
   it "allows non-base64 data URIs" do

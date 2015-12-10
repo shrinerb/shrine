@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow the data_uri plugin to accept "+" symbols in MIME type names (janko-m)
+
 * Make the data_uri plugin accept data URIs which aren't base64 encoded (janko-m)
 
 * Close all IOs after uploading them (janko-m)
