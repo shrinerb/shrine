@@ -25,3 +25,6 @@
 -
   name: Shrine for Paperclip Users
   path: paperclip_md.html
+-
+  name: Shrine for Refile Users
+  path: refile_md.html
