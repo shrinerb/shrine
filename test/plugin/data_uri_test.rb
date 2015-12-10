@@ -1,4 +1,5 @@
 require "test_helper"
+require "base64"
 
 describe "the data_uri plugin" do
   def setup
@@ -61,5 +62,11 @@ describe "the data_uri plugin" do
     @user.avatar_data_uri = "bla"
 
     assert_equal ["Data URI failed"], @user.avatar_attacher.errors
+  end
+
+  it "adds a #data_uri method to uploaded files" do
+    @user.avatar = fakeio(Base64.decode64("somefile"))
+
+    assert_equal "data:text/plain;base64,somefile", @user.avatar.data_uri
   end
 end

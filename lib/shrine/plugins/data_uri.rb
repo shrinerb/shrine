@@ -11,10 +11,10 @@ class Shrine
     # `#avatar_data_uri` and `#avatar_data_uri=` methods to your model.
     #
     #     user.avatar #=> nil
-    #     user.avatar_data_uri = "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    #     user.avatar_data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
     #     user.avatar #=> #<Shrine::UploadedFile>
     #
-    #     user.avatar.mime_type         #=> "image/jpeg"
+    #     user.avatar.mime_type         #=> "image/png"
     #     user.avatar.size              #=> 43423
     #     user.avatar.original_filename #=> nil
     #
@@ -23,6 +23,12 @@ class Shrine
     #
     #     plugin :data_uri, error_message: "data URI was invalid"
     #     plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
+    #
+    # This plugin also adds a `UploadedFile#data_uri` method, which returns
+    # a base64-encoded data URI of any UploadedFile (regardless of whether it
+    # was uploaded through a data URI or not):
+    #
+    #     user.avatar.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
     #
     # [data URIs]: https://tools.ietf.org/html/rfc2397
     # [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
@@ -75,6 +81,12 @@ class Shrine
         # Form builders require the reader as well.
         def data_uri
           @data_uri
+        end
+      end
+
+      module FileMethods
+        def data_uri
+          @data_uri ||= "data:#{mime_type||"text/plain"};base64,#{Base64.encode64(read).chomp}"
         end
       end
 

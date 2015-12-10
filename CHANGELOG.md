@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add a `UploadedFile#data_uri` method to the data_uri plugin (janko-m)
+
 * Allow the data_uri plugin to accept "+" symbols in MIME type names (janko-m)
 
 * Make the data_uri plugin accept data URIs which aren't base64 encoded (janko-m)
