@@ -45,12 +45,13 @@ uploaded_file.data #=>
 
 First we add the storage we want to use to Shrine's registry. Storages are
 simple Ruby classes which perform the actual uploads. We instantiate a `Shrine`
-with the storage name, and when we call `Shrine#upload` the following happens:
+with the storage name, and when we call `#upload` Shrine does the following:
 
-* a unique location is generated for the file
-* metadata is extracted from the file
-* the underlying storage is called to store the file
-* a `Shrine::UploadedFile` is returned with these data
+* generates a unique location for the file
+* extracts metadata from the file
+* uploads the file using the underlying storage
+* closes the file
+* returns a `Shrine::UploadedFile` with relevant data
 
 The argument to `Shrine#upload` needs to be an IO-like object. So, `File`,
 `Tempfile` and `StringIO` are all valid arguments. But the object doesn't have
