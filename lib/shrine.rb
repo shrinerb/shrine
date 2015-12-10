@@ -692,6 +692,7 @@ class Shrine
         def mime_type
           metadata.fetch("mime_type")
         end
+        alias content_type mime_type
 
         # Part of Shrine::UploadedFile's complying to the IO interface.  It
         # delegates to the internally downloaded file.

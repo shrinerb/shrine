@@ -27,6 +27,7 @@ describe Shrine::UploadedFile do
     assert_equal "foo.jpg", uploaded_file.original_filename
     assert_equal 5, uploaded_file.size
     assert_equal "image/jpeg", uploaded_file.mime_type
+    assert_equal "image/jpeg", uploaded_file.content_type
   end
 
   it "exposes the extension" do

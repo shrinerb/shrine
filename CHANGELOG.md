@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `UploadedFile#content_type` alias to `#mime_type` for better integration with upload libraries (janko-m)
+
 * Add a `UploadedFile#data_uri` method to the data_uri plugin (janko-m)
 
 * Allow the data_uri plugin to accept "+" symbols in MIME type names (janko-m)
