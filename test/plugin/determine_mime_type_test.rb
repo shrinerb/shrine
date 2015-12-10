@@ -18,7 +18,7 @@ describe "the determine_mime_type plugin" do
       @uploader = uploader(:filemagic)
       uploaded_file = @uploader.upload(file = fakeio("nature"))
 
-      assert_equal "nature", file.read
+      assert_equal "nature", uploaded_file.read
     end
   end unless RUBY_ENGINE == "jruby" || ENV["CI"]
 

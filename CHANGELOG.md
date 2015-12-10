@@ -1,5 +1,7 @@
 ## HEAD
 
+* Close all IOs after uploading them (janko-m)
+
 * Allow passing a custom IO object to the Linter (janko-m)
 
 * Add remove_invalid plugin for automatically deleting and deassigning invalid cached files (janko-m)

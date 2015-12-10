@@ -201,6 +201,12 @@ describe Shrine do
       assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
     end
 
+    it "closes the file after uploading" do
+      @uploader.store(io = fakeio)
+
+      assert_raises(IOError) { io.read }
+    end
+
     it "checks if the input is a valid IO" do
       assert_raises(Shrine::Error) { @uploader.store(:not_an_io) }
     end

@@ -208,7 +208,7 @@ class Shrine
         # The main method for uploading files.  Takes in an IO object and an
         # optional context (used internally by Shrine::Attacher).  It calls
         # user-defined #process, and aferwards it calls #store.  The `io` is
-        # rewinded after upload.
+        # closed after upload.
         def upload(io, context = {})
           io = processed(io, context) || io
           store(io, context)
@@ -335,7 +335,7 @@ class Shrine
         # Does the actual uploading, calling `#upload` on the storage.
         def copy(io, context)
           storage.upload(io, context[:location], context[:metadata])
-          io.rewind rescue nil
+          io.close rescue nil
         end
 
         # Does the actual deletion, calls `UploadedFile#delete`.
