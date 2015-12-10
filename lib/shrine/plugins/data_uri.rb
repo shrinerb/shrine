@@ -29,7 +29,7 @@ class Shrine
     module DataUri
       DEFAULT_ERROR_MESSAGE = "data URI was invalid"
       DEFAULT_CONTENT_TYPE = "text/plain"
-      DATA_URI_REGEXP = /\Adata:([-\w]+\/[-\w\+\.]+)?;base64,(.*)/m
+      DATA_URI_REGEXP = /\Adata:([-\w]+\/[-\w.]+)?(;base64)?,(.*)\z/m
 
       def self.configure(uploader, error_message: DEFAULT_ERROR_MESSAGE)
         uploader.opts[:data_uri_error_message] = error_message
@@ -61,7 +61,7 @@ class Shrine
 
           if match = uri.match(DATA_URI_REGEXP)
             content_type = match[1] || DEFAULT_CONTENT_TYPE
-            content      = Base64.decode64(match[2])
+            content      = match[2] ? Base64.decode64(match[3]) : match[3]
 
             assign DataFile.new(content, content_type: content_type)
           else

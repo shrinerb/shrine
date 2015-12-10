@@ -1,5 +1,6 @@
 require "./test/support/fakeio"
 require "./test/support/memory"
+require "base64"
 
 module TestHelpers
   module Generic
@@ -51,6 +52,10 @@ module TestHelpers
 
     def data_uri(content_type = "image/png")
       "data:#{content_type};base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    end
+
+    def data_uri_raw(content_type = "image/png")
+      "data:#{content_type},#{Base64.decode64("iVBORw0KGgoAAAANSUhEUgAAAAUA")}"
     end
 
     def io?(object)

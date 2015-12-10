@@ -35,6 +35,15 @@ describe "the data_uri plugin" do
     assert_equal "image/vnd.microsoft.icon", @user.avatar.mime_type
   end
 
+  it "allows non-base64 data URIs" do
+    @user.avatar_data_uri = data_uri_raw("image/png")
+
+    assert @user.avatar
+    refute_empty @user.avatar.read
+    assert_equal "image/png", @user.avatar.mime_type
+    assert @user.avatar.size > 0
+  end
+
   it "ignores empty strings" do
     @user.avatar_data_uri = data_uri
     @user.avatar_data_uri = ""

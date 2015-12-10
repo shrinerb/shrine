@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make the data_uri plugin accept data URIs which aren't base64 encoded (janko-m)
+
 * Close all IOs after uploading them (janko-m)
 
 * Allow passing a custom IO object to the Linter (janko-m)
