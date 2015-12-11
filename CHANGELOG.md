@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `FileSystem#url` Windows compatible (janko-m)
+
 * Add `UploadedFile#content_type` alias to `#mime_type` for better integration with upload libraries (janko-m)
 
 * Add a `UploadedFile#data_uri` method to the data_uri plugin (janko-m)

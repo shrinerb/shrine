@@ -28,8 +28,8 @@ class Shrine
     # additional `:host` option can be provided:
     #
     #     storage = Shrine::Storage::FileSystem.new("public",
-    #       subdirectory: "uploads", host: "//abc123.cloudfront.net")
-    #     storage.url("image.jpg") #=> "//abc123.cloudfront.net/uploads/image.jpg"
+    #       subdirectory: "uploads", host: "http://abc123.cloudfront.net")
+    #     storage.url("image.jpg") #=> "http://abc123.cloudfront.net/uploads/image.jpg"
     #
     # This option can be set to your application's domain, in order to get
     # absolute file URLs.
@@ -37,8 +37,8 @@ class Shrine
     # The `:host` option can also be used wihout `:subdirectory`, and is
     # useful if you for example have files located on another server:
     #
-    #     storage = Shrine::Storage::FileSystem.new("files", host: "943.23.43.1")
-    #     storage.url("image.jpg") #=> "943.23.43.1/files/image.jpg"
+    #     storage = Shrine::Storage::FileSystem.new("files", host: "http://943.23.43.1")
+    #     storage.url("image.jpg") #=> "http://943.23.43.1/files/image.jpg"
     #
     # ## Clearing cache
     #
@@ -148,15 +148,8 @@ class Shrine
       # with an optional #host in front. Otherwise returns the full path to the
       # file (also with an optional #host).
       def url(id, **options)
-        if subdirectory
-          File.join(host || "", subdirectory, id)
-        else
-          if host
-            File.join(host, path(id))
-          else
-            path(id).to_s
-          end
-        end
+        path = (subdirectory ? relative_path(id) : path(id)).to_s
+        host ? host + path : path
       end
 
       # Without any options it deletes all files from the #directory (and this
@@ -203,6 +196,10 @@ class Shrine
       def path!(id)
         path(id).dirname.mkpath
         path(id)
+      end
+
+      def relative_path(id)
+        "/" + subdirectory.join(id.gsub("/", File::SEPARATOR)).to_s
       end
 
       def relative(path)

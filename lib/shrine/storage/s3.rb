@@ -41,7 +41,7 @@ class Shrine
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
     # the `:host` option to have all your URLs use the CDN host:
     #
-    #     Shrine::Storage::S3.new(host: "//abc123.cloudfront.net", **s3_options)
+    #     Shrine::Storage::S3.new(host: "http://abc123.cloudfront.net", **s3_options)
     #
     # ## Clearing cache
     #

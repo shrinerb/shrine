@@ -5,6 +5,7 @@ require "shrine/storage/linter"
 
 require "down"
 require "fileutils"
+require "tmpdir"
 
 describe Shrine::Storage::FileSystem do
   def file_system(*args)
@@ -12,7 +13,7 @@ describe Shrine::Storage::FileSystem do
   end
 
   def root
-    "tmp"
+    File.join(Dir.tmpdir, "shrine")
   end
 
   before do
@@ -144,14 +145,14 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root)
       @storage.upload(fakeio, "foo.jpg")
 
-      assert_equal "tmp/foo.jpg", @storage.url("foo.jpg")
+      assert_equal "#{root}/foo.jpg", @storage.url("foo.jpg")
     end
 
     it "applies a host without :subdirectory" do
-      @storage = file_system(root, host: "124.83.12.24")
+      @storage = file_system(root, host: "http://124.83.12.24")
       @storage.upload(fakeio, "foo.jpg")
 
-      assert_equal "124.83.12.24/tmp/foo.jpg", @storage.url("foo.jpg")
+      assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg")
     end
 
     it "returns the path relative to the :subdirectory" do
@@ -159,6 +160,13 @@ describe Shrine::Storage::FileSystem do
       @storage.upload(fakeio, "foo.jpg")
 
       assert_equal "/uploads/foo.jpg", @storage.url("foo.jpg")
+    end
+
+    it "accepts a host with :subdirectory" do
+      @storage = file_system(root, subdirectory: "uploads", host: "http://abc123.cloudfront.net")
+      @storage.upload(fakeio, "foo.jpg")
+
+      assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg")
     end
   end
 
@@ -209,8 +217,8 @@ describe Shrine::Storage::FileSystem do
     @storage = file_system(root, subdirectory: "/uploads")
     @storage.upload(fakeio, "foo.jpg")
 
-    assert_equal "tmp/uploads", @storage.directory.to_s
-    assert_equal "tmp/uploads/foo.jpg", @storage.open("foo.jpg").path
+    assert_equal "#{root}/uploads", @storage.directory.to_s
+    assert_equal "#{root}/uploads/foo.jpg", @storage.open("foo.jpg").path
   end
 
   def assert_permissions(expected, path)
