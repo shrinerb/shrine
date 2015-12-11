@@ -100,7 +100,7 @@ class Shrine
 
       # Downloads the file from the given location, and returns a `Tempfile`.
       def download(id)
-        Down.copy_to_tempfile(id, open(id))
+        open(id) { |file| Down.copy_to_tempfile(id, file) }
       end
 
       # Moves the file to the given location. This gets called by the "moving"
@@ -123,8 +123,8 @@ class Shrine
       end
 
       # Opens the file on the given location in read mode.
-      def open(id)
-        path(id).open("rb")
+      def open(id, &block)
+        path(id).open("rb", &block)
       end
 
       # Returns the contents of the file as a String.

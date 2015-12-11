@@ -1,5 +1,7 @@
 ## HEAD
 
+* Close an open file descriptor left after downloading a FileSystem file (janko-m)
+
 * Make `FileSystem#url` Windows compatible (janko-m)
 
 * Add `UploadedFile#content_type` alias to `#mime_type` for better integration with upload libraries (janko-m)
