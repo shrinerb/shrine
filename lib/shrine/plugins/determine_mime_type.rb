@@ -8,8 +8,9 @@ class Shrine
     # The plugin accepts the following analyzers:
     #
     # :file
-    # : (Default). Uses the UNIX [file] utility to determine the MIME type
-    #   from file contents.
+    # : (Default). Uses the [file] utility to determine the MIME type from file
+    #   contents. It is installed by default on most operating systems, but the
+    #   [Windows equivalent] you need to install separately.
     #
     # :filemagic
     # : Uses the [ruby-filemagic] gem to determine the MIME type from file
@@ -42,6 +43,7 @@ class Shrine
     #     end
     #
     # [file]: http://linux.die.net/man/1/file
+    # [Windows equivalent]: http://gnuwin32.sourceforge.net/packages/file.htm
     # [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic
     # [mimemagic]: https://github.com/minad/mimemagic
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
