@@ -31,8 +31,8 @@ class Shrine
     #       subdirectory: "uploads", host: "http://abc123.cloudfront.net")
     #     storage.url("image.jpg") #=> "http://abc123.cloudfront.net/uploads/image.jpg"
     #
-    # This option can be set to your application's domain, in order to get
-    # absolute file URLs.
+    # If you're not using a CDN, it's recommended that you still set `:host` to
+    # your application's domain (at least in production).
     #
     # The `:host` option can also be used wihout `:subdirectory`, and is
     # useful if you for example have files located on another server:
