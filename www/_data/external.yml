@@ -11,11 +11,20 @@
       name: lotus-shrine
       url: https://github.com/katafrakt/lotus-shrine
     -
+      name: shrine-cloudinary
+      url: https://github.com/janko-m/shrine-cloudinary
+    -
+      name: shrine-flickr
+      url: https://github.com/janko-m/shrine-flickr
+    -
       name: shrine-fog
       url: https://github.com/janko-m/shrine-fog
     -
       name: shrine-imgix
       url: https://github.com/janko-m/shrine-imgix
+    -
+      name: shrine-sql
+      url: https://github.com/janko-m/shrine-sql
 
 -
   title: Projects
