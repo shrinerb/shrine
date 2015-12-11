@@ -1,5 +1,7 @@
 # Creating a New Storage
 
+## Essentials
+
 Shrine ships with the FileSystem and S3 storages, but it's also easy to create
 your own. A storage is a class which has at least the following methods:
 
@@ -47,18 +49,25 @@ class Shrine
 end
 ```
 
-To check that your storage implements all these methods correctly, you can use
-`Shrine::Storage::Linter` in tests:
+If your storage doesn't control which id the uploaded file will have, you
+can modify the `id` variable:
 
 ```rb
-require "shrine/storage/linter"
-
-storage = Shrine::Storage::MyStorage.new(*args)
-Shrine::Storage::Linter.call(storage)
+def upload(io, id, metadata = {})
+  actual_id = do_upload(io, id, metadata)
+  id.replace(actual_id)
+end
 ```
 
-The linter will pass real files through your storage, and raise an error with
-an appropriate message if a part of the specification isn't satisfied.
+Likewise, if you need to save some information into the metadata after upload,
+you can modify the metadata hash:
+
+```rb
+def upload(io, id, metadata = {})
+  additional_metadata = do_upload(io, id, metadata)
+  metadata.merge!(additional_metadata)
+end
+```
 
 ## Moving
 
@@ -76,7 +85,7 @@ class Shrine
       end
 
       def movable?(io, id)
-        # whether the given `io` is movable, to the location `id`
+        # whether the given `io` is movable to the location `id`
       end
 
       # ...
@@ -105,4 +114,35 @@ class Shrine
     end
   end
 end
+```
+
+## Linter
+
+To check that your storage implements all these methods correctly, you can use
+`Shrine::Storage::Linter`:
+
+```rb
+require "shrine/storage/linter"
+
+storage = Shrine::Storage::MyStorage.new(*args)
+linter = Shrine::Storage::Linter.new(storage)
+linter.call
+```
+
+The linter will test your methods with simple IO objects, and raise an error
+with an appropriate message if a part of the specification isn't satisfied.
+
+If you want to specify the IO object to use for testing (e.g. you need the IO
+to be an actual image), you can pass in a lambda which returns the IO when
+called:
+
+```rb
+linter.call(->{File.open("test/fixtures/image.jpg")})
+```
+
+If you don't want errors to be raised but rather only warnings, you can
+pass `action: :warn` when initializing
+
+```rb
+linter = Shrine::Storage::Linter.new(storage, action: :warn)
 ```
