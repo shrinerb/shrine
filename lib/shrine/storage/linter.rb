@@ -31,16 +31,19 @@ class Shrine
       end
 
       def call(io_factory = ->{FakeIO.new("image")})
-        storage.upload(io_factory.call, "foo.jpg", {"mime_type" => "image/jpeg"})
+        storage.upload(io_factory.call, id = "foo.jpg", {"mime_type" => "image/jpeg"})
 
-        file = storage.download("foo.jpg")
+        file = storage.download(id)
         error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)
         error! "#download returns an empty file" if file.read.empty?
 
-        error! "#open doesn't return a valid IO object" if !io?(storage.open("foo.jpg"))
-        error! "#read returns an empty string" if storage.read("foo.jpg").empty?
-        error! "#exists? returns false for a file that was uploaded" if !storage.exists?("foo.jpg")
-        error! "#url doesn't return a string" if !storage.url("foo.jpg", {}).is_a?(String)
+        error! "#open doesn't return a valid IO object" if !io?(storage.open(id))
+        error! "#read returns an empty string" if storage.read(id).empty?
+        error! "#exists? returns false for a file that was uploaded" if !storage.exists?(id)
+        error! "#url doesn't return a string" if !storage.url(id, {}).is_a?(String)
+
+        storage.delete(id)
+        error! "#exists? returns true for a file that was deleted" if storage.exists?(id)
 
         if storage.respond_to?(:move)
           if storage.respond_to?(:movable?)
@@ -50,23 +53,19 @@ class Shrine
             uploaded_file = uploader.upload(io_factory.call, location: "bar.jpg")
 
             if storage.movable?(uploaded_file, "quux.jpg")
-              storage.move(uploaded_file, "quux.jpg")
-              error! "#exists? returns false for destination after #move" if !storage.exists?("quux.jpg")
-              error! "#exists? returns true for source after #move" if storage.exists?("bar.jpg")
+              storage.move(uploaded_file, id = "quux.jpg")
+              error! "#exists? returns false for destination after #move" if !storage.exists?(id)
+              error! "#exists? returns true for source after #move" if storage.exists?(uploaded_file.id)
             end
           else
             error! "responds to #move but doesn't respond to #movable?" if !storage.respond_to?(:movable?)
           end
         end
 
-        storage.delete("foo.jpg")
-        error! "#exists? returns true for a file that was deleted" if storage.exists?("foo.jpg")
-
         if storage.respond_to?(:multi_delete)
-          storage.upload(io_factory.call, "foo.jpg")
-          storage.multi_delete(["foo.jpg"])
-
-          error! "#exists? returns true for a file that was multi-deleted" if storage.exists?("foo.jpg")
+          storage.upload(io_factory.call, id = "foo.jpg")
+          storage.multi_delete([id])
+          error! "#exists? returns true for a file that was multi-deleted" if storage.exists?(id)
         end
 
         begin
@@ -75,9 +74,9 @@ class Shrine
         rescue Shrine::Confirm
         end
 
-        storage.upload(io_factory.call, "foo.jpg", {"mime_type" => "image/jpeg"})
+        storage.upload(io_factory.call, id = "foo.jpg")
         storage.clear!(:confirm)
-        error! "file still #exists? after #clear! was called" if storage.exists?("foo.jpg")
+        error! "file still #exists? after #clear! was called" if storage.exists?(id)
 
         raise LintError.new(@errors) if @errors.any? && @action == :error
       end
