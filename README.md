@@ -544,7 +544,7 @@ Shrine.storages = {
 user = User.new(avatar: File.open(:avatar))
 user.avatar.url #=> "/uploads/j4k343ui12ls9.jpg"
 user.save
-user.avatar.url #=> "https://s3-sa-east-1.amazonaws.com/my-bucket/0943sf8gfk13.jpg"
+user.avatar.url #=> "https://my-bucket.s3-eu-west-1.amazonaws.com/0943sf8gfk13.jpg"
 ```
 
 If you're using S3 for both `:cache` and `:store`, saving the record will
