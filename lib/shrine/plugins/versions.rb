@@ -44,6 +44,9 @@ class Shrine
     #     user.avatar[:medium].width #=> 500
     #     user.avatar[:small].width  #=> 300
     #
+    # You probably want to load the `delete_uploaded` plugin to automatically
+    # delete processed files after they have been uploaded.
+    #
     # The plugin also extends the `avatar_url` method to accept versions:
     #
     #     user.avatar_url(:medium)

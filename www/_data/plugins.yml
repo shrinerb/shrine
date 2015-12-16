@@ -84,6 +84,10 @@ Metadata:
 
 Deleting:
   -
+    name: delete_uploaded
+    path: DeleteUploaded.html
+    description: Makes uploaders automatically delete files after they're uploaded.
+  -
     name: keep_files
     path: KeepFiles.html
     description: Allows you to keep files on the storage that would otherwise be deleted.
