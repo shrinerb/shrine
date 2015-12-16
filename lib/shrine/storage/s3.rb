@@ -40,6 +40,17 @@ class Shrine
     # These options will be passed to aws-sdk's methods for [uploading],
     # [copying] and [presigning].
     #
+    # You can also set additional upload options per upload by overriding
+    # `#extract_metadata` and adding the "s3" key:
+    #
+    #     class MyUploader < Shrine
+    #       def extract_metadata(io, context)
+    #         super.update("s3" => {
+    #           acl: {:thumb => "public-read"}[context[:version]] || "private"
+    #         })
+    #       end
+    #     end
+    #
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
@@ -106,6 +117,7 @@ class Shrine
       def upload(io, id, metadata = {})
         options = {content_type: metadata["mime_type"]}
         options.update(upload_options)
+        options.update(metadata.delete("s3") || {})
 
         if copyable?(io)
           copy(io, id, **options)

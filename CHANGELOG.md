@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow adding S3 upload options dynamically per upload (janko-m)
+
 * Add delete_uploaded plugin for automatically deleting files after they're uploaded (janko-m)
 
 * Close an open file descriptor left after downloading a FileSystem file (janko-m)

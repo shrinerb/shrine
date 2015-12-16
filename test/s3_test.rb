@@ -61,6 +61,14 @@ describe Shrine::Storage::S3 do
       @s3 = s3(upload_options: {content_type: "foo/bar"})
       @s3.upload(fakeio, "foo")
       tempfile = @s3.download("foo")
+
+      assert_equal "foo/bar", tempfile.content_type
+    end
+
+    it "accepts additional upload options via metadata" do
+      @s3.upload(fakeio, "foo", {"s3" => {content_type: "foo/bar"}})
+      tempfile = @s3.download("foo")
+
       assert_equal "foo/bar", tempfile.content_type
     end
   end
