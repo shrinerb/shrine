@@ -576,10 +576,10 @@ any other backgrounding library.
 The main advantages of Shrine's backgrounding support over other file upload
 libraries are:
 
-* **User experience** – Before the background job finishes, Shrine allows you
-  to show users the cached attachment, so at that point the upload is finished
-  for your users.  With other file upload libraries users cannot see the file
-  until the background job has finished, which is really lame.
+* **User experience** – After starting the background job, Shrine will save the
+  record with the cached attachment so that it can be immediately shown to the
+  user. With other file upload libraries users cannot see the file until the
+  background job has finished, which is really lame.
 * **Simplicity** – Instead of writing the workers for you, Shrine allows you
   to use your own workers in a very simple way. Also, no extra columns are
   required.
