@@ -21,7 +21,7 @@ class Shrine
     # being uploaded will be deleted afterwards. However, if both the file
     # being uploaded and the destination are on the filesystem, a `mv` command
     # will be executed instead. Some other storages may implement moving as
-    # well, usually if also both the `:cache` and `:store` are using the same
+    # well, usually if also both the cache and store are using the same
     # storage.
     module Moving
       def self.configure(uploader, storages:)

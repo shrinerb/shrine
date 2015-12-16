@@ -22,8 +22,8 @@ class Shrine
     #       end
     #     end
     #
-    # Now when you access the attachment through the model, a hash of uploaded
-    # files will be returned:
+    # Now when you access the stored attachment through the model, a hash of
+    # uploaded files will be returned:
     #
     #     JSON.parse(user.avatar_data) #=>
     #     # {
@@ -55,7 +55,7 @@ class Shrine
     #     user.avatar #=> #<Shrine::UploadedFile>
     #     user.avatar_url(:medium) #=> "http://example.com/original.jpg"
     #
-    #     # the versions have finished generating
+    #     # the background job has finished generating versions
     #
     #     user.avatar_url(:medium) #=> "http://example.com/medium.jpg"
     #
@@ -67,10 +67,8 @@ class Shrine
     # You can also easily generate default URLs for specific versions, since
     # the `context` will include the version name:
     #
-    #     class ImageUploader
-    #       def default_url(io, context)
-    #         "/images/defaults/#{context[:version]}.jpg"
-    #       end
+    #     plugin :default_url do |context|
+    #       "/images/defaults/#{context[:version]}.jpg"
     #     end
     #
     # When deleting versions, any multi delete capabilities will be leveraged,

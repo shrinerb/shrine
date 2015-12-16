@@ -7,8 +7,8 @@ class Shrine
     #     plugin :keep_location, :cache => :store
     #
     # The above will preserve location of cached files uploaded to store. More
-    # precisely, if a Shrine::UploadedFile from `:cache` is begin uploaded to
-    # `:store`, the stored file will have the same location as the cached file.
+    # precisely, if a Shrine::UploadedFile from cache is begin uploaded to
+    # store, the stored file will have the same location as the cached file.
     #
     # The destination storage can also be specified as an array:
     #

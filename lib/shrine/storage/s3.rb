@@ -4,8 +4,12 @@ require "uri"
 
 class Shrine
   module Storage
-    # The S3 storage handles uploads to Amazon S3 service, and it is
-    # initialized with the following 4 required options:
+    # The S3 storage handles uploads to Amazon S3 service, it depends on the
+    # [aws-sdk] gem:
+    #
+    #     gem "aws-sdk", "~> 2.1"
+    #
+    # It is initialized with the following 4 required options:
     #
     #     Shrine::Storage::S3.new(
     #       access_key_id: "xyz",
@@ -53,6 +57,7 @@ class Shrine
     # [uploading]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
     # [copying]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
     # [presigning]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
+    # [aws-sdk]: https://github.com/aws/aws-sdk-ruby
     class S3
       # Maximum number of S3 objects that can be deleted with a single request.
       BATCH_SIZE = 1000

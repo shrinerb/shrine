@@ -105,12 +105,12 @@ for store. If you want to change that, you can use the `default_storage`
 plugin:
 
 ```rb
-Shrine.storages[:dropbox] = Shrine::Storage::Dropbox.new(*args)
+Shrine.storages[:foo] = Shrine::Storage::Foo.new(*args)
 ```
 
 ```rb
 class ImageUploader
-  plugin :default_storage, store: :dropbox
+  plugin :default_storage, store: :foo
 end
 ```
 

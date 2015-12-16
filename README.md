@@ -22,7 +22,7 @@ Shrine has been tested on MRI 2.1, MRI 2.2, JRuby and Rubinius.
 
 ## Basics
 
-Here's a basic example showing how the file upload works:
+Here's a basic example showing how the file upload works in Shrine:
 
 ```rb
 require "shrine"
@@ -81,8 +81,8 @@ uploaded_file.delete
 ## Attachment
 
 In web applications, instead of managing files directly, we rather want to
-treat them as "attachments" to models and to tie them to the lifecycle of
-records. In Shrine we do this by generating and including "attachment" modules.
+treat them as "attachments" to recod tie them to their lifecycle. In Shrine we
+do this by generating and including "attachment" modules.
 
 Firstly we need to assign the special `:cache` and `:store` storages:
 
@@ -95,8 +95,9 @@ Shrine.storages = {
 }
 ```
 
-Next we should create an uploader specific to the type of files we're
-uploading:
+These storages will by default be used for caching and storing attachments, but
+you can use additional storages with the `default_storage` plugin. Next we
+should create an uploader specific to the type of files we're uploading:
 
 ```rb
 class ImageUploader < Shrine
@@ -119,7 +120,7 @@ Now our model has gained special methods for attaching avatars:
 
 ```rb
 user = User.new
-user.avatar = File.open("avatar.jpg") # uploads the file to `:cache`
+user.avatar = File.open("avatar.jpg") # uploads the file to cache
 user.avatar      #=> #<Shrine::UploadedFile>
 user.avatar_url  #=> "/uploads/9260ea09d8effd.jpg"
 user.avatar_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
@@ -171,7 +172,7 @@ Sequel and ActiveRecord ORMs. Shrine uses the `<attachment>_data` column
 for storing attachments, so you'll need to add it in a migration:
 
 ```rb
-add_column :users, :avatar_data, :text # or a "jsonb" column if you need querying
+add_column :users, :avatar_data, :text # or a JSON column
 ```
 ```rb
 Shrine.plugin :sequel # or :activerecord
@@ -255,8 +256,8 @@ end
 The `io` is the file being uploaded, and `context` we'll leave for later.  You
 may be wondering why we need this conditional. Well, when an attachment is
 assigned and saved, an "upload" actually happens two times. First the file is
-"uploaded" to `:cache` on assignment, and then the cached file is reuploaded to
-`:store` on save.
+"uploaded" to cache on assignment, and then the cached file is reuploaded to
+store on save.
 
 Ok, now how do we do the actual processing? Well, Shrine actually doesn't ship
 with any file processing functionality, because that is a generic problem that
@@ -278,8 +279,8 @@ end
 ```
 
 Notice that we needed to call `io.download`. This is because the original file
-was already stored to `:cache`, and now this cached file is being uploaded to
-`:store`. The cached file is an instance of `Shrine::UploadedFile`, but for
+was already stored to cache, and now this cached file is being uploaded to
+store. The cached file is an instance of `Shrine::UploadedFile`, but for
 processing we need to work with actual files, so we first need to download it.
 
 In general, processing works in a way that if `#process` returns a file, Shrine
@@ -463,20 +464,6 @@ class ImageUploader < Shrine
 end
 ```
 
-## Default URL
-
-When attachment is missing, `user.avatar_url` by default returns nil. However,
-you can choose to instead return a placeholder image on missing attachments
-with the `default_url` plugin:
-
-```rb
-class ImageUploader < Shrine
-  plugin :default_url do |context|
-    "/images/fallback/#{context[:name]}.png"
-  end
-end
-```
-
 ## Locations
 
 By default files will all be put in the same folder. If you want that each
@@ -501,43 +488,30 @@ class ImageUploader < Shrine
 end
 ```
 
-Note that in this case should be careful to make the locations unique,
-otherwise dirty tracking won't be detected properly (you can use
-`Shrine#generate_uid`).
+Note that in this case should make your locations unique, otherwise dirty
+tracking won't be detected properly (you can use `Shrine#generate_uid`).
 
 When using `Shrine` directly you can bypass `#generate_location` by passing in
 `:location`
 
 ```rb
 file = File.open("avatar.jpg")
-Shrine.new(:store).upload(file, location: "a/specific/location.jpg")
+Shrine.new(:store).upload(file, location: "some/specific/location.jpg")
 ```
 
-## Amazon S3
+## Storage
 
-So far in the examples we've only used the [FileSystem] storage. However, Shrine
-also ships with [S3] storage (which internally uses the [aws-sdk] gem).
-
-```rb
-gem "aws-sdk", "~> 2.1"
-```
-
-It's typically good to use FileSystem for `:cache`, and S3 for `:store`:
+Other than [FileSystem], Shrine also ships with [S3] storage:
 
 ```rb
-require "shrine"
-require "shrine/storage/file_system"
 require "shrine/storage/s3"
 
-Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads"),
-  store: Shrine::Storage::S3.new(
-    access_key_id:     "<ACCESS_KEY_ID>",      # "xyz"
-    secret_access_key: "<SECRET_ACCESS_KEY>",  # "abc"
-    region:            "<REGION>",             # "eu-west-1"
-    bucket:            "<BUCKET>",             # "my-app"
-  )
-}
+Shrine.storages[:store] = Shrine::Storage::S3.new(
+  access_key_id:     "<ACCESS_KEY_ID>",      # "xyz"
+  secret_access_key: "<SECRET_ACCESS_KEY>",  # "abc"
+  region:            "<REGION>",             # "eu-west-1"
+  bucket:            "<BUCKET>",             # "my-app"
+)
 ```
 
 ```rb
@@ -547,10 +521,24 @@ user.save
 user.avatar.url #=> "https://my-bucket.s3-eu-west-1.amazonaws.com/0943sf8gfk13.jpg"
 ```
 
-If you're using S3 for both `:cache` and `:store`, saving the record will
-execute an S3 COPY command if possible, which avoids reuploading the file.
-Also, the `versions` plugin takes advantage of S3's MULTI DELETE capabilities,
-so versions are deleted with a single HTTP request.
+If you're using S3 for both cache and store, saving the record will avoid
+reuploading the file by issuing an S3 COPY command instead.  Also, the
+`versions` plugin takes advantage of S3's MULTI DELETE capabilities, so
+versions are deleted with a single HTTP request.
+
+See the full documentation for [FileSystem] and [S3] storages. There are also
+many other Shrine storages available, see the [Plugins & Storages] section.
+
+### Clearing cache
+
+You will want to periodically clean your cache storage. Amazon S3 provides [a
+built-in solution](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html),
+and for FileSystem you can put something like this in your Rake task:
+
+```rb
+file_system = Shrine.storages[:cache]
+file_system.clear!(older_than: 1.week.ago) # adjust the time
+```
 
 ## Background jobs
 
@@ -585,8 +573,8 @@ The above puts all promoting (moving to store) and deleting of files into a
 background Sidekiq job. Obviously instead of Sidekiq you can just as well use
 any other backgrounding library.
 
-The main advantages of Shrine's backgrounding support over ones in other file
-upload libraries are:
+The main advantages of Shrine's backgrounding support over other file upload
+libraries are:
 
 * **User experience** – Before the background job finishes, Shrine allows you
   to show users the cached attachment, so at that point the upload is finished
@@ -600,27 +588,12 @@ upload libraries are:
 * **Safety** – All of Shrine's code has been designed to take delayed storing
   into account, so concurrency issues should be nonexistent.
 
-## Clearing cache
-
-Your `:cache` storage will grow over time, so you'll want to periodically clean
-it. If you're using FileSystem as your `:cache`, you can put this in a
-scheduled job:
-
-```rb
-file_system = Shrine.storages[:cache]
-file_system.clear!(older_than: 1.week.ago) # adjust the time
-```
-
-If your `:cache` is S3, Amazon provides settings for automatic cache clearing,
-see [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html).
-
 ## Plugins
 
-Shrine comes with a small core which provides only the essential functionality.
-However, it comes with a lot of additional features which can be loaded via
-plugins. This way you can choose exactly how much Shrine does for you. Shrine
-itself [ships with over 25 plugins], most of them I haven't managed to cover
-here.
+Shrine comes with a small core which provides only the essential functionality,
+and all additional features are available via plugins. This way you can choose
+exactly how much Shrine does for you. Shrine itself [ships with over 30
+plugins], most of them I haven't managed to cover here.
 
 The plugin system respects inheritance, so you can choose which plugins will
 be applied to which uploaders:
@@ -656,7 +629,8 @@ The gem is available as open source under the terms of the [MIT License].
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [MIT License]: http://opensource.org/licenses/MIT
 [example app]: https://github.com/janko-m/shrine-example
-[ships with over 25 plugins]: http://shrinerb.com#plugins
+[ships with over 30 plugins]: http://shrinerb.com#plugins
 [introductory blog post]: http://twin.github.io/introducing-shrine/
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[Plugins & Storages]: http://shrinerb.com#external

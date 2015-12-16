@@ -47,7 +47,7 @@ end
 ```
 
 In the following sections we talk about various strategies to prevent files from
-being uploaded to `:cache` and the temporary directory.
+being uploaded to cache and the temporary directory.
 
 ### Direct uploads
 
@@ -71,7 +71,7 @@ end
 ### Regular uploads
 
 If you're simply accepting uploads synchronously in the form, you can prevent
-large files from getting into `:cache` by loading the `remove_invalid` plugin:
+large files from getting into cache by loading the `remove_invalid` plugin:
 
 ```rb
 plugin :remove_invalid
