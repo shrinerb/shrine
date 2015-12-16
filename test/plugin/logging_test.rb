@@ -39,7 +39,7 @@ describe "the logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio) }
 
-    assert_match /PROCESS \S+ 1 file \(0.0s\)$/, stdout
+    assert_match /PROCESS \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "logs storing" do
@@ -47,7 +47,7 @@ describe "the logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio) }
 
-    assert_match /STORE \S+ 1 file \(0.0s\)$/, stdout
+    assert_match /STORE \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "logs deleting" do
@@ -56,7 +56,7 @@ describe "the logging plugin" do
 
     stdout = capture { @uploader.delete(uploaded_file) }
 
-    assert_match /DELETE \S+ 1 file \(0.0s\)$/, stdout
+    assert_match /DELETE \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "outputs context data" do
@@ -73,9 +73,9 @@ describe "the logging plugin" do
       @uploader.delete(uploaded_file, @context)
     end
 
-    assert_match /PROCESS\[store\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
-    assert_match /STORE\[store\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
-    assert_match /DELETE\[store\] \S+\[:avatar\] User\[16\] 1 file \(0.0s\)$/, stdout
+    assert_match /PROCESS\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, stdout
+    assert_match /STORE\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, stdout
+    assert_match /DELETE\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "supports JSON format" do
@@ -106,6 +106,6 @@ describe "the logging plugin" do
     @context[:record].instance_eval { undef id }
     stdout = capture { @uploader.upload(fakeio, @context) }
 
-    assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(0.0s\)$/, stdout
+    assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(\d+\.\d+s\)$/, stdout
   end
 end
