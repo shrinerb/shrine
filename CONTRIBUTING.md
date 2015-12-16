@@ -111,6 +111,8 @@ ActiveRecord::Migration.class_eval do
   self.verbose = false # disable migration output
   create_table(:posts) { |t| t.text :image_data }
 end
+# make errors propagate when raised in callbacks
+ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 class Post < ActiveRecord::Base
   include MyUploader[:image]
