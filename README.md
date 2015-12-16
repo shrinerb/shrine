@@ -554,10 +554,10 @@ so versions are deleted with a single HTTP request.
 
 ## Background jobs
 
-Unlike other uploading libraries, Shrine embraces that putting phases of file
-upload into background jobs is essential for scaling and good user experience,
-so it ships with `background_helpers` plugin which makes backgrounding really
-easy:
+Shrine is the first uploading library designed from day one to be used with
+background jobs. Backgrounding parts of file upload is essential for scaling
+and good user experience, and Shrine provides a `background_helpers` which
+makes it really easy to plug in your backgrounding library:
 
 ```rb
 Shrine.plugin :background_helpers
@@ -585,39 +585,20 @@ The above puts all promoting (moving to store) and deleting of files into a
 background Sidekiq job. Obviously instead of Sidekiq you can just as well use
 any other backgrounding library.
 
-### Seamless user experience
+The main advantages of Shrine's backgrounding support over ones in other file
+upload libraries are:
 
-In combination with direct upload for caching, this provides a completely
-seamless user experience. First the user ansynchronosuly caches the file and
-hopefully sees a nice progress bar. After this is finishes and user submits the
-form, promoting will be kicked off into a background job, and the record will
-be saved with the cached file If your cache is public (e.g. in the "public"
-folder), the end user will immediately see their uploaded file, because the URL
-will point to the cached version.
-
-In the meanwhile, what `#promote` does is it uploads the cached file `:store`,
-and writes the stored file to the column. When the record gets saved, the URL
-will switch from filesystem to S3, but the user won't even notice that
-something happened, because they will still see the same file.
-
-### Generality
-
-This solution is completely agnostic about what kind of attachment it is
-uploading/deleting, and for which model. This means that all attachments can
-use this same worker. Also, there is no need for any extra columns.
-
-### Safety
-
-It is possible that the user changes their mind and reuploads a new file before
-the background job finished promoting. With a naive implementation, this means
-that after uploading a new file, there can happen a brief moment where the user
-sees the old file again, which can be upsetting.
-
-Shrine handles this gracefully. After `#promote` uploads the cached file to
-`:store`, it checks if the cached file still matches the file in the record
-column. If the files are different, that means the user uploaded a new
-attachment, and Shrine won't do the replacement. Additionally, this job is
-idempotent, meaning it can be safely repeated in case of failure.
+* **User experience** – Before the background job finishes, Shrine allows you
+  to show users the cached attachment, so at that point the upload is finished
+  for your users.  With other file upload libraries users cannot see the file
+  until the background job has finished, which is really lame.
+* **Simplicity** – Instead of writing the workers for you, Shrine allows you
+  to use your own workers in a very simple way. Also, no extra columns are
+  required.
+* **Generality** – The above solution will automatically work for all uploaders,
+  types of files and models.
+* **Safety** – All of Shrine's code has been designed to take delayed storing
+  into account, so concurrency issues should be nonexistent.
 
 ## Clearing cache
 
