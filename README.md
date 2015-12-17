@@ -504,6 +504,9 @@ Shrine.new(:store).upload(file, location: "some/specific/location.jpg")
 Other than [FileSystem], Shrine also ships with [S3] storage:
 
 ```rb
+gem "aws-sdk", "~> 2.1"
+```
+```rb
 require "shrine/storage/s3"
 
 Shrine.storages[:store] = Shrine::Storage::S3.new(
