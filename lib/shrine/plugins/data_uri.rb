@@ -25,11 +25,11 @@ class Shrine
     #     plugin :data_uri, error_message: "data URI was invalid"
     #     plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
     #
-    # This plugin also adds a `UploadedFile#data_uri` method, which returns
-    # a base64-encoded data URI of any UploadedFile (regardless of whether it
-    # was uploaded through a data URI or not):
+    # This plugin also adds a `UploadedFile#data_uri` method (and `#base64`),
+    # which returns a base64-encoded data URI of any UploadedFile:
     #
     #     user.avatar.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    #     user.avatar.base64   #=> "iVBORw0KGgoAAAANSUhEUgAAAAUA"
     #
     # [data URIs]: https://tools.ietf.org/html/rfc2397
     # [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
@@ -86,8 +86,16 @@ class Shrine
       end
 
       module FileMethods
+        # Returns the data URI representation of the file.
         def data_uri
-          @data_uri ||= "data:#{mime_type||"text/plain"};base64,#{Base64.encode64(read).chomp}"
+          @data_uri ||= "data:#{mime_type || "text/plain"};base64,#{base64}"
+        end
+
+        # Returns contents of the file base64-encoded.
+        def base64
+          content = storage.read(id)
+          base64 = Base64.encode64(content)
+          base64.chomp
         end
       end
 

@@ -1,5 +1,9 @@
 ## HEAD
 
+* Add `UploadedFile#base64` to the data_uri plugin (janko-m)
+
+* Optimize `UploadedData#data_uri` to not download the file and instantiate file contents string only once (janko-m)
+
 * Allow adding S3 upload options dynamically per upload (janko-m)
 
 * Add delete_uploaded plugin for automatically deleting files after they're uploaded (janko-m)
