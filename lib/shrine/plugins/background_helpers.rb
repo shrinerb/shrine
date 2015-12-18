@@ -114,7 +114,7 @@ class Shrine
             data = {
               "uploaded_file" => get.to_json,
               "record"        => [record.class.to_s, record.id],
-              "attachment"    => name,
+              "attachment"    => name.to_s,
             }
 
             instance_exec(data, &background_promote) if promote?(get)
@@ -131,8 +131,8 @@ class Shrine
             data = {
               "uploaded_file" => uploaded_file.to_json,
               "record"        => [record.class.to_s, record.id],
-              "attachment"    => name,
-              "phase"         => phase,
+              "attachment"    => name.to_s,
+              "phase"         => phase.to_s,
             }
 
             instance_exec(data, &background_delete)

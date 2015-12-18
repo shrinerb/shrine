@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix background_helpers plugin not working with ActiveJob (janko-m)
+
 * Add `UploadedFile#base64` to the data_uri plugin (janko-m)
 
 * Optimize `UploadedData#data_uri` to not download the file and instantiate file contents string only once (janko-m)
