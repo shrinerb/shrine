@@ -20,6 +20,9 @@
       name: shrine-fog
       url: https://github.com/janko-m/shrine-fog
     -
+      name: shrine-gridfs
+      url: https://github.com/janko-m/shrine-gridfs
+    -
       name: shrine-imgix
       url: https://github.com/janko-m/shrine-imgix
     -
@@ -35,3 +38,6 @@
     -
       name: Rails example app
       url: https://github.com/erikdahlstrand/shrine-rails-example
+    -
+      name: Lotus example app
+      url: https://github.com/katafrakt/lotus-shrine-example
