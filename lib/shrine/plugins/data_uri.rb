@@ -1,4 +1,5 @@
 require "base64"
+require "stringio"
 
 class Shrine
   module Plugins
