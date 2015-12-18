@@ -1,5 +1,7 @@
 ## HEAD
 
+* Delete underlying Tempfiles when closing an `UploadedFile` (janko-m)
+
 * Fix background_helpers plugin not working with ActiveJob (janko-m)
 
 * Add `UploadedFile#base64` to the data_uri plugin (janko-m)
