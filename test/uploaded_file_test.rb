@@ -34,6 +34,9 @@ describe Shrine::UploadedFile do
     uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
     assert_equal "jpg", uploaded_file.extension
 
+    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
+    assert_equal "jpg", uploaded_file.extension
+
     uploaded_file = @uploader.upload(fakeio(filename: "foo"))
     assert_equal nil, uploaded_file.extension
 

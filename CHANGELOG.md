@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix extension not being returned for storages which remove it from ID (Flickr, SQL, GridFS) (janko-m)
+
 * Delete underlying Tempfiles when closing an `UploadedFile` (janko-m)
 
 * Fix background_helpers plugin not working with ActiveJob (janko-m)

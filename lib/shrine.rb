@@ -680,7 +680,7 @@ class Shrine
 
         # The extension derived from `#original_filename`.
         def extension
-          File.extname(id)[1..-1]
+          File.extname(id)[1..-1] || File.extname(original_filename.to_s)[1..-1]
         end
 
         # The filesize of the original file.
