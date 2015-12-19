@@ -55,6 +55,21 @@ class Shrine
     # pass the `:permissions` option:
     #
     #     Shrine::Storage::FileSystem.new("directory", permissions: 0755)
+    #
+    # ## Heroku
+    #
+    # Note that Heroku has a read-only filesystem, and doesn't allow you to
+    # upload your files to the "public" directory, you can however upload to
+    # "tmp" directory:
+    #
+    #     Shrine::Storage::FileSystem.new("tmp/uploads")
+    #
+    # Note that this approach has a couple of downsides. For example, you can
+    # only use it for cache, since Heroku wipes this directory between app
+    # restarts. This also means that deploying the app can cancel someone's
+    # uploading if you're using backgrounding. Also, you cannot display a link
+    # to the cached file before it is promoted to store, since it won't be in
+    # the "public" directory.
     class FileSystem
       attr_reader :directory, :subdirectory, :host, :permissions
 
