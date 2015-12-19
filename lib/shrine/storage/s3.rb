@@ -135,7 +135,7 @@ class Shrine
 
       # Returns the contents of the file as a String.
       def read(id)
-        object(id).get.body.read
+        object(id).get.body.string
       end
 
       # Returns true file exists on S3.
