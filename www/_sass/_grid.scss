@@ -6,7 +6,25 @@
 
 .col {
   margin-bottom: 1em;
+}
 
+.row:first-child .col:nth-child(1) {
+  @include mq(sm) {
+    width: (100%/3);
+    margin-right: 1em;
+    margin-bottom: 0;
+  }
+}
+
+.row:first-child .col:nth-child(2) {
+  @include mq(sm) {
+    width: (100%/3*2);
+    margin-right: 1em;
+    margin-bottom: 0;
+  }
+}
+
+.row:last-child .col {
   @include mq(sm) {
     width: (100%/3);
     margin-right: 1em;

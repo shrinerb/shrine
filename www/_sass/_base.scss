@@ -111,3 +111,7 @@ label {
   li { margin-bottom: 0.25em; }
   .category { font-weight: bold; }
 }
+
+.row:first-child .col:last-child ul {
+  @include columns(10em 2);
+}
