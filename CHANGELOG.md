@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow the context hash to be modified (janko-m)
+
 * Fix extension not being returned for storages which remove it from ID (Flickr, SQL, GridFS) (janko-m)
 
 * Delete underlying Tempfiles when closing an `UploadedFile` (janko-m)

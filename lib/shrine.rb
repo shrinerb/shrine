@@ -634,7 +634,7 @@ class Shrine
         # The context that's sent to Shrine on upload and delete. It holds the
         # record and the name of the attachment.
         def context
-          @context ||= {name: name, record: record}.freeze
+          @context ||= {name: name, record: record}
         end
       end
 
