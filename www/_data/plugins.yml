@@ -147,3 +147,7 @@ Other:
     name: module_include
     path: ModuleInclude.html
     description: Allows easy extending of core classes for a given uploader.
+  -
+    name: upload_options
+    path: UploadOptions.html
+    description: Allows dynamically creating and forwarding storage-specific upload options.

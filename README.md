@@ -595,7 +595,7 @@ libraries are:
 
 Shrine comes with a small core which provides only the essential functionality,
 and all additional features are available via plugins. This way you can choose
-exactly how much Shrine does for you. Shrine itself [ships with over 30
+exactly how much Shrine does for you. Shrine itself [ships with over 35
 plugins], most of them I haven't managed to cover here.
 
 The plugin system respects inheritance, so you can choose which plugins will
@@ -632,7 +632,7 @@ The gem is available as open source under the terms of the [MIT License].
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [MIT License]: http://opensource.org/licenses/MIT
 [example app]: https://github.com/janko-m/shrine-example
-[ships with over 30 plugins]: http://shrinerb.com#plugins
+[ships with over 35 plugins]: http://shrinerb.com#plugins
 [introductory blog post]: http://twin.github.io/introducing-shrine/
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html

@@ -40,14 +40,16 @@ class Shrine
     # These options will be passed to aws-sdk's methods for [uploading],
     # [copying] and [presigning].
     #
-    # You can also set additional upload options per upload by overriding
-    # `#extract_metadata` and adding the "s3" key:
+    # You can also forward additional upload options per upload with the
+    # `upload_options` plugin:
     #
     #     class MyUploader < Shrine
-    #       def extract_metadata(io, context)
-    #         super.update("s3" => {
-    #           acl: {:thumb => "public-read"}[context[:version]] || "private"
-    #         })
+    #       plugin :upload_options, store: ->(io, context) do
+    #         if context[:version] == :thumb
+    #           {acl: "public-read"}
+    #         else
+    #           {acl: "private"}
+    #         end
     #       end
     #     end
     #
