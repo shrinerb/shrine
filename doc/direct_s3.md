@@ -1,13 +1,23 @@
 # Direct Uploads to S3
 
 Probably the best way to do file uploads is to upload them directly to S3, and
-afterwards do processing in a background job. Direct S3 uploads are a bit more
-involved, so we'll explain the process.
+then upon saving the record when file is moved to a permanent place, put that
+and any additional file processing in the background. The goal of this guide
+is to provide instructions, as well as evaluate possible ways of doing this.
+
+```rb
+require "shrine/storage/s3"
+
+Shrine.storages = {
+  cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
+  store: Shrine::Storage::S3.new(prefix: "store", **s3_options),
+}
+```
 
 ## Enabling CORS
 
-First thing that we need to do is enable CORS on our S3 bucket. You can do that
-by clicking on "Properties > Permissions > Add CORS Configuration", and
+First thing that you need to do is enable CORS on your S3 bucket. You can do
+that by clicking on "Properties > Permissions > Add CORS Configuration", and
 then just follow the Amazon documentation on how to write a CORS file.
 
 http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
@@ -15,42 +25,42 @@ http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 Note that it may take some time for the CORS settings to be applied, due to
 DNS propagation.
 
-## Static upload
+## File hash
 
-If you're doing just a single file upload in your form, you can generate
-upfront the fields necessary for direct S3 uploads using
-`Shrine::Storage::S3#presign`. This method returns a [`Aws::S3::PresignedPost`]
-object, which has `#url` and `#fields`, which you could use like this:
-
-```erb
-<% presign = Shrine.storages[:cache].presign(SecureRandom.hex) %>
-
-<form action="<%= presign.url %>" method="post" enctype="multipart/form-data">
-  <input type="file" name="file">
-  <% presign.fields.each do |name, value| %>
-    <input type="hidden" name="<%= name %>" value="<%= value %>">
-  <% end %>
-</form>
-```
-
-You can also pass additional options to `#presign`:
+Shrine's JSON representation of an uploaded file looks like this:
 
 ```rb
-Shrine.storages[:cache].presign(SecureRandom.hex,
-  content_length_range: 0..(5*1024*1024), # Limit of 5 MB
-  success_action_redirect: webhook_url,   # Tell S3 where to redirect
-  # ...
-)
+{
+  "id": "349234854924394", # requied
+  "storage": "cache", # required
+  "metadata": {
+    "size": 45461, # required
+    "filename": "foo.jpg", # optional
+    "mime_type": "image/jpeg", # optional
+  }
+}
 ```
 
-## Dynamic upload
+The `id`, `storage` and `metadata.size` fields are required, and the rest of
+the metadata is optional. After uploading the file to S3, you need to construct
+this JSON and assign it to the hidden attachment field in the form.
 
-If the frontend is separate from the backend, or you want to do multiple file
-uploads, you need to generate these presigns dynamically. The `direct_upload`
-plugins provides a route just for that:
+## Strategy A (dynamic)
+
+* Best user experience
+* Single or multiple file uploads
+* Some JavaScript needed
+
+You can configure the `direct_upload` plugin to expose the presign route, and
+mount the endpoint:
 
 ```rb
 plugin :direct_upload, presign: true
+```
+```rb
+Rails.application.routes.draw do
+  mount ImageUploader.direct_endpoint => "attachments/image"
+end
 ```
 
 This gives the endpoint a `GET /:storage/presign` route, which generates a
@@ -70,46 +80,79 @@ presign object and returns it as JSON:
 }
 ```
 
-You can use this data in a similar way as with static upload. See
-the [example app] for how multiple file upload to S3 can be done using
-[jQuery-File-Upload].
+When the user attaches a file, you should first request the presign object from
+the direct endpoint, and then upload the file to the given URL with the given
+fields. For uploading to S3 you can use any of the great JavaScript libraries
+out there, [jQuery-File-Upload] for example.
 
-If you want to pass additional options to `Storage::S3#presign`, you can pass
-a block to `:presign`:
+After the upload you create a JSON representation of the uploaded file and
+usually write it to the hidden attachment field in the form:
 
-```rb
-plugin :direct_upload, presign: ->(request) do # yields a Roda request object
-  {success_action_redirect: "http://example.com/webhook"}
-end
-```
-
-## File hash
-
-Once you've uploaded the file to S3, you need to create the representation of
-the uploaded file which Shrine will understand. This is how a Shrine's uploaded
-file looks like:
-
-```rb
-{
-  "id" => "349234854924394",
-  "storage" => "cache",
-  "metadata" => {
-    "size" => 45461,
-    "filename" => "foo.jpg",     # optional
-    "mime_type" => "image/jpeg", # optional
+```js
+var image = {
+  id: /cache\/(.+)/.exec(key)[1], # we have to remove the prefix part
+  storage: 'cache',
+  metadata: {
+    size:      data.files[0].size,
+    filename:  data.files[0].name,
+    mime_type: data.files[0].type,
   }
 }
+
+$('input[type=file]').prev().value(JSON.stringify(image))
 ```
 
-The `id`, `storage` and `metadata.size` fields are required, and the rest of
-the metadata is optional. You need to assign a JSON representation of this
-hash to the model in place of the attachment.
+It's generally a good idea to disable the submit button until the file is
+uploaded, as well as display a progress bar. See the [example app] for the
+working implementation of multiple direct S3 uploads.
 
-```rb
-user.avatar = '{"id":"43244656","storage":"cache",...}'
+## Strategy B (static)
+
+* Basic user experience
+* Only for single uploads
+* No JavaScript needed
+
+An alternative to the previous strategy is generating a file upload form that
+submits synchronously to S3, and then redirects back to your application.
+For that you can use `Shrine::Storage::S3#presign`, which returns a
+[`Aws::S3::PresignedPost`] object, which has `#url` and `#fields`:
+
+```erb
+<% presign = Shrine.storages[:cache].presign(SecureRandom.hex, success_action_redirect: new_album_url) %>
+
+<form action="<%= presign.url %>" method="post" enctype="multipart/form-data">
+  <input type="file" name="file">
+  <% presign.fields.each do |name, value| %>
+    <input type="hidden" name="<%= name %>" value="<%= value %>">
+  <% end %>
+  <input type="submit" value="Upload">
+</form>
 ```
 
-In a form you can assign this to an appropriate "hidden" field.
+After the file is submitted, S3 will redirect to the URL you specified and
+include the object key as a query param:
+
+```erb
+<%
+  id = params[:key][/cache\/(.+)/, 1] # we have to remove the prefix part
+  cached_file = {
+    storage: "cache",
+    id: id,
+    metadata: {
+      size: Fastimage.size(Shrine.storages[:cache].url(id)), # requires the fastimage gem
+    },
+  }
+%>
+
+<form action="/albums" method="post">
+  <input type="hidden" name="album[image]" value="<%= cached_file.to_json %>">
+  <input type="submit" value="Save">
+</form>
+```
+
+Notice that we needed to fetch the size of the uploaded file. The presence of
+"size" metadata isn't required for this specific upload, but the absence of it
+may cause problems later on when doing file migrations.
 
 ## Eventual consistency
 
@@ -128,9 +171,9 @@ is moved to store soon after caching.
 > Storage Service Developer Guide*.
 
 This means that in certain cases copying from cache to store can fail if it
-happens soon after uploading to cache. If you start noticing these errors, and
-you're using `background_helpers` plugin, you can tell your backgrounding
-library to perform the job with a delay:
+happens immediately after uploading to cache. If you start noticing these
+errors, and you're using `background_helpers` plugin, you can tell your
+backgrounding library to perform the job with a delay:
 
 ```rb
 Shrine.plugin :background_helpers

@@ -5,22 +5,21 @@ require "securerandom"
 
 class Shrine
   module Plugins
-    # The direct_upload plugin provides a Rack endpoint (implemented in [Roda])
-    # which you can use to implement AJAX uploads.
+    # The direct_upload plugin provides a [Roda] endpoint which can be used for
+    # uploading individual files asynchronously.
     #
     #     plugin :direct_upload
     #
     # This is how you could mount the endpoint in a Rails application:
     #
     #     Rails.application.routes.draw do
-    #       # adds `POST /attachments/images/:storage/:name`
     #       mount ImageUploader.direct_endpoint => "/attachments/images"
     #     end
     #
-    # Note that you should mount a separate endpoint for each uploader that you
-    # want to use it with. This now gives your Ruby application a
-    # `POST /attachments/images/:storage/:name` route, which accepts a `file`
-    # query parameter, and returns the uploaded file in JSON format:
+    # You should always mount a new endpoint for each uploader that you want to
+    # enable direct uploads for. This now gives your Ruby application a `POST
+    # /attachments/images/:storage/:name` route, which accepts a `file` query
+    # parameter, and returns the uploaded file in JSON format:
     #
     #     # POST /attachments/images/cache/avatar
     #     {
@@ -33,16 +32,15 @@ class Shrine
     #       }
     #     }
     #
-    # There are many great JavaScript libraries for AJAX file uploads which can
-    # be hooked up to this endpoint, [jQuery-File-Upload] being the most
-    # popular one.
+    # Once you've uploaded the file, you need to assign this JSON to the hidden
+    # attachment field in the form. There are many great JavaScript libraries
+    # for file uploads, most popular being [jQuery-File-Upload].
     #
     # ## Limiting filesize
     #
-    # It's a good idea to limit the filesize of files that are uploaded. This
-    # plugin provides a `:max_size` option, so if a file is uploaded which is
-    # too large, the file will get automatically deleted and the endpoint will
-    # return status 413.
+    # It's good idea to limit the maximum filesize of uploaded files, if you
+    # set the `:max_size` option, files which are too big will get
+    # automatically deleted and 413 status will be returned:
     #
     #     plugin :direct_upload, max_size: 5*1024*1024 # 5 MB
     #
@@ -51,10 +49,9 @@ class Shrine
     #
     # ## Presigned
     #
-    # An alternative to the direct endpoint is doing direct uploads to the
-    # underlying storage. These uploads usually requires extra information
-    # from the server, and this plugin can provide an endpoint to it, which
-    # you can enable by passing in `presign: true`:
+    # An alternative to the direct endpoint is uploading directly to the
+    # underlying storage (S3). These uploads usually require extra information
+    # from the server, you can enable that route by passing `presign: true`:
     #
     #     plugin :direct_upload, presign: true
     #
@@ -77,29 +74,22 @@ class Shrine
     # The `url` is where the file needs to be uploaded to, and `fields` is
     # additional data that needs to be send on the upload. The `fields.key`
     # attribute is the location where the file will be uploaded to, it is
-    # generated randomly, but you can add an extension to it:
+    # generated randomly without an extension, but you can add it:
     #
     #     GET /cache/presign?extension=.png
     #
     # If you want additional options to be passed to Storage::S3#presign, you
-    # can pass a block to `:presign` and return additional options:
+    # can pass a block to `:presign`, and it will yield Roda's request object:
     #
     #     plugin :direct_upload, presign: ->(request) do
     #       {
     #         content_length_range: 0..(5*1024*1024), # limit the filesize to 5 MB
-    #         success_action_redirect: "http://example.com/webhook",
+    #         content_type: request.params["content_type"], # use "content_type" query parameter
     #       }
     #     end
     #
-    # The yielded object is an instance of [`Roda::RodaRequest`] (a subclass of
-    # `Rack::Request`), which allows you to pass different options depending on
-    # the request. For example, you could accept a `content_type` query
-    # parameter and add it to options:
-    #
-    #     plugin :direct_upload, presign: ->(request) do
-    #       {content_type: request.params["content_type"]} if request.params["content_type"]
-    #     end
-    #     # Now you can do `GET /cache/presign?content_type=image/jpeg`
+    # See the [Direct Uploads to S3] guide for further instructions on how to
+    # hook this up in a form.
     #
     # ## Allowed storages
     #
@@ -126,6 +116,7 @@ class Shrine
     # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
     # ["accept" attribute]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
     # [`Roda::RodaRequest`]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
+    # [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
     module DirectUpload
       def self.load_dependencies(uploader, *)
         uploader.plugin :rack_file

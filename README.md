@@ -197,15 +197,14 @@ user.avatar.exists? #=> false
 
 ## Direct uploads
 
-Shrine comes with a `direct_upload` plugin which provides an endpoint
-(implemented in [Roda]) that can be used for AJAX uploads.
+Shrine comes with a `direct_upload` plugin which provides a [Roda] endpoint
+that can be used for AJAX uploads (using any JavaScript file upload library):
 
 ```rb
 Shrine.plugin :direct_upload # Provides a Roda endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  # adds `POST /attachments/images/:storage/:name`
   mount ImageUploader.direct_endpoint => "/attachments/images"
 end
 ```
@@ -222,21 +221,9 @@ end
 }
 ```
 
-There are many great JavaScript libraries for AJAX file uploads, for example
-this is how we could hook up [jQuery-File-Upload] to our endpoint:
-
-```js
-$('[type="file"]').fileupload({
-  url: '/attachments/images/cache/avatar',
-  paramName: 'file',
-  done: function(e, data) { $(this).prev().value(data.result) }
-});
-```
-
-This is an oversimplified implementation without any UX, it's just to
-demonstrate how easy it is. The `direct_upload` plugin also provides a route
-for direct S3 uploads, see the [example app] for how you can do multiple
-uploads directly to S3.
+The plugin also provides a route that can be used for doing direct S3 uploads,
+see the documentation of the plugin for more details, as well as the [example
+app] to see how easy it is to implement multiple uploads directly to S3.
 
 ## Processing
 
