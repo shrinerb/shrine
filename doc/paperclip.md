@@ -22,10 +22,6 @@ class ImageUploader < Shrine
   def process(io, context)
     # processing
   end
-
-  def default_url(context)
-    # default URL
-  end
 end
 ```
 
@@ -222,13 +218,12 @@ As explained in the "Processing" section, processing is done by overriding the
 
 #### `:default_url`
 
-In Shrine you achieve default URLs by defining the instance method on the
-uploader:
+For default URLs you can use the `default_url` plugin:
 
 ```rb
 class ImageUploader < Shrine
-  def default_url(context)
-    "/placeholders/missing-image.png"
+  plugin :default_url do |context|
+    "/attachments/#{context[:name]}/default.jpg"
   end
 end
 ```

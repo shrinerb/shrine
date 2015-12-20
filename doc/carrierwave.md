@@ -196,13 +196,12 @@ for automatically generating an organized folder structure.
 
 #### `#default_url`
 
-Similarly to CarrierWave, you also provide default URLs be overriding the
-method:
+For default URLs you can use the `default_url` plugin:
 
 ```rb
 class ImageUploader < Shrine
-  def default_url(context)
-    # ...
+  plugin :default_url do |context|
+    "/attachments/#{context[:name]}/default.jpg"
   end
 end
 ```
