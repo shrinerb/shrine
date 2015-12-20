@@ -156,23 +156,21 @@ class Shrine
             allow_storage!(storage_key)
             @uploader = shrine_class.new(storage_key.to_sym)
 
-            unless presign
-              r.post ":name" do |name|
-                file = get_file
-                context = {name: name, phase: :cache}
+            r.post ":name" do |name|
+              file = get_file
+              context = {name: name, phase: :cache}
 
-                json @uploader.upload(file, context)
-              end
-            else
-              r.get "presign" do
-                location = SecureRandom.hex(30) + r.params["extension"].to_s
-                options = presign.call(r) if presign.respond_to?(:call)
+              json @uploader.upload(file, context)
+            end unless presign
 
-                signature = @uploader.storage.presign(location, options || {})
+            r.get "presign" do
+              location = SecureRandom.hex(30) + r.params["extension"].to_s
+              options = presign.call(r) if presign.respond_to?(:call)
 
-                json Hash[url: signature.url, fields: signature.fields]
-              end
-            end
+              signature = @uploader.storage.presign(location, options || {})
+
+              json Hash[url: signature.url, fields: signature.fields]
+            end if presign
           end
         end
 

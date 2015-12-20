@@ -149,7 +149,6 @@ end
 ```rb
 # config/routes.rb
 Rails.application.routes.draw do
-  # adds `POST /attachments/images/:storage/:name`
   mount ImageUploader.direct_endpoint => "/attachments/images"
 end
 ```

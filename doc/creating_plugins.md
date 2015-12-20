@@ -68,7 +68,7 @@ these modules, you can also make your plugin configurable:
 Shrine.plugin :my_plugin, foo: "bar"
 ```
 
-You can do this my adding a `.configure` method to your plugin, which will be
+You can do this by adding a `.configure` method to your plugin, which will be
 given any passed in arguments or blocks. Typically you'll want to save these
 options into Shrine's `opts`, so that you can access them inside of Shrine's
 methods.
