@@ -59,7 +59,7 @@ plugin :direct_upload, presign: true
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader.direct_endpoint => "attachments/image"
+  mount ImageUploader::UploadEndpoint => "attachments/image"
 end
 ```
 

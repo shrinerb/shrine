@@ -205,7 +205,7 @@ Shrine.plugin :direct_upload # Provides a Roda endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader.direct_endpoint => "/attachments/images"
+  mount ImageUploader::UploadEndpoint => "/attachments/images"
 end
 ```
 ```rb

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make the direct upload endpoint customizable, inheritable and inspectable (janko-m)
+
 * Add upload_options plugin for dynamically generating storage-specific upload options (janko-m)
 
 * Allow the context hash to be modified (janko-m)

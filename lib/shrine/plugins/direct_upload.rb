@@ -13,7 +13,7 @@ class Shrine
     # This is how you could mount the endpoint in a Rails application:
     #
     #     Rails.application.routes.draw do
-    #       mount ImageUploader.direct_endpoint => "/attachments/images"
+    #       mount ImageUploader::UploadEndpoint => "/attachments/images"
     #     end
     #
     # You should always mount a new endpoint for each uploader that you want to
@@ -47,7 +47,7 @@ class Shrine
     # Note that this option doesn't affect presigned uploads, but there you can
     # limit the filesize with storage options.
     #
-    # ## Presigned
+    # ## Presigning
     #
     # An alternative to the direct endpoint is uploading directly to the
     # underlying storage (S3). These uploads usually require extra information
@@ -107,7 +107,7 @@ class Shrine
     #
     #     Rails.application.routes.draw do
     #       constraints(->(r){r.env["warden"].authenticate!}) do
-    #         mount ImageUploader.direct_endpoint => "/attachments/images"
+    #         mount ImageUploader::UploadEndpoint => "/attachments/images"
     #       end
     #     end
     #
@@ -126,21 +126,28 @@ class Shrine
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_presign] = presign
         uploader.opts[:direct_upload_max_size] = max_size
+
+        uploader.assign_upload_endpoint(App) unless uploader.const_defined?(:UploadEndpoint)
       end
 
       module ClassMethods
-        # Return the cached Roda endpoint.
-        def direct_endpoint
-          @direct_endpoint ||= build_direct_endpoint
+        # Makes a copy of the endpoint from the superclass.
+        def inherited(subclass)
+          super
+          subclass.assign_upload_endpoint(self::UploadEndpoint)
         end
 
-        private
+        # Assigns the subclassed endpoint as the UploadEndpoint constant.
+        def assign_upload_endpoint(klass)
+          endpoint_class = Class.new(klass)
+          endpoint_class.opts[:shrine_class] = self
+          const_set(:UploadEndpoint, endpoint_class)
+        end
 
-        # Builds the endpoint and assigns it the current Shrine class.
-        def build_direct_endpoint
-          app = Class.new(App)
-          app.opts[:shrine_class] = self
-          app.app
+        # Returns the Roda direct upload endpoint.
+        def direct_endpoint
+          warn "#{self}.direct_endpoint is deprecated and will be removed in Shrine 2, you should use #{self}::UploadEndpoint instead."
+          self::UploadEndpoint
         end
       end
 

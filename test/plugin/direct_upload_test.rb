@@ -6,7 +6,7 @@ describe "the direct_upload plugin" do
   include TestHelpers::Rack
 
   def app
-    @uploader.class.direct_endpoint
+    @uploader.class::UploadEndpoint
   end
 
   def image
@@ -14,7 +14,7 @@ describe "the direct_upload plugin" do
   end
 
   def setup
-    @uploader = uploader(:cache) { plugin :direct_upload, max_size: nil }
+    @uploader = uploader(:cache) { plugin :direct_upload }
   end
 
   describe "POST /:storage/:name" do
@@ -172,8 +172,11 @@ describe "the direct_upload plugin" do
     assert_http_error 403
   end
 
-  it "memoizes the endpoint" do
-    assert_equal @uploader.class.direct_endpoint, @uploader.class.direct_endpoint
+  it "makes the endpoint inheritable" do
+    endpoint1 = Class.new(@uploader.class)::UploadEndpoint
+    endpoint2 = Class.new(@uploader.class)::UploadEndpoint
+
+    refute_equal endpoint1, endpoint2
   end
 
   def assert_http_error(status)
