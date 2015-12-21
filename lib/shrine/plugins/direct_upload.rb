@@ -131,13 +131,13 @@ class Shrine
       end
 
       module ClassMethods
-        # Makes a copy of the endpoint from the superclass.
+        # Assigns the subclass a copy of the upload endpoint class.
         def inherited(subclass)
           super
           subclass.assign_upload_endpoint(self::UploadEndpoint)
         end
 
-        # Assigns the subclassed endpoint as the UploadEndpoint constant.
+        # Assigns the subclassed endpoint as the `UploadEndpoint` constant.
         def assign_upload_endpoint(klass)
           endpoint_class = Class.new(klass)
           endpoint_class.opts[:shrine_class] = self
@@ -151,13 +151,12 @@ class Shrine
         end
       end
 
+      # Routes incoming requests. It first asserts that the storage is existent
+      # and allowed, then the filesize isn't too large. Afterwards it proceeds
+      # with the file upload and returns the uploaded file as JSON.
       class App < Roda
         plugin :default_headers, "Content-Type"=>"application/json"
-        plugin :halt
 
-        # Routes incoming requests. We first check if the storage is allowed,
-        # then proceed further with the upload, returning the uploaded file
-        # as JSON.
         route do |r|
           r.on ":storage" do |storage_key|
             allow_storage!(storage_key)
@@ -220,7 +219,9 @@ class Shrine
 
         # Halts the request with the error message.
         def error!(status, message)
-          request.halt status, {error: message}.to_json
+          response.status = status
+          response.write({error: message}.to_json)
+          request.halt
         end
 
         def shrine_class
