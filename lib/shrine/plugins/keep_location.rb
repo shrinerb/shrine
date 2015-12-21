@@ -22,7 +22,7 @@ class Shrine
         private
 
         def get_location(io, context)
-          if io.is_a?(UploadedFile) && keep_location?(io) && !context[:location]
+          if io.is_a?(UploadedFile) && keep_location?(io)
             io.id
           else
             super

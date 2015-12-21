@@ -301,16 +301,16 @@ describe Shrine do
 
   it "sends the context all the way down" do
     @uploader.instance_eval do
-      def process(io, foo:)
-        FakeIO.new(foo)
+      def process(io, context)
+        FakeIO.new(context[:foo])
       end
 
-      def generate_location(io, foo:)
-        foo
+      def generate_location(io, context)
+        context[:foo]
       end
 
-      def extract_metadata(io, foo:)
-        {"foo" => foo}
+      def extract_metadata(io, context)
+        {"foo" => context[:foo]}
       end
     end
 
