@@ -150,9 +150,9 @@ include the object key as a query param:
 </form>
 ```
 
-Notice that we needed to fetch the size of the uploaded file. The presence of
-"size" metadata isn't required for this specific upload, but the absence of it
-may cause problems later on when doing file migrations.
+Notice that we needed to fetch and assign the size of the uploaded file. This
+is because this hash is later transformed into an IO which requires `#size`
+to be non-nil (and it is read from the metadata field).
 
 ## Eventual consistency
 
