@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `around_*` hooks return the result of the corresponding action (janko-m)
+
 * Make the direct upload endpoint customizable, inheritable and inspectable (janko-m)
 
 * Add upload_options plugin for dynamically generating storage-specific upload options (janko-m)

@@ -112,4 +112,30 @@ describe "the hooks plugin" do
       ],
       @uploader.instance_variable_get("@hooks")
   end
+
+  it "returns the result in around hooks" do
+    @uploader.instance_eval do
+      def process(io, context)
+        io
+      end
+
+      def around_upload(io, context)
+        raise "not in around_upload" unless super.is_a?(Shrine::UploadedFile)
+      end
+
+      def around_process(io, context)
+        raise "not in around_process" unless super == io
+      end
+
+      def around_store(io, context)
+        raise "not in around_store" unless super.is_a?(Shrine::UploadedFile)
+      end
+
+      def around_delete(io, context)
+        raise "not in around_delete" unless super == io
+      end
+    end
+
+    @uploader.upload(fakeio)
+  end
 end

@@ -18,7 +18,7 @@ class Shrine
     #
     # Each hook will be called with 2 arguments, `io` and `context`. You should
     # always call `super` when overriding a hook, as other plugins may be using
-    # hooks internally, and without `super` they wouldn't get executed.
+    # hooks internally, and without `super` those wouldn't get executed.
     #
     # Shrine calls hooks in the following order when uploading a file:
     #
@@ -40,6 +40,17 @@ class Shrine
     #     * `before_delete`
     #     * DELETE
     #     * `after_delete`
+    #
+    # By default every `around_*` hook returns the result of the corresponding
+    # operation:
+    #
+    #     class ImageUploader < Shrine
+    #       def around_store(io, context)
+    #         result = super
+    #         result.class #=> Shrine::UploadedFile
+    #         result # it's good to always return the result for consistent behaviour
+    #       end
+    #     end
     #
     # It may be useful to know that you can realize some form of communication
     # between the hooks; whatever you save to the `context` hash will be
@@ -70,8 +81,9 @@ class Shrine
 
         def around_upload(*args)
           before_upload(*args)
-          yield
+          result = yield
           after_upload(*args)
+          result
         end
 
         def before_upload(*)
@@ -90,8 +102,9 @@ class Shrine
 
         def around_process(*args)
           before_process(*args)
-          yield
+          result = yield
           after_process(*args)
+          result
         end
 
         def before_process(*)
@@ -109,8 +122,9 @@ class Shrine
 
         def around_store(*args)
           before_store(*args)
-          yield
+          result = yield
           after_store(*args)
+          result
         end
 
         def before_store(*)
@@ -128,7 +142,7 @@ class Shrine
 
         def around_delete(*args)
           before_delete(*args)
-          yield
+          result = yield
           after_delete(*args)
         end
 
