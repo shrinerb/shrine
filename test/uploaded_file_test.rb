@@ -62,6 +62,15 @@ describe Shrine::UploadedFile do
     uploaded_file.close
   end
 
+  it "deletes the underlying Tempfile on closing" do
+    uploaded_file = @uploader.upload(fakeio)
+
+    uploaded_file.instance_variable_set("@io", tempfile = Tempfile.new(""))
+    uploaded_file.close
+
+    assert tempfile.path.nil?
+  end
+
   it "has storage related methods" do
     uploaded_file = @uploader.upload(fakeio("image"), location: "key")
 
