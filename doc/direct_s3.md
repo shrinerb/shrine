@@ -134,13 +134,12 @@ include the object key as a query param:
 
 ```erb
 <%
-  id = params[:key][/cache\/(.+)/, 1] # we have to remove the prefix part
   cached_file = {
     storage: "cache",
-    id: id,
+    id: params[:key][/cache\/(.+)/, 1], # we have to remove the prefix part,
     metadata: {
-      size: Fastimage.size(Shrine.storages[:cache].url(id)), # requires the fastimage gem
-    },
+      size: Shrine.storages[:cache].bucket.object(params[:key]).size,
+    }
   }
 %>
 
