@@ -83,22 +83,4 @@ module TestHelpers
       VCR.use_cassette(cassette) { super }
     end
   end
-
-  module Rack
-    def self.included(test)
-      super
-      require "rack/test"
-      test.include ::Rack::Test::Methods
-    end
-
-    def response
-      last_response
-    end
-
-    def body
-      require "json"
-      JSON.parse(response.body)
-    rescue JSON::ParserError
-    end
-  end
 end

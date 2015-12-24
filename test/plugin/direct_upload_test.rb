@@ -1,35 +1,28 @@
 require "test_helper"
-require "json"
 require "shrine/storage/s3"
+require "rack/test_app"
 
 describe "the direct_upload plugin" do
-  include TestHelpers::Rack
-
   def app
-    @uploader.class::UploadEndpoint
+    Rack::TestApp.wrap(@uploader.class::UploadEndpoint)
   end
 
-  def image
-    Rack::Test::UploadedFile.new(image_path)
-  end
-
-  def setup
+  before do
     @uploader = uploader(:cache) { plugin :direct_upload }
   end
 
   describe "POST /:storage/:name" do
     it "returns a JSON response" do
-      post "/cache/avatar", file: image
+      response = app.post "/cache/avatar", multipart: {file: image}
 
       assert_equal 200, response.status
       assert_equal "application/json", response.headers["Content-Type"]
-      JSON.parse(response.body)
     end
 
     it "uploads the given file" do
-      post "/cache/avatar", file: image
+      response = app.post "/cache/avatar", multipart: {file: image}
 
-      assert @uploader.storage.exists?(body["id"])
+      assert @uploader.storage.exists?(response.body_json["id"])
     end
 
     it "passes in :name and :phase parameters as context" do
@@ -39,16 +32,15 @@ describe "the direct_upload plugin" do
         end
       end
 
-      post "/cache/avatar", file: image
+      response = app.post "/cache/avatar", multipart: {file: image}
 
-      assert_equal '{"name":"avatar","phase":"cache"}', body['id']
+      assert_equal '{"name":"avatar","phase":"cache"}', response.body_json['id']
     end
 
     it "assigns metadata" do
-      image = Rack::Test::UploadedFile.new("test/fixtures/image.jpg", "image/jpeg")
-      post "/cache/avatar", file: image
+      response = app.post "/cache/avatar", multipart: {file: image}
 
-      metadata = body.fetch('metadata')
+      metadata = response.body_json.fetch('metadata')
       assert_equal 'image.jpg', metadata['filename']
       assert_equal 'image/jpeg', metadata['mime_type']
       assert_kind_of Integer, metadata['size']
@@ -58,40 +50,40 @@ describe "the direct_upload plugin" do
       uploaded_file = @uploader.upload(fakeio)
 
       @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
-      post "/cache/avatar", file: image
-      refute_empty body.fetch('thumb')
+      response = app.post "/cache/avatar", multipart: {file: image}
+      refute_empty response.body_json.fetch('thumb')
 
       @uploader.class.class_eval { define_method(:upload) { |*| Array[uploaded_file] } }
-      post "/cache/avatar", file: image
-      refute_empty body.fetch(0)
+      response = app.post "/cache/avatar", multipart: {file: image}
+      refute_empty response.body_json.fetch(0)
     end
 
     it "refuses files which are too big" do
       @uploader.opts[:direct_upload_max_size] = 0
-      post "/cache/avatar", file: image
-      assert_http_error 413
+      response = app.post "/cache/avatar", multipart: {file: image}
+      assert_http_error 413, response
 
       @uploader.opts[:direct_upload_max_size] = 5 * 1024 * 1024
-      post "/cache/avatar", file: image
+      response = app.post "/cache/avatar", multipart: {file: image}
       assert_equal 200, response.status
     end
 
     it "accepts only POST requests" do
-      put "/cache/avatar", file: image
+      response = app.put "/cache/avatar", multipart: {file: image}
 
       assert_equal 404, response.status
     end
 
     it "returns appropriate error message for missing file" do
-      post "/cache/avatar"
+      response = app.post "/cache/avatar"
 
-      assert_http_error 400
+      assert_http_error 400, response
     end
 
     it "returns appropriate error message for invalid file" do
-      post "/cache/avatar", file: "foo"
+      response = app.post "/cache/avatar", query: {file: "foo"}
 
-      assert_http_error 400
+      assert_http_error 400, response
     end
 
     it "allows other errors to propagate" do
@@ -101,14 +93,14 @@ describe "the direct_upload plugin" do
         end
       end
 
-      assert_raises(RuntimeError) { post "/cache/avatar", file: image }
+      assert_raises(RuntimeError) { app.post "/cache/avatar", multipart: {file: image} }
     end
 
     it "doesn't exist if :presign was set" do
       @uploader.opts[:direct_upload_presign] = true
-      post "/cache/avatar"
+      response = app.post "/cache/avatar"
 
-      assert_equal 404, last_response.status
+      assert_equal 404, response.status
     end
   end
 
@@ -124,52 +116,52 @@ describe "the direct_upload plugin" do
     end
 
     it "returns a presign object" do
-      get "/cache/presign"
+      response = app.get "/cache/presign"
 
-      refute_empty body.fetch("url")
-      refute_empty body.fetch("fields")
+      refute_empty response.body_json.fetch("url")
+      refute_empty response.body_json.fetch("fields")
     end
 
     it "accepts an extension" do
-      get "/cache/presign?extension=.jpg"
+      response = app.get "/cache/presign?extension=.jpg"
 
-      assert_match /\.jpg$/, body["fields"].fetch("key")
+      assert_match /\.jpg$/, response.body_json["fields"].fetch("key")
     end
 
     it "applies options passed to configuration" do
       @uploader.opts[:direct_upload_presign] = ->(r) do
         {content_type: r.params["content_type"]}
       end
-      get "/cache/presign?content_type=image/jpeg"
+      response = app.get "/cache/presign?content_type=image/jpeg"
 
-      assert_equal "image/jpeg", body["fields"].fetch("Content-Type")
+      assert_equal "image/jpeg", response.body_json["fields"].fetch("Content-Type")
     end
 
     it "allows the configuration block to return nil" do
       @uploader.opts[:direct_upload_presign] = ->(r) { nil }
-      get "/cache/presign"
+      response = app.get "/cache/presign"
 
-      assert_equal 200, last_response.status
+      assert_equal 200, response.status
     end
 
     it "doesn't exist if :presign wasn't set" do
       @uploader.opts[:direct_upload_presign] = false
-      get "cache/presign"
+      response = app.get "cache/presign"
 
-      assert_equal 404, last_response.status
+      assert_equal 404, response.status
     end
   end
 
   it "refuses storages which are not allowed" do
-    post "/store/avatar", file: image
+    response = app.post "/store/avatar", multipart: {file: image}
 
-    assert_http_error 403
+    assert_http_error 403, response
   end
 
   it "refuses storages which are nonexistent" do
-    post "/nonexistent/avatar", file: image
+    response = app.post "/nonexistent/avatar", multipart: {file: image}
 
-    assert_http_error 403
+    assert_http_error 403, response
   end
 
   it "makes the endpoint inheritable" do
@@ -179,9 +171,9 @@ describe "the direct_upload plugin" do
     refute_equal endpoint1, endpoint2
   end
 
-  def assert_http_error(status)
+  def assert_http_error(status, response)
     assert_equal status, response.status
     assert_equal "application/json", response.headers["Content-Type"]
-    refute_empty body.fetch("error")
+    refute_empty response.body_json.fetch("error")
   end
 end

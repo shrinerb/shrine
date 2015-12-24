@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "mocha"
   gem.add_development_dependency "vcr", "~> 2.9"
   gem.add_development_dependency "webmock"
-  gem.add_development_dependency "rack-test"
+  gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "dotenv"
 
   gem.add_development_dependency "roda"
