@@ -111,6 +111,25 @@ class Shrine
     #       end
     #     end
     #
+    # ## Customizing endpoint
+    #
+    # Since the endpoint is a [Roda] app, it can be easily customized via
+    # plugins:
+    #
+    #     class MyUploader
+    #       class UploadEndpoint
+    #         plugin :hooks
+    #
+    #         after do |response|
+    #           # ...
+    #         end
+    #       end
+    #     end
+    #
+    # Upon subclassing uploader the upload endpoint is also subclassed. You can
+    # also call the plugin again in an uploader subclass to change its
+    # configuration.
+    #
     # [Roda]: https://github.com/jeremyevans/roda
     # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
     # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
@@ -170,8 +189,8 @@ class Shrine
             end unless presign
 
             r.get "presign" do
-              location = SecureRandom.hex(30) + r.params["extension"].to_s
-              options = presign.call(r) if presign.respond_to?(:call)
+              location = SecureRandom.hex(30) + request.params["extension"].to_s
+              options = presign.call(request) if presign.respond_to?(:call)
 
               signature = @uploader.storage.presign(location, options || {})
 
@@ -180,9 +199,7 @@ class Shrine
           end
         end
 
-        def json(object)
-          object.to_json
-        end
+        private
 
         # Halts the request if storage is not allowed.
         def allow_storage!(storage)
@@ -222,6 +239,10 @@ class Shrine
           response.status = status
           response.write({error: message}.to_json)
           request.halt
+        end
+
+        def json(object)
+          object.to_json
         end
 
         def shrine_class
