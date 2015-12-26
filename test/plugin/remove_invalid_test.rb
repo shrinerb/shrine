@@ -13,4 +13,13 @@ describe "the remove_invalid plugin" do
     refute cached_file.exists?
     assert @attacher.get.nil?
   end
+
+  it "doesn't remove stored files" do
+    @attacher.class.validate { errors << :foo }
+    stored_file = @attacher.store.upload(fakeio)
+    @attacher.set(stored_file)
+
+    assert stored_file.exists?
+    refute @attacher.get.nil?
+  end
 end

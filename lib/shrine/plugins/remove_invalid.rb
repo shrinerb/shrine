@@ -9,7 +9,7 @@ class Shrine
         def validate
           super
         ensure
-          if errors.any?
+          if errors.any? && cache.uploaded?(get)
             delete!(get, phase: :invalid)
             _set(nil)
           end
