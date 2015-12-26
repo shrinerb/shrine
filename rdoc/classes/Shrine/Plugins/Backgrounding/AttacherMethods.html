@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::BackgroundHelpers::AttacherMethods</title>
+    <title>Shrine::Plugins::Backgrounding::AttacherMethods</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::BackgroundHelpers::AttacherMethods
+          Shrine::Plugins::Backgrounding::AttacherMethods
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../../files/lib/shrine/plugins/background_helpers_rb.html">lib/shrine/plugins/background_helpers.rb</a>
+            <a target="docwin" href="../../../../files/lib/shrine/plugins/backgrounding_rb.html">lib/shrine/plugins/backgrounding.rb</a>
           </li>
         </ol>
       </div>
@@ -64,7 +64,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-_promote-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine/plugins/background_helpers.rb, line 112</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_promote</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:background_promote</span>]&#x000A;    <span class="ruby-identifier">data</span> = {&#x000A;      <span class="ruby-string">&quot;uploaded_file&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;record&quot;</span>        =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>],&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name</span>,&#x000A;    }&#x000A;&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_promote</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 112</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_promote</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_promote</span>]&#x000A;    <span class="ruby-identifier">data</span> = {&#x000A;      <span class="ruby-string">&quot;uploaded_file&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;record&quot;</span>        =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>],&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>,&#x000A;    }&#x000A;&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_promote</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

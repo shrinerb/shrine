@@ -53,7 +53,7 @@
             <p>Each hook will be called with 2 arguments, <code>io</code> and
             <code>context</code>. You should always call <code>super</code> when
             overriding a hook, as other plugins may be using hooks internally, and
-            without <code>super</code> they wouldn&#39;t get executed.</p>
+            without <code>super</code> those wouldn&#39;t get executed.</p>
             
             <p><a href="../../Shrine.html">Shrine</a> calls hooks in the following order
             when uploading a file:</p>
@@ -96,6 +96,11 @@
             <p><code>after_delete</code></p>
             </li></ul>
             </li></ul>
+            
+            <p>By default every <code>around_*</code> hook returns the result of the
+            corresponding operation:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-identifier">result</span>.<span class="ruby-identifier">class</span> <span class="ruby-comment">#=&gt; Shrine::UploadedFile</span>&#x000A;    <span class="ruby-identifier">result</span> <span class="ruby-comment"># it&#39;s good to always return the result for consistent behaviour</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>It may be useful to know that you can realize some form of communication
             between the hooks; whatever you save to the <code>context</code> hash will

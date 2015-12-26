@@ -42,7 +42,9 @@
             <h2>Methods</h2>
             <h3>Public Instance</h3>
             <ol>
+              <li><a target="docwin" href="#method-i-assign_upload_endpoint">assign_upload_endpoint</a></li>
               <li><a target="docwin" href="#method-i-direct_endpoint">direct_endpoint</a></li>
+              <li><a target="docwin" href="#method-i-inherited">inherited</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -50,6 +52,24 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-assign_upload_endpoint'>
+                <a name='method-i-assign_upload_endpoint'></a>
+                <div class='synopsis'>
+                  <span class='name'>assign_upload_endpoint</span>
+                  <span class='arguments'>(klass)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Assigns the subclassed endpoint as the <code>UploadEndpoint</code>
+                  constant.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-assign_upload_endpoint-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-assign_upload_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 160</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:UploadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
               <div class='method public-instance' id='method-method-i-direct_endpoint'>
                 <a name='method-i-direct_endpoint'></a>
                 <div class='synopsis'>
@@ -58,13 +78,30 @@
                 </div>
                 <div class='description'>
                   
-                  <p>Return the cached Roda endpoint.</p>
+                  <p>Returns the Roda direct upload endpoint.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-direct_endpoint-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-direct_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 129</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">direct_endpoint</span>&#x000A;  <span class="ruby-ivar">@direct_endpoint</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">build_direct_endpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-direct_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 167</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">direct_endpoint</span>&#x000A;  <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;#{self}.direct_endpoint is deprecated and will be removed in Shrine 2, you should use #{self}::UploadEndpoint instead.&quot;</span>&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-inherited'>
+                <a name='method-i-inherited'></a>
+                <div class='synopsis'>
+                  <span class='name'>inherited</span>
+                  <span class='arguments'>(subclass)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Assigns the subclass a copy of the upload endpoint class.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-inherited-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 154</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

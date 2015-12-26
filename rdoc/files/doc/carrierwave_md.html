@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2015-11-26 03:11:44 +0100</span>
+          <span class='datetime'>2015-12-26 21:02:53 +0100</span>
         </div>
       </div>
       <div id='content'>
@@ -60,7 +60,7 @@
             globally (under a symbol name), and then you instantiate uploaders with a
             specific storage.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
             
             <pre class="ruby"><span class="ruby-identifier">cache_uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-identifier">store_uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>)</pre>
             
@@ -118,9 +118,9 @@
             cache, and <code>:store</code> for store. If you want to change that, you
             can use the <code>default_storage</code> plugin:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">dropbox</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Dropbox</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)</pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">foo</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Foo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)</pre>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">dropbox</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">foo</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h4 id="label-.process-2C+.version"><code>.process</code>, <code>.version</code><span><a href="#label-.process-2C+.version">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
@@ -176,7 +176,7 @@
             <code>#generate_location</code> method, which is triggered for all
             storages:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">case</span> <span class="ruby-identifier">storage_key</span>&#x000A;    <span class="ruby-keyword">when</span> :<span class="ruby-identifier">cache</span> <span class="ruby-keyword">then</span> <span class="ruby-string">&quot;...&quot;</span>&#x000A;    <span class="ruby-keyword">when</span> :<span class="ruby-identifier">store</span> <span class="ruby-keyword">then</span> <span class="ruby-string">&quot;...&quot;</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-node">&quot;#{context[:record].class}/#{context[:record].id}/#{io.original_filename}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>The <code>context</code> variable holds the additional data, like the
             attacment name and the record instance. You might also want to use the
@@ -185,10 +185,9 @@
             
             <h4 id="label-23default_url"><code>#default_url</code><span><a href="#label-23default_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
-            <p>Similarly to CarrierWave, you also provide default URLs be overriding the
-            method:</p>
+            <p>For default URLs you can use the <code>default_url</code> plugin:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">default_url</span>(<span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-node">&quot;/attachments/#{context[:name]}/default.jpg&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>The <code>context</code> variable holds the name of the attachment, record
             instance and in some cases the <code>:version</code>.</p>
@@ -218,13 +217,12 @@
             
             <h4 id="label-23recreate_versions-21"><code>#recreate_versions!</code><span><a href="#label-23recreate_versions-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
-            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t provide an
-            automatic mechanism for recreating versions, because that is very
-            individual for different situations. For example, sometimes you want to
-            regenerate all versions and sometimes just one. However, I wrote a guide
-            “<a
+            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t have a built-in
+            way of regenerating versions, because that&#39;s very individual and
+            depends on what versions you want regenerated, what ORM are you using, how
+            many records there are in your database etc. The <a
             href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Regenerating
-            versions</a>” that should help you out with that.</p>
+            versions</a> guide provides some useful tips on this task.</p>
             
             <h3 id="label-Models">Models<span><a href="#label-Models">&para;</a> <a href="#top">&uarr;</a></span></h3>
             

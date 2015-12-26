@@ -39,34 +39,45 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The direct_upload plugin provides a Rack endpoint (implemented in <a
-            href="https://github.com/jeremyevans/roda">Roda</a>) which you can use to
-            implement AJAX uploads.</p>
+            <p>The direct_upload plugin provides a <a
+            href="https://github.com/jeremyevans/roda">Roda</a> endpoint which can be
+            used for uploading individual files asynchronously.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span></pre>
             
             <p>This is how you could mount the endpoint in a Rails application:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># adds `POST /attachments/images/:storage/:name`</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">direct_endpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments/images&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments/images&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>Note that you should mount a separate endpoint for each uploader that you
-            want to use it with. This now gives your Ruby application a <code>POST&#x000A;/attachments/images/:storage/:name</code> route, which accepts a
+            <p>You should always mount a new endpoint for each uploader that you want to
+            enable direct uploads for. This now gives your Ruby application a
+            <code>POST /attachments/images/:storage/:name</code> route, which accepts a
             <code>file</code> query parameter, and returns the uploaded file in JSON
             format:</p>
             
             <pre class="ruby"><span class="ruby-comment"># POST /attachments/images/cache/avatar</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;43kewit94.jpg&quot;</span>,&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">384393</span>,&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>&#x000A;  }&#x000A;}</pre>
             
-            <p>There are many great JavaScript libraries for AJAX file uploads which can
-            be hooked up to this endpoint, <a
-            href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
-            being the most popular one.</p>
+            <p>Once you&#39;ve uploaded the file, you need to assign this JSON to the
+            hidden attachment field in the form. There are many great JavaScript
+            libraries for file uploads, most popular being <a
+            href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>.</p>
             
-            <h2 id="module-Shrine::Plugins::DirectUpload-label-Presigned">Presigned<span><a href="#module-Shrine::Plugins::DirectUpload-label-Presigned">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="module-Shrine::Plugins::DirectUpload-label-Limiting+filesize">Limiting filesize<span><a href="#module-Shrine::Plugins::DirectUpload-label-Limiting+filesize">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
-            <p>An alternative to the direct endpoint is doing direct uploads to the
-            underlying storage. These uploads usually requires extra information from
-            the server, and this plugin can provide an endpoint to it, which you can
-            enable by passing in <code>presign: true</code>:</p>
+            <p>It&#39;s good idea to limit the maximum filesize of uploaded files, if you
+            set the <code>:max_size</code> option, files which are too big will get
+            automatically deleted and 413 status will be returned:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 5 MB</span></pre>
+            
+            <p>Note that this option doesn&#39;t affect presigned uploads, but there you
+            can limit the filesize with storage options.</p>
+            
+            <h2 id="module-Shrine::Plugins::DirectUpload-label-Presigning">Presigning<span><a href="#module-Shrine::Plugins::DirectUpload-label-Presigning">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>An alternative to the direct endpoint is uploading directly to the
+            underlying storage (S3). These uploads usually require extra information
+            from the server, you can enable that route by passing <code>presign:&#x000A;true</code>:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span></pre>
             
@@ -74,30 +85,26 @@
             security reasons), and enable <code>GET /:storage/presign</code>. The
             response for that request looks something like this:</p>
             
-            <pre class="ruby">{&#x000A;  <span class="ruby-string">&quot;url&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;https://shrine-testing.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-string">&quot;fields&quot;</span> =<span class="ruby-operator">&gt;</span> {&#x000A;    <span class="ruby-string">&quot;key&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-string">&quot;policy&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-credential&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-algorithm&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-date&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-signature&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  }&#x000A;}</pre>
+            <pre class="ruby">{&#x000A;  <span class="ruby-string">&quot;url&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;https://my-bucket.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-string">&quot;fields&quot;</span> =<span class="ruby-operator">&gt;</span> {&#x000A;    <span class="ruby-string">&quot;key&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-string">&quot;policy&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-credential&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-algorithm&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-date&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-signature&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  }&#x000A;}</pre>
             
             <p>The <code>url</code> is where the file needs to be uploaded to, and
             <code>fields</code> is additional data that needs to be send on the upload.
             The <code>fields.key</code> attribute is the location where the file will
-            be uploaded to, it is generated randomly, but you can add an extension to
-            it:</p>
+            be uploaded to, it is generated randomly without an extension, but you can
+            add it:</p>
             
             <pre>GET /cache/presign?extension=.png</pre>
             
             <p>If you want additional options to be passed to <a
             href="../Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>,
-            you can pass a block to <code>:presign</code> and return additional
-            options:</p>
+            you can pass a block to <code>:presign</code>, and it will yield Roda&#39;s
+            request object:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {&#x000A;    <span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>), <span class="ruby-comment"># limit the filesize to 5 MB</span>&#x000A;    <span class="ruby-identifier">success_action_redirect</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://example.com/webhook&quot;</span>,&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {&#x000A;    <span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>), <span class="ruby-comment"># limit the filesize to 5 MB</span>&#x000A;    <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;content_type&quot;</span>], <span class="ruby-comment"># use &quot;content_type&quot; query parameter</span>&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>The yielded object is an instance of <a
-            href="http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html">Roda::RodaRequest</a>
-            (a subclass of <code>Rack::Request</code>), which allows you to pass
-            different options depending on the request. For example, you could accept a
-            <code>content_type</code> query parameter and add it to options:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;content_type&quot;</span>]} <span class="ruby-keyword">if</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;content_type&quot;</span>]&#x000A;<span class="ruby-keyword">end</span>&#x000A;<span class="ruby-comment"># Now you can do `GET /cache/presign?content_type=image/jpeg`</span></pre>
+            <p>See the <a
+            href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">Direct Uploads
+            to S3</a> guide for further instructions on how to hook this up in a form.</p>
             
             <h2 id="module-Shrine::Plugins::DirectUpload-label-Allowed+storages">Allowed storages<span><a href="#module-Shrine::Plugins::DirectUpload-label-Allowed+storages">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -113,7 +120,19 @@
             easily if your web framework has a good enough router. For example, in
             Rails you could add a <code>constraints</code> directive:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">constraints</span>(<span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">r</span>){<span class="ruby-identifier">r</span>.<span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;warden&quot;</span>].<span class="ruby-identifier">authenticate!</span>}) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">direct_endpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments/images&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">constraints</span>(<span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">r</span>){<span class="ruby-identifier">r</span>.<span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;warden&quot;</span>].<span class="ruby-identifier">authenticate!</span>}) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments/images&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h2 id="module-Shrine::Plugins::DirectUpload-label-Customizing+endpoint">Customizing endpoint<span><a href="#module-Shrine::Plugins::DirectUpload-label-Customizing+endpoint">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>Since the endpoint is a <a
+            href="https://github.com/jeremyevans/roda">Roda</a> app, it can be easily
+            customized via plugins:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span>&#x000A;  <span class="ruby-keyword">class</span> <span class="ruby-constant">UploadEndpoint</span>&#x000A;    <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span>&#x000A;&#x000A;    <span class="ruby-identifier">after</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">response</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>Upon subclassing uploader the upload endpoint is also subclassed. You can
+            also call the plugin again in an uploader subclass to change its
+            configuration.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -139,7 +158,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, allowed_storages: [:cache], presign: nil, **)</span>
+                  <span class='arguments'>(uploader, allowed_storages: [:cache], presign: nil, max_size: nil)</span>
                 </div>
                 <div class='description'>
                   
@@ -148,7 +167,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 122</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">allowed_storages</span><span class="ruby-operator">:</span> [<span class="ruby-value">:cache</span>], <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_allowed_storages</span>] = <span class="ruby-identifier">allowed_storages</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign</span>] = <span class="ruby-identifier">presign</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 144</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">allowed_storages</span><span class="ruby-operator">:</span> [<span class="ruby-value">:cache</span>], <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_allowed_storages</span>] = <span class="ruby-identifier">allowed_storages</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign</span>] = <span class="ruby-identifier">presign</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_max_size</span>] = <span class="ruby-identifier">max_size</span>&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-constant">App</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">const_defined?</span>(<span class="ruby-value">:UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -164,7 +183,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 118</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 140</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

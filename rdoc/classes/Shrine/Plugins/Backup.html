@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::Backup</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::Backup
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/backup_rb.html">lib/shrine/plugins/backup.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <p>The backup plugin allows you to automatically backup up stored files to an
+            additional storage.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">backup_store</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span></pre>
+            
+            <p>After the cached file is promoted to store, it will be reuploaded from
+            store to the provided “backup” storage.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">avatar</span><span class="ruby-operator">:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploaded both to :store and :backup_store</span></pre>
+            
+            <p>By default whenever stored files are deleted backed up files are deleted as
+            well, but you can keep files on the “backup” storage by passing
+            <code>delete: false</code>:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span>, <span class="ruby-identifier">delete</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
+            
+            <p>Note that when adding this plugin with already existing stored files, <a
+            href="../../Shrine.html">Shrine</a> won&#39;t know whether a stored file is
+            backed up or not, so attempting to delete the backup could result in an
+            error. To avoid that you can set <code>delete: false</code> until you
+            manually back up the existing stored files.</p>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Class</h3>
+            <ol>
+              <li><a target="docwin" href="#method-c-configure">configure</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="Backup/AttacherMethods.html">Shrine::Plugins::Backup::AttacherMethods</a></li>
+              <li><a target="docwin" href="Backup/InstanceMethods.html">Shrine::Plugins::Backup::InstanceMethods</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-configure'>
+                <a name='method-c-configure'></a>
+                <div class='synopsis'>
+                  <span class='name'>configure</span>
+                  <span class='arguments'>(uploader, storage:, delete: true)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 26</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">storage</span>,, <span class="ruby-identifier">delete</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>] = <span class="ruby-identifier">storage</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_delete</span>] = <span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

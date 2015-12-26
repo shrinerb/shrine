@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>Shrine::Plugins::DownloadEndpoint</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>module</span>
+          Shrine::Plugins::DownloadEndpoint
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/download_endpoint_rb.html">lib/shrine/plugins/download_endpoint.rb</a>
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <p>The download_endpoint plugin provides a <a
+            href="https://github.com/jeremyevans/roda">Roda</a> endpoint for
+            downloading uploaded files from specified storages. This is useful when
+            files from your storages aren&#39;t accessible over URL (e.g. database
+            storages) or if you want to authenticate your downloads.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">download_endpoint</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">store</span>], <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;attachments&quot;</span></pre>
+            
+            <p>After loading the plugin the endpoint should be mounted:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">appliations</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">DownloadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>Now all stored files can be downloaded through the endpoint, and the
+            endpoint will efficiently stream the file from the storage when the storage
+            supports it. <code>UploadedFile#url</code> will automatically return the
+            URL to the endpoint for specified storages, so it&#39;s not needed to
+            change the code:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/attachments/store/sdg0lsf8.jpg&quot;</span></pre>
+            <table class="rdoc-list note-list"><tbody><tr><td class='label'>:storages</td><td>
+            <p>An array of storage keys which the download endpoint should be used for.</p>
+            </td></tr><tr><td class='label'>:prefix</td><td>
+            <p>The location where the download endpoint was mounted. If it was  mounted at
+            the root level, this should be set to nil.</p>
+            </td></tr><tr><td class='label'>:host</td><td>
+            <p>The host that you want the download URLs to use (e.g. your app&#39;s domain
+            name or a CDN). By default URLs are relative.</p>
+            </td></tr><tr><td class='label'>:disposition</td><td>
+            <p>Can be set to “attachment” if you want that the user is always  prompted to
+            download the file when visiting the download URL.  The default is “inline”.</p>
+            </td></tr></tbody></table>
+            
+            <p>This plugin is also suitable on Heroku when using FileSystem storage for
+            cache. On Heroku files cannot be stored to the “public” folder but rather
+            to the “tmp” folder, which means that by default it&#39;s not possible to
+            show the URL to the cached file. The download endpoint generates the URL to
+            any file, regardless of its location.</p>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Class</h3>
+            <ol>
+              <li><a target="docwin" href="#method-c-configure">configure</a></li>
+            </ol>
+          </div>
+          <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="DownloadEndpoint/ClassMethods.html">Shrine::Plugins::DownloadEndpoint::ClassMethods</a></li>
+              <li><a target="docwin" href="DownloadEndpoint/FileMethods.html">Shrine::Plugins::DownloadEndpoint::FileMethods</a></li>
+              <li><a target="docwin" href="DownloadEndpoint/App.html">Shrine::Plugins::DownloadEndpoint::App</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-configure'>
+                <a name='method-c-configure'></a>
+                <div class='synopsis'>
+                  <span class='name'>configure</span>
+                  <span class='arguments'>(uploader, storages:, prefix:, disposition: "inline", host: nil)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 50</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">storages</span>,, <span class="ruby-identifier">prefix</span>,, <span class="ruby-identifier">disposition</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;inline&quot;</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint_storages</span>] = <span class="ruby-identifier">storages</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint_prefix</span>] = <span class="ruby-identifier">prefix</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint_disposition</span>] = <span class="ruby-identifier">disposition</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint_host</span>] = <span class="ruby-identifier">host</span>&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-constant">App</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">const_defined?</span>(<span class="ruby-value">:DownloadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

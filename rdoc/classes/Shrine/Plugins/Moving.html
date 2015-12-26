@@ -50,9 +50,9 @@
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>]</pre>
             
             <p>The <code>:storages</code> option specifies which storages the file will be
-            moved to. The above will move Rails&#39;s uploaded files to cache (without
-            this plugin it&#39;s simply copied over). However, you may want to move
-            cached files to <code>:store</code> as well:</p>
+            moved to. The above will move raw files to cache (without this plugin
+            it&#39;s simply copied over). However, you may want to move cached files to
+            <code>:store</code> as well:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>, :<span class="ruby-identifier">store</span>]</pre>
             
@@ -60,8 +60,8 @@
             being uploaded will be deleted afterwards. However, if both the file being
             uploaded and the destination are on the filesystem, a <code>mv</code>
             command will be executed instead. Some other storages may implement moving
-            as well, usually if also both the <code>:cache</code> and
-            <code>:store</code> are using the same storage.</p>
+            as well, usually if also both the cache and store are using the same
+            storage.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>

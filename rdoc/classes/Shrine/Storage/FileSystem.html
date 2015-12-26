@@ -45,14 +45,14 @@
             
             <p>The <a href="FileSystem.html">FileSystem</a> storage handles uploads to the
             filesystem, and it is most commonly initialized with a “base” folder and a
-            “subdirectory”:</p>
+            “prefix”:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads&quot;</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;/uploads/image.jpg&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads&quot;</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;/uploads/image.jpg&quot;</span></pre>
             
             <p>This storage will upload all files to “public/uploads”, and the URLs of the
             uploaded files will start with “/uploads/*”. This way you can use <a
             href="FileSystem.html">FileSystem</a> for both cache and store, one having
-            subdirectory “uploads/cache” and other “uploads/store”.</p>
+            the prefix “uploads/cache” and other “uploads/store”.</p>
             
             <p>You can also initialize the storage just with the “base” directory, and
             then the <a href="FileSystem.html">FileSystem</a> storage will generate
@@ -60,18 +60,21 @@
             
             <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Dir</span>.<span class="ruby-identifier">tmpdir</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/image.jpg&quot;</span></pre>
             
-            <h2 id="class-Shrine::Storage::FileSystem-label-CDN">CDN<span><a href="#class-Shrine::Storage::FileSystem-label-CDN">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="class-Shrine::Storage::FileSystem-label-Host">Host<span><a href="#class-Shrine::Storage::FileSystem-label-Host">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>It&#39;s generally a good idea to serve your files via a CDN, so an
             additional <code>:host</code> option can be provided:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>,&#x000A;  <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads&quot;</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;//abc123.cloudfront.net&quot;</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;//abc123.cloudfront.net/uploads/image.jpg&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>,&#x000A;  <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads&quot;</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;http://abc123.cloudfront.net/uploads/image.jpg&quot;</span></pre>
             
-            <p>The <code>:host</code> option can also be used wihout
-            <code>:subdirectory</code>, and is useful if you for example have files
-            located on another server:</p>
+            <p>If you&#39;re not using a CDN, it&#39;s recommended that you still set
+            <code>:host</code> to your application&#39;s domain (at least in
+            production).</p>
             
-            <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;files&quot;</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;943.23.43.1&quot;</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;943.23.43.1/files/image.jpg&quot;</span></pre>
+            <p>The <code>:host</code> option can also be used wihout <code>:prefix</code>,
+            and is useful if you for example have files located on another server:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;files&quot;</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://943.23.43.1&quot;</span>)&#x000A;<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>) <span class="ruby-comment">#=&gt; &quot;http://943.23.43.1/files/image.jpg&quot;</span></pre>
             
             <h2 id="class-Shrine::Storage::FileSystem-label-Clearing+cache">Clearing cache<span><a href="#class-Shrine::Storage::FileSystem-label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -87,6 +90,21 @@
             pass the <code>:permissions</code> option:</p>
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;directory&quot;</span>, <span class="ruby-identifier">permissions</span><span class="ruby-operator">:</span> <span class="ruby-value">0755</span>)</pre>
+            
+            <h2 id="class-Shrine::Storage::FileSystem-label-Heroku">Heroku<span><a href="#class-Shrine::Storage::FileSystem-label-Heroku">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>Note that Heroku has a read-only filesystem, and doesn&#39;t allow you to
+            upload your files to the “public” directory, you can however upload to
+            “tmp” directory:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;tmp/uploads&quot;</span>)</pre>
+            
+            <p>Note that this approach has a couple of downsides. For example, you can
+            only use it for cache, since Heroku wipes this directory between app
+            restarts. This also means that deploying the app can cancel someone&#39;s
+            uploading if you&#39;re using backgrounding. Also, by default you cannot
+            generate URLs to files in the “tmp” directory, but you can with the
+            download_endpoint plugin.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -106,8 +124,8 @@
               <li><a target="docwin" href="#method-i-move">move</a></li>
               <li><a target="docwin" href="#method-i-open">open</a></li>
               <li><a target="docwin" href="#attribute-i-permissions">permissions</a></li>
+              <li><a target="docwin" href="#attribute-i-prefix">prefix</a></li>
               <li><a target="docwin" href="#method-i-read">read</a></li>
-              <li><a target="docwin" href="#attribute-i-subdirectory">subdirectory</a></li>
               <li><a target="docwin" href="#method-i-upload">upload</a></li>
               <li><a target="docwin" href="#method-i-url">url</a></li>
             </ol>
@@ -142,7 +160,7 @@
                   </tr>
                   <tr class='top-aligned-row context-row'>
                     <td class='context-item-name'>
-                      <a name='attribute-i-subdirectory'>subdirectory</a>
+                      <a name='attribute-i-prefix'>prefix</a>
                     </td>
                     <td class='context-item-value'>[R]</td>
                     <td class='context-item-desc'></td>
@@ -156,17 +174,17 @@
                 <a name='method-c-new'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
-                  <span class='arguments'>(directory, subdirectory: nil, host: nil, clean: true, permissions: nil)</span>
+                  <span class='arguments'>(directory, prefix: nil, host: nil, clean: true, permissions: nil, subdirectory: nil)</span>
                 </div>
                 <div class='description'>
                   
                   <p>Initializes a storage for uploading to the filesystem.</p>
-                  <table class="rdoc-list note-list"><tbody><tr><td class='label'>:subdirectory</td><td>
+                  <table class="rdoc-list note-list"><tbody><tr><td class='label'>:prefix</td><td>
                   <p>The directory relative to <code>directory</code> to which files will be
                   stored,  and it is included in the URL.</p>
                   </td></tr><tr><td class='label'>:host</td><td>
-                  <p>URLs will by default be relative if <code>:subdirectory</code> is set, and
-                  you  can use this option to set a CDN host (e.g.
+                  <p>URLs will by default be relative if <code>:prefix</code> is set, and you 
+                  can use this option to set a CDN host (e.g.
                   <code>//abc123.cloudfront.net</code>).</p>
                   </td></tr><tr><td class='label'>:permissions</td><td>
                   <p>The generated files and folders will have default UNIX permissions,  but if
@@ -181,7 +199,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 76</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">directory</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">clean</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">permissions</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">subdirectory</span>&#x000A;    <span class="ruby-ivar">@subdirectory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">relative</span>(<span class="ruby-identifier">subdirectory</span>))&#x000A;    <span class="ruby-ivar">@directory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">directory</span>).<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@subdirectory</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-ivar">@directory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">directory</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-ivar">@host</span> = <span class="ruby-identifier">host</span>&#x000A;  <span class="ruby-ivar">@permissions</span> = <span class="ruby-identifier">permissions</span>&#x000A;  <span class="ruby-ivar">@clean</span> = <span class="ruby-identifier">clean</span>&#x000A;&#x000A;  <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">mkpath</span>&#x000A;  <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 94</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">directory</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">clean</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">permissions</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">subdirectory</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">prefix</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">subdirectory</span>&#x000A;    <span class="ruby-identifier">warn</span> <span class="ruby-string">&quot;The :subdirectory option is deprecated and will be removed in Shrine 2. You should use :prefix instead.&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subdirectory</span>&#x000A;    <span class="ruby-ivar">@prefix</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">relative</span>(<span class="ruby-identifier">prefix</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">subdirectory</span>))&#x000A;    <span class="ruby-ivar">@directory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">directory</span>).<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@prefix</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-ivar">@directory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">directory</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-ivar">@host</span> = <span class="ruby-identifier">host</span>&#x000A;  <span class="ruby-ivar">@permissions</span> = <span class="ruby-identifier">permissions</span>&#x000A;  <span class="ruby-ivar">@clean</span> = <span class="ruby-identifier">clean</span>&#x000A;&#x000A;  <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">mkpath</span>&#x000A;  <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <h2>Public Instance methods</h2>
@@ -203,7 +221,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-clear-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-clear-21-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 162</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">confirm</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">older_than</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">find</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">path</span>.<span class="ruby-identifier">mtime</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">older_than</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">rmtree</span> <span class="ruby-operator">:</span> <span class="ruby-constant">Find</span>.<span class="ruby-identifier">prune</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Confirm</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">confirm</span> <span class="ruby-operator">==</span> <span class="ruby-value">:confirm</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">rmtree</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">mkpath</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-clear-21-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 174</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">confirm</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">older_than</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">find</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">path</span>.<span class="ruby-identifier">mtime</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">older_than</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">rmtree</span> <span class="ruby-operator">:</span> <span class="ruby-constant">Find</span>.<span class="ruby-identifier">prune</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Confirm</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">confirm</span> <span class="ruby-operator">==</span> <span class="ruby-value">:confirm</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">rmtree</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">mkpath</span>&#x000A;    <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-delete'>
@@ -221,7 +239,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 139</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">delete</span>&#x000A;  <span class="ruby-identifier">clean</span>(<span class="ruby-identifier">id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">clean?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 158</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">delete</span>&#x000A;  <span class="ruby-identifier">clean</span>(<span class="ruby-identifier">id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">clean?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-download'>
@@ -239,7 +257,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-download-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-download-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 99</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-constant">Down</span>.<span class="ruby-identifier">copy_to_tempfile</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-download-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 118</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">copy_to_tempfile</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">file</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-exists-3F'>
@@ -256,7 +274,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-exists-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-exists-3F-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 133</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">exist?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-exists-3F-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 152</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">exist?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-movable-3F'>
@@ -275,7 +293,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-movable-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-movable-3F-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 117</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">movable?</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:path</span>) <span class="ruby-operator">||</span>&#x000A;    (<span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-movable-3F-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 136</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">movable?</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:path</span>) <span class="ruby-operator">||</span>&#x000A;    (<span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-move'>
@@ -293,14 +311,14 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-move-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-move-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:path</span>)&#x000A;    <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mv</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>, <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mv</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">path</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>), <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">clean</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">clean?</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-move-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 124</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:path</span>)&#x000A;    <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mv</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>, <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">mv</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">path</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>), <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">clean</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">storage</span>.<span class="ruby-identifier">clean?</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-open'>
                 <a name='method-i-open'></a>
                 <div class='synopsis'>
                   <span class='name'>open</span>
-                  <span class='arguments'>(id)</span>
+                  <span class='arguments'>(id, &block)</span>
                 </div>
                 <div class='description'>
                   
@@ -310,7 +328,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-open-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-open-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 123</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;rb&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-open-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 142</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;rb&quot;</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-read'>
@@ -327,7 +345,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-read-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-read-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 128</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">binread</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-read-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 147</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">binread</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-upload'>
@@ -344,7 +362,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 93</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>)); <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 112</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>))&#x000A;  <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-url'>
@@ -355,8 +373,8 @@
                 </div>
                 <div class='description'>
                   
-                  <p>If <a href="FileSystem.html#attribute-i-subdirectory">subdirectory</a> is
-                  present, returns the path relative to <a
+                  <p>If <a href="FileSystem.html#attribute-i-prefix">prefix</a> is present,
+                  returns the path relative to <a
                   href="FileSystem.html#attribute-i-directory">directory</a>, with an
                   optional <a href="FileSystem.html#attribute-i-host">host</a> in front.
                   Otherwise returns the full path to the file (also with an optional <a
@@ -366,7 +384,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-url-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 147</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">subdirectory</span>&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">host</span> <span class="ruby-operator">||</span> <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">subdirectory</span>, <span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">host</span>&#x000A;      <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">host</span>, <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>))&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">to_s</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 166</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">path</span> = (<span class="ruby-identifier">prefix</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">relative_path</span>(<span class="ruby-identifier">id</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>)).<span class="ruby-identifier">to_s</span>&#x000A;  <span class="ruby-identifier">host</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">host</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">path</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

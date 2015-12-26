@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::BackgroundHelpers</title>
+    <title>Shrine::Plugins::Backgrounding</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::BackgroundHelpers
+          Shrine::Plugins::Backgrounding
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../files/lib/shrine/plugins/background_helpers_rb.html">lib/shrine/plugins/background_helpers.rb</a>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/backgrounding_rb.html">lib/shrine/plugins/backgrounding.rb</a>
           </li>
         </ol>
       </div>
@@ -43,9 +43,9 @@
             and put them into background jobs. This doesn&#39;t require any additional
             columns.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">background_helpers</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span></pre>
             
-            <h2 id="module-Shrine::Plugins::BackgroundHelpers-label-Promoting">Promoting<span><a href="#module-Shrine::Plugins::BackgroundHelpers-label-Promoting">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="module-Shrine::Plugins::Backgrounding-label-Promoting">Promoting<span><a href="#module-Shrine::Plugins::Backgrounding-label-Promoting">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>If you&#39;re doing processing, or your <code>:store</code> is something
             other than <a href="../Storage/FileSystem.html">Storage::FileSystem</a>,
@@ -67,7 +67,7 @@
             concurrency issues, such as canceling promoting if the attachment has
             changed in the meanwhile.</p>
             
-            <h2 id="module-Shrine::Plugins::BackgroundHelpers-label-Deleting">Deleting<span><a href="#module-Shrine::Plugins::BackgroundHelpers-label-Deleting">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="module-Shrine::Plugins::Backgrounding-label-Deleting">Deleting<span><a href="#module-Shrine::Plugins::Backgrounding-label-Deleting">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>If your <code>:store</code> is something other than <a
             href="../Storage/FileSystem.html">Storage::FileSystem</a>, it&#39;s
@@ -83,7 +83,7 @@
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DeleteJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <h2 id="module-Shrine::Plugins::BackgroundHelpers-label-Conclusion">Conclusion<span><a href="#module-Shrine::Plugins::BackgroundHelpers-label-Conclusion">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="module-Shrine::Plugins::Backgrounding-label-Conclusion">Conclusion<span><a href="#module-Shrine::Plugins::Backgrounding-label-Conclusion">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>The examples above used Sidekiq, but obviously you can just as well use any
             other backgrounding library. Also, if you want you can use backgrounding
@@ -100,8 +100,8 @@
           <div id='class-list'>
             <h2>Classes and Modules</h2>
             <ol>
-              <li><a target="docwin" href="BackgroundHelpers/AttacherClassMethods.html">Shrine::Plugins::BackgroundHelpers::AttacherClassMethods</a></li>
-              <li><a target="docwin" href="BackgroundHelpers/AttacherMethods.html">Shrine::Plugins::BackgroundHelpers::AttacherMethods</a></li>
+              <li><a target="docwin" href="Backgrounding/AttacherClassMethods.html">Shrine::Plugins::Backgrounding::AttacherClassMethods</a></li>
+              <li><a target="docwin" href="Backgrounding/AttacherMethods.html">Shrine::Plugins::Backgrounding::AttacherMethods</a></li>
             </ol>
           </div>
           <div id='section'>

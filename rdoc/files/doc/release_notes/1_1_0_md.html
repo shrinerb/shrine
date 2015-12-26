@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>1.1.0.md</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>1.1.0.md</h1>
+        <div class='paths'>
+          doc/release_notes/1.1.0.md
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>2015-12-26 21:02:53 +0100</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <h1 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The <code>download_endpoint</code> plugin has been added, which allows
+            downloading files  that are otherwise unreachable by URL (e.g. file
+            uploaded to database  storages or the "tmp" directory), and also allows
+            authenticating downloads.</p>
+            </li><li>
+            <p>The <code>backup</code> plugin has been added, which allows automatically
+            backing up  stored files upon upload.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span></pre>
+            
+            <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">avatar</span><span class="ruby-operator">:</span> <span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads to :store and :backup_store</span></pre>
+            <ul><li>
+            <p>The <code>delete_uploaded</code> plugin has been added for automatically
+            deleting files  after they&#39;re uploaded (useful for removing temporary
+            files in versions).</p>
+            </li><li>
+            <p>The <code>upload_options</code> plugin has been added, for dynamically
+            generating  storage-specific upload options.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> [:<span class="ruby-identifier">original</span>, :<span class="ruby-identifier">thumb</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[:<span class="ruby-identifier">version</span>])&#x000A;    {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;private&quot;</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <ul><li>
+            <p>The <code>keep_location</code> plugin has been added, which allows keeping
+            file location  when moving from cache to store, which can be useful when
+            debugging.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_location</span>, :<span class="ruby-identifier">cache</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">store</span></pre>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; &quot;cache&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">save</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; &quot;store&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span></pre>
+            <ul><li>
+            <p>The <code>default_url</code> plugin has been added (extracted from the base
+            functionality):</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/#{context[:name]}/missing.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/avatar/missing.jpg&quot;</span></pre>
+            <ul><li>
+            <p>The <code>remove_invalid</code> plugin has been added, for automatically
+            deleting and  deassigning cached files that were invalid.</p>
+            </li></ul>
+            
+            <h1 id="label-New+storages">New storages<span><a href="#label-New+storages">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The <a href="https://github.com/janko-m/shrine-fog">shrine-fog</a> storage
+            has been created for storing files on any of the  cloud services supported
+            by <a href="https://github.com/fog/fog">Fog</a>.</p>
+            </li><li>
+            <p>The <a href="https://github.com/janko-m/shrine-imgix">shrine-imgix</a>
+            storage has been created which intergrates with the <a
+            href="http://www.imgix.com">Imgix</a>  service which provides on-the-fly
+            processing.</p>
+            </li><li>
+            <p>The <a
+            href="https://github.com/janko-m/shrine-cloudinary">shrine-cloudinary</a>
+            storage as been created for storing files on  <a
+            href="http://cloudinary.com">Cloudinary</a>, which supports upfront, eager
+            and on-the-fly processing.</p>
+            </li><li>
+            <p>The <a href="https://github.com/janko-m/shrine-flickr">shrine-flickr</a>
+            storage as been created for storing files on  <a
+            href="https://www.flickr.com">Flickr</a>, which automatically generates
+            various sizes of your photos upon  upload.</p>
+            </li><li>
+            <p>The <a href="https://github.com/janko-m/shrine-gridfs">shrine-gridfs</a>
+            storage has been created for storing files in MongoDB  using the <a
+            href="https://docs.mongodb.org/v3.0/core/gridfs/">GridFS</a> data model.</p>
+            </li><li>
+            <p>The <a href="https://github.com/janko-m/shrine-sql">shrine-sql</a> storage
+            has been created for storing files in any SQL  database.</p>
+            </li></ul>
+            
+            <h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The S3 storage now accepts <code>:upload_options</code> for applying
+            additional options  on upload and presigning.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">upload_options</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)</pre>
+            <ul><li>
+            <p>The <code>:max_size</code> has been (re)added to <code>direct_upload</code>
+            plugin, for limiting  the maximum accepted filesize.</p>
+            </li><li>
+            <p>The <code>data_uri</code> plugin now adds
+            <code>UploadedFile#data_uri</code> for returning a  base64-encoded data URI
+            representation of the file, and <code>UploadedFile#base64</code>  which
+            returns base64-encoded contents of the file.</p>
+            </li></ul>
+            
+            <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The <code>backgrounding</code> plugin is now compatible with ActiveJob.</p>
+            </li><li>
+            <p>The upload endpoint now returns the Roda class itself. This makes the
+            endpoint  customizable, inheritable and inspectable.</p>
+            </li><li>
+            <p>All files are now closed after they&#39;re uploaded, which should minimize
+            the  number of open file descriptors in the system.</p>
+            </li><li>
+            <p>Closed a temporary open file descriptor after downloading from FileSystem.</p>
+            </li><li>
+            <p>When an <code>UploadedFile</code> is reuploaded, any internal tempfiles
+            will be deleted.</p>
+            </li><li>
+            <p>The S3 storage now properly copies files larger than 5 GB, by switching to 
+            multipart copy.</p>
+            </li><li>
+            <p>The S3 storage can now multi-delete more than 1000 files, by internally 
+            batching deletes in groups of 1000 (which is S3&#39;s maximum).</p>
+            </li><li>
+            <p>The S3 storage now accepts additonal per-upload options through the 
+            <code>upload_options</code> plugin.</p>
+            </li><li>
+            <p>The <code>parallelize</code> plugin will now properly work with moving when
+            file is  uploaded and deleted.</p>
+            </li><li>
+            <p>The <code>around_*</code> hooks now return the result of the corresponding
+            operation.</p>
+            </li><li>
+            <p>Generating S3 presign now works properly when <code>:endpoint</code> option
+            is passed in.</p>
+            </li><li>
+            <p>The <code>data_uri</code> plugin now accepts non-base64 data URIs as well.</p>
+            </li><li>
+            <p>The <code>data_uri</code> plugin now accepts MIME types with "+" symbols
+            inside (e.g.  "application/vnd.api+json")</p>
+            </li><li>
+            <p>Downloading file from a URL doesn&#39;t do an unnecessary copy of the file
+            anymore.</p>
+            </li><li>
+            <p>Avoid an additional string allocation in <code>S3#read</code>.</p>
+            </li><li>
+            <p><code>UploadedFile#mime_type</code> is now aliased to
+            <code>#content_type</code> to play nice with  some HTTP libraries when
+            uploading.</p>
+            </li><li>
+            <p>The <code>pretty_location</code> plugin now generates shorter file IDs for
+            better  readability.</p>
+            </li><li>
+            <p><code>FileSystem#url</code> should now work properly for Windows users.</p>
+            </li><li>
+            <p>The <code>context</code> hash can now be modified.</p>
+            </li><li>
+            <p>Storages aren&#39;t required to rewind the uploaded file anymore, since
+            these  files are now closed.</p>
+            </li><li>
+            <p>Improved storage linter to test the "special" storage methods as well if 
+            they&#39;re available.</p>
+            </li></ul>
+            
+            <h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>Files are now closed after they&#39;re uploaded by
+            <code>Shrine#upload</code>, if you were  relying on the previous behaviour
+            you need to update your code.</p>
+            </li><li>
+            <p>The default URL functionality has been extracted into the
+            <code>default_url</code>  plugin, and overriding
+            <code>Shrine#default_url</code> is now deprecated.</p>
+            </li><li>
+            <p>The <code>:subdirectory</code> FileSystem option has been renamed to
+            <code>:prefix</code>, and the  old option is now deprecated.</p>
+            </li><li>
+            <p>The <code>background_helpers</code> plugin has been renamed to
+            <code>backgrounding</code>.</p>
+            </li><li>
+            <p><code>Shrine.direct_endpoint</code> from the <code>direct_upload</code>
+            plugin has been deprecated,  you should use
+            <code>Shrine::UploadEndpoint</code> instead.</p>
+            </li></ul>
+          </div>
+          <div id='context'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
