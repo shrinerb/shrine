@@ -74,12 +74,17 @@ provide form helpers for Rails, because it's so easy to do it yourself:
 <% end %>
 ```
 
+### URLs
+
 To get file URLs, in Shrine you just call `#url` on the file:
 
 ```rb
 @photo.image.url
-@photo.image_url #=> returns nil if attachment is missing
+@photo.image_url # returns nil if attachment is missing
 ```
+
+If you're using storages which don't expose files over URL, or you want to
+secure your downloads, you can use the `download_endpoint` plugin.
 
 ### Metadata
 
@@ -264,6 +269,7 @@ enpdoint.
 #### `.attachment_url`, `.file_url`
 
 You can call `#url` on the uploaded file, or `#<name>_url` on the model.
+Additionally you can use the `download_endpoint` plugin.
 
 #### `.upload_url`, `.attachment_upload_url`, `.presign_url`, `.attachment_presign_url`
 

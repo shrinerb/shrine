@@ -136,6 +136,10 @@ Other:
     path: DirectUpload.html
     description: Provides a Rack endpoint convenient for direct AJAX uploads.
   -
+    name: download_endpoint
+    path: DownloadEndpoint.html
+    description: Generates URLs to uploaded files which normally may not be accessible over URL.
+  -
     name: hooks
     path: Hooks.html
     description: Allows you to specify actions that occur before/around/after process/store/delete.

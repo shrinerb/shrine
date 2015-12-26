@@ -8,7 +8,7 @@ rvm:
   - "ruby-head"
   - "jruby-9.0.4.0"
   - "jruby-head"
-  - "rbx-2.5.8"
+  - "rbx-2.9"
 
 matrix:
   allow_failures:

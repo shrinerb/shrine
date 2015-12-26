@@ -16,6 +16,10 @@ class Shrine
         Down.copy_to_tempfile(id, open(id))
       end
 
+      def stream(id)
+        yield read(id)
+      end
+
       def open(id)
         StringIO.new(@store.fetch(id))
       end

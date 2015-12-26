@@ -69,6 +69,27 @@ def upload(io, id, metadata = {})
 end
 ```
 
+## Streaming
+
+If your storage can stream files by yielding chunks, you can add an additional
+`#stream` method:
+
+```rb
+class Shrine
+  module Storage
+    class MyStorage
+      # ...
+
+      def stream(id)
+        # yields chunks of the file
+      end
+
+      # ...
+    end
+  end
+end
+```
+
 ## Moving
 
 If your storage can move files, you can add 2 additional methods, and they will

@@ -42,6 +42,12 @@ class Shrine
         error! "#exists? returns false for a file that was uploaded" if !storage.exists?(id)
         error! "#url doesn't return a string" if !storage.url(id, {}).is_a?(String)
 
+        if storage.respond_to?(:stream)
+          content = ""
+          storage.stream(id) { |chunk| content << chunk }
+          error! "#stream does not yield any chunks" if content.empty?
+        end
+
         storage.delete(id)
         error! "#exists? returns true for a file that was deleted" if storage.exists?(id)
 

@@ -130,6 +130,11 @@ class Shrine
         Down.download(url(id))
       end
 
+      # Streams the object from S3, yielding downloaded chunks.
+      def stream(id)
+        object(id).get { |chunk| yield chunk }
+      end
+
       # Alias for #download.
       def open(id)
         download(id)
