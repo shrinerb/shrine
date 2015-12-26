@@ -31,7 +31,7 @@ describe Shrine::Storage::FileSystem do
 
   it "passes the linter" do
     Shrine::Storage::Linter.call(file_system(root))
-    Shrine::Storage::Linter.call(file_system(root, subdirectory: "uploads"))
+    Shrine::Storage::Linter.call(file_system(root, prefix: "uploads"))
   end
 
   describe "#initialize" do
@@ -39,7 +39,7 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root)
       assert File.directory?(root)
 
-      @storage = file_system(root, subdirectory: "uploads")
+      @storage = file_system(root, prefix: "uploads")
       assert File.directory?("#{root}/uploads")
     end
 
@@ -141,29 +141,29 @@ describe Shrine::Storage::FileSystem do
   end
 
   describe "#url" do
-    it "returns the full path without :subdirectory" do
+    it "returns the full path without :prefix" do
       @storage = file_system(root)
       @storage.upload(fakeio, "foo.jpg")
 
       assert_equal "#{root}/foo.jpg", @storage.url("foo.jpg")
     end
 
-    it "applies a host without :subdirectory" do
+    it "applies a host without :prefix" do
       @storage = file_system(root, host: "http://124.83.12.24")
       @storage.upload(fakeio, "foo.jpg")
 
       assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg")
     end
 
-    it "returns the path relative to the :subdirectory" do
-      @storage = file_system(root, subdirectory: "uploads")
+    it "returns the path relative to the :prefix" do
+      @storage = file_system(root, prefix: "uploads")
       @storage.upload(fakeio, "foo.jpg")
 
       assert_equal "/uploads/foo.jpg", @storage.url("foo.jpg")
     end
 
-    it "accepts a host with :subdirectory" do
-      @storage = file_system(root, subdirectory: "uploads", host: "http://abc123.cloudfront.net")
+    it "accepts a host with :prefix" do
+      @storage = file_system(root, prefix: "uploads", host: "http://abc123.cloudfront.net")
       @storage.upload(fakeio, "foo.jpg")
 
       assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg")
@@ -214,7 +214,7 @@ describe Shrine::Storage::FileSystem do
   end
 
   it "accepts absolute pathnames" do
-    @storage = file_system(root, subdirectory: "/uploads")
+    @storage = file_system(root, prefix: "/uploads")
     @storage.upload(fakeio, "foo.jpg")
 
     assert_equal "#{root}/uploads", @storage.directory.to_s

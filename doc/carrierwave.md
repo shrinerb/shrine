@@ -25,8 +25,8 @@ instantiate uploaders with a specific storage.
 require "shrine/storage/file_system"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/store"),
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
 }
 ```
 ```rb

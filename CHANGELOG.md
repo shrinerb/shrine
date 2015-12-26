@@ -1,5 +1,7 @@
 ## HEAD
 
+* Rename the `:subdirectory` option to `:prefix` on FileSystem storage (janko-m)
+
 * Add download_endpoint plugin for downloading files uploaded to database storages and for securing downloads (janko-m)
 
 * Make `around_*` hooks return the result of the corresponding action (janko-m)

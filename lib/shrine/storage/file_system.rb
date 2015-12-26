@@ -6,14 +6,14 @@ require "pathname"
 class Shrine
   module Storage
     # The FileSystem storage handles uploads to the filesystem, and it is
-    # most commonly initialized with a "base" folder and a "subdirectory":
+    # most commonly initialized with a "base" folder and a "prefix":
     #
-    #     storage = Shrine::Storage::FileSystem.new("public", subdirectory: "uploads")
+    #     storage = Shrine::Storage::FileSystem.new("public", prefix: "uploads")
     #     storage.url("image.jpg") #=> "/uploads/image.jpg"
     #
     # This storage will upload all files to "public/uploads", and the URLs
     # of the uploaded files will start with "/uploads/*". This way you can
-    # use FileSystem for both cache and store, one having subdirectory
+    # use FileSystem for both cache and store, one having the prefix
     # "uploads/cache" and other "uploads/store".
     #
     # You can also initialize the storage just with the "base" directory, and
@@ -28,13 +28,13 @@ class Shrine
     # additional `:host` option can be provided:
     #
     #     storage = Shrine::Storage::FileSystem.new("public",
-    #       subdirectory: "uploads", host: "http://abc123.cloudfront.net")
+    #       prefix: "uploads", host: "http://abc123.cloudfront.net")
     #     storage.url("image.jpg") #=> "http://abc123.cloudfront.net/uploads/image.jpg"
     #
     # If you're not using a CDN, it's recommended that you still set `:host` to
     # your application's domain (at least in production).
     #
-    # The `:host` option can also be used wihout `:subdirectory`, and is
+    # The `:host` option can also be used wihout `:prefix`, and is
     # useful if you for example have files located on another server:
     #
     #     storage = Shrine::Storage::FileSystem.new("files", host: "http://943.23.43.1")
@@ -71,16 +71,16 @@ class Shrine
     # generate URLs to files in the "tmp" directory, but you can with the
     # download_endpoint plugin.
     class FileSystem
-      attr_reader :directory, :subdirectory, :host, :permissions
+      attr_reader :directory, :prefix, :host, :permissions
 
       # Initializes a storage for uploading to the filesystem.
       #
-      # :subdirectory
+      # :prefix
       # :  The directory relative to `directory` to which files will be stored,
       #    and it is included in the URL.
       #
       # :host
-      # :  URLs will by default be relative if `:subdirectory` is set, and you
+      # :  URLs will by default be relative if `:prefix` is set, and you
       #    can use this option to set a CDN host (e.g. `//abc123.cloudfront.net`).
       #
       # :permissions
@@ -91,10 +91,11 @@ class Shrine
       # :  By default empty folders inside the directory are automatically
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
-      def initialize(directory, subdirectory: nil, host: nil, clean: true, permissions: nil)
-        if subdirectory
-          @subdirectory = Pathname(relative(subdirectory))
-          @directory = Pathname(directory).join(@subdirectory)
+      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: nil, subdirectory: nil)
+        if prefix || subdirectory
+          warn "The :subdirectory option is deprecated and will be removed in Shrine 2. You should use :prefix instead." if subdirectory
+          @prefix = Pathname(relative(prefix || subdirectory))
+          @directory = Pathname(directory).join(@prefix)
         else
           @directory = Pathname(directory)
         end
@@ -159,11 +160,11 @@ class Shrine
         clean(id) if clean?
       end
 
-      # If #subdirectory is present, returns the path relative to #directory,
+      # If #prefix is present, returns the path relative to #directory,
       # with an optional #host in front. Otherwise returns the full path to the
       # file (also with an optional #host).
       def url(id, **options)
-        path = (subdirectory ? relative_path(id) : path(id)).to_s
+        path = (prefix ? relative_path(id) : path(id)).to_s
         host ? host + path : path
       end
 
@@ -214,7 +215,7 @@ class Shrine
       end
 
       def relative_path(id)
-        "/" + subdirectory.join(id.gsub("/", File::SEPARATOR)).to_s
+        "/" + prefix.join(id.gsub("/", File::SEPARATOR)).to_s
       end
 
       def relative(path)

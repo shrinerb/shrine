@@ -63,8 +63,8 @@ require "open-uri"
 
 Shrine.plugin :sequel
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, subdirectory: "cache"),
-  store: Shrine::Storage::FileSystem.new(Dir.tmpdir, subdirectory: "store"),
+  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "cache"),
+  store: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "store"),
 }
 
 class MyUploader < Shrine
@@ -98,8 +98,8 @@ require "open-uri"
 
 Shrine.plugin :activerecord
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, subdirectory: "cache"),
-  store: Shrine::Storage::FileSystem.new(Dir.tmpdir, subdirectory: "store"),
+  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "cache"),
+  store: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "store"),
 }
 
 class MyUploader < Shrine

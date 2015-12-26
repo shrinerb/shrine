@@ -12,8 +12,8 @@ current store (let's say that you're migrating from FileSystem to S3):
 
 ```rb
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/store"),
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
   new_store: Shrine::Storage::S3.new(**s3_options),
 }
 
@@ -54,7 +54,7 @@ be `:store` again):
 
 ```rb
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", subdirectory: "uploads/cache"),
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
   store: Shrine::Storage::S3.new(**s3_options),
 }
 
