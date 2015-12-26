@@ -35,7 +35,7 @@ Shrine.plugin :migration_helpers # before the model is loaded
 ```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
-    user.avatar_store.upload(avatar)
+    user.avatar_store.upload(avatar, {record: user, name: :avatar})
   end
 end
 

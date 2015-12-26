@@ -48,7 +48,7 @@ User.paged_each do |user|
   user.update_avatar do |avatar|
     unless avatar.is_a?(Hash)
       file = some_processing(avatar.download)
-      thumb = user.avatar_store.upload(file)
+      thumb = user.avatar_store.upload(file, {record: user, name: :avatar, version: :thumb})
       {original: avatar, thumb: thumb}
     end
   end
@@ -104,11 +104,11 @@ Shrine.plugin :migration_helpers # before the model is loaded
 ```rb
 User.paged_each do |user|
   user.update_avatar do |avatar|
-    unless new = avatar[:new]
+    unless avatar[:new]
       file = some_processing(avatar[:original].download, *args)
-      new = user.avatar_store.upload(file)
+      new = user.avatar_store.upload(file, {record: user, name: :avatar, version: :new})
+      avatar.merge(new: new)
     end
-    avatar.merge(new: new)
   end
 end
 ```
