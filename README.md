@@ -534,11 +534,11 @@ file_system.clear!(older_than: 1.week.ago) # adjust the time
 
 Shrine is the first uploading library designed from day one to be used with
 background jobs. Backgrounding parts of file upload is essential for scaling
-and good user experience, and Shrine provides a `background_helpers` which
+and good user experience, and Shrine provides a `backgrounding` plugin which
 makes it really easy to plug in your backgrounding library:
 
 ```rb
-Shrine.plugin :background_helpers
+Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
 ```

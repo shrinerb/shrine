@@ -20,7 +20,7 @@ class Shrine
     # tests.
     #
     # If you want to put some parts of this lifecycle into a background job, see
-    # the background_helpers plugin.
+    # the backgrounding plugin.
     #
     # Additionally, any Shrine validation errors will added to Sequel's
     # errors upon validation. Note that if you want to validate presence of the
@@ -62,7 +62,7 @@ class Shrine
       end
 
       module AttacherClassMethods
-        # Needed by the background_helpers plugin.
+        # Needed by the backgrounding plugin.
         def find_record(record_class, record_id)
           record_class.with_pk!(record_id)
         end

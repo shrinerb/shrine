@@ -58,8 +58,8 @@ describe "the activerecord plugin" do
     assert_equal "store", @user.avatar.storage_key
   end
 
-  it "works with background_helpers plugin" do
-    @uploader.class.plugin :background_helpers
+  it "works with backgrounding plugin" do
+    @uploader.class.plugin :backgrounding
     @attacher.class.promote { |data| self.class.promote(data) }
     @attacher.class.delete { |data| self.class.delete(data) }
 

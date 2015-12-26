@@ -171,11 +171,11 @@ is moved to store soon after caching.
 
 This means that in certain cases copying from cache to store can fail if it
 happens immediately after uploading to cache. If you start noticing these
-errors, and you're using `background_helpers` plugin, you can tell your
+errors, and you're using `backgrounding` plugin, you can tell your
 backgrounding library to perform the job with a delay:
 
 ```rb
-Shrine.plugin :background_helpers
+Shrine.plugin :backgrounding
 Shrine::Attacher.promote do |data|
   UploadJob.perform_in(60, data) # tells a Sidekiq worker to perform in 1 minute
 end

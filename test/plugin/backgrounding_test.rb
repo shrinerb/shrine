@@ -9,11 +9,11 @@ end
 
 Sequel.cache_anonymous_models = false
 
-describe "the background_helpers plugin" do
+describe "the backgrounding plugin" do
   before do
     @uploader = uploader do
       plugin :sequel
-      plugin :background_helpers
+      plugin :backgrounding
     end
 
     user_class = Object.const_set("User", Sequel::Model(:users))

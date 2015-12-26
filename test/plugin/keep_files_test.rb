@@ -33,9 +33,9 @@ describe "the keep_files plugin" do
     end
   end
 
-  it "works with background_helpers plugin" do
+  it "works with backgrounding plugin" do
     @attacher = attacher(destroyed: true, replaced: true)
-    @attacher.shrine_class.plugin :background_helpers
+    @attacher.shrine_class.plugin :backgrounding
     @attacher.class.delete { |data| self.class.delete(data)  }
     @attacher.class.promote { promote(get) }
 

@@ -10,8 +10,8 @@ ORMs:
 
 Model:
   -
-    name: background_helpers
-    path: BackgroundHelpers.html
+    name: backgrounding
+    path: Backgrounding.html
     description: Adds the ability to put storing and deleting into a background job.
   -
     name: cached_attachment_data
