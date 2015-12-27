@@ -612,11 +612,13 @@ system].
  3. Install ruby-filemagic. Instructions at: https://github.com/blackwinter/ruby-filemagic
  4. Run "bundle"
  5. Run "rake"
+ 6. More details at [CONTRIBUTING].
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License].
 
+[CONTRIBUTING]: https://github.com/janko-m/shrine/blob/master/CONTRIBUTING.md
 [Contributor Covenant]: http://contributor-covenant.org
 [image_processing]: https://github.com/janko-m/image_processing
 [fastimage]: https://github.com/sdsykes/fastimage
