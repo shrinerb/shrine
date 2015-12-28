@@ -12,6 +12,10 @@ describe "the direct_upload plugin" do
   end
 
   describe "POST /:storage/:name" do
+    before do
+      skip "https://github.com/rubinius/rubinius/issues/3544" if RUBY_ENGINE == "rbx"
+    end
+
     it "returns a JSON response" do
       response = app.post "/cache/avatar", multipart: {file: image}
 
@@ -153,13 +157,13 @@ describe "the direct_upload plugin" do
   end
 
   it "refuses storages which are not allowed" do
-    response = app.post "/store/avatar", multipart: {file: image}
+    response = app.post "/store/avatar"
 
     assert_http_error 403, response
   end
 
   it "refuses storages which are nonexistent" do
-    response = app.post "/nonexistent/avatar", multipart: {file: image}
+    response = app.post "/nonexistent/avatar"
 
     assert_http_error 403, response
   end
