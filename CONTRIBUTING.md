@@ -26,14 +26,13 @@ Pull Request Guidelines
 Running tests
 =============
 
-The test suite requires that you have libmagic and SQLite installed.
-If you're using Homebrew, you can just run:
+The test suite requires that you have the following installed:
 
-```sh
-$ brew bundle
-```
+* [libmagic]
+* [SQLite]
 
-The test suite is best run using Rake:
+If you're using Homebrew, you can just run `brew bundle`. The test suite is
+best run using Rake:
 
 ```sh
 $ rake test
@@ -125,3 +124,5 @@ post = Post.create(image: open("https://example.com/image-from-internet.jpg"))
 
 [ruby-shrine]: https://groups.google.com/forum/#!forum/ruby-shrine
 [Shrine code of conduct]: https://github.com/janko-m/shrine/blob/master/CODE_OF_CONDUCT.md
+[libmagic]: https://github.com/threatstack/libmagic
+[SQLite]: https://www.sqlite.org
