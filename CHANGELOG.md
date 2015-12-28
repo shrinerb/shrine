@@ -1,4 +1,4 @@
-## HEAD
+## 1.1.0 (2015-12-26)
 
 * Rename the "background_helpers" plugin to "backgrounding" (janko-m)
 
