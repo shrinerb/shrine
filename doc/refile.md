@@ -306,7 +306,7 @@ class ImageUploader < Shrine
 
   Attacher.validate do
     validate_extension_inclusion [/jpe?g/, "png"]
-    validate_mime_type_inclusion [/image/jpeg/, "image/png"]
+    validate_mime_type_inclusion ["image/jpeg", "image/png"]
   end
 end
 ```
