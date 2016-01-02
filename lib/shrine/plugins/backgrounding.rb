@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The background_helpers plugin enables you to intercept phases of
+    # The backgrounding plugin enables you to intercept phases of
     # uploading and put them into background jobs. This doesn't require any
     # additional columns.
     #
@@ -66,7 +66,7 @@ class Shrine
     #
     # If you would like to speed up your uploads and deletes, you can use the
     # parallelize plugin, either as a replacement or an addition to
-    # background_helpers.
+    # backgrounding.
     module Backgrounding
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise
