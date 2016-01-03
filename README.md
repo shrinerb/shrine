@@ -59,8 +59,8 @@ to be an actual IO, it's enough that it responds to these 5 methods:
 `#read(*args)`, `#size`, `#eof?`, `#rewind` and `#close`.
 `ActionDispatch::Http::UploadedFile` is one such object.
 
-The returned `Shrine::UploadedFile` represents the file that has been uploaded,
-and we can do a lot with it:
+The returned object is a [`Shrine::UploadedFile`], which represents the file
+that was uploaded, and we can do a lot with it:
 
 ```rb
 uploaded_file.url      #=> "/uploads/938kjsdf932.jpg"
@@ -68,15 +68,12 @@ uploaded_file.read     #=> "..."
 uploaded_file.exists?  #=> true
 uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf>
 uploaded_file.metadata #=> {...}
+uploaded_file.delete
+# ...
 ```
 
 To read about the metadata that is stored with the uploaded file, see the
-[metadata](#metadata) section. Once you're done with the file, you can delete
-it.
-
-```rb
-uploaded_file.delete
-```
+[metadata](#metadata) section.
 
 ## Attachment
 
@@ -624,3 +621,4 @@ The gem is available as open source under the terms of the [MIT License].
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
 [Plugins & Storages]: http://shrinerb.com#external
+[`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html
