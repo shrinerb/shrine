@@ -201,6 +201,14 @@ describe Shrine do
       assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
     end
 
+    it "copies metadata from other UploadedFiles" do
+      uploaded_file = @uploader.store(fakeio)
+      uploaded_file.metadata["foo"] = "bar"
+      another_uploaded_file = @uploader.store(uploaded_file)
+
+      assert_equal "bar", another_uploaded_file.metadata["foo"]
+    end
+
     it "closes the file after uploading" do
       @uploader.store(io = fakeio)
 

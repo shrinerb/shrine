@@ -282,7 +282,7 @@ class Shrine
 
         private
 
-        # Extracts the filename from the IO using smart heuristics.
+        # Extracts the filename from the IO using some basic heuristics.
         def extract_filename(io)
           if io.respond_to?(:original_filename)
             io.original_filename
@@ -291,7 +291,7 @@ class Shrine
           end
         end
 
-        # Extracts the MIME type from the IO using smart heuristics.
+        # Extracts the MIME type from the IO using some basic heuristics.
         def extract_mime_type(io)
           if io.respond_to?(:mime_type)
             io.mime_type
@@ -311,7 +311,7 @@ class Shrine
         def _store(io, context)
           _enforce_io(io)
           context[:location] ||= get_location(io, context)
-          context[:metadata] ||= extract_metadata(io, context)
+          context[:metadata] ||= get_metadata(io, context)
 
           put(io, context)
 
@@ -352,6 +352,16 @@ class Shrine
         # for the `:location` option, otherwise it calls #generate_location.
         def get_location(io, context)
           generate_location(io, context)
+        end
+
+        # Copies the metadata over from an UploadedFile or calls
+        # #extract_metadata.
+        def get_metadata(io, context)
+          if io.is_a?(UploadedFile)
+            io.metadata.dup
+          else
+            extract_metadata(io, context)
+          end
         end
 
         # Checks if the object is a valid IO by checking that it responds to
