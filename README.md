@@ -22,7 +22,7 @@ Shrine has been tested on MRI 2.1, MRI 2.2, JRuby and Rubinius.
 
 ## Basics
 
-Here's a basic example showing how the file upload works in Shrine:
+Here's a basic example showing how file upload works in Shrine:
 
 ```rb
 require "shrine"
@@ -32,13 +32,13 @@ Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
 
 uploader = Shrine.new(:file_system)
 
-uploaded_file = uploader.upload(File.open("avatar.jpg"))
+uploaded_file = uploader.upload(File.open("movie.mp4"))
 uploaded_file      #=> #<Shrine::UploadedFile>
-uploaded_file.url  #=> "/uploads/9260ea09d8effd.jpg"
+uploaded_file.url  #=> "/uploads/9260ea09d8effd.mp4"
 uploaded_file.data #=>
 # {
 #   "storage"  => "file_system",
-#   "id"       => "9260ea09d8effd.jpg",
+#   "id"       => "9260ea09d8effd.mp4",
 #   "metadata" => {...},
 # }
 ```
@@ -63,10 +63,10 @@ The returned object is a [`Shrine::UploadedFile`], which represents the file
 that was uploaded, and we can do a lot with it:
 
 ```rb
-uploaded_file.url      #=> "/uploads/938kjsdf932.jpg"
+uploaded_file.url      #=> "/uploads/938kjsdf932.mp4"
 uploaded_file.read     #=> "..."
 uploaded_file.exists?  #=> true
-uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf>
+uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4>
 uploaded_file.metadata #=> {...}
 uploaded_file.delete
 # ...
@@ -98,7 +98,7 @@ should create an uploader specific to the type of files we're uploading:
 
 ```rb
 class ImageUploader < Shrine
-  # logic for uploading images
+  # your logic for uploading files
 end
 ```
 
@@ -106,10 +106,8 @@ Now if we assume that we have a "User" model, and we want our users to have an
 "avatar", we can generate and include an "attachment" module:
 
 ```rb
-class User
-  attr_accessor :avatar_data
-
-  include ImageUploader[:avatar]
+class User < Sequel::Model
+  include ImageUploader[:avatar] # uses the "avatar_data" attribute
 end
 ```
 
@@ -124,7 +122,7 @@ user.avatar_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"met
 ```
 
 The attachment module has added `#avatar`, `#avatar=` and `#avatar_url`
-methods to our User. This is what's happening:
+methods to our User, using regular module inclusion.
 
 ```rb
 Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
