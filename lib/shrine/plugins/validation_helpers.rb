@@ -150,8 +150,8 @@ class Shrine
         private
 
         # Converts a string to a regex.
-        def regex(string)
-          string.is_a?(Regexp) ? string : /^#{Regexp.escape(string)}$/
+        def regex(value)
+          value.is_a?(Regexp) ? value : /\A#{Regexp.escape(value)}\z/
         end
 
         # Returns the direct message if given, otherwise uses the default error
