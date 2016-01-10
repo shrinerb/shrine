@@ -140,7 +140,7 @@ class Shrine
         # Validates that the extension is not in the `blacklist`. The blacklist
         # is an array of strings or regexes.
         #
-        #     validate_extension_exclusion ["mov", /\Amp/]
+        #     validate_extension_exclusion ["mov", /\Amp/i]
         def validate_extension_exclusion(blacklist, message: nil)
           if blacklist.any? { |extension| regex(extension) =~ get.extension.to_s }
             errors << error_message(:extension_exclusion, message, blacklist)
