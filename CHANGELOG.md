@@ -1,5 +1,7 @@
 ## HEAD
 
+* Prevent multiline content type spoof attempts in validation_helpers (xzo)
+
 * Make custom metadata inherited from uploaded files and make `#extract_metadata` called only on caching (janko-m)
 
 ## 1.1.0 (2015-12-26)

@@ -100,6 +100,13 @@ describe "the validation_helpers plugin" do
       assert_empty @attacher.errors
     end
 
+    it "scans multiline strings" do
+      @attacher.assign(fakeio(content_type: "video/mpeg4\nfoo"))
+      @attacher.validate_mime_type_inclusion ["video/mpeg4"]
+
+      refute_empty @attacher.errors
+    end
+
     it "accepts regexes" do
       @attacher.assign(fakeio(content_type: "video/mpeg4"))
       @attacher.validate_mime_type_inclusion [/image/]
