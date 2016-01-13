@@ -14,10 +14,10 @@ class Shrine
     # * `after_commit` -- Promotes the attachment, deletes replaced ones.
     # * `after_destroy_commit` -- Deletes the attachment.
     #
-    # Note that if your tests are wrapped in transactions, the `after_commit`
-    # and `after_destroy_commit` callbacks won't get called, so in order to
-    # test uploading you should first disable these transactions for those
-    # tests.
+    # Note that if your tests are wrapped in transactions, for testing
+    # attachments you should set `Sequel::Model.use_transactions` to `false`,
+    # so that `after_commit` and `after_destroy_commit` callbacks get properly
+    # called.
     #
     # If you want to put some parts of this lifecycle into a background job, see
     # the backgrounding plugin.
