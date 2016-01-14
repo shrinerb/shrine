@@ -66,7 +66,7 @@ class Shrine
       module AttacherClassMethods
         # Needed by the backgrounding plugin.
         def find_record(record_class, record_id)
-          record_class.find(record_id)
+          record_class.where(id: record_id).first
         end
       end
 
@@ -86,6 +86,8 @@ class Shrine
         def changed?(uploaded_file)
           record.reload
           super
+        rescue ActiveRecord::RecordNotFound
+          true
         end
       end
     end

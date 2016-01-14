@@ -77,7 +77,7 @@ class Shrine
           else
             record_class, record_id = data["record"]
             record_class = Object.const_get(record_class)
-            record = find_record(record_class, record_id)
+            record = find_record(record_class, record_id) or return
 
             name = data["attachment"]
             attacher = record.send("#{name}_attacher")

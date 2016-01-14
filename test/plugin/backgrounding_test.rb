@@ -62,6 +62,16 @@ describe "the backgrounding plugin" do
 
       assert_equal fiber, @attacher.instance_variable_get("@fiber")
     end
+
+    it "doesn't error when record wasn't found" do
+      @user.avatar_attacher.class.promote do |data|
+        @fiber = Fiber.new { self.class.promote(data) }
+      end
+      @user.update(avatar: fakeio)
+      @user.destroy
+
+      @attacher.instance_variable_get("@fiber").resume
+    end
   end
 
   describe "deleting" do

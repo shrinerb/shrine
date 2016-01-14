@@ -64,7 +64,7 @@ class Shrine
       module AttacherClassMethods
         # Needed by the backgrounding plugin.
         def find_record(record_class, record_id)
-          record_class.with_pk!(record_id)
+          record_class.with_pk(record_id)
         end
       end
 
@@ -84,6 +84,8 @@ class Shrine
         def changed?(uploaded_file)
           record.reload
           super
+        rescue Sequel::Error
+          true
         end
 
         # Support for Postgres JSON columns.
