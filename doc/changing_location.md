@@ -16,7 +16,7 @@ Or by overriding `#generate_location`:
 ```rb
 class MyUploader < Shrine
   def generate_location(io, context)
-    "#{context[:record].class}/#{context[:record.id]}/#{io.original_filename}"
+    "#{context[:record].class}/#{context[:record].id}/#{io.original_filename}"
   end
 end
 ```
