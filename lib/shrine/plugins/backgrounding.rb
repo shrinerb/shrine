@@ -83,7 +83,7 @@ class Shrine
             attacher = record.send("#{name}_attacher")
             cached_file = attacher.uploaded_file(data["uploaded_file"])
 
-            attacher.promote(cached_file)
+            attacher.promote(cached_file) if cached_file == record.send(name)
           end
         end
 
