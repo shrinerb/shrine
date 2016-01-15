@@ -12,17 +12,18 @@ class Shrine
     #     user.avatar_cache #=> #<Shrine @storage_key=:cache @storage=#<Shrine::Storage::FileSystem @directory=public/uploads>>
     #     user.avatar_store #=> #<Shrine @storage_key=:store @storage=#<Shrine::Storage::S3:0x007fb8343397c8 @bucket=#<Aws::S3::Bucket name="foo">>>
     #
-    # The model will also get `#update_avatar` method, which should be used
-    # when doing attachment migrations. It will update the record's attachment
-    # with the result of the passed in block.
+    # The model will also get `#update_avatar` method, which can be used when
+    # doing attachment migrations. It will update the record's attachment with
+    # the result of the passed in block.
     #
     #     user.update_avatar do |avatar|
     #       user.avatar_store.upload(avatar) # saved to the record
     #     end
     #
     # This will get triggered _only_ if the attachment is not nil and is
-    # stored. The result can be anything that responds to `#to_json` and
-    # evaluates to uploaded files' data.
+    # stored, and will get saved only if the current attachment hasn't changed
+    # while executing the block. The result can be anything that responds to
+    # `#to_json` and evaluates to uploaded files' data.
     module MigrationHelpers
       module AttachmentMethods
         def initialize(name)
@@ -48,10 +49,9 @@ class Shrine
         # Updates the attachment with the result of the block. It will get
         # called only if the attachment exists and is stored.
         def update_stored(&block)
-          attachment = get
-          return if attachment.nil? || cache.uploaded?(attachment)
-          new_attachment = block.call(attachment)
-          update(new_attachment) unless changed?(attachment)
+          return if get.nil? || cache.uploaded?(get)
+          new_attachment = block.call(get)
+          swap(new_attachment)
         end
       end
     end

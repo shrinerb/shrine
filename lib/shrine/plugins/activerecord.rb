@@ -73,21 +73,20 @@ class Shrine
       module AttacherMethods
         private
 
+        # Updates the current attachment with the new one, unless the current
+        # attachment has changed.
+        def swap(uploaded_file)
+          record.class.transaction do
+            break if record.send("#{name}_data") != record.reload.send("#{name}_data")
+            super
+          end
+        rescue ActiveRecord::RecordNotFound
+        end
+
         # We save the record after updating, raising any validation errors.
         def update(uploaded_file)
           super
           record.save!
-        end
-
-        # If we're in a transaction, then promoting is happening inline. If
-        # we're not, then this is happening in a background job. In that case
-        # when we're checking that the attachment changed during storing, we
-        # need to first reload the record to pick up new columns.
-        def changed?(uploaded_file)
-          record.reload
-          super
-        rescue ActiveRecord::RecordNotFound
-          true
         end
       end
     end

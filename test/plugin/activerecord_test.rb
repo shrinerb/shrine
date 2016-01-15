@@ -56,6 +56,7 @@ describe "the activerecord plugin" do
     @user.save
 
     assert_equal "store", @user.avatar.storage_key
+    assert @user.avatar.exists?
   end
 
   it "works with backgrounding plugin" do

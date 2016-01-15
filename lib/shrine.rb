@@ -522,16 +522,11 @@ class Shrine
           promote(get) if promote?(get)
         end
 
-        # Promotes a cached file to store, taking into account to check whether
-        # the attachment has changed in the meanwhile. Afterwards the cached
-        # file is deleted.
+        # Uploads the cached file to store, and updates the record with the
+        # stored file.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :store)
-          unless changed?(cached_file)
-            update(stored_file)
-          else
-            delete!(stored_file, phase: :stored)
-          end
+          swap(stored_file) or delete!(stored_file, phase: :stored)
         end
 
         # Deletes the attachment that was replaced, and is called after saving
@@ -588,6 +583,12 @@ class Shrine
           uploaded_file && cache.uploaded?(uploaded_file)
         end
 
+        # Alias to #update, overriden in ORM plugins.
+        def swap(uploaded_file)
+          update(uploaded_file)
+          uploaded_file
+        end
+
         # Sets and saves the uploaded file.
         def update(uploaded_file)
           _set(uploaded_file)
@@ -618,11 +619,6 @@ class Shrine
         # The validation block provided by `Shrine.validate`.
         def validate_block
           shrine_class.opts[:validate]
-        end
-
-        # Checks if the uploaded file matches the written one.
-        def changed?(uploaded_file)
-          get != uploaded_file
         end
 
         # It dumps the UploadedFile to JSON and writes the result to the column.
