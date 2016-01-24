@@ -19,7 +19,7 @@ class Shrine
     #     user.avatar.size              #=> 43423
     #     user.avatar.original_filename #=> nil
     #
-    # If the data URI wasn't correctly parsed, an error message will added to
+    # If the data URI wasn't correctly parsed, an error message will be added to
     # the attachment column. You can change the default error message:
     #
     #     plugin :data_uri, error_message: "data URI was invalid"

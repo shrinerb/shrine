@@ -18,10 +18,10 @@ class Shrine
     #
     # You should always mount a new endpoint for each uploader that you want to
     # enable direct uploads for. This now gives your Ruby application a `POST
-    # /attachments/images/:storage/:name` route, which accepts a `file` query
+    # /attachments/images/:storage/:name` route, which accepts a "file" query
     # parameter, and returns the uploaded file in JSON format:
     #
-    #     # POST /attachments/images/cache/avatar
+    #     # POST /attachments/images/cache/avatar (file upload)
     #     {
     #       "id": "43kewit94.jpg",
     #       "storage": "cache",
@@ -32,9 +32,9 @@ class Shrine
     #       }
     #     }
     #
-    # Once you've uploaded the file, you need to assign this JSON to the hidden
-    # attachment field in the form. There are many great JavaScript libraries
-    # for file uploads, most popular being [jQuery-File-Upload].
+    # Once you've uploaded the file, you need to assign the result to the
+    # hidden attachment field in the form. There are many great JavaScript
+    # libraries for file uploads, most popular being [jQuery-File-Upload].
     #
     # ## Limiting filesize
     #

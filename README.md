@@ -106,8 +106,8 @@ Now if we assume that we have a "User" model, and we want our users to have an
 "avatar", we can generate and include an "attachment" module:
 
 ```rb
-class User < Sequel::Model
-  include ImageUploader[:avatar] # uses the "avatar_data" attribute
+class User
+  include ImageUploader[:avatar] # requires "avatar_data" attribute
 end
 ```
 
@@ -137,10 +137,9 @@ Shrine.attachment(:avatar)
 Shrine::Attachment.new(:document)
 ```
 
-The setter (`#avatar=`) caches the assigned file and writes it to the "data"
-column (`avatar_data`). The getter (`#avatar`) reads the "data" column and
-returns a `Shrine::UploadedFile`. The url method (`#avatar_url`) calls
-`avatar.url` if the attachment is present, otherwise returns nil.
+* `#avatar=` – caches the file and saves a JSON representation into `avatar_data`
+* `#avatar` – returns a `Shrine::UploadedFile` based on the data from `avatar_data`
+* `#avatar_url` – calls `avatar.url` if attachment is present, otherwise returns nil.
 
 This is how you would typically create the form for a `@user`:
 
@@ -190,10 +189,18 @@ user.destroy
 user.avatar.exists? #=> false
 ```
 
+*NOTE: The record will first be saved with the cached attachment, and afterwards
+(in an "after commit" hook) updated with the stored attachment. This is done so
+that processing/storing isn't performed inside a database transaction. If you're
+doing processing, there will be a bried period of time when the record will exist
+with an unprocessed attachment, so you may need to account for that.*
+
 ## Direct uploads
 
 Shrine comes with a `direct_upload` plugin which provides a [Roda] endpoint
-that can be used for AJAX uploads (using any JavaScript file upload library):
+that accepts file uploads. This allows you to asynchronously start caching the
+file the moment the user selects it (e.g. using the [jQuery-File-Upload] JS
+library), which gives a nice experience to the user.
 
 ```rb
 Shrine.plugin :direct_upload # Provides a Roda endpoint
@@ -203,21 +210,18 @@ Rails.application.routes.draw do
   mount ImageUploader::UploadEndpoint => "/attachments/images"
 end
 ```
-```rb
-# POST /attachments/images/cache/avatar
-{
-  "id": "43kewit94.jpg",
-  "storage": "cache",
-  "metadata": {
-    "size": 384393,
-    "filename": "nature.jpg",
-    "mime_type": "image/jpeg"
-  }
-}
+```js
+$('[type="file"]').fileupload({
+  url:       '/attachments/images/cache/avatar',
+  paramName: 'file',
+  add:       function(e, data) { /* Disable the submit button */ },
+  progress:  function(e, data) { /* Add a nice progress bar */ },
+  done:      function(e, data) { /* Fill in the hidden field with the result */ }
+});
 ```
 
-The plugin also provides a route that can be used for doing direct S3 uploads,
-see the documentation of the plugin for more details, as well as the [example
+The plugin also provides a route that can be used for doing direct S3 uploads.
+See the documentation of the plugin for more details, as well as the [example
 app] to see how easy it is to implement multiple uploads directly to S3.
 
 ## Processing
@@ -235,11 +239,13 @@ class ImageUploader < Shrine
 end
 ```
 
-The `io` is the file being uploaded, and `context` we'll leave for later.  You
+The `io` is the file being uploaded, and `context` we'll leave for later. You
 may be wondering why we need this conditional. Well, when an attachment is
 assigned and saved, an "upload" actually happens two times. First the file is
 "uploaded" to cache on assignment, and then the cached file is reuploaded to
-store on save.
+store on save. You could theoretically do processing in both phases, depending
+on your preferences (although it's generally not recommended to process on
+caching).
 
 Ok, now how do we do the actual processing? Well, Shrine actually doesn't ship
 with any file processing functionality, because that is a generic problem that
@@ -339,10 +345,9 @@ user.save                              # "store"
 ```
 
 The `:name` is the name of the attachment, in this case "avatar". The `:record`
-is the model instance, in this case instance of `User`. As for `:phase`, in web
-applications a file upload isn't an event that happens at once, it's a process
-that happens in *phases*. By default there are only 2 phases, "cache" and
-"store", other plugins add more of them.
+is the model instance, in this case instance of `User`. Lastly, the `:phase`;
+by default the two main phases of attaching are "cache" and "store", but some
+plugins add more of them, and there are different ones for deleting files.
 
 Context is really useful for doing conditional processing and validation, since
 we have access to the record and attachment name. In general the context is
@@ -398,11 +403,11 @@ end
 
 ### MIME type
 
-By default, "mime_type" is inherited from `#content_type` of the uploaded file.
-In case of Rails, this value is set from the `Content-Type` header, which the
-browser sets solely based on the extension of the uploaded file. This means
-that by default Shrine's "mime_type" is *not* guaranteed to hold the actual
-MIME type of the file.
+By default, "mime_type" is inherited from `#content_type` of the uploaded file,
+which holds the value of the "Content-Type" header added by the browser solely
+based on the extension of the uploaded file. This means that by default
+Shrine's "mime_type" is *not* guaranteed to hold the actual MIME type of the
+file.
 
 To help with that Shrine provides the `determine_mime_type` plugin, which by
 default uses the UNIX [file] utility to determine the actual MIME type:
@@ -465,13 +470,13 @@ If you want to generate your own locations, simply override
 ```rb
 class ImageUploader < Shrine
   def generate_location(io, context)
-    "#{context[:record].class}/#{context[:record].id}/#{io.original_filename}"
+    "#{context[:record].class}/#{super}"
   end
 end
 ```
 
-Note that in this case should make your locations unique, otherwise dirty
-tracking won't be detected properly (you can use `Shrine#generate_uid`).
+Note that there should always be a random component in the location, otherwise
+dirty tracking won't be detected properly (you can use `Shrine#generate_uid`).
 
 When using `Shrine` directly you can bypass `#generate_location` by passing in
 `:location`
@@ -506,8 +511,8 @@ user.save
 user.avatar.url #=> "https://my-bucket.s3-eu-west-1.amazonaws.com/0943sf8gfk13.jpg"
 ```
 
-If you're using S3 for both cache and store, saving the record will avoid
-reuploading the file by issuing an S3 COPY command instead.  Also, the
+If you're using S3 both for cache and store, saving the record will avoid
+reuploading the file by issuing an S3 COPY command instead. Also, the
 `versions` plugin takes advantage of S3's MULTI DELETE capabilities, so
 versions are deleted with a single HTTP request.
 
@@ -578,7 +583,7 @@ libraries are:
 Shrine comes with a small core which provides only the essential functionality,
 and all additional features are available via plugins. This way you can choose
 exactly how much Shrine does for you. Shrine itself [ships with over 35
-plugins], most of them I haven't managed to cover here.
+plugins], most of which I haven't managed to cover here.
 
 The plugin system respects inheritance, so you can choose which plugins will
 be applied to which uploaders:
@@ -602,7 +607,6 @@ system].
 
 The gem is available as open source under the terms of the [MIT License].
 
-[Contributor Covenant]: http://contributor-covenant.org
 [image_processing]: https://github.com/janko-m/image_processing
 [fastimage]: https://github.com/sdsykes/fastimage
 [file]: http://linux.die.net/man/1/file

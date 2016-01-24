@@ -1,25 +1,18 @@
 class Shrine
   module Plugins
-    # The backgrounding plugin enables you to intercept phases of
-    # uploading and put them into background jobs. This doesn't require any
-    # additional columns.
+    # The backgrounding plugin enables you to remove processing/storing/deleting
+    # of files from record's lifecycle, and put them into background jobs.
+    # This is generally useful if you're doing processing and/or your store is
+    # something other than Storage::FileSystem.
     #
-    #     plugin :backgrounding
-    #
-    # ## Promoting
-    #
-    # If you're doing processing, or your `:store` is something other than
-    # Storage::FileSystem, it's recommended to put promoting (moving to store)
-    # into a background job. This plugin allows you to do that by calling
-    # `Shrine::Attacher.promote`:
-    #
+    #     Shrine.plugin :backgrounding
     #     Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
+    #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
     #
-    # When you call `Shrine::Attacher.promote` with a block, it will save the
-    # block and call it on every promotion. Then in your background job you can
-    # again call `Shrine::Attacher.promote` with the data, and internally it
-    # will resolve all necessary objects, do the promoting and update the
-    # record.
+    # The `data` variable is a serializable hash containing all context needed
+    # for promotion/deletion. You then just need to declare `UploadJob` and
+    # `DeleteJob`, and call `Shrine::Attacher.promote`/`Shrine::Attacher.delete`
+    # with the data hash:
     #
     #     class UploadJob
     #       include Sidekiq::Worker
@@ -29,22 +22,6 @@ class Shrine
     #       end
     #     end
     #
-    # Shrine automatically handles all concurrency issues, such as canceling
-    # promoting if the attachment has changed in the meanwhile.
-    #
-    # ## Deleting
-    #
-    # If your `:store` is something other than Storage::FileSystem, it's
-    # recommended to put deleting files into a background job. This plugin
-    # allows you to do that by calling `Shrine::Attacher.delete`:
-    #
-    #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
-    #
-    # When you call `Shrine::Attacher.delete` with a block, it will save the
-    # block and call it on every delete. Then in your background job you can
-    # again call `Shrine::Attacher.delete` with the data, and internally it
-    # will resolve all necessary objects, and delete the file.
-    #
     #     class DeleteJob
     #       include Sidekiq::Worker
     #
@@ -53,20 +30,19 @@ class Shrine
     #       end
     #     end
     #
-    # ## Conclusion
+    # Internally these methods will resolve all necessary objects, do the
+    # promotion/deletion, and in case of promotion update the record with the
+    # stored attachment. Concurrency issues, like record being deleted or
+    # attachment being changed, are handled automatically.
     #
     # The examples above used Sidekiq, but obviously you can just as well use
-    # any other backgrounding library. Also, if you want you can use
-    # backgrounding just for certain uploaders:
+    # any other backgrounding library. This setup will work globally for all
+    # uploaders.
     #
-    #     class ImageUploader < Shrine
-    #       Attacher.promote { |data| UploadJob.perform_async(data) }
-    #       Attacher.delete { |data| DeleteJob.perform_async(data) }
-    #     end
     #
-    # If you would like to speed up your uploads and deletes, you can use the
-    # parallelize plugin, either as a replacement or an addition to
-    # backgrounding.
+    # If you're generating versions, and you want to process some versions in
+    # the foreground before kicking off a background job, you can use the
+    # `recache` plugin.
     module Backgrounding
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise
@@ -108,7 +84,8 @@ class Shrine
       end
 
       module AttacherMethods
-        # Calls the promoting block with the data if it's been registered.
+        # Calls the promoting block (if registered) with a serializable data
+        # hash.
         def _promote
           if background_promote = shrine_class.opts[:backgrounding_promote]
             data = {
@@ -125,7 +102,8 @@ class Shrine
 
         private
 
-        # Calls the deleting block with the data if it's been registered.
+        # Calls the deleting block (if registered) with a serializable data
+        # hash.
         def delete!(uploaded_file, phase:)
           if background_delete = shrine_class.opts[:backgrounding_delete]
             data = {

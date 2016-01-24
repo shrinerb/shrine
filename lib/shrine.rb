@@ -554,7 +554,7 @@ class Shrine
           end
         end
 
-        # Runs the validations defined by `Shrine.validate`.
+        # Runs the validations defined by `Attacher.validate`.
         def validate
           errors.clear
           instance_exec(&validate_block) if validate_block && get
@@ -578,7 +578,7 @@ class Shrine
         end
 
         # Returns true if uploaded_file exists and is cached.  If it's true,
-        # #promote will be called.
+        # \#promote will be called.
         def promote?(uploaded_file)
           uploaded_file && cache.uploaded?(uploaded_file)
         end

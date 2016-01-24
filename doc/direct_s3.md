@@ -1,12 +1,17 @@
 # Direct Uploads to S3
 
-Probably the best way to do file uploads is to upload them directly to S3, and
-then upon saving the record when file is moved to a permanent place, put that
-and any additional file processing in the background. The goal of this guide
-is to provide instructions, as well as evaluate possible ways of doing this.
+Shrine gives you the ability to upload files directly to S3, which frees your
+server from accepting file uploads. If on saving the record you need to do some
+file processing, you can kick that into a background job using the
+`backgrounding` plugin. If you're not doing any processing and your permanent
+storage is also S3, saving the record will perform an S3 COPY request from
+cache to store, without any downloading and uploading (which is both fast and
+memory-efficient).
 
 ```rb
 require "shrine/storage/s3"
+
+s3_options = {access_key_id: "...", secret_access_key: "...", region: "..."}
 
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),

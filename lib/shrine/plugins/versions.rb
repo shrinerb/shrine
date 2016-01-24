@@ -171,7 +171,7 @@ class Shrine
               if file = get[version]
                 file.url(**options)
               else
-                default_url(options.merge(version: version))
+                default_url(**options, version: version)
               end
             else
               raise Error, "must call #{name}_url with the name of the version"
@@ -180,7 +180,7 @@ class Shrine
             if get || version.nil?
               super(**options)
             else
-              default_url(options.merge(version: version))
+              default_url(**options, version: version)
             end
           end
         end

@@ -68,11 +68,11 @@ class Shrine
 
       module FileMethods
         def width
-          metadata["width"] && Integer(metadata["width"])
+          Integer(metadata["width"]) if metadata["width"]
         end
 
         def height
-          metadata["height"] && Integer(metadata["height"])
+          Integer(metadata["height"]) if metadata["height"]
         end
       end
     end

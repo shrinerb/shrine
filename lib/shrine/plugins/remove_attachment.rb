@@ -16,7 +16,8 @@ class Shrine
     #     <% end %>
     #
     # Now when the checkbox is ticked and the form is submitted, the attached
-    # file will be removed.
+    # file will be removed. Note that the "remove_avatar" field needs to be
+    # declared somewhere after the hidden field.
     module RemoveAttachment
       module AttachmentMethods
         def initialize(name)
@@ -38,7 +39,7 @@ class Shrine
         # We remove the attachment if the value evaluates to true.
         def remove=(value)
           @remove = value
-          set(nil) if remove?
+          assign(nil) if remove?
         end
 
         def remove
