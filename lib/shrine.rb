@@ -335,6 +335,7 @@ class Shrine
         # Does the actual uploading, calling `#upload` on the storage.
         def copy(io, context)
           storage.upload(io, context[:location], context[:metadata])
+        ensure
           io.close rescue nil
         end
 

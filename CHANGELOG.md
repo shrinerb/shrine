@@ -1,5 +1,7 @@
 ## HEAD
 
+* Close the IO on upload even if the upload errors (janko-m)
+
 * Use a transaction when checking if attachment has changed after storing during promotion (janko-m)
 
 * Don't attempt to start promoting in background if attachment has already changed (janko-m)
