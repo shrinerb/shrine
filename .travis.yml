@@ -3,12 +3,13 @@ language: ruby
 sudo: false
 
 rvm:
-  - "2.1"
-  - "2.2"
+  - "2.1.8"
+  - "2.2.4"
+  - "2.3.0"
   - "ruby-head"
   - "jruby-9.0.4.0"
   - "jruby-head"
-  - "rbx-2.9"
+  - "rbx-3.13"
 
 matrix:
   allow_failures:
