@@ -8,8 +8,8 @@
   title: Plugins & Storages
   items:
     -
-      name: lotus-shrine
-      url: https://github.com/katafrakt/lotus-shrine
+      name: hanami-shrine
+      url: https://github.com/katafrakt/hanami-shrine
     -
       name: shrine-cloudinary
       url: https://github.com/janko-m/shrine-cloudinary
@@ -39,5 +39,5 @@
       name: Rails example app
       url: https://github.com/erikdahlstrand/shrine-rails-example
     -
-      name: Lotus example app
-      url: https://github.com/katafrakt/lotus-shrine-example
+      name: Hanami example app
+      url: https://github.com/katafrakt/hanami-shrine-example
