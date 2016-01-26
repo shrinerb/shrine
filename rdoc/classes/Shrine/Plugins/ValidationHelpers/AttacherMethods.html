@@ -70,7 +70,7 @@
                   <p>Validates that the extension is not in the <code>blacklist</code>. The
                   blacklist is an array of strings or regexes.</p>
                   
-                  <pre class="ruby"><span class="ruby-identifier">validate_extension_exclusion</span> [<span class="ruby-string">&quot;mov&quot;</span>, <span class="ruby-regexp">/^mp*/</span>]</pre>
+                  <pre class="ruby"><span class="ruby-identifier">validate_extension_exclusion</span> [<span class="ruby-string">&quot;mov&quot;</span>, <span class="ruby-regexp">/\Amp/i</span>]</pre>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate_extension_exclusion-source'); return false">
@@ -90,7 +90,7 @@
                   <p>Validates that the extension is in the <code>whitelist</code>. The
                   whitelist is an array of strings or regexes.</p>
                   
-                  <pre class="ruby"><span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>]</pre>
+                  <pre class="ruby"><span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/\Ajpe?g\z/i</span>]</pre>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate_extension_inclusion-source'); return false">
@@ -163,7 +163,7 @@
                   <p>Validates that the MIME type is not in the <code>blacklist</code>. The
                   blacklist is an array of strings or regexes.</p>
                   
-                  <pre class="ruby"><span class="ruby-identifier">validate_mime_type_exclusion</span> [<span class="ruby-string">&quot;image/gif&quot;</span>, <span class="ruby-regexp">/^audio/</span>]</pre>
+                  <pre class="ruby"><span class="ruby-identifier">validate_mime_type_exclusion</span> [<span class="ruby-string">&quot;image/gif&quot;</span>, <span class="ruby-regexp">/\Aaudio/</span>]</pre>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate_mime_type_exclusion-source'); return false">
@@ -183,7 +183,7 @@
                   <p>Validates that the MIME type is in the <code>whitelist</code>. The
                   whitelist is an array of strings or regexes.</p>
                   
-                  <pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;audio/mp3&quot;</span>, <span class="ruby-regexp">/^video/</span>]</pre>
+                  <pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;audio/mp3&quot;</span>, <span class="ruby-regexp">/\Avideo/</span>]</pre>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate_mime_type_inclusion-source'); return false">

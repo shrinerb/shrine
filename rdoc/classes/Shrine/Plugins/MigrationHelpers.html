@@ -49,15 +49,16 @@
             
             <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_cache</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:cache @storage=#&lt;Shrine::Storage::FileSystem @directory=public/uploads&gt;&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:store @storage=#&lt;Shrine::Storage::S3:0x007fb8343397c8 @bucket=#&lt;Aws::S3::Bucket name=&quot;foo&quot;&gt;&gt;&gt;</span></pre>
             
-            <p>The model will also get <code>#update_avatar</code> method, which should be
+            <p>The model will also get <code>#update_avatar</code> method, which can be
             used when doing attachment migrations. It will update the record&#39;s
             attachment with the result of the passed in block.</p>
             
             <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_avatar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">avatar</span>) <span class="ruby-comment"># saved to the record</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>This will get triggered <em>only</em> if the attachment is not nil and is
-            stored. The result can be anything that responds to <code>#to_json</code>
-            and evaluates to uploaded files&#39; data.</p>
+            stored, and will get saved only if the current attachment hasn&#39;t
+            changed while executing the block. The result can be anything that responds
+            to <code>#to_json</code> and evaluates to uploaded files&#39; data.</p>
           </div>
           <div id='context'>
           </div>

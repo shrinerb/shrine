@@ -57,7 +57,7 @@
             <p>If you would like to change the error message inline, you can pass the
             <code>:message</code> option to any validation method:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-regexp">/^image/</span>], <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;is not an image&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-regexp">/\Aimage/</span>], <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;is not an image&quot;</span></pre>
             
             <p>For a complete list of all validation helpers, see <a
             href="ValidationHelpers/AttacherMethods.html">AttacherMethods</a>.</p>

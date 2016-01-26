@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2015-12-26 21:02:53 +0100</span>
+          <span class='datetime'>2016-01-26 11:54:49 +0700</span>
         </div>
       </div>
       <div id='content'>
@@ -40,13 +40,16 @@
             
             <h1 id="label-Direct+Uploads+to+S3">Direct Uploads to S3<span><a href="#label-Direct+Uploads+to+S3">&para;</a> <a href="#top">&uarr;</a></span></h1>
             
-            <p>Probably the best way to do file uploads is to upload them directly to S3,
-            and then upon saving the record when file is moved to a permanent place,
-            put that and any additional file processing in the background. The goal of
-            this guide is to provide instructions, as well as evaluate possible ways of
-            doing this.</p>
+            <p><a href="../../classes/Shrine.html">Shrine</a> gives you the ability to
+            upload files directly to S3, which frees your server from accepting file
+            uploads. If on saving the record you need to do some file processing, you
+            can kick that into a background job using the <code>backgrounding</code>
+            plugin. If you&#39;re not doing any processing and your permanent storage
+            is also S3, saving the record will perform an S3 COPY request from cache to
+            store, without any downloading and uploading (which is both fast and
+            memory-efficient).</p>
             
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {<span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-identifier">region</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;...&quot;</span>}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
             
             <h2 id="label-Enabling+CORS">Enabling CORS<span><a href="#label-Enabling+CORS">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

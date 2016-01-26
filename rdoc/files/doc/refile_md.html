@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2015-12-26 01:44:41 +0100</span>
+          <span class='datetime'>2016-01-26 02:25:32 +0700</span>
         </div>
       </div>
       <div id='content'>
@@ -265,7 +265,7 @@
             instance-level inside the uploader, most commonly with the
             <code>validation_helpers</code> plugin:</p>
             
-            <pre>class ImageUploader &lt; Shrine&#x000A;  plugin :validation_helpers&#x000A;  Attacher.validate do&#x000A;    validate_extension_inclusion [/jpe?g/, &quot;png&quot;]&#x000A;    validate_mime_type_inclusion [/image/jpeg/, &quot;image/png&quot;]&#x000A;  end&#x000A;end</pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>, <span class="ruby-string">&quot;png&quot;</span>]&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;image/jpeg&quot;</span>, <span class="ruby-string">&quot;image/png&quot;</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h4 id="label-3Acache-2C+-3Astore"><code>:cache</code>, <code>:store</code><span><a href="#label-3Acache-2C+-3Astore">&para;</a> <a href="#top">&uarr;</a></span></h4>
             

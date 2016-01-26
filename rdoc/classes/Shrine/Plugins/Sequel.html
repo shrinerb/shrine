@@ -54,10 +54,10 @@
             <p><code>after_destroy_commit</code> – Deletes the attachment.</p>
             </li></ul>
             
-            <p>Note that if your tests are wrapped in transactions, the
-            <code>after_commit</code> and <code>after_destroy_commit</code> callbacks
-            won&#39;t get called, so in order to test uploading you should first
-            disable these transactions for those tests.</p>
+            <p>Note that if your tests are wrapped in transactions, for testing
+            attachments you should set <code>Sequel::Model.use_transactions</code> to
+            <code>false</code>, so that <code>after_commit</code> and
+            <code>after_destroy_commit</code> callbacks get properly called.</p>
             
             <p>If you want to put some parts of this lifecycle into a background job, see
             the backgrounding plugin.</p>

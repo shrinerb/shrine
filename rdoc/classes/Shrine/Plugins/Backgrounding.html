@@ -39,61 +39,39 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The background_helpers plugin enables you to intercept phases of uploading
-            and put them into background jobs. This doesn&#39;t require any additional
-            columns.</p>
+            <p>The backgrounding plugin enables you to remove processing/storing/deleting
+            of files from record&#39;s lifecycle, and put them into background jobs.
+            This is generally useful if you&#39;re doing processing and/or your store
+            is something other than <a
+            href="../Storage/FileSystem.html">Storage::FileSystem</a>.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">UploadJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
             
-            <h2 id="module-Shrine::Plugins::Backgrounding-label-Promoting">Promoting<span><a href="#module-Shrine::Plugins::Backgrounding-label-Promoting">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <p>The <code>data</code> variable is a serializable hash containing all
+            context needed for promotion/deletion. You then just need to declare
+            <code>UploadJob</code> and <code>DeleteJob</code>, and call
+            <code>Shrine::Attacher.promote</code>/<code>Shrine::Attacher.delete</code>
+            with the data hash:</p>
             
-            <p>If you&#39;re doing processing, or your <code>:store</code> is something
-            other than <a href="../Storage/FileSystem.html">Storage::FileSystem</a>,
-            it&#39;s recommended to put promoting (moving to store) into a background
-            job. This plugin allows you to do that by calling
-            <code>Shrine::Attacher.promote</code>:</p>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UploadJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">DeleteJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">UploadJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
-            
-            <p>When you call <code>Shrine::Attacher.promote</code> with a block, it will
-            save the block and call it on every promotion. Then in your background job
-            you can again call <code>Shrine::Attacher.promote</code> with the data, and
-            internally it will resolve all necessary objects, do the promoting and
-            update the record.</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UploadJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p><a href="../../Shrine.html">Shrine</a> automatically handles all
-            concurrency issues, such as canceling promoting if the attachment has
-            changed in the meanwhile.</p>
-            
-            <h2 id="module-Shrine::Plugins::Backgrounding-label-Deleting">Deleting<span><a href="#module-Shrine::Plugins::Backgrounding-label-Deleting">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If your <code>:store</code> is something other than <a
-            href="../Storage/FileSystem.html">Storage::FileSystem</a>, it&#39;s
-            recommended to put deleting files into a background job. This plugin allows
-            you to do that by calling <code>Shrine::Attacher.delete</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
-            
-            <p>When you call <code>Shrine::Attacher.delete</code> with a block, it will
-            save the block and call it on every delete. Then in your background job you
-            can again call <code>Shrine::Attacher.delete</code> with the data, and
-            internally it will resolve all necessary objects, and delete the file.</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DeleteJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <h2 id="module-Shrine::Plugins::Backgrounding-label-Conclusion">Conclusion<span><a href="#module-Shrine::Plugins::Backgrounding-label-Conclusion">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <p>Internally these methods will resolve all necessary objects, do the
+            promotion/deletion, and in case of promotion update the record with the
+            stored attachment. Concurrency issues, like record being deleted or
+            attachment being changed, are handled automatically.</p>
             
             <p>The examples above used Sidekiq, but obviously you can just as well use any
-            other backgrounding library. Also, if you want you can use backgrounding
-            just for certain uploaders:</p>
+            other backgrounding library. This setup will work globally for all
+            uploaders.</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">UploadJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+            <p>Both methods return the record (if it exists and the action didn&#39;t
+            abort), so you can use it to do additional actions:</p>
             
-            <p>If you would like to speed up your uploads and deletes, you can use the
-            parallelize plugin, either as a replacement or an addition to
-            background_helpers.</p>
+            <pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">record</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">record</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">published</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Post</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>If you&#39;re generating versions, and you want to process some versions in
+            the foreground before kicking off a background job, you can use the
+            <code>recache</code> plugin.</p>
           </div>
           <div id='context'>
           </div>

@@ -52,12 +52,11 @@
             <p>You should always mount a new endpoint for each uploader that you want to
             enable direct uploads for. This now gives your Ruby application a
             <code>POST /attachments/images/:storage/:name</code> route, which accepts a
-            <code>file</code> query parameter, and returns the uploaded file in JSON
-            format:</p>
+            “file” query parameter, and returns the uploaded file in JSON format:</p>
             
-            <pre class="ruby"><span class="ruby-comment"># POST /attachments/images/cache/avatar</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;43kewit94.jpg&quot;</span>,&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">384393</span>,&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>&#x000A;  }&#x000A;}</pre>
+            <pre class="ruby"><span class="ruby-comment"># POST /attachments/images/cache/avatar (file upload)</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;43kewit94.jpg&quot;</span>,&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">384393</span>,&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>&#x000A;  }&#x000A;}</pre>
             
-            <p>Once you&#39;ve uploaded the file, you need to assign this JSON to the
+            <p>Once you&#39;ve uploaded the file, you need to assign the result to the
             hidden attachment field in the form. There are many great JavaScript
             libraries for file uploads, most popular being <a
             href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>.</p>

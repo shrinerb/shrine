@@ -52,7 +52,8 @@
             <pre>&lt;%= form_for @user do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :avatar, value: @user.avatar_data %&gt;&#x000A;  &lt;%= f.file_field :avatar %&gt;&#x000A;  Remove attachment: &lt;%= f.check_box :remove_avatar %&gt;&#x000A;&lt;% end %&gt;</pre>
             
             <p>Now when the checkbox is ticked and the form is submitted, the attached
-            file will be removed.</p>
+            file will be removed. Note that the “remove_avatar” field needs to be
+            declared somewhere after the hidden field.</p>
           </div>
           <div id='context'>
           </div>
