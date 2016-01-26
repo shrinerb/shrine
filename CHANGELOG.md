@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `Shrine::Attacher.promote` and `Shrine::Attacher.delete` return the record in backgrounding plugin (janko-m)
+
 * Close the IO on upload even if the upload errors (janko-m)
 
 * Use a transaction when checking if attachment has changed after storing during promotion (janko-m)

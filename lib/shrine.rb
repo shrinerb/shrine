@@ -527,7 +527,8 @@ class Shrine
         # stored file.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :store)
-          swap(stored_file) or delete!(stored_file, phase: :stored)
+          (result = swap(stored_file)) or delete!(stored_file, phase: :stored)
+          result
         end
 
         # Deletes the attachment that was replaced, and is called after saving

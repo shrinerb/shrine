@@ -39,6 +39,13 @@ class Shrine
     # any other backgrounding library. This setup will work globally for all
     # uploaders.
     #
+    # Both methods return the record (if it exists and the action didn't
+    # abort), so you can use it to do additional actions:
+    #
+    #     def perform(data)
+    #       record = Shrine::Attacher.promote(data)
+    #       record.update(published: true) if record.is_a?(Post)
+    #     end
     #
     # If you're generating versions, and you want to process some versions in
     # the foreground before kicking off a background job, you can use the
@@ -58,8 +65,11 @@ class Shrine
             name = data["attachment"]
             attacher = record.send("#{name}_attacher")
             cached_file = attacher.uploaded_file(data["uploaded_file"])
+            return if cached_file != record.send(name)
 
-            attacher.promote(cached_file) if cached_file == record.send(name)
+            attacher.promote(cached_file) or return
+
+            record
           end
         end
 
@@ -79,6 +89,8 @@ class Shrine
             context = {name: name.to_sym, record: record, phase: phase.to_sym}
 
             attacher.store.delete(uploaded_file, context)
+
+            record
           end
         end
       end
