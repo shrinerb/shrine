@@ -80,7 +80,7 @@ class Shrine
             break if record.send("#{name}_data") != record.reload.send("#{name}_data")
             super
           end
-        rescue ActiveRecord::RecordNotFound
+        rescue ::ActiveRecord::RecordNotFound
         end
 
         # We save the record after updating, raising any validation errors.

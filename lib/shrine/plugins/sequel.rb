@@ -78,7 +78,7 @@ class Shrine
             break if record.send("#{name}_data") != record.reload.send("#{name}_data")
             super
           end
-        rescue Sequel::Error
+        rescue ::Sequel::Error
         end
 
         # We save the record after updating, raising any validation errors.
