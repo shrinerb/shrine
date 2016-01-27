@@ -1,3 +1,7 @@
+## HEAD
+
+* Fix `NameError` when silencing "missing record" errors in backgrounding (janko-m)
+
 ## 1.2.0 (2016-01-26)
 
 * Make `Shrine::Attacher.promote` and `Shrine::Attacher.delete` return the record in backgrounding plugin (janko-m)
