@@ -151,6 +151,27 @@ class Shrine
 
         def after_delete(*)
         end
+
+
+        def around_promote(*args)
+          before_promote(*args)
+          result = yield
+          after_promote(*args)
+        end
+
+        def before_promote(*)
+        end
+
+        def after_promote(*)
+        end
+      end
+
+      module AttacherMethods
+        def promote(cached_file)
+          result = nil
+          store.around_promote(cached_file, record: record) { result = super }
+          result
+        end
       end
     end
 

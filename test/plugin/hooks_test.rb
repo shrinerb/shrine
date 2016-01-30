@@ -2,7 +2,8 @@ require "test_helper"
 
 describe "the hooks plugin" do
   before do
-    @uploader = uploader { plugin :hooks }
+    @attacher = attacher { plugin :hooks }
+    @uploader = @attacher.store
   end
 
   it "provides uploading hooks" do
@@ -109,6 +110,38 @@ describe "the hooks plugin" do
         "before_delete",
         "after_delete",
         "after around_delete",
+      ],
+      @uploader.instance_variable_get("@hooks")
+  end
+
+  it "provides promote hooks" do
+    @uploader.instance_eval do
+      def around_promote(cached_file, *args)
+        @hooks = []
+        @hooks << "before around_promote"
+        super
+        @hooks << "after around_promote"
+      end
+
+      def before_promote(cached_file, *args)
+        @hooks << "before_promote"
+        super
+      end
+
+      def after_promote(cached_file, *args)
+        super
+        @hooks << "after_promote"
+      end
+    end
+
+    @attacher.promote(fakeio)
+
+    assert_equal \
+      [
+        "before around_promote",
+        "before_promote",
+        "after_promote",
+        "after around_promote",
       ],
       @uploader.instance_variable_get("@hooks")
   end
