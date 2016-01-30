@@ -40,8 +40,8 @@ class Shrine
     # These options will be passed to aws-sdk's methods for [uploading],
     # [copying] and [presigning].
     #
-    # You can also forward additional upload options per upload with the
-    # `upload_options` plugin:
+    # You can also generate upload options per upload with the `upload_options`
+    # plugin:
     #
     #     class MyUploader < Shrine
     #       plugin :upload_options, store: ->(io, context) do
@@ -52,6 +52,9 @@ class Shrine
     #         end
     #       end
     #     end
+    #
+    # Note that these aren't applied to presigns, since presigns are generated
+    # using the storage directly.
     #
     # ## CDN
     #

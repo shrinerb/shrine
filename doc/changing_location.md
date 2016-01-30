@@ -4,26 +4,12 @@ You have a production app with already uploaded attachments. However, you've
 realized that the existing store folder structure for attachments isn't working
 for you.
 
-The first step is to change the location, either by using the `pretty_location`
-plugin:
+The first step is to change the location (by overriding `#generate_location` or
+with the pretty_location plugin), and deploy that change. Attachments on old
+locations will still continue to work properly.
 
-```rb
-Shrine.plugin :pretty_location
-```
-
-Or by overriding `#generate_location`:
-
-```rb
-class MyUploader < Shrine
-  def generate_location(io, context)
-    "#{context[:record].class}/#{context[:record].id}/#{io.original_filename}"
-  end
-end
-```
-
-After you've deployed this change, all existing attachments on old locations
-will continue to work properly. The next step is to run a script that will
-move those to new locations. The easiest way to do that is to reupload them:
+The next step is to run a script that will move those to new locations. The
+easiest way to do that is to reupload them, and afterwards delete them:
 
 ```rb
 Shrine.plugin :migration_helpers # before the model is loaded

@@ -55,9 +55,9 @@ class Shrine
     #
     #     plugin :direct_upload, presign: true
     #
-    # This will disable the default `POST /:storage/:name` route (for security
-    # reasons), and enable `GET /:storage/presign`. The response for that
-    # request looks something like this:
+    # This will add `GET /:storage/presign`, and disable the default `POST
+    # /:storage/:name` (for security reasons) The response for that request
+    # looks something like this:
     #
     #     {
     #       "url" => "https://my-bucket.s3-eu-west-1.amazonaws.com",

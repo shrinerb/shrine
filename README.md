@@ -245,7 +245,8 @@ assigned and saved, an "upload" actually happens two times. First the file is
 "uploaded" to cache on assignment, and then the cached file is reuploaded to
 store on save. You could theoretically do processing in both phases, depending
 on your preferences (although it's generally not recommended to process on
-caching).
+caching, because it happens before file validations; use the `recache` plugin
+instead).
 
 Ok, now how do we do the actual processing? Well, Shrine actually doesn't ship
 with any file processing functionality, because that is a generic problem that
