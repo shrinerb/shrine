@@ -107,9 +107,7 @@ class Shrine
     #         }
     #         super
     #       end
-    #     end
     #
-    #     class ImageUploader < Shrine
     #       def after_promote(cached_file, record:)
     #         cached_file #=> {
     #           "id": "43kewit94.jpg",
