@@ -71,6 +71,69 @@ class Shrine
     # In that case you should always somehow mark this key as private (for
     # example with an underscore) so that it doesn't clash with any
     # existing keys.
+    #
+    # Promote hooks are triggered when `promote` or `finalize` method is run on
+    # your record's attacher instance or the `Shine::Attacher` class in the case
+    # that the `:backgrounding` plugin is used. Similar to all previous hooks,
+    # they are executed in the following order:
+    #
+    # * `around_promote`
+    #     * `before_promote`
+    #     * PROMOTE
+    #     * `after_promote`
+    #
+    # Promote hooks are called with 2 arguments, `cached_file` and `record`.
+    # `cached_file` is the `cache` file upload. `record` is the full instance of
+    # the associated record. You should always call `super` when overriding a
+    # hook, as other plugins may be using hooks internally, and without `super`
+    # those wouldn't get executed.
+    #
+    # The promote hooks are the only shrine hooks that execute around an update
+    # to the record and its underlying database. In the case of `ActiveRecord`,
+    # `before_promote` and `after_promote` operate when ActiveRecord's
+    # `before_save` and `after_commit` hooks are run. This also means that the
+    # `record` argument supplied to `before_promote` and `after_promote` will
+    # have its uploader in the cache state and store state respectively:
+    #
+    #     In this example; `ImageUploader` is attached to `image` on the record
+    #     and the uses the `versions` plugin.
+    #
+    #     class ImageUploader < Shrine
+    #       def before_promote(cached_file, record:)
+    #         record.image_data #=> {
+    #           "id": "43kewit94.jpg",
+    #           "storage": "cache",
+    #           "metadata": { "size": 384393, ... }
+    #         }
+    #         super
+    #       end
+    #     end
+    #
+    #     class ImageUploader < Shrine
+    #       def after_promote(cached_file, record:)
+    #         cached_file #=> {
+    #           "id": "43kewit94.jpg",
+    #           "storage": "cache",
+    #           "metadata": { "size": 384393, ... }
+    #         }
+    #         record.image_data #=> {
+    #           "original": {
+    #             "id": "43kewit94-original.jpg",
+    #             "storage": "store",
+    #             "metadata": { "size": 114917, ...}
+    #             }
+    #           },
+    #           "thumb": {
+    #             "id": "43kewit94-thumb.jpg",
+    #             "storage": "store",
+    #             "metadata": { "size": 11493, ...}
+    #           }
+    #         super
+    #       end
+    #     end
+    #
+    # Similar to the other hooks, you can realize some form of communication
+    # between the hooks by sending more arguments to the rest argument.
     module Hooks
       module InstanceMethods
         def upload(io, context = {})
