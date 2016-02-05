@@ -7,6 +7,9 @@
     -
       name: File Uploads: Asynchronous World
       url: http://twin.github.io/file-uploads-asynchronous-world
+    -
+      name: Uploading files with Shrine in Hanami
+      url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
 -
   title: Plugins & Storages
   items:
