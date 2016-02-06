@@ -717,8 +717,10 @@ class Shrine
         # Part of Shrine::UploadedFile's complying to the IO interface.  It
         # delegates to the internally downloaded file.
         def close
-          io.close
-          io.delete if io.class.name == "Tempfile"
+          if @io
+            io.close
+            io.delete if io.class.name == "Tempfile"
+          end
         end
 
         # Part of Shrine::UploadedFile's complying to the IO interface.  It

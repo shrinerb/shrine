@@ -71,6 +71,17 @@ describe Shrine::UploadedFile do
     assert tempfile.path.nil?
   end
 
+  it "doesn't open an IO just in order to close it" do
+    uploaded_file = @uploader.class.uploaded_file(
+      'id' => '123',
+      'storage' => 'cache',
+      'metadata' => { 'size' => 1 }
+    )
+
+    uploaded_file.storage.expects(:open).never
+    uploaded_file.close
+  end
+
   it "has storage related methods" do
     uploaded_file = @uploader.upload(fakeio("image"), location: "key")
 
