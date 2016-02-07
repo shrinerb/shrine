@@ -1,5 +1,7 @@
 ## HEAD
 
+* Close the `UploadedFile` on upload only if it was previously opened, which doesn't happen on S3 COPY (reidab)
+
 * Fix `NameError` when silencing "missing record" errors in backgrounding (janko-m)
 
 ## 1.2.0 (2016-01-26)
