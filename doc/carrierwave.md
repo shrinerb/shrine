@@ -1,24 +1,24 @@
 # Shrine for CarrierWave Users
 
-This guide is aimed at helping CarrierWave users transition to Shrine. We will
-first generally mention what are the key differences. Afterwards there is an
-extensive reference of CarrierWave's interface and what is the equivalent in
-Shrine.
+This guide is aimed at helping CarrierWave users transition to Shrine. First it
+explains some key differences in the design between the two libraries.
+Afterwards it explains how you can transition an existing app that uses
+CarrierWave to Shrine. It then finishes off with an extensive reference of
+CarrierWave's interface and what is the equivalent in Shrine.
 
 ## Uploaders
 
-Shrine has a concept of uploaders similar to CarrierWave's, but instead of
-inheriting from `CarrierWave::Uploader::Base`, you inherit from `Shrine`
-directly:
+Shrine has a concept of uploaders similar to CarrierWave's, which allows you to
+have different uploading logic for different types of files:
 
 ```rb
 class ImageUploader < Shrine
-  # ...
+  # uploading logic
 end
 ```
 
 While in CarrierWave you choose a storages for uploaders directly, in Shrine
-you first register storages globally (under a symbol name), and then you
+you first register storages globally (under a symbol name), and then you can
 instantiate uploaders with a specific storage.
 
 ```rb
@@ -35,15 +35,15 @@ store_uploader = Shrine.new(:store)
 ```
 
 CarrierWave uses symbols for referencing storages (`:file`, `:fog`, ...), but
-in Shrine you instantiate storages directly. This makes storages much more
-flexible, because this way they can have their own options that are specific to
-them.
+in Shrine storages are simple Ruby classes which you can instantiate directly.
+This makes storages much more flexible, because this way they can have their
+own options that are specific to them.
 
 ### Processing
 
-In Shrine processing is done instance-level in the `#process` method. To
-generate versions, you simply return a hash, and also load the `versions`
-plugin to make your uploader recognize versions:
+In Shrine processing is done instance-level in the `#process` method, and can
+be specified for each phase. You can return a single processed file or a hash of
+versions (with the `versions` plugin):
 
 ```rb
 require "image_processing/mini_magick" # part of the "image_processing" gem
@@ -73,7 +73,7 @@ Shrine.plugin :activerecord # If you're using ActiveRecord
 ```
 
 Instead of giving you class methods for "mounting" uploaders, in Shrine you
-generate "attachment modules" which you include in your models:
+generate attachment modules which you simply include in your models:
 
 ```rb
 class User < Sequel::Model
@@ -82,8 +82,8 @@ end
 ```
 
 You models are required to have the `<attachment>_data` column, in the above
-case `avatar_data`. It contains the storage and location of the file, as well
-as additional metadata.
+case `avatar_data`. Shrine stores storage, location, and additional metadata of
+the uploaded file to that column.
 
 ### Multiple uploads
 
@@ -93,6 +93,99 @@ model. This is a good thing, because the implementation is specific to the ORM
 you're using, and it's analogous to how you would implement adding items to any
 dynamic one-to-many relationship. Take a look at the [example app] which
 demonstrates how easy it is to implement multiple uploads.
+
+## Migrating from CarrierWave
+
+You have an existing app using CarrierWave and you want to transfer it to
+Shrine. Let's assume we have a `Photo` model with the "image" attachment. First
+we need to create the `image_data` column for Shrine:
+
+```rb
+add_column :photos, :image_data, :text
+```
+
+Afterwards we need to make new uploads write to the `image_data` column. This
+can be done by including the below module to all models that have CarrierWave
+attachments:
+
+```rb
+require "fastimage"
+
+module CarrierwaveShrineSynchronization
+  def self.included(model)
+    model.before_save do
+      self.class.uploaders.each_key do |name|
+        write_shrine_data(name) if changes.key?(name)
+      end
+    end
+  end
+
+  def write_shrine_data(name)
+    uploader = send(name)
+
+    if read_attribute(name).present?
+      data = uploader_to_shrine_data(uploader)
+
+      if uploader.versions.any?
+        data = {original: data}
+        uploader.versions.each do |name, version|
+          data[name] = uploader_to_shrine_data(version)
+        end
+      end
+
+      write_attribute(:"#{name}_data", data.to_json)
+    else
+      write_attribute(:"#{name}_data", nil)
+    end
+  end
+
+  private
+
+  # If you'll be using `:prefix` on your Shrine storage, make sure to
+  # subtract it from the path assigned as `:id`.
+  def uploader_to_shrine_data(uploader)
+    path = uploader.store_path(read_attribute(uploader.mounted_as))
+
+    size   = uploader.file.size if changes.key?(uploader.mounted_as)
+    size ||= FastImage.new(uploader.url).content_length
+    size ||= File.size(File.join(uploader.root, path))
+    filename = File.basename(path)
+    mime_type = MIME::Types.type_for(path).first.to_s.presence
+
+    {
+      storage: :store,
+      id: path,
+      metadata: {
+        size: size,
+        filename: filename,
+        mime_type: mime_type,
+      },
+    }
+  end
+end
+```
+```rb
+class Photo < ActiveRecord::Base
+  mount_uploader :image, ImageUploader
+  include CarrierwaveShrineSynchronization # needs to be after `mount_uploader`
+end
+```
+
+After you deploy this code, the `image_data` column should now be successfully
+synchronized with new attachments.  Next step is to run a script which writes
+all existing CarrierWave attachments to `image_data`:
+
+```rb
+Photo.find_each do |photo|
+  Photo.uploaders.each_key { |name| photo.write_shrine_data(name) }
+  photo.save!
+end
+```
+
+Now you should be able to rewrite your application so that it uses Shrine
+instead of CarrierWave, using equivalent Shrine storages. For help with
+translating the code from CarrierWave to Shrine, you can consult the reference
+below.
 
 ## CarrierWave to Shrine direct mapping
 
@@ -107,7 +200,6 @@ plugin:
 ```rb
 Shrine.storages[:foo] = Shrine::Storage::Foo.new(*args)
 ```
-
 ```rb
 class ImageUploader
   plugin :default_storage, store: :foo

@@ -78,8 +78,8 @@ To read about the metadata that is stored with the uploaded file, see the
 ## Attachment
 
 In web applications, instead of managing files directly, we rather want to
-treat them as "attachments" to recod tie them to their lifecycle. In Shrine we
-do this by generating and including "attachment" modules.
+treat them as "attachments" to records and tie them to their lifecycle. In
+Shrine we do this by generating and including "attachment" modules.
 
 Firstly we need to assign the special `:cache` and `:store` storages:
 
@@ -528,7 +528,7 @@ and for FileSystem you can put something like this in your Rake task:
 
 ```rb
 file_system = Shrine.storages[:cache]
-file_system.clear!(older_than: 1.week.ago) # adjust the time
+file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
 ```
 
 ## Background jobs
@@ -570,7 +570,7 @@ libraries are:
 * **User experience** – After starting the background job, Shrine will save the
   record with the cached attachment so that it can be immediately shown to the
   user. With other file upload libraries users cannot see the file until the
-  background job has finished, which is really lame.
+  background job has finished.
 * **Simplicity** – Instead of writing the workers for you, Shrine allows you
   to use your own workers in a very simple way. Also, no extra columns are
   required.

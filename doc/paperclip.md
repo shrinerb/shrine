@@ -103,10 +103,9 @@ class User < Sequel::Model
 end
 ```
 
-Unlike in Paperclip which requires you to have `<attachment>_file_name`,
-`<attachment>_file_size`, `<attachment>_content_type` and
-`<attachment>_updated_at` columns, in Shrine you only need to have an
-`<attachment>_data` text column, and all information will be stored there.
+Unlike in Paperclip which requires you to have 4 `<attachment>_*` columns, in
+Shrine you only need to have an `<attachment>_data` text column, and all
+information will be stored there (in the above case `avatar_data`).
 
 The attachments use `:store` for storing the files, and `:cache` for caching.
 The latter is something Paperclip doesn't do, but caching before storing is
@@ -178,6 +177,120 @@ class ImageUploader < Shrine
   end
 end
 ```
+
+## Migrating from Paperclip
+
+You have an existing app using Paperclip and you want to transfer it to Shrine.
+First we need to make new uploads write to the `<attachment>_data` column.
+Let's assume we have a `Photo` model with the "image" attachment:
+
+```rb
+add_column :photos, :image_data, :text
+```
+
+Afterwards we need to make new uploads write to the `image_data` column. This
+can be done by including the below module to all models that have Paperclip
+attachments:
+
+```rb
+require "fastimage"
+
+module PaperclipShrineSynchronization
+  def self.included(model)
+    model.before_save do
+      Paperclip::AttachmentRegistry.each_definition do |klass, name, options|
+        write_shrine_data(name) if changes.key?(:"#{name}_file_name") && klass == self.class
+      end
+    end
+  end
+
+  def write_shrine_data(name)
+    attachment = send(name)
+
+    if attachment.size.present?
+      data = attachment_to_shrine_data(attachment)
+
+      if attachment.styles.any?
+        data = {original: data}
+        attachment.styles.each do |name, style|
+          data[name] = style_to_shrine_data(style)
+        end
+      end
+
+      write_attribute(:"#{name}_data", data.to_json)
+    else
+      write_attribute(:"#{name}_data", nil)
+    end
+  end
+
+  private
+
+  # If you'll be using a `:prefix` on your Shrine storage, or you're storing
+  # files on the filesystem, make sure to subtract the appropriate part
+  # from the path assigned to `:id`.
+  def attachment_to_shrine_data(attachment)
+    {
+      storage: :store,
+      id: attachment.path,
+      metadata: {
+        size: attachment.size,
+        filename: attachment.original_filename,
+        content_type: attachment.content_type,
+      },
+    }
+  end
+
+  # If you'll be using a `:prefix` on your Shrine storage, or you're storing
+  # files on the filesystem, make sure to subtract the appropriate part
+  # from the path assigned to `:id`.
+  def style_to_shrine_data(style)
+    attachment = style.attachment
+    path = attachment.path(style.name)
+    url = attachment.url(style.name)
+    file = attachment.instance_variable_get("@queued_for_write")[style.name]
+
+    size   = file.size if file
+    size ||= FastImage.new(url).content_length
+    size ||= File.size(path)
+    filename = File.basename(path)
+    mime_type = MIME::Types.type_for(path).first.to_s.presence
+
+    {
+      storage: :store,
+      id: path,
+      metadata: {
+        size: size,
+        filename: filename,
+        mime_type: mime_type,
+      }
+    }
+  end
+end
+```
+```rb
+class Photo < ActiveRecord::Base
+  has_attached_file :image
+  include PaperclipShrineSynchronization # needs to be after `has_attached_file`
+end
+```
+
+After you deploy this code, the `image_data` column should now be successfully
+synchronized with new attachments.  Next step is to run a script which writes
+all existing CarrierWave attachments to `image_data`:
+
+```rb
+Photo.find_each do |photo|
+  Paperclip::AttachmentRegistry.each_definition do |klass, name, options|
+    photo.write_shrine_data(name) if klass == Photo
+  end
+  photo.save!
+end
+```
+
+Now you should be able to rewrite your application so that it uses Shrine
+instead of Paperclip, using equivalent Shrine storages. For help with
+translating the code from Paperclip to Shrine, you can consult the reference
+below.
 
 ## Paperclip to Shrine direct mapping
 

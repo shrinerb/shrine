@@ -188,6 +188,67 @@ Shrine doesn't have a built-in solution for accepting multiple uploads, but
 it's actually very easy to do manually, see the [example app] on how you can do
 multiple uploads directly to S3.
 
+## Migrating from Refile
+
+You have an existing app using Refile and you want to transfer it to
+Shrine. Let's assume we have a `Photo` model with the "image" attachment. First
+we need to create the `image_data` column for Shrine:
+
+```rb
+add_column :photos, :image_data, :text
+```
+
+Afterwards we need to make new uploads write to the `image_data` column. This
+can be done by including the below module to all models that have Refile
+attachments:
+
+```rb
+module RefileShrineSynchronization
+  def write_shrine_data(name)
+    if read_attribute("#{name}_id").present?
+      data = {
+        storage: :store,
+        id: send("#{name}_id"),
+        metadata: {
+          size: (send("#{name}_size") if respond_to?("#{name}_size")),
+          filename: (send("#{name}_filename") if respond_to?("#{name}_filename")),
+          mime_type: (send("#{name}_content_type") if respond_to?("#{name}_content_type")),
+        }
+      }
+
+      write_attribute(:"#{name}_data", data.to_json)
+    else
+      write_attribute(:"#{name}_data", nil)
+    end
+  end
+end
+```
+```rb
+class Photo < ActiveRecord::Base
+  attachment :image
+  include RefileShrineSynchronization
+
+  before_save do
+    write_shrine_data(:image) if changes.key?(:image_id)
+  end
+end
+```
+
+After you deploy this code, the `image_data` column should now be successfully
+synchronized with new attachments.  Next step is to run a script which writes
+all existing Refile attachments to `image_data`:
+
+```rb
+Photo.find_each do |photo|
+  photo.write_shrine_data(:image)
+  photo.save!
+end
+```
+
+Now you should be able to rewrite your application so that it uses Shrine
+instead of Refile, using equivalent Shrine storages. For help with translating
+the code from Refile to Shrine, you can consult the reference below.
+
 ## Refile to Shrine direct mapping
 
 ### `Refile`
