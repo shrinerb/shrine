@@ -69,10 +69,31 @@ def upload(io, id, metadata = {})
 end
 ```
 
+## Updating
+
+If your storage supports updating data of existing files (e.g. some metadata),
+the convention is to create an `#update` method:
+
+```rb
+class Shrine
+  module Storage
+    class MyStorage
+      # ...
+
+      def update(id, options = {})
+        # update data of the file
+      end
+
+      # ...
+    end
+  end
+end
+```
+
 ## Streaming
 
 If your storage can stream files by yielding chunks, you can add an additional
-`#stream` method:
+`#stream` method (used by the `download_endpoint` plugin):
 
 ```rb
 class Shrine
