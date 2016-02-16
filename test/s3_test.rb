@@ -71,6 +71,15 @@ describe Shrine::Storage::S3 do
 
       assert_equal "foo/bar", tempfile.content_type
     end
+
+    it "doesn't require S3 files to have a size" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.metadata.delete("size")
+
+      @s3.upload(uploaded_file, "foo.jpg")
+
+      assert @s3.exists?("foo.jpg")
+    end
   end
 
   describe "#url" do

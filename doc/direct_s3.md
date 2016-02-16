@@ -39,7 +39,7 @@ Shrine's JSON representation of an uploaded file looks like this:
   "id": "349234854924394", # requied
   "storage": "cache", # required
   "metadata": {
-    "size": 45461, # required
+    "size": 45461, # optional
     "filename": "foo.jpg", # optional
     "mime_type": "image/jpeg", # optional
   }
@@ -141,10 +141,8 @@ include the object key as a query param:
 <%
   cached_file = {
     storage: "cache",
-    id: params[:key][/cache\/(.+)/, 1], # we have to remove the prefix part,
-    metadata: {
-      size: Shrine.storages[:cache].bucket.object(params[:key]).size,
-    }
+    id: params[:key][/cache\/(.+)/, 1], # we have to remove the prefix part
+    metadata: {},
   }
 %>
 

@@ -683,7 +683,7 @@ class Shrine
 
         # The filename that was extracted from the original file.
         def original_filename
-          metadata.fetch("filename")
+          metadata["filename"]
         end
 
         # The extension derived from `#original_filename`.
@@ -693,12 +693,12 @@ class Shrine
 
         # The filesize of the original file.
         def size
-          Integer(metadata.fetch("size"))
+          Integer(metadata["size"]) if metadata["size"]
         end
 
         # The MIME type of the original file.
         def mime_type
-          metadata.fetch("mime_type")
+          metadata["mime_type"]
         end
         alias content_type mime_type
 

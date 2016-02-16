@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't make uploaded file's metadata methods error when the corresponding key-value pair is missing (janko-m)
+
 * Close the `UploadedFile` on upload only if it was previously opened, which doesn't happen on S3 COPY (reidab)
 
 * Fix `NameError` when silencing "missing record" errors in backgrounding (janko-m)

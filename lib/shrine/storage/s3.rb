@@ -245,7 +245,7 @@ class Shrine
 
       # Amazon requires multipart copy from S3 objects larger than 5 GB.
       def large?(io)
-        io.size >= 5*1024*1024*1024 # 5GB
+        io.size && io.size >= 5*1024*1024*1024 # 5GB
       end
     end
   end
