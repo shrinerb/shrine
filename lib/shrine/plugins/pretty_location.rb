@@ -14,7 +14,7 @@ class Shrine
     module PrettyLocation
       module InstanceMethods
         def generate_location(io, context)
-          type = context[:record].class.name.downcase if context[:record] && context[:record].class.name
+          type = context[:record].class.name.downcase.gsub('::', '/') if context[:record] && context[:record].class.name
           id   = context[:record].id if context[:record].respond_to?(:id)
           name = context[:name]
 
