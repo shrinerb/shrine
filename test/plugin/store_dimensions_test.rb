@@ -21,6 +21,13 @@ describe "the store_dimensions plugin" do
       assert_equal 100, uploaded_file.metadata["width"]
       assert_equal 67, uploaded_file.metadata["height"]
     end
+
+    it "resets cursor after reading attempting to extract dimensions from an invalid image file" do
+      io = File.open("test/fixtures/invalid_image.jpg")
+      @uploader = uploader(:fastimage)
+      uploaded_file = @uploader.extract_dimensions(io)
+      assert_equal 0, io.pos
+    end
   end
 
   it "allows storing with custom extractor" do

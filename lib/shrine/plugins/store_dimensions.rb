@@ -62,7 +62,10 @@ class Shrine
         private
 
         def _extract_dimensions_with_fastimage(io)
-          FastImage.size(io)
+          FastImage.size(io, raise_on_failure: true)
+        rescue FastImage::FastImageException
+          io.rewind
+          nil
         end
       end
 
