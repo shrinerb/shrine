@@ -14,8 +14,10 @@ class Shrine
     module PrettyLocation
       module InstanceMethods
         def generate_location(io, context)
-          type = context[:record].class.name.downcase if context[:record] && context[:record].class.name
-          id   = context[:record].id if context[:record].respond_to?(:id)
+          if context[:record]
+            type = class_location(context[:record].class) if context[:record].class.name
+            id   = context[:record].id if context[:record].respond_to?(:id)
+          end
           name = context[:name]
 
           dirname, slash, basename = super.rpartition("/")
@@ -29,6 +31,10 @@ class Shrine
 
         def generate_uid(io)
           SecureRandom.hex(5)
+        end
+
+        def class_location(klass)
+          klass.name.downcase.split("::").last
         end
       end
     end
