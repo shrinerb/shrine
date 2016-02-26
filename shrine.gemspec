@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
-  gem.add_dependency "down", ">= 1.0.5"
+  gem.add_dependency "down", ">= 2.0.0"
 
   gem.add_development_dependency "rake"
   gem.add_development_dependency "minitest", "~> 5.8"

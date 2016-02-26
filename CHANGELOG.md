@@ -1,5 +1,7 @@
 ## HEAD
 
+* Bump Down dependency to 2.0.0 in order to fix downloading URLs with "[]" characters (janko-m)
+
 * Add `:namespace` option to pretty_location for including class namespace in location (janko-m)
 
 * Don't include the namespace of the class in the location with the pretty_location plugin (janko-m)
