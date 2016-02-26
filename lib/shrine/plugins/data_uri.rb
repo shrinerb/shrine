@@ -74,7 +74,7 @@ class Shrine
           else
             message = shrine_class.opts[:data_uri_error_message]
             message = message.call(uri) if message.respond_to?(:call)
-            errors << message
+            errors.replace [message]
             @data_uri = uri
           end
         end

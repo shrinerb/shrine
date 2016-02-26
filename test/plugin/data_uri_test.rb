@@ -64,6 +64,13 @@ describe "the data_uri plugin" do
     assert_equal ["Data URI failed"], @user.avatar_attacher.errors
   end
 
+  it "clears any existing errors" do
+    @user.avatar_attacher.errors << "foo"
+    @user.avatar_data_uri = "bla"
+
+    refute_includes @user.avatar_attacher.errors, "foo"
+  end
+
   it "adds a #data_uri method to uploaded files" do
     @user.avatar = fakeio(Base64.decode64("somefile"))
 

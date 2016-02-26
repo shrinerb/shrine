@@ -87,7 +87,7 @@ class Shrine
           else
             message = shrine_class.opts[:remote_url_error_message]
             message = message.call(url) if message.respond_to?(:call)
-            errors << message
+            errors.replace [message]
             @remote_url = url
           end
         end

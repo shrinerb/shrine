@@ -68,6 +68,13 @@ describe "the remote_url plugin" do
     assert_equal ["Message"], @attacher.errors
   end
 
+  it "clears any existing errors" do
+    @attacher.errors << "foo"
+    @attacher.record.avatar_remote_url = invalid_url
+
+    refute_includes @attacher.errors, "foo"
+  end
+
   it "accepts custom downloader" do
     @attacher = attacher(downloader: ->(url, **) { fakeio(url) })
     @attacher.record.avatar_remote_url = "foo"
