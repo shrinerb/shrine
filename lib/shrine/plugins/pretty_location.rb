@@ -11,7 +11,22 @@ class Shrine
     #
     #     "user/564/avatar/thumb-493g82jf23.jpg"
     #     # :model/:id/:attachment/:version-:uid.:extension
+    #
+    # By default if a record class is inside a namespace, only the "inner"
+    # class name is used in the location. If you want to include the namespace,
+    # you can pass in the `:namespace` option with the desired separator as the
+    # value:
+    #
+    #     plugin :pretty_location, namespace: "_"
+    #     # "blog_user/.../493g82jf23.jpg"
+    #
+    #     plugin :pretty_location, namespace: "/"
+    #     # "blog/user/.../493g82jf23.jpg"
     module PrettyLocation
+      def self.configure(uploader, namespace: nil)
+        uploader.opts[:pretty_location_namespace] = namespace
+      end
+
       module InstanceMethods
         def generate_location(io, context)
           if context[:record]
@@ -34,7 +49,12 @@ class Shrine
         end
 
         def class_location(klass)
-          klass.name.downcase.split("::").last
+          parts = klass.name.downcase.split("::")
+          if separator = opts[:pretty_location_namespace]
+            parts.join(separator)
+          else
+            parts.last
+          end
         end
       end
     end

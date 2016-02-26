@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:namespace` option to pretty_location for including class namespace in location (janko-m)
+
 * Don't include the namespace of the class in the location with the pretty_location plugin (janko-m)
 
 * Remove aws-sdk deprecation warning when storage isn't instantiated with credentials (reidab)
