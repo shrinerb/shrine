@@ -184,6 +184,11 @@ class Shrine
         end
       end
 
+      # Returns back the url for direct uploads
+      def presign(id, **options)
+        OpenStruct.new(url: options[:url], fields: { key: id })
+      end
+
       protected
 
       # Returns the full path to the file.

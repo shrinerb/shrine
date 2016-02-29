@@ -102,7 +102,7 @@ class Shrine
           if background_promote = shrine_class.opts[:backgrounding_promote]
             data = {
               "uploaded_file" => get.to_json,
-              "record"        => [record.class.to_s, record.id],
+              "record"        => [record.class.to_s, record.id.to_s],
               "attachment"    => name.to_s,
             }
 
@@ -120,7 +120,7 @@ class Shrine
           if background_delete = shrine_class.opts[:backgrounding_delete]
             data = {
               "uploaded_file" => uploaded_file.to_json,
-              "record"        => [record.class.to_s, record.id],
+              "record"        => [record.class.to_s, record.id.to_s],
               "attachment"    => name.to_s,
               "phase"         => phase.to_s,
             }

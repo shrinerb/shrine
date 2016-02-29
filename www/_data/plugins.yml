@@ -7,6 +7,10 @@ ORMs:
     name: sequel
     path: Sequel.html
     description: Provides Sequel integration, adding callbacks and validations.
+  -
+    name: mongoid
+    path: Mongoid.html
+    description: Provides Mongoid integration, adding callbacks and validations.
 
 Model:
   -
@@ -40,7 +44,7 @@ Model:
   -
     name: rack_file
     path: RackFile.html
-    description: Allows you models to accept Rack uploaded file hashes as attachments.
+    description: Allows your models to accept Rack uploaded file hashes as attachments.
   -
     name: remote_url
     path: RemoteUrl.html

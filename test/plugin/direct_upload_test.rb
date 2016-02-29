@@ -38,7 +38,7 @@ describe "the direct_upload plugin" do
 
       response = app.post "/cache/avatar", multipart: {file: image}
 
-      assert_equal '{"name":"avatar","phase":"cache"}', response.body_json['id']
+      assert_equal '{"name":"avatar","phase":"cache","location":null}', response.body_json['id']
     end
 
     it "assigns metadata" do
@@ -98,13 +98,6 @@ describe "the direct_upload plugin" do
       end
 
       assert_raises(RuntimeError) { app.post "/cache/avatar", multipart: {file: image} }
-    end
-
-    it "doesn't exist if :presign was set" do
-      @uploader.opts[:direct_upload_presign] = true
-      response = app.post "/cache/avatar"
-
-      assert_equal 404, response.status
     end
   end
 
