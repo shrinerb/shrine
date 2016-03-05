@@ -39,7 +39,7 @@ class Shrine
     # Finally, if for some reason the way the file is downloaded doesn't suit
     # your needs, you can provide a custom downloader:
     #
-    #     plugin :remote_url, downloader: ->(url) do
+    #     plugin :remote_url, downloader: ->(url, max_size:) do
     #       request = RestClient::Request.new(method: :get, url: url, raw_response: true)
     #       response = request.execute
     #       response.file
