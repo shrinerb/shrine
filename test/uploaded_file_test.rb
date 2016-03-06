@@ -4,171 +4,258 @@ require "set"
 
 describe Shrine::UploadedFile do
   before do
-    @uploader = uploader
+    @uploader = uploader(:store)
+  end
+
+  def uploaded_file(data = {})
+    data = {"id" => "foo", "storage" => "store", "metadata" => {}}.merge(data)
+    @uploader.class::UploadedFile.new(data)
   end
 
   it "is an IO" do
     assert io?(@uploader.upload(fakeio))
   end
 
-  it "exposes data readers" do
-    uploaded_file = @uploader.upload(fakeio, location: "key")
-
-    assert_instance_of Hash, uploaded_file.data
-    assert_equal "key", uploaded_file.id
-    assert_equal "store", uploaded_file.storage_key
-    assert_instance_of Hash, uploaded_file.metadata
-  end
-
-  it "has metadata readers" do
-    io = fakeio("image", filename: "foo.jpg", content_type: "image/jpeg")
-    uploaded_file = @uploader.upload(io)
-
-    assert_equal "foo.jpg", uploaded_file.original_filename
-    assert_equal 5, uploaded_file.size
-    assert_equal "image/jpeg", uploaded_file.mime_type
-    assert_equal "image/jpeg", uploaded_file.content_type
-
-    uploaded_file.metadata.clear
-
-    assert_equal nil, uploaded_file.original_filename
-    assert_equal nil, uploaded_file.size
-    assert_equal nil, uploaded_file.mime_type
-    assert_equal nil, uploaded_file.content_type
-  end
-
-  it "exposes the extension" do
-    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
-    assert_equal "jpg", uploaded_file.extension
-
-    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
-    assert_equal "jpg", uploaded_file.extension
-
-    uploaded_file = @uploader.upload(fakeio(filename: "foo"))
-    assert_equal nil, uploaded_file.extension
-
-    uploaded_file = @uploader.upload(fakeio)
-    assert_equal nil, uploaded_file.extension
-  end
-
-  it "coerces the size to integer" do
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.metadata["size"] = "13"
-
-    assert_equal 13, uploaded_file.size
-  end
-
-  it "has IO-related methods" do
-    uploaded_file = @uploader.upload(fakeio("image"), location: "key")
-
-    assert io?(uploaded_file.to_io)
-
-    assert_equal "image", uploaded_file.read
-    assert_equal true, uploaded_file.eof?
-    uploaded_file.rewind
-    uploaded_file.close
-  end
-
-  it "deletes the underlying Tempfile on closing" do
-    uploaded_file = @uploader.upload(fakeio)
-
-    uploaded_file.instance_variable_set("@io", tempfile = Tempfile.new(""))
-    uploaded_file.close
-
-    assert tempfile.path.nil?
-  end
-
-  it "doesn't open an IO just in order to close it" do
-    uploaded_file = @uploader.class.uploaded_file(
-      'id' => '123',
-      'storage' => 'cache',
-      'metadata' => { 'size' => 1 }
-    )
-
-    uploaded_file.storage.expects(:open).never
-    uploaded_file.close
-  end
-
-  it "has storage related methods" do
-    uploaded_file = @uploader.upload(fakeio("image"), location: "key")
-
-    assert_equal "memory://key", uploaded_file.url
-    assert_instance_of Tempfile, uploaded_file.download
-    uploaded_file.delete
-    assert_equal false, uploaded_file.exists?
-
-    assert_instance_of Shrine::Storage::Memory, uploaded_file.storage
-    assert_instance_of @uploader.class, uploaded_file.uploader
-  end
-
-  it "can be replaced with another file" do
-    uploaded_file = @uploader.upload(fakeio("image"), location: "key")
-
-    replaced = uploaded_file.replace(fakeio("replaced"))
-
-    assert_equal 8, replaced.size
-    assert_equal "replaced", replaced.read
-  end
-
-  it "forwards url arguments to storage" do
-    @uploader.storage.instance_eval do
-      def url(id, **options)
-        options.to_json
-      end
+  describe "#initialize" do
+    it "assigns appropriate variables" do
+      data = {"id" => "foo", "storage" => "store", "metadata" => {}}
+      uploaded_file = uploaded_file(data)
+      assert_equal "foo", uploaded_file.id
+      assert_equal "store", uploaded_file.storage_key
+      assert_equal Hash.new, uploaded_file.metadata
     end
-    uploaded_file = @uploader.upload(fakeio)
 
-    assert_equal '{"foo":"bar"}', uploaded_file.url(foo: "bar")
+    it "raises an error if storage is not registered" do
+      data = {"id" => "foo", "storage" => "foo", "metadata" => {}}
+      assert_raises(Shrine::Error) { uploaded_file(data) }
+    end
+
+    it "doesn't create symbols for unregistered storage names" do
+      data = {"id" => "foo", "storage" => "nosymbol", "metadata" => {}}
+      assert_raises(Shrine::Error) { uploaded_file(data) }
+      refute_includes Symbol.all_symbols.map(&:to_s), "nosymbol"
+    end
+  end
+
+  describe "#original_filename" do
+    it "returns filename from metadata" do
+      uploaded_file = uploaded_file("metadata" => {"filename" => "foo.jpg"})
+      assert_equal "foo.jpg", uploaded_file.original_filename
+
+      uploaded_file = uploaded_file("metadata" => {"filename" => nil})
+      assert_equal nil, uploaded_file.original_filename
+
+      uploaded_file = uploaded_file("metadata" => {})
+      assert_equal nil, uploaded_file.original_filename
+    end
+  end
+
+  describe "#extension" do
+    it "extracts file extension from id" do
+      uploaded_file = uploaded_file("id" => "foo.jpg")
+      assert_equal "jpg", uploaded_file.extension
+
+      uploaded_file = uploaded_file("id" => "foo")
+      assert_equal nil, uploaded_file.extension
+    end
+
+    it "extracts file extension from filename" do
+      uploaded_file = uploaded_file("metadata" => {"filename" => "foo.jpg"})
+      assert_equal "jpg", uploaded_file.extension
+
+      uploaded_file = uploaded_file("metadata" => {"filename" => "foo"})
+      assert_equal nil, uploaded_file.extension
+
+      uploaded_file = uploaded_file("metadata" => {})
+      assert_equal nil, uploaded_file.extension
+    end
+
+    # Some storages may reformat the file on upload, changing its extension,
+    # so we want to make sure that we take the new extension, and not the
+    # extension file had before upload.
+    it "prefers extension from id over one from filename" do
+      uploaded_file = uploaded_file("id" => "foo.jpg", "metadata" => {"filename" => "foo.png"})
+      assert_equal "jpg", uploaded_file.extension
+    end
+  end
+
+  describe "#size" do
+    it "returns size from metadata" do
+      uploaded_file = uploaded_file("metadata" => {"size" => 50})
+      assert_equal 50, uploaded_file.size
+
+      uploaded_file = uploaded_file("metadata" => {"size" => nil})
+      assert_equal nil, uploaded_file.size
+
+      uploaded_file = uploaded_file("metadata" => {})
+      assert_equal nil, uploaded_file.size
+    end
+
+    it "converts the value to integer" do
+      uploaded_file = uploaded_file("metadata" => {"size" => "50"})
+      assert_equal 50, uploaded_file.size
+
+      uploaded_file = uploaded_file("metadata" => {"size" => "not a number"})
+      assert_raises(ArgumentError) { uploaded_file.size }
+    end
+  end
+
+  describe "#mime_type" do
+    it "returns mime_type from metadata" do
+      uploaded_file = uploaded_file("metadata" => {"mime_type" => "image/jpeg"})
+      assert_equal "image/jpeg", uploaded_file.mime_type
+
+      uploaded_file = uploaded_file("metadata" => {"mime_type" => nil})
+      assert_equal nil, uploaded_file.mime_type
+
+      uploaded_file = uploaded_file("metadata" => {})
+      assert_equal nil, uploaded_file.mime_type
+    end
+
+    it "has #content_type alias" do
+      uploaded_file = uploaded_file("metadata" => {"mime_type" => "image/jpeg"})
+      assert_equal "image/jpeg", uploaded_file.content_type
+    end
+  end
+
+  describe "#read" do
+    it "delegates to underlying IO" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      assert_equal "file", uploaded_file.read
+      uploaded_file.rewind
+      assert_equal "fi", uploaded_file.read(2)
+      assert_equal "le", uploaded_file.read(2)
+      assert_equal nil,  uploaded_file.read(2)
+    end
+  end
+
+  describe "#eof?" do
+    it "delegates to underlying IO" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      refute uploaded_file.eof?
+      uploaded_file.read
+      assert uploaded_file.eof?
+    end
+  end
+
+  describe "#close" do
+    it "delegates to underlying IO" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      uploaded_file.read
+      uploaded_file.close
+      assert_raises(IOError) { uploaded_file.read }
+    end
+
+    it "deletes the underlying tempfile" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.instance_variable_set("@io", tempfile = Tempfile.new(""))
+      uploaded_file.close
+      refute tempfile.path
+    end
+
+    # Sometimes an uploaded file will be copied over instead of reuploaded (S3),
+    # in which case it's not downloaded, so we don't want that closing actually
+    # downloads the file.
+    it "doesn't open the file if it wasn't opened yet" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.storage.expects(:open).never
+      uploaded_file.close
+    end
+  end
+
+  describe "#rewind" do
+    it "delegates to underlying IO" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      assert_equal "file", uploaded_file.read
+      uploaded_file.rewind
+      assert_equal "file", uploaded_file.read
+    end
+  end
+
+  describe "#url" do
+    it "delegates to underlying storage" do
+      uploaded_file = uploaded_file("id" => "foo")
+      assert_equal "memory://foo", uploaded_file.url
+    end
+
+    it "forwards given options to storage" do
+      uploaded_file = uploaded_file("id" => "foo")
+      uploaded_file.storage.expects(:url).with("foo", {foo: "foo"})
+      uploaded_file.url(foo: "foo")
+    end
+  end
+
+  describe "#exists?" do
+    it "delegates to underlying storage" do
+      uploaded_file = @uploader.upload(fakeio)
+      assert uploaded_file.exists?
+
+      uploaded_file = uploaded_file({})
+      refute uploaded_file.exists?
+    end
+  end
+
+  describe "#download" do
+    it "delegates to underlying storage" do
+      uploaded_file = @uploader.upload(fakeio)
+      assert_instance_of Tempfile, uploaded_file.download
+    end
+  end
+
+  describe "#replace" do
+    it "uploads another file to the same location" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      new_uploaded_file = uploaded_file.replace(fakeio("replaced"))
+
+      assert_equal uploaded_file.id, new_uploaded_file.id
+      assert_equal "replaced", new_uploaded_file.read
+      assert_equal 8, new_uploaded_file.size
+    end
+  end
+
+  describe "#delete" do
+    it "delegates to underlying storage" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.delete
+      refute uploaded_file.exists?
+    end
+  end
+
+  describe "#to_io" do
+    it "returns the underlying IO" do
+      uploaded_file = @uploader.upload(fakeio)
+      assert io?(uploaded_file.to_io)
+      assert_equal uploaded_file.object_id, uploaded_file.object_id
+    end
+  end
+
+  it "exposes #storage and #uploader" do
+    uploaded_file = uploaded_file({})
+    assert_instance_of Shrine::Storage::Memory, uploaded_file.storage
+    assert_instance_of uploaded_file.shrine_class, uploaded_file.uploader
   end
 
   it "implements #to_json" do
-    uploaded_file = @uploader.class::UploadedFile.new(
-      "id"       => "123",
-      "storage"  => "store",
-      "metadata" => {},
-    )
-
-    assert_equal '{"id":"123","storage":"store","metadata":{}}',
-                  uploaded_file.to_json
-
-    assert_equal '{"thumb":{"id":"123","storage":"store","metadata":{}}}',
-                  {thumb: uploaded_file}.to_json
+    uploaded_file = uploaded_file("id" => "foo", "storage" => "store", "metadata" => {})
+    assert_equal '{"id":"foo","storage":"store","metadata":{}}', uploaded_file.to_json
+    assert_equal '{"thumb":{"id":"foo","storage":"store","metadata":{}}}', {thumb: uploaded_file}.to_json
   end
 
   it "implements equality" do
-    assert_equal(
-      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-    )
-
-    refute_equal(
-      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "cache", "metadata" => {}),
-    )
-
-    refute_equal(
-      @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {}),
-      @uploader.class::UploadedFile.new("id" => "bar", "storage" => "store", "metadata" => {}),
-    )
+    assert_equal uploaded_file(), uploaded_file()
+    assert_equal uploaded_file("metadata" => {"foo" => "foo"}), uploaded_file("metadata" => {"bar" => "bar"})
+    refute_equal uploaded_file("id" => "foo"), uploaded_file("id" => "bar")
+    refute_equal uploaded_file("storage" => "store"), uploaded_file("storage" => "cache")
   end
 
   it "implements hash equality" do
-    uploaded_file1 = @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
-    uploaded_file2 = @uploader.class::UploadedFile.new("id" => "foo", "storage" => "store", "metadata" => {})
-
-    assert_equal 1, Set.new([uploaded_file1, uploaded_file2]).count
+    assert_equal 1, Set.new([uploaded_file(), uploaded_file()]).size
+    assert_equal 2, Set.new([uploaded_file("id" => "foo"), uploaded_file("id" => "bar")]).size
+    assert_equal 2, Set.new([uploaded_file("storage" => "store"), uploaded_file("storage" => "cache")]).size
   end
 
   it "implements cleaner #inspect" do
-    uploaded_file = @uploader.class::UploadedFile.new(
-      "id" => "123", "storage" => "store", "metadata" => {})
-
+    uploaded_file = uploaded_file("id" => "123", "storage" => "store", "metadata" => {})
     assert_match /#<\S+ @data=\{"id"=>"123", "storage"=>"store", "metadata"=>{}\}>/, uploaded_file.inspect
-  end
-
-  it "raises an error if invalid storage key is given" do
-    assert_raises(Shrine::Error) do
-      Shrine::UploadedFile.new("id" => "123", "storage" => "foo", "metadata" => {})
-    end
   end
 end

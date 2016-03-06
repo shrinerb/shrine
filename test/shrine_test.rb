@@ -67,7 +67,6 @@ describe Shrine do
     it "returns an instance of Attachment" do
       uploader = Class.new(Shrine)
       uploader.storages = {cache: "cache", store: "store"}
-
       assert_instance_of uploader::Attachment, uploader.attachment(:avatar)
       assert_instance_of uploader::Attachment, uploader[:avatar]
     end
@@ -77,28 +76,24 @@ describe Shrine do
     it "accepts data as JSON string" do
       uploaded_file = @uploader.upload(fakeio)
       retrieved = @uploader.class.uploaded_file(uploaded_file.to_json)
-
       assert_equal uploaded_file, retrieved
     end
 
     it "accepts data as Hash" do
       uploaded_file = @uploader.upload(fakeio)
       retrieved = @uploader.class.uploaded_file(uploaded_file.data)
-
       assert_equal uploaded_file, retrieved
     end
 
     it "accepts an UploadedFile" do
       uploaded_file = @uploader.upload(fakeio)
       retrieved = @uploader.class.uploaded_file(uploaded_file)
-
       assert_equal uploaded_file, retrieved
     end
 
     it "yields the converted file" do
       uploaded_file = @uploader.upload(fakeio)
       @uploader.class.uploaded_file(uploaded_file.data) { |o| @yielded = o }
-
       assert_equal uploaded_file, @yielded
     end
 
@@ -122,17 +117,18 @@ describe Shrine do
   end
 
   describe "#initialize" do
-    it "symbolizes storage key" do
-      shrine = Class.new(Shrine)
-      shrine.storages = {foo: "bar"}
+    it "accepts symbol and string storage names" do
+      uploader = @uploader.class.new(:store)
+      assert_equal :store, uploader.storage_key
+      assert_equal @uploader.storage, uploader.storage
 
-      uploader = shrine.new("foo")
-
-      assert_equal :foo, uploader.storage_key
+      uploader = @uploader.class.new("store")
+      assert_equal :store, uploader.storage_key
+      assert_equal @uploader.storage, uploader.storage
     end
 
-    it "raises an error on missing storage" do
-      assert_raises(Shrine::Error) { Shrine.new(:foo) }
+    it "raises an error on unknown storage" do
+      assert_raises(Shrine::Error) { @uploader.class.new(:foo) }
     end
   end
 
@@ -144,75 +140,71 @@ describe Shrine do
 
   describe "#upload" do
     it "stores the file" do
-      uploaded_file = @uploader.upload(fakeio)
-
+      uploaded_file = @uploader.upload(fakeio("original"))
       assert uploaded_file.exists?
+      assert_equal "original", uploaded_file.read
     end
 
     it "calls the processing" do
-      @uploader.instance_eval do
-        def process(io, context)
-          FakeIO.new(io.read.reverse)
-        end
-      end
-
+      @uploader.instance_eval { def process(io, context); FakeIO.new(io.read.reverse); end }
       uploaded_file = @uploader.upload(fakeio("original"))
-
       assert_equal "lanigiro", uploaded_file.read
+    end
+
+    it "sends the context all the way down" do
+      @uploader.instance_eval do
+        def process(io, context); FakeIO.new(context[:foo]); end
+        def generate_location(io, context); context[:foo]; end
+        def extract_metadata(io, context); {"foo" => context[:foo]}; end
+      end
+      uploaded_file = @uploader.upload(fakeio, {foo: "bar"})
+      assert_equal "bar", uploaded_file.read
+      assert_equal "bar", uploaded_file.id
+      assert_equal "bar", uploaded_file.metadata["foo"]
     end
   end
 
   describe "#store" do
     it "uploads the file without processing" do
-      @uploader.instance_eval do
-        def process(io, context)
-          FakeIO.new(io.read.reverse)
-        end
-      end
-
+      @uploader.instance_eval { def process(io, context); FakeIO.new(io.read.reverse); end }
       uploaded_file = @uploader.store(fakeio("original"))
-
       assert_equal "original", uploaded_file.read
     end
 
     it "uses :location if available" do
       uploaded_file = @uploader.store(fakeio, location: "foo")
-
       assert_equal "foo", uploaded_file.id
     end
 
     it "calls #generate_location if :location isn't provided" do
-      @uploader.instance_eval do
-        def generate_location(io, context)
-          "foo"
-        end
-      end
+      @uploader.instance_eval { def generate_location(io, context); "foo"; end }
       uploaded_file = @uploader.store(fakeio)
-
       assert_equal "foo", uploaded_file.id
     end
 
     it "extracts and assigns metadata" do
       photo = fakeio("photo", filename: "nature.jpg", content_type: "image/jpeg")
       uploaded_file = @uploader.store(photo)
-
-      assert_equal 5, uploaded_file.metadata["size"]
+      assert_equal 5,            uploaded_file.metadata["size"]
       assert_equal "nature.jpg", uploaded_file.metadata["filename"]
       assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
     end
 
     it "copies metadata from other UploadedFiles" do
-      uploaded_file = @uploader.store(fakeio)
-      uploaded_file.metadata["foo"] = "bar"
-      another_uploaded_file = @uploader.store(uploaded_file)
-
-      assert_equal "bar", another_uploaded_file.metadata["foo"]
+      another_uploaded_file = @uploader.store(fakeio)
+      another_uploaded_file.metadata["foo"] = "bar"
+      uploaded_file = @uploader.store(another_uploaded_file)
+      assert_equal "bar", uploaded_file.metadata["foo"]
     end
 
     it "closes the file after uploading" do
       @uploader.store(io = fakeio)
-
       assert_raises(IOError) { io.read }
+    end
+
+    it "doesn't error when storage already closed the file" do
+      @uploader.storage.instance_eval { def upload(io, *); super; io.close; end }
+      @uploader.store(fakeio)
     end
 
     it "checks if the input is a valid IO" do
@@ -223,28 +215,25 @@ describe Shrine do
   describe "#uploaded?" do
     it "returns true if storages match" do
       cached_file = @uploader.class.new(:cache).upload(fakeio)
-
       assert @uploader.class.new(:cache).uploaded?(cached_file)
       refute @uploader.class.new(:store).uploaded?(cached_file)
     end
   end
 
   describe "#delete" do
-    it "deletes the single files" do
+    it "deletes the given file" do
       uploaded_file = @uploader.upload(fakeio)
       deleted_file = @uploader.delete(uploaded_file)
-
-      assert_equal uploaded_file, deleted_file
       refute deleted_file.exists?
+      assert_equal uploaded_file, deleted_file
     end
   end
 
   describe "#generate_location" do
     it "creates a unique location" do
-      id1 = @uploader.generate_location(fakeio)
-      id2 = @uploader.generate_location(fakeio)
-
-      refute id1 == id2
+      location1 = @uploader.generate_location(fakeio)
+      location2 = @uploader.generate_location(fakeio)
+      refute location1 == location2
     end
 
     it "preserves the extension" do
@@ -264,7 +253,6 @@ describe Shrine do
 
     it "handles no filename" do
       location = @uploader.generate_location(fakeio)
-
       assert_match /^[\w-]+$/, location
     end
   end
@@ -278,12 +266,11 @@ describe Shrine do
       assert_equal "Gemfile", metadata["filename"]
 
       metadata = @uploader.extract_metadata(fakeio)
-      assert_equal nil, metadata.fetch("filename")
+      assert_equal nil, metadata["filename"]
     end
 
     it "extracts the filesize" do
       metadata = @uploader.extract_metadata(fakeio("image"))
-
       assert_equal 5, metadata["size"]
     end
 
@@ -292,40 +279,16 @@ describe Shrine do
       assert_equal "image/jpeg", metadata["mime_type"]
 
       metadata = @uploader.extract_metadata(fakeio)
-      assert_equal nil, metadata.fetch("mime_type")
+      assert_equal nil, metadata["mime_type"]
     end
 
     it "successfully extracts metadata from another UploadedFile" do
       file = fakeio("avatar", filename: "foo.jpg", content_type: "image/jpeg")
       uploaded_file = @uploader.upload(file)
-
       metadata = @uploader.extract_metadata(uploaded_file)
-
-      assert_equal 6, metadata["size"]
-      assert_equal "foo.jpg", metadata["filename"]
+      assert_equal 6,            metadata["size"]
+      assert_equal "foo.jpg",    metadata["filename"]
       assert_equal "image/jpeg", metadata["mime_type"]
     end
-  end
-
-  it "sends the context all the way down" do
-    @uploader.instance_eval do
-      def process(io, context)
-        FakeIO.new(context[:foo])
-      end
-
-      def generate_location(io, context)
-        context[:foo]
-      end
-
-      def extract_metadata(io, context)
-        {"foo" => context[:foo]}
-      end
-    end
-
-    uploaded_file = @uploader.upload(fakeio, {foo: "bar"})
-
-    assert_equal "bar", uploaded_file.read
-    assert_equal "bar", uploaded_file.id
-    assert_equal "bar", uploaded_file.metadata["foo"]
   end
 end

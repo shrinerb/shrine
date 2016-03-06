@@ -527,7 +527,7 @@ class Shrine
         # stored file.
         def promote(cached_file)
           stored_file = store!(cached_file, phase: :store)
-          (result = swap(stored_file)) or delete!(stored_file, phase: :stored)
+          result = swap(stored_file) or delete!(stored_file, phase: :stored)
           result
         end
 
@@ -562,6 +562,7 @@ class Shrine
           instance_exec(&validate_block) if validate_block && get
         end
 
+        # Delegates to `Shrine.uploaded_file`.
         def uploaded_file(*args, &block)
           shrine_class.uploaded_file(*args, &block)
         end
@@ -585,7 +586,7 @@ class Shrine
           uploaded_file && cache.uploaded?(uploaded_file)
         end
 
-        # Alias to #update, overriden in ORM plugins.
+        # Calls #update, overriden in ORM plugins.
         def swap(uploaded_file)
           update(uploaded_file)
           uploaded_file
@@ -686,7 +687,8 @@ class Shrine
           metadata["filename"]
         end
 
-        # The extension derived from `#original_filename`.
+        # The extension derived from #id if present, otherwise from
+        # #original_filename.
         def extension
           File.extname(id)[1..-1] || File.extname(original_filename.to_s)[1..-1]
         end
@@ -790,7 +792,7 @@ class Shrine
 
         # The storage class this file was uploaded to.
         def storage
-          uploader.storage
+          shrine_class.find_storage(storage_key)
         end
 
         # Returns the Shrine class related to this uploaded file.

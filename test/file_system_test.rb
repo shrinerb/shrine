@@ -52,20 +52,17 @@ describe Shrine::Storage::FileSystem do
   describe "#upload" do
     it "creates subdirectories" do
       @storage.upload(fakeio, "a/a/a.jpg")
-
       assert @storage.exists?("a/a/a.jpg")
     end
 
     it "copies full file content" do
       @storage.upload(input = fakeio("A" * 20_000), "foo.jpg")
-
       assert_equal 20_000, @storage.open("foo.jpg").size
    end
 
     it "sets file permissions" do
       @storage = file_system(root, permissions: 0755)
       @storage.upload(fakeio, "foo.jpg")
-
       assert_permissions 0755, @storage.open("foo.jpg").path
     end
   end
@@ -75,7 +72,6 @@ describe Shrine::Storage::FileSystem do
       file                      = Down.copy_to_tempfile("", image)
       file_system_uploaded_file = @shrine.new(:file_system).upload(fakeio)
       memory_uploaded_file      = @shrine.new(:memory).upload(fakeio)
-
       assert @storage.movable?(file, nil)
       assert @storage.movable?(file_system_uploaded_file, nil)
       refute @storage.movable?(memory_uploaded_file, nil)
@@ -109,7 +105,6 @@ describe Shrine::Storage::FileSystem do
 
     it "cleans moved file's directory" do
       uploaded_file = @shrine.new(:file_system).upload(fakeio, location: "a/a/a.jpg")
-
       @storage.move(uploaded_file, "b.jpg")
       refute @storage.exists?("a/a")
     end
@@ -118,7 +113,6 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root, permissions: 0755)
       file = Down.copy_to_tempfile("", image)
       @storage.move(file, "bar.jpg")
-
       assert_permissions 0755, @storage.open("bar.jpg").path
     end
   end
@@ -126,7 +120,6 @@ describe Shrine::Storage::FileSystem do
   describe "#open" do
     it "opens the file in binary mode" do
       @storage.upload(fakeio, "foo.jpg")
-
       assert @storage.open("foo.jpg").binmode?
     end
   end
@@ -135,7 +128,6 @@ describe Shrine::Storage::FileSystem do
     it "cleans subdirectories" do
       @storage.upload(fakeio, "a/a/a.jpg")
       @storage.delete("a/a/a.jpg")
-
       refute @storage.exists?("a/a")
     end
   end
@@ -144,28 +136,24 @@ describe Shrine::Storage::FileSystem do
     it "returns the full path without :prefix" do
       @storage = file_system(root)
       @storage.upload(fakeio, "foo.jpg")
-
       assert_equal "#{root}/foo.jpg", @storage.url("foo.jpg")
     end
 
     it "applies a host without :prefix" do
       @storage = file_system(root, host: "http://124.83.12.24")
       @storage.upload(fakeio, "foo.jpg")
-
       assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg")
     end
 
     it "returns the path relative to the :prefix" do
       @storage = file_system(root, prefix: "uploads")
       @storage.upload(fakeio, "foo.jpg")
-
       assert_equal "/uploads/foo.jpg", @storage.url("foo.jpg")
     end
 
     it "accepts a host with :prefix" do
       @storage = file_system(root, prefix: "uploads", host: "http://abc123.cloudfront.net")
       @storage.upload(fakeio, "foo.jpg")
-
       assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg")
     end
   end
@@ -174,17 +162,14 @@ describe Shrine::Storage::FileSystem do
     it "creates the directory after deleting it" do
       @storage = file_system(root)
       @storage.clear!(:confirm)
-
       assert File.directory?(root)
     end
 
     it "is able to delete old files" do
       @storage = file_system(root)
       @storage.upload(fakeio, "foo")
-
       @storage.clear!(older_than: Time.now - 1)
       assert @storage.exists?("foo")
-
       @storage.clear!(older_than: Time.now + 1)
       refute @storage.exists?("foo")
     end
@@ -200,14 +185,12 @@ describe Shrine::Storage::FileSystem do
     it "deletes empty directories up the hierarchy" do
       @storage.upload(fakeio, "a/a/a/a.jpg")
       @storage.delete("a/a/a/a.jpg")
-
       refute @storage.exists?("a")
       assert File.exist?(@storage.directory)
 
       @storage.upload(fakeio, "a/a/a/a.jpg")
       @storage.upload(fakeio, "a/b.jpg")
       @storage.delete("a/a/a/a.jpg")
-
       refute @storage.exists?("a/a")
       assert @storage.exists?("a")
     end
@@ -216,7 +199,6 @@ describe Shrine::Storage::FileSystem do
   it "accepts absolute pathnames" do
     @storage = file_system(root, prefix: "/uploads")
     @storage.upload(fakeio, "foo.jpg")
-
     assert_equal "#{root}/uploads", @storage.directory.to_s
     assert_equal "#{root}/uploads/foo.jpg", @storage.open("foo.jpg").path
   end

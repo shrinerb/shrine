@@ -26,12 +26,7 @@ module TestHelpers
     end
 
     def fakeio(content = "file", **options)
-      fakeio = FakeIO.new(content, **options)
-      fakeio.singleton_class.class_eval do
-        attr_reader :original_filename if options[:filename]
-        attr_reader :content_type if options[:content_type]
-      end
-      fakeio
+      FakeIO.new(content, **options)
     end
 
     def image
