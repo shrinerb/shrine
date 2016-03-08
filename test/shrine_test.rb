@@ -242,7 +242,7 @@ describe Shrine do
       assert_match /\.jpg$/, location
 
       # Uploaded file
-      uploaded_file = @uploader.upload(fakeio(filename: "avatar.jpg"))
+      uploaded_file = @uploader.upload(fakeio, location: "avatar.jpg")
       location = @uploader.generate_location(uploaded_file)
       assert_match /\.jpg$/, location
 
@@ -251,7 +251,14 @@ describe Shrine do
       assert_match /\.rb$/, location
     end
 
-    it "handles no filename" do
+    it "handles no extension or no filename" do
+      location = @uploader.generate_location(fakeio(filename: "avatar"))
+      assert_match /^[\w-]+$/, location
+
+      uploaded_file = @uploader.upload(fakeio, location: "avatar")
+      location = @uploader.generate_location(uploaded_file)
+      assert_match /^[\w-]+$/, location
+
       location = @uploader.generate_location(fakeio)
       assert_match /^[\w-]+$/, location
     end

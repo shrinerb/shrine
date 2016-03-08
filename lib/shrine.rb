@@ -258,10 +258,11 @@ class Shrine
         # Generates a unique location for the uploaded file, and preserves an
         # optional extension.
         def generate_location(io, context = {})
-          extension = File.extname(extract_filename(io).to_s)
+          extension   = ".#{io.extension}" if io.is_a?(UploadedFile) && io.extension
+          extension ||= File.extname(extract_filename(io).to_s)
           basename  = generate_uid(io)
 
-          basename + extension
+          basename + extension.to_s
         end
 
         # Extracts filename, size and MIME type from the file, which is later

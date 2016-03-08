@@ -1,5 +1,7 @@
 ## HEAD
 
+* Correctly infer the extension in `#generate_location` when uploading an `UploadedFile` (janko-m)
+
 * Fix ability for errors to accumulate in data_uri and remote_url plugins when assigning mutliples to same record instance (janko-m)
 
 * Bump Down dependency to 2.0.0 in order to fix downloading URLs with "[]" characters (janko-m)
