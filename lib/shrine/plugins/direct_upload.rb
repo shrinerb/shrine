@@ -95,7 +95,7 @@ class Shrine
     #
     # While Shrine only accepts cached attachments on form submits (for security
     # reasons), you can use this endpoint to upload files to any storage, just
-    # add it do allowed storages:
+    # add it to allowed storages:
     #
     #     plugin :direct_upload, allowed_storages: [:cache, :store]
     #
@@ -183,16 +183,17 @@ class Shrine
 
             r.post ":name" do |name|
               file = get_file
-              context = {name: name, phase: :cache}
+              context = {name: name, phase: :cache, location: request.params["key"]}
 
               json @uploader.upload(file, context)
-            end unless presign
+            end
 
             r.get "presign" do
               location = SecureRandom.hex(30) + request.params["extension"].to_s
-              options = presign.call(request) if presign.respond_to?(:call)
+              options  = (presign.call(request) if presign.respond_to?(:call)) || {}
+              options  = options.merge(url: request.params["url"])
 
-              signature = @uploader.storage.presign(location, options || {})
+              signature = @uploader.storage.presign(location, options)
 
               json Hash[url: signature.url, fields: signature.fields]
             end if presign
