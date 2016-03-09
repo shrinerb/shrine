@@ -1,5 +1,7 @@
 ## HEAD
 
+* Rewind the IO after extracting image dimensions even when extraction failed (kaapa)
+
 * Correctly infer the extension in `#generate_location` when uploading an `UploadedFile` (janko-m)
 
 * Fix ability for errors to accumulate in data_uri and remote_url plugins when assigning mutliples to same record instance (janko-m)

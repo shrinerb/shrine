@@ -62,7 +62,9 @@ class Shrine
         private
 
         def _extract_dimensions_with_fastimage(io)
-          FastImage.size(io)
+          result = FastImage.size(io)
+          io.rewind # https://github.com/sdsykes/fastimage/pull/66
+          result
         end
       end
 
