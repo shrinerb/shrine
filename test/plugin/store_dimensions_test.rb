@@ -17,16 +17,19 @@ describe "the store_dimensions plugin" do
     it "extracts dimensions from non-files" do
       @uploader = uploader(:fastimage)
 
-      uploaded_file = @uploader.upload(FakeIO.new(image.read))
+      uploaded_file = @uploader.upload(fakeio(image.read))
       assert_equal 100, uploaded_file.metadata["width"]
       assert_equal 67, uploaded_file.metadata["height"]
     end
 
-    it "resets cursor after reading attempting to extract dimensions from an invalid image file" do
-      io = File.open("test/fixtures/invalid_image.jpg")
+    # https://github.com/sdsykes/fastimage/pull/66
+    it "rewinds the IO even in case of invalid image" do
       @uploader = uploader(:fastimage)
-      uploaded_file = @uploader.extract_dimensions(io)
-      assert_equal 0, io.pos
+
+      uploaded_file = @uploader.upload(io = fakeio("content"))
+      assert_equal "content", uploaded_file.read
+      assert_equal nil, uploaded_file.metadata["width"]
+      assert_equal nil, uploaded_file.metadata["height"]
     end
   end
 
