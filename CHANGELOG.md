@@ -1,5 +1,7 @@
 ## HEAD
 
+* Give different error message when file wasn't found or was too large in remote_url (janko-m)
+
 * Rewind the IO after extracting MIME type with MimeMagic (janko-m)
 
 * Rewind the IO after extracting image dimensions even when extraction failed (kaapa)

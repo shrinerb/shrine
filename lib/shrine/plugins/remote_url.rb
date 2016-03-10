@@ -29,13 +29,6 @@ class Shrine
     #
     #     plugin :remote_url, max_size: nil
     #
-    # If download fails, either because the remote file wasn't found, was too
-    # large, or the request redirected, an error will be added to the
-    # attachment. You can change the default error message:
-    #
-    #     plugin :remote_url, error_message: "download failed"
-    #     plugin :remote_url, error_message: ->(url) { I18n.t("errors.download_failed") }
-    #
     # Finally, if for some reason the way the file is downloaded doesn't suit
     # your needs, you can provide a custom downloader:
     #
@@ -44,9 +37,13 @@ class Shrine
     #       response = request.execute
     #       response.file
     #     end
+    #
+    # If download errors, the error is rescued and a validation error is added
+    # equal to the error message. You can change the default error message:
+    #
+    #     plugin :remote_url, error_message: "download failed"
+    #     plugin :remote_url, error_message: ->(url) { I18n.t("errors.download_failed") }
     module RemoteUrl
-      DEFAULT_ERROR_MESSAGE = "file was not found or was too large"
-
       def self.load_dependencies(uploader, downloader: :open_uri, **)
         case downloader
         when :open_uri then require "down"
@@ -55,8 +52,8 @@ class Shrine
 
       def self.configure(uploader, downloader: :open_uri, error_message: nil, max_size:)
         uploader.opts[:remote_url_downloader] = downloader
-        uploader.opts[:remote_url_error_message] = error_message || DEFAULT_ERROR_MESSAGE
         uploader.opts[:remote_url_max_size] = max_size
+        uploader.opts[:remote_url_error_message] = error_message
       end
 
       module AttachmentMethods
@@ -82,11 +79,19 @@ class Shrine
         def remote_url=(url)
           return if url == ""
 
-          if downloaded_file = download(url)
+          begin
+            downloaded_file = download(url)
+          rescue => error
+            download_error = error
+          end
+
+          if downloaded_file
             assign(downloaded_file)
           else
-            message = shrine_class.opts[:remote_url_error_message]
-            message = message.call(url) if message.respond_to?(:call)
+            message   = shrine_class.opts[:remote_url_error_message]
+            message   = message.call(url) if message.respond_to?(:call)
+            message ||= download_error.message if download_error
+            message ||= "download failed"
             errors.replace [message]
             @remote_url = url
           end
@@ -117,7 +122,6 @@ class Shrine
         # the download simply failed.
         def download_with_open_uri(url, max_size:)
           Down.download(url, max_size: max_size)
-        rescue Down::Error
         end
       end
     end
