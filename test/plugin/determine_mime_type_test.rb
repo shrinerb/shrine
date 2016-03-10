@@ -45,6 +45,7 @@ describe "the determine_mime_type plugin" do
     it "extracts content type of any IO" do
       uploaded_file = @uploader.upload(fakeio(image.read))
       assert_equal "image/jpeg", uploaded_file.mime_type
+      assert_equal image.read, uploaded_file.read
     end
   end
 

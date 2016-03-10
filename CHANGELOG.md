@@ -1,5 +1,7 @@
 ## HEAD
 
+* Rewind the IO after extracting MIME type with MimeMagic (janko-m)
+
 * Rewind the IO after extracting image dimensions even when extraction failed (kaapa)
 
 * Correctly infer the extension in `#generate_location` when uploading an `UploadedFile` (janko-m)

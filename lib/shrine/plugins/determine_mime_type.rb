@@ -114,7 +114,9 @@ class Shrine
 
         # Uses the mimemagic gem to extract the MIME type.
         def _extract_mime_type_with_mimemagic(io)
-          MimeMagic.by_magic(io).type
+          result = MimeMagic.by_magic(io).type
+          io.rewind
+          result
         end
 
         # Uses the mime-types gem to determine MIME type from file extension.
