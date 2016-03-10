@@ -93,17 +93,10 @@ describe "the activerecord plugin" do
 
   it "doesn't raise errors in background job when record is not found" do
     @uploader.class.plugin :backgrounding
-    @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-    @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
-
+    @attacher.class.promote { |data| record.delete; self.class.promote(data) }
+    @attacher.class.delete { |data| record.delete; self.class.delete(data) }
     @user.update(avatar: fakeio)
-    @user.delete
-    @user.avatar_attacher.instance_variable_get("@f").resume
-    @user = @user.class.new
-
-    @user.update(avatar_data: @user.avatar_attacher.store.upload(fakeio).to_json)
     @user.destroy
-    @user.avatar_attacher.instance_variable_get("@f").resume
   end
 
   it "doesn't send another background job when saved again" do
