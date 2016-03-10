@@ -262,6 +262,17 @@ describe Shrine do
       location = @uploader.generate_location(fakeio)
       assert_match /^[\w-]+$/, location
     end
+
+    it "can access extracted metadata" do
+      @uploader.instance_eval do
+        def generate_location(io, context)
+          @metadata = context[:metadata]
+          super
+        end
+      end
+      uploaded_file = @uploader.upload(fakeio)
+      assert_equal uploaded_file.metadata, @uploader.instance_variable_get("@metadata")
+    end
   end
 
   describe "#extract_metadata" do

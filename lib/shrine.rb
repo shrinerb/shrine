@@ -311,8 +311,8 @@ class Shrine
         # the metadata, stores the file, and returns a Shrine::UploadedFile.
         def _store(io, context)
           _enforce_io(io)
-          context[:location] ||= get_location(io, context)
           context[:metadata] ||= get_metadata(io, context)
+          context[:location] ||= get_location(io, context)
 
           put(io, context)
 

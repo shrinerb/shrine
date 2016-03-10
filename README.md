@@ -47,8 +47,8 @@ First we add the storage we want to use to Shrine's registry. Storages are
 simple Ruby classes which perform the actual uploads. We instantiate a `Shrine`
 with the storage name, and when we call `#upload` Shrine does the following:
 
-* generates a unique location for the file
 * extracts metadata from the file
+* generates a unique location for the file
 * uploads the file using the underlying storage
 * closes the file
 * returns a `Shrine::UploadedFile` with relevant data
@@ -478,9 +478,11 @@ end
 
 Note that there should always be a random component in the location, otherwise
 dirty tracking won't be detected properly (you can use `Shrine#generate_uid`).
+Also note that you can access the extracted metadata here through
+`context[:metadata]`.
 
-When using `Shrine` directly you can bypass `#generate_location` by passing in
-`:location`
+When using the uploader directly, it's possible to bypass `#generate_location`
+by passing in `:location`:
 
 ```rb
 file = File.open("avatar.jpg")

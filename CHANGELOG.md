@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make extracted metadata accessible in `#generate_location` through `:metadata` in context hash (janko-m)
+
 * Don't require the "metadata" key when instantiating a `Shrine::UploadedFile` (janko-m)
 
 * Add `:include_error` option to remote_url for accessing download error in `:error_message` block (janko-m)
