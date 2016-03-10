@@ -8,6 +8,7 @@ ActiveRecord::Migration.class_eval do
     t.text :avatar_data
   end
 end
+ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 describe "the activerecord plugin" do
   before do
@@ -55,7 +56,7 @@ describe "the activerecord plugin" do
   it "doesn't replace if callback chain halted" do
     @user.update(avatar: fakeio)
     uploaded_file = @user.avatar
-    @user.class.before_save { throw(:abort) }
+    @user.class.before_save { false }
     @user.update(avatar: fakeio)
     assert uploaded_file.exists?
   end

@@ -55,7 +55,7 @@ describe "the sequel plugin" do
   it "doesn't replace if callback chain halted" do
     @user.update(avatar: fakeio)
     uploaded_file = @user.avatar
-    @user.instance_eval { def before_save; cancel_action; super; end }
+    @user.instance_eval { def before_save; cancel_action; end }
     @user.update(avatar: fakeio) rescue nil
     assert uploaded_file.exists?
   end
