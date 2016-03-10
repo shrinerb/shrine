@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:include_error` option to remote_url for accessing download error in `:error_message` block (janko-m)
+
 * Give different error message when file wasn't found or was too large in remote_url (janko-m)
 
 * Rewind the IO after extracting MIME type with MimeMagic (janko-m)

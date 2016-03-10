@@ -43,6 +43,12 @@ class Shrine
     #
     #     plugin :remote_url, error_message: "download failed"
     #     plugin :remote_url, error_message: ->(url) { I18n.t("errors.download_failed") }
+    #
+    # If you need the error instance for generating the error message, passing
+    # the `:include_error` option will additionally yield the error to the
+    # block:
+    #
+    #     plugin :remote_url, include_error: true, error_message: ->(url, error) { "..." }
     module RemoteUrl
       def self.load_dependencies(uploader, downloader: :open_uri, **)
         case downloader
@@ -50,10 +56,11 @@ class Shrine
         end
       end
 
-      def self.configure(uploader, downloader: :open_uri, error_message: nil, max_size:)
+      def self.configure(uploader, downloader: :open_uri, max_size:, error_message: nil, include_error: false)
         uploader.opts[:remote_url_downloader] = downloader
         uploader.opts[:remote_url_max_size] = max_size
         uploader.opts[:remote_url_error_message] = error_message
+        uploader.opts[:remote_url_include_error] = include_error
       end
 
       module AttachmentMethods
@@ -88,10 +95,7 @@ class Shrine
           if downloaded_file
             assign(downloaded_file)
           else
-            message   = shrine_class.opts[:remote_url_error_message]
-            message   = message.call(url) if message.respond_to?(:call)
-            message ||= download_error.message if download_error
-            message ||= "download failed"
+            message = download_error_message(url, download_error)
             errors.replace [message]
             @remote_url = url
           end
@@ -122,6 +126,19 @@ class Shrine
         # the download simply failed.
         def download_with_open_uri(url, max_size:)
           Down.download(url, max_size: max_size)
+        end
+
+        def download_error_message(url, error)
+          if message = shrine_class.opts[:remote_url_error_message]
+            args = [url]
+            args << error if shrine_class.opts[:remote_url_include_error]
+            message = message.call(*args) if message.respond_to?(:call)
+          else
+            message = "download failed"
+            message = "#{message}: #{error.message}" if error
+          end
+
+          message
         end
       end
     end

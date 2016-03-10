@@ -58,21 +58,26 @@ describe "the remote_url plugin" do
     assert_empty @user.avatar_attacher.errors
 
     @user.avatar_remote_url = bad_url
-    assert_equal ["file not found"], @user.avatar_attacher.errors
+    assert_equal ["download failed: file not found"], @user.avatar_attacher.errors
 
     @attacher.shrine_class.opts[:remote_url_max_size] = 1
     @user.avatar_remote_url = good_url
-    assert_equal ["file is too large (max is 0MB)"], @user.avatar_attacher.errors
+    assert_equal ["download failed: file is too large (max is 0MB)"], @user.avatar_attacher.errors
   end
 
   it "accepts custom error message" do
-    @attacher.shrine_class.opts[:remote_url_error_message] = "plain"
+    @attacher.shrine_class.opts[:remote_url_error_message] = "download failed"
     @user.avatar_remote_url = bad_url
-    assert_equal ["plain"], @user.avatar_attacher.errors
+    assert_equal ["download failed"], @user.avatar_attacher.errors
 
-    @attacher.shrine_class.opts[:remote_url_error_message] = ->(url){"block"}
+    @attacher.shrine_class.opts[:remote_url_error_message] = ->(url){"download failed: #{url}"}
     @user.avatar_remote_url = bad_url
-    assert_equal ["block"], @user.avatar_attacher.errors
+    assert_equal ["download failed: #{bad_url}"], @user.avatar_attacher.errors
+
+    @attacher.shrine_class.opts[:remote_url_include_error] = true
+    @attacher.shrine_class.opts[:remote_url_error_message] = ->(url, error){error.message}
+    @user.avatar_remote_url = bad_url
+    assert_equal ["file not found"], @user.avatar_attacher.errors
   end
 
   it "has a default error message when downloader returns nil" do
