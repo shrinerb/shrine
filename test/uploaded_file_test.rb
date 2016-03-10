@@ -18,20 +18,20 @@ describe Shrine::UploadedFile do
 
   describe "#initialize" do
     it "assigns appropriate variables" do
-      data = {"id" => "foo", "storage" => "store", "metadata" => {}}
+      data = {"id" => "foo", "storage" => "store", "metadata" => {"foo" => "bar"}}
       uploaded_file = uploaded_file(data)
       assert_equal "foo", uploaded_file.id
       assert_equal "store", uploaded_file.storage_key
-      assert_equal Hash.new, uploaded_file.metadata
+      assert_equal Hash["foo" => "bar"], uploaded_file.metadata
     end
 
     it "raises an error if storage is not registered" do
-      data = {"id" => "foo", "storage" => "foo", "metadata" => {}}
+      data = {"id" => "foo", "storage" => "foo"}
       assert_raises(Shrine::Error) { uploaded_file(data) }
     end
 
     it "doesn't create symbols for unregistered storage names" do
-      data = {"id" => "foo", "storage" => "nosymbol", "metadata" => {}}
+      data = {"id" => "foo", "storage" => "nosymbol"}
       assert_raises(Shrine::Error) { uploaded_file(data) }
       refute_includes Symbol.all_symbols.map(&:to_s), "nosymbol"
     end

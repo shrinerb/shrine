@@ -678,7 +678,7 @@ class Shrine
           @data        = data
           @id          = data.fetch("id")
           @storage_key = data.fetch("storage")
-          @metadata    = data.fetch("metadata")
+          @metadata    = data.fetch("metadata", {})
 
           storage # ensure storage exists
         end

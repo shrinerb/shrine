@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't require the "metadata" key when instantiating a `Shrine::UploadedFile` (janko-m)
+
 * Add `:include_error` option to remote_url for accessing download error in `:error_message` block (janko-m)
 
 * Give different error message when file wasn't found or was too large in remote_url (janko-m)
