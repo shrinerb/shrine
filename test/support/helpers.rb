@@ -30,27 +30,7 @@ module TestHelpers
     end
 
     def image
-      File.open(image_path)
-    end
-
-    def image_path
-      "test/fixtures/image.jpg"
-    end
-
-    def image_url
-      "https://cdn0.iconfinder.com/data/icons/octicons/1024/mark-github-128.png?foo=bar"
-    end
-
-    def invalid_url
-      "https://google.com/foo"
-    end
-
-    def data_uri(content_type = "image/png")
-      "data:#{content_type};base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
-    end
-
-    def data_uri_raw(content_type = "image/png")
-      "data:#{content_type},#{Base64.decode64("iVBORw0KGgoAAAANSUhEUgAAAAUA")}"
+      File.open("test/fixtures/image.jpg")
     end
 
     def io?(object)
@@ -58,24 +38,6 @@ module TestHelpers
         object.respond_to?(m) && [a.count, -1].include?(object.method(m).arity)
       end
       missing_methods.empty?
-    end
-  end
-
-  module Interactions
-    include Minitest::Hooks
-
-    def self.included(test)
-      super
-      require "vcr"
-      VCR.configure do |config|
-        config.cassette_library_dir = "test/fixtures"
-        config.hook_into :webmock
-        config.allow_http_connections_when_no_cassette = true
-      end
-    end
-
-    def around
-      VCR.use_cassette(cassette) { super }
     end
   end
 end

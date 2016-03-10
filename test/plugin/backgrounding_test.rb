@@ -24,80 +24,66 @@ describe "the backgrounding plugin" do
   end
 
   after do
-    User.db[:users].delete
+    User.dataset.delete
     Object.send(:remove_const, "User")
   end
 
   describe "promoting" do
     it "stores the file and saves it to record" do
-      @user.avatar_attacher.class.promote do |data|
-        @fiber = Fiber.new { self.class.promote(data) }
-      end
-
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.update(avatar: fakeio)
-
       assert_equal "cache", @user.reload.avatar.storage_key
-      @attacher.instance_variable_get("@fiber").resume
+      @attacher.instance_variable_get("@f").resume
       assert_equal "store", @user.reload.avatar.storage_key
     end
 
     it "doesn't get triggered when there is nothing to promote" do
-      @user.avatar_attacher.class.promote do |data|
-        @fiber = Fiber.new { self.class.promote(data) }
-      end
-
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.save
-
-      refute @attacher.instance_variable_defined?("@fiber")
-    end
-
-    it "doesn't get triggered again if the record is saved" do
-      @user.avatar_attacher.class.promote do |data|
-        @fiber = Fiber.new { self.class.promote(data) }
-      end
-      @user.update(avatar: fakeio)
-      fiber = @attacher.instance_variable_get("@fiber")
-
-      @user.save
-
-      assert_equal fiber, @attacher.instance_variable_get("@fiber")
+      refute @attacher.instance_variable_defined?("@f")
     end
 
     it "doesn't error when record wasn't found" do
-      @user.avatar_attacher.class.promote do |data|
-        @fiber = Fiber.new { self.class.promote(data) }
-      end
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.update(avatar: fakeio)
       @user.destroy
+      @attacher.instance_variable_get("@f").resume
+    end
 
-      @attacher.instance_variable_get("@fiber").resume
+    it "doesn't continue uploading if attachment has already changed" do
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @user.update(avatar: fakeio)
+      @user.this.update(avatar_data: nil)
+      Shrine.any_instance.expects(:upload).never
+      refute @attacher.instance_variable_get("@f").resume
+    end
+
+    it "doesn't return the record if promoting aborted" do
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @attacher.class.class_eval { def swap(*); nil; end }
+      @user.update(avatar: fakeio)
+      refute @attacher.instance_variable_get("@f").resume
     end
   end
 
   describe "deleting" do
-    it "replaces files" do
-      @user.avatar_attacher.class.delete do |data|
-        @fiber = Fiber.new { self.class.delete(data) }
-      end
-      @user.update(avatar: fakeio)
-      uploaded_file = @user.avatar
-      @user.update(avatar: fakeio)
-
-      assert uploaded_file.exists?
-      @user.avatar_attacher.instance_variable_get("@fiber").resume
-      refute uploaded_file.exists?
-    end
-
-    it "destroys files" do
-      @attacher.class.delete do |data|
-        @fiber = Fiber.new { self.class.delete(data) }
-      end
+    it "is triggered on destroy" do
+      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
       @user.update(avatar: fakeio)
       uploaded_file = @user.avatar
       @user.destroy
-
       assert uploaded_file.exists?
-      @attacher.instance_variable_get("@fiber").resume
+      @attacher.instance_variable_get("@f").resume
+      refute uploaded_file.exists?
+    end
+
+    it "is triggered on replace" do
+      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
+      @user.update(avatar: fakeio)
+      uploaded_file = @user.avatar
+      @user.update(avatar: fakeio)
+      assert uploaded_file.exists?
+      @attacher.instance_variable_get("@f").resume
       refute uploaded_file.exists?
     end
 
@@ -105,7 +91,6 @@ describe "the backgrounding plugin" do
       @user.update(avatar: fakeio)
       uploaded_file = @user.avatar
       @user.destroy
-
       refute uploaded_file.exists?
     end
   end

@@ -3,10 +3,6 @@ require "stringio"
 require "logger"
 
 describe "the logging plugin" do
-  def uploader(**options)
-    super() { plugin :logging, stream: $out, **options }
-  end
-
   def capture
     yield
     result = $out.string
@@ -16,6 +12,7 @@ describe "the logging plugin" do
 
   before do
     $out = StringIO.new
+    @uploader = uploader { plugin :logging, stream: $out }
     @context = {name: :avatar, phase: :store}
     @context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
   end
@@ -25,48 +22,27 @@ describe "the logging plugin" do
   end
 
   it "logs processing" do
-    @uploader = uploader
-
     stdout = capture { @uploader.upload(fakeio) }
-
     refute_match /PROCESS/, stdout
 
-    @uploader.singleton_class.class_eval do
-      def process(io, context = {})
-        FakeIO.new(io.read.reverse)
-      end
-    end
-
+    @uploader.instance_eval { def process(io, context); io; end }
     stdout = capture { @uploader.upload(fakeio) }
-
     assert_match /PROCESS \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "logs storing" do
-    @uploader = uploader
-
     stdout = capture { @uploader.upload(fakeio) }
-
     assert_match /STORE \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "logs deleting" do
-    @uploader = uploader
     uploaded_file = @uploader.upload(fakeio)
-
     stdout = capture { @uploader.delete(uploaded_file) }
-
     assert_match /DELETE \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
   it "outputs context data" do
-    @uploader = uploader
-
-    @uploader.singleton_class.class_eval do
-      def process(io, context = {})
-        io
-      end
-    end
+    @uploader.instance_eval { def process(io, context); io; end }
 
     stdout = capture do
       uploaded_file = @uploader.upload(fakeio, @context)
@@ -79,33 +55,25 @@ describe "the logging plugin" do
   end
 
   it "supports JSON format" do
-    @uploader = uploader(format: :json)
-
+    @uploader.opts[:logging_format] = :json
     stdout = capture { @uploader.upload(fakeio, @context) }
-
-    JSON.parse(stdout.match(/: /).post_match)
+    JSON.parse(stdout[/\{.+\}/])
   end
 
   it "supports Heroku-style format" do
-    @uploader = uploader(format: :heroku)
-
+    @uploader.opts[:logging_format] = :heroku
     stdout = capture { @uploader.upload(fakeio, @context) }
-
     assert_match "action=store phase=store", stdout
   end
 
   it "accepts a custom logger" do
-    @uploader = uploader(logger: (logger = Logger.new(nil)))
-
+    @uploader.class.logger = (logger = Logger.new(nil))
     assert_equal logger, @uploader.class.logger
   end
 
   it "accepts model instances without an #id" do
-    @uploader = uploader
-
     @context[:record].instance_eval { undef id }
     stdout = capture { @uploader.upload(fakeio, @context) }
-
     assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(\d+\.\d+s\)$/, stdout
   end
 end

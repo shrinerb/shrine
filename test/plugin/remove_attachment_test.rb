@@ -9,14 +9,12 @@ describe "the remove_attachment plugin" do
   it "nullifies files" do
     @user.avatar = fakeio
     @user.remove_avatar = true
-
     assert_equal nil, @user.avatar
   end
 
-  it "doesn't nullify filese if set to false" do
+  it "doesn't nullify files if set to false" do
     @user.avatar = fakeio
     @user.remove_avatar = "false"
-
     refute_equal nil, @user.avatar
   end
 

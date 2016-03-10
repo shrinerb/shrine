@@ -2,91 +2,84 @@ require "test_helper"
 require "stringio"
 
 describe "the determine_mime_type plugin" do
-  def uploader(analyzer)
-    super() { plugin :determine_mime_type, analyzer: analyzer }
-  end
-
-  describe ":filemagic" do
-    it "determines content type from file contents" do
-      @uploader = uploader(:filemagic)
-      uploaded_file = @uploader.upload(image)
-
-      assert_equal "image/jpeg", uploaded_file.mime_type
-    end
-
-    it "rewinds the file after reading from it" do
-      @uploader = uploader(:filemagic)
-      uploaded_file = @uploader.upload(file = fakeio("nature"))
-
-      assert_equal "nature", uploaded_file.read
-    end
-  end unless RUBY_ENGINE == "jruby" || ENV["CI"]
-
   describe ":file" do
-    it "determines content type from file contents" do
-      @uploader = uploader(:file)
-      uploaded_file = @uploader.upload(image)
+    before do
+      @uploader = uploader do
+        plugin :determine_mime_type, analyzer: :file
+      end
+    end
 
+    it "determines content type from file contents" do
+      uploaded_file = @uploader.upload(image)
       assert_equal "image/jpeg", uploaded_file.mime_type
     end
 
     it "is able to determine content type for non-files" do
-      @uploader = uploader(:file)
-      stringio = StringIO.new(image.read)
-      uploaded_file = @uploader.upload(stringio)
-
+      uploaded_file = @uploader.upload(fakeio(image.read))
       assert_equal "image/jpeg", uploaded_file.mime_type
+      assert_equal image.read, uploaded_file.read
     end
   end
 
-  describe ":mimemagic" do
-    it "extracts content type of any IO" do
-      @uploader = uploader(:mimemagic)
-      stringio = StringIO.new(image.read)
-      uploaded_file = @uploader.upload(stringio)
+  describe ":filemagic" do
+    before do
+      @uploader = uploader do
+        plugin :determine_mime_type, analyzer: :filemagic
+      end
+    end
 
+    it "determines content type from file contents" do
+      uploaded_file = @uploader.upload(image)
+      assert_equal "image/jpeg", uploaded_file.mime_type
+      assert_equal image.read, uploaded_file.read
+    end
+  end unless RUBY_ENGINE == "jruby" || ENV["CI"]
+
+  describe ":mimemagic" do
+    before do
+      @uploader = uploader do
+        plugin :determine_mime_type, analyzer: :mimemagic
+      end
+    end
+
+    it "extracts content type of any IO" do
+      uploaded_file = @uploader.upload(fakeio(image.read))
       assert_equal "image/jpeg", uploaded_file.mime_type
     end
   end
 
   describe ":mime_types" do
-    it "extract content type from the file extension" do
-      @uploader = uploader(:mime_types)
+    before do
+      @uploader = uploader do
+        plugin :determine_mime_type, analyzer: :mime_types
+      end
+    end
 
+    it "extract content type from the file extension" do
       uploaded_file = @uploader.upload(fakeio(filename: "image.png"))
       assert_equal "image/png", uploaded_file.mime_type
 
-      uploaded_file = @uploader.upload(File.open(image_path))
+      uploaded_file = @uploader.upload(image)
       assert_equal "image/jpeg", uploaded_file.mime_type
     end
 
     it "returns nil on unkown extension" do
-      @uploader = uploader(:mime_types)
       uploaded_file = @uploader.upload(fakeio(filename: "file.foo"))
-
       assert_equal nil, uploaded_file.mime_type
     end
 
     it "returns nil when input is not a file" do
-      @uploader = uploader(:mime_types)
       uploaded_file = @uploader.upload(fakeio)
-
       assert_equal nil, uploaded_file.mime_type
     end
   end
 
   it "allows passing a custom extractor" do
-    @uploader = uploader ->(io) { "foo/bar" }
+    @uploader = uploader do
+      plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" }
+    end
+
     uploaded_file = @uploader.upload(fakeio)
-
     assert_equal "foo/bar", uploaded_file.mime_type
-  end
-
-  it "doesn't do extracting on UploadedFiles" do
-    @uploader = uploader(:file)
-    uploaded_file = @uploader.upload(image)
-    another_uploaded_file = @uploader.upload(uploaded_file)
-
-    assert_equal "image/jpeg", another_uploaded_file.mime_type
   end
 end

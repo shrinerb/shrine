@@ -20,20 +20,16 @@ describe "the migration_helpers plugin" do
 
   describe "update_<attachment>" do
     it "updates the attachment" do
-      @attacher.assign(fakeio("original"))
-      @attacher._promote
-
+      @attacher.set(@attacher.store.upload(fakeio("original")))
       @user.update_avatar do |avatar|
         assert_equal @user.avatar, avatar
         @user.avatar_store.upload(fakeio("replaced"))
       end
-
       assert_equal "replaced", @user.avatar.read
     end
 
     it "doesn't update attachment when current one is cached" do
       @attacher.assign(fakeio("original"))
-
       @user.update_avatar { fail }
     end
 

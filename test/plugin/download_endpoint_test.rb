@@ -7,40 +7,37 @@ describe "the download_endpoint plugin" do
   end
 
   before do
-    @uploader = uploader { plugin :download_endpoint, storages: [:store], prefix: nil }
+    @uploader = uploader do
+      plugin :download_endpoint, storages: [:store], prefix: nil
+    end
     @id = @uploader.upload(fakeio("image", filename: "foo.jpg")).id
   end
 
   describe "app" do
     it "returns file contents in the response" do
       response = app.get "/store/#{@id}"
-
       assert_equal "image", response.body_binary
     end
 
     it "returns file contents when storage doesn't support streaming" do
       @uploader.storage.instance_eval { undef stream }
       response = app.get "/store/#{@id}"
-
       assert_equal "image", response.body_binary
     end
 
     it "returns the inline content disposition by default" do
       response = app.get "/store/#{@id}"
-
       assert_match /inline; filename="\w+\.jpg"/, response.headers["Content-Disposition"]
     end
 
     it "returns the attachment content disposition when set" do
       @uploader.opts[:download_endpoint_disposition] = "attachment"
       response = app.get "/store/#{@id}"
-
       assert_match /attachment; filename="\w+\.jpg"/, response.headers["Content-Disposition"]
     end
 
     it "returns the correct content type" do
       response = app.get "/store/#{@id}"
-
       assert_equal "image/jpeg", response.headers["Content-Type"]
     end
 
@@ -56,13 +53,11 @@ describe "the download_endpoint plugin" do
 
     it "refuses storages which are not allowed" do
       response = app.get "/cache/#{@id}"
-
       assert_http_error 403, response
     end
 
     it "refuses storages which are nonexistent" do
       response = app.post "/nonexistent/#{@id}"
-
       assert_http_error 403, response
     end
   end
@@ -70,21 +65,18 @@ describe "the download_endpoint plugin" do
   describe "#url" do
     it "returns the endpoint URL" do
       uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-
       assert_equal "/store/foo.jpg", uploaded_file.url
     end
 
     it "applies the host" do
       @uploader.opts[:download_endpoint_host] = "http://example.com"
       uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-
       assert_equal "http://example.com/store/foo.jpg", uploaded_file.url
     end
 
     it "applies the prefix" do
       @uploader.opts[:download_endpoint_prefix] = "attachments"
       uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-
       assert_equal "/attachments/store/foo.jpg", uploaded_file.url
     end
 
@@ -92,13 +84,11 @@ describe "the download_endpoint plugin" do
       @uploader.opts[:download_endpoint_host] = "http://example.com"
       @uploader.opts[:download_endpoint_prefix] = "attachments"
       uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-
       assert_equal "http://example.com/attachments/store/foo.jpg", uploaded_file.url
     end
 
     it "returns default for uploaded files which aren't in the list" do
       uploaded_file = @uploader.class.new(:cache).upload(fakeio, location: "foo.jpg")
-
       refute_equal "/cache/foo.jpg", uploaded_file.url
     end
   end
@@ -106,7 +96,6 @@ describe "the download_endpoint plugin" do
   it "makes the endpoint inheritable" do
     endpoint1 = Class.new(@uploader.class)::DownloadEndpoint
     endpoint2 = Class.new(@uploader.class)::DownloadEndpoint
-
     refute_equal endpoint1, endpoint2
   end
 

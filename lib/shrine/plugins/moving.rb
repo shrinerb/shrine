@@ -17,12 +17,12 @@ class Shrine
     #
     #     plugin :moving, storages: [:cache, :store]
     #
-    # What exactly means "moving"? Usually this means that the file which is
-    # being uploaded will be deleted afterwards. However, if both the file
-    # being uploaded and the destination are on the filesystem, a `mv` command
-    # will be executed instead. Some other storages may implement moving as
-    # well, usually if also both the cache and store are using the same
-    # storage.
+    # What exactly means "moving"? If both the file being uploaded and the
+    # destination are on the filesystem, a `mv` command will be executed
+    # (making the transfer instantaneous). Some other storages may implement
+    # moving as well, usually only for files which are on the same storage.
+    # If moving isn't implemented by the storage, the file will be simply
+    # deleted after upload.
     module Moving
       def self.configure(uploader, storages:)
         uploader.opts[:move_files_to_storages] = storages

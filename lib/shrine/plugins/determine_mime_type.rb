@@ -107,7 +107,8 @@ class Shrine
         # Uses the ruby-filemagic gem to magically extract the MIME type.
         def _extract_mime_type_with_filemagic(io)
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          data = io.read(MAGIC_NUMBER); io.rewind
+          data = io.read(MAGIC_NUMBER)
+          io.rewind
           filemagic.buffer(data)
         end
 

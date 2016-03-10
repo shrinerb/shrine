@@ -22,38 +22,60 @@ describe "the sequel plugin" do
   end
 
   after do
-    User.db[:users].delete
+    User.dataset.delete
     Object.send(:remove_const, "User")
   end
 
-  it "sets validation errors on the record" do
-    @user.avatar_attacher.class.validate { errors << "Foo" }
-    @user.avatar = fakeio
+  it "promotes on save" do
+    @user.update(avatar: fakeio("file1")) # insert
+    refute @user.modified?
+    assert_equal "store", @user.avatar.storage_key
+    assert_equal "file1", @user.avatar.read
 
+    @user.update(avatar: fakeio("file2")) # update
+    refute @user.modified?
+    assert_equal "store", @user.avatar.storage_key
+    assert_equal "file2", @user.avatar.read
+  end
+
+  it "adds validation errors to the record" do
+    @user.avatar_attacher.class.validate { errors << "error" }
+    @user.avatar = fakeio
     refute @user.valid?
-    assert_equal Hash[avatar: ["Foo"]], @user.errors
+    assert_equal Hash[avatar: ["error"]], @user.errors.to_hash
+  end
+
+  it "replaces after saving" do
+    @user.update(avatar: fakeio)
+    uploaded_file = @user.avatar
+    @user.update(avatar: fakeio)
+    refute uploaded_file.exists?
+  end
+
+  it "doesn't replace if callback chain halted" do
+    @user.update(avatar: fakeio)
+    uploaded_file = @user.avatar
+    @user.instance_eval { def before_save; cancel_action; super; end }
+    @user.update(avatar: fakeio) rescue nil
+    assert uploaded_file.exists?
   end
 
   it "triggers saving if file was attached" do
-    @user.avatar_attacher.instance_eval do
-      def save
-        @save = true
-      end
-    end
-
-    @user.save
-    refute @user.avatar_attacher.instance_variable_get("@save")
-
-    @user.update(avatar: fakeio)
-    assert @user.avatar_attacher.instance_variable_get("@save")
+    @user.avatar_attacher.expects(:save).twice
+    @user.update(avatar: fakeio) # insert
+    @user.update(avatar: fakeio) # update
   end
 
-  it "promotes on save" do
-    @user.avatar = fakeio
-    @user.save
+  it "doesn't trigger saving if file wasn't attached" do
+    @user.avatar_attacher.expects(:save).never
+    @user.save # insert
+    @user.save # update
+  end
 
-    assert_equal "store", @user.avatar.storage_key
-    assert @user.avatar.exists?
+  it "destroys attachments" do
+    @user.update(avatar: fakeio)
+    @user.destroy
+    refute @user.avatar.exists?
   end
 
   it "works with backgrounding plugin" do
@@ -68,43 +90,47 @@ describe "the sequel plugin" do
     refute @user.avatar.exists?
   end
 
-  it "replaces after saving" do
-    @user.avatar = fakeio
-    @user.save
-    uploaded_file = @user.avatar
+  it "doesn't raise errors in background job when record is not found" do
+    @uploader.class.plugin :backgrounding
+    @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+    @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
 
-    @user.avatar = fakeio
-    @user.save
+    @user.update(avatar: fakeio)
+    @user.delete
+    @user.avatar_attacher.instance_variable_get("@f").resume
+    @user = @user.class.new
 
-    refute uploaded_file.exists?
+    @user.update(avatar_data: @user.avatar_attacher.store.upload(fakeio).to_json)
+    @user.destroy
+    @user.avatar_attacher.instance_variable_get("@f").resume
   end
 
-  it "doesn't replace if there were errors during saving" do
-    @user.avatar = fakeio
+  it "doesn't send another background job when saved again" do
+    @uploader.class.plugin :backgrounding
+    @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+    @user.update(avatar: fakeio)
+    fiber = @user.avatar_attacher.instance_variable_get("@f")
     @user.save
-    uploaded_file = @user.avatar
+    assert_equal fiber, @user.avatar_attacher.instance_variable_get("@f")
+  end
 
-    @user.class.class_eval do
-      def before_save
+  it "terminates swapping if attachment has changed" do
+    @attacher.instance_eval do
+      def swap(uploaded_file)
+        record.this.update(avatar_data: nil)
         super
-        raise
       end
     end
+    @user.update(avatar: fakeio)
+    assert_equal nil, @user.reload.avatar
 
-    @user.avatar = fakeio
-    @user.save rescue nil
-
-    assert uploaded_file.exists?
-  end
-
-  it "destroys attachments" do
-    @user.avatar = fakeio
-    @user.save
-    uploaded_file = @user.avatar
-
-    @user.destroy
-
-    refute uploaded_file.exists?
+    @attacher.instance_eval do
+      def swap(uploaded_file)
+        record.this.delete
+        super
+      end
+    end
+    @user.update(avatar: fakeio)
   end
 
   it "adds support for Postgres JSON columns" do

@@ -22,7 +22,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "minitest-hooks", "~> 1.3.0"
   gem.add_development_dependency "mocha"
-  gem.add_development_dependency "vcr", "~> 2.9"
   gem.add_development_dependency "webmock"
   gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "dotenv"
@@ -39,7 +38,7 @@ Gem::Specification.new do |gem|
   end
 
   gem.add_development_dependency "sequel"
-  gem.add_development_dependency "activerecord"
+  gem.add_development_dependency "activerecord", "5.0.0.beta3"
 
   if RUBY_ENGINE == "jruby"
     gem.add_development_dependency "activerecord-jdbcsqlite3-adapter"

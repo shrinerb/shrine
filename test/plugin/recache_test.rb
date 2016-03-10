@@ -6,16 +6,10 @@ describe "the recache plugin" do
   end
 
   it "recaches cached files" do
-    @attacher.shrine_class.class_eval do
-      def process(io, context)
-        FakeIO.new(io.read.reverse) if context[:phase] == :recache
-      end
-    end
-
     @attacher.assign(fakeio("original"))
+    cached_file = @attacher.get
     @attacher.save
-
-    assert_equal "lanigiro", @attacher.get.read
+    refute_equal cached_file, @attacher.get
   end
 
   it "doesn't recache if attachment is missing" do
@@ -23,11 +17,9 @@ describe "the recache plugin" do
   end
 
   it "recaches only cached files" do
-    @attacher.assign(fakeio)
-    @attacher._promote
-
+    @attacher.set(@attacher.store.upload(fakeio))
+    stored_file = @attacher.get
     @attacher.save
-
-    assert_equal "store", @attacher.get.storage_key
+    assert_equal stored_file, @attacher.get
   end
 end

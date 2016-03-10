@@ -1,12 +1,14 @@
 require "test_helper"
 
 describe "the upload_options plugin" do
-  def uploader(options)
-    super(:store) { plugin :upload_options, **options  }
+  before do
+    @uploader = uploader(:store) do
+      plugin :upload_options
+    end
   end
 
-  it "adds upload options to key named as the storage" do
-    @uploader = uploader(store: ->(io, context) { Hash[foo: "bar"] })
+  it "accepts a block" do
+    @uploader.opts[:upload_options_options] = {store: ->(io, context){Hash[foo: "bar"]}}
     @uploader.storage.instance_eval do
       def upload(io, id, metadata = {})
         metadata.fetch("memory").fetch(:foo)
@@ -18,7 +20,7 @@ describe "the upload_options plugin" do
   end
 
   it "accepts a hash" do
-    @uploader = uploader(store: {foo: "bar"})
+    @uploader.opts[:upload_options_options] = {store: {foo: "bar"}}
     @uploader.storage.instance_eval do
       def upload(io, id, metadata = {})
         metadata.fetch("memory").fetch(:foo)
@@ -29,11 +31,11 @@ describe "the upload_options plugin" do
     @uploader.upload(fakeio)
   end
 
-  it "doesn't store anything if this isn't the storage" do
-    @uploader = uploader(cache: {foo: "bar"})
+  it "only passes upload options to specified storages" do
+    @uploader.opts[:upload_options_options] = {cache: {foo: "bar"}}
     @uploader.storage.instance_eval do
       def upload(io, id, metadata = {})
-        raise if metadata.key("memory")
+        raise if metadata.key?("memory")
         super
       end
     end

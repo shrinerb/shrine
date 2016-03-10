@@ -5,21 +5,17 @@ describe "the remove_invalid plugin" do
     @attacher = attacher { plugin :remove_invalid }
   end
 
-  it "deletes and removes the invalid file" do
+  it "deletes and removes invalid files" do
     @attacher.class.validate { errors << :foo }
-    cached_file = @attacher.cache.upload(fakeio)
-    @attacher.set(cached_file)
-
+    @attacher.set(cached_file = @attacher.cache.upload(fakeio))
     refute cached_file.exists?
-    assert @attacher.get.nil?
+    refute @attacher.get
   end
 
   it "doesn't remove stored files" do
     @attacher.class.validate { errors << :foo }
-    stored_file = @attacher.store.upload(fakeio)
-    @attacher.set(stored_file)
-
+    @attacher.set(stored_file = @attacher.store.upload(fakeio))
     assert stored_file.exists?
-    refute @attacher.get.nil?
+    assert @attacher.get
   end
 end

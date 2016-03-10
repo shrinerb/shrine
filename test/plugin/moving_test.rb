@@ -1,16 +1,14 @@
 require "test_helper"
 require "shrine/storage/file_system"
-require "down"
 
 describe "the moving plugin" do
-  def shrine(storages)
-    shrine = Class.new(Shrine)
-    shrine.storages = {
+  before do
+    @shrine = Class.new(Shrine)
+    @shrine.storages = {
       file_system: Shrine::Storage::FileSystem.new("tmp"),
       memory:      Shrine::Storage::Memory.new,
     }
-    shrine.plugin :moving, storages: storages
-    shrine
+    @shrine.plugin :moving, storages: [:file_system, :memory]
   end
 
   after do
@@ -18,46 +16,39 @@ describe "the moving plugin" do
   end
 
   it "uses the storage to move the IO" do
-    @uploader = shrine([:file_system]).new(:file_system)
-    file = Down.copy_to_tempfile("", image)
-    file.singleton_class.instance_eval { undef_method :delete }
-
+    @uploader = @shrine.new(:file_system)
+    file = Tempfile.new("")
+    file.instance_eval { undef delete }
     uploaded_file = @uploader.upload(file)
-
     assert uploaded_file.exists?
     refute File.exist?(file.path)
   end
 
   it "uploads and deletes the IO if storage doesn't support moving" do
-    @uploader = shrine([:memory]).new(:memory)
-
-    file = Down.copy_to_tempfile("", image); path = file.path
-    stored_file = @uploader.upload(file)
-    assert stored_file.exists?
-    refute File.exist?(path)
-
-    uploaded_file = @uploader.upload(fakeio)
-    stored_file = @uploader.upload(uploaded_file)
-    assert stored_file.exists?
-    refute uploaded_file.exists?
+    @uploader = @shrine.new(:memory)
+    uploaded_file = @uploader.upload(file = Tempfile.new(""))
+    assert uploaded_file.exists?
+    refute file.path
   end
 
-  it "doesn't trip if IO doesn't respond to delete" do
-    @uploader = shrine([:memory]).new(:memory)
-    uploaded_file = @uploader.upload(fakeio)
+  it "uploads and deletes if the IO isn't movable" do
+    @uploader = @shrine.new(:file_system)
+    memory_file = @shrine.new(:memory).upload(fakeio)
+    uploaded_file = @uploader.upload(memory_file)
+    assert uploaded_file.exists?
+    refute memory_file.exists?
+  end
 
+  it "doesn't trip if IO isn't deletable" do
+    @uploader = @shrine.new(:file_system)
+    uploaded_file = @uploader.upload(fakeio)
     assert uploaded_file.exists?
   end
 
   it "only moves to specified storages" do
-    @uploader = shrine([:file_system]).new(:memory)
-    file = Down.copy_to_tempfile("", image)
-    uploaded_file = @uploader.upload(file)
-    assert File.exist?(file.path)
-
-    @uploader = shrine([:memory]).new(:file_system)
-    file = Down.copy_to_tempfile("", image)
-    uploaded_file = @uploader.upload(file)
+    @uploader = @shrine.new(:file_system)
+    @uploader.opts[:move_files_to_storages] = []
+    uploaded_file = @uploader.upload(file = Tempfile.new(""))
     assert File.exist?(file.path)
   end
 end

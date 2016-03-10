@@ -23,7 +23,7 @@ class Shrine
         private
 
         def default_url(**options)
-          default_url_block.call(options.merge(context))
+          default_url_block.call(context.merge(options){|k,old,new|old})
         end
 
         def default_url_block

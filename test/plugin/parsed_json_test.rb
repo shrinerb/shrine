@@ -8,7 +8,6 @@ describe "the parsed_json plugin" do
   it "enables assigning cached files with hashes" do
     cached_file = @attacher.cache.upload(fakeio)
     @attacher.assign(cached_file.data)
-
-    assert_kind_of Shrine::UploadedFile, @attacher.get
+    assert @attacher.get
   end
 end
