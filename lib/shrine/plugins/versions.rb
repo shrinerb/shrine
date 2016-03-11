@@ -154,7 +154,6 @@ class Shrine
         def _delete(uploaded_file, context)
           if (versions = uploaded_file).is_a?(Hash)
             _delete(versions.values, context)
-            versions
           else
             super
           end
