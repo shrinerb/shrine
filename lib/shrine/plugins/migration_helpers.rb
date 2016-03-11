@@ -5,12 +5,24 @@ class Shrine
     #
     #     plugin :migration_helpers
     #
+    # ## `<attachment>_cache` and `<attachment>_store`
+    #
     # If your attachment's name is "avatar", the model will get `#avatar_cache`
     # and `#avatar_store` methods.
     #
     #     user = User.new
     #     user.avatar_cache #=> #<Shrine @storage_key=:cache @storage=#<Shrine::Storage::FileSystem @directory=public/uploads>>
     #     user.avatar_store #=> #<Shrine @storage_key=:store @storage=#<Shrine::Storage::S3:0x007fb8343397c8 @bucket=#<Aws::S3::Bucket name="foo">>>
+    #
+    # ## `<attachment>_cached?` and `<attachment>_stored?`
+    #
+    # You can use these methods to check whether attachment exists and is
+    # cached/stored:
+    #
+    #     user.avatar_cached? # user.avatar && user.avatar_cache.uploaded?(user.avatar)
+    #     user.avatar_stored? # user.avatar && user.avatar_store.uploaded?(user.avatar)
+    #
+    # ## `update_<attachment>`
     #
     # The model will also get `#update_avatar` method, which can be used when
     # doing attachment migrations. It will update the record's attachment with
@@ -41,6 +53,14 @@ class Shrine
             def #{name}_store
               #{name}_attacher.store
             end
+
+            def #{name}_cached?
+              #{name}_attacher.cached?
+            end
+
+            def #{name}_stored?
+              #{name}_attacher.stored?
+            end
           RUBY
         end
       end
@@ -52,6 +72,18 @@ class Shrine
           return if get.nil? || cache.uploaded?(get)
           new_attachment = block.call(get)
           swap(new_attachment)
+        end
+
+        # Returns true if the attachment is present and is uploaded by the
+        # temporary storage.
+        def cached?
+          get && cache.uploaded?(get)
+        end
+
+        # Returns true if the attachment is present and is uploaded by the
+        # permanent storage.
+        def stored?
+          get && store.uploaded?(get)
         end
       end
     end

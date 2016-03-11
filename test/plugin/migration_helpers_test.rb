@@ -18,6 +18,28 @@ describe "the migration_helpers plugin" do
     end
   end
 
+  describe "<attachment>_cached?" do
+    it "returns true if attachment is present and is cached" do
+      @user.avatar_data = @user.avatar_cache.upload(fakeio).to_json
+      assert @user.avatar_cached?
+      @user.avatar_data = @user.avatar_store.upload(fakeio).to_json
+      refute @user.avatar_cached?
+      @user.avatar_data = nil
+      refute @user.avatar_cached?
+    end
+  end
+
+  describe "<attachment>_stored?" do
+    it "returns true if attachment is present and is stored" do
+      @user.avatar_data = @user.avatar_store.upload(fakeio).to_json
+      assert @user.avatar_stored?
+      @user.avatar_data = @user.avatar_cache.upload(fakeio).to_json
+      refute @user.avatar_stored?
+      @user.avatar_data = nil
+      refute @user.avatar_stored?
+    end
+  end
+
   describe "update_<attachment>" do
     it "updates the attachment" do
       @attacher.set(@attacher.store.upload(fakeio("original")))

@@ -28,9 +28,9 @@ class Shrine
     # If you want to put some parts of this lifecycle into a background job, see
     # the backgrounding plugin.
     #
-    # Additionally, any Shrine validation errors will added to ActiveRecord's
-    # errors upon validation. Note that if you want to validate presence of the
-    # attachment, you can do it directly on the model.
+    # Additionally, any Shrine validation errors will be added to
+    # ActiveRecord's errors upon validation. If you want to validate presence
+    # of the attachment, you can do it directly on the model.
     #
     #     class User < ActiveRecord::Base
     #       include ImageUploader[:avatar]

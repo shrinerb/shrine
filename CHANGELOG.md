@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `<attachment>_cached?` and `<attachment>_stored?` to migration_helpers plugin (janko-m)
+
 * Fix `Attacher#backup_file` from backup plugin not to modify the given uploaded file (janko-m)
 
 * Allow modifying UploadedFile's data hash after it's instantiated to change the UploadedFile (janko-m)
