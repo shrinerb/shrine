@@ -14,6 +14,14 @@ describe Shrine::Attacher do
       assert_equal "image", @attacher.get.read
     end
 
+    it "caches to different locations when repeated" do
+      @attacher.assign(fakeio)
+      uploaded_file1 = @attacher.get
+      @attacher.assign(fakeio)
+      uploaded_file2 = @attacher.get
+      refute_equal uploaded_file1.id, uploaded_file2.id
+    end
+
     it "passes context hash on caching" do
       io = fakeio
       context = {name: @attacher.name, record: @attacher.record, phase: :cache}

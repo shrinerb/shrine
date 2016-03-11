@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't mutate context hash inside the uploader (janko-m)
+
 * Make extracted metadata accessible in `#generate_location` through `:metadata` in context hash (janko-m)
 
 * Don't require the "metadata" key when instantiating a `Shrine::UploadedFile` (janko-m)

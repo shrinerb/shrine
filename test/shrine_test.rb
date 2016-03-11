@@ -162,6 +162,10 @@ describe Shrine do
       assert_equal "bar", uploaded_file.id
       assert_equal "bar", uploaded_file.metadata["foo"]
     end
+
+    it "doesn't mutate context" do
+      @uploader.upload(fakeio, {}.freeze)
+    end
   end
 
   describe "#store" do

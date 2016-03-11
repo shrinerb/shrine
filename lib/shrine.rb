@@ -311,15 +311,15 @@ class Shrine
         # the metadata, stores the file, and returns a Shrine::UploadedFile.
         def _store(io, context)
           _enforce_io(io)
-          context[:metadata] ||= get_metadata(io, context)
-          context[:location] ||= get_location(io, context)
+          metadata = get_metadata(io, context)
+          location = get_location(io, context.merge(metadata: metadata))
 
-          put(io, context)
+          put(io, context.merge(location: location, metadata: metadata))
 
           self.class::UploadedFile.new(
-            "id"       => context[:location],
+            "id"       => location,
             "storage"  => storage_key.to_s,
-            "metadata" => context[:metadata],
+            "metadata" => metadata,
           )
         end
 
@@ -353,7 +353,7 @@ class Shrine
         # Retrieves the location for the given io and context. First it looks
         # for the `:location` option, otherwise it calls #generate_location.
         def get_location(io, context)
-          generate_location(io, context)
+          context[:location] || generate_location(io, context)
         end
 
         # Copies the metadata over from an UploadedFile or calls
@@ -644,7 +644,7 @@ class Shrine
         # The context that's sent to Shrine on upload and delete. It holds the
         # record and the name of the attachment.
         def context
-          @context ||= {name: name, record: record}
+          {name: name, record: record}
         end
       end
 
