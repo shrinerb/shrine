@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate the keep_location plugin (janko-m)
+
 * Don't mutate context hash inside the uploader (janko-m)
 
 * Make extracted metadata accessible in `#generate_location` through `:metadata` in context hash (janko-m)

@@ -1,3 +1,6 @@
+warn "The keep_location Shrine plugin is deprecated and will be removed in Shrine 2. " \
+     "You can easily implement the same behaviour in Shrine#generate_location."
+
 class Shrine
   module Plugins
     # The keep_location plugin allows you to preserve locations when
