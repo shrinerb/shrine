@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix `Attacher#backup_file` from backup plugin not to modify the given uploaded file (janko-m)
+
 * Allow modifying UploadedFile's data hash after it's instantiated to change the UploadedFile (janko-m)
 
 * Deprecate the keep_location plugin (janko-m)

@@ -30,20 +30,25 @@ class Shrine
 
       module AttacherMethods
         def backup_file(uploaded_file)
-          uploaded_file(uploaded_file) { |f| f.data["storage"] = backup_storage.to_s }
-          uploaded_file(uploaded_file.to_json)
+          uploaded_file(uploaded_file.to_json) do |file|
+            file.data["storage"] = backup_storage.to_s
+          end
         end
 
         private
 
         # Back up the stored file and return it.
         def store!(io, phase:)
-          super.tap { |stored_file| store_backup!(stored_file) }
+          stored_file = super
+          store_backup!(stored_file)
+          stored_file
         end
 
         # Delete the backed up file unless `:delete` was set to false.
         def delete!(uploaded_file, phase:)
-          super.tap { |deleted_file| delete_backup!(deleted_file) if backup_delete? }
+          deleted_file = super
+          delete_backup!(deleted_file) if backup_delete?
+          deleted_file
         end
 
         # Upload the stored file to the backup storage.

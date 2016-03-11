@@ -25,6 +25,12 @@ describe "the backup plugin" do
     refute_equal "foo", @attacher.get
   end
 
+  it "still assigns the stored file" do
+    @attacher.assign(fakeio)
+    @attacher._promote
+    assert_equal "store", @attacher.get.storage_key
+  end
+
   it "deletes backed up files" do
     @attacher.assign(fakeio)
     @attacher._promote
@@ -38,5 +44,21 @@ describe "the backup plugin" do
     @attacher._promote
     @attacher.destroy
     assert backup_file(@attacher.get).exists?
+  end
+
+  describe "#backup_file" do
+    it "returns the backed up uploaded file" do
+      @attacher.assign(fakeio)
+      @attacher._promote
+      backup_file = @attacher.backup_file(@attacher.get)
+      assert_equal "cache", backup_file.storage_key
+    end
+
+    it "doesn't modify the given uploaded file" do
+      @attacher.assign(fakeio)
+      @attacher._promote
+      @attacher.backup_file(uploaded_file = @attacher.get)
+      assert_equal @attacher.get, uploaded_file
+    end
   end
 end
