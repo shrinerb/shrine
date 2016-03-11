@@ -30,7 +30,7 @@ describe "the versions plugin" do
   end
 
   it "passes the version name to location generator" do
-    @uploader.instance_eval { def generate_location(io, version:); version.to_s; end }
+    @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
     versions = @uploader.upload(thumb: fakeio)
     assert_equal "thumb", versions.fetch(:thumb).id
   end

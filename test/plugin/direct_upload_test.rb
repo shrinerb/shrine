@@ -30,7 +30,7 @@ describe "the direct_upload plugin" do
     it "passes in :name and :phase parameters as context" do
       @uploader.class.class_eval { def generate_location(io, context); context.to_json; end }
       response = app.post "/cache/avatar", multipart: {file: image}
-      assert_equal '{"name":"avatar","phase":"cache"}', response.body_json['id']
+      assert_includes response.body_json['id'], '"name":"avatar","phase":"cache"'
     end
 
     it "assigns metadata" do
