@@ -17,12 +17,15 @@ describe Shrine::UploadedFile do
   end
 
   describe "#initialize" do
-    it "assigns appropriate variables" do
+    it "assigns the data hash" do
       data = {"id" => "foo", "storage" => "store", "metadata" => {"foo" => "bar"}}
       uploaded_file = uploaded_file(data)
-      assert_equal "foo", uploaded_file.id
-      assert_equal "store", uploaded_file.storage_key
-      assert_equal Hash["foo" => "bar"], uploaded_file.metadata
+      assert_equal data, uploaded_file.data
+    end
+
+    it "initializes metadata if absent" do
+      uploaded_file = uploaded_file("metadata" => nil)
+      assert_equal Hash.new, uploaded_file.metadata
     end
 
     it "raises an error if storage is not registered" do
@@ -34,6 +37,35 @@ describe Shrine::UploadedFile do
       data = {"id" => "foo", "storage" => "nosymbol"}
       assert_raises(Shrine::Error) { uploaded_file(data) }
       refute_includes Symbol.all_symbols.map(&:to_s), "nosymbol"
+    end
+  end
+
+  describe "#id" do
+    it "is fetched from data" do
+      uploaded_file = uploaded_file("id" => "foo")
+      assert_equal "foo", uploaded_file.id
+      uploaded_file.data["id"] = "bar"
+      assert_equal "bar", uploaded_file.id
+    end
+  end
+
+  describe "#storage_key" do
+    it "is fetched from data" do
+      uploaded_file = uploaded_file("storage" => "store")
+      assert_equal "store", uploaded_file.storage_key
+      uploaded_file.data["storage"] = "cache"
+      assert_equal "cache", uploaded_file.storage_key
+    end
+  end
+
+  describe "#metadata" do
+    it "is fetched from data" do
+      uploaded_file = uploaded_file("metadata" => {"foo" => "foo"})
+      assert_equal Hash["foo" => "foo"], uploaded_file.metadata
+      uploaded_file.data["metadata"] = {"bar" => "bar"}
+      assert_equal Hash["bar" => "bar"], uploaded_file.metadata
+      uploaded_file.data["metadata"].replace({"baz" => "baz"})
+      assert_equal Hash["baz" => "baz"], uploaded_file.metadata
     end
   end
 

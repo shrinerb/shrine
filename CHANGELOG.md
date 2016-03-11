@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow modifying UploadedFile's data hash after it's instantiated to change the UploadedFile (janko-m)
+
 * Deprecate the keep_location plugin (janko-m)
 
 * Don't mutate context hash inside the uploader (janko-m)

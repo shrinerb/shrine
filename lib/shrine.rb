@@ -661,26 +661,29 @@ class Shrine
       end
 
       module FileMethods
-        # The ID of the uploaded file, which holds the location of the actual
-        # file on the storage
-        attr_reader :id
-
-        # The storage key as a string.
-        attr_reader :storage_key
-
-        # A hash of metadata, returned from `Shrine#extract_metadata`.
-        attr_reader :metadata
-
         # The entire data hash which identifies this uploaded file.
         attr_reader :data
 
         def initialize(data)
-          @data        = data
-          @id          = data.fetch("id")
-          @storage_key = data.fetch("storage")
-          @metadata    = data.fetch("metadata", {})
-
+          @data = data
+          @data["metadata"] ||= {}
           storage # ensure storage exists
+        end
+
+        # The ID of the uploaded file, which holds the location of the actual
+        # file on the storage
+        def id
+          @data.fetch("id")
+        end
+
+        # The storage key as a string.
+        def storage_key
+          @data.fetch("storage")
+        end
+
+        # A hash of metadata.
+        def metadata
+          @data.fetch("metadata")
         end
 
         # The filename that was extracted from the original file.
@@ -788,7 +791,7 @@ class Shrine
 
         # The instance of `Shrine` with the corresponding storage.
         def uploader
-          @uploader ||= shrine_class.new(storage_key)
+          shrine_class.new(storage_key)
         end
 
         # The storage class this file was uploaded to.
