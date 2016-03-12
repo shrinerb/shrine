@@ -5,7 +5,7 @@
       name: Introducing Shrine
       url: http://twin.github.io/introducing-shrine
     -
-      name: File Uploads: Asynchronous World
+      name: "File Uploads: Asynchronous World"
       url: http://twin.github.io/file-uploads-asynchronous-world
     -
       name: Uploading files with Shrine in Hanami
@@ -34,7 +34,6 @@
     -
       name: shrine-sql
       url: https://github.com/janko-m/shrine-sql
-
 -
   title: Projects
   items:
