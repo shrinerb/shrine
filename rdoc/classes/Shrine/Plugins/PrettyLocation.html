@@ -50,6 +50,20 @@
             locations will typically look like this:</p>
             
             <pre class="ruby"><span class="ruby-string">&quot;user/564/avatar/thumb-493g82jf23.jpg&quot;</span>&#x000A;<span class="ruby-comment"># :model/:id/:attachment/:version-:uid.:extension</span></pre>
+            
+            <p>By default if a record class is inside a namespace, only the “inner” class
+            name is used in the location. If you want to include the namespace, you can
+            pass in the <code>:namespace</code> option with the desired separator as
+            the value:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span>, <span class="ruby-identifier">namespace</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;_&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog_user/.../493g82jf23.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span>, <span class="ruby-identifier">namespace</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog/user/.../493g82jf23.jpg&quot;</span></pre>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Class</h3>
+            <ol>
+              <li><a target="docwin" href="#method-c-configure">configure</a></li>
+            </ol>
           </div>
           <div id='context'>
           </div>
@@ -60,6 +74,25 @@
             </ol>
           </div>
           <div id='section'>
+            <div id='methods'>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-configure'>
+                <a name='method-c-configure'></a>
+                <div class='synopsis'>
+                  <span class='name'>configure</span>
+                  <span class='arguments'>(uploader, namespace: nil)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/pretty_location.rb, line 26</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">namespace</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>] = <span class="ruby-identifier">namespace</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -31,12 +31,73 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-01-26 14:39:46 +0700</span>
+          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-1.3.0+-282016-03-12-29">1.3.0 (2016-03-12)<span><a href="#label-1.3.0+-282016-03-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Add <code>&lt;attachment&gt;_cached?</code> and
+            <code>&lt;attachment&gt;_stored?</code> to migration_helpers plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Fix <code>Attacher#backup_file</code> from backup plugin not to modify the
+            given uploaded file (janko-m)</p>
+            </li><li>
+            <p>Allow modifying UploadedFile&#39;s data hash after it&#39;s instantiated to
+            change the UploadedFile (janko-m)</p>
+            </li><li>
+            <p>Deprecate the keep_location plugin (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t mutate context hash inside the uploader (janko-m)</p>
+            </li><li>
+            <p>Make extracted metadata accessible in <code>#generate_location</code>
+            through <code>:metadata</code> in context hash (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t require the "metadata" key when instantiating a
+            <code>Shrine::UploadedFile</code> (janko-m)</p>
+            </li><li>
+            <p>Add <code>:include_error</code> option to remote_url for accessing download
+            error in <code>:error_message</code> block (janko-m)</p>
+            </li><li>
+            <p>Give different error message when file wasn&#39;t found or was too large in
+            remote_url (janko-m)</p>
+            </li><li>
+            <p>Rewind the IO after extracting MIME type with MimeMagic (janko-m)</p>
+            </li><li>
+            <p>Rewind the IO after extracting image dimensions even when extraction failed
+            (kaapa)</p>
+            </li><li>
+            <p>Correctly infer the extension in <code>#generate_location</code> when
+            uploading an <code>UploadedFile</code> (janko-m)</p>
+            </li><li>
+            <p>Fix ability for errors to accumulate in data_uri and remote_url plugins
+            when assigning mutliples to same record instance (janko-m)</p>
+            </li><li>
+            <p>Bump Down dependency to 2.0.0 in order to fix downloading URLs with "[]"
+            characters (janko-m)</p>
+            </li><li>
+            <p>Add <code>:namespace</code> option to pretty_location for including class
+            namespace in location (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t include the namespace of the class in the location with the
+            pretty_location plugin (janko-m)</p>
+            </li><li>
+            <p>Remove aws-sdk deprecation warning when storage isn&#39;t instantiated with
+            credentials (reidab)</p>
+            </li><li>
+            <p>Don&#39;t make uploaded file&#39;s metadata methods error when the
+            corresponding key-value pair is missing (janko-m)</p>
+            </li><li>
+            <p>Close the <code>UploadedFile</code> on upload only if it was previously
+            opened, which doesn&#39;t happen on S3 COPY (reidab)</p>
+            </li><li>
+            <p>Fix <code>NameError</code> when silencing "missing record" errors in
+            backgrounding (janko-m)</p>
+            </li></ul>
             
             <h2 id="label-1.2.0+-282016-01-26-29">1.2.0 (2016-01-26)<span><a href="#label-1.2.0+-282016-01-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>

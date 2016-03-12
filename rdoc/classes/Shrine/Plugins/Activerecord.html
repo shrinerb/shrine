@@ -69,9 +69,8 @@
             the backgrounding plugin.</p>
             
             <p>Additionally, any <a href="../../Shrine.html">Shrine</a> validation errors
-            will added to ActiveRecord&#39;s errors upon validation. Note that if you
-            want to validate presence of the attachment, you can do it directly on the
-            model.</p>
+            will be added to ActiveRecord&#39;s errors upon validation. If you want to
+            validate presence of the attachment, you can do it directly on the model.</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;  <span class="ruby-identifier">validates_presence_of</span> :<span class="ruby-identifier">avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
           </div>

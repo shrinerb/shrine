@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-01-26 02:25:32 +0700</span>
+          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
         </div>
       </div>
       <div id='content'>
@@ -41,24 +41,25 @@
             <h1 id="label-Shrine+for+CarrierWave+Users"><a href="../../classes/Shrine.html">Shrine</a> for CarrierWave Users<span><a href="#label-Shrine+for+CarrierWave+Users">&para;</a> <a href="#top">&uarr;</a></span></h1>
             
             <p>This guide is aimed at helping CarrierWave users transition to <a
-            href="../../classes/Shrine.html">Shrine</a>. We will first generally
-            mention what are the key differences. Afterwards there is an extensive
-            reference of CarrierWave&#39;s interface and what is the equivalent in <a
-            href="../../classes/Shrine.html">Shrine</a>.</p>
+            href="../../classes/Shrine.html">Shrine</a>. First it explains some key
+            differences in the design between the two libraries. Afterwards it explains
+            how you can transition an existing app that uses CarrierWave to <a
+            href="../../classes/Shrine.html">Shrine</a>. It then finishes off with an
+            extensive reference of CarrierWave&#39;s interface and what is the
+            equivalent in <a href="../../classes/Shrine.html">Shrine</a>.</p>
             
             <h2 id="label-Uploaders">Uploaders<span><a href="#label-Uploaders">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p><a href="../../classes/Shrine.html">Shrine</a> has a concept of uploaders
-            similar to CarrierWave&#39;s, but instead of inheriting from
-            <code>CarrierWave::Uploader::Base</code>, you inherit from
-            <code>Shrine</code> directly:</p>
+            similar to CarrierWave&#39;s, which allows you to have different uploading
+            logic for different types of files:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># uploading logic</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>While in CarrierWave you choose a storages for uploaders directly, in <a
             href="../../classes/Shrine.html">Shrine</a> you first register storages
-            globally (under a symbol name), and then you instantiate uploaders with a
-            specific storage.</p>
+            globally (under a symbol name), and then you can instantiate uploaders with
+            a specific storage.</p>
             
             <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
             
@@ -66,16 +67,17 @@
             
             <p>CarrierWave uses symbols for referencing storages (<code>:file</code>,
             <code>:fog</code>, …), but in <a
-            href="../../classes/Shrine.html">Shrine</a> you instantiate storages
-            directly. This makes storages much more flexible, because this way they can
-            have their own options that are specific to them.</p>
+            href="../../classes/Shrine.html">Shrine</a> storages are simple Ruby
+            classes which you can instantiate directly. This makes storages much more
+            flexible, because this way they can have their own options that are
+            specific to them.</p>
             
             <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
             <p>In <a href="../../classes/Shrine.html">Shrine</a> processing is done
-            instance-level in the <code>#process</code> method. To generate versions,
-            you simply return a hash, and also load the <code>versions</code> plugin to
-            make your uploader recognize versions:</p>
+            instance-level in the <code>#process</code> method, and can be specified
+            for each phase. You can return a single processed file or a hash of
+            versions (with the <code>versions</code> plugin):</p>
             
             <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span> <span class="ruby-comment"># part of the &quot;image_processing&quot; gem</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>, <span class="ruby-identifier">names</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">small</span>, :<span class="ruby-identifier">medium</span>, :<span class="ruby-identifier">large</span>]&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">phase</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-identifier">thumb</span> = <span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;      {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">thumb</span><span class="ruby-operator">:</span> <span class="ruby-identifier">thumb</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
@@ -88,14 +90,15 @@
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>       <span class="ruby-comment"># If you&#39;re using Sequel</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span> <span class="ruby-comment"># If you&#39;re using ActiveRecord</span></pre>
             
             <p>Instead of giving you class methods for “mounting” uploaders, in <a
-            href="../../classes/Shrine.html">Shrine</a> you generate “attachment
-            modules” which you include in your models:</p>
+            href="../../classes/Shrine.html">Shrine</a> you generate attachment modules
+            which you simply include in your models:</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>] <span class="ruby-comment"># adds `avatar`, `avatar=` and `avatar_url` methods</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>You models are required to have the <code>&lt;attachment&gt;_data</code>
-            column, in the above case <code>avatar_data</code>. It contains the storage
-            and location of the file, as well as additional metadata.</p>
+            column, in the above case <code>avatar_data</code>. <a
+            href="../../classes/Shrine.html">Shrine</a> stores storage, location, and
+            additional metadata of the uploaded file to that column.</p>
             
             <h3 id="label-Multiple+uploads">Multiple uploads<span><a href="#label-Multiple+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
@@ -107,6 +110,37 @@
             dynamic one-to-many relationship. Take a look at the <a
             href="https://github.com/janko-m/shrine-example">example app</a> which
             demonstrates how easy it is to implement multiple uploads.</p>
+            
+            <h2 id="label-Migrating+from+CarrierWave">Migrating from CarrierWave<span><a href="#label-Migrating+from+CarrierWave">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>You have an existing app using CarrierWave and you want to transfer it to
+            <a href="../../classes/Shrine.html">Shrine</a>. Let&#39;s assume we have a
+            <code>Photo</code> model with the “image” attachment. First we need to
+            create the <code>image_data</code> column for Shrine:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">add_column</span> :<span class="ruby-identifier">photos</span>, :<span class="ruby-identifier">image_data</span>, :<span class="ruby-identifier">text</span></pre>
+            
+            <p>Afterwards we need to make new uploads write to the <code>image_data</code>
+            column. This can be done by including the below module to all models that
+            have CarrierWave attachments:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;fastimage&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">module</span> <span class="ruby-constant">CarrierwaveShrineSynchronization</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-identifier">model</span>.<span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;      <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">uploaders</span>.<span class="ruby-identifier">each_key</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">changes</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">name</span>)&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-identifier">name</span>)&#x000A;    <span class="ruby-identifier">uploader</span> = <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">read_attribute</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">present?</span>&#x000A;      <span class="ruby-identifier">data</span> = <span class="ruby-identifier">uploader_to_shrine_data</span>(<span class="ruby-identifier">uploader</span>)&#x000A;&#x000A;      <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">versions</span>.<span class="ruby-identifier">any?</span>&#x000A;        <span class="ruby-identifier">data</span> = {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">data</span>}&#x000A;        <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">versions</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">version</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">data</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">uploader_to_shrine_data</span>(<span class="ruby-identifier">version</span>)&#x000A;        <span class="ruby-keyword">end</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-identifier">write_attribute</span>(:<span class="ruby-node">&quot;#{name}_data&quot;</span>, <span class="ruby-identifier">data</span>.<span class="ruby-identifier">to_json</span>)&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-identifier">write_attribute</span>(:<span class="ruby-node">&quot;#{name}_data&quot;</span>, <span class="ruby-keyword">nil</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">private</span>&#x000A;&#x000A;  <span class="ruby-comment"># If you&#39;ll be using `:prefix` on your Shrine storage, make sure to</span>&#x000A;  <span class="ruby-comment"># subtract it from the path assigned as `:id`.</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">uploader_to_shrine_data</span>(<span class="ruby-identifier">uploader</span>)&#x000A;    <span class="ruby-identifier">path</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">store_path</span>(<span class="ruby-identifier">read_attribute</span>(<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">mounted_as</span>))&#x000A;&#x000A;    <span class="ruby-identifier">size</span>   = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">changes</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">mounted_as</span>)&#x000A;    <span class="ruby-identifier">size</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">FastImage</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">url</span>).<span class="ruby-identifier">content_length</span>&#x000A;    <span class="ruby-identifier">size</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">size</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">root</span>, <span class="ruby-identifier">path</span>))&#x000A;    <span class="ruby-identifier">filename</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">path</span>)&#x000A;    <span class="ruby-identifier">mime_type</span> = <span class="ruby-constant">MIME</span><span class="ruby-operator">::</span><span class="ruby-constant">Types</span>.<span class="ruby-identifier">type_for</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">first</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">presence</span>&#x000A;&#x000A;    {&#x000A;      <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">store</span>,&#x000A;      <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-identifier">path</span>,&#x000A;      <span class="ruby-identifier">metadata</span><span class="ruby-operator">:</span> {&#x000A;        <span class="ruby-identifier">size</span><span class="ruby-operator">:</span> <span class="ruby-identifier">size</span>,&#x000A;        <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-identifier">filename</span>,&#x000A;        <span class="ruby-identifier">mime_type</span><span class="ruby-operator">:</span> <span class="ruby-identifier">mime_type</span>,&#x000A;      },&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">mount_uploader</span> :<span class="ruby-identifier">image</span>, <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">CarrierwaveShrineSynchronization</span> <span class="ruby-comment"># needs to be after `mount_uploader`</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>After you deploy this code, the <code>image_data</code> column should now
+            be successfully synchronized with new attachments. Next step is to run a
+            script which writes all existing CarrierWave attachments to
+            <code>image_data</code>:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">uploaders</span>.<span class="ruby-identifier">each_key</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-identifier">name</span>) }&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save!</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>Now you should be able to rewrite your application so that it uses <a
+            href="../../classes/Shrine.html">Shrine</a> instead of CarrierWave, using
+            equivalent <a href="../../classes/Shrine.html">Shrine</a> storages. For
+            help with translating the code from CarrierWave to <a
+            href="../../classes/Shrine.html">Shrine</a>, you can consult the reference
+            below.</p>
             
             <h2 id="label-CarrierWave+to+Shrine+direct+mapping">CarrierWave to <a href="../../classes/Shrine.html">Shrine</a> direct mapping<span><a href="#label-CarrierWave+to+Shrine+direct+mapping">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

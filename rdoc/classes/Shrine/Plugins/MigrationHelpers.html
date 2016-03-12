@@ -44,10 +44,21 @@
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">migration_helpers</span></pre>
             
+            <h2 id="module-Shrine::Plugins::MigrationHelpers-label-3Cattachment-3E_cache+and+-3Cattachment-3E_store"><code>&lt;attachment&gt;_cache</code> and <code>&lt;attachment&gt;_store</code><span><a href="#module-Shrine::Plugins::MigrationHelpers-label-3Cattachment-3E_cache+and+-3Cattachment-3E_store">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
             <p>If your attachment&#39;s name is “avatar”, the model will get
             <code>#avatar_cache</code> and <code>#avatar_store</code> methods.</p>
             
             <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_cache</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:cache @storage=#&lt;Shrine::Storage::FileSystem @directory=public/uploads&gt;&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:store @storage=#&lt;Shrine::Storage::S3:0x007fb8343397c8 @bucket=#&lt;Aws::S3::Bucket name=&quot;foo&quot;&gt;&gt;&gt;</span></pre>
+            
+            <h2 id="module-Shrine::Plugins::MigrationHelpers-label-3Cattachment-3E_cached-3F+and+-3Cattachment-3E_stored-3F"><code>&lt;attachment&gt;_cached?</code> and <code>&lt;attachment&gt;_stored?</code><span><a href="#module-Shrine::Plugins::MigrationHelpers-label-3Cattachment-3E_cached-3F+and+-3Cattachment-3E_stored-3F">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>You can use these methods to check whether attachment exists and is
+            cached/stored:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_cached?</span> <span class="ruby-comment"># user.avatar &amp;&amp; user.avatar_cache.uploaded?(user.avatar)</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_stored?</span> <span class="ruby-comment"># user.avatar &amp;&amp; user.avatar_store.uploaded?(user.avatar)</span></pre>
+            
+            <h2 id="module-Shrine::Plugins::MigrationHelpers-label-update_-3Cattachment-3E"><code>update_&lt;attachment&gt;</code><span><a href="#module-Shrine::Plugins::MigrationHelpers-label-update_-3Cattachment-3E">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>The model will also get <code>#update_avatar</code> method, which can be
             used when doing attachment migrations. It will update the record&#39;s

@@ -56,12 +56,12 @@
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>, :<span class="ruby-identifier">store</span>]</pre>
             
-            <p>What exactly means “moving”? Usually this means that the file which is
-            being uploaded will be deleted afterwards. However, if both the file being
-            uploaded and the destination are on the filesystem, a <code>mv</code>
-            command will be executed instead. Some other storages may implement moving
-            as well, usually if also both the cache and store are using the same
-            storage.</p>
+            <p>What exactly means “moving”? If both the file being uploaded and the
+            destination are on the filesystem, a <code>mv</code> command will be
+            executed (making the transfer instantaneous). Some other storages may
+            implement moving as well, usually only for files which are on the same
+            storage. If moving isn&#39;t implemented by the storage, the file will be
+            simply deleted after upload.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>

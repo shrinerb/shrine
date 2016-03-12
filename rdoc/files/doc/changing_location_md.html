@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-01-26 02:25:32 +0700</span>
+          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
         </div>
       </div>
       <div id='content'>
@@ -44,19 +44,13 @@
             you&#39;ve realized that the existing store folder structure for
             attachments isn&#39;t working for you.</p>
             
-            <p>The first step is to change the location, either by using the
-            <code>pretty_location</code> plugin:</p>
+            <p>The first step is to change the location (by overriding
+            <code>#generate_location</code> or with the pretty_location plugin), and
+            deploy that change. Attachments on old locations will still continue to
+            work properly.</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span></pre>
-            
-            <p>Or by overriding <code>#generate_location</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-node">&quot;#{context[:record].class}/#{context[:record].id}/#{io.original_filename}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>After you&#39;ve deployed this change, all existing attachments on old
-            locations will continue to work properly. The next step is to run a script
-            that will move those to new locations. The easiest way to do that is to
-            reupload them:</p>
+            <p>The next step is to run a script that will move those to new locations. The
+            easiest way to do that is to reupload them, and afterwards delete them:</p>
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">migration_helpers</span> <span class="ruby-comment"># before the model is loaded</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">multi_delete</span> <span class="ruby-comment"># for deleting multiple files at once</span></pre>
             

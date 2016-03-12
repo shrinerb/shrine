@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-01-26 02:25:32 +0700</span>
+          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
         </div>
       </div>
       <div id='content'>
@@ -58,10 +58,18 @@
             
             <pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span> = {})&#x000A;  <span class="ruby-identifier">additional_metadata</span> = <span class="ruby-identifier">do_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">metadata</span>)&#x000A;  <span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">additional_metadata</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
+            <h2 id="label-Updating">Updating<span><a href="#label-Updating">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>If your storage supports updating data of existing files (e.g. some
+            metadata), the convention is to create an <code>#update</code> method:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">options</span> = {})&#x000A;        <span class="ruby-comment"># update data of the file</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
             <h2 id="label-Streaming">Streaming<span><a href="#label-Streaming">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>If your storage can stream files by yielding chunks, you can add an
-            additional <code>#stream</code> method:</p>
+            additional <code>#stream</code> method (used by the
+            <code>download_endpoint</code> plugin):</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">stream</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># yields chunks of the file</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
