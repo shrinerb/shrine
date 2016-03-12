@@ -2,7 +2,7 @@ require "test_helper"
 
 describe "the versions plugin" do
   before do
-    @attacher = attacher { plugin :versions, names: [:thumb] }
+    @attacher = attacher { plugin :versions, names: [:thumb, :medium, :large] }
     @uploader = @attacher.store
   end
 
@@ -104,10 +104,20 @@ describe "the versions plugin" do
       @attacher.expects(:default_url).with(version: :thumb, foo: "foo")
       @attacher.url(:thumb, foo: "foo")
     end
+
+    it "supports :fallbacks" do
+      @attacher.shrine_class.opts[:version_fallbacks] = {
+        medium: :thumb,
+        large:  :medium,
+      }
+      @attacher.set(thumb: @attacher.store.upload(fakeio))
+      assert_equal @attacher.url(:thumb), @attacher.url(:medium)
+      assert_equal @attacher.url(:thumb), @attacher.url(:large)
+    end
   end
 
   describe "Attacher" do
-    it "enables assiging uploaded versions" do
+    it "enables assigning uploaded versions" do
       @attacher.assign({thumb: @attacher.cache.upload(fakeio)}.to_json)
       assert_kind_of Shrine::UploadedFile, @attacher.get.fetch(:thumb)
     end

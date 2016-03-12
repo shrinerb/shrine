@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:fallbacks` to versions plugin for fallback URLs for versions which haven't finished processing (janko-m)
+
 * Fix keep_files not to spawn a background job when file will not be deleted (janko-m)
 
 ## 1.3.0 (2016-03-12)

@@ -62,6 +62,18 @@ class Shrine
     #
     #     user.avatar_url(:medium) #=> "http://example.com/medium.jpg"
     #
+    # If you already have some versions processed in the foreground when a
+    # background job is kicked off, you can setup explicit URL fallbacks:
+    #
+    #     plugin :versions,
+    #       names: [:thumb, :thumb_2x, :large, :large_2x],
+    #       fallbacks: {:thumb_2x => :thumb, :large_2x => :large}
+    #
+    #     # ... (background job is kicked off)
+    #
+    #     user.avatar_url(:thumb_2x) # returns :thumb URL until :thumb_2x becomes available
+    #     user.avatar_url(:large_2x) # returns :large URL until :large_2x becomes available
+    #
     # Any additional options will be properly forwarded to the underlying
     # storage:
     #
@@ -75,7 +87,7 @@ class Shrine
     #     end
     #
     # When deleting versions, any multi delete capabilities will be leveraged,
-    # so when usingStorage::S3, deleting versions will issue only a single HTTP
+    # so when using Storage::S3, deleting versions will issue only a single HTTP
     # request. If you want to delete versions manually, you can use
     # `Shrine#delete`:
     #
@@ -86,8 +98,9 @@ class Shrine
         uploader.plugin :multi_delete
       end
 
-      def self.configure(uploader, names:)
+      def self.configure(uploader, names:, fallbacks: {})
         uploader.opts[:version_names] = names
+        uploader.opts[:version_fallbacks] = fallbacks
       end
 
       module ClassMethods
@@ -158,9 +171,11 @@ class Shrine
         def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
-              raise Error, "unknown version: #{version.inspect}" if !shrine_class.version_names.include?(version)
+              raise Error, "unknown version: #{version.inspect}" if !shrine_class.version?(version)
               if file = get[version]
                 file.url(**options)
+              elsif fallback = shrine_class.opts[:version_fallbacks][version]
+                url(fallback, **options)
               else
                 default_url(**options, version: version)
               end
