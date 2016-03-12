@@ -29,11 +29,11 @@ describe "the store_dimensions plugin" do
     end
   end
 
-  it "persists between UploadedFiles" do
+  it "extracts dimensions from UploadedFiles" do
     uploaded_file = @uploader.upload(image)
-    reuploaded_file = @uploader.upload(uploaded_file)
-    assert_equal 100, reuploaded_file.metadata["width"]
-    assert_equal 67, reuploaded_file.metadata["height"]
+    width, height = @uploader.extract_dimensions(uploaded_file)
+    assert_equal 100, width
+    assert_equal 67, height
   end
 
   it "gives UploadedFile `width` and `height` methods" do

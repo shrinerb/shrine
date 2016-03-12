@@ -83,4 +83,14 @@ describe "the determine_mime_type plugin" do
     uploaded_file = @uploader.upload(fakeio)
     assert_equal "foo/bar", uploaded_file.mime_type
   end
+
+  it "extracts MIME type from UploadedFiles" do
+    @uploader = uploader do
+      plugin :determine_mime_type, analyzer: :mime_types
+    end
+
+    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
+    mime_type = @uploader.extract_mime_type(uploaded_file)
+    assert_equal "image/jpeg", mime_type
+  end
 end

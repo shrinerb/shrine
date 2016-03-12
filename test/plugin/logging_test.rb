@@ -30,6 +30,25 @@ describe "the logging plugin" do
     assert_match /PROCESS \S+ 1 file \(\d+\.\d+s\)$/, stdout
   end
 
+  it "counts versions" do
+    @uploader.class.plugin :versions, names: [:thumb, :original]
+    @uploader.instance_eval { def process(io, context); io; end }
+    stdout = capture do
+      versions = @uploader.upload(thumb: fakeio, original: fakeio)
+      @uploader.delete(versions)
+    end
+    assert_match /PROCESS \S+ 2 files/, stdout
+    assert_match /STORE \S+ 2 files/, stdout
+    assert_match /DELETE \S+ 2 files/, stdout
+  end
+
+  it "counts array of files" do
+    @uploader.class.plugin :multi_delete
+    files = [@uploader.upload(fakeio), @uploader.upload(fakeio)]
+    stdout = capture { @uploader.delete(files) }
+    assert_match /DELETE \S+ 2 files/, stdout
+  end
+
   it "logs storing" do
     stdout = capture { @uploader.upload(fakeio) }
     assert_match /STORE \S+ 1 file \(\d+\.\d+s\)$/, stdout

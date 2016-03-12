@@ -313,4 +313,9 @@ describe Shrine do
       assert_equal "image/jpeg", metadata["mime_type"]
     end
   end
+
+  it "has Confirm error for clearing storages" do
+    confirm = Shrine::Confirm.new
+    refute_empty confirm.message
+  end
 end

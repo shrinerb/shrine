@@ -4,6 +4,7 @@ if ENV["COVERAGE"]
   require "simplecov"
   SimpleCov.start do
     add_filter "/test/"
+    add_filter "/lib/shrine/storage/linter.rb"
   end
 end
 

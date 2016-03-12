@@ -1,5 +1,6 @@
 require "test_helper"
 require "webmock/minitest"
+WebMock.allow_net_connect!
 
 describe "the remote_url plugin" do
   before do

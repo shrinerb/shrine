@@ -165,7 +165,7 @@ class Shrine
 
         # Returns the Roda direct upload endpoint.
         def direct_endpoint
-          warn "#{self}.direct_endpoint is deprecated and will be removed in Shrine 2, you should use #{self}::UploadEndpoint instead."
+          warn "Shrine.direct_endpoint is deprecated and will be removed in Shrine 2, you should use Shrine::UploadEndpoint instead."
           self::UploadEndpoint
         end
       end

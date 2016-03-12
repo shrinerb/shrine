@@ -17,4 +17,16 @@ describe "the rack_file plugin" do
     assert_equal "image.jpg",  uploaded_file.original_filename
     assert_equal "image/jpeg", uploaded_file.mime_type
   end
+
+  it "adds #path, #to_io and #tempfile methods to IO" do
+    @attacher.cache.instance_eval do
+      def process(io, context)
+        io.path
+        io.to_io
+        io.tempfile
+      end
+    end
+
+    @attacher.assign({tempfile: Tempfile.new("")})
+  end
 end

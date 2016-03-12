@@ -253,4 +253,8 @@ describe Shrine::Attacher do
       assert_empty @attacher.errors
     end
   end
+
+  it "has smarter .inspect" do
+    assert_includes @attacher.class.inspect, "::Attacher"
+  end
 end

@@ -290,4 +290,8 @@ describe Shrine::UploadedFile do
     uploaded_file = uploaded_file("id" => "123", "storage" => "store", "metadata" => {})
     assert_match /#<\S+ @data=\{"id"=>"123", "storage"=>"store", "metadata"=>{}\}>/, uploaded_file.inspect
   end
+
+  it "has smarter .inspect" do
+    assert_includes uploaded_file.class.inspect, "::UploadedFile"
+  end
 end
