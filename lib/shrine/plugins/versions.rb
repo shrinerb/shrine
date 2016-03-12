@@ -100,20 +100,11 @@ class Shrine
           version_names.map(&:to_s).include?(name.to_s)
         end
 
-        # Asserts that the hash doesn't contain any unknown versions.
-        def versions!(hash)
-          hash.select { |name, _| version?(name) or raise Error, "unknown version: #{name.inspect}" }
-        end
-
-        # Filters the hash to contain only the registered versions.
-        def versions(hash)
-          hash.select { |name, _| version?(name) }
-        end
-
         # Converts a hash of data into a hash of versions.
         def uploaded_file(object, &block)
-          if object.is_a?(Hash) && !object.key?("storage")
-            versions(object).inject({}) do |result, (name, data)|
+          if (hash = object).is_a?(Hash) && !hash.key?("storage")
+            hash.inject({}) do |result, (name, data)|
+              next result if !version?(name)
               result.update(name.to_sym => uploaded_file(data, &block))
             end
           else
@@ -141,7 +132,8 @@ class Shrine
         def _store(io, context)
           if (hash = io).is_a?(Hash)
             raise Error, ":location is not applicable to versions" if context.key?(:location)
-            self.class.versions!(hash).inject({}) do |result, (name, version)|
+            hash.inject({}) do |result, (name, version)|
+              raise Error, "unknown version: #{name.inspect}" if !self.class.version?(name)
               result.update(name => _store(version, version: name, **context))
             end
           else
