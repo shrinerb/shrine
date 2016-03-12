@@ -1,3 +1,7 @@
+## HEAD
+
+* Fix keep_files not to spawn a background job when file will not be deleted (janko-m)
+
 ## 1.3.0 (2016-03-12)
 
 * Add `<attachment>_cached?` and `<attachment>_stored?` to migration_helpers plugin (janko-m)

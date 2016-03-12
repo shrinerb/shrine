@@ -188,12 +188,6 @@ describe Shrine::Attacher do
       @attacher.replace
       assert cached_file.exists?
     end
-
-    it "removes the dirty status" do
-      @attacher.set(@attacher.store.upload(fakeio))
-      @attacher.replace
-      refute @attacher.attached?
-    end
   end
 
   describe "#destroy" do

@@ -38,19 +38,15 @@ describe "the keep_files plugin" do
   it "works with backgrounding plugin" do
     @attacher = attacher do
       plugin :keep_files, destroyed: true, replaced: true
+      plugin :backgrounding
     end
 
-    @attacher.shrine_class.plugin :backgrounding
-    @attacher.class.delete { |data| self.class.delete(data)  }
-    @attacher.class.promote { |data| self.class.promote(data) }
-
-    @attacher.set(uploaded_file = @attacher.store.upload(fakeio))
-    @attacher.set(nil)
+    @attacher.class.delete { |data| fail }
+    @attacher.set(replaced = @attacher.store.upload(fakeio))
+    @attacher.set(destroyed = @attacher.store.upload(fakeio))
     @attacher.replace
-    assert uploaded_file.exists?
-
-    @attacher.set(uploaded_file = @attacher.store.upload(fakeio))
     @attacher.destroy
-    assert uploaded_file.exists?
+    assert replaced.exists?
+    assert destroyed.exists?
   end
 end

@@ -516,6 +516,7 @@ class Shrine
         # be called after saving.
         def finalize
           replace
+          remove_instance_variable("@old")
           _promote
         end
 
@@ -537,7 +538,6 @@ class Shrine
         # don't get called for the current attachment anymore.
         def replace
           delete!(@old, phase: :replaced) if @old && !cache.uploaded?(@old)
-          remove_instance_variable("@old")
         end
 
         # Deletes the attachment. Typically this should be called after
