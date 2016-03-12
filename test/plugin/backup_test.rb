@@ -33,9 +33,13 @@ describe "the backup plugin" do
 
   it "deletes backed up files" do
     @attacher.assign(fakeio)
-    @attacher._promote
+    replaced = @attacher._promote
+    @attacher.assign(fakeio)
+    destroyed = @attacher._promote
+    @attacher.replace
+    refute backup_file(replaced).exists?
     @attacher.destroy
-    refute backup_file(@attacher.get).exists?
+    refute backup_file(destroyed).exists?
   end
 
   it "doesn't delete backed up file if :delete is set to false" do
@@ -44,6 +48,29 @@ describe "the backup plugin" do
     @attacher._promote
     @attacher.destroy
     assert backup_file(@attacher.get).exists?
+  end
+
+  it "makes delete work with backgrounding" do
+    @attacher.shrine_class.plugin :backgrounding
+    @attacher.class.delete { |data| (@f ||= []) << Fiber.new{self.class.delete(data)} }
+    @attacher.assign(fakeio)
+    replaced = @attacher._promote
+    @attacher.assign(fakeio)
+    destroyed = @attacher._promote
+
+    @attacher.replace
+    assert replaced.exists?
+    assert @attacher.backup_file(replaced).exists?
+    @attacher.instance_variable_get("@f").reject!(&:resume)
+    refute replaced.exists?
+    refute @attacher.backup_file(replaced).exists?
+
+    @attacher.destroy
+    assert destroyed.exists?
+    assert @attacher.backup_file(destroyed).exists?
+    @attacher.instance_variable_get("@f").reject!(&:resume)
+    refute destroyed.exists?
+    refute @attacher.backup_file(destroyed).exists?
   end
 
   describe "#backup_file" do

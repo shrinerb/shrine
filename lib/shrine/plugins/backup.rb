@@ -31,11 +31,27 @@ class Shrine
       module AttacherMethods
         # Backs up the stored file after promoting.
         def promote(*)
-          stored_file = super
-          store_backup!(stored_file) if stored_file
-          stored_file
+          result = super
+          store_backup!(result) if result
+          result
         end
 
+        # Deletes the backup file in addition to the stored file.
+        def replace
+          result = super
+          delete_backup!(@old) if result && delete_backup?
+          result
+        end
+
+        # Deletes the backup file in addition to the stored file.
+        def destroy
+          result = super
+          delete_backup!(get) if result && delete_backup?
+          result
+        end
+
+        # Returns a copy of the given uploaded file with storage changed to
+        # backup storage.
         def backup_file(uploaded_file)
           uploaded_file(uploaded_file.to_json) do |file|
             file.data["storage"] = backup_storage.to_s
@@ -44,13 +60,6 @@ class Shrine
 
         private
 
-        # Delete the backed up file unless `:delete` was set to false.
-        def delete!(uploaded_file, phase:)
-          deleted_file = super
-          delete_backup!(deleted_file) if backup_delete?
-          deleted_file
-        end
-
         # Upload the stored file to the backup storage.
         def store_backup!(stored_file)
           backup_store.upload(stored_file, context.merge(phase: :backup))
@@ -58,7 +67,7 @@ class Shrine
 
         # Deleted the stored file from the backup storage.
         def delete_backup!(deleted_file)
-          backup_store.delete(backup_file(deleted_file), context.merge(phase: :backup))
+          delete!(backup_file(deleted_file), phase: :backup)
         end
 
         def backup_store
@@ -69,7 +78,7 @@ class Shrine
           shrine_class.opts[:backup_storage]
         end
 
-        def backup_delete?
+        def delete_backup?
           shrine_class.opts[:backup_delete]
         end
       end
