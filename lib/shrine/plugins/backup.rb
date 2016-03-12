@@ -29,6 +29,13 @@ class Shrine
       end
 
       module AttacherMethods
+        # Backs up the stored file after promoting.
+        def promote(*)
+          stored_file = super
+          store_backup!(stored_file) if stored_file
+          stored_file
+        end
+
         def backup_file(uploaded_file)
           uploaded_file(uploaded_file.to_json) do |file|
             file.data["storage"] = backup_storage.to_s
@@ -36,13 +43,6 @@ class Shrine
         end
 
         private
-
-        # Back up the stored file and return it.
-        def store!(io, phase:)
-          stored_file = super
-          store_backup!(stored_file)
-          stored_file
-        end
 
         # Delete the backed up file unless `:delete` was set to false.
         def delete!(uploaded_file, phase:)

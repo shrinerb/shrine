@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make storing backup happen *after* promoting instead of before (janko-m)
+
 * Add `:fallbacks` to versions plugin for fallback URLs for versions which haven't finished processing (janko-m)
 
 * Fix keep_files not to spawn a background job when file will not be deleted (janko-m)
