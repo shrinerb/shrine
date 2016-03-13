@@ -75,18 +75,12 @@ class Shrine
 
         # Updates the current attachment with the new one, unless the current
         # attachment has changed.
-        def swap(uploaded_file)
-          record.class.transaction do
-            break if record.send("#{name}_data") != record.reload.send("#{name}_data")
-            super
-          end
-        rescue ::ActiveRecord::RecordNotFound
-        end
-
-        # We save the record after updating, raising any validation errors.
         def update(uploaded_file)
-          super
-          record.save!
+          record.class.where(record.class.primary_key => record.id)
+            .where(:"#{name}_data" => record.send(:"#{name}_data"))
+            .update_all(:"#{name}_data" => uploaded_file.to_json)
+          record.reload
+        rescue ::ActiveRecord::RecordNotFound
         end
       end
     end

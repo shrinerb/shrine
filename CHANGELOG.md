@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove a tiny possibility of a race condition with backgrounding on subsequent updates (janko-m)
+
 * Add `:delegate` option to migration_helpers for opting out of defining methods on the model (janko-m)
 
 * Make logging plugin log number of both input and output files for processing (janko-m)

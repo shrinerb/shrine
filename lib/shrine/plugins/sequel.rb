@@ -73,18 +73,12 @@ class Shrine
 
         # Updates the current attachment with the new one, unless the current
         # attachment has changed.
-        def swap(uploaded_file)
-          record.db.transaction do
-            break if record.send("#{name}_data") != record.reload.send("#{name}_data")
-            super
-          end
-        rescue ::Sequel::Error
-        end
-
-        # We save the record after updating, raising any validation errors.
         def update(uploaded_file)
-          super
-          record.save(raise_on_failure: true)
+          record.this
+            .where(:"#{name}_data" => record.send(:"#{name}_data"))
+            .update(:"#{name}_data" => uploaded_file.to_json)
+          record.reload
+        rescue ::Sequel::Error
         end
 
         # Support for Postgres JSON columns.

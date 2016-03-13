@@ -139,7 +139,7 @@ describe Shrine::Attacher do
       io = fakeio
       context = {name: @attacher.name, record: @attacher.record, phase: :store}
       @attacher.assign(io)
-      @attacher.store.expects(:upload).with(@attacher.get, context).returns(true)
+      @attacher.store.expects(:upload).with(@attacher.get, context).returns(@attacher.get)
       @attacher._promote
     end
 
