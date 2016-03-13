@@ -93,7 +93,7 @@ class Shrine
         end
 
         # Collects the data and sends it for logging.
-        def log(action, io, context)
+        def log(action, input, context)
           result, duration = benchmark { yield }
 
           _log(
@@ -103,7 +103,7 @@ class Shrine
             attachment:   context[:name],
             record_class: (context[:record].class if context[:record]),
             record_id:    (context[:record].id if context[:record].respond_to?(:id)),
-            files:        count(io),
+            files:        (action == "process" ? [count(input), count(result)] : count(result)),
             duration:     ("%.2f" % duration).to_f,
           ) unless result.nil?
 
@@ -124,16 +124,18 @@ class Shrine
           components.last << "[:#{data[:attachment]}]" if data[:attachment]
           components << "#{data[:record_class]}" if data[:record_class]
           components.last << "[#{data[:record_id]}]" if data[:record_id]
-          components << (data[:files] > 1 ? "#{data[:files]} files" : "#{data[:files]} file")
+          components << "#{Array(data[:files]).join("-")} #{"file#{"s" if Array(data[:files]).any?{|n| n > 1}}"}"
           components << "(#{data[:duration]}s)"
           components.join(" ")
         end
 
         def _log_message_json(data)
+          data[:files] = Array(data[:files]).join("-")
           data.to_json
         end
 
         def _log_message_heroku(data)
+          data[:files] = Array(data[:files]).join("-")
           data.map { |key, value| "#{key}=#{value}" }.join(" ")
         end
 

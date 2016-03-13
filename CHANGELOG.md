@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make logging plugin log number of both input and output files for processing (janko-m)
+
 * Make deleting backup work with backgrounding plugin (janko-m)
 
 * Make storing backup happen *after* promoting instead of before (janko-m)
