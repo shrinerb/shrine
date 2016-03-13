@@ -59,4 +59,15 @@ describe "the migration_helpers plugin" do
       @user.update_avatar { fail }
     end
   end
+
+  it "doesn't delegate if :delegate is set to false" do
+    @attacher = attacher { plugin :migration_helpers, delegate: false }
+    @user = @attacher.record
+
+    refute_respond_to @user, :avatar_cache
+    refute_respond_to @user, :avatar_store
+    refute_respond_to @user, :avatar_cached?
+    refute_respond_to @user, :avatar_stored?
+    refute_respond_to @user, :update_avatar
+  end
 end

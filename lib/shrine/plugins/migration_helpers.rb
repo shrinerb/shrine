@@ -1,45 +1,63 @@
 class Shrine
   module Plugins
-    # The migration_helpers plugin gives the model additional helper methods
-    # which are convenient when doing attachment migrations.
+    # The migration_helpers plugin gives the attacher additional helper methods
+    # which are convenient when doing file migrations.
     #
-    #     plugin :migration_helpers
+    # By default additional methods are also added to the model which delegate
+    # to the underlying attacher. If you want to disable that, you can load the
+    # plugin with `delegate: false`:
     #
-    # ## `<attachment>_cache` and `<attachment>_store`
+    #     plugin :migration_helpers, delegate: false
     #
-    # If your attachment's name is "avatar", the model will get `#avatar_cache`
-    # and `#avatar_store` methods.
+    # ## `attachment_cache` and `attachment_store`
     #
-    #     user = User.new
+    # These methods return cache and store uploaders used by the underlying
+    # attacher:
+    #
     #     user.avatar_cache #=> #<Shrine @storage_key=:cache @storage=#<Shrine::Storage::FileSystem @directory=public/uploads>>
     #     user.avatar_store #=> #<Shrine @storage_key=:store @storage=#<Shrine::Storage::S3:0x007fb8343397c8 @bucket=#<Aws::S3::Bucket name="foo">>>
     #
-    # ## `<attachment>_cached?` and `<attachment>_stored?`
+    #     # attacher equivalents
+    #     user.avatar_attacher.cache
+    #     user.avatar_attacher.store
     #
-    # You can use these methods to check whether attachment exists and is
-    # cached/stored:
+    # ## `attachment_cached?` and `attachment_stored?`
+    #
+    # These methods return true if attachment exists and is cached/stored:
     #
     #     user.avatar_cached? # user.avatar && user.avatar_cache.uploaded?(user.avatar)
     #     user.avatar_stored? # user.avatar && user.avatar_store.uploaded?(user.avatar)
     #
-    # ## `update_<attachment>`
+    #     # attacher equivalents
+    #     user.avatar_attacher.cached?
+    #     user.avatar_attacher.stored?
     #
-    # The model will also get `#update_avatar` method, which can be used when
-    # doing attachment migrations. It will update the record's attachment with
-    # the result of the passed in block.
+    # ## `update_attachment`
+    #
+    # This method updates the record's attachment with the result of the given
+    # block.
     #
     #     user.update_avatar do |avatar|
     #       user.avatar_store.upload(avatar) # saved to the record
     #     end
     #
-    # This will get triggered _only_ if the attachment is not nil and is
-    # stored, and will get saved only if the current attachment hasn't changed
-    # while executing the block. The result can be anything that responds to
-    # `#to_json` and evaluates to uploaded files' data.
+    #     # attacher equivalent
+    #     user.avatar_attacher.update_stored { |avatar| }
+    #
+    # The block will get triggered _only_ if the attachment is present and not
+    # cached, *and* will save the record only if the record's attachment
+    # hasn't changed in the time it took to execute the block. This method is
+    # most useful for adding/removing versions and changing locations of files.
     module MigrationHelpers
+      def self.configure(uploader, delegate: true)
+        uploader.opts[:migration_helpers_delegate] = delegate
+      end
+
       module AttachmentMethods
         def initialize(name)
           super
+
+          return if shrine_class.opts[:migration_helpers_delegate] == false
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def update_#{name}(&block)

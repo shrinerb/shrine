@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:delegate` option to migration_helpers for opting out of defining methods on the model (janko-m)
+
 * Make logging plugin log number of both input and output files for processing (janko-m)
 
 * Make deleting backup work with backgrounding plugin (janko-m)
