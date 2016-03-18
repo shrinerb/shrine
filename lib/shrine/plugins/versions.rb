@@ -108,6 +108,10 @@ class Shrine
           opts[:version_names]
         end
 
+        def version_fallbacks
+          opts[:version_fallbacks]
+        end
+
         # Checks that the identifier is a registered version.
         def version?(name)
           version_names.map(&:to_s).include?(name.to_s)
@@ -174,7 +178,7 @@ class Shrine
               raise Error, "unknown version: #{version.inspect}" if !shrine_class.version?(version)
               if file = get[version]
                 file.url(**options)
-              elsif fallback = shrine_class.opts[:version_fallbacks][version]
+              elsif fallback = shrine_class.version_fallbacks[version]
                 url(fallback, **options)
               else
                 default_url(**options, version: version)
