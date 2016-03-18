@@ -5,6 +5,11 @@ class Shrine
     #
     #     plugin :determine_mime_type
     #
+    # By default the UNIX [file] utility is used to determine the MIME type, but
+    # you can change it:
+    #
+    #     plugin :determine_mime_type, analyzer: :filemagic
+    #
     # The plugin accepts the following analyzers:
     #
     # :file
@@ -27,19 +32,10 @@ class Shrine
     #   *extension*. Note that unlike other solutions, this analyzer is not
     #   guaranteed to return the actual MIME type of the file.
     #
-    # By default the UNIX [file] utility is used to detrmine the MIME type, but
-    # you can change it:
-    #
-    #     plugin :determine_mime_type, analyzer: :filemagic
-    #
     # If none of these quite suit your needs, you can use a custom analyzer:
     #
     #     plugin :determine_mime_type, analyzer: ->(io) do
-    #       if io.path.end_with?(".odt")
-    #         "application/vnd.oasis.opendocument.text"
-    #       else
-    #         MimeMagic.by_magic(io).type
-    #       end
+    #       # returns the extracted MIME type
     #     end
     #
     # [file]: http://linux.die.net/man/1/file

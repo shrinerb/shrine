@@ -478,7 +478,7 @@ end
 
 Note that there should always be a random component in the location, otherwise
 dirty tracking won't be detected properly (you can use `Shrine#generate_uid`).
-Also note that you can access the extracted metadata here through
+Inside this method you can access the extracted metadata through
 `context[:metadata]`.
 
 When using the uploader directly, it's possible to bypass `#generate_location`
@@ -595,7 +595,7 @@ be applied to which uploaders:
 Shrine.plugin :logging # enables logging for all uploaders
 
 class ImageUploader < Shrine
-  plugin :store_dimensions # stores dimensions only for this uploader
+  plugin :store_dimensions # stores dimensions only for this uploader and its descendants
 end
 ```
 
