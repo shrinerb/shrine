@@ -191,7 +191,7 @@ class Shrine
             object(id).public_url(**options)
           end
         else
-          URI.join(host, object(id).key).to_s
+          URI.join(host, URI(object(id).public_url(**options)).path).to_s
         end
       end
 

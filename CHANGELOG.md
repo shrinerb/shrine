@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix S3 URL erroring due to not being URL-encoded when `:host` option is used (janko-m)
+
 * Remove a tiny possibility of a race condition with backgrounding on subsequent updates (janko-m)
 
 * Add `:delegate` option to migration_helpers for opting out of defining methods on the model (janko-m)
