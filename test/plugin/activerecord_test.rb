@@ -39,6 +39,14 @@ describe "the activerecord plugin" do
     assert_equal "file2", @user.avatar.read
   end
 
+  it "successfully promotes when record is invalid" do
+    @user.class.validate { errors.add(:base, "Invalid") }
+    @user.avatar = fakeio
+    @user.save(validate: false)
+    refute @user.changed?
+    assert_equal "store", @user.avatar.storage_key
+  end
+
   it "adds validation errors to the record" do
     @user.avatar_attacher.class.validate { errors << "error" }
     @user.avatar = fakeio

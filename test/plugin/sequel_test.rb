@@ -38,6 +38,14 @@ describe "the sequel plugin" do
     assert_equal "file2", @user.avatar.read
   end
 
+  it "successfully promotes when record is invalid" do
+    @user.instance_eval { def validate; errors.add(:base, "Invalid"); end }
+    @user.avatar = fakeio
+    @user.save(validate: false)
+    assert_empty @user.changed_columns
+    assert_equal "store", @user.avatar.storage_key
+  end
+
   it "adds validation errors to the record" do
     @user.avatar_attacher.class.validate { errors << "error" }
     @user.avatar = fakeio
