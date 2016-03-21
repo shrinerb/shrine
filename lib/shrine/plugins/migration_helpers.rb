@@ -49,8 +49,9 @@ class Shrine
     # hasn't changed in the time it took to execute the block. This method is
     # most useful for adding/removing versions and changing locations of files.
     module MigrationHelpers
-      def self.configure(uploader, delegate: true)
-        uploader.opts[:migration_helpers_delegate] = delegate
+      def self.configure(uploader, options = {})
+        warn "The :delegate option in migration_helpers Shrine plugin will default to false in Shrine 2. To remove this warning, set :delegate explicitly." if !options.key?(:delegate)
+        uploader.opts[:migration_helpers_delegate] = options.fetch(:delegate, true)
       end
 
       module AttachmentMethods

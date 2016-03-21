@@ -2,7 +2,7 @@ require "test_helper"
 
 describe "the migration_helpers plugin" do
   before do
-    @attacher = attacher { plugin :migration_helpers }
+    @attacher = attacher { plugin :migration_helpers, delegate: true }
     @user = @attacher.record
   end
 
