@@ -46,9 +46,10 @@ Shrine's JSON representation of an uploaded file looks like this:
 }
 ```
 
-The `id`, `storage` and `metadata.size` fields are required, and the rest of
-the metadata is optional. After uploading the file to S3, you need to construct
-this JSON and assign it to the hidden attachment field in the form.
+The `id`, `storage` fields are optional, while the `metadata` values are
+optional (`metadata.size` is only required to later upload that file to a
+non-S3 storage). After uploading the file to S3, you need to construct this
+JSON and assign it to the hidden attachment field in the form.
 
 ## Strategy A (dynamic)
 
@@ -95,7 +96,7 @@ usually write it to the hidden attachment field in the form:
 
 ```js
 var image = {
-  id: /cache\/(.+)/.exec(key)[1], # we have to remove the prefix part
+  id: key.match(/cache\/(.+)/)[1], # we have to remove the prefix part
   storage: 'cache',
   metadata: {
     size:      data.files[0].size,

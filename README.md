@@ -64,10 +64,10 @@ that was uploaded, and we can do a lot with it:
 
 ```rb
 uploaded_file.url      #=> "/uploads/938kjsdf932.mp4"
+uploaded_file.metadata #=> {...}
 uploaded_file.read     #=> "..."
 uploaded_file.exists?  #=> true
 uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4>
-uploaded_file.metadata #=> {...}
 uploaded_file.delete
 # ...
 ```
@@ -84,6 +84,7 @@ Shrine we do this by generating and including "attachment" modules.
 Firstly we need to assign the special `:cache` and `:store` storages:
 
 ```rb
+require "shrine"
 require "shrine/storage/file_system"
 
 Shrine.storages = {

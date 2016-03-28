@@ -124,7 +124,7 @@ Storage:
   -
     name: pretty_location
     path: PrettyLocation.html
-    description: Attempts to generate a more organized folder structure on the storage.
+    description: Generates a more organized directory structure on the storage.
 
 Other:
   -

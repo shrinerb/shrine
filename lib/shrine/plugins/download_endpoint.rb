@@ -112,7 +112,7 @@ class Shrine
                   @storage.stream(id) { |chunk| out << chunk }
                 else
                   io, buffer = @storage.open(id), ""
-                  out << io.read(16384, buffer) until io.eof?
+                  out << io.read(16*1024, buffer) until io.eof?
                   io.close
                   io.delete if io.class.name == "Tempfile"
                 end

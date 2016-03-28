@@ -56,7 +56,7 @@ class Shrine
               #{@name}_attacher.finalize if #{@name}_attacher.attached?
             end
 
-            after_commit on: :destroy do
+            after_commit on: [:destroy] do
               #{@name}_attacher.destroy
             end
           RUBY
