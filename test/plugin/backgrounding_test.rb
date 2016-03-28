@@ -94,4 +94,41 @@ describe "the backgrounding plugin" do
       refute uploaded_file.exists?
     end
   end
+
+  describe ".dump" do
+    it "creates a serializable hash of the attacher" do
+      @attacher.record.save
+      @attacher.assign(fakeio)
+      data = @attacher.class.dump(@attacher)
+      assert_equal @attacher.get, @attacher.uploaded_file(data["uploaded_file"])
+      assert_equal [@attacher.record.class.to_s, @attacher.record.id], data["record"]
+      assert_equal @attacher.name.to_s, data["attachment"]
+    end
+
+    it "handles the case when attachment is nil" do
+      data = @attacher.class.dump(@attacher)
+      assert_equal nil, data["uploaded_file"]
+    end
+  end
+
+  describe ".load" do
+    it "instantiates the attacher" do
+      @attacher.record.save
+      data = @attacher.class.dump(@attacher)
+      attacher = @attacher.class.load(data)
+      assert_instance_of @attacher.class, attacher
+      assert_equal @attacher.name, attacher.name
+      assert_equal @attacher.record.class, attacher.record.class
+      assert_equal @attacher.record.id, attacher.record.id
+    end
+
+    it "handles record not found" do
+      @attacher.record.save
+      @attacher.record.destroy
+      data = @attacher.class.dump(@attacher)
+      attacher = @attacher.class.load(data)
+      assert_equal @attacher.record.class, attacher.record.class
+      assert_equal @attacher.record.id, attacher.record.id
+    end
+  end
 end

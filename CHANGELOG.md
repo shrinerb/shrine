@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `Attacher.dump` and `Attacher.load` for writing custom background jobs with custom functionality (janko-m)
+
 * Fix S3 URL erroring due to not being URL-encoded when `:host` option is used (janko-m)
 
 * Remove a tiny possibility of a race condition with backgrounding on subsequent updates (janko-m)

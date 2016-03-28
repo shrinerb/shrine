@@ -47,6 +47,9 @@ class Shrine
     #       record.update(published: true) if record.is_a?(Post)
     #     end
     #
+    # You can also write custom background jobs with `Shrine::Attacher.dump`
+    # and `Shrine::Attacher.load`.
+    #
     # If you're generating versions, and you want to process some versions in
     # the foreground before kicking off a background job, you can use the
     # `recache` plugin.
@@ -58,18 +61,13 @@ class Shrine
           if block
             shrine_class.opts[:backgrounding_promote] = block
           else
-            record_class, record_id = data["record"]
-            record_class = Object.const_get(record_class)
-            record = find_record(record_class, record_id) or return
-
-            name = data["attachment"]
-            attacher = record.send("#{name}_attacher")
+            attacher = load(data)
             cached_file = attacher.uploaded_file(data["uploaded_file"])
-            return if cached_file != record.send(name)
+            return if cached_file != attacher.get
 
             attacher.promote(cached_file) or return
 
-            record
+            attacher.record
           end
         end
 
@@ -79,19 +77,38 @@ class Shrine
           if block
             shrine_class.opts[:backgrounding_delete] = block
           else
-            record_class, record_id = data["record"]
-            record = Object.const_get(record_class).new
-            record.id = record_id
-
-            name, phase = data["attachment"], data["phase"]
-            attacher = record.send("#{name}_attacher")
+            attacher = load(data)
             uploaded_file = attacher.uploaded_file(data["uploaded_file"])
-            context = {name: name.to_sym, record: record, phase: phase.to_sym}
+            context = {name: attacher.name, record: attacher.record, phase: data["phase"].to_sym}
 
             attacher.store.delete(uploaded_file, context)
 
-            record
+            attacher.record
           end
+        end
+
+        # Dumps all the information about the attacher in a serializable hash
+        # suitable for passing as an argument to background jobs.
+        def dump(attacher)
+          {
+            "uploaded_file" => attacher.get && attacher.get.to_json,
+            "record"        => [attacher.record.class.to_s, attacher.record.id],
+            "attachment"    => attacher.name.to_s,
+          }
+        end
+
+        # Loads the data created by #dump, resolving the record and returning
+        # the attacher.
+        def load(data)
+          record_class, record_id = data["record"]
+          record_class = Object.const_get(record_class)
+          record = find_record(record_class, record_id) ||
+            record_class.new.tap { |object| object.id = record_id }
+
+          name = data["attachment"]
+          attacher = record.send("#{name}_attacher")
+
+          attacher
         end
       end
 
@@ -100,12 +117,7 @@ class Shrine
         # hash.
         def _promote
           if background_promote = shrine_class.opts[:backgrounding_promote]
-            data = {
-              "uploaded_file" => get.to_json,
-              "record"        => [record.class.to_s, record.id],
-              "attachment"    => name.to_s,
-            }
-
+            data = self.class.dump(self)
             instance_exec(data, &background_promote) if promote?(get)
           else
             super
@@ -118,14 +130,12 @@ class Shrine
         # hash.
         def delete!(uploaded_file, phase:)
           if background_delete = shrine_class.opts[:backgrounding_delete]
-            data = {
+            data = self.class.dump(self).merge(
               "uploaded_file" => uploaded_file.to_json,
-              "record"        => [record.class.to_s, record.id],
-              "attachment"    => name.to_s,
               "phase"         => phase.to_s,
-            }
-
+            )
             instance_exec(data, &background_delete)
+
             uploaded_file
           else
             super(uploaded_file, phase: phase)
