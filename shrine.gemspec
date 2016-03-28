@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "down", ">= 2.0.1"
 
-  gem.add_development_dependency "rake"
+  gem.add_development_dependency "rake", "~> 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "minitest-hooks", "~> 1.3.0"
   gem.add_development_dependency "mocha"
