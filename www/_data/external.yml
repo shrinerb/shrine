@@ -35,7 +35,7 @@
       name: shrine-sql
       url: https://github.com/janko-m/shrine-sql
 -
-  title: Projects
+  title: Projects & Libraries
   items:
     -
       name: Roda example app (official)
@@ -46,3 +46,6 @@
     -
       name: Hanami example app
       url: https://github.com/katafrakt/hanami-shrine-example
+    -
+      name: rails_admin_shrine
+      url: https://github.com/iquest/rails_admin_shrine
