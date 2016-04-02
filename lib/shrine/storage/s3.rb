@@ -130,7 +130,7 @@ class Shrine
 
       # Downloads the file from S3, and returns a `Tempfile`.
       def download(id)
-        Down.download(url(id))
+        Down.download(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
       end
 
       # Streams the object from S3, yielding downloaded chunks.

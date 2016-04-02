@@ -1,5 +1,7 @@
 ## HEAD
 
+* Pass the SSL CA bundle to open-uri when downloading an S3 file (janko-m)
+
 * Add `Attacher.dump` and `Attacher.load` for writing custom background jobs with custom functionality (janko-m)
 
 * Fix S3 URL erroring due to not being URL-encoded when `:host` option is used (janko-m)
