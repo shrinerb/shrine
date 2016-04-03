@@ -63,7 +63,6 @@ class Shrine
           else
             attacher = load(data)
             cached_file = attacher.uploaded_file(data["uploaded_file"])
-            return if cached_file != attacher.get
 
             attacher.promote(cached_file) or return
 
@@ -122,6 +121,12 @@ class Shrine
           else
             super
           end
+        end
+
+        # Returns early if attachments don't match.
+        def promote(cached_file)
+          return if cached_file != get
+          super
         end
 
         private
