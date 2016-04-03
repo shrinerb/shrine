@@ -1,5 +1,7 @@
 ## HEAD
 
+* Rename delete_uploaded plugin to "delete_raw" to better explain its functionality (janko-m)
+
 * Pass the SSL CA bundle to open-uri when downloading an S3 file (janko-m)
 
 * Add `Attacher.dump` and `Attacher.load` for writing custom background jobs with custom functionality (janko-m)

@@ -1,8 +1,8 @@
 require "test_helper"
 
-describe "the delete_uploaded plugin" do
+describe "the delete_raw plugin" do
   before do
-    @uploader = uploader { plugin :delete_uploaded }
+    @uploader = uploader { plugin :delete_raw }
   end
 
   it "deletes the file after it was uploaded" do
@@ -21,7 +21,7 @@ describe "the delete_uploaded plugin" do
   end
 
   it "accepts specifying storages" do
-    @uploader.class.plugin :delete_uploaded, storages: [:store]
+    @uploader.class.plugin :delete_raw, storages: [:store]
     @uploader.class.new(:cache).upload(tempfile = Tempfile.new(""))
     assert tempfile.path
     @uploader.class.new(:store).upload(tempfile = Tempfile.new(""))

@@ -84,9 +84,9 @@ Metadata:
 
 Deleting:
   -
-    name: delete_uploaded
-    path: DeleteUploaded.html
-    description: Makes uploaders automatically delete files after they're uploaded.
+    name: delete_raw
+    path: DeleteRaw.html
+    description: Automatically deletes raw files after they've been uploaded.
   -
     name: keep_files
     path: KeepFiles.html
