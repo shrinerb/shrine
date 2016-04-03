@@ -20,7 +20,7 @@ class Shrine
       module InstanceMethods
         private
 
-        # Deletes the uploaded file unless it's an UploadedFile.
+        # Deletes the file that was uploaded, unless it's an UploadedFile.
         def copy(io, context)
           super
           if io.respond_to?(:delete) && !io.is_a?(UploadedFile)

@@ -38,6 +38,7 @@ class Shrine
             if movable?(io, context)
               move(io, context)
             else
+              warn "The #{storage_key.inspect} Shrine storage doesn't support moving a #{io.inspect}. It is currently still deleted, but it won't be in Shrine 2."
               super
               io.delete if io.respond_to?(:delete)
             end
