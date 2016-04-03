@@ -37,6 +37,18 @@ describe "the backgrounding plugin" do
       assert_equal "store", @user.reload.avatar.storage_key
     end
 
+    it "passes the correct phase" do
+      @attacher.class.promote { |data| self.class.promote(data) }
+      @user.avatar = fakeio
+      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, phase: :store)
+      @user.save
+
+      @attacher.class.promote { |data| self.class.promote(data.merge("phase" => "foo")) }
+      @user.avatar = fakeio
+      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, phase: :foo)
+      @user.save
+    end
+
     it "doesn't get triggered when there is nothing to promote" do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.save

@@ -6,15 +6,15 @@ class Shrine
     # something other than Storage::FileSystem.
     #
     #     Shrine.plugin :backgrounding
-    #     Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
+    #     Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
     #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
     #
     # The `data` variable is a serializable hash containing all context needed
-    # for promotion/deletion. You then just need to declare `UploadJob` and
+    # for promotion/deletion. You then just need to declare `PromoteJob` and
     # `DeleteJob`, and call `Shrine::Attacher.promote`/`Shrine::Attacher.delete`
     # with the data hash:
     #
-    #     class UploadJob
+    #     class PromoteJob
     #       include Sidekiq::Worker
     #
     #       def perform(data)
@@ -63,8 +63,9 @@ class Shrine
           else
             attacher = load(data)
             cached_file = attacher.uploaded_file(data["uploaded_file"])
+            phase = data["phase"].to_sym
 
-            attacher.promote(cached_file) or return
+            attacher.promote(cached_file, phase: phase) or return
 
             attacher.record
           end
@@ -116,7 +117,7 @@ class Shrine
         # hash.
         def _promote
           if background_promote = shrine_class.opts[:backgrounding_promote]
-            data = self.class.dump(self)
+            data = self.class.dump(self).merge("phase" => "store")
             instance_exec(data, &background_promote) if promote?(get)
           else
             super
@@ -124,7 +125,7 @@ class Shrine
         end
 
         # Returns early if attachments don't match.
-        def promote(cached_file)
+        def promote(cached_file, *)
           return if cached_file != get
           super
         end

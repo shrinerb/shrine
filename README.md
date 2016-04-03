@@ -543,11 +543,11 @@ makes it really easy to plug in your backgrounding library:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote { |data| UploadJob.perform_async(data) }
+Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
 ```
 ```rb
-class UploadJob
+class PromoteJob
   include Sidekiq::Worker
   def perform(data)
     Shrine::Attacher.promote(data)

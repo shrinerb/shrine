@@ -527,8 +527,8 @@ class Shrine
 
         # Uploads the cached file to store, and updates the record with the
         # stored file.
-        def promote(cached_file)
-          stored_file = store!(cached_file, phase: :store)
+        def promote(cached_file, phase: :store)
+          stored_file = store!(cached_file, phase: phase)
           result = swap(stored_file) or delete!(stored_file, phase: :stored)
           result
         end

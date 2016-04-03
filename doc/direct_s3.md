@@ -181,7 +181,7 @@ backgrounding library to perform the job with a delay:
 ```rb
 Shrine.plugin :backgrounding
 Shrine::Attacher.promote do |data|
-  UploadJob.perform_in(60, data) # tells a Sidekiq worker to perform in 1 minute
+  PromoteJob.perform_in(60, data) # tells a Sidekiq worker to perform in 1 minute
 end
 ```
 

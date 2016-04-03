@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow passing phase to `Attacher#promote` and generalize promoting background job (janko-m)
+
 * Close the cached file after extracting its metadata in restore_cached plugin (janko-m)
 
 * Rename delete_uploaded plugin to "delete_raw" to better explain its functionality (janko-m)
