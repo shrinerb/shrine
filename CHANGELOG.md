@@ -1,5 +1,7 @@
 ## HEAD
 
+* Close the cached file after extracting its metadata in restore_cached plugin (janko-m)
+
 * Rename delete_uploaded plugin to "delete_raw" to better explain its functionality (janko-m)
 
 * Pass the SSL CA bundle to open-uri when downloading an S3 file (janko-m)

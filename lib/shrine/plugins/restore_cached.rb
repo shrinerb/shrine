@@ -18,14 +18,15 @@ class Shrine
         private
 
         def assign_cached(value)
-          uploaded_file = uploaded_file(value) do |file|
-            next unless cache.uploaded?(file)
-            return unless file.exists?
-            real_metadata = cache.extract_metadata(file.to_io, context)
-            file.metadata.update(real_metadata)
+          cached_file = uploaded_file(value) do |cached_file|
+            next unless cache.uploaded?(cached_file)
+            return unless cached_file.exists?
+            real_metadata = cache.extract_metadata(cached_file.to_io, context)
+            cached_file.metadata.update(real_metadata)
+            cached_file.close
           end
 
-          super(uploaded_file)
+          super(cached_file)
         end
       end
     end
