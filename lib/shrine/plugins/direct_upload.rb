@@ -95,7 +95,7 @@ class Shrine
     #
     # While Shrine only accepts cached attachments on form submits (for security
     # reasons), you can use this endpoint to upload files to any storage, just
-    # add it do allowed storages:
+    # add it to allowed storages:
     #
     #     plugin :direct_upload, allowed_storages: [:cache, :store]
     #

@@ -40,7 +40,7 @@ Model:
   -
     name: rack_file
     path: RackFile.html
-    description: Allows you models to accept Rack uploaded file hashes as attachments.
+    description: Allows your models to accept Rack uploaded file hashes as attachments.
   -
     name: remote_url
     path: RemoteUrl.html
