@@ -84,6 +84,10 @@ Metadata:
 
 Deleting:
   -
+    name: delete_promoted
+    path: DeletePromoted.html
+    description: Deletes promoted files after the record has been updated.
+  -
     name: delete_raw
     path: DeleteRaw.html
     description: Automatically deletes raw files after they've been uploaded.

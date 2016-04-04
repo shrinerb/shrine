@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add delete_promoted plugin for deleting promoted files after record has been updated (janko-m)
+
 * Allow passing phase to `Attacher#promote` and generalize promoting background job (janko-m)
 
 * Close the cached file after extracting its metadata in restore_cached plugin (janko-m)
