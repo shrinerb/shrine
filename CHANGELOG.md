@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix logger not being inherited in the logging plugin (janko-m)
+
 * Add delete_promoted plugin for deleting promoted files after record has been updated (janko-m)
 
 * Allow passing phase to `Attacher#promote` and generalize promoting background job (janko-m)

@@ -45,7 +45,7 @@ class Shrine
     # `Shrine.logger.level = Logger::INFO`.
     module Logging
       def self.configure(uploader, logger: nil, stream: $stdout, format: :human)
-        uploader.logger = logger if logger
+        uploader.opts[:logging_logger] = logger
         uploader.opts[:logging_stream] = stream
         uploader.opts[:logging_format] = format
       end
@@ -57,7 +57,7 @@ class Shrine
 
         # Initializes a new logger if it hasn't been initialized.
         def logger
-          @logger ||= (
+          @logger ||= opts[:logging_logger] || (
             logger = Logger.new(opts[:logging_stream])
             logger.level = Logger::INFO
             logger.level = Logger::WARN if ENV["RACK_ENV"] == "test"
