@@ -18,10 +18,10 @@ class Shrine
     #
     # You should always mount a new endpoint for each uploader that you want to
     # enable direct uploads for. This now gives your Ruby application a `POST
-    # /attachments/images/:storage/:name` route, which accepts a "file" query
+    # /attachments/images/:storage/upload` route, which accepts a "file" query
     # parameter, and returns the uploaded file in JSON format:
     #
-    #     # POST /attachments/images/cache/avatar (file upload)
+    #     # POST /attachments/images/cache/upload (file upload)
     #     {
     #       "id": "43kewit94.jpg",
     #       "storage": "cache",
@@ -181,9 +181,13 @@ class Shrine
             allow_storage!(storage_key)
             @uploader = shrine_class.new(storage_key.to_sym)
 
-            r.post ":name" do |name|
+            r.post ["upload", ":name"] do |name|
               file = get_file
-              context = {name: name, phase: :cache}
+              context = {phase: :cache}
+              if name != "upload"
+                warn "The \"POST /:storage/:name\" route of the direct_upload Shrine plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead."
+                context[:name] = name
+              end
 
               json @uploader.upload(file, context)
             end unless presign

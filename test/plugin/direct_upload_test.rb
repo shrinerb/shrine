@@ -11,30 +11,30 @@ describe "the direct_upload plugin" do
     @uploader = uploader(:cache) { plugin :direct_upload }
   end
 
-  describe "POST /:storage/:name" do
+  describe "POST /:storage/upload" do
     before do
       skip "https://github.com/rubinius/rubinius/issues/3544" if RUBY_ENGINE == "rbx"
     end
 
     it "returns a JSON response" do
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       assert_equal 200, response.status
       assert_equal "application/json", response.headers["Content-Type"]
     end
 
     it "uploads the given file" do
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       assert @uploader.storage.exists?(response.body_json["id"])
     end
 
-    it "passes in :name and :phase parameters as context" do
-      @uploader.class.class_eval { def generate_location(io, context); context.to_json; end }
-      response = app.post "/cache/avatar", multipart: {file: image}
-      assert_includes response.body_json['id'], '"name":"avatar","phase":"cache"'
+    it "adds the :phase parameter to context" do
+      @uploader.class.class_eval { def extract_metadata(io, context); {"phase" => context[:phase]}; end }
+      response = app.post "/cache/upload", multipart: {file: image}
+      assert_equal "cache", response.body_json["metadata"]["phase"]
     end
 
     it "assigns metadata" do
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       metadata = response.body_json.fetch('metadata')
       assert_equal 'image.jpg', metadata['filename']
       assert_equal 'image/jpeg', metadata['mime_type']
@@ -45,48 +45,53 @@ describe "the direct_upload plugin" do
       uploaded_file = @uploader.upload(fakeio)
 
       @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       refute_empty response.body_json.fetch('thumb')
 
       @uploader.class.class_eval { define_method(:upload) { |*| Array[uploaded_file] } }
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       refute_empty response.body_json.fetch(0)
     end
 
     it "refuses files which are too big" do
       @uploader.opts[:direct_upload_max_size] = 0
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       assert_http_error 413, response
 
       @uploader.opts[:direct_upload_max_size] = 5 * 1024 * 1024
-      response = app.post "/cache/avatar", multipart: {file: image}
+      response = app.post "/cache/upload", multipart: {file: image}
       assert_equal 200, response.status
     end
 
     it "accepts only POST requests" do
-      response = app.put "/cache/avatar", multipart: {file: image}
+      response = app.put "/cache/upload", multipart: {file: image}
       assert_equal 404, response.status
     end
 
     it "returns appropriate error message for missing file" do
-      response = app.post "/cache/avatar"
+      response = app.post "/cache/upload"
       assert_http_error 400, response
     end
 
     it "returns appropriate error message for invalid file" do
-      response = app.post "/cache/avatar", query: {file: "foo"}
+      response = app.post "/cache/upload", query: {file: "foo"}
       assert_http_error 400, response
     end
 
     it "allows other errors to propagate" do
       @uploader.class.class_eval { def process(io, context); raise; end }
-      assert_raises(RuntimeError) { app.post "/cache/avatar", multipart: {file: image} }
+      assert_raises(RuntimeError) { app.post "/cache/upload", multipart: {file: image} }
     end
 
     it "doesn't exist if :presign was set" do
       @uploader.opts[:direct_upload_presign] = true
-      response = app.post "/cache/avatar"
+      response = app.post "/cache/upload"
       assert_equal 404, response.status
+    end
+
+    it "supports deprecated :name version" do
+      response = app.post "/cache/avatar", multipart: {file: image}
+      assert_equal 200, response.status
     end
   end
 
@@ -132,12 +137,12 @@ describe "the direct_upload plugin" do
   end
 
   it "refuses storages which are not allowed" do
-    response = app.post "/store/avatar"
+    response = app.post "/store/upload"
     assert_http_error 403, response
   end
 
   it "refuses storages which are nonexistent" do
-    response = app.post "/nonexistent/avatar"
+    response = app.post "/nonexistent/upload"
     assert_http_error 403, response
   end
 

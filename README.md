@@ -213,7 +213,7 @@ end
 ```
 ```js
 $('[type="file"]').fileupload({
-  url:       '/attachments/images/cache/avatar',
+  url:       '/attachments/images/cache/upload',
   paramName: 'file',
   add:       function(e, data) { /* Disable the submit button */ },
   progress:  function(e, data) { /* Add a nice progress bar */ },

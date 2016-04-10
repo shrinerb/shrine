@@ -158,7 +158,7 @@ Rails.application.routes.draw do
 end
 ```
 ```rb
-# POST /attachments/images/cache/avatar
+# POST /attachments/images/cache/upload
 {
   "id": "43kewit94.jpg",
   "storage": "cache",
