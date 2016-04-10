@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add separate `:presign_options` option for receiving presign options in direct_upload plugin (janko-m)
+
 * Add ability to generate fake presigns for storages which don't support them for testing (janko-m)
 
 * Change the `/:storage/:name` route to `/:storage/upload` in direct_upload plugin (janko-m)

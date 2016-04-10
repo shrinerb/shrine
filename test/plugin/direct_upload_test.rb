@@ -118,13 +118,13 @@ describe "the direct_upload plugin" do
     end
 
     it "applies options passed to configuration" do
-      @uploader.opts[:direct_upload_presign] = ->(r) { Hash[content_type: r["content_type"]] }
+      @uploader.opts[:direct_upload_presign_options] = ->(r) { Hash[content_type: r["content_type"]] }
       response = app.get "/cache/presign?content_type=image/jpeg"
       assert_equal "image/jpeg", response.body_json["fields"].fetch("Content-Type")
     end
 
     it "allows the configuration block to return nil" do
-      @uploader.opts[:direct_upload_presign] = ->(r) { nil }
+      @uploader.opts[:direct_upload_presign_options] = ->(r) { nil }
       response = app.get "/cache/presign"
       assert_equal 200, response.status
     end

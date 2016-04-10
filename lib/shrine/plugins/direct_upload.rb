@@ -80,13 +80,16 @@ class Shrine
     #     GET /cache/presign?extension=.png
     #
     # If you want additional options to be passed to Storage::S3#presign, you
-    # can pass a block to `:presign`, and it will yield Roda's request object:
+    # can pass `:presign_options` with a hash or a block (which gets yielded
+    # Roda's request object):
     #
-    #     plugin :direct_upload, presign: ->(request) do
-    #       {
-    #         content_length_range: 0..(5*1024*1024), # limit the filesize to 5 MB
-    #         content_type: request.params["content_type"], # use "content_type" query parameter
-    #       }
+    #     plugin :direct_upload, presign: true, presign_options: {acl: "public-read"}
+    #
+    #     plugin :direct_upload, presign: true, presign_options: ->(request) do
+    #       options = {}
+    #       options[:content_length_range] = 0..(5*1024*1024)       # limit the filesize to 5 MB
+    #       options[:content_type] = request.params["content_type"] # use "content_type" query parameter
+    #       options
     #     end
     #
     # See the [Direct Uploads to S3] guide for further instructions on how to
@@ -149,9 +152,16 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], presign: nil, max_size: nil)
+      def self.configure(uploader, allowed_storages: [:cache], presign: nil, presign_options: {}, max_size: nil)
+        if presign.respond_to?(:call)
+          warn "Passing a block to :presign in direct_upload plugin is deprecated and will be removed in Shrine 2. Use :presign_options instead."
+          presign_options = presign
+          presign = true
+        end
+
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_presign] = presign
+        uploader.opts[:direct_upload_presign_options] = presign_options
         uploader.opts[:direct_upload_max_size] = max_size
 
         uploader.assign_upload_endpoint(App) unless uploader.const_defined?(:UploadEndpoint)
@@ -196,16 +206,16 @@ class Shrine
               uploaded_file = upload(file, context)
 
               json uploaded_file
-            end unless presign && presign_storage?
+            end unless presign? && presign_storage?
 
             r.get "presign" do
               location = generate_location
-              options = presign_options
+              options = get_presign_options
 
               presign_data = generate_presign(location, options)
 
               json presign_data
-            end if presign
+            end if presign?
           end
         end
 
@@ -228,7 +238,7 @@ class Shrine
             context[:name] = name
           end
 
-          if presign && !presign_storage?
+          if presign? && !presign_storage?
             context[:location] = request.params["key"]
           end
 
@@ -246,8 +256,9 @@ class Shrine
         end
 
         # Returns dynamic options for generating the presign.
-        def presign_options
-          options = presign.call(request) if presign.respond_to?(:call)
+        def get_presign_options
+          options = presign_options
+          options = options.call(request) if options.respond_to?(:call)
           options || {}
         end
 
@@ -329,8 +340,12 @@ class Shrine
           shrine_class.opts[:direct_upload_allowed_storages]
         end
 
-        def presign
+        def presign?
           shrine_class.opts[:direct_upload_presign]
+        end
+
+        def presign_options
+          shrine_class.opts[:direct_upload_presign_options]
         end
 
         def max_size
