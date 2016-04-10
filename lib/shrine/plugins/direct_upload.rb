@@ -79,6 +79,10 @@ class Shrine
     #
     #     GET /cache/presign?extension=.png
     #
+    # You can change how the key is generated with `:presign_location`:
+    #
+    #     plugin :direct_upload, presign: true, presign_location: ->(request) { "${filename}" }
+    #
     # If you want additional options to be passed to Storage::S3#presign, you
     # can pass `:presign_options` with a hash or a block (which gets yielded
     # Roda's request object):
@@ -93,7 +97,7 @@ class Shrine
     #     end
     #
     # See the [Direct Uploads to S3] guide for further instructions on how to
-    # hook this up in a form.
+    # hook the presigned uploads to a form.
     #
     # ### Testing presigns
     #
@@ -152,7 +156,7 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], presign: nil, presign_options: {}, max_size: nil)
+      def self.configure(uploader, allowed_storages: [:cache], presign: nil, presign_options: {}, presign_location: nil, max_size: nil)
         if presign.respond_to?(:call)
           warn "Passing a block to :presign in direct_upload plugin is deprecated and will be removed in Shrine 2. Use :presign_options instead."
           presign_options = presign
@@ -162,6 +166,7 @@ class Shrine
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_presign] = presign
         uploader.opts[:direct_upload_presign_options] = presign_options
+        uploader.opts[:direct_upload_presign_location] = presign_location
         uploader.opts[:direct_upload_max_size] = max_size
 
         uploader.assign_upload_endpoint(App) unless uploader.const_defined?(:UploadEndpoint)
@@ -209,7 +214,7 @@ class Shrine
             end unless presign? && presign_storage?
 
             r.get "presign" do
-              location = generate_location
+              location = get_presign_location
               options = get_presign_options
 
               presign_data = generate_presign(location, options)
@@ -250,9 +255,13 @@ class Shrine
           uploader.upload(file, context)
         end
 
-        # Generates a unique location.
-        def generate_location
-          SecureRandom.hex(30) + request.params["extension"].to_s
+        # Generates a unique location, or calls `:presign_location`.
+        def get_presign_location
+          if presign_location
+            presign_location.call(request)
+          else
+            SecureRandom.hex(30) + request.params["extension"].to_s
+          end
         end
 
         # Returns dynamic options for generating the presign.
@@ -346,6 +355,10 @@ class Shrine
 
         def presign_options
           shrine_class.opts[:direct_upload_presign_options]
+        end
+
+        def presign_location
+          shrine_class.opts[:direct_upload_presign_location]
         end
 
         def max_size
