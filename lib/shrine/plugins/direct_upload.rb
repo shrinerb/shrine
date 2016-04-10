@@ -178,25 +178,22 @@ class Shrine
 
         route do |r|
           r.on ":storage" do |storage_key|
-            allow_storage!(storage_key)
-            @uploader = shrine_class.new(storage_key.to_sym)
+            @uploader = get_uploader(storage_key)
 
             r.post ["upload", ":name"] do |name|
               file = get_file
-              context = {phase: :cache}
-              if name != "upload"
-                warn "The \"POST /:storage/:name\" route of the direct_upload Shrine plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead."
-                context[:name] = name
-              end
+              context = get_context(name)
 
-              json @uploader.upload(file, context)
+              uploaded_file = upload(file, context)
+
+              json uploaded_file
             end unless presign
 
             r.get "presign" do
-              location = SecureRandom.hex(30) + request.params["extension"].to_s
-              options = presign.call(request) if presign.respond_to?(:call)
+              location = generate_location
+              options = presign_options
 
-              signature = @uploader.storage.presign(location, options || {})
+              signature = generate_presign(location, options)
 
               json Hash[url: signature.url, fields: signature.fields]
             end if presign
@@ -204,6 +201,43 @@ class Shrine
         end
 
         private
+
+        # Instantiates the uploader, checking first if the storage is allowed.
+        def get_uploader(storage_key)
+          allow_storage!(storage_key)
+          shrine_class.new(storage_key.to_sym)
+        end
+
+        # Retrieves the context for the upload.
+        def get_context(name)
+          context = {phase: :cache}
+          if name != "upload"
+            warn "The \"POST /:storage/:name\" route of the direct_upload Shrine plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead."
+            context[:name] = name
+          end
+          context
+        end
+
+        # Uploads the file to the requested storage.
+        def upload(file, context)
+          @uploader.upload(file, context)
+        end
+
+        # Generates a unique location.
+        def generate_location
+          SecureRandom.hex(30) + request.params["extension"].to_s
+        end
+
+        # Returns dynamic options for generating the presign.
+        def presign_options
+          options = presign.call(request) if presign.respond_to?(:call)
+          options || {}
+        end
+
+        # Calls storage to generate a presign.
+        def generate_presign(location, options)
+          @uploader.storage.presign(location, options)
+        end
 
         # Halts the request if storage is not allowed.
         def allow_storage!(storage)
