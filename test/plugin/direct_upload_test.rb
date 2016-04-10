@@ -83,10 +83,10 @@ describe "the direct_upload plugin" do
       assert_raises(RuntimeError) { app.post "/cache/upload", multipart: {file: image} }
     end
 
-    it "doesn't exist if :presign was set" do
+    it "exists if :presign is set for fake presigns" do
       @uploader.opts[:direct_upload_presign] = true
-      response = app.post "/cache/upload"
-      assert_equal 404, response.status
+      response = app.post "/cache/upload", multipart: {file: image}
+      assert_equal 200, response.status
     end
 
     it "supports deprecated :name version" do
@@ -134,6 +134,15 @@ describe "the direct_upload plugin" do
       response = app.get "cache/presign"
       assert_equal 404, response.status
     end
+  end
+
+  it "supports fake presigns" do
+    @uploader.opts[:direct_upload_presign] = true
+    response = app.get "/cache/presign"
+    assert_equal "http://localhost/cache/upload", response.body_json["url"]
+    refute_empty (location = response.body_json["fields"]["key"])
+    response = app.post "/cache/upload", multipart: {file: image}, query: {key: location}
+    assert_equal location, response.body_json["id"]
   end
 
   it "refuses storages which are not allowed" do

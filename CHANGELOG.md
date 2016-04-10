@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add ability to generate fake presigns for storages which don't support them for testing (janko-m)
+
 * Change the `/:storage/:name` route to `/:storage/upload` in direct_upload plugin (janko-m)
 
 * Fix logger not being inherited in the logging plugin (janko-m)

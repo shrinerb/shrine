@@ -50,8 +50,9 @@ class Shrine
     # ## Presigning
     #
     # An alternative to the direct endpoint is uploading directly to the
-    # underlying storage (S3). These uploads usually require extra information
-    # from the server, you can enable that route by passing `presign: true`:
+    # underlying storage (currently only supported by Amazon S3). These uploads
+    # usually require extra information from the server, you can enable that
+    # route by passing `presign: true`:
     #
     #     plugin :direct_upload, presign: true
     #
@@ -90,6 +91,13 @@ class Shrine
     #
     # See the [Direct Uploads to S3] guide for further instructions on how to
     # hook this up in a form.
+    #
+    # ### Testing presigns
+    #
+    # If you want to test presigned uploads, but don't want to pay the
+    # performance cost of using Amazon S3 storage in tests, you can simply swap
+    # out S3 with a storage like FileSystem. The presigns will still get
+    # generated, but will simply point to this endpoint's upload route.
     #
     # ## Allowed storages
     #
@@ -175,6 +183,7 @@ class Shrine
       # with the file upload and returns the uploaded file as JSON.
       class App < Roda
         plugin :default_headers, "Content-Type"=>"application/json"
+        plugin :json_parser
 
         route do |r|
           r.on ":storage" do |storage_key|
@@ -187,20 +196,22 @@ class Shrine
               uploaded_file = upload(file, context)
 
               json uploaded_file
-            end unless presign
+            end unless presign && presign_storage?
 
             r.get "presign" do
               location = generate_location
               options = presign_options
 
-              signature = generate_presign(location, options)
+              presign_data = generate_presign(location, options)
 
-              json Hash[url: signature.url, fields: signature.fields]
+              json presign_data
             end if presign
           end
         end
 
         private
+
+        attr_reader :uploader
 
         # Instantiates the uploader, checking first if the storage is allowed.
         def get_uploader(storage_key)
@@ -211,16 +222,22 @@ class Shrine
         # Retrieves the context for the upload.
         def get_context(name)
           context = {phase: :cache}
+
           if name != "upload"
             warn "The \"POST /:storage/:name\" route of the direct_upload Shrine plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead."
             context[:name] = name
           end
+
+          if presign && !presign_storage?
+            context[:location] = request.params["key"]
+          end
+
           context
         end
 
         # Uploads the file to the requested storage.
         def upload(file, context)
-          @uploader.upload(file, context)
+          uploader.upload(file, context)
         end
 
         # Generates a unique location.
@@ -234,9 +251,30 @@ class Shrine
           options || {}
         end
 
-        # Calls storage to generate a presign.
+        # Generates the presign hash for the request.
         def generate_presign(location, options)
-          @uploader.storage.presign(location, options)
+          if presign_storage?
+            generate_real_presign(location, options)
+          else
+            generate_fake_presign(location, options)
+          end
+        end
+
+        # Generates a presign by calling the storage.
+        def generate_real_presign(location, options)
+          signature = uploader.storage.presign(location, options)
+          {url: signature.url, fields: signature.fields}
+        end
+
+        # Generates a presign that points to the direct upload endpoint.
+        def generate_fake_presign(location, options)
+          url = request.url.sub(/presign$/, "upload")
+          {url: url, fields: {key: location}}
+        end
+
+        # Returns true if the storage supports presigns.
+        def presign_storage?
+          uploader.storage.respond_to?(:presign)
         end
 
         # Halts the request if storage is not allowed.
