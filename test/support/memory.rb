@@ -17,7 +17,7 @@ class Shrine
       end
 
       def stream(id)
-        yield read(id)
+        yield read(id), read(id).length
       end
 
       def open(id)

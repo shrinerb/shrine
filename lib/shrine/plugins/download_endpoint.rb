@@ -107,14 +107,13 @@ class Shrine
               response["Content-Disposition"] = "#{disposition}; filename=#{filename.inspect}"
               response["Content-Type"] = Rack::Mime.mime_type(extname)
 
+              chunks = get_stream(id)
+              _, content_length = chunks.peek
+              response['Content-Length'] = content_length.to_s if content_length
+
               stream do |out|
-                if @storage.respond_to?(:stream)
-                  @storage.stream(id) { |chunk| out << chunk }
-                else
-                  io, buffer = @storage.open(id), ""
-                  out << io.read(16*1024, buffer) until io.eof?
-                  io.close
-                  io.delete if io.class.name == "Tempfile"
+                chunks.each do |chunk|
+                  out << chunk
                 end
               end
             end
@@ -122,6 +121,22 @@ class Shrine
         end
 
         private
+
+        attr_reader :storage
+
+        def get_stream(id)
+          if storage.respond_to?(:stream)
+            storage.enum_for(:stream, id)
+          else
+            Enumerator.new do |y|
+              io = storage.open(id)
+              buffer = ""
+              y.yield(io.read(16*1024, buffer), io.size) until io.eof?
+              io.close
+              io.delete if io.class.name == "Tempfile"
+            end
+          end
+        end
 
         # Halts the request if storage is not allowed.
         def allow_storage!(storage)

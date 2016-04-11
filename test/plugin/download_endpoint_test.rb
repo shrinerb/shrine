@@ -10,7 +10,8 @@ describe "the download_endpoint plugin" do
     @uploader = uploader do
       plugin :download_endpoint, storages: [:store], prefix: nil
     end
-    @id = @uploader.upload(fakeio("image", filename: "foo.jpg")).id
+    @uploaded_file = @uploader.upload(fakeio("image", filename: "foo.jpg"))
+    @id = @uploaded_file.id
   end
 
   describe "app" do
@@ -49,6 +50,19 @@ describe "the download_endpoint plugin" do
       @id = @uploader.upload(fakeio("image")).id
       response = app.get "/store/#{@id}"
       assert_equal "application/octet-stream", response.headers["Content-Type"]
+    end
+
+    it "returns Content-Length" do
+      response = app.get "/store/#{@id}"
+      assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
+
+      @uploader.storage.instance_eval { undef stream }
+      response = app.get "/store/#{@id}"
+      assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
+
+      @uploader.storage.instance_eval { def stream(id); yield read(id); end }
+      response = app.get "/store/#{@id}"
+      refute_includes response.headers.keys, "Content-Length"
     end
 
     it "refuses storages which are not allowed" do
