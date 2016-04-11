@@ -8,7 +8,7 @@ class Shrine
     #
     #     plugin :data_uri
     #
-    # If for example your attachment is called "avatar", this plugin will add
+    # If your attachment is called "avatar", this plugin will add
     # `#avatar_data_uri` and `#avatar_data_uri=` methods to your model.
     #
     #     user.avatar #=> nil
@@ -17,7 +17,14 @@ class Shrine
     #
     #     user.avatar.mime_type         #=> "image/png"
     #     user.avatar.size              #=> 43423
-    #     user.avatar.original_filename #=> nil
+    #
+    # If you want the uploaded file to have an extension, you can generate a
+    # filename based on the content type of the data URI:
+    #
+    #     plugin :data_uri, filename: ->(content_type) do
+    #       extension = MIME::Types[content_type].first.preferred_extension
+    #       "data_uri.#{extension}"
+    #     end
     #
     # If the data URI wasn't correctly parsed, an error message will be added to
     # the attachment column. You can change the default error message:
@@ -38,7 +45,8 @@ class Shrine
       DEFAULT_CONTENT_TYPE = "text/plain"
       DATA_URI_REGEXP = /\Adata:([-\w.+]+\/[-\w.+]+)?(;base64)?,(.*)\z/m
 
-      def self.configure(uploader, error_message: DEFAULT_ERROR_MESSAGE)
+      def self.configure(uploader, filename: nil, error_message: DEFAULT_ERROR_MESSAGE)
+        uploader.opts[:data_uri_filename] = filename
         uploader.opts[:data_uri_error_message] = error_message
       end
 
@@ -69,8 +77,10 @@ class Shrine
           if match = uri.match(DATA_URI_REGEXP)
             content_type = match[1] || DEFAULT_CONTENT_TYPE
             content      = match[2] ? Base64.decode64(match[3]) : match[3]
+            filename     = shrine_class.opts[:data_uri_filename]
+            filename     = filename.call(content_type) if filename
 
-            assign DataFile.new(content, content_type: content_type)
+            assign DataFile.new(content, content_type: content_type, filename: filename)
           else
             message = shrine_class.opts[:data_uri_error_message]
             message = message.call(uri) if message.respond_to?(:call)
@@ -94,16 +104,16 @@ class Shrine
         # Returns contents of the file base64-encoded.
         def base64
           content = storage.read(id)
-          base64 = Base64.encode64(content)
-          base64.chomp
+          Base64.encode64(content).chomp
         end
       end
 
       class DataFile < StringIO
-        attr_reader :content_type
+        attr_reader :content_type, :original_filename
 
-        def initialize(content, content_type: nil)
+        def initialize(content, content_type: nil, filename: nil)
           @content_type = content_type
+          @original_filename = filename
           super(content)
         end
       end

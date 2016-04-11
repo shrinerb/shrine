@@ -48,6 +48,13 @@ describe "the data_uri plugin" do
     assert @user.avatar
   end
 
+  it "can generate filenames" do
+    @attacher.shrine_class.opts[:data_uri_filename] = ->(c) { "data_uri.#{c.split("/").last}" }
+    @user.avatar_data_uri = data_uri("image/png")
+    assert_equal "data_uri.png", @user.avatar.original_filename
+    assert_match /\.png$/, @user.avatar.id
+  end
+
   it "adds a validation error if data_uri wasn't properly matched" do
     @user.avatar_data_uri = "bla"
     assert_equal ["data URI was invalid"], @user.avatar_attacher.errors

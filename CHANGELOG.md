@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:filename` to data_uri plugin for generating filenames based on content type (janko-m)
+
 * Make user-defined hooks always happen around logging (janko-m)
 
 * Add `:presign_location` to direct_upload for generating the key (janko-m)
