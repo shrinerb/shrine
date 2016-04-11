@@ -47,7 +47,7 @@ describe "the moving plugin" do
 
   it "only moves to specified storages" do
     @uploader = @shrine.new(:file_system)
-    @uploader.opts[:move_files_to_storages] = []
+    @uploader.opts[:moving_storages] = []
     uploaded_file = @uploader.upload(file = Tempfile.new(""))
     assert File.exist?(file.path)
   end

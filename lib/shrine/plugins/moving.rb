@@ -25,7 +25,7 @@ class Shrine
     # deleted after upload.
     module Moving
       def self.configure(uploader, storages:)
-        uploader.opts[:move_files_to_storages] = storages
+        uploader.opts[:moving_storages] = storages
       end
 
       module InstanceMethods
@@ -56,7 +56,7 @@ class Shrine
         end
 
         def move?(io, context)
-          opts[:move_files_to_storages].include?(storage_key)
+          opts[:moving_storages].include?(storage_key)
         end
       end
     end
