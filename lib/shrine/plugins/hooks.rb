@@ -144,6 +144,7 @@ class Shrine
           before_delete(*args)
           result = yield
           after_delete(*args)
+          result
         end
 
         def before_delete(*)

@@ -99,4 +99,24 @@ describe "the logging plugin" do
     stdout = capture { @uploader.upload(fakeio, @context) }
     assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(\d+\.\d+s\)$/, stdout
   end
+
+  it "works with hooks plugin in the right order" do
+    @uploader = uploader do
+      plugin :hooks
+      plugin :logging, stream: $out
+    end
+
+    @uploader.class.class_eval do
+      def around_store(io, context)
+        self.class.logger.info "before logging"
+        super
+        self.class.logger.info "after logging"
+      end
+    end
+
+    stdout = capture { @uploader.upload(fakeio) }
+    assert_match "before logging", stdout.lines[0]
+    assert_match "STORE",          stdout.lines[1]
+    assert_match "after logging",  stdout.lines[2]
+  end
 end

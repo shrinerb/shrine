@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make user-defined hooks always happen around logging (janko-m)
+
 * Add `:presign_location` to direct_upload for generating the key (janko-m)
 
 * Add separate `:presign_options` option for receiving presign options in direct_upload plugin (janko-m)
