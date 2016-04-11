@@ -39,4 +39,9 @@ describe "the parallelize plugin" do
     assert uploaded_file.exists?
     refute tempfile.path
   end
+
+  it "propagates any errors" do
+    @uploader.storage.instance_eval { def upload(*); raise; end }
+    assert_raises(RuntimeError) { @uploader.upload(fakeio) }
+  end
 end

@@ -30,7 +30,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
-  gem.add_development_dependency "thread", "~> 0.2"
   gem.add_development_dependency "aws-sdk", "~> 2.1.30"
 
   unless RUBY_ENGINE == "jruby" || ENV["CI"]

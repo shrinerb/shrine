@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove "thread" gem dependency in parallelize plugin (janko-m)
+
 * Add `:filename` to data_uri plugin for generating filenames based on content type (janko-m)
 
 * Make user-defined hooks always happen around logging (janko-m)
