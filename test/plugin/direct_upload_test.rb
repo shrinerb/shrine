@@ -4,7 +4,7 @@ require "rack/test_app"
 
 describe "the direct_upload plugin" do
   def app
-    Rack::TestApp.wrap(@uploader.class::UploadEndpoint)
+    Rack::TestApp.wrap(Rack::Lint.new(@uploader.class::UploadEndpoint))
   end
 
   before do
@@ -139,7 +139,7 @@ describe "the direct_upload plugin" do
 
     it "doesn't exist if :presign wasn't set" do
       @uploader.opts[:direct_upload_presign] = false
-      response = app.get "cache/presign"
+      response = app.get "/cache/presign"
       assert_equal 404, response.status
     end
   end

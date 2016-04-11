@@ -97,8 +97,7 @@ class Shrine
 
         route do |r|
           r.on ":storage" do |storage_key|
-            allow_storage!(storage_key)
-            @storage = shrine_class.find_storage(storage_key)
+            @storage = get_storage(storage_key)
 
             r.get /(.*)/ do |id|
               filename = request.path.split("/").last
@@ -124,6 +123,11 @@ class Shrine
 
         attr_reader :storage
 
+        def get_storage(storage_key)
+          allow_storage!(storage_key)
+          shrine_class.find_storage(storage_key)
+        end
+
         def get_stream(id)
           if storage.respond_to?(:stream)
             storage.enum_for(:stream, id)
@@ -139,9 +143,9 @@ class Shrine
         end
 
         # Halts the request if storage is not allowed.
-        def allow_storage!(storage)
-          if !allowed_storages.map(&:to_s).include?(storage)
-            error! 403, "Storage #{storage.inspect} is not allowed."
+        def allow_storage!(storage_key)
+          if !allowed_storages.map(&:to_s).include?(storage_key)
+            error! 403, "Storage #{storage_key.inspect} is not allowed."
           end
         end
 

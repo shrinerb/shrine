@@ -298,9 +298,9 @@ class Shrine
         end
 
         # Halts the request if storage is not allowed.
-        def allow_storage!(storage)
-          if !allowed_storages.map(&:to_s).include?(storage)
-            error! 403, "Storage #{storage.inspect} is not allowed."
+        def allow_storage!(storage_key)
+          if !allowed_storages.map(&:to_s).include?(storage_key)
+            error! 403, "Storage #{storage_key.inspect} is not allowed."
           end
         end
 
