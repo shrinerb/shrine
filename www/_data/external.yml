@@ -8,6 +8,9 @@
       name: "File Uploads: Asynchronous World"
       url: http://twin.github.io/file-uploads-asynchronous-world
     -
+      name: Rails File Uploading You Can Believe in with Shrine
+      url: http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/
+    -
       name: Uploading files with Shrine in Hanami
       url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
 -
