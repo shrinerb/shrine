@@ -135,7 +135,8 @@ class Shrine
 
       # Streams the object from S3, yielding downloaded chunks.
       def stream(id)
-        object(id).get { |chunk| yield chunk }
+        object = object(id)
+        object.get { |chunk| yield chunk, object.content_length }
       end
 
       # Alias for #download.
