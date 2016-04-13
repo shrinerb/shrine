@@ -4,6 +4,8 @@ require "down"
 class Shrine
   module Storage
     class Memory
+      attr_reader :store
+
       def initialize(store = {})
         @store = store
       end
@@ -14,6 +16,16 @@ class Shrine
 
       def download(id)
         Down.copy_to_tempfile(id, open(id))
+      end
+
+      def move(io, id, metadata = {})
+        store[id] = store.delete(io.id)
+      end
+
+      def movable?(io, id)
+        io.is_a?(UploadedFile) &&
+        io.storage.is_a?(Storage::Memory) &&
+        io.storage.store == store
       end
 
       def stream(id)
@@ -34,6 +46,10 @@ class Shrine
 
       def delete(id)
         @store.delete(id) or raise "file doesn't exist"
+      end
+
+      def multi_delete(ids)
+        ids.each { |id| delete(id) }
       end
 
       def url(id, **options)

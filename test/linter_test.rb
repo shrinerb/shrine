@@ -1,0 +1,203 @@
+require "test_helper"
+require "shrine/storage/linter"
+
+describe Shrine::Storage::Linter do
+  before do
+    @storage = Shrine::Storage::Memory.new
+    @linter = Shrine::Storage::Linter.new(@storage)
+  end
+
+  it "passes for memory storage" do
+    @linter.call
+  end
+
+  describe "upload" do
+    it "tests that storage allows 3rd options argument" do
+      @storage.instance_eval { def upload(io, id); super; end }
+      assert_raises(ArgumentError) { @linter.call }
+    end
+
+    it "takes into account that storage can modify location" do
+      @storage.instance_eval { def upload(io, id, *); id.replace("bar"); super; end }
+      @linter.call
+    end
+  end
+
+  describe "download" do
+    it "tests that returned object is a Tempfile" do
+      @storage.instance_eval { def download(id); File.open(__FILE__); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that returned IO is not empty" do
+      @storage.instance_eval { def download(id); Tempfile.new(""); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  describe "open" do
+    it "tests that returned object is an IO" do
+      @storage.instance_eval { def download(id); StringIO.new("foo").tap { |io| io.instance_eval{undef rewind} }; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that returned IO is not empty" do
+      @storage.instance_eval { def download(id); StringIO.new; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  describe "read" do
+    it "tests that returned object is a string" do
+      @storage.instance_eval { def read(id); []; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that returned object is not empty" do
+      @storage.instance_eval { def read(id); ""; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  describe "exists" do
+    it "tests that it returns true for uploaded files" do
+      @storage.instance_eval { def exists?(id); false; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  describe "url" do
+    it "tests that it's defined" do
+      @storage.instance_eval { def url(id); end }
+      @linter.call
+    end
+
+    it "tests that it returns either nil or a string" do
+      @storage.instance_eval { def url(id); :symbol; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  describe "stream" do
+    it "tests that chunks are yielded" do
+      @storage.instance_eval { def stream(id); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that chunks don't sum up to empty content" do
+      @storage.instance_eval { def stream(id); yield ""; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that yielded content length is a number" do
+      @storage.instance_eval { def stream(id); yield read(id), nil; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "isn't tested if storage doesn't define it" do
+      @storage.instance_eval { undef stream }
+      @linter.call
+    end
+  end
+
+  describe "delete" do
+    it "tests that file doesn't exist anymore" do
+      @storage.instance_eval { def delete(id); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  describe "move" do
+    it "tests that storage allows 3rd options argument" do
+      @storage.instance_eval { def move(io, id); super; end }
+      assert_raises(ArgumentError) { @linter.call }
+    end
+
+    it "tests that #movable? is defined" do
+      @storage.instance_eval { undef movable? }
+      assert_raises(NoMethodError) { @linter.call }
+    end
+
+    it "tests that destination exists" do
+      @storage.instance_eval { def move(io, id, *); store.delete(io.id); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that source doesn't exist" do
+      @storage.instance_eval { def move(io, id, *); store[id] = io.read; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "isn't tested if storage doesn't define it" do
+      @storage.instance_eval { undef move }
+      @linter.call
+    end
+  end
+
+  it "doesn't leave any files" do
+    @linter.call
+    assert_empty @storage.store
+  end
+
+  describe "multi delete" do
+    it "tests that files don't exist anymore" do
+      @storage.instance_eval { def multi_delete(ids); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "isn't tested if storage doesn't define it" do
+      @storage.instance_eval { undef multi_delete }
+      @linter.call
+    end
+  end
+
+  describe "clear!" do
+    it "tests that it requires confirmation" do
+      @storage.instance_eval { def clear!(*); super(:confirm); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that none of the files exist" do
+      @storage.instance_eval { def clear!(confirm = nil); raise Shrine::Confirm unless confirm == :confirm; nil; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+  end
+
+  it "can print errors as warnings" do
+    @storage.instance_eval { def read(id); ""; end }
+    linter = Shrine::Storage::Linter.new(@storage, action: :warn)
+    assert_output(nil, /empty/) { linter.call }
+  end
+
+  it "accepts an IO factory" do
+    @linter.call(->{StringIO.new("file")})
+  end
+
+  it "works for storages that close files on upload" do
+    @storage.instance_eval { def upload(io, id, *); super; io.close; end }
+    @linter.call
+  end
+
+  it "accounts for storages which cannot write immediately to previously used location" do
+    @storage.instance_eval do
+      def upload(io, id, *)
+        @uploaded ||= []
+        raise if @uploaded.include?(id)
+        super
+        @uploaded << id
+      end
+    end
+
+    @linter.call
+  end
+
+  it "accounts for storages processing uploaded files" do
+    @storage.instance_eval { def upload(io, id, *); store[id] = "processed"; end }
+    @linter.call
+  end
+
+  it "doesn't pass any file extensions" do
+    @storage.instance_eval { def upload(io, id, *); raise if id.include?('.'); super; end }
+    @linter.call
+  end
+end

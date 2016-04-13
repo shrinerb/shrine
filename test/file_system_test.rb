@@ -30,8 +30,8 @@ describe Shrine::Storage::FileSystem do
   end
 
   it "passes the linter" do
-    Shrine::Storage::Linter.call(file_system(root))
-    Shrine::Storage::Linter.call(file_system(root, prefix: "uploads"))
+    Shrine::Storage::Linter.new(file_system(root)).call
+    Shrine::Storage::Linter.new(file_system(root, prefix: "uploads")).call
   end
 
   describe "#initialize" do

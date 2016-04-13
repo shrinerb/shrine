@@ -31,8 +31,8 @@ describe Shrine::Storage::S3 do
   end
 
   it "passes the linter" do
-    Shrine::Storage::Linter.call(s3)
-    Shrine::Storage::Linter.call(s3(prefix: "foo"))
+    Shrine::Storage::Linter.new(s3).call
+    Shrine::Storage::Linter.new(s3(prefix: "foo")).call
   end
 
   describe "#upload" do

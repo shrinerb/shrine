@@ -7,18 +7,21 @@ require "tempfile"
 class Shrine
   # Error which is thrown when Storage::Linter fails.
   class LintError < Error
-    attr_reader :errors
-
-    def initialize(errors)
-      @errors = errors
-      super(errors.to_s)
-    end
   end
 
   module Storage
-    # Checks if the storage conforms to Shrine's specification. If the check
-    # fails, by default it raises a LintError, but you can also specify
-    # `action: :warn`.
+    # Checks if the storage conforms to Shrine's specification.
+    #
+    #   Shrine::Storage::Linter.new(storage).call
+    #
+    # If the check fails, by default it raises a `Shrine::LintError`, but you
+    # can also specify `action: :warn`:
+    #
+    #   Shrine::Storage::Linter.new(storage, action: :warn).call
+    #
+    # You can also specify an IO factory which the storage will use:
+    #
+    #   Shrine::Storage::Linter.new(storage).call(->{File.open("test/fixtures/image.jpg")})
     class Linter
       def self.call(*args)
         new(*args).call
@@ -27,67 +30,106 @@ class Shrine
       def initialize(storage, action: :error)
         @storage = storage
         @action  = action
-        @errors  = []
       end
 
-      def call(io_factory = ->{FakeIO.new("image")})
-        storage.upload(io_factory.call, id = "foo.jpg", {"mime_type" => "image/jpeg"})
+      def call(io_factory = default_io_factory)
+        storage.upload(io_factory.call, id = "foo", {})
 
-        file = storage.download(id)
-        error! "#download doesn't return a Tempfile" if !file.is_a?(Tempfile)
-        error! "#download returns an empty file" if file.read.empty?
-
-        error! "#open doesn't return a valid IO object" if !io?(storage.open(id))
-        error! "#read returns an empty string" if storage.read(id).empty?
-        error! "#exists? returns false for a file that was uploaded" if !storage.exists?(id)
-        error! "#url doesn't return a string" if !storage.url(id, {}).is_a?(String)
-
-        if storage.respond_to?(:stream)
-          content = ""
-          storage.stream(id) { |chunk| content << chunk }
-          error! "#stream does not yield any chunks" if content.empty?
-        end
-
-        storage.delete(id)
-        error! "#exists? returns true for a file that was deleted" if storage.exists?(id)
+        lint_download(id)
+        lint_open(id)
+        lint_read(id)
+        lint_exists(id)
+        lint_url(id)
+        lint_stream(id) if storage.respond_to?(:stream)
+        lint_delete(id)
 
         if storage.respond_to?(:move)
-          if storage.respond_to?(:movable?)
-            error! "#movable? doesn't accept 2 arguments" if !(storage.method(:movable?).arity == 2)
-            error! "#move doesn't accept 3 arguments" if !(storage.method(:move).arity == -3)
-
-            uploaded_file = uploader.upload(io_factory.call, location: "bar.jpg")
-
-            if storage.movable?(uploaded_file, "quux.jpg")
-              storage.move(uploaded_file, id = "quux.jpg")
-              error! "#exists? returns false for destination after #move" if !storage.exists?(id)
-              error! "#exists? returns true for source after #move" if storage.exists?(uploaded_file.id)
-            end
-          else
-            error! "responds to #move but doesn't respond to #movable?" if !storage.respond_to?(:movable?)
-          end
+          uploaded_file = uploader.upload(io_factory.call, location: "bar")
+          lint_move(uploaded_file, "quux")
         end
 
         if storage.respond_to?(:multi_delete)
-          storage.upload(io_factory.call, id = "foo.jpg")
-          storage.multi_delete([id])
-          error! "#exists? returns true for a file that was multi-deleted" if storage.exists?(id)
+          storage.upload(io_factory.call, id = "baz")
+          lint_multi_delete(id)
         end
+
+        storage.upload(io_factory.call, id = "quux")
+        lint_clear(id)
+      end
+
+      def lint_download(id)
+        downloaded = storage.download(id)
+        error :download, "doesn't return a Tempfile" if !downloaded.is_a?(Tempfile)
+        error :download, "returns an empty IO object" if downloaded.read.empty?
+      end
+
+      def lint_open(id)
+        opened = storage.open(id)
+        error :open, "doesn't return a valid IO object" if !io?(opened)
+        error :open, "returns an empty IO object" if opened.read.empty?
+      end
+
+      def lint_read(id)
+        read = storage.read(id)
+        error :read, "doesn't return a string" if !read.is_a?(String)
+        error :read, "returns an empty string" if read.empty?
+      end
+
+      def lint_exists(id)
+        error :exists?, "returns false for a file that was uploaded" if !storage.exists?(id)
+      end
+
+      def lint_url(id)
+        # just assert #url exists, it isn't required to return anything
+        url = storage.url(id)
+        error :url, "should return either nil or a string" if !(url.nil? || url.is_a?(String))
+      end
+
+      def lint_stream(id)
+        streamed = storage.enum_for(:stream, id).to_a
+        chunks = streamed.map { |(chunk, _)| chunk }
+        content_length = Array(streamed[0])[1]
+
+        error :stream, "doesn't yield any chunks" if chunks.empty?
+        error :stream, "yielded chunks sum up to empty content" if chunks.inject("", :+).empty?
+
+        if Array(streamed.first).size == 2
+          error :stream, "yielded content length isn't a number" if !content_length.is_a?(Integer)
+        end
+      end
+
+      def lint_delete(id)
+        storage.delete(id)
+        error :delete, "file still #exists? after deleting" if storage.exists?(id)
+      end
+
+      def lint_move(uploaded_file, id)
+        if storage.movable?(uploaded_file, id)
+          storage.move(uploaded_file, id, {})
+          error :exists?, "returns false for destination after #move" if !storage.exists?(id)
+          error :exists?, "returns true for source after #move" if storage.exists?(uploaded_file.id)
+        end
+      end
+
+      def lint_multi_delete(id)
+        storage.multi_delete([id])
+        error :exists?, "returns true for a file that was multi-deleted" if storage.exists?(id)
+      end
+
+      def lint_clear(id)
+        storage.clear!(:confirm)
+        error :clear!, "file still #exists? after clearing" if storage.exists?(id)
 
         begin
           storage.clear!
-          error! "#clear! should raise Shrine::Confirm unless :confirm is passed in"
+          error :clear!, "should raise Shrine::Confirm if :confirm is not passed in"
         rescue Shrine::Confirm
         end
-
-        storage.upload(io_factory.call, id = "foo.jpg")
-        storage.clear!(:confirm)
-        error! "file still #exists? after #clear! was called" if storage.exists?(id)
-
-        raise LintError.new(@errors) if @errors.any? && @action == :error
       end
 
       private
+
+      attr_reader :storage
 
       def uploader
         shrine = Class.new(Shrine)
@@ -96,18 +138,27 @@ class Shrine
       end
 
       def io?(object)
-        missing_methods = IO_METHODS.reject do |m, a|
-          object.respond_to?(m) && [a.count, -1].include?(object.method(m).arity)
+        uploader.send(:_enforce_io, object)
+        true
+      rescue Shrine::InvalidFile
+        false
+      end
+
+      def error(method_name, message)
+        if @action == :error
+          raise LintError, full_message(method_name, message)
+        else
+          warn full_message(method_name, message)
         end
-        missing_methods.empty?
       end
 
-      def error!(message)
-        @errors << message
-        warn(message) if @action.to_s.start_with?("warn")
+      def full_message(method_name, message)
+        "#{@storage.class}##{method_name} - #{message}"
       end
 
-      attr_reader :storage
+      def default_io_factory
+        -> { FakeIO.new("file") }
+      end
 
       class FakeIO
         def initialize(content)

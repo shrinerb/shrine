@@ -171,8 +171,8 @@ linter = Shrine::Storage::Linter.new(storage)
 linter.call
 ```
 
-The linter will test your methods with simple IO objects, and raise an error
-with an appropriate message if a part of the specification isn't satisfied.
+The linter will test your methods with fake IO objects, and raise a
+`Shrine::LintError` if any part of the contract isn't satisfied.
 
 If you want to specify the IO object to use for testing (e.g. you need the IO
 to be an actual image), you can pass in a lambda which returns the IO when
@@ -188,3 +188,7 @@ pass `action: :warn` when initializing
 ```rb
 linter = Shrine::Storage::Linter.new(storage, action: :warn)
 ```
+
+Note that using the linter doesn't mean that you shouldn't write any manual
+tests for your storage. There will likely be some edge cases that won't be
+tested by the linter.
