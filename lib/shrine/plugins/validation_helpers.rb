@@ -75,7 +75,7 @@ class Shrine
         # store_dimensions plugin.
         def validate_max_width(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          if get.width > max
+          if get.width && get.width > max
             errors << error_message(:max_width, message, max)
           end
         end
@@ -84,7 +84,7 @@ class Shrine
         # store_dimensions plugin.
         def validate_min_width(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          if get.width < min
+          if get.width && get.width < min
             errors << error_message(:min_width, message, min)
           end
         end
@@ -93,7 +93,7 @@ class Shrine
         # store_dimensions plugin.
         def validate_max_height(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          if get.height > max
+          if get.height && get.height > max
             errors << error_message(:max_height, message, max)
           end
         end
@@ -102,7 +102,7 @@ class Shrine
         # store_dimensions plugin.
         def validate_min_height(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          if get.height < min
+          if get.height && get.height < min
             errors << error_message(:min_height, message, min)
           end
         end

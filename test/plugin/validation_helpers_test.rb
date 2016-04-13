@@ -29,6 +29,13 @@ describe "the validation_helpers plugin" do
       refute_empty @attacher.errors
     end
 
+    it "doesn't trigger if width is missing" do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(fakeio("not an image"))
+      @attacher.validate_max_width 10
+      assert_empty @attacher.errors
+    end
+
     it "requires the store_dimensions plugin" do
       @attacher.assign(image)
       assert_raises(Shrine::Error) { @attacher.validate_max_width 500 }
@@ -41,6 +48,13 @@ describe "the validation_helpers plugin" do
       @attacher.assign(image)
       @attacher.validate_min_width 500
       refute_empty @attacher.errors
+    end
+
+    it "doesn't trigger if width is missing" do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(fakeio("not an image"))
+      @attacher.validate_min_width 10
+      assert_empty @attacher.errors
     end
 
     it "requires the store_dimensions plugin" do
@@ -57,6 +71,13 @@ describe "the validation_helpers plugin" do
       refute_empty @attacher.errors
     end
 
+    it "doesn't trigger if height is missing" do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(fakeio("not an image"))
+      @attacher.validate_max_height 10
+      assert_empty @attacher.errors
+    end
+
     it "requires the store_dimensions plugin" do
       @attacher.assign(image)
       assert_raises(Shrine::Error) { @attacher.validate_max_height 500 }
@@ -69,6 +90,13 @@ describe "the validation_helpers plugin" do
       @attacher.assign(image)
       @attacher.validate_min_height 500
       refute_empty @attacher.errors
+    end
+
+    it "doesn't trigger if height is missing" do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(fakeio("not an image"))
+      @attacher.validate_min_height 10
+      assert_empty @attacher.errors
     end
 
     it "requires the store_dimensions plugin" do

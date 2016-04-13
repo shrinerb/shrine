@@ -1,5 +1,7 @@
 ## HEAD
 
+* Prevent errors when attempting to validate dimensions when they are absent (janko-m)
+
 * Remove "thread" gem dependency in parallelize plugin (janko-m)
 
 * Add `:filename` to data_uri plugin for generating filenames based on content type (janko-m)
