@@ -1,5 +1,3 @@
-require "json"
-
 class Shrine
   module Plugins
     # The restore_cached plugin ensures the cached file data hasn't been

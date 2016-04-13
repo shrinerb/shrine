@@ -198,7 +198,7 @@ class Shrine
       # Deletes all files from the storage (requires confirmation).
       def clear!(confirm = nil)
         raise Shrine::Confirm unless confirm == :confirm
-        @bucket.object_versions(prefix: prefix).delete
+        bucket.object_versions(prefix: prefix).delete
       end
 
       # Returns a signature for direct uploads. Internally it calls
@@ -215,12 +215,12 @@ class Shrine
 
       # Returns the S3 object.
       def object(id)
-        @bucket.object([*prefix, id].join("/"))
+        bucket.object([*prefix, id].join("/"))
       end
 
       # This is used to check whether an S3 file is copyable.
       def access_key_id
-        @s3.client.config.credentials.credentials.access_key_id
+        s3.client.config.credentials.credentials.access_key_id
       end
 
       private
@@ -238,7 +238,7 @@ class Shrine
 
       # The file is copyable if it's on S3 and on the same Amazon account.
       def copyable?(io)
-        io.respond_to?(:storage) &&
+        io.is_a?(UploadedFile) &&
         io.storage.is_a?(Storage::S3) &&
         io.storage.access_key_id == access_key_id
       end
