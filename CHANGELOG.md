@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `before_*` and `after_*` hooks happen before and after `around_*` hooks (janko-m)
+
 * Rename restore_cached plugin to more accurate "restore_cached_data" (janko-m)
 
 * Prevent errors when attempting to validate dimensions when they are absent (janko-m)

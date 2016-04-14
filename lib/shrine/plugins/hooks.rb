@@ -22,24 +22,21 @@ class Shrine
     #
     # Shrine calls hooks in the following order when uploading a file:
     #
+    # * `before_upload`
     # * `around_upload`
-    #     * `before_upload`
+    #     * `before_process`
     #     * `around_process`
-    #         * `before_process`
-    #         * PROCESS
-    #         * `after_process`
+    #     * `after_process`
+    #     * `before_store`
     #     * `around_store`
-    #         * `before_store`
-    #         * STORE
-    #         * `after_store`
-    #     * `after_upload`
+    #     * `after_store`
+    # * `after_upload`
     #
     # Shrine calls hooks in the following order when deleting a file:
     #
+    # * `before_delete`
     # * `around_delete`
-    #     * `before_delete`
-    #     * DELETE
-    #     * `after_delete`
+    # * `after_delete`
     #
     # By default every `around_*` hook returns the result of the corresponding
     # operation:
@@ -51,39 +48,18 @@ class Shrine
     #         result # it's good to always return the result for consistent behaviour
     #       end
     #     end
-    #
-    # It may be useful to know that you can realize some form of communication
-    # between the hooks; whatever you save to the `context` hash will be
-    # forwarded further down:
-    #
-    #     class ImageUploader < Shrine
-    #       def before_process(io, context)
-    #         context[:_foo] = "bar"
-    #         super
-    #       end
-    #
-    #       def before_store(io, context)
-    #         context[:_foo] #=> "bar"
-    #         super
-    #       end
-    #     end
-    #
-    # In that case you should always somehow mark this key as private (for
-    # example with an underscore) so that it doesn't clash with any
-    # existing keys.
     module Hooks
       module InstanceMethods
         def upload(io, context = {})
           result = nil
+          before_upload(io, context)
           around_upload(io, context) { result = super }
+          after_upload(io, context)
           result
         end
 
         def around_upload(*args)
-          before_upload(*args)
-          result = yield
-          after_upload(*args)
-          result
+          yield
         end
 
         def before_upload(*)
@@ -95,16 +71,15 @@ class Shrine
 
         def processed(io, context)
           result = nil
+          before_process(io, context)
           around_process(io, context) { result = super }
+          after_process(io, context)
           result
         end
         private :processed
 
         def around_process(*args)
-          before_process(*args)
-          result = yield
-          after_process(*args)
-          result
+          yield
         end
 
         def before_process(*)
@@ -116,15 +91,14 @@ class Shrine
 
         def store(io, context = {})
           result = nil
+          before_store(io, context)
           around_store(io, context) { result = super }
+          after_store(io, context)
           result
         end
 
         def around_store(*args)
-          before_store(*args)
-          result = yield
-          after_store(*args)
-          result
+          yield
         end
 
         def before_store(*)
@@ -136,15 +110,14 @@ class Shrine
 
         def delete(io, context = {})
           result = nil
+          before_delete(io, context)
           around_delete(io, context) { result = super }
+          after_delete(io, context)
           result
         end
 
         def around_delete(*args)
-          before_delete(*args)
-          result = yield
-          after_delete(*args)
-          result
+          yield
         end
 
         def before_delete(*)

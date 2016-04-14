@@ -6,22 +6,22 @@ describe "the hooks plugin" do
   end
 
   it "provides uploading hooks" do
+    @uploader.instance_variable_set("@hooks", [])
     @uploader.instance_eval do
-      def around_upload(io, context)
-        @hooks = []
-        @hooks << "before around_upload"
-        super
-        @hooks << "after around_upload"
-      end
-
       def before_upload(io, context)
         @hooks << "before_upload"
         super
       end
 
-      def after_upload(io, context)
+      def around_upload(io, context)
+        @hooks << "before around_upload"
         super
-        @hooks << "after_upload"
+        @hooks << "after around_upload"
+      end
+
+      def before_process(io, context)
+        @hooks << "before_process"
+        super
       end
 
       def around_process(io, context)
@@ -30,21 +30,9 @@ describe "the hooks plugin" do
         @hooks << "after around_process"
       end
 
-      def before_process(io, context)
-        @hooks << "before_process"
-        super
-      end
-
       def after_process(io, context)
         super
         @hooks << "after_process"
-      end
-
-
-      def around_store(io, context)
-        @hooks << "before around_store"
-        super
-        @hooks << "after around_store"
       end
 
       def before_store(io, context)
@@ -52,9 +40,20 @@ describe "the hooks plugin" do
         super
       end
 
+      def around_store(io, context)
+        @hooks << "before around_store"
+        super
+        @hooks << "after around_store"
+      end
+
       def after_store(io, context)
         super
         @hooks << "after_store"
+      end
+
+      def after_upload(io, context)
+        super
+        @hooks << "after_upload"
       end
     end
 
@@ -63,34 +62,35 @@ describe "the hooks plugin" do
     assert_kind_of Shrine::UploadedFile, result
     assert_equal \
       [
-        "before around_upload",
         "before_upload",
-        "before around_process",
-        "before_process",
-        "after_process",
-        "after around_process",
-        "before around_store",
-        "before_store",
-        "after_store",
-        "after around_store",
-        "after_upload",
+        "before around_upload",
+          "before_process",
+          "before around_process",
+          "after around_process",
+          "after_process",
+
+          "before_store",
+          "before around_store",
+          "after around_store",
+          "after_store",
         "after around_upload",
+        "after_upload",
       ],
       @uploader.instance_variable_get("@hooks")
   end
 
   it "provides deleting hooks" do
+    @uploader.instance_variable_set("@hooks", [])
     @uploader.instance_eval do
-      def around_delete(io, context)
-        @hooks = []
-        @hooks << "before around_delete"
-        super
-        @hooks << "after around_delete"
-      end
-
       def before_delete(io, context)
         @hooks << "before_delete"
         super
+      end
+
+      def around_delete(io, context)
+        @hooks << "before around_delete"
+        super
+        @hooks << "after around_delete"
       end
 
       def after_delete(io, context)
@@ -105,10 +105,10 @@ describe "the hooks plugin" do
     assert_kind_of Shrine::UploadedFile, result
     assert_equal \
       [
-        "before around_delete",
         "before_delete",
-        "after_delete",
+        "before around_delete",
         "after around_delete",
+        "after_delete",
       ],
       @uploader.instance_variable_get("@hooks")
   end
