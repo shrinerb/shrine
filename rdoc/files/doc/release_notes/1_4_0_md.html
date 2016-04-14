@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>1.4.0.md</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>1.4.0.md</h1>
+        <div class='paths'>
+          doc/release_notes/1.4.0.md
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>Added delete_promoted plugin for deleting files that have been promoted,
+            which  applies to any cached files that have been uploaded to store.</p>
+            </li><li>
+            <p>Added <code>:fallbacks</code> option to versions plugin, which allows
+            specifying  fallback URLs for versions which haven&#39;t finished
+            processing yet.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>,&#x000A;    <span class="ruby-identifier">names</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">thumb</span>, :<span class="ruby-identifier">thumb_2x</span>, :<span class="ruby-identifier">large</span>, :<span class="ruby-identifier">large_2x</span>],&#x000A;    <span class="ruby-identifier">fallbacks</span><span class="ruby-operator">:</span> {:<span class="ruby-identifier">thumb_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">thumb</span>, :<span class="ruby-identifier">large_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">large</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <pre class="ruby"><span class="ruby-comment"># ... (background job is working)</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(:<span class="ruby-identifier">thumb_2x</span>) <span class="ruby-comment"># returns :thumb URL until :thumb_2x becomes available</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(:<span class="ruby-identifier">large_2x</span>) <span class="ruby-comment"># returns :large URL until :large_2x becomes available</span></pre>
+            <ul><li>
+            <p>Added ability to do custom backgrounding via <code>Attacher.dump</code> and
+            <code>Attacher.load</code>.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Record</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">after_commit</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">something_happened?</span>&#x000A;      <span class="ruby-identifier">data</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">image_attacher</span>)&#x000A;      <span class="ruby-constant">SomethingJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">SomethingJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <ul><li>
+            <p>Added <code>:presign_location</code> to direct_upload plugin for generating
+            the location  for presigned upload.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">presign_location</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">r</span>) { <span class="ruby-string">&quot;${filename}&quot;</span> }</pre>
+            <ul><li>
+            <p>Added <code>:filename</code> to data_uri for generating filenames based on
+            content type  of the data URI, in order for filename&#39;s extension to be
+            automatically used  in uploaded file&#39;s location.</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">content_type</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-constant">MIME</span><span class="ruby-operator">::</span><span class="ruby-constant">Types</span>[<span class="ruby-identifier">content_type</span>].<span class="ruby-identifier">first</span>.<span class="ruby-identifier">preferred_extension</span>&#x000A;  <span class="ruby-node">&quot;data_uri.#{extension}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The download_endpoint now sets the <code>Content-Length</code> response
+            header, if the  size of the uploaded file is available (S3 now supports
+            it).</p>
+            </li><li>
+            <p>It&#39;s now possible to swap S3 storage with FileSystem when using
+            presigns in  direct_upload plugin, without changing any code, which is very
+            useful in  tests.</p>
+            </li><li>
+            <p>The backup plugin now waits for the record to be saved with stored files 
+            before it starts uploading to backup storage.</p>
+            </li><li>
+            <p>The logging plugin now logs both number of input and output files for 
+            processing.</p>
+            </li><li>
+            <p>The migration_helpers now has a <code>:delegate</code> option, which when
+            set to false  doesn&#39;t add any additional methods to the model.</p>
+            </li><li>
+            <p>In restore_cached_data plugin the cached file is now closed after the 
+            metadata has been extracted.</p>
+            </li><li>
+            <p><code>Attacher#promote</code> can now accept a phase, which makes it more
+            generic and  can now be used for securely reuploading stored files (no
+            processing, aborts  if attachment changes, old file is deleted with
+            delete_promoted plugin),  which is useful for moving to new location.</p>
+            </li><li>
+            <p>The <code>:presign_options</code> now accepts a static hash in addition to
+            a block.</p>
+            </li><li>
+            <p>The direct_upload endpoint has now been refactored into methods, which
+            means  its now easier to override parts of its behaviour.</p>
+            </li><li>
+            <p>The user-defined hooks will now happen outside logging, regardless of the 
+            load order of logging and hooks plugins.</p>
+            </li><li>
+            <p>The parallelize plugin doesn&#39;t depend on the <a
+            href="https://github.com/meh/ruby-thread">thread</a> gem anymore, it now 
+            uses threads directly.</p>
+            </li><li>
+            <p>Improved the storage linter; it now accounts for some subtleties which
+            could  potentially make some storages error, it fails fast, and it tests
+            the content  length in streaming.</p>
+            </li><li>
+            <p>The <code>before_*</code> and <code>after_*</code> hooks now always happen
+            around <code>around_*</code> hooks.</p>
+            </li><li>
+            <p>The IO is now automatically rewinded when custom analyzer is used with 
+            determine_mime_type and store_dimensions plugins.</p>
+            </li></ul>
+            
+            <h1 id="label-Bug+fixes">Bug fixes<span><a href="#label-Bug+fixes">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>Fixed logger not being inherited in the logging plugin.</p>
+            </li><li>
+            <p>In validation_helpers plugin the dimensions validations now don&#39;t do
+            anything  when dimensions are missing from metadata (previously they were
+            erroring).</p>
+            </li><li>
+            <p>The keep_files plugin doesn&#39;t spawn delete background jobs anymore for
+            files  that are to be kept.</p>
+            </li><li>
+            <p>Deleting backed up files now actually works with backgrounding plugin.</p>
+            </li><li>
+            <p><a href="../../../classes/Shrine.html">Shrine</a> now ignores validations
+            when promoting, which means it will work when  saving the record when it is
+            invalid (but validations are skipped).</p>
+            </li><li>
+            <p>S3 storage now properly encodes the URL when <code>:host</code> option is
+            used, which  would previously cause errors if location contained URL-unsafe
+            characters.</p>
+            </li><li>
+            <p>Eliminate a tiny chance of a race condition during promoting, which could 
+            happen with subsequent attachment updates on the same record when using the
+            backgrounding plugin.</p>
+            </li><li>
+            <p>S3 storage now uses an assigned SSL certificate when downloading.</p>
+            </li></ul>
+            
+            <h1 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The restore_cached plugin has been renamed to "restore_cached_data". The 
+            plugin will stop being loadable with the old name in <a
+            href="../../../classes/Shrine.html">Shrine</a> 2.</p>
+            </li><li>
+            <p>In direct_upload presign options are now accepted via
+            <code>:presign_options</code>  (instead of <code>:presign</code>).
+            Accepting them via <code>:presign</code> will stop working in  <a
+            href="../../../classes/Shrine.html">Shrine</a> 2.</p>
+            </li><li>
+            <p>The direct_upload&#39;s endpoint has now been changed from
+            <code>/:storage/:name</code> to  <code>/:storage/upload</code>. The old
+            endpoint is still accessible and will stay in  <a
+            href="../../../classes/Shrine.html">Shrine</a> 2, but will be removed in <a
+            href="../../../classes/Shrine.html">Shrine</a> 3.</p>
+            </li><li>
+            <p>The <code>:delegate</code> option is now mandatory to pass for
+            migration_helpers,  until <a href="../../../classes/Shrine.html">Shrine</a>
+            2 where it will default to false.</p>
+            </li><li>
+            <p>The delete_uploaded plugin has been renamed to "delete_raw". The plugin can
+            still be loaded via "delete_uploaded", but this won&#39;t be possible
+            anymore in  <a href="../../../classes/Shrine.html">Shrine</a> 2.</p>
+            </li><li>
+            <p>The moving plugin now deprecates "fake" moving, where in case the storage 
+            didn&#39;t support moving the file would be uploaded and deleted. In <a
+            href="../../../classes/Shrine.html">Shrine</a> 2  the file won&#39;t be
+            deleted anymore (you can use the delete_raw plugin for  this
+            functionality).</p>
+            </li><li>
+            <p>The <code>Shrine.versions!</code> and <code>Shrine.versions</code> methods
+            have been removed, as  they were part of internal API of versions plugin,
+            but accidentally made  public.</p>
+            </li></ul>
+          </div>
+          <div id='context'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -46,7 +46,7 @@
             aborted).</p>
             </li></ul>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UploadJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">record</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">record</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">published</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Post</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PromoteJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">record</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">record</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">published</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Post</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
             <ul><li>

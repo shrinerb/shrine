@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -49,13 +49,18 @@
             href="../classes/Shrine.html">Shrine</a>.</p>
             
             <h2 id="label-Resources">Resources<span><a href="#label-Resources">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>Documentation: <a target="_top" href="http://shrinerb.com">shrinerb.com</a>  Source: <a
-            href="https://github.com/janko-m/shrine">github.com/janko-m/shrine</a> 
-            Bugs: <a
-            href="https://github.com/janko-m/shrine/issues">github.com/janko-m/shrine/issues</a>
-            Help &amp; Dicussion: <a
+            <ul><li>
+            <p>Documentation: <a target="_top" href="http://shrinerb.com">shrinerb.com</a></p>
+            </li><li>
+            <p>Source: <a
+            href="https://github.com/janko-m/shrine">github.com/janko-m/shrine</a></p>
+            </li><li>
+            <p>Bugs: <a
+            href="https://github.com/janko-m/shrine/issues">github.com/janko-m/shrine/issues</a></p>
+            </li><li>
+            <p>Help &amp; Dicussion: <a
             href="https://groups.google.com/forum/#!forum/ruby-shrine">groups.google.com/group/ruby-shrine</a></p>
+            </li></ul>
             
             <h2 id="label-Installation">Installation<span><a href="#label-Installation">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -92,7 +97,7 @@
             href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html">Shrine::UploadedFile</a>,
             which represents the file that was uploaded, and we can do a lot with it:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>      <span class="ruby-comment">#=&gt; &quot;/uploads/938kjsdf932.mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>     <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>  <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {...}</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-comment"># ...</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>      <span class="ruby-comment">#=&gt; &quot;/uploads/938kjsdf932.mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {...}</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>     <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>  <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-comment"># ...</span></pre>
             
             <p>To read about the metadata that is stored with the uploaded file, see the
             <a href="#metadata">metadata</a> section.</p>
@@ -107,7 +112,7 @@
             <p>Firstly we need to assign the special <code>:cache</code> and
             <code>:store</code> storages:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
             
             <p>These storages will by default be used for caching and storing attachments,
             but you can use additional storages with the <code>default_storage</code>
@@ -188,7 +193,7 @@
             
             <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments/images&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre>$(&#39;[type=&quot;file&quot;]&#39;).fileupload({&#x000A;  url:       &#39;/attachments/images/cache/avatar&#39;,&#x000A;  paramName: &#39;file&#39;,&#x000A;  add:       function(e, data) {    Disable the submit button    },&#x000A;  progress:  function(e, data) {    Add a nice progress bar    },&#x000A;  done:      function(e, data) { /* Fill in the hidden field with the result */ }&#x000A;});</pre>
+            <pre>$(&#39;[type=&quot;file&quot;]&#39;).fileupload({&#x000A;  url:       &#39;/attachments/images/cache/upload&#39;,&#x000A;  paramName: &#39;file&#39;,&#x000A;  add:       function(e, data) {    Disable the submit button    },&#x000A;  progress:  function(e, data) {    Add a nice progress bar    },&#x000A;  done:      function(e, data) { /* Fill in the hidden field with the result */ }&#x000A;});</pre>
             
             <p>The plugin also provides a route that can be used for doing direct S3
             uploads. See the documentation of the plugin for more details, as well as
@@ -332,6 +337,9 @@
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">metadata</span> = <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;custom&quot;</span>] = <span class="ruby-identifier">extract_custom</span>(<span class="ruby-identifier">io</span>)&#x000A;    <span class="ruby-identifier">metadata</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
+            <p>Note that if you&#39;re extracting custom metadata from Ruby, you should
+            always rewind the file afterwards.</p>
+            
             <h2 id="label-Locations">Locations<span><a href="#label-Locations">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>By default files will all be put in the same folder. If you want that each
@@ -349,8 +357,8 @@
             
             <p>Note that there should always be a random component in the location,
             otherwise dirty tracking won&#39;t be detected properly (you can use
-            <code>Shrine#generate_uid</code>). Also note that you can access the
-            extracted metadata here through <code>context[:metadata]</code>.</p>
+            <code>Shrine#generate_uid</code>). Inside this method you can access the
+            extracted metadata through <code>context[:metadata]</code>.</p>
             
             <p>When using the uploader directly, it&#39;s possible to bypass
             <code>#generate_location</code> by passing in <code>:location</code>:</p>
@@ -403,9 +411,9 @@
             <code>backgrounding</code> plugin which makes it really easy to plug in
             your backgrounding library:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">UploadJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">UploadJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PromoteJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DeleteJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
@@ -441,7 +449,7 @@
             <p>The plugin system respects inheritance, so you can choose which plugins
             will be applied to which uploaders:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span> <span class="ruby-comment"># enables logging for all uploaders</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span> <span class="ruby-comment"># stores dimensions only for this uploader</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span> <span class="ruby-comment"># enables logging for all uploaders</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span> <span class="ruby-comment"># stores dimensions only for this uploader and its descendants</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Inspiration">Inspiration<span><a href="#label-Inspiration">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

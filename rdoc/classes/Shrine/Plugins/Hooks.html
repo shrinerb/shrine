@@ -58,59 +58,40 @@
             <p><a href="../../Shrine.html">Shrine</a> calls hooks in the following order
             when uploading a file:</p>
             <ul><li>
-            <p><code>around_upload</code></p>
-            <ul><li>
             <p><code>before_upload</code></p>
             </li><li>
-            <p><code>around_process</code></p>
+            <p><code>around_upload</code></p>
             <ul><li>
             <p><code>before_process</code></p>
             </li><li>
-            <p>PROCESS</p>
+            <p><code>around_process</code></p>
             </li><li>
             <p><code>after_process</code></p>
-            </li></ul>
             </li><li>
-            <p><code>around_store</code></p>
-            <ul><li>
             <p><code>before_store</code></p>
             </li><li>
-            <p>STORE</p>
+            <p><code>around_store</code></p>
             </li><li>
             <p><code>after_store</code></p>
             </li></ul>
             </li><li>
             <p><code>after_upload</code></p>
             </li></ul>
-            </li></ul>
             
             <p><a href="../../Shrine.html">Shrine</a> calls hooks in the following order
             when deleting a file:</p>
             <ul><li>
-            <p><code>around_delete</code></p>
-            <ul><li>
             <p><code>before_delete</code></p>
             </li><li>
-            <p>DELETE</p>
+            <p><code>around_delete</code></p>
             </li><li>
             <p><code>after_delete</code></p>
-            </li></ul>
             </li></ul>
             
             <p>By default every <code>around_*</code> hook returns the result of the
             corresponding operation:</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-identifier">result</span>.<span class="ruby-identifier">class</span> <span class="ruby-comment">#=&gt; Shrine::UploadedFile</span>&#x000A;    <span class="ruby-identifier">result</span> <span class="ruby-comment"># it&#39;s good to always return the result for consistent behaviour</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>It may be useful to know that you can realize some form of communication
-            between the hooks; whatever you save to the <code>context</code> hash will
-            be forwarded further down:</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">_foo</span>] = <span class="ruby-string">&quot;bar&quot;</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">_foo</span>] <span class="ruby-comment">#=&gt; &quot;bar&quot;</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>In that case you should always somehow mark this key as private (for
-            example with an underscore) so that it doesn&#39;t clash with any existing
-            keys.</p>
           </div>
           <div id='context'>
           </div>

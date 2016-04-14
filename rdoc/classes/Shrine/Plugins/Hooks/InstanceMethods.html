@@ -77,7 +77,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-after_delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-after_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 152</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_delete</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-after_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 126</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_delete</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-after_process'>
@@ -93,7 +93,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-after_process-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-after_process-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 113</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_process</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-after_process-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 88</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_process</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-after_store'>
@@ -109,7 +109,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-after_store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-after_store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 133</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_store</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-after_store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 107</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_store</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-after_upload'>
@@ -125,7 +125,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-after_upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-after_upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 92</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_upload</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-after_upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 68</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">after_upload</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-around_delete'>
@@ -141,7 +141,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-around_delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-around_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 143</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_delete</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">before_delete</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span>&#x000A;  <span class="ruby-identifier">after_delete</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-around_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 119</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_delete</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">yield</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-around_process'>
@@ -157,7 +157,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-around_process-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-around_process-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 103</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_process</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">before_process</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span>&#x000A;  <span class="ruby-identifier">after_process</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-around_process-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 81</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_process</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">yield</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-around_store'>
@@ -173,7 +173,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-around_store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-around_store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 123</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">before_store</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span>&#x000A;  <span class="ruby-identifier">after_store</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-around_store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 100</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">yield</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-around_upload'>
@@ -189,7 +189,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-around_upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-around_upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 82</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_upload</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">before_upload</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">yield</span>&#x000A;  <span class="ruby-identifier">after_upload</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-around_upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_upload</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">yield</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-before_delete'>
@@ -205,7 +205,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-before_delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-before_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 149</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_delete</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-before_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 123</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_delete</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-before_process'>
@@ -221,7 +221,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-before_process-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-before_process-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 110</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_process</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-before_process-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 85</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_process</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-before_store'>
@@ -237,7 +237,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-before_store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-before_store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 130</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_store</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-before_store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 104</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_store</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-before_upload'>
@@ -253,7 +253,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-before_upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-before_upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 89</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_upload</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-before_upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 65</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">before_upload</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-delete'>
@@ -269,7 +269,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 137</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-identifier">around_delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span> }&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 111</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-identifier">before_delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">around_delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span> }&#x000A;  <span class="ruby-identifier">after_delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-store'>
@@ -285,7 +285,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 117</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span> }&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 92</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-identifier">before_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span> }&#x000A;  <span class="ruby-identifier">after_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-upload'>
@@ -301,7 +301,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 76</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-identifier">around_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span> }&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/plugins/hooks.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">nil</span>&#x000A;  <span class="ruby-identifier">before_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">around_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span> }&#x000A;  <span class="ruby-identifier">after_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

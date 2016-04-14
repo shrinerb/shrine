@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::RestoreCached::AttacherMethods</title>
+    <title>Shrine::Plugins::DeletePromoted</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -27,18 +27,32 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::RestoreCached::AttacherMethods
+          Shrine::Plugins::DeletePromoted
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../../files/lib/shrine/plugins/restore_cached_rb.html">lib/shrine/plugins/restore_cached.rb</a>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/delete_promoted_rb.html">lib/shrine/plugins/delete_promoted.rb</a>
           </li>
         </ol>
       </div>
       <div id='content'>
         <div id='text'>
-          <div id='description'></div>
+          <div id='description'>
+            
+            <p>The delete_promoted plugin deletes files that have been promoted, after the
+            record is saved. This means that cached files handled by the attacher will
+            automatically get deleted once they&#39;re uploaded to store. This also
+            applies to any other uploaded file passed to <code>Attacher#promote</code>.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_promoted</span></pre>
+          </div>
           <div id='context'>
+          </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="DeletePromoted/AttacherMethods.html">Shrine::Plugins::DeletePromoted::AttacherMethods</a></li>
+            </ol>
           </div>
           <div id='section'>
           </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::DeleteUploaded</title>
+    <title>Shrine::Plugins::DeleteRaw</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::DeleteUploaded
+          Shrine::Plugins::DeleteRaw
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../files/lib/shrine/plugins/delete_uploaded_rb.html">lib/shrine/plugins/delete_uploaded.rb</a>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/delete_raw_rb.html">lib/shrine/plugins/delete_raw.rb</a>
           </li>
         </ol>
       </div>
@@ -39,18 +39,16 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The delete_uploaded plugin will automatically delete files after they have
-            been uploaded. This is especially useful when doing processing, to ensure
-            that temporary files have been deleted after upload. One exception are
-            <code>Shrine::UploadedFile</code> files, they won&#39;t get deleted for
-            stability reasons.</p>
+            <p>The delete_raw plugin will automatically delete raw files that have been
+            uploaded. This is especially useful when doing processing, to ensure that
+            temporary files have been deleted after upload.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_uploaded</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_raw</span></pre>
             
-            <p>By default this behaviour will be applied to all storages, but you can
-            limit this only to specified storages:</p>
+            <p>By default any raw file that was uploaded will be deleted, but you can
+            limit this only to files uploaded to certain storages:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_uploaded</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">store</span>]</pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_raw</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">store</span>]</pre>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -64,7 +62,7 @@
           <div id='class-list'>
             <h2>Classes and Modules</h2>
             <ol>
-              <li><a target="docwin" href="DeleteUploaded/InstanceMethods.html">Shrine::Plugins::DeleteUploaded::InstanceMethods</a></li>
+              <li><a target="docwin" href="DeleteRaw/InstanceMethods.html">Shrine::Plugins::DeleteRaw::InstanceMethods</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -74,7 +72,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, storages: :all)</span>
+                  <span class='arguments'>(uploader, storages: nil)</span>
                 </div>
                 <div class='description'>
                   
@@ -83,7 +81,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/delete_uploaded.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> <span class="ruby-value">:all</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:delete_uploaded_storages</span>] = <span class="ruby-identifier">storages</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/delete_raw.rb, line 14</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:delete_uploaded_storages</span>] = <span class="ruby-identifier">storages</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

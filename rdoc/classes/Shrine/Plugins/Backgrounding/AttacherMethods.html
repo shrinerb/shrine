@@ -43,6 +43,7 @@
             <h3>Public Instance</h3>
             <ol>
               <li><a target="docwin" href="#method-i-_promote">_promote</a></li>
+              <li><a target="docwin" href="#method-i-promote">promote</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -64,7 +65,24 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-_promote-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 101</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_promote</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_promote</span>]&#x000A;    <span class="ruby-identifier">data</span> = {&#x000A;      <span class="ruby-string">&quot;uploaded_file&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;record&quot;</span>        =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>],&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>,&#x000A;    }&#x000A;&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_promote</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 135</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_promote</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_promote</span>]&#x000A;    <span class="ruby-identifier">data</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">merge</span>(<span class="ruby-string">&quot;phase&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;store&quot;</span>)&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_promote</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">promote?</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-promote'>
+                <a name='method-i-promote'></a>
+                <div class='synopsis'>
+                  <span class='name'>promote</span>
+                  <span class='arguments'>(cached_file, *)</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>Returns early if attachments don&#39;t match.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-promote-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 145</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">cached_file</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached_file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">get</span>&#x000A;  <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

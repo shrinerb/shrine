@@ -31,12 +31,88 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-1.4.0+-282016-04-15-29">1.4.0 (2016-04-15)<span><a href="#label-1.4.0+-282016-04-15-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Make determine_mime_type and store_dimensions automatically rewind IO with
+            custom analyzer (janko-m)</p>
+            </li><li>
+            <p>Make <code>before_*</code> and <code>after_*</code> hooks happen before and
+            after <code>around_*</code> hooks (janko-m)</p>
+            </li><li>
+            <p>Rename restore_cached plugin to more accurate "restore_cached_data"
+            (janko-m)</p>
+            </li><li>
+            <p>Prevent errors when attempting to validate dimensions when they are absent
+            (janko-m)</p>
+            </li><li>
+            <p>Remove "thread" gem dependency in parallelize plugin (janko-m)</p>
+            </li><li>
+            <p>Add <code>:filename</code> to data_uri plugin for generating filenames
+            based on content type (janko-m)</p>
+            </li><li>
+            <p>Make user-defined hooks always happen around logging (janko-m)</p>
+            </li><li>
+            <p>Add <code>:presign_location</code> to direct_upload for generating the key
+            (janko-m)</p>
+            </li><li>
+            <p>Add separate <code>:presign_options</code> option for receiving presign
+            options in direct_upload plugin (janko-m)</p>
+            </li><li>
+            <p>Add ability to generate fake presigns for storages which don&#39;t support
+            them for testing (janko-m)</p>
+            </li><li>
+            <p>Change the <code>/:storage/:name</code> route to
+            <code>/:storage/upload</code> in direct_upload plugin (janko-m)</p>
+            </li><li>
+            <p>Fix logger not being inherited in the logging plugin (janko-m)</p>
+            </li><li>
+            <p>Add delete_promoted plugin for deleting promoted files after record has
+            been updated (janko-m)</p>
+            </li><li>
+            <p>Allow passing phase to <code>Attacher#promote</code> and generalize
+            promoting background job (janko-m)</p>
+            </li><li>
+            <p>Close the cached file after extracting its metadata in restore_cached
+            plugin (janko-m)</p>
+            </li><li>
+            <p>Rename delete_uploaded plugin to "delete_raw" to better explain its
+            functionality (janko-m)</p>
+            </li><li>
+            <p>Pass the SSL CA bundle to open-uri when downloading an S3 file (janko-m)</p>
+            </li><li>
+            <p>Add <code>Attacher.dump</code> and <code>Attacher.load</code> for writing
+            custom background jobs with custom functionality (janko-m)</p>
+            </li><li>
+            <p>Fix S3 URL erroring due to not being URL-encoded when <code>:host</code>
+            option is used (janko-m)</p>
+            </li><li>
+            <p>Remove a tiny possibility of a race condition with backgrounding on
+            subsequent updates (janko-m)</p>
+            </li><li>
+            <p>Add <code>:delegate</code> option to migration_helpers for opting out of
+            defining methods on the model (janko-m)</p>
+            </li><li>
+            <p>Make logging plugin log number of both input and output files for
+            processing (janko-m)</p>
+            </li><li>
+            <p>Make deleting backup work with backgrounding plugin (janko-m)</p>
+            </li><li>
+            <p>Make storing backup happen <em>after</em> promoting instead of before
+            (janko-m)</p>
+            </li><li>
+            <p>Add <code>:fallbacks</code> to versions plugin for fallback URLs for
+            versions which haven&#39;t finished processing (janko-m)</p>
+            </li><li>
+            <p>Fix keep_files not to spawn a background job when file will not be deleted
+            (janko-m)</p>
+            </li></ul>
             
             <h2 id="label-1.3.0+-282016-03-12-29">1.3.0 (2016-03-12)<span><a href="#label-1.3.0+-282016-03-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>

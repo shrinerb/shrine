@@ -39,13 +39,13 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The backup plugin allows you to automatically backup up stored files to an
+            <p>The backup plugin allows you to automatically back up stored files to an
             additional storage.</p>
             
             <pre class="ruby"><span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">backup_store</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span></pre>
             
-            <p>After the cached file is promoted to store, it will be reuploaded from
-            store to the provided “backup” storage.</p>
+            <p>After a file is stored, it will be reuploaded from store to the provided
+            backup storage.</p>
             
             <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">avatar</span><span class="ruby-operator">:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploaded both to :store and :backup_store</span></pre>
             

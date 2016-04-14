@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -153,7 +153,7 @@
             
             <pre class="ruby"><span class="ruby-comment"># config/routes.rb</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments/images&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre class="ruby"><span class="ruby-comment"># POST /attachments/images/cache/avatar</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;43kewit94.jpg&quot;</span>,&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">384393</span>,&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>&#x000A;  }&#x000A;}</pre>
+            <pre class="ruby"><span class="ruby-comment"># POST /attachments/images/cache/upload</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;43kewit94.jpg&quot;</span>,&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">384393</span>,&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>&#x000A;  }&#x000A;}</pre>
             
             <p>Unlike Refile, <a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t
             ship with a JavaScript script which you can just include to make it work.

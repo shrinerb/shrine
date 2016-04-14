@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -95,8 +95,8 @@
             
             <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/linter&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">MyStorage</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-identifier">linter</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Linter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">storage</span>)&#x000A;<span class="ruby-identifier">linter</span>.<span class="ruby-identifier">call</span></pre>
             
-            <p>The linter will test your methods with simple IO objects, and raise an
-            error with an appropriate message if a part of the specification isn&#39;t
+            <p>The linter will test your methods with fake IO objects, and raise a
+            <code>Shrine::LintError</code> if any part of the contract isn&#39;t
             satisfied.</p>
             
             <p>If you want to specify the IO object to use for testing (e.g. you need the
@@ -109,6 +109,10 @@
             pass <code>action: :warn</code> when initializing</p>
             
             <pre class="ruby"><span class="ruby-identifier">linter</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Linter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">storage</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">warn</span>)</pre>
+            
+            <p>Note that using the linter doesn&#39;t mean that you shouldn&#39;t write
+            any manual tests for your storage. There will likely be some edge cases
+            that won&#39;t be tested by the linter.</p>
           </div>
           <div id='context'>
           </div>

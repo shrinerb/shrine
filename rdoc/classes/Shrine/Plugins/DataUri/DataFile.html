@@ -51,6 +51,7 @@
             <h3>Public Instance</h3>
             <ol>
               <li><a target="docwin" href="#attribute-i-content_type">content_type</a></li>
+              <li><a target="docwin" href="#attribute-i-original_filename">original_filename</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -67,6 +68,13 @@
                     <td class='context-item-value'>[R]</td>
                     <td class='context-item-desc'></td>
                   </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-original_filename'>original_filename</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
                 </table>
               </div>
             </div>
@@ -76,7 +84,7 @@
                 <a name='method-c-new'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
-                  <span class='arguments'>(content, content_type: nil)</span>
+                  <span class='arguments'>(content, content_type: nil, filename: nil)</span>
                 </div>
                 <div class='description'>
                   
@@ -85,7 +93,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-ivar">@content_type</span> = <span class="ruby-identifier">content_type</span>&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">content</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 114</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-ivar">@content_type</span> = <span class="ruby-identifier">content_type</span>&#x000A;  <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">filename</span>&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">content</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

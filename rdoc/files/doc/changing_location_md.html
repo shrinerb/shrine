@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -44,19 +44,25 @@
             you&#39;ve realized that the existing store folder structure for
             attachments isn&#39;t working for you.</p>
             
-            <p>The first step is to change the location (by overriding
-            <code>#generate_location</code> or with the pretty_location plugin), and
-            deploy that change. Attachments on old locations will still continue to
-            work properly.</p>
+            <p>The first step is to change the location, by overriding
+            <code>#generate_location</code> or with the pretty_location plugin, and
+            deploy that change. This will make any new files upload to the desired
+            location, attachments on old locations will still continue to work
+            normally.</p>
             
-            <p>The next step is to run a script that will move those to new locations. The
-            easiest way to do that is to reupload them, and afterwards delete them:</p>
+            <p>The next step is to run a script that will move old files to new locations.
+            The easiest way to do that is to reupload them and delete them. <a
+            href="../../classes/Shrine.html">Shrine</a> has a method exactly for that,
+            <code>Attacher#promote</code>, which also handles the situation when
+            someone attaches a new file during “moving” (since we&#39;re running this
+            script on live production).</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">migration_helpers</span> <span class="ruby-comment"># before the model is loaded</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">multi_delete</span> <span class="ruby-comment"># for deleting multiple files at once</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_promoted</span>&#x000A;&#x000A;<span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">change_location</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre class="ruby"><span class="ruby-identifier">old_avatars</span> = []&#x000A;&#x000A;<span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_avatar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">old_avatars</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">avatar</span>&#x000A;    <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">avatar</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">old_avatars</span>.<span class="ruby-identifier">any?</span>&#x000A;  <span class="ruby-comment"># you&#39;ll have to change this code slightly if you&#39;re using versions</span>&#x000A;  <span class="ruby-identifier">uploader</span> = <span class="ruby-identifier">old_avatars</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">uploader</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">old_avatars</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+            <p>Note that the phase has to be overriden, otherwise it defaults to
+            <code>:store</code> which would trigger processing if you have it set up.</p>
             
-            <p>And now all your existing attachments should be happily living on new
+            <p>Now all your existing attachments should be happily living on new
             locations.</p>
           </div>
           <div id='context'>

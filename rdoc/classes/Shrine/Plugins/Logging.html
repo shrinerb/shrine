@@ -47,7 +47,7 @@
             going on, or you simply want to have it logged for future debugging. By
             default the logging output looks something like this:</p>
             
-            <pre>2015-10-09T20:06:06.676Z #25602: UPLOAD[direct] ImageUploader[:avatar] User[29543] 1 file (0.1s)&#x000A;2015-10-09T20:06:06.854Z #25602: PROCESS[promote]: ImageUploader[:avatar] User[29543] 3 files (0.22s)&#x000A;2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)</pre>
+            <pre>2015-10-09T20:06:06.676Z #25602: STORE[cache] ImageUploader[:avatar] User[29543] 1 file (0.1s)&#x000A;2015-10-09T20:06:06.854Z #25602: PROCESS[store]: ImageUploader[:avatar] User[29543] 1-3 files (0.22s)&#x000A;2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)</pre>
             
             <p>The plugin accepts the following options:</p>
             <table class="rdoc-list note-list"><tbody><tr><td class='label'>:format</td><td>
@@ -67,7 +67,7 @@
             <p>The default format is probably easiest to read, but may not be easiest to
             grep. If this is important to you, you can switch to another format:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">json</span>&#x000A;<span class="ruby-comment"># {&quot;action&quot;:&quot;upload&quot;,&quot;phase&quot;:&quot;direct&quot;,&quot;uploader&quot;:&quot;ImageUploader&quot;,&quot;attachment&quot;:&quot;avatar&quot;,...}</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">heroku</span>&#x000A;<span class="ruby-comment"># action=upload phase=direct uploader=ImageUploader attachment=avatar record_class=User ...</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">json</span>&#x000A;<span class="ruby-comment"># {&quot;action&quot;:&quot;upload&quot;,&quot;phase&quot;:&quot;cache&quot;,&quot;uploader&quot;:&quot;ImageUploader&quot;,&quot;attachment&quot;:&quot;avatar&quot;,...}</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">heroku</span>&#x000A;<span class="ruby-comment"># action=upload phase=cache uploader=ImageUploader attachment=avatar record_class=User ...</span></pre>
             
             <p><a href="Logging.html">Logging</a> is by default disabled in tests, but you
             can enable it by setting <code>Shrine.logger.level = Logger::INFO</code>.</p>
@@ -77,6 +77,7 @@
             <h3>Public Class</h3>
             <ol>
               <li><a target="docwin" href="#method-c-configure">configure</a></li>
+              <li><a target="docwin" href="#method-c-load_dependencies">load_dependencies</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -104,7 +105,23 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">logger</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">stream</span><span class="ruby-operator">:</span> <span class="ruby-identifier">$stdout</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> <span class="ruby-value">:human</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">logger</span> = <span class="ruby-identifier">logger</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">logger</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_stream</span>] = <span class="ruby-identifier">stream</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_format</span>] = <span class="ruby-identifier">format</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 51</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">logger</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">stream</span><span class="ruby-operator">:</span> <span class="ruby-identifier">$stdout</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> <span class="ruby-value">:human</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_logger</span>] = <span class="ruby-identifier">logger</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_stream</span>] = <span class="ruby-identifier">stream</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_format</span>] = <span class="ruby-identifier">format</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-method-c-load_dependencies'>
+                <a name='method-c-load_dependencies'></a>
+                <div class='synopsis'>
+                  <span class='name'>load_dependencies</span>
+                  <span class='arguments'>(uploader, *)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

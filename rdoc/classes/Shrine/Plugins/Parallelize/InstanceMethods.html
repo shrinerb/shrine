@@ -48,6 +48,12 @@
           </div>
           <div id='context'>
           </div>
+          <div id='class-list'>
+            <h2>Classes and Modules</h2>
+            <ol>
+              <li><a target="docwin" href="InstanceMethods/ThreadPool.html">Shrine::Plugins::Parallelize::InstanceMethods::ThreadPool</a></li>
+            </ol>
+          </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public Instance methods</h2>
@@ -64,7 +70,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 32</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-store'>
@@ -80,7 +86,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 28</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 19</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">context</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

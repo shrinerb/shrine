@@ -67,7 +67,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-cached-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-cached-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 79</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">cached?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-cached-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 98</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">cached?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-stored-3F'>
@@ -85,7 +85,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-stored-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-stored-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 85</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">stored?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">store</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-stored-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 104</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">stored?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">store</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-update_stored'>
@@ -103,7 +103,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-update_stored-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-update_stored-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">update_stored</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-identifier">new_attachment</span> = <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">new_attachment</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-update_stored-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 90</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">update_stored</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-identifier">new_attachment</span> = <span class="ruby-identifier">block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">get</span>)&#x000A;  <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">new_attachment</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-03-12 19:41:03 +0700</span>
+          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -70,8 +70,9 @@
             
             <pre class="ruby">{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;349234854924394&quot;</span>, <span class="ruby-comment"># requied</span>&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-comment"># required</span>&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">45461</span>, <span class="ruby-comment"># optional</span>&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;foo.jpg&quot;</span>, <span class="ruby-comment"># optional</span>&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>, <span class="ruby-comment"># optional</span>&#x000A;  }&#x000A;}</pre>
             
-            <p>The <code>id</code>, <code>storage</code> and <code>metadata.size</code>
-            fields are required, and the rest of the metadata is optional. After
+            <p>The <code>id</code>, <code>storage</code> fields are optional, while the
+            <code>metadata</code> values are optional (<code>metadata.size</code> is
+            only required to later upload that file to a non-S3 storage). After
             uploading the file to S3, you need to construct this JSON and assign it to
             the hidden attachment field in the form.</p>
             
@@ -106,7 +107,7 @@
             <p>After the upload you create a JSON representation of the uploaded file and
             usually write it to the hidden attachment field in the form:</p>
             
-            <pre>var image = {&#x000A;  id: /cache\/(.+)/.exec(key)[1], # we have to remove the prefix part&#x000A;  storage: &#39;cache&#39;,&#x000A;  metadata: {&#x000A;    size:      data.files[0].size,&#x000A;    filename:  data.files[0].name,&#x000A;    mime_type: data.files[0].type,&#x000A;  }&#x000A;}&#x000A;$(&#39;input[type=file]&#39;).prev().value(JSON.stringify(image))</pre>
+            <pre>var image = {&#x000A;  id: key.match(/cache\/(.+)/)[1], # we have to remove the prefix part&#x000A;  storage: &#39;cache&#39;,&#x000A;  metadata: {&#x000A;    size:      data.files[0].size,&#x000A;    filename:  data.files[0].name,&#x000A;    mime_type: data.files[0].type,&#x000A;  }&#x000A;}&#x000A;$(&#39;input[type=file]&#39;).prev().value(JSON.stringify(image))</pre>
             
             <p>It&#39;s generally a good idea to disable the submit button until the file
             is uploaded, as well as display a progress bar. See the <a
@@ -140,6 +141,18 @@
             This is because this hash is later transformed into an IO which requires
             <code>#size</code> to be non-nil (and it is read from the metadata field).</p>
             
+            <h2 id="label-Metadata">Metadata<span><a href="#label-Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>With direct uploads any metadata has to be extracted on the client, since
+            caching the file doesn&#39;t touch your application. When the cached file
+            is stored, Shrine&#39;s default behaviour is to simply copy over cached
+            file&#39;s metadata.</p>
+            
+            <p>If you want to extract metadata on the server before storing, you can just
+            load the restore_cached_data plugin.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">restore_cached_data</span></pre>
+            
             <h2 id="label-Eventual+consistency">Eventual consistency<span><a href="#label-Eventual+consistency">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>When uploading objects to Amazon S3, sometimes they may not be available
@@ -165,7 +178,7 @@
             errors, and you&#39;re using <code>backgrounding</code> plugin, you can
             tell your backgrounding library to perform the job with a delay:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">UploadJob</span>.<span class="ruby-identifier">perform_in</span>(<span class="ruby-value">60</span>, <span class="ruby-identifier">data</span>) <span class="ruby-comment"># tells a Sidekiq worker to perform in 1 minute</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_in</span>(<span class="ruby-value">60</span>, <span class="ruby-identifier">data</span>) <span class="ruby-comment"># tells a Sidekiq worker to perform in 1 minute</span>&#x000A;<span class="ruby-keyword">end</span></pre>
           </div>
           <div id='context'>
           </div>

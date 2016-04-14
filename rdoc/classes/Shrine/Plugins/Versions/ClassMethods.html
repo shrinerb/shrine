@@ -44,9 +44,8 @@
             <ol>
               <li><a target="docwin" href="#method-i-uploaded_file">uploaded_file</a></li>
               <li><a target="docwin" href="#method-i-version-3F">version?</a></li>
+              <li><a target="docwin" href="#method-i-version_fallbacks">version_fallbacks</a></li>
               <li><a target="docwin" href="#method-i-version_names">version_names</a></li>
-              <li><a target="docwin" href="#method-i-versions">versions</a></li>
-              <li><a target="docwin" href="#method-i-versions-21">versions!</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -68,7 +67,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-uploaded_file-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-uploaded_file-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 114</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">object</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">object</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-string">&quot;storage&quot;</span>)&#x000A;    <span class="ruby-identifier">versions</span>(<span class="ruby-identifier">object</span>).<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">result</span>, (<span class="ruby-identifier">name</span>, <span class="ruby-identifier">data</span>)<span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">result</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>))&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-uploaded_file-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 121</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">object</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">if</span> (<span class="ruby-identifier">hash</span> = <span class="ruby-identifier">object</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">hash</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-string">&quot;storage&quot;</span>)&#x000A;    <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">result</span>, (<span class="ruby-identifier">name</span>, <span class="ruby-identifier">data</span>)<span class="ruby-operator">|</span>&#x000A;      <span class="ruby-keyword">next</span> <span class="ruby-identifier">result</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">version?</span>(<span class="ruby-identifier">name</span>)&#x000A;      <span class="ruby-identifier">result</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>))&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-version-3F'>
@@ -85,7 +84,23 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-version-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-version-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 99</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">version?</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-identifier">version_names</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_s</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-version-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 116</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">version?</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-identifier">version_names</span>.<span class="ruby-identifier">map</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:to_s</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-version_fallbacks'>
+                <a name='method-i-version_fallbacks'></a>
+                <div class='synopsis'>
+                  <span class='name'>version_fallbacks</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-version_fallbacks-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-version_fallbacks-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 111</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">version_fallbacks</span>&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_fallbacks</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-version_names'>
@@ -101,41 +116,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-version_names-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-version_names-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 94</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">version_names</span>&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_names</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-versions'>
-                <a name='method-i-versions'></a>
-                <div class='synopsis'>
-                  <span class='name'>versions</span>
-                  <span class='arguments'>(hash)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Filters the hash to contain only the registered versions.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-versions-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-versions-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 109</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">versions</span>(<span class="ruby-identifier">hash</span>)&#x000A;  <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">select</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">_</span><span class="ruby-operator">|</span> <span class="ruby-identifier">version?</span>(<span class="ruby-identifier">name</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-versions-21'>
-                <a name='method-i-versions-21'></a>
-                <div class='synopsis'>
-                  <span class='name'>versions!</span>
-                  <span class='arguments'>(hash)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Asserts that the hash doesn&#39;t contain any unknown versions.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-versions-21-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-versions-21-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 104</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">versions!</span>(<span class="ruby-identifier">hash</span>)&#x000A;  <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">select</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">_</span><span class="ruby-operator">|</span> <span class="ruby-identifier">version?</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">or</span> <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;unknown version: #{name.inspect}&quot;</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-version_names-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 107</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">version_names</span>&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_names</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
