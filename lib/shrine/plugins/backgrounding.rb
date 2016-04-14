@@ -47,8 +47,25 @@ class Shrine
     #       record.update(published: true) if record.is_a?(Post)
     #     end
     #
-    # You can also write custom background jobs with `Shrine::Attacher.dump`
-    # and `Shrine::Attacher.load`.
+    # You can also write custom background jobs with `Attacher.dump` and
+    # `Attacher.load`:
+    #
+    #     class User < Sequel::Model
+    #       def after_commit
+    #         if some_condition
+    #           data = Shrine::Attacher.dump(avatar_attacher)
+    #           SomethingJob.perform_async(data)
+    #         end
+    #       end
+    #     end
+    #
+    #     class SomethingJob
+    #       include Sidekiq::Worker
+    #       def perform(data)
+    #         attacher = Shrine::Attacher.load(data)
+    #         # ...
+    #       end
+    #     end
     #
     # If you're generating versions, and you want to process some versions in
     # the foreground before kicking off a background job, you can use the
