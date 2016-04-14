@@ -1,8 +1,8 @@
 require "test_helper"
 
-describe "the restore_cached plugin" do
+describe "the restore_cached_data plugin" do
   before do
-    @attacher = attacher { plugin :restore_cached }
+    @attacher = attacher { plugin :restore_cached_data }
   end
 
   it "reextracts metadata of set cached files" do

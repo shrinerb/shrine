@@ -1,5 +1,7 @@
 ## HEAD
 
+* Rename restore_cached plugin to more accurate "restore_cached_data" (janko-m)
+
 * Prevent errors when attempting to validate dimensions when they are absent (janko-m)
 
 * Remove "thread" gem dependency in parallelize plugin (janko-m)
