@@ -9,31 +9,20 @@ describe "the store_dimensions plugin" do
 
   describe ":fastimage" do
     it "extracts dimensions from files" do
-      uploaded_file = @uploader.upload(image)
-      assert_equal 100, uploaded_file.metadata["width"]
-      assert_equal 67, uploaded_file.metadata["height"]
+      dimensions = @uploader.extract_dimensions(image)
+      assert_equal [100, 67], dimensions
     end
 
     it "extracts dimensions from non-files" do
-      uploaded_file = @uploader.upload(fakeio(image.read))
-      assert_equal 100, uploaded_file.metadata["width"]
-      assert_equal 67, uploaded_file.metadata["height"]
-    end
-
-    # https://github.com/sdsykes/fastimage/pull/66
-    it "rewinds the IO even in case of invalid image" do
-      uploaded_file = @uploader.upload(io = fakeio("content"))
-      assert_equal "content", uploaded_file.read
-      assert_equal nil, uploaded_file.metadata["width"]
-      assert_equal nil, uploaded_file.metadata["height"]
+      dimensions = @uploader.extract_dimensions(fakeio(image.read))
+      assert_equal [100, 67], dimensions
     end
   end
 
   it "extracts dimensions from UploadedFiles" do
     uploaded_file = @uploader.upload(image)
-    width, height = @uploader.extract_dimensions(uploaded_file)
-    assert_equal 100, width
-    assert_equal 67, height
+    dimensions = @uploader.extract_dimensions(uploaded_file)
+    assert_equal [100, 67], dimensions
   end
 
   it "gives UploadedFile `width` and `height` methods" do
@@ -59,11 +48,14 @@ describe "the store_dimensions plugin" do
   end
 
   it "allows storing with custom extractor" do
-    @uploader = uploader do
-      plugin :store_dimensions, analyzer: ->(io){[5, 10]}
-    end
-    uploaded_file = @uploader.upload(image)
-    assert_equal 5, uploaded_file.metadata["width"]
-    assert_equal 10, uploaded_file.metadata["height"]
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){[5, 10]} }
+    dimensions = @uploader.extract_dimensions(fakeio)
+    assert_equal [5, 10], dimensions
+  end
+
+  it "always rewinds the IO" do
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){io.read; [5, 10]} }
+    @uploader.extract_dimensions(file = image)
+    assert_equal 0, file.pos
   end
 end

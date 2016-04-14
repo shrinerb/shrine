@@ -73,13 +73,17 @@ class Shrine
         def extract_mime_type(io)
           analyzer = opts[:mime_type_analyzer]
 
-          if io.respond_to?(:mime_type)
+          mime_type = if io.respond_to?(:mime_type)
             io.mime_type
           elsif analyzer.is_a?(Symbol)
             send(:"_extract_mime_type_with_#{analyzer}", io)
           else
             analyzer.call(io)
           end
+
+          io.rewind
+
+          mime_type
         end
 
         private
@@ -94,7 +98,6 @@ class Shrine
             mime_type, _ = Open3.capture2(*cmd, io.path)
           else
             mime_type, _ = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER), binmode: true)
-            io.rewind
           end
 
           mime_type.strip unless mime_type.empty?
@@ -103,16 +106,12 @@ class Shrine
         # Uses the ruby-filemagic gem to magically extract the MIME type.
         def _extract_mime_type_with_filemagic(io)
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          data = io.read(MAGIC_NUMBER)
-          io.rewind
-          filemagic.buffer(data)
+          filemagic.buffer(io.read(MAGIC_NUMBER))
         end
 
         # Uses the mimemagic gem to extract the MIME type.
         def _extract_mime_type_with_mimemagic(io)
-          result = MimeMagic.by_magic(io).type
-          io.rewind
-          result
+          MimeMagic.by_magic(io).type
         end
 
         # Uses the mime-types gem to determine MIME type from file extension.

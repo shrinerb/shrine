@@ -50,21 +50,23 @@ class Shrine
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
 
-          if io.respond_to?(:width) && io.respond_to?(:height)
+          dimensions = if io.respond_to?(:width) && io.respond_to?(:height)
             [io.width, io.height]
           elsif analyzer.is_a?(Symbol)
             send(:"_extract_dimensions_with_#{analyzer}", io)
           else
             analyzer.call(io)
           end
+
+          io.rewind
+
+          dimensions
         end
 
         private
 
         def _extract_dimensions_with_fastimage(io)
-          result = FastImage.size(io)
-          io.rewind # https://github.com/sdsykes/fastimage/pull/66
-          result
+          FastImage.size(io)
         end
       end
 

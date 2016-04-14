@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make determine_mime_type and store_dimensions automatically rewind IO with custom analyzer (janko-m)
+
 * Make `before_*` and `after_*` hooks happen before and after `around_*` hooks (janko-m)
 
 * Rename restore_cached plugin to more accurate "restore_cached_data" (janko-m)
