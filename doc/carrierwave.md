@@ -451,7 +451,7 @@ you can change this with the `default_storage` plugin.
 
 #### `fog_*`
 
-These options will be set on the soon-to-be-released Fog storage for Shrine.
+These options are set on the [shrine-fog] storage.
 
 #### `delete_tmp_file_after_storage`, `remove_previously_stored_file_after_update`
 
@@ -522,3 +522,4 @@ multipart or not.
 [image_processing]: https://github.com/janko-m/image_processing
 [example app]: https://github.com/janko-m/shrine-example
 [Regenerating versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[shrine-fog]: https://github.com/janko-m/shrine-fog

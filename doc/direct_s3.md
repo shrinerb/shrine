@@ -157,6 +157,19 @@ Notice that we needed to fetch and assign the size of the uploaded file. This
 is because this hash is later transformed into an IO which requires `#size`
 to be non-nil (and it is read from the metadata field).
 
+## Metadata
+
+With direct uploads any metadata has to be extracted on the client, since
+caching the file doesn't touch your application. When the cached file is stored,
+Shrine's default behaviour is to simply copy over cached file's metadata.
+
+If you want to extract metadata on the server before storing, you can just
+load the restore_cached_data plugin.
+
+```rb
+plugin :restore_cached_data
+```
+
 ## Eventual consistency
 
 When uploading objects to Amazon S3, sometimes they may not be available

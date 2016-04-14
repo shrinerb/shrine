@@ -453,6 +453,9 @@ class ImageUploader < Shrine
 end
 ```
 
+Note that if you're extracting custom metadata from Ruby, you should always
+rewind the file afterwards.
+
 ## Locations
 
 By default files will all be put in the same folder. If you want that each

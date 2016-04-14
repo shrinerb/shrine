@@ -4,33 +4,26 @@ You have a production app with already uploaded attachments. However, you've
 realized that the existing store folder structure for attachments isn't working
 for you.
 
-The first step is to change the location (by overriding `#generate_location` or
-with the pretty_location plugin), and deploy that change. Attachments on old
-locations will still continue to work properly.
+The first step is to change the location, by overriding `#generate_location` or
+with the pretty_location plugin, and deploy that change. This will make any new
+files upload to the desired location, attachments on old locations will still
+continue to work normally.
 
-The next step is to run a script that will move those to new locations. The
-easiest way to do that is to reupload them, and afterwards delete them:
+The next step is to run a script that will move old files to new locations. The
+easiest way to do that is to reupload them and delete them. Shrine has a method
+exactly for that, `Attacher#promote`, which also handles the situation when
+someone attaches a new file during "moving" (since we're running this script on
+live production).
 
 ```rb
-Shrine.plugin :migration_helpers # before the model is loaded
-Shrine.plugin :multi_delete # for deleting multiple files at once
-```
-```rb
-old_avatars = []
+Shrine.plugin :delete_promoted
 
 User.paged_each do |user|
-  user.update_avatar do |avatar|
-    old_avatars << avatar
-    user.avatar_store.upload(avatar)
-  end
-end
-
-if old_avatars.any?
-  # you'll have to change this code slightly if you're using versions
-  uploader = old_avatars.first.uploader
-  uploader.delete(old_avatars)
+  user.promote(user.avatar, phase: :change_location)
 end
 ```
 
-And now all your existing attachments should be happily living on new
-locations.
+Note that the phase has to be overriden, otherwise it defaults to `:store`
+which would trigger processing if you have it set up.
+
+Now all your existing attachments should be happily living on new locations.
