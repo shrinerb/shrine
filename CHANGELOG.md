@@ -1,4 +1,4 @@
-## HEAD
+## 1.4.0 (2016-04-15)
 
 * Make determine_mime_type and store_dimensions automatically rewind IO with custom analyzer (janko-m)
 
