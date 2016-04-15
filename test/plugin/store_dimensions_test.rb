@@ -17,12 +17,6 @@ describe "the store_dimensions plugin" do
     end
   end
 
-  it "extracts dimensions from UploadedFiles" do
-    uploaded_file = @uploader.upload(image)
-    dimensions = @uploader.extract_dimensions(uploaded_file)
-    assert_equal [100, 67], dimensions
-  end
-
   it "gives UploadedFile `width` and `height` methods" do
     uploaded_file = @uploader.upload(image)
     assert_equal uploaded_file.metadata["width"], uploaded_file.width

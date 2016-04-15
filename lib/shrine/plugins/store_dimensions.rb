@@ -49,15 +49,9 @@ class Shrine
         # calls the predefined or custom analyzer.
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
+          analyzer = method(:"_extract_dimensions_with_#{analyzer}") if analyzer.is_a?(Symbol)
 
-          dimensions = if io.respond_to?(:width) && io.respond_to?(:height)
-            [io.width, io.height]
-          elsif analyzer.is_a?(Symbol)
-            send(:"_extract_dimensions_with_#{analyzer}", io)
-          else
-            analyzer.call(io)
-          end
-
+          dimensions = analyzer.call(io)
           io.rewind
 
           dimensions
