@@ -4,9 +4,7 @@ require "stringio"
 describe "the determine_mime_type plugin" do
   describe ":file" do
     before do
-      @uploader = uploader do
-        plugin :determine_mime_type, analyzer: :file
-      end
+      @uploader = uploader { plugin :determine_mime_type, analyzer: :file }
     end
 
     it "determines content type from file contents" do
@@ -22,9 +20,7 @@ describe "the determine_mime_type plugin" do
 
   describe ":filemagic" do
     before do
-      @uploader = uploader do
-        plugin :determine_mime_type, analyzer: :filemagic
-      end
+      @uploader = uploader { plugin :determine_mime_type, analyzer: :filemagic }
     end
 
     it "determines content type from file contents" do
@@ -35,9 +31,7 @@ describe "the determine_mime_type plugin" do
 
   describe ":mimemagic" do
     before do
-      @uploader = uploader do
-        plugin :determine_mime_type, analyzer: :mimemagic
-      end
+      @uploader = uploader { plugin :determine_mime_type, analyzer: :mimemagic }
     end
 
     it "extracts content type of any IO" do
@@ -48,9 +42,7 @@ describe "the determine_mime_type plugin" do
 
   describe ":mime_types" do
     before do
-      @uploader = uploader do
-        plugin :determine_mime_type, analyzer: :mime_types
-      end
+      @uploader = uploader { plugin :determine_mime_type, analyzer: :mime_types }
     end
 
     it "extract content type from the file extension" do
@@ -76,13 +68,6 @@ describe "the determine_mime_type plugin" do
     @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" } }
     mime_type = @uploader.send(:extract_mime_type, fakeio)
     assert_equal "foo/bar", mime_type
-  end
-
-  it "extracts MIME type from UploadedFiles" do
-    @uploader = uploader { plugin :determine_mime_type, analyzer: :mime_types }
-    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"))
-    mime_type = @uploader.send(:extract_mime_type, uploaded_file)
-    assert_equal "image/jpeg", mime_type
   end
 
   it "always rewinds the file" do

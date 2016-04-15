@@ -294,9 +294,7 @@ class Shrine
 
         # Extracts the MIME type from the IO using some basic heuristics.
         def extract_mime_type(io)
-          if io.respond_to?(:mime_type)
-            io.mime_type
-          elsif io.respond_to?(:content_type)
+          if io.respond_to?(:content_type)
             io.content_type
           end
         end

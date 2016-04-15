@@ -2,9 +2,7 @@ require "test_helper"
 
 describe "the store_dimensions plugin" do
   before do
-    @uploader = uploader do
-      plugin :store_dimensions, analyzer: :fastimage
-    end
+    @uploader = uploader { plugin :store_dimensions, analyzer: :fastimage }
   end
 
   describe ":fastimage" do

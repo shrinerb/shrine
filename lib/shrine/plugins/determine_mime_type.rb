@@ -72,15 +72,9 @@ class Shrine
         # a built-in analyzer or a custom one.
         def extract_mime_type(io)
           analyzer = opts[:mime_type_analyzer]
+          analyzer = method(:"_extract_mime_type_with_#{analyzer}") if analyzer.is_a?(Symbol)
 
-          mime_type = if io.respond_to?(:mime_type)
-            io.mime_type
-          elsif analyzer.is_a?(Symbol)
-            send(:"_extract_mime_type_with_#{analyzer}", io)
-          else
-            analyzer.call(io)
-          end
-
+          mime_type = analyzer.call(io)
           io.rewind
 
           mime_type
