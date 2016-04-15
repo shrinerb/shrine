@@ -95,6 +95,7 @@ class Shrine
 
         if Array(streamed.first).size == 2
           error :stream, "yielded content length isn't a number" if !content_length.is_a?(Integer)
+          error :stream, "yielded chunks don't sum up to given content length" if content_length != chunks.inject("", :+).length
         end
       end
 
