@@ -111,6 +111,9 @@ class Shrine
 end
 ```
 
+You should also yield the total filesize as the second argument, so that
+download_endpoint can set `Content-Length` before it starts streaming.
+
 ## Moving
 
 If your storage can move files, you can add 2 additional methods, and they will
