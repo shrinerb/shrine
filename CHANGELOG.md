@@ -1,3 +1,7 @@
+## 1.4.1 (HEAD)
+
+* Bring back triggering callbacks on promote in ORM plugins, and add support for optimistic locking (janko-m)
+
 ## 1.4.0 (2016-04-15)
 
 * Make determine_mime_type and store_dimensions automatically rewind IO with custom analyzer (janko-m)

@@ -25,8 +25,10 @@ class Shrine
     # `after_commit` callbacks won't get called, so in order to test uploading
     # you should first disable these transactions for those tests.
     #
-    # If you want to put some parts of this lifecycle into a background job, see
-    # the backgrounding plugin.
+    # If you want to put some parts of this lifecycle into a background job,
+    # see the backgrounding plugin. In that case you might want to use
+    # ActiveRecord's [optimistic locking] to eliminate the chance of race
+    # conditions.
     #
     # Additionally, any Shrine validation errors will be added to
     # ActiveRecord's errors upon validation. If you want to validate presence
@@ -36,6 +38,8 @@ class Shrine
     #       include ImageUploader[:avatar]
     #       validates_presence_of :avatar
     #     end
+    #
+    # [optimistic locking]: http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     module Activerecord
       module AttachmentMethods
         def included(model)
@@ -76,11 +80,13 @@ class Shrine
         # Updates the current attachment with the new one, unless the current
         # attachment has changed.
         def update(uploaded_file)
-          record.class.where(record.class.primary_key => record.id)
-            .where(:"#{name}_data" => record.send(:"#{name}_data"))
-            .update_all(:"#{name}_data" => uploaded_file.to_json)
-          record.reload
+          if record.send("#{name}_data") == record.reload.send("#{name}_data")
+            record.send("#{name}_data=", uploaded_file.to_json)
+            record.save(validate: false)
+          end
         rescue ::ActiveRecord::RecordNotFound
+        rescue ::ActiveRecord::StaleObjectError
+          retry
         end
       end
     end

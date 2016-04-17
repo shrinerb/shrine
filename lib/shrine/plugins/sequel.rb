@@ -1,5 +1,7 @@
 require "sequel"
 
+Sequel::Model.plugin :instance_filters
+
 class Shrine
   module Plugins
     # The sequel plugin extends the "attachment" interface with support for
@@ -19,8 +21,8 @@ class Shrine
     # so that `after_commit` and `after_destroy_commit` callbacks get properly
     # called.
     #
-    # If you want to put some parts of this lifecycle into a background job, see
-    # the backgrounding plugin.
+    # If you want to put some parts of this lifecycle into a background job,
+    # see the backgrounding plugin.
     #
     # Additionally, any Shrine validation errors will added to Sequel's
     # errors upon validation. Note that if you want to validate presence of the
@@ -74,11 +76,10 @@ class Shrine
         # Updates the current attachment with the new one, unless the current
         # attachment has changed.
         def update(uploaded_file)
-          record.this
-            .where(:"#{name}_data" => record.send(:"#{name}_data"))
-            .update(:"#{name}_data" => uploaded_file.to_json)
-          record.reload
-        rescue ::Sequel::Error
+          record.instance_filter(:"#{name}_data" => record.send("#{name}_data"))
+          record.send("#{name}_data=", uploaded_file.to_json)
+          record.save(validate: false)
+        rescue ::Sequel::NoExistingObject
         end
 
         # Support for Postgres JSON columns.

@@ -6,6 +6,7 @@ ActiveRecord::Migration.verbose = false
 ActiveRecord::Migration.class_eval do
   create_table :users do |t|
     t.text :avatar_data
+    t.integer :lock_version
   end
 end
 ActiveRecord::Base.raise_in_transactional_callbacks = true
@@ -83,10 +84,35 @@ describe "the activerecord plugin" do
       assert_equal nil, @user.reload.avatar
     end
 
-    it "is terminated when record was deleted" do
+    it "is terminated when attachment changed during update" do
+      @user.instance_eval do
+        def save(*)
+          if avatar && avatar.storage_key == "store"
+            self.class.update_all(avatar_data: nil, lock_version: lock_version + 1)
+          end
+          super
+        end
+      end
+      @user.update(avatar: fakeio)
+      assert_equal nil, @user.reload.avatar
+    end
+
+    it "is terminated when record was deleted before update" do
       @attacher.instance_eval do
         def update(uploaded_file)
           record.class.delete_all
+          super
+        end
+      end
+      @user.update(avatar: fakeio)
+    end
+
+    it "is terminated when record was deleted during update" do
+      @user.instance_eval do
+        def save(*)
+          if avatar && avatar.storage_key == "store"
+            self.class.delete_all
+          end
           super
         end
       end
