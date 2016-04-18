@@ -66,7 +66,10 @@
             test uploading you should first disable these transactions for those tests.</p>
             
             <p>If you want to put some parts of this lifecycle into a background job, see
-            the backgrounding plugin.</p>
+            the backgrounding plugin. In that case you might want to use
+            ActiveRecord&#39;s <a
+            href="http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html">optimistic
+            locking</a> to eliminate the chance of race conditions.</p>
             
             <p>Additionally, any <a href="../../Shrine.html">Shrine</a> validation errors
             will be added to ActiveRecord&#39;s errors upon validation. If you want to

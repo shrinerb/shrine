@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
+          <span class='datetime'>2016-04-18 12:38:42 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -84,8 +84,9 @@
             <h2 id="label-Attachments">Attachments<span><a href="#label-Attachments">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>Like CarrierWave, <a href="../../classes/Shrine.html">Shrine</a> also
-            provides integrations with ORMs, it ships with plugins for both Sequel and
-            ActiveRecord (but it can also be used with simple PORO models).</p>
+            provides integrations with ORMs, it ships with plugins for both <a
+            href="../../classes/Sequel.html">Sequel</a> and ActiveRecord (but it can
+            also be used with simple PORO models).</p>
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>       <span class="ruby-comment"># If you&#39;re using Sequel</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span> <span class="ruby-comment"># If you&#39;re using ActiveRecord</span></pre>
             
@@ -164,9 +165,10 @@
             <h4 id="label-.before-2C+.after"><code>.before</code>, <code>.after</code><span><a href="#label-.before-2C+.after">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
             <p>In <a href="../../classes/Shrine.html">Shrine</a> you can get callbacks by
-            loading the <code>hooks</code> plugin. Unlike CarrierWave, and much like
-            Sequel, <a href="../../classes/Shrine.html">Shrine</a> implements callbacks
-            by overriding instance methods:</p>
+            loading the <code>hooks</code> plugin. Unlike CarrierWave, and much like <a
+            href="../../classes/Sequel.html">Sequel</a>, <a
+            href="../../classes/Shrine.html">Shrine</a> implements callbacks by
+            overriding instance methods:</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">after_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-comment"># do something</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             

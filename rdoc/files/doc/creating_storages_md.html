@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-04-15 01:32:34 +0200</span>
+          <span class='datetime'>2016-04-18 12:38:42 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -72,6 +72,10 @@
             <code>download_endpoint</code> plugin):</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">stream</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># yields chunks of the file</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>You should also yield the total filesize as the second argument, so that
+            download_endpoint can set <code>Content-Length</code> before it starts
+            streaming.</p>
             
             <h2 id="label-Moving">Moving<span><a href="#label-Moving">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>upload_options.rb</title>
+    <title>1.4.1.md</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -25,9 +25,9 @@
   <body class='page'>
     <div class='file' id='wrapper'>
       <div class='header'>
-        <h1 class='name'>upload_options.rb</h1>
+        <h1 class='name'>1.4.1.md</h1>
         <div class='paths'>
-          lib/shrine/plugins/upload_options.rb
+          doc/release_notes/1.4.1.md
         </div>
         <div class='last-update'>
           Last Update:
@@ -36,7 +36,20 @@
       </div>
       <div id='content'>
         <div id='text'>
-          <div id='description'></div>
+          <div id='description'>
+            
+            <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p><a href="../../../classes/Shrine.html">Shrine</a> 1.4.0 introduced a
+            regression where it didn&#39;t trigger callbacks for  promoting files
+            anymore. This was done in order to eliminate a tiny chance  for a race
+            condition when same attachment is updated subsequently with  backgrounding.
+            We bring back triggering callbacks on promote. For <a
+            href="../../../classes/Sequel.html">Sequel</a> we  eliminate the chance of
+            a race condition, while ActiveRecord users can now  add optimistic locking
+            to prevent this.</p>
+            </li></ul>
+          </div>
           <div id='context'>
           </div>
         </div>
