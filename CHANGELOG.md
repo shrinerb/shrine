@@ -1,4 +1,4 @@
-## 1.4.1 (HEAD)
+## 1.4.1 (2016-04-18)
 
 * Bring back triggering callbacks on promote in ORM plugins, and add support for optimistic locking (janko-m)
 
