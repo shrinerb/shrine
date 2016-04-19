@@ -16,10 +16,9 @@ class Shrine
     # * `after_commit` -- Promotes the attachment, deletes replaced ones.
     # * `after_destroy_commit` -- Deletes the attachment.
     #
-    # Note that if your tests are wrapped in transactions, for testing
-    # attachments you should set `Sequel::Model.use_transactions` to `false`,
-    # so that `after_commit` and `after_destroy_commit` callbacks get properly
-    # called.
+    # Also note that if your tests are wrapped in transactions, the
+    # `after_commit` callbacks won't get called, so in order to test uploading
+    # you should first disable transactions for those tests.
     #
     # If you want to put some parts of this lifecycle into a background job,
     # see the backgrounding plugin.
@@ -76,10 +75,13 @@ class Shrine
         # Updates the current attachment with the new one, unless the current
         # attachment has changed.
         def update(uploaded_file)
-          record.instance_filter(:"#{name}_data" => record.send("#{name}_data"))
-          record.send("#{name}_data=", uploaded_file.to_json)
-          record.save(validate: false)
+          if record.send("#{name}_data") == record.reload.send("#{name}_data")
+            record.send("#{name}_data=", uploaded_file.to_json)
+            record.save(validate: false)
+          end
         rescue ::Sequel::NoExistingObject
+        rescue ::Sequel::Error => error
+          raise unless error.message == "Record not found" # prior to version 4.28
         end
 
         # Support for Postgres JSON columns.

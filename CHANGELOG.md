@@ -1,3 +1,9 @@
+## 1.4.2 (HEAD)
+
+* Removed ActiveRecord's automatic support for optimistic locking as it wasn't stable (janko-m)
+
+* Fixed record's dataset being modified after promoting preventing further updates with the same instance (janko-m)
+
 ## 1.4.1 (2016-04-18)
 
 * Bring back triggering callbacks on promote in ORM plugins, and add support for optimistic locking (janko-m)

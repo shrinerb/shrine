@@ -85,19 +85,6 @@ describe "the sequel plugin" do
       assert_equal nil, @user.reload.avatar
     end
 
-    it "is terminated when attachment changed during update" do
-      @user.instance_eval do
-        def save(*)
-          if avatar && avatar.storage_key == "store"
-            this.update(avatar_data: nil)
-          end
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      assert_equal nil, @user.reload.avatar
-    end
-
     it "is terminated when record was deleted before update" do
       @attacher.instance_eval do
         def update(uploaded_file)

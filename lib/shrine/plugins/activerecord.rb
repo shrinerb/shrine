@@ -23,12 +23,10 @@ class Shrine
     #
     # Also note that if your tests are wrapped in transactions, the
     # `after_commit` callbacks won't get called, so in order to test uploading
-    # you should first disable these transactions for those tests.
+    # you should first disable transactions for those tests.
     #
     # If you want to put some parts of this lifecycle into a background job,
-    # see the backgrounding plugin. In that case you might want to use
-    # ActiveRecord's [optimistic locking] to eliminate the chance of race
-    # conditions.
+    # see the backgrounding plugin.
     #
     # Additionally, any Shrine validation errors will be added to
     # ActiveRecord's errors upon validation. If you want to validate presence
@@ -85,8 +83,6 @@ class Shrine
             record.save(validate: false)
           end
         rescue ::ActiveRecord::RecordNotFound
-        rescue ::ActiveRecord::StaleObjectError
-          retry
         end
       end
     end
