@@ -129,7 +129,7 @@ describe "the versions plugin" do
     end
 
     it "replaces versions sucessfully" do
-      original = @attacher.set(thumb: @uploader.upload(fakeio))
+      @attacher.set(original = {thumb: @uploader.upload(fakeio)})
       @attacher.set(thumb: @uploader.upload(fakeio))
       @attacher.replace
       refute original[:thumb].exists?

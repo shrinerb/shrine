@@ -23,7 +23,7 @@ describe "the keep_files plugin" do
     end
 
     it "keeps files which were replaced during saving" do
-      uploaded_file = @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(uploaded_file = @attacher.store.upload(fakeio))
       @attacher.set(@attacher.store.upload(fakeio))
       @attacher.replace
       assert uploaded_file.exists?

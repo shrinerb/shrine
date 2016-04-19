@@ -8,8 +8,8 @@ describe "the restore_cached_data plugin" do
   it "reextracts metadata of set cached files" do
     cached_file = @attacher.cache.upload(fakeio("image"))
     cached_file.metadata["size"] = 24354535
-    restored_file = @attacher.assign(cached_file.to_json)
-    assert_equal 5, restored_file.metadata["size"]
+    @attacher.assign(cached_file.to_json)
+    assert_equal 5, @attacher.get.metadata["size"]
   end
 
   it "skips extracting if the file is from :store" do

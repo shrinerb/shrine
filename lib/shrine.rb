@@ -492,8 +492,6 @@ class Shrine
           @old = get unless get == uploaded_file
           _set(uploaded_file)
           validate
-
-          get
         end
 
         # Retrieves the uploaded file from the record column.

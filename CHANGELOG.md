@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Don't return the uploaded file in `Attacher#set` and `Attacher#assign` (janko-m)
+
 * Return the attacher instance in `Attacher.promote` and `Attacher.delete` in backgrounding plugin (janko-m)
 
 * Rename "attachment" to "name", and "uploaded_file" to "attachment" in backgrounding plugin (janko-m)
