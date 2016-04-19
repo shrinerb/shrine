@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove deprecated `Shrine.direct_endpoint` from direct_upload plugin (janko-m)
+
 * Remove deprecated keep_location plugin (janko-m)
 
 * Make `Shrine#extract_dimensions` a private method in store_dimensions plugin (janko-m)

@@ -185,12 +185,6 @@ class Shrine
           endpoint_class.opts[:shrine_class] = self
           const_set(:UploadEndpoint, endpoint_class)
         end
-
-        # Returns the Roda direct upload endpoint.
-        def direct_endpoint
-          warn "Shrine.direct_endpoint is deprecated and will be removed in Shrine 2, you should use Shrine::UploadEndpoint instead."
-          self::UploadEndpoint
-        end
       end
 
       # Routes incoming requests. It first asserts that the storage is existent

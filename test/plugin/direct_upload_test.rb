@@ -169,10 +169,6 @@ describe "the direct_upload plugin" do
     refute_equal endpoint1, endpoint2
   end
 
-  it "adds .direct_endpoint accessor" do
-    assert_equal @uploader.class::UploadEndpoint, @uploader.class.direct_endpoint
-  end
-
   def assert_http_error(status, response)
     assert_equal status, response.status
     assert_equal "application/json", response.headers["Content-Type"]
