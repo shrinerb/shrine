@@ -1,30 +1,18 @@
 class Shrine
   module Plugins
-    # The moving plugin enables you to move files to specified storages. On
-    # the filesystem moving is istantaneous, since the OS only changes the
-    # pointer, so this plugin is useful when dealing with large files.
+    # The moving plugin makes so that when files are supposed to be uploaded,
+    # they are moved instead. For example, on FileSystem moving is
+    # instantaneous regardless of the filesize, so it's suitable for speeding
+    # up uploads for larger files.
     #
-    # This plugin is also recommended if you're doing processing, since by
-    # default temporary files won't immediately get deleted (Ruby's Tempfiles
-    # usually get deleted only when the process ends).
+    #     plugin :moving
+    #
+    # By default files will be moved whenever the storage supports it. If you
+    # want moving to happen only for certain storages, you can set `storages`:
     #
     #     plugin :moving, storages: [:cache]
-    #
-    # The `:storages` option specifies which storages the file will be moved
-    # to. The above will move raw files to cache (without this plugin it's
-    # simply copied over). However, you may want to move cached files to
-    # `:store` as well:
-    #
-    #     plugin :moving, storages: [:cache, :store]
-    #
-    # What exactly means "moving"? If both the file being uploaded and the
-    # destination are on the filesystem, a `mv` command will be executed
-    # (making the transfer instantaneous). Some other storages may implement
-    # moving as well, usually only for files which are on the same storage.
-    # If moving isn't implemented by the storage, the file will be simply
-    # deleted after upload.
     module Moving
-      def self.configure(uploader, storages:)
+      def self.configure(uploader, storages: nil)
         uploader.opts[:moving_storages] = storages
       end
 
@@ -35,13 +23,7 @@ class Shrine
         # copying and deleting.
         def copy(io, context)
           if move?(io, context)
-            if movable?(io, context)
-              move(io, context)
-            else
-              warn "The #{storage_key.inspect} Shrine storage doesn't support moving a #{io.inspect}. It is currently still deleted, but it won't be in Shrine 2."
-              super
-              io.delete if io.respond_to?(:delete)
-            end
+            move(io, context)
           else
             super
           end
@@ -56,6 +38,11 @@ class Shrine
         end
 
         def move?(io, context)
+          moving_storage? && movable?(io, context)
+        end
+
+        def moving_storage?
+          opts[:moving_storages].nil? ||
           opts[:moving_storages].include?(storage_key)
         end
       end

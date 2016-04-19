@@ -1,5 +1,9 @@
 ## 2.0.0 (HEAD)
 
+* Don't require `:storages` option anymore in moving plugin (janko-m)
+
+* Don't delete uploaded IO if storage doesn't support moving in moving plugin (janko-m)
+
 * Rename delete phases to be shorter and consistent in naming with upload phases (janko-m)
 
 * Remove deprecated `Shrine#default_url` (janko-m)

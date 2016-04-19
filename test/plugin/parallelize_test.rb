@@ -33,11 +33,11 @@ describe "the parallelize plugin" do
   end
 
   it "works with moving plugin" do
-    @uploader.class.plugin :moving, storages: [:store]
-    tempfile = Tempfile.new("")
-    uploaded_file = @uploader.upload(tempfile)
+    @uploader.class.plugin :moving
+    memory_file = @uploader.upload(fakeio)
+    uploaded_file = @uploader.upload(memory_file)
     assert uploaded_file.exists?
-    refute tempfile.path
+    refute memory_file.exists?
   end
 
   it "propagates any errors" do
