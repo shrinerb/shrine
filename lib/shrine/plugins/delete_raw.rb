@@ -12,7 +12,7 @@ class Shrine
     #     plugin :delete_raw, storages: [:store]
     module DeleteRaw
       def self.configure(uploader, storages: nil)
-        uploader.opts[:delete_uploaded_storages] = storages
+        uploader.opts[:delete_raw_storages] = storages
       end
 
       module InstanceMethods
@@ -27,8 +27,8 @@ class Shrine
         end
 
         def delete_uploaded?(io)
-          opts[:delete_uploaded_storages].nil? ||
-          opts[:delete_uploaded_storages].include?(storage_key)
+          opts[:delete_raw_storages].nil? ||
+          opts[:delete_raw_storages].include?(storage_key)
         end
       end
     end

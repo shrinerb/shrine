@@ -15,7 +15,7 @@ class Shrine
     # or hashes.
     module UploadOptions
       def self.configure(uploader, options = {})
-        uploader.opts[:upload_options_options] = options
+        uploader.opts[:upload_options] = options
       end
 
       module InstanceMethods
@@ -29,7 +29,7 @@ class Shrine
         private
 
         def get_upload_options(io, context)
-          options = opts[:upload_options_options][storage_key]
+          options = opts[:upload_options][storage_key]
           options = options.call(io, context) if options.respond_to?(:call)
           options
         end
