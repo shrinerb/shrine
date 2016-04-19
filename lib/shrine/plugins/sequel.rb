@@ -1,7 +1,5 @@
 require "sequel"
 
-Sequel::Model.plugin :instance_filters
-
 class Shrine
   module Plugins
     # The sequel plugin extends the "attachment" interface with support for
