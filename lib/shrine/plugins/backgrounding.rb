@@ -39,12 +39,12 @@ class Shrine
     # any other backgrounding library. This setup will work globally for all
     # uploaders.
     #
-    # Both methods return the record (if it exists and the action didn't
-    # abort), so you can use it to do additional actions:
+    # Both methods return the `Shrine::Attacher` instance (if it exists and the
+    # action didn't abort), so you can use it to do additional actions:
     #
     #     def perform(data)
-    #       record = Shrine::Attacher.promote(data)
-    #       record.update(published: true) if record.is_a?(Post)
+    #       attacher = Shrine::Attacher.promote(data)
+    #       attacher.record.update(published: true) if attacher.record.is_a?(Post)
     #     end
     #
     # You can also write custom background jobs with `Attacher.dump` and
@@ -84,7 +84,7 @@ class Shrine
 
             attacher.promote(cached_file, phase: phase) or return
 
-            attacher.record
+            attacher
           end
         end
 
@@ -100,7 +100,7 @@ class Shrine
 
             attacher.store.delete(uploaded_file, context)
 
-            attacher.record
+            attacher
           end
         end
 

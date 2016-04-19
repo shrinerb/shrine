@@ -49,6 +49,12 @@ describe "the backgrounding plugin" do
       @user.save
     end
 
+    it "returns the attacher" do
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @user.update(avatar: fakeio)
+      assert_instance_of @attacher.class, @attacher.instance_variable_get("@f").resume
+    end
+
     it "doesn't get triggered when there is nothing to promote" do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.save
@@ -97,6 +103,13 @@ describe "the backgrounding plugin" do
       assert uploaded_file.exists?
       @attacher.instance_variable_get("@f").resume
       refute uploaded_file.exists?
+    end
+
+    it "returns the attacher" do
+      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
+      @user.update(avatar: fakeio)
+      @user.destroy
+      assert_instance_of @attacher.class, @attacher.instance_variable_get("@f").resume
     end
 
     it "does regular deleting if nothing was assigned" do

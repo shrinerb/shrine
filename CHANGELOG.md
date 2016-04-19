@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Return the attacher instance in `Attacher.promote` and `Attacher.delete` in backgrounding plugin (janko-m)
+
 * Rename "attachment" to "name", and "uploaded_file" to "attachment" in backgrounding plugin (janko-m)
 
 * Remove using `:presign` for presign options instead of `:presign_options` (janko-m)
