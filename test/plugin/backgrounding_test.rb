@@ -112,14 +112,14 @@ describe "the backgrounding plugin" do
       @attacher.record.save
       @attacher.assign(fakeio)
       data = @attacher.class.dump(@attacher)
-      assert_equal @attacher.get, @attacher.uploaded_file(data["uploaded_file"])
+      assert_equal @attacher.get, @attacher.uploaded_file(data["attachment"])
       assert_equal [@attacher.record.class.to_s, @attacher.record.id], data["record"]
-      assert_equal @attacher.name.to_s, data["attachment"]
+      assert_equal @attacher.name.to_s, data["name"]
     end
 
     it "handles the case when attachment is nil" do
       data = @attacher.class.dump(@attacher)
-      assert_equal nil, data["uploaded_file"]
+      assert_equal nil, data["attachment"]
     end
   end
 

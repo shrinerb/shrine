@@ -79,7 +79,7 @@ class Shrine
             shrine_class.opts[:backgrounding_promote] = block
           else
             attacher = load(data)
-            cached_file = attacher.uploaded_file(data["uploaded_file"])
+            cached_file = attacher.uploaded_file(data["attachment"])
             phase = data["phase"].to_sym
 
             attacher.promote(cached_file, phase: phase) or return
@@ -95,7 +95,7 @@ class Shrine
             shrine_class.opts[:backgrounding_delete] = block
           else
             attacher = load(data)
-            uploaded_file = attacher.uploaded_file(data["uploaded_file"])
+            uploaded_file = attacher.uploaded_file(data["attachment"])
             context = {name: attacher.name, record: attacher.record, phase: data["phase"].to_sym}
 
             attacher.store.delete(uploaded_file, context)
@@ -108,9 +108,9 @@ class Shrine
         # suitable for passing as an argument to background jobs.
         def dump(attacher)
           {
-            "uploaded_file" => attacher.get && attacher.get.to_json,
-            "record"        => [attacher.record.class.to_s, attacher.record.id],
-            "attachment"    => attacher.name.to_s,
+            "attachment" => attacher.get && attacher.get.to_json,
+            "record"     => [attacher.record.class.to_s, attacher.record.id],
+            "name"       => attacher.name.to_s,
           }
         end
 
@@ -122,7 +122,7 @@ class Shrine
           record = find_record(record_class, record_id) ||
             record_class.new.tap { |object| object.id = record_id }
 
-          name = data["attachment"]
+          name = data["name"]
           attacher = record.send("#{name}_attacher")
 
           attacher
@@ -154,8 +154,8 @@ class Shrine
         def delete!(uploaded_file, phase:)
           if background_delete = shrine_class.opts[:backgrounding_delete]
             data = self.class.dump(self).merge(
-              "uploaded_file" => uploaded_file.to_json,
-              "phase"         => phase.to_s,
+              "attachment" => uploaded_file.to_json,
+              "phase"      => phase.to_s,
             )
             instance_exec(data, &background_delete)
 
