@@ -44,10 +44,6 @@ class Shrine
 
         private
 
-        def generate_uid(io)
-          SecureRandom.hex(5)
-        end
-
         def class_location(klass)
           parts = klass.name.downcase.split("::")
           if separator = opts[:pretty_location_namespace]

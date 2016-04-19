@@ -248,7 +248,7 @@ class Shrine
           if presign_location
             presign_location.call(request)
           else
-            SecureRandom.hex(30) + request.params["extension"].to_s
+            uploader.send(:generate_uid, nil) + request.params["extension"].to_s
           end
         end
 

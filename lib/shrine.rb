@@ -372,7 +372,7 @@ class Shrine
 
         # Generates a UID to use in location for uploaded files.
         def generate_uid(io)
-          SecureRandom.hex(30)
+          SecureRandom.hex
         end
       end
 
