@@ -7,7 +7,16 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = ">= 2.1"
 
   gem.summary      = "Toolkit for file uploads in Ruby"
-  gem.description  = "Toolkit for file uploads in Ruby"
+  gem.description  = <<-END
+Shrine is a toolkit for file uploads in Ruby. It supports uploading, processing
+and deleting IO objects, backed by a storage adapter. It uses efficient
+streaming to minimize memory usage.
+
+Shrine comes with a high-level attachment interface for attaching uploaded
+files to database records, saving their location and metadata to a database
+column, and tying them to record's lifecycle.
+  END
+
   gem.homepage     = "https://github.com/janko-m/shrine"
   gem.authors      = ["Janko Marohnić"]
   gem.email        = ["janko.marohnic@gmail.com"]
