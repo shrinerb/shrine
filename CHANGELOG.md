@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove deprecated keep_location plugin (janko-m)
+
 * Make `Shrine#extract_dimensions` a private method in store_dimensions plugin (janko-m)
 
 * Keep `Shrine#extract_mime_type` a private method when loading determine_mime_type plugin (janko-m)
