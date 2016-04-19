@@ -84,11 +84,6 @@ describe "the direct_upload plugin" do
       response = app.post "/cache/upload", multipart: {file: image}
       assert_equal 200, response.status
     end
-
-    it "supports deprecated :name version" do
-      response = app.post "/cache/avatar", multipart: {file: image}
-      assert_equal 200, response.status
-    end
   end
 
   describe "GET /:storage/presign" do
