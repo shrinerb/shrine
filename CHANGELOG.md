@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Deprecate loading the backgrounding plugin through the old "background_helpers" alias (janko-m)
+
 * Don't store filenames of Tempfiles in the "filename" metadata field of uploaded files (janko-m)
 
 ## 1.4.2 (2016-04-19)
