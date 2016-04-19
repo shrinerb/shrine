@@ -1,4 +1,4 @@
-## 1.4.2 (HEAD)
+## 1.4.2 (2016-04-19)
 
 * Removed ActiveRecord's automatic support for optimistic locking as it wasn't stable (janko-m)
 
