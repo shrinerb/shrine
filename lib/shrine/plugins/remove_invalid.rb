@@ -10,7 +10,7 @@ class Shrine
           super
         ensure
           if errors.any? && cache.uploaded?(get)
-            delete!(get, phase: :invalid)
+            delete!(get, phase: :validate)
             _set(nil)
           end
         end

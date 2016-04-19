@@ -520,7 +520,7 @@ class Shrine
         # stored file.
         def promote(cached_file, phase: :store)
           stored_file = store!(cached_file, phase: phase)
-          result = swap(stored_file) or delete!(stored_file, phase: :stored)
+          result = swap(stored_file) or delete!(stored_file, phase: :abort)
           result
         end
 
@@ -528,13 +528,13 @@ class Shrine
         # by ORM integrations. If also removes `@old` so that #save and #finalize
         # don't get called for the current attachment anymore.
         def replace
-          delete!(@old, phase: :replaced) if @old && !cache.uploaded?(@old)
+          delete!(@old, phase: :replace) if @old && !cache.uploaded?(@old)
         end
 
         # Deletes the attachment. Typically this should be called after
         # destroying a record.
         def destroy
-          delete!(get, phase: :destroyed) if get && !cache.uploaded?(get)
+          delete!(get, phase: :destroy) if get && !cache.uploaded?(get)
         end
 
         # Returns the URL to the attached file (internally calls `#url` on the

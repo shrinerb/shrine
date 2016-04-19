@@ -175,7 +175,7 @@ describe Shrine::Attacher do
     end
 
     it "passes context hash to delete" do
-      context = {name: @attacher.name, record: @attacher.record, phase: :replaced}
+      context = {name: @attacher.name, record: @attacher.record, phase: :replace}
       @attacher.set(@attacher.store.upload(fakeio))
       @attacher.store.expects(:delete).with(@attacher.get, context)
       @attacher.set(nil)
@@ -202,7 +202,7 @@ describe Shrine::Attacher do
     end
 
     it "passes context hash to delete" do
-      context = {name: @attacher.name, record: @attacher.record, phase: :destroyed}
+      context = {name: @attacher.name, record: @attacher.record, phase: :destroy}
       @attacher.set(@attacher.store.upload(fakeio))
       @attacher.store.expects(:delete).with(@attacher.get, context)
       @attacher.destroy

@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Rename delete phases to be shorter and consistent in naming with upload phases (janko-m)
+
 * Remove deprecated `Shrine#default_url` (janko-m)
 
 * Remove deprecated `:subdirectory` on FileSystem storage (janko-m)
