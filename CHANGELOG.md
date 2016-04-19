@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove deprecated "restore_cached" alias for restore_cached_data plugin (janko-m)
+
 * Remove deprecated "delete_uploaded" alias for delete_raw plugin (janko-m)
 
 * Make the default generated unique location shorter (janko-m)
