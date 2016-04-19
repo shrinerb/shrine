@@ -20,10 +20,16 @@ class Shrine
       end
 
       module AttacherMethods
+        def url(**options)
+          super || default_url(**options)
+        end
+
         private
 
         def default_url(**options)
-          default_url_block.call(context.merge(options){|k,old,new|old})
+          if default_url_block
+            default_url_block.call(context.merge(options){|k,old,new|old})
+          end
         end
 
         def default_url_block

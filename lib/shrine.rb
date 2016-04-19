@@ -276,11 +276,6 @@ class Shrine
           }
         end
 
-        # User-defined default URL for when a file is missing (called by
-        # `Attacher#url`).
-        def default_url(context)
-        end
-
         private
 
         # Extracts the filename from the IO using some basic heuristics.
@@ -543,14 +538,9 @@ class Shrine
         end
 
         # Returns the URL to the attached file (internally calls `#url` on the
-        # storage).  If the attachment is missing, it calls
-        # `Shrine#default_url`.  Forwards any URL options to the storage.
+        # storage), forwarding any URL options to the storage.
         def url(**options)
-          if uploaded_file = get
-            uploaded_file.url(**options)
-          else
-            default_url(**options)
-          end
+          get.url(**options) if read
         end
 
         # Runs the validations defined by `Attacher.validate`.

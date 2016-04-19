@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove deprecated `Shrine#default_url` (janko-m)
+
 * Remove deprecated `:subdirectory` on FileSystem storage (janko-m)
 
 * Don't return the uploaded file in `Attacher#set` and `Attacher#assign` (janko-m)

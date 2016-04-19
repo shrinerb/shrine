@@ -96,6 +96,7 @@ class Shrine
     module Versions
       def self.load_dependencies(uploader, *)
         uploader.plugin :multi_delete
+        uploader.plugin :default_url
       end
 
       def self.configure(uploader, names:, fallbacks: {})
