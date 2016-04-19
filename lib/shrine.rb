@@ -599,13 +599,6 @@ class Shrine
           store.delete(uploaded_file, context.merge(phase: phase))
         end
 
-        # Delegates to `Shrine#default_url`.
-        def default_url(**options)
-          url = store.default_url(options.merge(context))
-          warn "Overriding Shrine#default_url is deprecated and will be removed in Shrine 2. You should use the default_url plugin." if url
-          url
-        end
-
         # The validation block provided by `Shrine.validate`.
         def validate_block
           shrine_class.opts[:validate]
