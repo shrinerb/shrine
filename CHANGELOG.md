@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Make `Shrine#extract_dimensions` a private method in store_dimensions plugin (janko-m)
+
 * Keep `Shrine#extract_mime_type` a private method when loading determine_mime_type plugin (janko-m)
 
 * Deprecate loading the backgrounding plugin through the old "background_helpers" alias (janko-m)

@@ -45,6 +45,8 @@ class Shrine
           )
         end
 
+        private
+
         # If the `io` is an uploaded file, copies its dimensions, otherwise
         # calls the predefined or custom analyzer.
         def extract_dimensions(io)
@@ -56,8 +58,6 @@ class Shrine
 
           dimensions
         end
-
-        private
 
         def _extract_dimensions_with_fastimage(io)
           FastImage.size(io)

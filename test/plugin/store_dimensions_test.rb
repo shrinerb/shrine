@@ -7,14 +7,26 @@ describe "the store_dimensions plugin" do
 
   describe ":fastimage" do
     it "extracts dimensions from files" do
-      dimensions = @uploader.extract_dimensions(image)
+      dimensions = @uploader.send(:extract_dimensions, image)
       assert_equal [100, 67], dimensions
     end
 
     it "extracts dimensions from non-files" do
-      dimensions = @uploader.extract_dimensions(fakeio(image.read))
+      dimensions = @uploader.send(:extract_dimensions, fakeio(image.read))
       assert_equal [100, 67], dimensions
     end
+  end
+
+  it "allows storing with custom extractor" do
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){[5, 10]} }
+    dimensions = @uploader.send(:extract_dimensions, fakeio)
+    assert_equal [5, 10], dimensions
+  end
+
+  it "always rewinds the IO" do
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){io.read; [5, 10]} }
+    @uploader.send(:extract_dimensions, file = image)
+    assert_equal 0, file.pos
   end
 
   it "gives UploadedFile `width` and `height` methods" do
@@ -37,17 +49,5 @@ describe "the store_dimensions plugin" do
     uploaded_file.metadata.delete("height")
     assert_equal nil, uploaded_file.width
     assert_equal nil, uploaded_file.height
-  end
-
-  it "allows storing with custom extractor" do
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){[5, 10]} }
-    dimensions = @uploader.extract_dimensions(fakeio)
-    assert_equal [5, 10], dimensions
-  end
-
-  it "always rewinds the IO" do
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){io.read; [5, 10]} }
-    @uploader.extract_dimensions(file = image)
-    assert_equal 0, file.pos
   end
 end
