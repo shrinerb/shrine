@@ -288,7 +288,7 @@ class Shrine
           if io.respond_to?(:original_filename)
             io.original_filename
           elsif io.respond_to?(:path)
-            File.basename(io.path)
+            File.basename(io.path) unless io.class.name == "Tempfile"
           end
         end
 

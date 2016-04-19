@@ -289,6 +289,9 @@ describe Shrine do
 
       metadata = @uploader.extract_metadata(fakeio)
       assert_equal nil, metadata["filename"]
+
+      metadata = @uploader.extract_metadata(Tempfile.new(""))
+      assert_equal nil, metadata["filename"]
     end
 
     it "extracts the filesize" do

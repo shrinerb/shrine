@@ -1,3 +1,7 @@
+## 2.0.0 (HEAD)
+
+* Don't store filenames of Tempfiles in the "filename" metadata field of uploaded files (janko-m)
+
 ## 1.4.2 (2016-04-19)
 
 * Removed ActiveRecord's automatic support for optimistic locking as it wasn't stable (janko-m)
