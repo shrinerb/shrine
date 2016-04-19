@@ -67,6 +67,8 @@ class Shrine
       MAGIC_NUMBER = 1024
 
       module InstanceMethods
+        private
+
         # If a Shrine::UploadedFile was given, it returns its MIME type, since
         # that value was already determined by this analyzer. Otherwise it calls
         # a built-in analyzer or a custom one.
@@ -79,8 +81,6 @@ class Shrine
 
           mime_type
         end
-
-        private
 
         # Uses the UNIX file utility to extract the MIME type. It does so only
         # if it's a file, because even though the utility accepts standard

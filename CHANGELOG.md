@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Keep `Shrine#extract_mime_type` a private method when loading determine_mime_type plugin (janko-m)
+
 * Deprecate loading the backgrounding plugin through the old "background_helpers" alias (janko-m)
 
 * Don't store filenames of Tempfiles in the "filename" metadata field of uploaded files (janko-m)
