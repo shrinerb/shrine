@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Make the `:delegate` option in migration_helpers default to `false` (janko-m)
+
 * Don't require `:storages` option anymore in moving plugin (janko-m)
 
 * Don't delete uploaded IO if storage doesn't support moving in moving plugin (janko-m)
