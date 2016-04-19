@@ -157,12 +157,6 @@ class Shrine
       end
 
       def self.configure(uploader, allowed_storages: [:cache], presign: nil, presign_options: {}, presign_location: nil, max_size: nil)
-        if presign.respond_to?(:call)
-          warn "Passing a block to :presign in direct_upload plugin is deprecated and will be removed in Shrine 2. Use :presign_options instead."
-          presign_options = presign
-          presign = true
-        end
-
         uploader.opts[:direct_upload_allowed_storages] = allowed_storages
         uploader.opts[:direct_upload_presign] = presign
         uploader.opts[:direct_upload_presign_options] = presign_options

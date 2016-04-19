@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove using `:presign` for presign options instead of `:presign_options` (janko-m)
+
 * Remove deprecated `Shrine.direct_endpoint` from direct_upload plugin (janko-m)
 
 * Remove deprecated keep_location plugin (janko-m)
