@@ -13,4 +13,4 @@ test_versions() {
   rm .ruby-version
 }
 
-test_versions "2.1.7 2.2.3 jruby-9.0.4.0 rbx-2.5.8"
+test_versions "2.1.7 2.2.3 2.3.0 jruby-9.0.4.0"

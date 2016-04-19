@@ -161,7 +161,7 @@ class Shrine
 
             uploaded_file
           else
-            super(uploaded_file, phase: phase)
+            super
           end
         end
       end

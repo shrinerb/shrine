@@ -84,7 +84,7 @@ class Shrine
               id,
             ].join("/")
           else
-            super(options)
+            super
           end
         end
       end

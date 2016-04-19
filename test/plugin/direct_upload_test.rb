@@ -12,10 +12,6 @@ describe "the direct_upload plugin" do
   end
 
   describe "POST /:storage/upload" do
-    before do
-      skip "https://github.com/rubinius/rubinius/issues/3544" if RUBY_ENGINE == "rbx"
-    end
-
     it "returns a JSON response" do
       response = app.post "/cache/upload", multipart: {file: image}
       assert_equal 200, response.status
