@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>1.4.1.md</title>
+    <title>1.4.2.md</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -25,13 +25,13 @@
   <body class='page'>
     <div class='file' id='wrapper'>
       <div class='header'>
-        <h1 class='name'>1.4.1.md</h1>
+        <h1 class='name'>1.4.2.md</h1>
         <div class='paths'>
-          doc/release_notes/1.4.1.md
+          doc/release_notes/1.4.2.md
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-04-18 12:59:21 +0200</span>
+          <span class='datetime'>2016-04-19 13:09:27 +0200</span>
         </div>
       </div>
       <div id='content'>
@@ -40,14 +40,28 @@
             
             <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
             <ul><li>
-            <p><a href="../../../classes/Shrine.html">Shrine</a> 1.4.0 introduced a
-            regression where it didn&#39;t trigger callbacks for  promoting files
-            anymore. This was done in order to eliminate a tiny chance  for a race
-            condition when same attachment is updated subsequently with  backgrounding.
-            We bring back triggering callbacks on promote. For <a
-            href="../../../classes/Sequel.html">Sequel</a> we  eliminate the chance of
-            a race condition, while ActiveRecord users can now  add optimistic locking
-            to prevent this.</p>
+            <p>Version 1.4.1 introduced handling optimistic locking in ActiveRecord
+            plugin,  however the implementation wasn&#39;t stable and wouldn&#39;t work
+            correctly in  some cases, so we revert the behaviour as it was in version
+            1.4.0. Developers  can still handle optimistic locking themselves inside
+            background jobs.</p>
+            </li><li>
+            <p>Version 1.4.1 introduced an instance filter of cached attachment in <a
+            href="../../../classes/Sequel.html">Sequel</a>  plugin, which makes the
+            same record instance unupdateable after promoting,  even when not using
+            backgrounding, so we revert the behaviour as it was in  version 1.4.0. This
+            is only a problem if you&#39;re doing something with the  record instance
+            after updating attachment.</p>
+            </li></ul>
+            
+            <h1 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The <a href="../../../classes/Sequel.html">Sequel</a> plugin now
+            doesn&#39;t rescue every <code>Sequel::Error</code> on promoting, it  just
+            rescues “Record not found” ones (in <a
+            href="../../../classes/Sequel.html">Sequel</a> 4.28+ this is a 
+            <code>Sequel::NoExistingObject</code>, but prior to that was a generic
+            <code>Sequel::Error</code>).</p>
             </li></ul>
           </div>
           <div id='context'>
