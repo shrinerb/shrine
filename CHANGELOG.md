@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove deprecated "delete_uploaded" alias for delete_raw plugin (janko-m)
+
 * Make the default generated unique location shorter (janko-m)
 
 * Make the `:delegate` option in migration_helpers default to `false` (janko-m)
