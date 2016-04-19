@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove deprecated `:subdirectory` on FileSystem storage (janko-m)
+
 * Don't return the uploaded file in `Attacher#set` and `Attacher#assign` (janko-m)
 
 * Return the attacher instance in `Attacher.promote` and `Attacher.delete` in backgrounding plugin (janko-m)

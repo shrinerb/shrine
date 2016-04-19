@@ -91,10 +91,9 @@ class Shrine
       # :  By default empty folders inside the directory are automatically
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
-      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: nil, subdirectory: nil)
-        if prefix || subdirectory
-          warn "The :subdirectory option is deprecated and will be removed in Shrine 2. You should use :prefix instead." if subdirectory
-          @prefix = Pathname(relative(prefix || subdirectory))
+      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: nil)
+        if prefix
+          @prefix = Pathname(relative(prefix))
           @directory = Pathname(directory).join(@prefix)
         else
           @directory = Pathname(directory)
