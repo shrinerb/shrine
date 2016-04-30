@@ -171,4 +171,9 @@ describe "the activerecord plugin" do
       assert_equal fiber, @user.avatar_attacher.instance_variable_get("@f")
     end
   end
+
+  it "allows including attachment model to non-ActiveRecord objects" do
+    uploader = @uploader
+    Struct.new(:avatar_data) { include uploader.class[:avatar] }
+  end
 end

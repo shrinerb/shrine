@@ -43,6 +43,8 @@ class Shrine
         def included(model)
           super
 
+          return unless model < ::ActiveRecord::Base
+
           model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
             validate do
               #{@name}_attacher.errors.each do |message|
