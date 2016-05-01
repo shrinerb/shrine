@@ -1,7 +1,12 @@
 class Shrine
   module Plugins
-    # The upload_options allows you to create additional upload options depending
-    # on file and context, and forward them to the underlying storage.
+    # The upload_options allows you to automatically pass additional upload
+    # options to storage on every upload:
+    #
+    #     plugin :upload_options, cache: {acl: "private"}
+    #
+    # Keys are names of the registered storages, and values are either hashes
+    # or blocks.
     #
     #     plugin :upload_options, store: ->(io, context) do
     #       if [:original, :thumb].include?(context[:version])
@@ -10,9 +15,6 @@ class Shrine
     #         {acl: "private"}
     #       end
     #     end
-    #
-    # Keys are names of the registered storages, and values are either blocks
-    # or hashes.
     module UploadOptions
       def self.configure(uploader, options = {})
         uploader.opts[:upload_options] = options
