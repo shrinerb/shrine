@@ -34,6 +34,7 @@ column, and tying them to record's lifecycle.
   gem.add_development_dependency "webmock"
   gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "dotenv"
+  gem.add_development_dependency "shrine-memory"
 
   gem.add_development_dependency "roda"
   gem.add_development_dependency "mimemagic"

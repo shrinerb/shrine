@@ -1,5 +1,5 @@
 require "./test/support/fakeio"
-require "./test/support/memory"
+require "shrine/storage/memory"
 require "base64"
 
 module TestHelpers

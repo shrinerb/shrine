@@ -35,6 +35,9 @@
       name: shrine-imgix
       url: https://github.com/janko-m/shrine-imgix
     -
+      name: shrine-memory
+      url: https://github.com/janko-m/shrine-memory
+    -
       name: shrine-sql
       url: https://github.com/janko-m/shrine-sql
 -
