@@ -1,6 +1,6 @@
 # Shrine
 
-Shrine is a toolkit for file uploads in Ruby applications.
+Shrine is a toolkit for handling file uploads in Ruby applications.
 
 If you're new, you're encouraged to read the [introductory blog post] which
 explains the motivation behind Shrine.
@@ -22,7 +22,7 @@ Shrine has been tested on MRI 2.1, MRI 2.2, MRI 2.3 and JRuby.
 
 ## Basics
 
-Here's a basic example showing how file upload itself works in Shrine:
+Here's an example showing how basic file upload works in Shrine:
 
 ```rb
 require "shrine"
@@ -42,11 +42,11 @@ uploaded_file.data #=>
 # }
 ```
 
-Let's break down what's going on here:
+Let's see what's going on here:
 
 First we registered the storage we want to use under a name. Storages are plain
-Ruby classes which encapsulate file management on some service. We can then
-instantiate `Shrine` as a wrapper around that storage. A call to `upload`
+Ruby classes which encapsulate file management on a particular service. We can
+then instantiate `Shrine` as a wrapper around that storage. A call to `upload`
 uploads the given file to the underlying storage.
 
 The argument to `upload` needs to be an IO-like object. So, `File`, `Tempfile`
@@ -113,7 +113,7 @@ Now our model has gained special methods for attaching files:
 
 ```rb
 photo = Photo.new
-photo.image = File.open("avatar.jpg") # uploads the file to cache
+photo.image = File.open("nature.jpg") # uploads the file to cache
 photo.image      #=> #<Shrine::UploadedFile>
 photo.image_url  #=> "/uploads/cache/9260ea09d8effd.jpg"
 photo.image_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
@@ -131,7 +131,7 @@ Shrine[:document] #=> #<Shrine::Attachment(document)>
 Shrine[:document].instance_methods #=> [:document=, :document, :document_url, :document_attacher]
 
 # Expanded forms
-Shrine.attachment(:avatar)
+Shrine.attachment(:image)
 Shrine::Attachment.new(:document)
 ```
 
@@ -154,7 +154,7 @@ works because `#image=` also accepts an already cached file via its JSON
 representation:
 
 ```rb
-user.avatar = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'
+photo.image = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'
 ```
 
 ### ORM
@@ -422,7 +422,7 @@ pretty_location plugin:
 Shrine.plugin :pretty_location
 ```
 ```rb
-photo = Photo.create(image: File.open("avatar.jpg"))
+photo = Photo.create(image: File.open("nature.jpg"))
 photo.image.id #=> "photo/34/image/34krtreds2df.jpg"
 ```
 
@@ -451,7 +451,7 @@ by passing a `:location`:
 
 ```rb
 uploader = Shrine.new(:store)
-file = File.open("avatar.jpg")
+file = File.open("nature.jpg")
 uploader.upload(file, location: "some/specific/location.jpg")
 ```
 

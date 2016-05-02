@@ -1,4 +1,4 @@
-# Changing Location of Files
+# Migrating to Different Location
 
 You have a production app with already uploaded attachments. However, you've
 realized that the existing store folder structure for attachments isn't working

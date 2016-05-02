@@ -1,5 +1,5 @@
 title: Shrine
-description: File upload toolkit for Ruby
+description: Toolkit for handling file uploads in Ruby
 baseurl: ""
 url: shrinerb.com
 markdown: kramdown

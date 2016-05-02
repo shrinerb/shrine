@@ -19,8 +19,7 @@ class Shrine
       module InstanceMethods
         private
 
-        # If the storage supports moving we use that, otherwise we do moving by
-        # copying and deleting.
+        # Moves the file if storage supports it, otherwise defaults to copying.
         def copy(io, context)
           if move?(io, context)
             move(io, context)

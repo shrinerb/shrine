@@ -1,7 +1,4 @@
 -
-  name: Changing Location of Files
-  path: changing_location_md.html
--
   name: Creating a New Plugin
   path: creating_plugins_md.html
 -
@@ -11,7 +8,10 @@
   name: Direct Uploads to S3
   path: direct_s3_md.html
 -
-  name: Migrating to Another Storage
+  name: Migrating to Different Location
+  path: changing_location_md.html
+-
+  name: Migrating to Different Storage
   path: migrating_storage_md.html
 -
   name: Reprocessing Versions
