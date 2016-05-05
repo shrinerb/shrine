@@ -76,7 +76,7 @@ describe "the sequel plugin" do
 
     it "is terminated when attachment changed before update" do
       @attacher.instance_eval do
-        def update(*)
+        def swap(*)
           record.this.update(avatar_data: nil)
           super
         end

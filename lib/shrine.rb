@@ -576,7 +576,7 @@ class Shrine
         # Calls #update, overriden in ORM plugins.
         def swap(uploaded_file)
           update(uploaded_file)
-          uploaded_file if get == uploaded_file
+          uploaded_file if uploaded_file == get
         end
 
         # Sets and saves the uploaded file.

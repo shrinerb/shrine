@@ -77,14 +77,17 @@ class Shrine
       module AttacherMethods
         private
 
-        # Updates the current attachment with the new one, unless the current
-        # attachment has changed.
-        def update(uploaded_file)
-          if record.send(:"#{name}_data") == record.reload.send(:"#{name}_data")
-            record.send(:"#{name}_data=", uploaded_file.to_json)
-            record.save(validate: false)
-          end
+        # Proceeds with updating the record unless the attachment has changed.
+        def swap(uploaded_file)
+          return if record.send(:"#{name}_data") != record.reload.send(:"#{name}_data")
+          super
         rescue ::ActiveRecord::RecordNotFound
+        end
+
+        # Saves the record after assignment, skipping validations.
+        def update(uploaded_file)
+          super
+          record.save(validate: false)
         end
       end
     end

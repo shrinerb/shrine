@@ -74,7 +74,7 @@ describe "the activerecord plugin" do
 
     it "is terminated when attachment changed before update" do
       @attacher.instance_eval do
-        def update(*)
+        def swap(*)
           record.class.update_all(avatar_data: nil)
           super
         end
@@ -85,7 +85,7 @@ describe "the activerecord plugin" do
 
     it "is terminated when record was deleted before update" do
       @attacher.instance_eval do
-        def update(uploaded_file)
+        def swap(*)
           record.class.delete_all
           super
         end
