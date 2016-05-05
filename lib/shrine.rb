@@ -611,12 +611,12 @@ class Shrine
 
         # It writes to record's `<attachment>_data` column.
         def write(value)
-          record.send("#{name}_data=", value)
+          record.send(:"#{name}_data=", value)
         end
 
         # It reads from the record's `<attachment>_data` column.
         def read
-          value = record.send("#{name}_data")
+          value = record.send(:"#{name}_data")
           value unless value.nil? || value.empty?
         end
 

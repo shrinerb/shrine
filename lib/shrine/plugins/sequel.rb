@@ -73,8 +73,8 @@ class Shrine
         # Updates the current attachment with the new one, unless the current
         # attachment has changed.
         def update(uploaded_file)
-          if record.send("#{name}_data") == record.reload.send("#{name}_data")
-            record.send("#{name}_data=", uploaded_file.to_json)
+          if record.send(:"#{name}_data") == record.reload.send(:"#{name}_data")
+            record.send(:"#{name}_data=", uploaded_file.to_json)
             record.save(validate: false)
           end
         rescue ::Sequel::NoExistingObject
