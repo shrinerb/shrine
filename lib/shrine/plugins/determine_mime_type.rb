@@ -86,7 +86,7 @@ class Shrine
         # if it's a file, because even though the utility accepts standard
         # input, it would mean that we have to read the whole file in memory.
         def _extract_mime_type_with_file(io)
-          cmd = ["file", "--mime-type", "--brief"]
+          cmd = ["file", "--mime-type", "--brief", "--"]
 
           if io.respond_to?(:path)
             mime_type, _ = Open3.capture2(*cmd, io.path)

@@ -16,6 +16,24 @@ describe "the determine_mime_type plugin" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
       assert_equal "image/jpeg", mime_type
     end
+
+    describe "when the path looks like an option" do
+      let(:path) { "-image.jpg" }
+
+      before do
+        FileUtils.cp(image, path)
+      end
+
+      after do
+        FileUtils.rm(path)
+      end
+
+      it "does not fail and determines content type from file contents" do
+        image = File.open(path)
+        mime_type = @uploader.send(:extract_mime_type, image)
+        assert_equal "image/jpeg", mime_type
+      end
+    end
   end
 
   describe ":filemagic" do
