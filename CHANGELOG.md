@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Handle paths that start with "-" in determine_mime_type plugin when `:file` analyzer is used (zaeleus)
+
 * Allow including attachment module to non-ActiveRecord::Base with activerecord plugin (janko-m)
 
 * Remove deprecated "restore_cached" alias for restore_cached_data plugin (janko-m)
