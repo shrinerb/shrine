@@ -5,6 +5,9 @@
   name: Creating a New Storage
   path: creating_storages_md.html
 -
+  name: Design of Shrine
+  path: design_md.html
+-
   name: Direct Uploads to S3
   path: direct_s3_md.html
 -
