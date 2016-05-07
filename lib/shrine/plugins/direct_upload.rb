@@ -186,7 +186,6 @@ class Shrine
       # with the file upload and returns the uploaded file as JSON.
       class App < Roda
         plugin :default_headers, "Content-Type"=>"application/json"
-        plugin :json_parser
 
         route do |r|
           r.on ":storage" do |storage_key|
