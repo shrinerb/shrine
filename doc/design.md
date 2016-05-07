@@ -10,9 +10,10 @@ There are five main types of objects that you deal with in Shrine:
 
 ## Storage
 
-A storage class encapsulates file management logic on a particular service. It
-is what actually performs uploads, generation of URLs, deletions and similar. By
-convention it is namespaced under `Shrine::Storage`.
+On the lowest level we have a storage. A storage class encapsulates file
+management logic on a particular service. It is what actually performs uploads,
+generation of URLs, deletions and similar. By convention it is namespaced under
+`Shrine::Storage`.
 
 ```rb
 filesystem = Shrine::Storage::FileSystem.new("uploads")
@@ -21,7 +22,7 @@ filesystem.url("foo") #=> "uploads/foo"
 filesystem.delete("foo")
 ```
 
-All storages conform to the same unified interface:
+A storage is a PORO which responds to certain methods:
 
 ```rb
 class Shrine
@@ -69,12 +70,12 @@ class Shrine
 end
 ```
 
+Storages are typically not used directly, but through `Shrine`.
+
 ## `Shrine`
 
-Storages are typically not used directly, but through an uploader which acts as
-a wrapper around the storage. An uploader is any descendant of `Shrine`. In
-order for an uploader to wrap a storage, we first have to register the storage
-under a name:
+A `Shrine` object (also called an "uploader") acts as a wrapper around a
+storage. First the storage needs to be registered under a name:
 
 ```rb
 Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
@@ -97,11 +98,14 @@ following:
 * closes the file
 * creates a `Shrine::UploadedFile` from the data
 
+In applications it's common to create subclasses of `Shrine`, in order to allow
+having different uploading logic for different types of files.
+
 ## `Shrine::UploadedFile`
 
-`Shrine::UploadedFile` represents a file that was uploaded to a storage. It is
-essentially a wrapper around a data hash containing all the information about
-the uploaded file.
+`Shrine::UploadedFile` represents a file that was uploaded to a storage, and is
+the result of `Shrine#upload`. It is essentially a wrapper around a data hash
+containing information about the uploaded file.
 
 ```rb
 uploaded_file      #=> #<Shrine::UploadedFile>
@@ -117,9 +121,9 @@ uploaded_file.data #=>
 # }
 ```
 
-As we can see, the data hash contains the storage the file was uploaded to,
-the location, and some metadata: original filename, MIME type and filesize.
-The `Shrine::UploadedFile` object has handy methods which use this data:
+The data hash contains the storage the file was uploaded to, the location, and
+some metadata: original filename, MIME type and filesize. The
+`Shrine::UploadedFile` object has handy methods which use this data:
 
 ```rb
 # metadata methods
@@ -141,9 +145,12 @@ remote file), so it can be passed to `Shrine#upload` as well.
 
 ## `Shrine::Attacher`
 
-We want to treat uploaded files as *attachments* to records, saving their data
-into a database column. This is the responsibility of `Shrine::Attacher`. The
-attaching process requires a temporary and a permanent storage to be
+We usually want to treat uploaded files as *attachments* to records, saving
+their data into a database column. This is the responsibility of
+`Shrine::Attacher`. A `Shrine::Attacher` uses `Shrine` uploaders and
+`Shrine::UploadedFile` objects internally.
+
+The attaching process requires a temporary and a permanent storage to be
 registered (by default that's `:cache` and `:store`):
 
 ```rb
@@ -153,12 +160,8 @@ Shrine.storages = {
 }
 ```
 
-A file can be assigned to the attacher, which will "cache" (upload) the file to
-the temporary storage. After validations pass, the cached file can be
-"promoted" (uploaded) to permanent storage. Behind the scenes a cached
-`Shrine::UploadedFile` is given to `Shrine#upload`, which works because
-`Shrine::UploadedFile` is an IO-like object. After both caching and promoting
-the data hash of the uploaded file is saved to the record's column as JSON.
+A `Shrine::Attacher` is instantiated with a model instance and an attachment
+name (an "image" attachment will be saved to `image_data` field):
 
 ```rb
 attacher = Shrine::Attacher.new(photo, :image)
@@ -172,10 +175,18 @@ attacher.get #=> #<Shrine::UploadedFile>
 attacher.record.image_data #=> "{\"storage\":\"store\",\"id\":\"ksdf02lr9sf3la.jpg\",\"metadata\":{...}}"
 ```
 
+Above a file is assigned by the attacher, which "caches" (uploads) the file to
+the temporary storage. The cached file is then "promoted" (uploaded) to
+permanent storage. Behind the scenes a cached `Shrine::UploadedFile` is given
+to `Shrine#upload`, which works because `Shrine::UploadedFile` is an IO-like
+object. After both caching and promoting the data hash of the uploaded file is
+assigned to the record's column as JSON.
+
 ## `Shrine::Attachment`
 
-A `Shrine::Attachment` module exposes the attacher for an attachment through
-the record. The `Shrine::Attachment` class is a sublcass of `Module`, which
+`Shrine::Attachment` is the highest level of abstraction. A
+`Shrine::Attachment` module exposes the `Shrine::Attacher` object through the
+model instance. The `Shrine::Attachment` class is a sublcass of `Module`, which
 means that an instance of `Shrine::Attachment` is a module:
 
 ```rb
@@ -203,7 +214,10 @@ photo.image_url    # shorthand for `photo.image_attacher.url`
 photo.image_attacher #=> #<Shrine::Attacher>
 ```
 
-When an ORM plugin is loaded, the `Shrine::Attachment` module also adds
-callbacks for uploading the cached file to permanent storage when record is
-saved, and for deleting the file when it was replaced, removed, or the record
-was destroyed.
+When an ORM plugin is loaded, the `Shrine::Attachment` module also
+automatically:
+
+* syncs Shrine's validation errors with the record
+* triggers promoting after record is saved
+* deletes the uploaded file if attachment was replaced, removed or the record
+  destroyed
