@@ -2,12 +2,7 @@ require "test_helper"
 require "active_record"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
-ActiveRecord::Migration.verbose = false
-ActiveRecord::Migration.class_eval do
-  create_table :users do |t|
-    t.text :avatar_data
-  end
-end
+ActiveRecord::Base.connection.create_table(:users) { |t| t.text :avatar_data }
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 describe "the activerecord plugin" do
