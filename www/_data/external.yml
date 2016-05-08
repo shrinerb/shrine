@@ -38,6 +38,9 @@
       name: shrine-memory
       url: https://github.com/janko-m/shrine-memory
     -
+      name: shrine-mongoid
+      url: https://github.com/janko-m/shrine-mongoid
+    -
       name: shrine-reform
       url: https://github.com/janko-m/shrine-reform
     -
