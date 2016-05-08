@@ -31,8 +31,10 @@ class Shrine
     #     end
     module Sequel
       module AttachmentMethods
-        def initialize(*)
+        def included(model)
           super
+
+          return unless model < ::Sequel::Model
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def validate

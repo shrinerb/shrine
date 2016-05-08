@@ -87,7 +87,7 @@ describe "the sequel plugin" do
 
     it "is terminated when record was deleted before update" do
       @attacher.instance_eval do
-        def update(uploaded_file)
+        def swap(*)
           record.this.delete
           super
         end
@@ -188,5 +188,11 @@ describe "the sequel plugin" do
     ], :avatar_data
 
     @user.update(avatar: fakeio)
+  end
+
+  it "allows including attachment model to non-Sequel objects" do
+    uploader = @uploader
+    object = Struct.new(:avatar_data) { include uploader.class[:avatar] }
+    refute_respond_to object, :validate
   end
 end

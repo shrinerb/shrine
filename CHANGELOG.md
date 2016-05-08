@@ -1,8 +1,10 @@
 ## 2.0.0 (HEAD)
 
+* Allow including attachment module to non-`Sequel::Model` objects in sequel plugin (janko-m)
+
 * Handle paths that start with "-" in determine_mime_type plugin when `:file` analyzer is used (zaeleus)
 
-* Allow including attachment module to non-ActiveRecord::Base with activerecord plugin (janko-m)
+* Allow including attachment module to non-`ActiveRecord::Base` objects in activerecord plugin (janko-m)
 
 * Remove deprecated "restore_cached" alias for restore_cached_data plugin (janko-m)
 
