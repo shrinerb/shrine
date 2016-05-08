@@ -126,7 +126,7 @@ describe "the backgrounding plugin" do
       @attacher.assign(fakeio)
       data = @attacher.class.dump(@attacher)
       assert_equal @attacher.get, @attacher.uploaded_file(data["attachment"])
-      assert_equal [@attacher.record.class.to_s, @attacher.record.id], data["record"]
+      assert_equal [@attacher.record.class.to_s, @attacher.record.id.to_s], data["record"]
       assert_equal @attacher.name.to_s, data["name"]
     end
 

@@ -109,7 +109,7 @@ class Shrine
         def dump(attacher)
           {
             "attachment" => attacher.get && attacher.get.to_json,
-            "record"     => [attacher.record.class.to_s, attacher.record.id],
+            "record"     => [attacher.record.class.to_s, attacher.record.id.to_s],
             "name"       => attacher.name.to_s,
           }
         end

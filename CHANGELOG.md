@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Support Mongoid in backgrounding plugin (janko-m)
+
 * Allow including attachment module to non-`Sequel::Model` objects in sequel plugin (janko-m)
 
 * Handle paths that start with "-" in determine_mime_type plugin when `:file` analyzer is used (zaeleus)
