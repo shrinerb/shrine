@@ -20,16 +20,16 @@ class Shrine
     # declared somewhere after the hidden field.
     module RemoveAttachment
       module AttachmentMethods
-        def initialize(name)
+        def initialize(*)
           super
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def remove_#{name}=(value)
-              #{name}_attacher.remove = value
+            def remove_#{@name}=(value)
+              #{@name}_attacher.remove = value
             end
 
-            def remove_#{name}
-              #{name}_attacher.remove
+            def remove_#{@name}
+              #{@name}_attacher.remove
             end
           RUBY
         end

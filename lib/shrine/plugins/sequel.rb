@@ -31,30 +31,30 @@ class Shrine
     #     end
     module Sequel
       module AttachmentMethods
-        def initialize(name)
+        def initialize(*)
           super
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def validate
               super
-              #{name}_attacher.errors.each do |message|
-                errors.add(:#{name}, message)
+              #{@name}_attacher.errors.each do |message|
+                errors.add(:#{@name}, message)
               end
             end
 
             def before_save
               super
-              #{name}_attacher.save if #{name}_attacher.attached?
+              #{@name}_attacher.save if #{@name}_attacher.attached?
             end
 
             def after_commit
               super
-              #{name}_attacher.finalize if #{name}_attacher.attached?
+              #{@name}_attacher.finalize if #{@name}_attacher.attached?
             end
 
             def after_destroy_commit
               super
-              #{name}_attacher.destroy
+              #{@name}_attacher.destroy
             end
           RUBY
         end

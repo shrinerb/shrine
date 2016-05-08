@@ -51,16 +51,16 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(name)
+        def initialize(*)
           super
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}_data_uri=(uri)
-              #{name}_attacher.data_uri = uri
+            def #{@name}_data_uri=(uri)
+              #{@name}_attacher.data_uri = uri
             end
 
-            def #{name}_data_uri
-              #{name}_attacher.data_uri
+            def #{@name}_data_uri
+              #{@name}_attacher.data_uri
             end
           RUBY
         end

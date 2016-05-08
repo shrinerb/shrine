@@ -20,16 +20,16 @@ class Shrine
     # both cached and stored files). This keeps Rails logs cleaner.
     module CachedAttachmentData
       module AttachmentMethods
-        def initialize(name)
+        def initialize(*)
           super
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def cached_#{name}_data
-              #{name}_attacher.read_cached
+            def cached_#{@name}_data
+              #{@name}_attacher.read_cached
             end
 
-            def cached_#{name}_data=(value)
-              #{name}_attacher.assign(value)
+            def cached_#{@name}_data=(value)
+              #{@name}_attacher.assign(value)
             end
           RUBY
         end

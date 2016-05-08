@@ -64,16 +64,16 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(name)
+        def initialize(*)
           super
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}_remote_url=(url)
-              #{name}_attacher.remote_url = url
+            def #{@name}_remote_url=(url)
+              #{@name}_attacher.remote_url = url
             end
 
-            def #{name}_remote_url
-              #{name}_attacher.remote_url
+            def #{@name}_remote_url
+              #{@name}_attacher.remote_url
             end
           RUBY
         end
