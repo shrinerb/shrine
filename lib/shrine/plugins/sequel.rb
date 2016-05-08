@@ -34,7 +34,7 @@ class Shrine
         def initialize(name)
           super
 
-          class_eval <<-RUBY, __FILE__, __LINE__ + 1
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def validate
               super
               #{name}_attacher.errors.each do |message|
