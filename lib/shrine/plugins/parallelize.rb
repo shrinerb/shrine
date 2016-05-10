@@ -43,8 +43,8 @@ class Shrine
         end
 
         class ThreadPool
-          def initialize(thread_count)
-            @thread_count = thread_count
+          def initialize(size)
+            @size = size
             @tasks = Queue.new
           end
 
@@ -53,7 +53,7 @@ class Shrine
           end
 
           def perform
-            threads = @thread_count.times.map { spawn_thread }
+            threads = @size.times.map { spawn_thread }
             threads.each(&:join)
           end
 
