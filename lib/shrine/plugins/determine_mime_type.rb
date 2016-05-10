@@ -32,6 +32,11 @@ class Shrine
     #   *extension*. Note that unlike other solutions, this analyzer is not
     #   guaranteed to return the actual MIME type of the file.
     #
+    # :default
+    # : Uses the default way of extracting the MIME type, and that is from the
+    #   "Content-Type" request header, which might not hold the actual MIME type
+    #   of the file.
+    #
     # If none of these quite suit your needs, you can use a custom analyzer:
     #
     #     plugin :determine_mime_type, analyzer: ->(io) do
@@ -74,6 +79,7 @@ class Shrine
         # a built-in analyzer or a custom one.
         def extract_mime_type(io)
           analyzer = opts[:mime_type_analyzer]
+          return super if analyzer == :default
           analyzer = method(:"_extract_mime_type_with_#{analyzer}") if analyzer.is_a?(Symbol)
 
           mime_type = analyzer.call(io)

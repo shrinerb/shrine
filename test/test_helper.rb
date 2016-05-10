@@ -15,6 +15,10 @@ require "mocha/mini_test"
 
 require "shrine"
 
+class Shrine
+  def warn(*); end # disable mime_type warnings
+end
+
 require "./test/support/helpers"
 
 Minitest::Spec.include TestHelpers::Generic

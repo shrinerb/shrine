@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Print secuity warning when not using determine_mime_type plugin (janko-m)
+
 * Support Mongoid in backgrounding plugin (janko-m)
 
 * Allow including attachment module to non-`Sequel::Model` objects in sequel plugin (janko-m)

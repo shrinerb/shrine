@@ -7,12 +7,12 @@ describe "the determine_mime_type plugin" do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :file }
     end
 
-    it "determines content type from file contents" do
+    it "determines MIME type from file contents" do
       mime_type = @uploader.send(:extract_mime_type, image)
       assert_equal "image/jpeg", mime_type
     end
 
-    it "is able to determine content type for non-files" do
+    it "is able to determine MIME type for non-files" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
       assert_equal "image/jpeg", mime_type
     end
@@ -31,7 +31,7 @@ describe "the determine_mime_type plugin" do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :filemagic }
     end
 
-    it "determines content type from file contents" do
+    it "determines MIME type from file contents" do
       mime_type = @uploader.send(:extract_mime_type, image)
       assert_equal "image/jpeg", mime_type
     end
@@ -42,7 +42,7 @@ describe "the determine_mime_type plugin" do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :mimemagic }
     end
 
-    it "extracts content type of any IO" do
+    it "extracts MIME type of any IO" do
       mime_type = @uploader.send(:extract_mime_type, image)
       assert_equal "image/jpeg", mime_type
     end
@@ -53,7 +53,7 @@ describe "the determine_mime_type plugin" do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :mime_types }
     end
 
-    it "extract content type from the file extension" do
+    it "extract MIME type from the file extension" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(filename: "image.png"))
       assert_equal "image/png", mime_type
 
@@ -69,6 +69,17 @@ describe "the determine_mime_type plugin" do
     it "returns nil when input is not a file" do
       mime_type = @uploader.send(:extract_mime_type, fakeio)
       assert_equal nil, mime_type
+    end
+  end
+
+  describe ":default" do
+    before do
+      @uploader = uploader { plugin :determine_mime_type, analyzer: :default }
+    end
+
+    it "extracts MIME type from #content_type" do
+      mime_type = @uploader.send(:extract_mime_type, fakeio(content_type: "foo/bar"))
+      assert_equal "foo/bar", mime_type
     end
   end
 
