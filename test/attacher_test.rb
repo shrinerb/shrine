@@ -258,6 +258,33 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#cache!" do
+    it "uploads the IO to cache and passes context" do
+      io = fakeio
+      context = {name: @attacher.name, record: @attacher.record, phase: nil}
+      @attacher.cache.expects(:upload).with(io, context)
+      @attacher.cache!(io)
+    end
+  end
+
+  describe "#store!" do
+    it "uploads the IO to store and passes context" do
+      io = fakeio
+      context = {name: @attacher.name, record: @attacher.record, phase: nil}
+      @attacher.store.expects(:upload).with(io, context)
+      @attacher.store!(io)
+    end
+  end
+
+  describe "#delete!" do
+    it "deletes the IO and passes context" do
+      io = fakeio
+      context = {name: @attacher.name, record: @attacher.record, phase: nil}
+      @attacher.store.expects(:delete).with(io, context)
+      @attacher.delete!(io)
+    end
+  end
+
   it "has smarter .inspect" do
     assert_includes @attacher.class.inspect, "::Attacher"
   end

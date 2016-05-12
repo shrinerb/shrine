@@ -555,6 +555,21 @@ class Shrine
           shrine_class.uploaded_file(*args, &block)
         end
 
+        # Uploads the file to cache passing context.
+        def cache!(io, **options)
+          cache.upload(io, context.merge(options))
+        end
+
+        # Uploads the file to store passing context.
+        def store!(io, **options)
+          store.upload(io, context.merge(options))
+        end
+
+        # Deletes the file passing context.
+        def delete!(uploaded_file, **options)
+          store.delete(uploaded_file, context.merge(options))
+        end
+
         # Returns the Shrine class related to this attacher.
         def shrine_class
           self.class.shrine_class
@@ -583,21 +598,6 @@ class Shrine
         # Sets and saves the uploaded file.
         def update(uploaded_file)
           _set(uploaded_file)
-        end
-
-        # Uploads the file to cache (calls `Shrine#upload`).
-        def cache!(io, phase:)
-          cache.upload(io, context.merge(phase: phase))
-        end
-
-        # Uploads the file to store (calls `Shrine#upload`).
-        def store!(io, phase:)
-          store.upload(io, context.merge(phase: phase))
-        end
-
-        # Deletes the file (calls `Shrine#delete`).
-        def delete!(uploaded_file, phase:)
-          store.delete(uploaded_file, context.merge(phase: phase))
         end
 
         # The validation block provided by `Shrine.validate`.

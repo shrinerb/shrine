@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Make `Attacher#cache!`, `Attacher#store!`, and `Attacher#delete!` public (janko-m)
+
 * Don't cache storages in dynamic_storage plugin (janko-m)
 
 * Make only one HTTP request in download_endpoint plugin (janko-m)

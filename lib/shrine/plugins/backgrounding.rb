@@ -147,8 +147,6 @@ class Shrine
           super
         end
 
-        private
-
         # Calls the deleting block (if registered) with a serializable data
         # hash.
         def delete!(uploaded_file, phase:)
