@@ -93,8 +93,6 @@ class Shrine
       # and allowed. Afterwards it proceeds with the file download using
       # streaming.
       class App < Roda
-        plugin :streaming
-
         route do |r|
           r.on ":storage" do |storage_key|
             @storage = get_storage(storage_key)
@@ -117,11 +115,7 @@ class Shrine
                 end
               end
 
-              stream do |out|
-                chunks.each do |chunk|
-                  out << chunk
-                end
-              end
+              r.halt response.finish_with_body(chunks)
             end
           end
         end
