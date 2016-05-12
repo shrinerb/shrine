@@ -65,6 +65,12 @@ describe "the download_endpoint plugin" do
       refute_includes response.headers.keys, "Content-Length"
     end
 
+    it "calls #stream on storage only once" do
+      @uploader.storage.instance_eval { def stream(id); raise if @called; @called = true; super; end }
+      response = app.get "/store/#{@id}"
+      assert_equal @uploaded_file.read, response.body_binary
+    end
+
     it "refuses storages which are not allowed" do
       response = app.get "/cache/#{@id}"
       assert_http_error 403, response

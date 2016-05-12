@@ -106,9 +106,16 @@ class Shrine
               response["Content-Disposition"] = "#{disposition}; filename=#{filename.inspect}"
               response["Content-Type"] = Rack::Mime.mime_type(extname)
 
-              chunks = get_stream(id)
-              _, content_length = chunks.peek
+              stream = get_stream(id)
+              _, content_length = stream.peek
               response['Content-Length'] = content_length.to_s if content_length
+
+              chunks = Enumerator.new do |y|
+                loop do
+                  chunk, * = stream.next
+                  y << chunk
+                end
+              end
 
               stream do |out|
                 chunks.each do |chunk|

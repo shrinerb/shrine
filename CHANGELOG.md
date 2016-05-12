@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Make only one HTTP request in download_endpoint plugin (janko-m)
+
 * Print secuity warning when not using determine_mime_type plugin (janko-m)
 
 * Support Mongoid in backgrounding plugin (janko-m)
@@ -57,6 +59,8 @@
 * Bring back triggering callbacks on promote in ORM plugins, and add support for optimistic locking (janko-m)
 
 ## 1.4.0 (2016-04-15)
+
+* Return "Content-Length" response header in download_endpoint plugin (janko-m)
 
 * Make determine_mime_type and store_dimensions automatically rewind IO with custom analyzer (janko-m)
 
