@@ -96,9 +96,9 @@ class Shrine
           else
             attacher = load(data)
             uploaded_file = attacher.uploaded_file(data["attachment"])
-            context = {name: attacher.name, record: attacher.record, phase: data["phase"].to_sym}
+            phase = data["phase"].to_sym if data["phase"]
 
-            attacher.store.delete(uploaded_file, context)
+            attacher.delete!(uploaded_file, phase: phase)
 
             attacher
           end
@@ -134,8 +134,25 @@ class Shrine
         # hash.
         def _promote
           if background_promote = shrine_class.opts[:backgrounding_promote]
-            data = self.class.dump(self).merge("phase" => "store")
+            data = self.class.dump(self).merge(
+              "phase" => "store",
+            )
             instance_exec(data, &background_promote) if promote?(get)
+          else
+            super
+          end
+        end
+
+        # Calls the deleting block (if registered) with a serializable data
+        # hash.
+        def _delete(uploaded_file, phase: nil)
+          if background_delete = shrine_class.opts[:backgrounding_delete]
+            data = self.class.dump(self).merge(
+              "attachment" => uploaded_file.to_json,
+              "phase"      => (phase.to_s if phase),
+            )
+            instance_exec(data, &background_delete)
+            uploaded_file
           else
             super
           end
@@ -145,22 +162,6 @@ class Shrine
         def promote(cached_file, *)
           return if cached_file != get
           super
-        end
-
-        # Calls the deleting block (if registered) with a serializable data
-        # hash.
-        def delete!(uploaded_file, phase:)
-          if background_delete = shrine_class.opts[:backgrounding_delete]
-            data = self.class.dump(self).merge(
-              "attachment" => uploaded_file.to_json,
-              "phase"      => phase.to_s,
-            )
-            instance_exec(data, &background_delete)
-
-            uploaded_file
-          else
-            super
-          end
         end
       end
     end

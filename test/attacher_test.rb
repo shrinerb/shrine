@@ -219,6 +219,14 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#_delete" do
+    it "deletes the uploaded file" do
+      uploaded_file = @attacher.store.upload(fakeio)
+      @attacher._delete(uploaded_file)
+      refute uploaded_file.exists?
+    end
+  end
+
   describe "#url" do
     it "calls storage's #url" do
       assert_equal nil, @attacher.url

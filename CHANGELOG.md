@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Add `Attacher#_delete` which now spawns a background job instead of `Attacher#delete!` (janko-m)
+
 * Make `Attacher#cache!`, `Attacher#store!`, and `Attacher#delete!` public (janko-m)
 
 * Don't cache storages in dynamic_storage plugin (janko-m)

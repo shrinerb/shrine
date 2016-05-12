@@ -67,7 +67,7 @@ class Shrine
 
         # Deleted the stored file from the backup storage.
         def delete_backup!(deleted_file)
-          delete!(backup_file(deleted_file), phase: :backup)
+          _delete(backup_file(deleted_file), phase: :backup)
         end
 
         def backup_store
