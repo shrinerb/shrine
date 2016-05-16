@@ -32,19 +32,18 @@ class Shrine
     #
     # Internally these methods will resolve all necessary objects, do the
     # promotion/deletion, and in case of promotion update the record with the
-    # stored attachment. Concurrency issues, like record being deleted or
-    # attachment being changed, are handled automatically.
+    # stored attachment.
     #
     # The examples above used Sidekiq, but obviously you can just as well use
     # any other backgrounding library. This setup will work globally for all
     # uploaders.
     #
-    # Both methods return the `Shrine::Attacher` instance (if it exists and the
-    # action didn't abort), so you can use it to do additional actions:
+    # Both methods return the `Shrine::Attacher` instance (if the action didn't
+    # abort), so you can use it to do additional actions:
     #
     #     def perform(data)
     #       attacher = Shrine::Attacher.promote(data)
-    #       attacher.record.update(published: true) if attacher.record.is_a?(Post)
+    #       attacher.record.update(published: true) if attacher && attacher.record.is_a?(Post)
     #     end
     #
     # You can also write custom background jobs with `Attacher.dump` and
@@ -52,6 +51,7 @@ class Shrine
     #
     #     class User < Sequel::Model
     #       def after_commit
+    #         super
     #         if some_condition
     #           data = Shrine::Attacher.dump(avatar_attacher)
     #           SomethingJob.perform_async(data)
@@ -69,7 +69,7 @@ class Shrine
     #
     # If you're generating versions, and you want to process some versions in
     # the foreground before kicking off a background job, you can use the
-    # `recache` plugin.
+    # recache plugin.
     module Backgrounding
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise
@@ -104,14 +104,9 @@ class Shrine
           end
         end
 
-        # Dumps all the information about the attacher in a serializable hash
-        # suitable for passing as an argument to background jobs.
+        # Delegates to `Attacher#dump`.
         def dump(attacher)
-          {
-            "attachment" => attacher.get && attacher.get.to_json,
-            "record"     => [attacher.record.class.to_s, attacher.record.id.to_s],
-            "name"       => attacher.name.to_s,
-          }
+          attacher.dump
         end
 
         # Loads the data created by #dump, resolving the record and returning
@@ -162,6 +157,16 @@ class Shrine
         def promote(cached_file, *)
           return if cached_file != get
           super
+        end
+
+        # Dumps all the information about the attacher in a serializable hash
+        # suitable for passing as an argument to background jobs.
+        def dump
+          {
+            "attachment" => (get && get.to_json),
+            "record"     => [record.class.to_s, record.id.to_s],
+            "name"       => name.to_s,
+          }
         end
       end
     end
