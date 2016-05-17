@@ -497,7 +497,7 @@ class Shrine
 
         # Returns true if a new file has been attached.
         def attached?
-          instance_variable_defined?("@old")
+          instance_variable_defined?(:@old)
         end
 
         # Plugins can override this if they want something to be done on save.
@@ -508,7 +508,7 @@ class Shrine
         # be called after saving.
         def finalize
           replace
-          remove_instance_variable("@old")
+          remove_instance_variable(:@old)
           _promote
         end
 
