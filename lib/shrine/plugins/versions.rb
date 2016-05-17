@@ -22,6 +22,18 @@ class Shrine
     #       end
     #     end
     #
+    # Note that if you want to keep the original file, you can forward it as is
+    # without explicitly downloading it (since `Shrine::UploadedFile` itself is
+    # an IO-like object), which might avoid downloading depending on the
+    # storage:
+    #
+    #     def process(io, context)
+    #       if context[:phase] == :store
+    #         # ...
+    #         {original: io, thumb: thumb}
+    #       end
+    #     end
+    #
     # Now when you access the stored attachment through the model, a hash of
     # uploaded files will be returned:
     #
