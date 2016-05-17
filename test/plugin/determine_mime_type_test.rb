@@ -17,6 +17,13 @@ describe "the determine_mime_type plugin" do
       assert_equal "image/jpeg", mime_type
     end
 
+    it "returns nil for unidentified MIME types" do
+      require "open3"
+      Open3.stubs(:capture2).returns("", nil)
+      mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
+      assert_equal nil, mime_type
+    end
+
     it "handles filenames which start with '-' and look like an option" do
       FileUtils.cp(image, "-image.jpg")
       dashed_image = File.open("-image.jpg")
@@ -45,6 +52,11 @@ describe "the determine_mime_type plugin" do
     it "extracts MIME type of any IO" do
       mime_type = @uploader.send(:extract_mime_type, image)
       assert_equal "image/jpeg", mime_type
+    end
+
+    it "returns nil for unidentified MIME types" do
+      mime_type = @uploader.send(:extract_mime_type, fakeio(""))
+      assert_equal nil, mime_type
     end
   end
 

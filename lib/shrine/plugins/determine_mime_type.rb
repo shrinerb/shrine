@@ -98,10 +98,10 @@ class Shrine
         def _extract_mime_type_with_mimemagic(io)
           require "mimemagic"
 
-          mime_type = MimeMagic.by_magic(io).type
+          mime = MimeMagic.by_magic(io)
           io.rewind
 
-          mime_type
+          mime.type if mime
         end
 
         def _extract_mime_type_with_filemagic(io)
