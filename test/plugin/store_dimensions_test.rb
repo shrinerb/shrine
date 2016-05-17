@@ -21,6 +21,10 @@ describe "the store_dimensions plugin" do
     @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){[5, 10]} }
     dimensions = @uploader.send(:extract_dimensions, fakeio)
     assert_equal [5, 10], dimensions
+
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io, analyzers){analyzers[:fastimage].call(io)} }
+    dimensions = @uploader.send(:extract_dimensions, image)
+    assert_equal [100, 67], dimensions
   end
 
   it "always rewinds the IO" do

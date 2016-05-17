@@ -17,19 +17,14 @@ class Shrine
     # if for some reason it doesn't suit your needs, you can provide a custom
     # `:analyzer`:
     #
-    #     plugin :store_dimensions, analyzer: ->(io) do
-    #       MiniMagick::Image.new(io).dimensions #=> [300, 500]
+    #     plugin :store_dimensions, analyzer: ->(io, analyzers) do
+    #       dimensions = analyzers[:fastimage].call(io)
+    #       dimensions || MiniMagick::Image.new(io).dimensions
     #     end
     #
     # [fastimage]: https://github.com/sdsykes/fastimage
     # [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
     module StoreDimensions
-      def self.load_dependencies(uploader, analyzer: :fastimage)
-        case analyzer
-        when :fastimage then require "fastimage"
-        end
-      end
-
       def self.configure(uploader, analyzer: :fastimage)
         uploader.opts[:dimensions_analyzer] = analyzer
       end
@@ -51,16 +46,26 @@ class Shrine
         # calls the predefined or custom analyzer.
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
-          analyzer = method(:"_extract_dimensions_with_#{analyzer}") if analyzer.is_a?(Symbol)
+          analyzer = dimensions_analyzers[analyzer] if analyzer.is_a?(Symbol)
+          args = [io, dimensions_analyzers].first(analyzer.arity)
 
-          dimensions = analyzer.call(io)
+          dimensions = analyzer.call(*args)
           io.rewind
 
           dimensions
         end
 
+        def dimensions_analyzers
+          Hash.new { |hash, key| method(:"_extract_dimensions_with_#{key}") }
+        end
+
         def _extract_dimensions_with_fastimage(io)
-          FastImage.size(io)
+          require "fastimage"
+
+          dimensions = FastImage.size(io)
+          io.rewind
+
+          dimensions
         end
       end
 

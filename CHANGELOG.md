@@ -1,8 +1,10 @@
 ## 2.0.0 (HEAD)
 
+* Allow implementing a custom dimensions analyzer using built-in ones (janko-m)
+
 * Don't error in determine_mime_type when MimeMagic cannot determine the MIME (janko-m)
 
-* Allow implementing a custom MIME type analyzer in using built-in ones (janko-m)
+* Allow implementing a custom MIME type analyzer using built-in ones (janko-m)
 
 * Don't check that the cached file exists in restore_cached_data plugin (janko-m)
 
