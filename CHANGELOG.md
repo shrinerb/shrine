@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Don't check that the cached file exists in restore_cached_data plugin (janko-m)
+
 * Deprecate migration_helpers plugin and move `Attacher#cached?` and `Attacher#stored?` to base (janko-m)
 
 * Don't trigger restore_cached_data plugin functionality when assigning the same cached attachment (janko-m)
