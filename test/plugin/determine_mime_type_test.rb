@@ -85,8 +85,12 @@ describe "the determine_mime_type plugin" do
 
   it "allows passing a custom extractor" do
     @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" } }
-    mime_type = @uploader.send(:extract_mime_type, fakeio)
+    mime_type = @uploader.send(:extract_mime_type, image)
     assert_equal "foo/bar", mime_type
+
+    @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io, analyzers) { analyzers[:file].call(io) } }
+    mime_type = @uploader.send(:extract_mime_type, image)
+    assert_equal "image/jpeg", mime_type
   end
 
   it "always rewinds the file" do

@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Allow implementing a custom MIME type analyzer in using built-in ones (janko-m)
+
 * Don't check that the cached file exists in restore_cached_data plugin (janko-m)
 
 * Deprecate migration_helpers plugin and move `Attacher#cached?` and `Attacher#stored?` to base (janko-m)

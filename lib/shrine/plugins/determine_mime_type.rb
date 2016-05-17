@@ -15,12 +15,12 @@ class Shrine
     # :file
     # : (Default). Uses the [file] utility to determine the MIME type from file
     #   contents. It is installed by default on most operating systems, but the
-    #   [Windows equivalent] you need to install separately.
+    #   [Windows equivalent] needs to be installed separately.
     #
     # :filemagic
     # : Uses the [ruby-filemagic] gem to determine the MIME type from file
-    #   contents, using a similar MIME database as the `file` utility.
-    #   Unlike the `file` utility, ruby-filemagic should work on Windows.
+    #   contents, using a similar MIME database as the `file` utility. Unlike
+    #   the `file` utility, ruby-filemagic works on Windows without any setup.
     #
     # :mimemagic
     # : Uses the [mimemagic] gem to determine the MIME type from file contents.
@@ -37,10 +37,10 @@ class Shrine
     #   "Content-Type" request header, which might not hold the actual MIME type
     #   of the file.
     #
-    # If none of these quite suit your needs, you can use a custom analyzer:
+    # If none of these quite suit your needs, you can build a custom analyzer:
     #
-    #     plugin :determine_mime_type, analyzer: ->(io) do
-    #       # returns the extracted MIME type
+    #     plugin :determine_mime_type, analyzer: ->(io, analyzers) do
+    #       analyzers[:mimemagic].call(io) || analyzers[:file].call(io)
     #     end
     #
     # [file]: http://linux.die.net/man/1/file
@@ -49,20 +49,6 @@ class Shrine
     # [mimemagic]: https://github.com/minad/mimemagic
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
     module DetermineMimeType
-      def self.load_dependencies(uploader, analyzer: :file)
-        case analyzer
-        when :file      then require "open3"
-        when :filemagic then require "filemagic"
-        when :mimemagic then require "mimemagic"
-        when :mime_types
-          begin
-            require "mime/types/columnar"
-          rescue LoadError
-            require "mime/types"
-          end
-        end
-      end
-
       def self.configure(uploader, analyzer: :file)
         uploader.opts[:mime_type_analyzer] = analyzer
       end
@@ -80,42 +66,63 @@ class Shrine
         def extract_mime_type(io)
           analyzer = opts[:mime_type_analyzer]
           return super if analyzer == :default
-          analyzer = method(:"_extract_mime_type_with_#{analyzer}") if analyzer.is_a?(Symbol)
 
-          mime_type = analyzer.call(io)
+          analyzer = mime_type_analyzers[analyzer] if analyzer.is_a?(Symbol)
+          args = [io, mime_type_analyzers].first(analyzer.arity)
+
+          mime_type = analyzer.call(*args)
           io.rewind
 
           mime_type
         end
 
-        # Uses the UNIX file utility to extract the MIME type. It does so only
-        # if it's a file, because even though the utility accepts standard
-        # input, it would mean that we have to read the whole file in memory.
+        def mime_type_analyzers
+          Hash.new { |hash, key| method(:"_extract_mime_type_with_#{key}") }
+        end
+
         def _extract_mime_type_with_file(io)
+          require "open3"
+
           cmd = ["file", "--mime-type", "--brief", "--"]
 
           if io.respond_to?(:path)
-            mime_type, _ = Open3.capture2(*cmd, io.path)
+            mime_type, * = Open3.capture2(*cmd, io.path)
           else
-            mime_type, _ = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER), binmode: true)
+            mime_type, * = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER), binmode: true)
+            io.rewind
           end
 
           mime_type.strip unless mime_type.empty?
         end
 
-        # Uses the ruby-filemagic gem to magically extract the MIME type.
-        def _extract_mime_type_with_filemagic(io)
-          filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          filemagic.buffer(io.read(MAGIC_NUMBER))
-        end
-
-        # Uses the mimemagic gem to extract the MIME type.
         def _extract_mime_type_with_mimemagic(io)
-          MimeMagic.by_magic(io).type
+          require "mimemagic"
+
+          mime_type = MimeMagic.by_magic(io).type
+          io.rewind
+
+          mime_type
         end
 
-        # Uses the mime-types gem to determine MIME type from file extension.
+        def _extract_mime_type_with_filemagic(io)
+          require "filemagic"
+
+          filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
+          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER))
+
+          io.rewind
+          filemagic.close
+
+          mime_type
+        end
+
         def _extract_mime_type_with_mime_types(io)
+          begin
+            require "mime/types/columnar"
+          rescue LoadError
+            require "mime/types"
+          end
+
           if filename = extract_filename(io)
             mime_type = MIME::Types.of(filename).first
             mime_type.to_s if mime_type
