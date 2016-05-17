@@ -509,7 +509,7 @@ class Shrine
         def finalize
           replace
           remove_instance_variable(:@old)
-          _promote(phase: :store) if promote?
+          _promote(phase: :store) if cached?
         end
 
         # Promotes the file.
@@ -555,6 +555,16 @@ class Shrine
           get.url(**options) if read
         end
 
+        # Returns true if attachment is present and cached.
+        def cached?
+          get && cache.uploaded?(get)
+        end
+
+        # Returns true if attachment is present and stored.
+        def stored?
+          get && store.uploaded?(get)
+        end
+
         # Runs the validations defined by `Attacher.validate`.
         def validate
           errors.clear
@@ -592,12 +602,6 @@ class Shrine
         def assign_cached(value)
           cached_file = uploaded_file(value)
           set(cached_file) if cache.uploaded?(cached_file)
-        end
-
-        # Returns true if uploaded_file exists and is cached.  If it's true,
-        # \#promote will be called.
-        def promote?
-          get && cache.uploaded?(get)
         end
 
         # Sets and saves the uploaded file.

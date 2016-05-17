@@ -30,10 +30,6 @@ Model:
     path: Included.html
     description: Allows the included attachments to define additional methods on the model.
   -
-    name: migration_helpers
-    path: MigrationHelpers.html
-    description: Provides a set of helper methods that are useful when doing file migrations.
-  -
     name: parsed_json
     path: ParsedJson.html
     description: Allows assigning cached files as hashes/arrays (on top of JSON strings).

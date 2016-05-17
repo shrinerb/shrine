@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Deprecate migration_helpers plugin and move `Attacher#cached?` and `Attacher#stored?` to base (janko-m)
+
 * Don't trigger restore_cached_data plugin functionality when assigning the same cached attachment (janko-m)
 
 * Give `Attacher#_promote` and `Attacher#promote` the same method signature (janko-m)

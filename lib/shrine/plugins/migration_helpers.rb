@@ -1,3 +1,5 @@
+warn "The migration_helpers Shrine plugin is deprecated and will be removed in Shrine 3. Attacher#cached? and Attacher#stored? have been moved to base."
+
 class Shrine
   module Plugins
     # The migration_helpers plugin gives the attacher additional helper methods

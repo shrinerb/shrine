@@ -17,13 +17,11 @@ live production).
 
 ```rb
 Shrine.plugin :delete_promoted
-Shrine.plugin :migration_helpers
 
 User.paged_each do |user|
-  if user.avatar_attacher.stored?
-    user.promote(phase: :migrate)
-    # use `user._promote(phase: :migrate)` if you want promoting to be backgrounded
-  end
+  attacher = user.avatar_attacher
+  attacher.promote(phase: :migrate) if attacher.stored?
+  # use `attacher._promote(phase: :migrate)` if you want promoting to be backgrounded
 end
 ```
 

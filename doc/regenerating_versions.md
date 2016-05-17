@@ -20,7 +20,7 @@ class ImageUploader < Shrine
   def process(io, context)
     case context[:phase]
     when :store
-      thumb = process_thumb(io.download) # replace with actual processing method
+      thumb = process_thumb(io.download)
       {original: io, thumb: thumb}
     end
   end
@@ -41,16 +41,12 @@ Afterwards you should run a script which reprocesses the versions for existing
 files:
 
 ```rb
-Shrine.plugin :migration_helpers # before the model is loaded
-```
-```rb
 User.paged_each do |user|
-  user.update_avatar do |avatar|
-    unless avatar.is_a?(Hash)
-      file = some_processing(avatar.download)
-      thumb = user.avatar_store.upload(file, {record: user, name: :avatar, version: :thumb})
-      {original: avatar, thumb: thumb}
-    end
+  attacher, attachment = user.avatar_attacher, user.avatar
+  if attacher.stored? && !attachment.is_a?(Hash)
+    file = some_processing(attachment.download)
+    thumb = attacher.store!(file, version: :thumb)
+    attacher.swap({original: avatar, thumb: thumb})
   end
 end
 ```
@@ -62,14 +58,12 @@ First you need to change and deploy your updated processing code, and
 afterwards you can run a script like this on your production database:
 
 ```rb
-Shrine.plugin :migration_helpers # before the model is loaded
-```
-
-```rb
 User.paged_each do |user|
-  user.update_avatar do |avatar|
-    thumb = some_processing(avatar[:original].download)
-    avatar.merge(thumb: avatar[:thumb].replace(thumb))
+  attacher, attachment = user.avatar_attacher, user.avatar
+  if attacher.stored?
+    file = some_processing(attachment[:original].download)
+    thumb = attachment[:thumb].replace(thumb)
+    attacher.swap(attachment.merge(thumb: thumb))
   end
 end
 ```
@@ -98,17 +92,12 @@ After you've deployed this change, you should run a script that will generate
 the new version for all existing records:
 
 ```rb
-Shrine.plugin :migration_helpers # before the model is loaded
-```
-
-```rb
 User.paged_each do |user|
-  user.update_avatar do |avatar|
-    unless avatar[:new]
-      file = some_processing(avatar[:original].download, *args)
-      new = user.avatar_store.upload(file, {record: user, name: :avatar, version: :new})
-      avatar.merge(new: new)
-    end
+  attacher, attachment = user.avatar_attacher, user.avatar
+  if attacher.stored? && !attachment[:new]
+    file = some_processing(attachment[:original].download, *args)
+    new = attacher.store!(file, version: :new)
+    attacher.swap(attachment.merge(new: new))
   end
 end
 ```
@@ -125,17 +114,13 @@ not to use the new version, and deploy that code. After you've done that, you
 can run a script which removes that version:
 
 ```rb
-Shrine.plugin :migration_helpers # before the model is loaded
-```
-
-```rb
 old_versions = []
 
 User.paged_each do |user|
-  user.update_avatar do |avatar|
-    old_version = avatar.delete(:old_version)
-    old_versions << old_version if old_version
-    avatar
+  attacher, attachment = user.avatar_attacher, user.avatar
+  if attacher.stored? && attachment[:old_version]
+    old_versions << attachment.delete(:old_version)
+    attacher.swap(attachment)
   end
 end
 
@@ -155,12 +140,9 @@ regenerate all versions. After you've deployed the change in processing, you
 can run a script which updates existing records:
 
 ```rb
-Shrine.plugin :migration_helpers # before the model is loaded
-```
-
-```rb
 User.paged_each do |user|
-  if user.avatar && user.avatar_store.uploaded?(user.avatar)
+  if user.avatar_attacher.stored?
+    # assuming your largest version is named ":original"
     user.update(avatar: user.avatar[:original])
   end
 end

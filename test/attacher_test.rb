@@ -252,6 +252,28 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#cached?" do
+    it "returns true if attachment is cached" do
+      @attacher.set(@attacher.cache.upload(fakeio))
+      assert @attacher.cached?
+      @attacher.set(@attacher.store.upload(fakeio))
+      refute @attacher.cached?
+      @attacher.set(nil)
+      refute @attacher.cached?
+    end
+  end
+
+  describe "#stored?" do
+    it "returns true if attachment is cached" do
+      @attacher.set(@attacher.store.upload(fakeio))
+      assert @attacher.stored?
+      @attacher.set(@attacher.cache.upload(fakeio))
+      refute @attacher.stored?
+      @attacher.set(nil)
+      refute @attacher.stored?
+    end
+  end
+
   describe "#validate" do
     it "instance exec's the validation block" do
       @attacher.class.validate { errors << get.read }
