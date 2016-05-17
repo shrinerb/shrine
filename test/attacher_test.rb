@@ -106,23 +106,33 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#finalize" do
+    it "it removes the attached state" do
+      @attacher.assign(fakeio)
+      @attacher.finalize
+      refute @attacher.attached?
+    end
+
+    it "doesn't call #_promote if assigned file is not cached" do
+      stored_file = @attacher.store.upload(fakeio)
+      @attacher.set(stored_file)
+      @attacher.expects(:promote).never
+      @attacher.finalize
+    end
+
+    it "doesn't call #promote if no file is assigned" do
+      @attacher.assign(fakeio)
+      @attacher.assign(nil)
+      @attacher.expects(:promote).never
+      @attacher.finalize
+    end
+  end
+
   describe "#_promote" do
     it "calls #promote if assigned file is cached" do
       cached_file = @attacher.cache.upload(fakeio)
       @attacher.record.avatar_data = cached_file.to_json
       @attacher.expects(:promote)
-      @attacher._promote
-    end
-
-    it "doesn't call #promote if assigned file is not cached" do
-      stored_file = @attacher.store.upload(fakeio)
-      @attacher.record.avatar_data = stored_file.to_json
-      @attacher.expects(:promote).never
-      @attacher._promote
-    end
-
-    it "doesn't call #promote if no file is assigned" do
-      @attacher.expects(:promote).never
       @attacher._promote
     end
   end
@@ -137,12 +147,8 @@ describe Shrine::Attacher do
 
     it "passes context hash on storing" do
       io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, phase: :store}
+      context = {name: @attacher.name, record: @attacher.record, phase: :foo}
       @attacher.assign(io)
-      @attacher.store.expects(:upload).with(@attacher.get, context).returns(@attacher.get)
-      @attacher.promote(@attacher.get)
-
-      context[:phase] = :foo
       @attacher.store.expects(:upload).with(@attacher.get, context).returns(@attacher.get)
       @attacher.promote(@attacher.get, phase: :foo)
     end
@@ -269,27 +275,27 @@ describe Shrine::Attacher do
   describe "#cache!" do
     it "uploads the IO to cache and passes context" do
       io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, phase: nil}
+      context = {name: @attacher.name, record: @attacher.record, foo: "bar"}
       @attacher.cache.expects(:upload).with(io, context)
-      @attacher.cache!(io)
+      @attacher.cache!(io, foo: "bar")
     end
   end
 
   describe "#store!" do
     it "uploads the IO to store and passes context" do
       io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, phase: nil}
+      context = {name: @attacher.name, record: @attacher.record, foo: "bar"}
       @attacher.store.expects(:upload).with(io, context)
-      @attacher.store!(io)
+      @attacher.store!(io, foo: "bar")
     end
   end
 
   describe "#delete!" do
     it "deletes the IO and passes context" do
       io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, phase: nil}
+      context = {name: @attacher.name, record: @attacher.record, foo: "bar"}
       @attacher.store.expects(:delete).with(io, context)
-      @attacher.delete!(io)
+      @attacher.delete!(io, foo: "bar")
     end
   end
 

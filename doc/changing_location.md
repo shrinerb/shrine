@@ -17,13 +17,17 @@ live production).
 
 ```rb
 Shrine.plugin :delete_promoted
+Shrine.plugin :migration_helpers
 
 User.paged_each do |user|
-  user.promote(user.avatar, phase: :change_location)
+  if user.avatar_attacher.stored?
+    user.promote(phase: :migrate)
+    # use `user._promote(phase: :migrate)` if you want promoting to be backgrounded
+  end
 end
 ```
 
-Note that the phase has to be overriden, otherwise it defaults to `:store`
-which would trigger processing if you have it set up.
+The `:phase` is not mandatory, it's just for better introspection when
+monitoring background jobs and logs.
 
 Now all your existing attachments should be happily living on new locations.

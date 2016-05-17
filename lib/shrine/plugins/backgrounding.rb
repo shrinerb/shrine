@@ -38,6 +38,18 @@ class Shrine
     # any other backgrounding library. This setup will work globally for all
     # uploaders.
     #
+    # The backgrounding plugin affects the `Shrine::Attacher` in a way that
+    # `#_promote` and `#_delete` spawn background jobs, while `#promote` and
+    # `#delete!` are always synchronous:
+    #
+    #     # asynchronous (spawn background jobs)
+    #     attacher._promote
+    #     attacher._delete(attachment)
+    #
+    #     # synchronous
+    #     attacher.promote
+    #     attacher.delete!(attachment)
+    #
     # Both methods return the `Shrine::Attacher` instance (if the action didn't
     # abort), so you can use it to do additional actions:
     #
@@ -80,8 +92,9 @@ class Shrine
           else
             attacher = load(data)
             cached_file = attacher.uploaded_file(data["attachment"])
-            phase = data["phase"].to_sym
+            phase = data["phase"].to_sym if data["phase"]
 
+            return if cached_file != attacher.get
             attacher.promote(cached_file, phase: phase) or return
 
             attacher
@@ -127,12 +140,13 @@ class Shrine
       module AttacherMethods
         # Calls the promoting block (if registered) with a serializable data
         # hash.
-        def _promote
+        def _promote(uploaded_file = get, phase: nil)
           if background_promote = shrine_class.opts[:backgrounding_promote]
             data = self.class.dump(self).merge(
-              "phase" => "store",
+              "attachment" => uploaded_file.to_json,
+              "phase"      => (phase.to_s if phase),
             )
-            instance_exec(data, &background_promote) if promote?(get)
+            instance_exec(data, &background_promote)
           else
             super
           end
@@ -151,12 +165,6 @@ class Shrine
           else
             super
           end
-        end
-
-        # Returns early if attachments don't match.
-        def promote(cached_file, *)
-          return if cached_file != get
-          super
         end
 
         # Dumps all the information about the attacher in a serializable hash

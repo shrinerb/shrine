@@ -8,7 +8,7 @@ class Shrine
     #     plugin :delete_promoted
     module DeletePromoted
       module AttacherMethods
-        def promote(uploaded_file, *)
+        def promote(uploaded_file = get, **options)
           result = super
           _delete(uploaded_file, phase: :promote)
           result

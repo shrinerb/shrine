@@ -509,20 +509,26 @@ class Shrine
         def finalize
           replace
           remove_instance_variable(:@old)
-          _promote
+          _promote(phase: :store) if promote?
         end
 
-        # Calls #promote if attached file is cached.
-        def _promote
-          promote(get) if promote?(get)
+        # Promotes the file.
+        def _promote(uploaded_file = get, phase: nil)
+          promote(uploaded_file, phase: phase)
         end
 
         # Uploads the cached file to store, and updates the record with the
         # stored file.
-        def promote(cached_file, phase: :store)
-          stored_file = store!(cached_file, phase: phase)
+        def promote(uploaded_file = get, **options)
+          stored_file = store!(uploaded_file, **options)
           result = swap(stored_file) or _delete(stored_file, phase: :abort)
           result
+        end
+
+        # Calls #update, overriden in ORM plugins.
+        def swap(uploaded_file)
+          update(uploaded_file)
+          uploaded_file if uploaded_file == get
         end
 
         # Deletes the attachment that was replaced, and is called after saving
@@ -584,20 +590,14 @@ class Shrine
 
         # Assigns a cached file (refuses if the file is stored).
         def assign_cached(value)
-          uploaded_file = uploaded_file(value)
-          set(uploaded_file) if cache.uploaded?(uploaded_file)
+          cached_file = uploaded_file(value)
+          set(cached_file) if cache.uploaded?(cached_file)
         end
 
         # Returns true if uploaded_file exists and is cached.  If it's true,
         # \#promote will be called.
-        def promote?(uploaded_file)
-          uploaded_file && cache.uploaded?(uploaded_file)
-        end
-
-        # Calls #update, overriden in ORM plugins.
-        def swap(uploaded_file)
-          update(uploaded_file)
-          uploaded_file if uploaded_file == get
+        def promote?
+          get && cache.uploaded?(get)
         end
 
         # Sets and saves the uploaded file.
