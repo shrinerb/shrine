@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Don't cache storages in dynamic_storage plugin (janko-m)
+
 * Make only one HTTP request in download_endpoint plugin (janko-m)
 
 * Print secuity warning when not using determine_mime_type plugin (janko-m)

@@ -14,12 +14,7 @@ describe "the dynamic_storage plugin" do
     assert_equal :bar, @uploader.class.new(:store_bar).storage
   end
 
-  it "caches the dynamically evaluated storages" do
-    @uploader.class.storage /store_(\w+)/ do |match|
-      match[1]
-    end
-
-    assert_equal @uploader.class.new(:store_foo).storage.object_id,
-                 @uploader.class.new(:store_foo).storage.object_id
+  it "delegates to default behaviour when storage wasn't found" do
+    assert_instance_of Shrine::Storage::Memory, @uploader.class.new(:store).storage
   end
 end

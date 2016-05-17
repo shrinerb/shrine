@@ -34,20 +34,12 @@ class Shrine
         private
 
         def resolve_dynamic_storage(name)
-          dynamic_storage_cache.fetch(name) do
-            dynamic_storages.each do |regex, block|
-              if match = name.to_s.match(regex)
-                dynamic_storage_cache[name] = block.call(match)
-                break
-              end
+          dynamic_storages.each do |regex, block|
+            if match = name.to_s.match(regex)
+              return block.call(match)
             end
-
-            dynamic_storage_cache[name]
           end
-        end
-
-        def dynamic_storage_cache
-          @dynamic_storage_cache ||= {}
+          nil
         end
       end
     end
