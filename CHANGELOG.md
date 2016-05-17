@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Don't trigger restore_cached_data plugin functionality when assigning the same cached attachment (janko-m)
+
 * Add `Attacher#_delete` which now spawns a background job instead of `Attacher#delete!` (janko-m)
 
 * Make `Attacher#cache!`, `Attacher#store!`, and `Attacher#delete!` public (janko-m)

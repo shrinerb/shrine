@@ -475,7 +475,7 @@ class Shrine
         # Otherwise it assumes that it's an IO object and caches it.
         def assign(value)
           if value.is_a?(String)
-            assign_cached(value) unless value == ""
+            assign_cached(value) unless value == "" || value == read
           else
             uploaded_file = cache!(value, phase: :cache) if value
             set(uploaded_file)
@@ -485,7 +485,7 @@ class Shrine
         # Assigns a Shrine::UploadedFile, runs validation and schedules the
         # old file for deletion.
         def set(uploaded_file)
-          @old = get unless get == uploaded_file
+          @old = get
           _set(uploaded_file)
           validate
         end

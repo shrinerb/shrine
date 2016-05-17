@@ -52,6 +52,12 @@ describe Shrine::Attacher do
       @attacher.assign("")
       assert @attacher.get
     end
+
+    it "doesn't dirty if attachment didn't change" do
+      @attacher.record.avatar_data = @attacher.cache.upload(fakeio).to_json
+      @attacher.assign(@attacher.get.to_json)
+      refute @attacher.attached?
+    end
   end
 
   describe "#set" do
@@ -65,12 +71,6 @@ describe Shrine::Attacher do
       @attacher.set(nil)
       assert_equal nil, @attacher.get
       assert_equal nil, @attacher.record.avatar_data
-    end
-
-    it "doesn't dirty if attachment didn't change" do
-      @attacher.record.avatar_data = @attacher.cache.upload(fakeio).to_json
-      @attacher.set(@attacher.get)
-      refute @attacher.attached?
     end
 
     it "allows setting stored files" do
