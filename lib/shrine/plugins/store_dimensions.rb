@@ -47,7 +47,7 @@ class Shrine
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
           analyzer = dimensions_analyzers[analyzer] if analyzer.is_a?(Symbol)
-          args = [io, dimensions_analyzers].first(analyzer.arity)
+          args = [io, dimensions_analyzers].take(analyzer.arity.abs)
 
           dimensions = analyzer.call(*args)
           io.rewind

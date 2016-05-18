@@ -68,7 +68,7 @@ class Shrine
           return super if analyzer == :default
 
           analyzer = mime_type_analyzers[analyzer] if analyzer.is_a?(Symbol)
-          args = [io, mime_type_analyzers].first(analyzer.arity)
+          args = [io, mime_type_analyzers].take(analyzer.arity.abs)
 
           mime_type = analyzer.call(*args)
           io.rewind

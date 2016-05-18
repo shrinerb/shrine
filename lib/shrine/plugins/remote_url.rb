@@ -119,7 +119,7 @@ class Shrine
         def download_error_message(url, error)
           if message = shrine_class.opts[:remote_url_error_message]
             if message.respond_to?(:call)
-              args = [url, error].take(message.arity)
+              args = [url, error].take(message.arity.abs)
               message = message.call(*args)
             end
           else
