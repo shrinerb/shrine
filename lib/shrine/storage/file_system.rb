@@ -167,16 +167,15 @@ class Shrine
         host ? host + path : path
       end
 
-      # Without any options it deletes all files from the #directory (and this
-      # requires confirmation). If `:older_than` is passed in (a `Time`
-      # object), deletes all files which were last modified before that time.
-      def clear!(confirm = nil, older_than: nil)
+      # Deletes all files from the #directory. If `:older_than` is passed in (a
+      # `Time` object), deletes all files which were last modified before that
+      # time.
+      def clear!(older_than: nil)
         if older_than
           directory.find do |path|
             path.mtime < older_than ? path.rmtree : Find.prune
           end
         else
-          raise Shrine::Confirm unless confirm == :confirm
           directory.rmtree
           directory.mkpath
           directory.chmod(permissions) if permissions

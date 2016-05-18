@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove `Shrine::Confirm` and confirming `Storage#clear!` in general (janko-m)
+
 * Allow implementing a custom dimensions analyzer using built-in ones (janko-m)
 
 * Don't error in determine_mime_type when MimeMagic cannot determine the MIME (janko-m)

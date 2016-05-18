@@ -196,9 +196,8 @@ class Shrine
         end
       end
 
-      # Deletes all files from the storage (requires confirmation).
-      def clear!(confirm = nil)
-        raise Shrine::Confirm unless confirm == :confirm
+      # Deletes all files from the storage.
+      def clear!
         bucket.object_versions(prefix: prefix).delete
       end
 

@@ -118,14 +118,8 @@ class Shrine
       end
 
       def lint_clear(id)
-        storage.clear!(:confirm)
+        storage.clear!
         error :clear!, "file still #exists? after clearing" if storage.exists?(id)
-
-        begin
-          storage.clear!
-          error :clear!, "should raise Shrine::Confirm if :confirm is not passed in"
-        rescue Shrine::Confirm
-        end
       end
 
       private

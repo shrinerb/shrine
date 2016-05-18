@@ -23,13 +23,6 @@ class Shrine
     end
   end
 
-  # Raised by storages in method `#clear!` when confirmation wasn't passed in.
-  class Confirm < Error
-    def message
-      "Are you sure you want to delete all files from the storage? (confirm with `clear!(:confirm)`)"
-    end
-  end
-
   # Methods which an object has to respond to in order to be considered
   # an IO object.  Keys are method names, and values are arguments.
   IO_METHODS = {

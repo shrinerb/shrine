@@ -161,7 +161,7 @@ describe Shrine::Storage::FileSystem do
   describe "#clear!" do
     it "creates the directory after deleting it" do
       @storage = file_system(root)
-      @storage.clear!(:confirm)
+      @storage.clear!
       assert File.directory?(root)
     end
 
@@ -176,7 +176,7 @@ describe Shrine::Storage::FileSystem do
 
     it "reestablishes directory permissions" do
       @storage = file_system(root, permissions: 0755)
-      @storage.clear!(:confirm)
+      @storage.clear!
       assert_permissions 0755, root
     end
   end

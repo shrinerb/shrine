@@ -27,7 +27,7 @@ describe Shrine::Storage::S3 do
   end
 
   after do
-    @s3.clear!(:confirm)
+    @s3.clear!
   end
 
   it "passes the linter" do

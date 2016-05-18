@@ -152,13 +152,8 @@ describe Shrine::Storage::Linter do
   end
 
   describe "clear!" do
-    it "tests that it requires confirmation" do
-      @storage.instance_eval { def clear!(*); super(:confirm); end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "tests that none of the files exist" do
-      @storage.instance_eval { def clear!(confirm = nil); raise Shrine::Confirm unless confirm == :confirm; nil; end }
+    it "tests that files don't exist after clearing" do
+      @storage.instance_eval { def clear!; end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
   end
