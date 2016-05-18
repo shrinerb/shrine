@@ -21,6 +21,7 @@ describe "the parallelize plugin" do
   end
 
   it "successfully deletes" do
+    @uploader.storage.instance_eval { undef multi_delete }
     versions = @uploader.upload(
       large:  fakeio("large"),
       medium: fakeio("medium"),

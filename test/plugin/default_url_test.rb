@@ -17,4 +17,9 @@ describe "the default_url plugin" do
     @attacher.assign(fakeio)
     assert_equal "memory://#{@attacher.get.id}", @attacher.url
   end
+
+  it "doesn't require a block to be given" do
+    @attacher = attacher { plugin :default_url }
+    assert_equal nil, @attacher.url
+  end
 end

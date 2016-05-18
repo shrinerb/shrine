@@ -5,7 +5,7 @@ describe "multi_delete plugin" do
     @uploader = uploader { plugin :multi_delete }
   end
 
-  it "allows deleting multiple files at instance level" do
+  it "allows Shrine#delete to take multiple files" do
     uploaded_file = @uploader.upload(fakeio)
     deleted_files = @uploader.delete([uploaded_file])
     assert_equal [uploaded_file], deleted_files
@@ -17,5 +17,13 @@ describe "multi_delete plugin" do
     uploaded_file = @uploader.upload(fakeio, location: "foo")
     deleted_files = @uploader.delete([uploaded_file])
     assert_equal [uploaded_file], deleted_files
+  end
+
+  it "does regular individual deletion if storage doesn't support it" do
+    @uploader.storage.instance_eval { undef multi_delete }
+    uploaded_file = @uploader.upload(fakeio)
+    deleted_files = @uploader.delete([uploaded_file])
+    assert_equal [uploaded_file], deleted_files
+    assert deleted_files.none?(&:exists?)
   end
 end
