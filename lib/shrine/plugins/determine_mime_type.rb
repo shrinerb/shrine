@@ -49,8 +49,8 @@ class Shrine
     # [mimemagic]: https://github.com/minad/mimemagic
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
     module DetermineMimeType
-      def self.configure(uploader, analyzer: :file)
-        uploader.opts[:mime_type_analyzer] = analyzer
+      def self.configure(uploader, opts = {})
+        uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, :file)
       end
 
       # How many bytes we have to read to get the magic file header which

@@ -50,17 +50,11 @@ class Shrine
     #
     #     plugin :remote_url, include_error: true, error_message: ->(url, error) { "..." }
     module RemoteUrl
-      def self.load_dependencies(uploader, downloader: :open_uri, **)
-        case downloader
-        when :open_uri then require "down"
-        end
-      end
-
-      def self.configure(uploader, downloader: :open_uri, max_size:, error_message: nil, include_error: false)
-        uploader.opts[:remote_url_downloader] = downloader
-        uploader.opts[:remote_url_max_size] = max_size
-        uploader.opts[:remote_url_error_message] = error_message
-        uploader.opts[:remote_url_include_error] = include_error
+      def self.configure(uploader, opts = {})
+        uploader.opts[:remote_url_downloader] = opts.fetch(:downloader, uploader.opts.fetch(:remote_url_downloader, :open_uri))
+        uploader.opts[:remote_url_max_size] = opts.fetch(:max_size, uploader.opts[:remote_url_max_size])
+        uploader.opts[:remote_url_error_message] = opts.fetch(:error_message, uploader.opts[:remote_url_error_message])
+        uploader.opts[:remote_url_include_error] = opts.fetch(:include_error, uploader.opts.fetch(:remote_url_include_error, false))
       end
 
       module AttachmentMethods
@@ -125,6 +119,7 @@ class Shrine
         # We silence any download errors, because for the user's point of view
         # the download simply failed.
         def download_with_open_uri(url, max_size:)
+          require "down"
           Down.download(url, max_size: max_size)
         end
 

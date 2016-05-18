@@ -12,9 +12,9 @@ class Shrine
     #
     #     plugin :default_storage, store: ->(record, name) { :"store_#{record.username}" }
     module DefaultStorage
-      def self.configure(uploader, cache: nil, store: nil)
-        uploader.opts[:default_storage_cache] = cache
-        uploader.opts[:default_storage_store] = store
+      def self.configure(uploader, opts = {})
+        uploader.opts[:default_storage_cache] = opts.fetch(:cache, uploader.opts[:default_storage_cache])
+        uploader.opts[:default_storage_store] = opts.fetch(:store, uploader.opts[:default_storage_store])
       end
 
       module AttacherMethods

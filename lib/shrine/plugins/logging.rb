@@ -48,10 +48,10 @@ class Shrine
         uploader.plugin :hooks
       end
 
-      def self.configure(uploader, logger: nil, stream: $stdout, format: :human)
-        uploader.opts[:logging_logger] = logger
-        uploader.opts[:logging_stream] = stream
-        uploader.opts[:logging_format] = format
+      def self.configure(uploader, opts = {})
+        uploader.opts[:logging_logger] = opts.fetch(:logger, uploader.opts[:logging_logger])
+        uploader.opts[:logging_stream] = opts.fetch(:stream, uploader.opts.fetch(:logging_stream, $stdout))
+        uploader.opts[:logging_format] = opts.fetch(:format, uploader.opts.fetch(:logging_format, :human))
       end
 
       module ClassMethods

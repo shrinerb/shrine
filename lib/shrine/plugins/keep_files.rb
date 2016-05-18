@@ -20,10 +20,10 @@ class Shrine
     #
     # [event store]: http://docs.geteventstore.com/introduction/event-sourcing-basics/
     module KeepFiles
-      def self.configure(uploader, destroyed: nil, replaced: nil, **)
-        uploader.opts[:keep_files] = []
-        uploader.opts[:keep_files] << :destroyed if destroyed
-        uploader.opts[:keep_files] << :replaced if replaced
+      def self.configure(uploader, opts = {})
+        keep_files = (uploader.opts[:keep_files] ||= [])
+        opts[:destroyed] ? keep_files << :destroyed : keep_files.delete(:destroyed) if opts.key?(:destroyed)
+        opts[:replaced] ? keep_files << :replaced : keep_files.delete(:replaced) if opts.key?(:replaced)
       end
 
       module AttacherMethods

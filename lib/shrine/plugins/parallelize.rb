@@ -11,8 +11,8 @@ class Shrine
     #
     #     plugin :parallelize, threads: 5
     module Parallelize
-      def self.configure(uploader, threads: 3)
-        uploader.opts[:parallelize_threads] = threads
+      def self.configure(uploader, opts = {})
+        uploader.opts[:parallelize_threads] = opts.fetch(:threads, uploader.opts.fetch(:parallelize_threads, 3))
       end
 
       module InstanceMethods

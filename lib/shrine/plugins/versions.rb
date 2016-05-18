@@ -111,9 +111,11 @@ class Shrine
         uploader.plugin :default_url
       end
 
-      def self.configure(uploader, names:, fallbacks: {})
-        uploader.opts[:version_names] = names
-        uploader.opts[:version_fallbacks] = fallbacks
+      def self.configure(uploader, opts = {})
+        uploader.opts[:version_names] = opts.fetch(:names, uploader.opts[:version_names])
+        uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
+
+        raise Error, "The :names option is required for versions plugin" if uploader.opts[:version_names].nil?
       end
 
       module ClassMethods

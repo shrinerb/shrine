@@ -156,12 +156,12 @@ class Shrine
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, allowed_storages: [:cache], presign: nil, presign_options: {}, presign_location: nil, max_size: nil)
-        uploader.opts[:direct_upload_allowed_storages] = allowed_storages
-        uploader.opts[:direct_upload_presign] = presign
-        uploader.opts[:direct_upload_presign_options] = presign_options
-        uploader.opts[:direct_upload_presign_location] = presign_location
-        uploader.opts[:direct_upload_max_size] = max_size
+      def self.configure(uploader, opts = {})
+        uploader.opts[:direct_upload_allowed_storages] = opts.fetch(:allowed_storages, uploader.opts.fetch(:direct_upload_allowed_storages, [:cache]))
+        uploader.opts[:direct_upload_presign] = opts.fetch(:presign, uploader.opts[:direct_upload_presign])
+        uploader.opts[:direct_upload_presign_options] = opts.fetch(:presign_options, uploader.opts.fetch(:direct_upload_presign_options, {}))
+        uploader.opts[:direct_upload_presign_location] = opts.fetch(:presign_location, uploader.opts[:direct_upload_presign_location])
+        uploader.opts[:direct_upload_max_size] = opts.fetch(:max_size, uploader.opts[:direct_upload_max_size])
 
         uploader.assign_upload_endpoint(App) unless uploader.const_defined?(:UploadEndpoint)
       end

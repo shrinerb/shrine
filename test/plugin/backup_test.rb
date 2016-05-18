@@ -74,6 +74,10 @@ describe "the backup plugin" do
     refute @attacher.backup_file(destroyed).exists?
   end
 
+  it "requires the :storage option" do
+    assert_raises(Shrine::Error) { @attacher.shrine_class.plugin :backup, storage: nil }
+  end
+
   describe "#backup_file" do
     it "returns the backed up uploaded file" do
       @attacher.assign(fakeio)

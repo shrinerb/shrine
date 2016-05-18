@@ -23,9 +23,11 @@ class Shrine
     # you can set `delete: false` until you manually back up the existing
     # stored files.
     module Backup
-      def self.configure(uploader, storage:, delete: true)
-        uploader.opts[:backup_storage] = storage
-        uploader.opts[:backup_delete] = delete
+      def self.configure(uploader, opts = {})
+        uploader.opts[:backup_storage] = opts.fetch(:storage, uploader.opts[:backup_storage])
+        uploader.opts[:backup_delete] = opts.fetch(:delete, uploader.opts.fetch(:backup_delete, true))
+
+        raise Error, "The :storage option is required for backup plugin" if uploader.opts[:backup_storage].nil?
       end
 
       module AttacherMethods

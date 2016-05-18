@@ -158,4 +158,10 @@ describe "the versions plugin" do
       @uploader.upload({thumb: fakeio}, location: "foobar")
     end
   end
+
+  it "requires :names option" do
+    assert_raises(Shrine::Error) do
+      @attacher.shrine_class.plugin :versions, names: nil
+    end
+  end
 end

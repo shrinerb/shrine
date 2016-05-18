@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Make previous plugin options persist when reapplying the plugin (janko-m)
+
 * Improve how upload options and metadata are passed to storage's `#upload` and `#move` (janko-m)
 
 * Remove `Shrine::Confirm` and confirming `Storage#clear!` in general (janko-m)

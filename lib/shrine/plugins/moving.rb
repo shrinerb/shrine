@@ -12,8 +12,8 @@ class Shrine
     #
     #     plugin :moving, storages: [:cache]
     module Moving
-      def self.configure(uploader, storages: nil)
-        uploader.opts[:moving_storages] = storages
+      def self.configure(uploader, opts = {})
+        uploader.opts[:moving_storages] = opts.fetch(:storages, uploader.opts[:moving_storages])
       end
 
       module InstanceMethods

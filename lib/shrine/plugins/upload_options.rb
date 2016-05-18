@@ -17,7 +17,8 @@ class Shrine
     #     end
     module UploadOptions
       def self.configure(uploader, options = {})
-        uploader.opts[:upload_options] = options
+        uploader.opts[:upload_options] ||= {}
+        options.each { |key, value| uploader.opts[:upload_options][key] = value }
       end
 
       module InstanceMethods

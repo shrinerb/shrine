@@ -9,7 +9,7 @@ class Shrine
     # and the latter will always have precedence over default options.
     module DefaultUrlOptions
       def self.configure(uploader, **options)
-        uploader.opts[:default_url_options] = options
+        uploader.opts[:default_url_options] = (uploader.opts[:default_url_options] || {}).merge(options)
       end
 
       module FileMethods

@@ -47,11 +47,13 @@ class Shrine
     #
     # [Roda]: https://github.com/jeremyevans/roda
     module DownloadEndpoint
-      def self.configure(uploader, storages:, prefix:, disposition: "inline", host: nil)
-        uploader.opts[:download_endpoint_storages] = storages
-        uploader.opts[:download_endpoint_prefix] = prefix
-        uploader.opts[:download_endpoint_disposition] = disposition
-        uploader.opts[:download_endpoint_host] = host
+      def self.configure(uploader, opts = {})
+        uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
+        uploader.opts[:download_endpoint_prefix] = opts.fetch(:prefix, uploader.opts[:download_endpoint_prefix])
+        uploader.opts[:download_endpoint_disposition] = opts.fetch(:disposition, uploader.opts.fetch(:download_endpoint_disposition, "inline"))
+        uploader.opts[:download_endpoint_host] = opts.fetch(:host, uploader.opts[:download_endpoint_host])
+
+        raise Error, "The :storages option is required for download_endpoint plugin" if uploader.opts[:download_endpoint_storages].nil?
 
         uploader.assign_download_endpoint(App) unless uploader.const_defined?(:DownloadEndpoint)
       end

@@ -45,9 +45,9 @@ class Shrine
       DEFAULT_CONTENT_TYPE = "text/plain"
       DATA_URI_REGEXP = /\Adata:([-\w.+]+\/[-\w.+]+)?(;base64)?,(.*)\z/m
 
-      def self.configure(uploader, filename: nil, error_message: DEFAULT_ERROR_MESSAGE)
-        uploader.opts[:data_uri_filename] = filename
-        uploader.opts[:data_uri_error_message] = error_message
+      def self.configure(uploader, opts = {})
+        uploader.opts[:data_uri_filename] = opts.fetch(:filename, uploader.opts[:data_uri_filename])
+        uploader.opts[:data_uri_error_message] = opts.fetch(:error_message, uploader.opts[:data_uri_error_message])
       end
 
       module AttachmentMethods
@@ -82,7 +82,7 @@ class Shrine
 
             assign DataFile.new(content, content_type: content_type, filename: filename)
           else
-            message = shrine_class.opts[:data_uri_error_message]
+            message = shrine_class.opts[:data_uri_error_message] || DEFAULT_ERROR_MESSAGE
             message = message.call(uri) if message.respond_to?(:call)
             errors.replace [message]
             @data_uri = uri

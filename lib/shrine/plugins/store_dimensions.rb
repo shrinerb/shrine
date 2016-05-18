@@ -25,8 +25,8 @@ class Shrine
     # [fastimage]: https://github.com/sdsykes/fastimage
     # [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
     module StoreDimensions
-      def self.configure(uploader, analyzer: :fastimage)
-        uploader.opts[:dimensions_analyzer] = analyzer
+      def self.configure(uploader, opts = {})
+        uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))
       end
 
       module InstanceMethods

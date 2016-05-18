@@ -23,8 +23,8 @@ class Shrine
     #     plugin :pretty_location, namespace: "/"
     #     # "blog/user/.../493g82jf23.jpg"
     module PrettyLocation
-      def self.configure(uploader, namespace: nil)
-        uploader.opts[:pretty_location_namespace] = namespace
+      def self.configure(uploader, opts = {})
+        uploader.opts[:pretty_location_namespace] = opts.fetch(:namespace, uploader.opts[:pretty_location_namespace])
       end
 
       module InstanceMethods
