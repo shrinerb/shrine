@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Remove the `:include_error` option from remote_url plugin (janko-m)
+
 * Make previous plugin options persist when reapplying the plugin (janko-m)
 
 * Improve how upload options and metadata are passed to storage's `#upload` and `#move` (janko-m)

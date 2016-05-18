@@ -75,7 +75,6 @@ describe "the remote_url plugin" do
     @user.avatar_remote_url = bad_url
     assert_equal ["download failed: #{bad_url}"], @user.avatar_attacher.errors
 
-    @attacher.shrine_class.opts[:remote_url_include_error] = true
     @attacher.shrine_class.opts[:remote_url_error_message] = ->(url, error){error.message}
     @user.avatar_remote_url = bad_url
     assert_equal ["file not found"], @user.avatar_attacher.errors

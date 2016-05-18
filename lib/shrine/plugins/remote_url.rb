@@ -42,19 +42,12 @@ class Shrine
     # equal to the error message. You can change the default error message:
     #
     #     plugin :remote_url, error_message: "download failed"
-    #     plugin :remote_url, error_message: ->(url) { I18n.t("errors.download_failed") }
-    #
-    # If you need the error instance for generating the error message, passing
-    # the `:include_error` option will additionally yield the error to the
-    # block:
-    #
-    #     plugin :remote_url, include_error: true, error_message: ->(url, error) { "..." }
+    #     plugin :remote_url, error_message: ->(url, error) { I18n.t("errors.download_failed") }
     module RemoteUrl
       def self.configure(uploader, opts = {})
         uploader.opts[:remote_url_downloader] = opts.fetch(:downloader, uploader.opts.fetch(:remote_url_downloader, :open_uri))
         uploader.opts[:remote_url_max_size] = opts.fetch(:max_size, uploader.opts[:remote_url_max_size])
         uploader.opts[:remote_url_error_message] = opts.fetch(:error_message, uploader.opts[:remote_url_error_message])
-        uploader.opts[:remote_url_include_error] = opts.fetch(:include_error, uploader.opts.fetch(:remote_url_include_error, false))
       end
 
       module AttachmentMethods
@@ -125,9 +118,10 @@ class Shrine
 
         def download_error_message(url, error)
           if message = shrine_class.opts[:remote_url_error_message]
-            args = [url]
-            args << error if shrine_class.opts[:remote_url_include_error]
-            message = message.call(*args) if message.respond_to?(:call)
+            if message.respond_to?(:call)
+              args = [url, error].take(message.arity)
+              message = message.call(*args)
+            end
           else
             message = "download failed"
             message = "#{message}: #{error.message}" if error
