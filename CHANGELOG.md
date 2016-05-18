@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Improve how upload options and metadata are passed to storage's `#upload` and `#move` (janko-m)
+
 * Remove `Shrine::Confirm` and confirming `Storage#clear!` in general (janko-m)
 
 * Allow implementing a custom dimensions analyzer using built-in ones (janko-m)

@@ -116,10 +116,10 @@ class Shrine
       #
       # It assigns the correct "Content-Type" taken from the MIME type, because
       # by default S3 sets everything to "application/octet-stream".
-      def upload(io, id, metadata = {})
-        options = {content_type: metadata["mime_type"]}
+      def upload(io, id, shrine_metadata: {}, **upload_options)
+        options = {content_type: shrine_metadata["mime_type"]}
+        options.update(@upload_options)
         options.update(upload_options)
-        options.update(metadata.delete("s3") || {})
 
         if copyable?(io)
           copy(io, id, **options)

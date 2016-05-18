@@ -13,7 +13,7 @@ class Shrine
         # initializing logic
       end
 
-      def upload(io, id, metadata = {})
+      def upload(io, id, shrine_metadata: {}, **upload_options)
         # uploads `io` to the location `id`
       end
 
@@ -53,7 +53,7 @@ If your storage doesn't control which id the uploaded file will have, you
 can modify the `id` variable:
 
 ```rb
-def upload(io, id, metadata = {})
+def upload(io, id, shrine_metadata: {}, **upload_options)
   actual_id = do_upload(io, id, metadata)
   id.replace(actual_id)
 end
@@ -63,7 +63,7 @@ Likewise, if you need to save some information into the metadata after upload,
 you can modify the metadata hash:
 
 ```rb
-def upload(io, id, metadata = {})
+def upload(io, id, shrine_metadata: {}, **upload_options)
   additional_metadata = do_upload(io, id, metadata)
   metadata.merge!(additional_metadata)
 end
@@ -125,7 +125,7 @@ class Shrine
     class MyStorage
       # ...
 
-      def move(io, id, metadata = {})
+      def move(io, id, shrine_metadata: {}, **upload_options)
         # does the moving of the `io` to the location `id`
       end
 

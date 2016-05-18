@@ -488,6 +488,16 @@ capabilities, so versions are deleted with a single HTTP request.
 See the full documentation for [FileSystem] and [S3] storages. There are also
 many other Shrine storages available, see the [Plugins & Storages] section.
 
+## Upload options
+
+Many storages accept additional upload options, which you can pass via the
+upload_options plugin, or manually when uploading:
+
+```rb
+uploader = Shrine.new(:store)
+uploader.upload(file, upload_options: {acl: "private"})
+```
+
 ## Direct uploads
 
 Shrine comes with a direct_upload plugin which provides a [Roda] endpoint that

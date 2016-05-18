@@ -32,7 +32,7 @@ class Shrine
         # initializing logic
       end
 
-      def upload(io, id, metadata = {})
+      def upload(io, id, shrine_metadata: {}, **upload_options)
         # uploads `io` to the location `id`
       end
 

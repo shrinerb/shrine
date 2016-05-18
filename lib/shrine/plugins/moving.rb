@@ -29,7 +29,8 @@ class Shrine
         end
 
         def move(io, context)
-          storage.move(io, context[:location], context[:metadata])
+          context[:upload_options] = (context[:upload_options] || {}).merge(shrine_metadata: context[:metadata])
+          storage.move(io, context[:location], context[:upload_options])
         end
 
         def movable?(io, context)

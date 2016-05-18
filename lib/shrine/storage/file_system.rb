@@ -108,7 +108,7 @@ class Shrine
       end
 
       # Copies the file into the given location.
-      def upload(io, id, metadata = {})
+      def upload(io, id, shrine_metadata: {}, **upload_options)
         IO.copy_stream(io, path!(id))
         path(id).chmod(permissions) if permissions
       end
@@ -120,7 +120,7 @@ class Shrine
 
       # Moves the file to the given location. This gets called by the "moving"
       # plugin.
-      def move(io, id, metadata = {})
+      def move(io, id, shrine_metadata: {}, **upload_options)
         if io.respond_to?(:path)
           FileUtils.mv io.path, path!(id)
         else

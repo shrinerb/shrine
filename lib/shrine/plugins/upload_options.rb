@@ -23,8 +23,7 @@ class Shrine
       module InstanceMethods
         def put(io, context)
           upload_options = get_upload_options(io, context)
-          key = storage.class.name.split("::").last.downcase
-          context[:metadata][key] = upload_options if upload_options
+          context = {upload_options: upload_options}.merge(context)
           super
         end
 

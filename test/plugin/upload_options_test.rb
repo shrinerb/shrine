@@ -10,8 +10,8 @@ describe "the upload_options plugin" do
   it "accepts a block" do
     @uploader.opts[:upload_options] = {store: ->(io, context){Hash[foo: "bar"]}}
     @uploader.storage.instance_eval do
-      def upload(io, id, metadata = {})
-        metadata.fetch("memory").fetch(:foo)
+      def upload(io, id, shrine_metadata: {}, **upload_options)
+        upload_options.fetch(:foo)
         super
       end
     end
@@ -22,8 +22,8 @@ describe "the upload_options plugin" do
   it "accepts a hash" do
     @uploader.opts[:upload_options] = {store: {foo: "bar"}}
     @uploader.storage.instance_eval do
-      def upload(io, id, metadata = {})
-        metadata.fetch("memory").fetch(:foo)
+      def upload(io, id, shrine_metadata: {}, **upload_options)
+        upload_options.fetch(:foo)
         super
       end
     end
@@ -34,8 +34,8 @@ describe "the upload_options plugin" do
   it "only passes upload options to specified storages" do
     @uploader.opts[:upload_options] = {cache: {foo: "bar"}}
     @uploader.storage.instance_eval do
-      def upload(io, id, metadata = {})
-        raise if metadata.key?("memory")
+      def upload(io, id, shrine_metadata: {}, **upload_options)
+        raise if upload_options.any?
         super
       end
     end
