@@ -1,5 +1,7 @@
 ## 2.0.0 (HEAD)
 
+* Include query parameters in CDN-ed S3 URLs, making them work for private objects (janko-m)
+
 * Remove the `:include_error` option from remote_url plugin (janko-m)
 
 * Make previous plugin options persist when reapplying the plugin (janko-m)

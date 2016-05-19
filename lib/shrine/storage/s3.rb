@@ -171,29 +171,36 @@ class Shrine
 
       # Returns the presigned URL to the file.
       #
+      # :public
+      # :  Creates an unsigned version of the URL (the permissions on the S3
+      #    bucket need to be modified to allow public URLs).
+      #
       # :download
       # :  If set to `true`, creates a "forced download" link, which means that
       #    the browser will never display the file and always ask the user to
       #    download it.
       #
-      # :public
-      # :  Creates an unsigned version of the URL (requires setting appropriate
-      #    permissions on the S3 bucket).
-      #
-      # All other options are forwarded to [`Aws::S3::Object#presigned_url`].
+      # All other options are forwarded to [`Aws::S3::Object#presigned_url`] or
+      # [`Aws::S3::Object#public_url`].
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
+      # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#public_url-instance_method
       def url(id, download: nil, public: nil, **options)
-        if host.nil?
-          options[:response_content_disposition] = "attachment" if download
-          if public.nil?
-            object(id).presigned_url(:get, **options)
-          else
-            object(id).public_url(**options)
-          end
+        options[:response_content_disposition] = "attachment" if download
+
+        if public
+          url = object(id).public_url(**options)
         else
-          URI.join(host, URI.encode(object(id).key)).to_s
+          url = object(id).presigned_url(:get, **options)
         end
+
+        if host
+          uri = URI.parse(url)
+          uri.path = uri.path.match(/^\/#{bucket.name}/).post_match unless uri.host.include?(bucket.name)
+          url = URI.join(host, uri.request_uri).to_s
+        end
+
+        url
       end
 
       # Deletes all files from the storage.

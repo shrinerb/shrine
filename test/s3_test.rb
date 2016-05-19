@@ -88,13 +88,16 @@ describe Shrine::Storage::S3 do
 
     it "can provide a CDN url" do
       @s3 = s3(host: "http://123.cloudfront.net")
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", @s3.url("foo/bar quux")
+      assert_equal "http://123.cloudfront.net/foo/bar%20quux", @s3.url("foo/bar quux", public: true)
 
       @s3 = s3(host: "http://123.cloudfront.net", force_path_style: true)
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", @s3.url("foo/bar quux")
+      assert_equal "http://123.cloudfront.net/foo/bar%20quux", @s3.url("foo/bar quux", public: true)
 
       @s3 = s3(host: "http://123.cloudfront.net")
-      assert_equal "http://123.cloudfront.net/#{@s3.bucket.name}", @s3.url("#{@s3.bucket.name}")
+      assert_equal "http://123.cloudfront.net/#{@s3.bucket.name}", @s3.url("#{@s3.bucket.name}", public: true)
+
+      @s3 = s3(host: "http://123.cloudfront.net")
+      assert_match %r{http://123.cloudfront.net/foo/bar%20quux\?\S+}, @s3.url("foo/bar quux")
     end
 
     it "can provide a public url" do
