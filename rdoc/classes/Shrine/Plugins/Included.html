@@ -40,17 +40,15 @@
           <div id='description'>
             
             <p>The included plugin allows you to hook up to the <code>.included</code>
-            hook when of the “attachment” module. This allows you to add additonal
-            methods to the model whenever an attachment is included.</p>
+            hook of the attachment module, and do additional action on the model which
+            includes it.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">included</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">define_method</span>(<span class="ruby-node">&quot;#{name}_width&quot;</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">width</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">define_method</span>(<span class="ruby-node">&quot;#{name}_height&quot;</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">height</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>The block is evaluated in the context of the model, but note that you
-            cannot use keywords like <code>def</code>, instead you should use the
-            metaprogramming equivalents like <code>define_method</code>. Now when an
-            attachment is included to a model, it will receive the appropriate methods:</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_width</span>  <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_height</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;avatar.jpg&quot;</span>)&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_width</span>  <span class="ruby-comment">#=&gt; 300</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_height</span> <span class="ruby-comment">#=&gt; 500</span></pre>
+            <p>The block is evaluated in the context of the model via
+            <code>instance_exec</code>. This means you cannot use keywords like
+            <code>def</code>, instead you should use the metaprogramming equivalents
+            like <code>define_method</code>.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -83,7 +81,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 34</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

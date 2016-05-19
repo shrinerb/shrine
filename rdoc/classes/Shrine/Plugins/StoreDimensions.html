@@ -55,14 +55,13 @@
             However, if for some reason it doesn&#39;t suit your needs, you can provide
             a custom <code>:analyzer</code>:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [300, 500]</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">fastimage</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">dimensions</span> <span class="ruby-operator">||</span> <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
             <h3>Public Class</h3>
             <ol>
               <li><a target="docwin" href="#method-c-configure">configure</a></li>
-              <li><a target="docwin" href="#method-c-load_dependencies">load_dependencies</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -81,7 +80,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, analyzer: :fastimage)</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
                 </div>
                 <div class='description'>
                   
@@ -90,23 +89,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 33</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-value">:fastimage</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>] = <span class="ruby-identifier">analyzer</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-class' id='method-method-c-load_dependencies'>
-                <a name='method-c-load_dependencies'></a>
-                <div class='synopsis'>
-                  <span class='name'>load_dependencies</span>
-                  <span class='arguments'>(uploader, analyzer: :fastimage)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-value">:fastimage</span>)&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-identifier">analyzer</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:fastimage</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;fastimage&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 28</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:dimensions_analyzer</span>, <span class="ruby-value">:fastimage</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

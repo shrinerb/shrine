@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Shrine</title>
-    <meta name="description" content="File upload toolkit for Ruby">
+    <meta name="description" content="Toolkit for handling file uploads in Ruby">
     <link rel="canonical" href="shrinerb.com/">
     <link rel="stylesheet" href="/styles/main.css">
     <script>
@@ -25,8 +25,8 @@
     <header class="header">
   <div class="container">
     <div>
-      <h1>Shrine (v1.4.2)</h1>
-      <p>File upload toolkit for Ruby</p>
+      <h1>Shrine (v2.0.0)</h1>
+      <p>Toolkit for handling file uploads in Ruby</p>
     </div>
     <a class="btn" href="http://shrinerb.com/rdoc/files/README_md.html">README</a>
   </div>
@@ -91,12 +91,6 @@
         <ul>
           
           <li>
-            <a href="http://shrinerb.com/rdoc/files/doc/changing_location_md.html">
-              Changing Location of Files
-            </a>
-          </li>
-          
-          <li>
             <a href="http://shrinerb.com/rdoc/files/doc/creating_plugins_md.html">
               Creating a New Plugin
             </a>
@@ -109,14 +103,26 @@
           </li>
           
           <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/design_md.html">
+              Design of Shrine
+            </a>
+          </li>
+          
+          <li>
             <a href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">
               Direct Uploads to S3
             </a>
           </li>
           
           <li>
+            <a href="http://shrinerb.com/rdoc/files/doc/changing_location_md.html">
+              Migrating to Different Location
+            </a>
+          </li>
+          
+          <li>
             <a href="http://shrinerb.com/rdoc/files/doc/migrating_storage_md.html">
-              Migrating to Another Storage
+              Migrating to Different Storage
             </a>
           </li>
           
@@ -227,15 +233,6 @@
               </dt>
               <dd>
                 <div>Allows the included attachments to define additional methods on the model.</div>
-              </dd>
-            </dl>
-          
-            <dl>
-              <dt>
-                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MigrationHelpers.html">migration_helpers</a>:
-              </dt>
-              <dd>
-                <div>Provides a set of helper methods that are useful when doing file migrations.</div>
               </dd>
             </dl>
           
@@ -527,6 +524,14 @@
         
         <li>
           
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_0_0_md.html">
+            2.0.0
+          </a> 
+          
+        </li>
+        
+        <li>
+          
           <a href="http://shrinerb.com/rdoc/files/doc/release_notes/1_4_2_md.html">
             1.4.2
           </a> |
@@ -577,7 +582,7 @@
             
             <li>
               <a href="http://twin.github.io/file-uploads-asynchronous-world">
-                File Uploads: Asynchronous World
+                Asynchronous File Management
               </a>
             </li>
             
@@ -633,6 +638,24 @@
             <li>
               <a href="https://github.com/janko-m/shrine-imgix">
                 shrine-imgix
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-memory">
+                shrine-memory
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-mongoid">
+                shrine-mongoid
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-reform">
+                shrine-reform
               </a>
             </li>
             

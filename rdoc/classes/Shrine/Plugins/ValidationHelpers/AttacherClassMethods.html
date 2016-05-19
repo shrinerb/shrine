@@ -63,7 +63,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-default_validation_messages-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-default_validation_messages-source'><span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">default_validation_messages</span>&#x000A;  <span class="ruby-ivar">@default_validation_messages</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_MESSAGES</span>.<span class="ruby-identifier">merge</span>(&#x000A;    <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers_default_messages</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-default_validation_messages-source'><span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">default_validation_messages</span>&#x000A;  <span class="ruby-ivar">@default_validation_messages</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">DEFAULT_MESSAGES</span>.<span class="ruby-identifier">merge</span>(&#x000A;    <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

@@ -40,30 +40,30 @@
           <div id='description'></div>
           <div id='method-list'>
             <h2>Methods</h2>
-            <h3>Public Class</h3>
+            <h3>Public Instance</h3>
             <ol>
-              <li><a target="docwin" href="#method-c-new">new</a></li>
+              <li><a target="docwin" href="#method-i-included">included</a></li>
             </ol>
           </div>
           <div id='context'>
           </div>
           <div id='section'>
             <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-new'>
-                <a name='method-c-new'></a>
+              <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-included'>
+                <a name='method-i-included'></a>
                 <div class='synopsis'>
-                  <span class='name'>new</span>
-                  <span class='arguments'>(name)</span>
+                  <span class='name'>included</span>
+                  <span class='arguments'>(model)</span>
                 </div>
                 <div class='description'>
                   
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-included-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/sequel.rb, line 36</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">name</span>)&#x000A;          <span class="ruby-keyword">super</span>&#x000A;&#x000A;          <span class="ruby-identifier">class_eval</span> <span class="ruby-string">&quot;            def validate&#x000A;              super&#x000A;              #{name}_attacher.errors.each do |message|&#x000A;                errors.add(:#{name}, message)&#x000A;              end&#x000A;            end&#x000A;&#x000A;            def before_save&#x000A;              super&#x000A;              #{name}_attacher.save if #{name}_attacher.attached?&#x000A;            end&#x000A;&#x000A;            def after_commit&#x000A;              super&#x000A;              #{name}_attacher.finalize if #{name}_attacher.attached?&#x000A;            end&#x000A;&#x000A;            def after_destroy_commit&#x000A;              super&#x000A;              #{name}_attacher.destroy&#x000A;            end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-included-source'><span class="ruby-comment"># File lib/shrine/plugins/sequel.rb, line 56</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier">included</span>(<span class="ruby-identifier">model</span>)&#x000A;          <span class="ruby-keyword">super</span>&#x000A;&#x000A;          <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">model</span> <span class="ruby-operator">&lt;</span> <span class="ruby-operator">::</span><span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;&#x000A;          <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;            def validate&#x000A;              super&#x000A;              #{@name}_attacher.errors.each do |message|&#x000A;                errors.add(:#{@name}, message)&#x000A;              end&#x000A;            end&#x000A;&#x000A;            def before_save&#x000A;              super&#x000A;              #{@name}_attacher.save if #{@name}_attacher.attached?&#x000A;            end&#x000A;&#x000A;            def after_commit&#x000A;              super&#x000A;              #{@name}_attacher.finalize if #{@name}_attacher.attached?&#x000A;            end&#x000A;&#x000A;            def after_destroy_commit&#x000A;              super&#x000A;              #{@name}_attacher.destroy&#x000A;            end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

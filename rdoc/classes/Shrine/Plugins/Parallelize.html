@@ -70,7 +70,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, threads: 3)</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
                 </div>
                 <div class='description'>
                   
@@ -79,7 +79,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 14</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">threads</span><span class="ruby-operator">:</span> <span class="ruby-value">3</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:parallelize_threads</span>] = <span class="ruby-identifier">threads</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 14</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:parallelize_threads</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:threads</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:parallelize_threads</span>, <span class="ruby-value">3</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

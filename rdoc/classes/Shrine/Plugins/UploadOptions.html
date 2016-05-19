@@ -39,13 +39,15 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The upload_options allows you to create additional upload options depending
-            on file and context, and forward them to the underlying storage.</p>
+            <p>The upload_options allows you to automatically pass additional upload
+            options to storage on every upload:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_options</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;private&quot;</span>}</pre>
+            
+            <p>Keys are names of the registered storages, and values are either hashes or
+            blocks.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> [:<span class="ruby-identifier">original</span>, :<span class="ruby-identifier">thumb</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[:<span class="ruby-identifier">version</span>])&#x000A;    {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;private&quot;</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>Keys are names of the registered storages, and values are either blocks or
-            hashes.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -78,7 +80,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_options.rb, line 17</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_options_options</span>] = <span class="ruby-identifier">options</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_options.rb, line 19</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_options</span>] <span class="ruby-operator">||=</span> {}&#x000A;  <span class="ruby-identifier">options</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_options</span>][<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

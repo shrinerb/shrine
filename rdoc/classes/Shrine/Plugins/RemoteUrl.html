@@ -49,42 +49,36 @@
             
             <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_remote_url</span> = <span class="ruby-string">&quot;http://example.com/cool-image.png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 43423</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cool-image.png&quot;</span></pre>
             
-            <p>The file will by default be downloaded using Ruby&#39;s open-uri standard
-            library. Following redirects is disabled for security reasons. It&#39;s
-            also good practice to limit the filesize of the remote file:</p>
+            <p>The file will by default be downloaded using <a
+            href="https://github.com/janko-m/down">Down</a>, which is a wrapper around
+            the open-uri standard library. It&#39;s a good practice to limit the
+            maximum filesize of the remote file:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span></pre>
             
-            <p>Now if a file that is bigger than 20MB is assigned, <a
-            href="../../Shrine.html">Shrine</a> will terminate the download as soon as
-            it gets the “Content-Length” header, or the buffer size surpasses the
-            maximum size. However, if for whatever reason you don&#39;t want to limit
-            the maximum file size, you can set <code>:max_size</code> to nil:</p>
+            <p>Now if a file that is bigger than 20MB is assigned, download will be
+            terminated as soon as it gets the “Content-Length” header, or the size of
+            currently downloaded content surpasses the maximum size. However, if for
+            whatever reason you don&#39;t want to limit the maximum file size, you can
+            set <code>:max_size</code> to nil:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span></pre>
             
-            <p>Finally, if for some reason the way the file is downloaded doesn&#39;t suit
-            your needs, you can provide a custom downloader:</p>
+            <p>If you need to additionally customize how the file is downloaded, you can
+            override the <code>:downloader</code>:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">downloader</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span>:) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">request</span> = <span class="ruby-constant">RestClient</span><span class="ruby-operator">::</span><span class="ruby-constant">Request</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">method</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">get</span>, <span class="ruby-identifier">url</span><span class="ruby-operator">:</span> <span class="ruby-identifier">url</span>, <span class="ruby-identifier">raw_response</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)&#x000A;  <span class="ruby-identifier">response</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">execute</span>&#x000A;  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-identifier">downloader</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span>:) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">Down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-identifier">max_size</span>, <span class="ruby-identifier">max_redirects</span><span class="ruby-operator">:</span> <span class="ruby-value">4</span>, <span class="ruby-identifier">read_timeout</span><span class="ruby-operator">:</span> <span class="ruby-value">3</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>If download errors, the error is rescued and a validation error is added
             equal to the error message. You can change the default error message:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;download failed&quot;</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>) { <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">t</span>(<span class="ruby-string">&quot;errors.download_failed&quot;</span>) }</pre>
-            
-            <p>If you need the error instance for generating the error message, passing
-            the <code>:include_error</code> option will additionally yield the error to
-            the block:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">include_error</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">error</span>) { <span class="ruby-string">&quot;...&quot;</span> }</pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;download failed&quot;</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">error</span>) { <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">t</span>(<span class="ruby-string">&quot;errors.download_failed&quot;</span>) }</pre>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
             <h3>Public Class</h3>
             <ol>
               <li><a target="docwin" href="#method-c-configure">configure</a></li>
-              <li><a target="docwin" href="#method-c-load_dependencies">load_dependencies</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -103,7 +97,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, downloader: :open_uri, max_size:, error_message: nil, include_error: false)</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
                 </div>
                 <div class='description'>
                   
@@ -112,23 +106,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb, line 59</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">downloader</span><span class="ruby-operator">:</span> <span class="ruby-value">:open_uri</span>, <span class="ruby-identifier">max_size</span>,, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">include_error</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_downloader</span>] = <span class="ruby-identifier">downloader</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>] = <span class="ruby-identifier">max_size</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>] = <span class="ruby-identifier">error_message</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_include_error</span>] = <span class="ruby-identifier">include_error</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-class' id='method-method-c-load_dependencies'>
-                <a name='method-c-load_dependencies'></a>
-                <div class='synopsis'>
-                  <span class='name'>load_dependencies</span>
-                  <span class='arguments'>(uploader, downloader: :open_uri, **)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">downloader</span><span class="ruby-operator">:</span> <span class="ruby-value">:open_uri</span>, <span class="ruby-operator">**</span>)&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-identifier">downloader</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:open_uri</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :max_size option is required for remote_url plugin&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:max_size</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:remote_url_max_size</span>)&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_downloader</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:downloader</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:remote_url_downloader</span>, <span class="ruby-value">:open_uri</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:error_message</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

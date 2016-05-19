@@ -54,7 +54,7 @@
                 <a name='method-c-new'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
-                  <span class='arguments'>(name)</span>
+                  <span class='arguments'>(*)</span>
                 </div>
                 <div class='description'>
                   
@@ -63,7 +63,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/remove_attachment.rb, line 23</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">name</span>)&#x000A;          <span class="ruby-keyword">super</span>&#x000A;&#x000A;          <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;            def remove_#{name}=(value)&#x000A;              #{name}_attacher.remove = value&#x000A;            end&#x000A;&#x000A;            def remove_#{name}&#x000A;              #{name}_attacher.remove&#x000A;            end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/remove_attachment.rb, line 23</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span>)&#x000A;          <span class="ruby-keyword">super</span>&#x000A;&#x000A;          <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;            def remove_#{@name}=(value)&#x000A;              #{@name}_attacher.remove = value&#x000A;            end&#x000A;&#x000A;            def remove_#{@name}&#x000A;              #{@name}_attacher.remove&#x000A;            end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

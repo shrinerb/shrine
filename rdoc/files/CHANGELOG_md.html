@@ -31,12 +31,123 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-04-19 13:13:04 +0200</span>
+          <span class='datetime'>2016-05-19 19:30:52 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-2.0.0+-282016-05-19-29">2.0.0 (2016-05-19)<span><a href="#label-2.0.0+-282016-05-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Include query parameters in CDN-ed S3 URLs, making them work for private
+            objects (janko-m)</p>
+            </li><li>
+            <p>Remove the <code>:include_error</code> option from remote_url plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Make previous plugin options persist when reapplying the plugin (janko-m)</p>
+            </li><li>
+            <p>Improve how upload options and metadata are passed to storage&#39;s
+            <code>#upload</code> and <code>#move</code> (janko-m)</p>
+            </li><li>
+            <p>Remove <code>Shrine::Confirm</code> and confirming
+            <code>Storage#clear!</code> in general (janko-m)</p>
+            </li><li>
+            <p>Allow implementing a custom dimensions analyzer using built-in ones
+            (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t error in determine_mime_type when MimeMagic cannot determine the
+            MIME (janko-m)</p>
+            </li><li>
+            <p>Allow implementing a custom MIME type analyzer using built-in ones
+            (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t check that the cached file exists in restore_cached_data plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Deprecate migration_helpers plugin and move <code>Attacher#cached?</code>
+            and <code>Attacher#stored?</code> to base (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t trigger restore_cached_data plugin functionality when assigning
+            the same cached attachment (janko-m)</p>
+            </li><li>
+            <p>Give <code>Attacher#_promote</code> and <code>Attacher#promote</code> the
+            same method signature (janko-m)</p>
+            </li><li>
+            <p>Add <code>Attacher#_delete</code> which now spawns a background job instead
+            of <code>Attacher#delete!</code> (janko-m)</p>
+            </li><li>
+            <p>Make <code>Attacher#cache!</code>, <code>Attacher#store!</code>, and
+            <code>Attacher#delete!</code> public (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t cache storages in dynamic_storage plugin (janko-m)</p>
+            </li><li>
+            <p>Make only one HTTP request in download_endpoint plugin (janko-m)</p>
+            </li><li>
+            <p>Print secuity warning when not using determine_mime_type plugin (janko-m)</p>
+            </li><li>
+            <p>Support Mongoid in backgrounding plugin (janko-m)</p>
+            </li><li>
+            <p>Allow including attachment module to non-<code>Sequel::Model</code> objects
+            in sequel plugin (janko-m)</p>
+            </li><li>
+            <p>Handle paths that start with "-" in determine_mime_type plugin when
+            <code>:file</code> analyzer is used (zaeleus)</p>
+            </li><li>
+            <p>Allow including attachment module to non-<code>ActiveRecord::Base</code>
+            objects in activerecord plugin (janko-m)</p>
+            </li><li>
+            <p>Remove deprecated "restore_cached" alias for restore_cached_data plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Remove deprecated "delete_uploaded" alias for delete_raw plugin (janko-m)</p>
+            </li><li>
+            <p>Make the default generated unique location shorter (janko-m)</p>
+            </li><li>
+            <p>Make the <code>:delegate</code> option in migration_helpers default to
+            <code>false</code> (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t require <code>:storages</code> option anymore in moving plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t delete uploaded IO if storage doesn&#39;t support moving in
+            moving plugin (janko-m)</p>
+            </li><li>
+            <p>Rename delete phases to be shorter and consistent in naming with upload
+            phases (janko-m)</p>
+            </li><li>
+            <p>Remove deprecated <code>Shrine#default_url</code> (janko-m)</p>
+            </li><li>
+            <p>Remove deprecated <code>:subdirectory</code> on FileSystem storage
+            (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t return the uploaded file in <code>Attacher#set</code> and
+            <code>Attacher#assign</code> (janko-m)</p>
+            </li><li>
+            <p>Return the attacher instance in <code>Attacher.promote</code> and
+            <code>Attacher.delete</code> in backgrounding plugin (janko-m)</p>
+            </li><li>
+            <p>Rename "attachment" to "name", and "uploaded_file" to "attachment" in
+            backgrounding plugin (janko-m)</p>
+            </li><li>
+            <p>Remove using <code>:presign</code> for presign options instead of
+            <code>:presign_options</code> (janko-m)</p>
+            </li><li>
+            <p>Remove deprecated <code>Shrine.direct_endpoint</code> from direct_upload
+            plugin (janko-m)</p>
+            </li><li>
+            <p>Remove deprecated keep_location plugin (janko-m)</p>
+            </li><li>
+            <p>Make <code>Shrine#extract_dimensions</code> a private method in
+            store_dimensions plugin (janko-m)</p>
+            </li><li>
+            <p>Keep <code>Shrine#extract_mime_type</code> a private method when loading
+            determine_mime_type plugin (janko-m)</p>
+            </li><li>
+            <p>Deprecate loading the backgrounding plugin through the old
+            "background_helpers" alias (janko-m)</p>
+            </li></ul>
             
             <h2 id="label-1.4.2+-282016-04-19-29">1.4.2 (2016-04-19)<span><a href="#label-1.4.2+-282016-04-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>
@@ -55,6 +166,9 @@
             
             <h2 id="label-1.4.0+-282016-04-15-29">1.4.0 (2016-04-15)<span><a href="#label-1.4.0+-282016-04-15-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>
+            <p>Return "Content-Length" response header in download_endpoint plugin
+            (janko-m)</p>
+            </li><li>
             <p>Make determine_mime_type and store_dimensions automatically rewind IO with
             custom analyzer (janko-m)</p>
             </li><li>

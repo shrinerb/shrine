@@ -44,10 +44,11 @@
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span></pre>
             
-            <p>Now whenever an “attachment” module is included, additional callbacks are
-            added to the model:</p>
+            <h2 id="module-Shrine::Plugins::Sequel-label-Callbacks">Callbacks<span><a href="#module-Shrine::Plugins::Sequel-label-Callbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>Now the attachment module will add additional callbacks to the model:</p>
             <ul><li>
-            <p><code>before_save</code> – Currently only used by the recache plugin.</p>
+            <p><code>before_save</code> – Used by the recached plugin.</p>
             </li><li>
             <p><code>after_commit</code> – Promotes the attachment, deletes replaced ones.</p>
             </li><li>
@@ -58,8 +59,15 @@
             <code>after_commit</code> callbacks won&#39;t get called, so in order to
             test uploading you should first disable transactions for those tests.</p>
             
-            <p>If you want to put some parts of this lifecycle into a background job, see
-            the backgrounding plugin.</p>
+            <p>If you want to put promoting/deleting into a background job, see the
+            backgrounding plugin.</p>
+            
+            <p>Since attaching first saves the record with a cached attachment, then saves
+            again with a stored attachment, you can detect this in callbacks:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_save</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed_columns</span>.<span class="ruby-identifier">include?</span>(:<span class="ruby-identifier">avatar</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;      <span class="ruby-comment"># cached</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed_columns</span>.<span class="ruby-identifier">include?</span>(:<span class="ruby-identifier">avatar</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;      <span class="ruby-comment"># promoted</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h2 id="module-Shrine::Plugins::Sequel-label-Validations">Validations<span><a href="#module-Shrine::Plugins::Sequel-label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>Additionally, any <a href="../../Shrine.html">Shrine</a> validation errors
             will added to Sequel&#39;s errors upon validation. Note that if you want to

@@ -55,13 +55,13 @@
             utility to determine the MIME type from file  contents. It is installed by
             default on most operating systems, but the  <a
             href="http://gnuwin32.sourceforge.net/packages/file.htm">Windows
-            equivalent</a> you need to install separately.</p>
+            equivalent</a> needs to be installed separately.</p>
             </td></tr><tr><td class='label'>:filemagic</td><td>
             <p>Uses the <a
             href="https://github.com/blackwinter/ruby-filemagic">ruby-filemagic</a> gem
             to determine the MIME type from file  contents, using a similar MIME
-            database as the <code>file</code> utility.  Unlike the <code>file</code>
-            utility, ruby-filemagic should work on Windows.</p>
+            database as the <code>file</code> utility. Unlike  the <code>file</code>
+            utility, ruby-filemagic works on Windows without any setup.</p>
             </td></tr><tr><td class='label'>:mimemagic</td><td>
             <p>Uses the <a href="https://github.com/minad/mimemagic">mimemagic</a> gem to
             determine the MIME type from file contents.  Unlike ruby-filemagic,
@@ -73,18 +73,21 @@
             determine the MIME type from the file  <em>extension</em>. Note that unlike
             other solutions, this analyzer is not  guaranteed to return the actual MIME
             type of the file.</p>
+            </td></tr><tr><td class='label'>:default</td><td>
+            <p>Uses the default way of extracting the MIME type, and that is from the 
+            “Content-Type” request header, which might not hold the actual MIME type 
+            of the file.</p>
             </td></tr></tbody></table>
             
-            <p>If none of these quite suit your needs, you can use a custom analyzer:</p>
+            <p>If none of these quite suit your needs, you can build a custom analyzer:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># returns the extracted MIME type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">mimemagic</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
             <h3>Public Class</h3>
             <ol>
               <li><a target="docwin" href="#method-c-configure">configure</a></li>
-              <li><a target="docwin" href="#method-c-load_dependencies">load_dependencies</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -120,7 +123,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, analyzer: :file)</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
                 </div>
                 <div class='description'>
                   
@@ -129,23 +132,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-value">:file</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>] = <span class="ruby-identifier">analyzer</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-class' id='method-method-c-load_dependencies'>
-                <a name='method-c-load_dependencies'></a>
-                <div class='synopsis'>
-                  <span class='name'>load_dependencies</span>
-                  <span class='arguments'>(uploader, analyzer: :file)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-value">:file</span>)&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-identifier">analyzer</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:file</span>      <span class="ruby-keyword">then</span> <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;open3&quot;</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:filemagic</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;filemagic&quot;</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:mimemagic</span> <span class="ruby-keyword">then</span> <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mimemagic&quot;</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-value">:mime_types</span>&#x000A;    <span class="ruby-keyword">begin</span>&#x000A;      <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mime/types/columnar&quot;</span>&#x000A;    <span class="ruby-keyword">rescue</span> <span class="ruby-constant">LoadError</span>&#x000A;      <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mime/types&quot;</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 52</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-value">:file</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

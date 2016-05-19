@@ -63,7 +63,7 @@
                 <a name='method-c-new'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
-                  <span class='arguments'>(thread_count)</span>
+                  <span class='arguments'>(size)</span>
                 </div>
                 <div class='description'>
                   
@@ -72,7 +72,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 46</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">thread_count</span>)&#x000A;  <span class="ruby-ivar">@thread_count</span> = <span class="ruby-identifier">thread_count</span>&#x000A;  <span class="ruby-ivar">@tasks</span> = <span class="ruby-constant">Queue</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 46</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">size</span>)&#x000A;  <span class="ruby-ivar">@size</span> = <span class="ruby-identifier">size</span>&#x000A;  <span class="ruby-ivar">@tasks</span> = <span class="ruby-constant">Queue</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <h2>Public Instance methods</h2>
@@ -105,7 +105,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-perform-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-perform-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>&#x000A;  <span class="ruby-identifier">threads</span> = <span class="ruby-ivar">@thread_count</span>.<span class="ruby-identifier">times</span>.<span class="ruby-identifier">map</span> { <span class="ruby-identifier">spawn_thread</span> }&#x000A;  <span class="ruby-identifier">threads</span>.<span class="ruby-identifier">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:join</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-perform-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>&#x000A;  <span class="ruby-identifier">threads</span> = <span class="ruby-ivar">@size</span>.<span class="ruby-identifier">times</span>.<span class="ruby-identifier">map</span> { <span class="ruby-identifier">spawn_thread</span> }&#x000A;  <span class="ruby-identifier">threads</span>.<span class="ruby-identifier">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:join</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

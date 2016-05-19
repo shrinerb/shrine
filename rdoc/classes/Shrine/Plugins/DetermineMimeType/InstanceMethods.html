@@ -38,38 +38,9 @@
       <div id='content'>
         <div id='text'>
           <div id='description'></div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a target="docwin" href="#method-i-extract_mime_type">extract_mime_type</a></li>
-            </ol>
-          </div>
           <div id='context'>
           </div>
           <div id='section'>
-            <div id='methods'>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-extract_mime_type'>
-                <a name='method-i-extract_mime_type'></a>
-                <div class='synopsis'>
-                  <span class='name'>extract_mime_type</span>
-                  <span class='arguments'>(io)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>If a <a href="../../UploadedFile.html">Shrine::UploadedFile</a> was given,
-                  it returns its MIME type, since that value was already determined by this
-                  analyzer. Otherwise it calls a built-in analyzer or a custom one.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-extract_mime_type-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-extract_mime_type-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 73</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_mime_type</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">analyzer</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>]&#x000A;&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:mime_type</span>)&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">mime_type</span>&#x000A;  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;_extract_mime_type_with_#{analyzer}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

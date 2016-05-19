@@ -39,15 +39,10 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The restore_cached_data plugin ensures the cached file data hasn&#39;t been
-            tampered with, by restoring the metadata after assignment. The user can
-            tamper with the cached file data by modifying the hidden field before
-            submitting the form.</p>
-            
-            <p>Firstly the assignment is terminated if the cached file doesn&#39;t exist,
-            which can happen if the user changes the “id” or “storage” data. If the
-            cached file exists, the metadata is reextracted from the original file and
-            replaced with the potentially tampered with ones.</p>
+            <p>The restore_cached_data plugin ensures the cached file metadata hasn&#39;t
+            been tampered with, which can be done by modifying the hidden field before
+            submitting the form. The cached file&#39;s metadata will be reextracted
+            during assignment and replaced with potentially tampered one.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">restore_cached_data</span></pre>
           </div>

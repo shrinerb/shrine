@@ -39,29 +39,18 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The moving plugin enables you to move files to specified storages. On the
-            filesystem moving is istantaneous, since the OS only changes the pointer,
-            so this plugin is useful when dealing with large files.</p>
+            <p>The moving plugin makes so that when files are supposed to be uploaded,
+            they are moved instead. For example, on FileSystem moving is instantaneous
+            regardless of the filesize, so it&#39;s suitable for speeding up uploads
+            for larger files.</p>
             
-            <p>This plugin is also recommended if you&#39;re doing processing, since by
-            default temporary files won&#39;t immediately get deleted (Ruby&#39;s
-            Tempfiles usually get deleted only when the process ends).</p>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span></pre>
+            
+            <p>By default files will be moved whenever the storage supports it. If you
+            want moving to happen only for certain storages, you can set
+            <code>storages</code>:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>]</pre>
-            
-            <p>The <code>:storages</code> option specifies which storages the file will be
-            moved to. The above will move raw files to cache (without this plugin
-            it&#39;s simply copied over). However, you may want to move cached files to
-            <code>:store</code> as well:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">moving</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>, :<span class="ruby-identifier">store</span>]</pre>
-            
-            <p>What exactly means “moving”? If both the file being uploaded and the
-            destination are on the filesystem, a <code>mv</code> command will be
-            executed (making the transfer instantaneous). Some other storages may
-            implement moving as well, usually only for files which are on the same
-            storage. If moving isn&#39;t implemented by the storage, the file will be
-            simply deleted after upload.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -85,7 +74,7 @@
                 <a name='method-c-configure'></a>
                 <div class='synopsis'>
                   <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, storages:)</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
                 </div>
                 <div class='description'>
                   
@@ -94,7 +83,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/moving.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">storages</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>] = <span class="ruby-identifier">storages</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/moving.rb, line 15</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:storages</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
