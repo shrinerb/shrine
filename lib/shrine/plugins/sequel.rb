@@ -7,10 +7,11 @@ class Shrine
     #
     #     plugin :sequel
     #
-    # Now whenever an "attachment" module is included, additional callbacks are
-    # added to the model:
+    # ## Callbacks
     #
-    # * `before_save` -- Currently only used by the recache plugin.
+    # Now the attachment module will add additional callbacks to the model:
+    #
+    # * `before_save` -- Used by the recached plugin.
     # * `after_commit` -- Promotes the attachment, deletes replaced ones.
     # * `after_destroy_commit` -- Deletes the attachment.
     #
@@ -18,8 +19,29 @@ class Shrine
     # `after_commit` callbacks won't get called, so in order to test uploading
     # you should first disable transactions for those tests.
     #
-    # If you want to put some parts of this lifecycle into a background job,
-    # see the backgrounding plugin.
+    # If you want to put promoting/deleting into a background job, see the
+    # backgrounding plugin.
+    #
+    # Since attaching first saves the record with a cached attachment, then
+    # saves again with a stored attachment, you can detect this in callbacks:
+    #
+    #     class User < Sequel::Model
+    #       include ImageUploader[:avatar]
+    #
+    #       def before_save
+    #         super
+    #
+    #         if changed_columns.include?(:avatar) && avatar_attacher.cached?
+    #           # cached
+    #         end
+    #
+    #         if changed_columns.include?(:avatar) && avatar_attacher.stored?
+    #           # promoted
+    #         end
+    #       end
+    #     end
+    #
+    # ## Validations
     #
     # Additionally, any Shrine validation errors will added to Sequel's
     # errors upon validation. Note that if you want to validate presence of the
