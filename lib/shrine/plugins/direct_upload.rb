@@ -32,6 +32,9 @@ class Shrine
     #       }
     #     }
     #
+    # Note that the endpoint uploads the file standalone, without any knowledge
+    # of the record, so `context[:record]` and `context[:name]` will be nil.
+    #
     # Once you've uploaded the file, you need to assign the result to the
     # hidden attachment field in the form. There are many great JavaScript
     # libraries for file uploads, most popular being [jQuery-File-Upload].
