@@ -1,4 +1,4 @@
-## 2.0.0 (HEAD)
+## 2.0.0 (2016-05-19)
 
 * Include query parameters in CDN-ed S3 URLs, making them work for private objects (janko-m)
 
