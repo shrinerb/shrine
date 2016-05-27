@@ -22,4 +22,9 @@ describe "the default_url plugin" do
     @attacher = attacher { plugin :default_url }
     assert_equal nil, @attacher.url
   end
+
+  it "doesn't override previously set default URL if no block is given" do
+    @attacher.shrine_class.plugin :default_url
+    refute_equal nil, @attacher.url
+  end
 end

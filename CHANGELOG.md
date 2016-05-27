@@ -1,3 +1,7 @@
+## 2.0.1 (2016-05-30)
+
+* Don't override previously set default_url in versions plugin (janko-m)
+
 ## 2.0.0 (2016-05-19)
 
 * Include query parameters in CDN-ed S3 URLs, making them work for private objects (janko-m)

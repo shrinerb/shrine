@@ -16,7 +16,7 @@ class Shrine
     # Any additional URL options will be present in the `context` hash.
     module DefaultUrl
       def self.configure(uploader, &block)
-        uploader.opts[:default_url] = block
+        uploader.opts[:default_url] = block if block
       end
 
       module AttacherMethods
