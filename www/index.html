@@ -71,9 +71,8 @@
         {% for major in site.data.versions %}
         <li>
           {% for version in major %}
-          <a href="http://{{ site.url }}/rdoc/files/doc/release_notes/{{ version.path }}">
-            {{ version.name }}
-          </a> {% unless forloop.last %}|{% endunless %}
+          <a href="http://{{ site.url }}/rdoc/files/doc/release_notes/{{ version.path }}">{{ version.name }}</a>
+          {% unless forloop.last %}|{% endunless %}
           {% endfor %}
         </li>
         {% endfor %}
