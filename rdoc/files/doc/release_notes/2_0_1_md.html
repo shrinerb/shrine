@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>determine_mime_type.rb</title>
+    <title>2.0.1.md</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -25,9 +25,9 @@
   <body class='page'>
     <div class='file' id='wrapper'>
       <div class='header'>
-        <h1 class='name'>determine_mime_type.rb</h1>
+        <h1 class='name'>2.0.1.md</h1>
         <div class='paths'>
-          lib/shrine/plugins/determine_mime_type.rb
+          doc/release_notes/2.0.1.md
         </div>
         <div class='last-update'>
           Last Update:
@@ -36,18 +36,17 @@
       </div>
       <div id='content'>
         <div id='text'>
-          <div id='description'></div>
+          <div id='description'>
+            
+            <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>Fixed versions plugin removing what was set by default_url plugin, if 
+            default_url plugin was loaded before versions</p>
+            </li></ul>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span> &#x000A;  <span class="ruby-identifier">plugin</span>(:<span class="ruby-identifier">default_url</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span> }&#x000A;  <span class="ruby-identifier">plugin</span>(:<span class="ruby-identifier">versions</span>) <span class="ruby-comment"># doesn&#39;t remove default_url anymore</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+          </div>
           <div id='context'>
-            <div id='requires'>
-              <h2>Required files</h2>
-              <ol>
-                <li>open3</li>
-                <li>mimemagic</li>
-                <li>filemagic</li>
-                <li>mime/types/columnar</li>
-                <li>mime/types</li>
-              </ol>
-            </div>
           </div>
         </div>
       </div>
