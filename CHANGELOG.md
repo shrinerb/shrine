@@ -1,3 +1,7 @@
+## HEAD
+
+* Deprecate `#cached_<attachment>_data=` over using `<attachment>` for the hidden field (janko-m)
+
 ## 2.0.1 (2016-05-30)
 
 * Don't override previously set default_url in versions plugin (janko-m)

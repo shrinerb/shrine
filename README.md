@@ -139,11 +139,14 @@ Shrine::Attachment.new(:document)
 * `#image` – returns a `Shrine::UploadedFile` based on data from `image_data`
 * `#image_url` – calls `image.url` if attachment is present, otherwise returns nil.
 
-This is how you would typically create the form for a `@photo`:
+This is how you should create a form for a `@photo`:
 
+```rb
+Shrine.plugin :cached_attachment_data
+```
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
-  <input name="photo[image]" type="hidden" value="<%= @photo.image_data %>">
+  <input name="photo[image]" type="hidden" value="<%= @photo.cached_image_data %>">
   <input name="photo[image]" type="file">
 </form>
 ```
@@ -151,7 +154,7 @@ This is how you would typically create the form for a `@photo`:
 The "file" field is for file upload, while the "hidden" field is to make the
 file persist in case of validation errors, and for direct uploads. This code
 works because `#image=` also accepts an already cached file via its JSON
-representation:
+representation (which is what `#cached_image_data` returns):
 
 ```rb
 photo.image = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'

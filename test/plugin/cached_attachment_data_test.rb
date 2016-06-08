@@ -1,0 +1,16 @@
+require "test_helper"
+
+describe "the cached_attachment_data plugin" do
+  before do
+    @attacher = attacher { plugin :cached_attachment_data }
+    @user = @attacher.record
+  end
+
+  it "returns the attachment data only if it's cached" do
+    assert_equal nil, @user.cached_avatar_data
+    @user.avatar = fakeio
+    assert_equal @user.avatar.to_json, @user.cached_avatar_data
+    @user.avatar_attacher.promote
+    assert_equal nil, @user.cached_avatar_data
+  end
+end

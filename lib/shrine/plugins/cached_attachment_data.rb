@@ -1,23 +1,19 @@
 class Shrine
   module Plugins
-    # The cached_attachment_data adds a method for assigning cached files that
-    # is more convenient for forms.
+    # The cached_attachment_data plugin adds the ability to retain the cached
+    # file across form redisplays, which means the file doesn't have to be
+    # reuploaded in case of validation errors.
     #
     #     plugin :cached_attachment_data
     #
-    # If for example your attachment is called "avatar", this plugin will add
-    # `#cached_avatar_data` and `#cached_avatar_data=` methods to your model.
-    # This allows you to write your hidden field without explicitly setting
-    # `:value`:
+    # The plugin adds `#cached_<attachment>_data` to the model, which returns
+    # the cached file as JSON, and should be used to set the value of the
+    # hidden form field:
     #
     #     <%= form_for @user do |f| %>
-    #       <%= f.hidden_field :cached_avatar_data %>
+    #       <%= f.hidden_field :avatar, value: @user.cached_avatar_data %>
     #       <%= f.field_field :avatar %>
     #     <% end %>
-    #
-    # Additionally, the hidden field will only be set when the attachment is
-    # cached (as opposed to the default where `user.avatar_data` will return
-    # both cached and stored files). This keeps Rails logs cleaner.
     module CachedAttachmentData
       module AttachmentMethods
         def initialize(*)
@@ -29,6 +25,7 @@ class Shrine
             end
 
             def cached_#{@name}_data=(value)
+              warn "Calling #cached_#{@name}_data= is deprecated and will be removed in Shrine 3. You should use the original field name: `f.hidden_field :#{@name}, value: record.cached_#{@name}_data`."
               #{@name}_attacher.assign(value)
             end
           RUBY
