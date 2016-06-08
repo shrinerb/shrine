@@ -152,9 +152,11 @@ Shrine.plugin :cached_attachment_data
 ```
 
 The "file" field is for file upload, while the "hidden" field is to make the
-file persist in case of validation errors, and for direct uploads. This code
-works because `#image=` also accepts an already cached file via its JSON
-representation (which is what `#cached_image_data` returns):
+file persist in case of validation errors, and for direct uploads. Note that
+the hidden field should always be *before* the file field.
+
+This code works because `#image=` also accepts an already cached file via its
+JSON representation (which is what `#cached_image_data` returns):
 
 ```rb
 photo.image = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'
