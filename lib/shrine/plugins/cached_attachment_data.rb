@@ -34,7 +34,7 @@ class Shrine
 
       module AttacherMethods
         def read_cached
-          get.to_json if get && cache.uploaded?(get)
+          get.to_json if cached? && attached?
         end
       end
     end
