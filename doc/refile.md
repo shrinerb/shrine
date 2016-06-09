@@ -29,7 +29,7 @@ end
 
 While in Refile you configure attachments by passing options to `.attachment`,
 in Shrine you define all your uploading logic inside uploaders, and then
-generate an attacment module with that uploader which is included into the
+generate an attachment module with that uploader which is included into the
 model:
 
 ```rb
