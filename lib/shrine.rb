@@ -19,7 +19,7 @@ class Shrine
     private
 
     def missing_methods_string
-      @missing_methods.map { |m, args| "`#{m}(#{args.join(", ")})`" }.join(", ")
+      @missing_methods.map { |m, args| "##{m}" }.join(", ")
     end
   end
 
@@ -358,10 +358,7 @@ class Shrine
         # `#read`, `#eof?`, `#rewind`, `#size` and `#close`, otherwise raises
         # Shrine::InvalidFile.
         def _enforce_io(io)
-          missing_methods = IO_METHODS.reject do |m, a|
-            io.respond_to?(m) && [a.count, -1].include?(io.method(m).arity)
-          end
-
+          missing_methods = IO_METHODS.select { |m, a| !io.respond_to?(m) }
           raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 

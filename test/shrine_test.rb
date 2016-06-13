@@ -212,7 +212,21 @@ describe Shrine do
     end
 
     it "checks if the input is a valid IO" do
-      assert_raises(Shrine::Error) { @uploader.store(:not_an_io) }
+      assert_raises(Shrine::InvalidFile) { @uploader.store(:not_an_io) }
+    end
+
+    it "passes objects which satisfy IO interface through #method_missing" do
+      delegator_class = Struct.new(:object) do
+        def method_missing(name, *args, &block)
+          object.send(name, *args, &block)
+        end
+
+        def respond_to?(name, include_private = false)
+          object.respond_to?(name, include_private) || super
+        end
+      end
+
+      @uploader.store(delegator_class.new(fakeio))
     end
   end
 

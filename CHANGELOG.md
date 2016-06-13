@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't assert arity of IO methods, so that objects like `Rack::Test::UploadedFile` are allowed (janko-m)
+
 * Deprecate `#cached_<attachment>_data=` over using `<attachment>` for the hidden field (janko-m)
 
 ## 2.0.1 (2016-05-30)
