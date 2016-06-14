@@ -3,16 +3,12 @@ require "stringio"
 require "logger"
 
 describe "the logging plugin" do
-  def capture
-    yield
-    result = $out.string
-    $out.reopen(StringIO.new)
-    result
+  def log
+    @uploader.opts[:logging_stream].string
   end
 
   before do
-    $out = StringIO.new
-    @uploader = uploader { plugin :logging, stream: $out }
+    @uploader = uploader { plugin :logging, stream: StringIO.new }
     @context = {name: :avatar, phase: :store}
     @context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
   end
@@ -22,23 +18,23 @@ describe "the logging plugin" do
   end
 
   it "logs processing" do
-    stdout = capture { @uploader.upload(fakeio) }
-    refute_match /PROCESS/, stdout
+    @uploader.upload(fakeio)
+    refute_match /PROCESS/, log
 
     @uploader.instance_eval { def process(io, context); io; end }
-    stdout = capture { @uploader.upload(fakeio) }
-    assert_match /PROCESS \S+ 1-1 file \(\d+\.\d+s\)$/, stdout
+    @uploader.upload(fakeio)
+    assert_match /PROCESS \S+ 1-1 file \(\d+\.\d+s\)$/, log
   end
 
   it "logs storing" do
-    stdout = capture { @uploader.upload(fakeio) }
-    assert_match /STORE \S+ 1 file \(\d+\.\d+s\)$/, stdout
+    @uploader.upload(fakeio)
+    assert_match /STORE \S+ 1 file \(\d+\.\d+s\)$/, log
   end
 
   it "logs deleting" do
     uploaded_file = @uploader.upload(fakeio)
-    stdout = capture { @uploader.delete(uploaded_file) }
-    assert_match /DELETE \S+ 1 file \(\d+\.\d+s\)$/, stdout
+    @uploader.delete(uploaded_file)
+    assert_match /DELETE \S+ 1 file \(\d+\.\d+s\)$/, log
   end
 
   it "counts versions" do
@@ -48,45 +44,42 @@ describe "the logging plugin" do
         {thumb: StringIO.new, original: StringIO.new}
       end
     end
-    stdout = capture do
-      versions = @uploader.upload(fakeio)
-      @uploader.delete(versions)
-    end
-    assert_match /PROCESS \S+ 1-2 files/, stdout
-    assert_match /STORE \S+ 2 files/, stdout
-    assert_match /DELETE \S+ 2 files/, stdout
+
+    versions = @uploader.upload(fakeio)
+    @uploader.delete(versions)
+
+    assert_match /PROCESS \S+ 1-2 files/, log
+    assert_match /STORE \S+ 2 files/, log
+    assert_match /DELETE \S+ 2 files/, log
   end
 
   it "counts array of files" do
     @uploader.class.plugin :multi_delete
-    files = [@uploader.upload(fakeio), @uploader.upload(fakeio)]
-    stdout = capture { @uploader.delete(files) }
-    assert_match /DELETE \S+ 2 files/, stdout
+    @uploader.delete([@uploader.upload(fakeio), @uploader.upload(fakeio)])
+    assert_match /DELETE \S+ 2 files/, log
   end
 
   it "outputs context data" do
     @uploader.instance_eval { def process(io, context); io; end }
 
-    stdout = capture do
-      uploaded_file = @uploader.upload(fakeio, @context)
-      @uploader.delete(uploaded_file, @context)
-    end
+    uploaded_file = @uploader.upload(fakeio, @context)
+    @uploader.delete(uploaded_file, @context)
 
-    assert_match /PROCESS\[store\] \S+\[:avatar\] User\[16\] 1-1 file \(\d+\.\d+s\)$/, stdout
-    assert_match /STORE\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, stdout
-    assert_match /DELETE\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, stdout
+    assert_match /PROCESS\[store\] \S+\[:avatar\] User\[16\] 1-1 file \(\d+\.\d+s\)$/, log
+    assert_match /STORE\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, log
+    assert_match /DELETE\[store\] \S+\[:avatar\] User\[16\] 1 file \(\d+\.\d+s\)$/, log
   end
 
   it "supports JSON format" do
     @uploader.opts[:logging_format] = :json
-    stdout = capture { @uploader.upload(fakeio, @context) }
-    JSON.parse(stdout[/\{.+\}/])
+    @uploader.upload(fakeio, @context)
+    JSON.parse(log[/\{.+\}/])
   end
 
   it "supports Heroku-style format" do
     @uploader.opts[:logging_format] = :heroku
-    stdout = capture { @uploader.upload(fakeio, @context) }
-    assert_match "action=store phase=store", stdout
+    @uploader.upload(fakeio, @context)
+    assert_match "action=store phase=store", log
   end
 
   it "accepts a custom logger" do
@@ -96,13 +89,13 @@ describe "the logging plugin" do
 
   it "accepts model instances without an #id" do
     @context[:record].instance_eval { undef id }
-    stdout = capture { @uploader.upload(fakeio, @context) }
-    assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(\d+\.\d+s\)$/, stdout
+    @uploader.upload(fakeio, @context)
+    assert_match /STORE\[store\] \S+\[:avatar\] User 1 file \(\d+\.\d+s\)$/, log
   end
 
   it "works with hooks plugin in the right order" do
     @uploader = uploader do
-      plugin :logging, stream: $out
+      plugin :logging, stream: StringIO.new
       plugin :hooks
     end
 
@@ -114,9 +107,10 @@ describe "the logging plugin" do
       end
     end
 
-    stdout = capture { @uploader.upload(fakeio) }
-    assert_match "before logging", stdout.lines[0]
-    assert_match "after logging",  stdout.lines[1]
-    assert_match "STORE",          stdout.lines[2]
+    @uploader.upload(fakeio)
+
+    assert_match "before logging", log.lines[0]
+    assert_match "after logging",  log.lines[1]
+    assert_match "STORE",          log.lines[2]
   end
 end

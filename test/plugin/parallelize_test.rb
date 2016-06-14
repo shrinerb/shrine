@@ -60,8 +60,10 @@ describe "the parallelize plugin" do
     end
 
     @uploader.upload(fakeio)
-    assert_match "pool performed", @uploader.opts[:logging_stream].string.lines[0]
-    assert_match "STORE",          @uploader.opts[:logging_stream].string.lines[1]
+    log = @uploader.opts[:logging_stream].string
+
+    assert_match "pool performed", log.lines[0]
+    assert_match "STORE",          log.lines[1]
   end
 
   it "propagates any errors" do
