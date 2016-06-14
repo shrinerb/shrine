@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/keep_files"
 
-describe "the keep_files plugin" do
+describe Shrine::Plugins::KeepFiles do
   describe ":destroyed" do
     before do
       @attacher = attacher do

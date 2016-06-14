@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/default_storage"
 
-describe "the default_storage plugin" do
+describe Shrine::Plugins::DefaultStorage do
   it "allows setting the cache as symbol" do
     @attacher = attacher { plugin :default_storage, cache: :store }
     assert_equal :store, @attacher.cache.storage_key

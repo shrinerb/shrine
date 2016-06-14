@@ -1,8 +1,9 @@
 require "test_helper"
+require "shrine/plugins/parallelize"
 require "tempfile"
 require "stringio"
 
-describe "the parallelize plugin" do
+describe Shrine::Plugins::Parallelize do
   before do
     @uploader = uploader do
       plugin :versions, names: [:large, :medium, :small]

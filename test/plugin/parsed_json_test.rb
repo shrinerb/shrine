@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/parsed_json"
 
-describe "the parsed_json plugin" do
+describe Shrine::Plugins::ParsedJson do
   before do
     @attacher = attacher { plugin :parsed_json }
   end

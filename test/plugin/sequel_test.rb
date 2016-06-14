@@ -1,4 +1,5 @@
 require "test_helper"
+require "shrine/plugins/sequel"
 require "sequel"
 require "sequel/extensions/pg_json"
 
@@ -10,7 +11,7 @@ end
 
 Sequel.cache_anonymous_models = false
 
-describe "the sequel plugin" do
+describe Shrine::Plugins::Sequel do
   before do
     @uploader = uploader { plugin :sequel }
 

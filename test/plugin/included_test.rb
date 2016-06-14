@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/included"
 
-describe "the included plugin" do
+describe Shrine::Plugins::Included do
   it "enables extending the model attachment is being included to" do
     @uploader = uploader do
       plugin :included do |name|

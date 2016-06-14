@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/default_url"
 
-describe "the default_url plugin" do
+describe Shrine::Plugins::DefaultUrl do
   before do
     @attacher = attacher do
       plugin(:default_url) { |context| context }

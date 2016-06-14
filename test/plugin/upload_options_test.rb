@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/upload_options"
 
-describe "the upload_options plugin" do
+describe Shrine::Plugins::UploadOptions do
   before do
     @uploader = uploader(:store) do
       plugin :upload_options

@@ -1,8 +1,9 @@
 require "test_helper"
+require "shrine/plugins/direct_upload"
 require "shrine/storage/s3"
 require "rack/test_app"
 
-describe "the direct_upload plugin" do
+describe Shrine::Plugins::DirectUpload do
   def app
     Rack::TestApp.wrap(Rack::Lint.new(@uploader.class::UploadEndpoint))
   end

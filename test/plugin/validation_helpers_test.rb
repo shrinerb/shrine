@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/validation_helpers"
 
-describe "the validation_helpers plugin" do
+describe Shrine::Plugins::ValidationHelpers do
   before do
     @attacher = attacher { plugin :validation_helpers }
   end

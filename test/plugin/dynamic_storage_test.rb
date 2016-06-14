@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/dynamic_storage"
 
-describe "the dynamic_storage plugin" do
+describe Shrine::Plugins::DynamicStorage do
   before do
     @uploader = uploader { plugin :dynamic_storage }
   end

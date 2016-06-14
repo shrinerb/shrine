@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/default_url_options"
 
-describe "the default_url_options plugin" do
+describe Shrine::Plugins::DefaultUrlOptions do
   before do
     @uploader = uploader do
       plugin :default_url_options, store: {foo: "foo"}

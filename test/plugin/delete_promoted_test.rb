@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/delete_promoted"
 
-describe "the delete_promoted plugin" do
+describe Shrine::Plugins::DeletePromoted do
   before do
     @attacher = attacher { plugin :delete_promoted }
   end

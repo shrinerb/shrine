@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/store_dimensions"
 
-describe "the store_dimensions plugin" do
+describe Shrine::Plugins::StoreDimensions do
   before do
     @uploader = uploader { plugin :store_dimensions, analyzer: :fastimage }
   end

@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/versions"
 
-describe "the versions plugin" do
+describe Shrine::Plugins::Versions do
   before do
     @attacher = attacher { plugin :versions, names: [:thumb, :medium, :large] }
     @uploader = @attacher.store

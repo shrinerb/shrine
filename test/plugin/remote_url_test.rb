@@ -1,8 +1,9 @@
 require "test_helper"
+require "shrine/plugins/remote_url"
 require "webmock/minitest"
 WebMock.allow_net_connect!
 
-describe "the remote_url plugin" do
+describe Shrine::Plugins::RemoteUrl do
   before do
     @attacher = attacher do
       plugin :remote_url, max_size: nil

@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/remove_invalid"
 
-describe "the remove_invalid plugin" do
+describe Shrine::Plugins::RemoveInvalid do
   before do
     @attacher = attacher { plugin :remove_invalid }
   end

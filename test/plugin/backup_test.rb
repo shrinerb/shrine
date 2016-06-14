@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/backup"
 
-describe "the backup plugin" do
+describe Shrine::Plugins::Backup do
   before do
     @attacher = attacher { plugin :backup, storage: :cache }
   end

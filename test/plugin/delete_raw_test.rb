@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/delete_raw"
 
-describe "the delete_raw plugin" do
+describe Shrine::Plugins::DeleteRaw do
   before do
     @uploader = uploader { plugin :delete_raw }
   end

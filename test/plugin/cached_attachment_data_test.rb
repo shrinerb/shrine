@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/cached_attachment_data"
 
-describe "the cached_attachment_data plugin" do
+describe Shrine::Plugins::CachedAttachmentData do
   before do
     @attacher = attacher { plugin :cached_attachment_data }
     @user = @attacher.record

@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/rack_file"
 
-describe "the rack_file plugin" do
+describe Shrine::Plugins::RackFile do
   before do
     @attacher = attacher { plugin :rack_file }
   end

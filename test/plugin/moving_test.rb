@@ -1,7 +1,8 @@
 require "test_helper"
+require "shrine/plugins/moving"
 require "shrine/storage/file_system"
 
-describe "the moving plugin" do
+describe Shrine::Plugins::Moving do
   before do
     @uploader = uploader { plugin :moving }
   end

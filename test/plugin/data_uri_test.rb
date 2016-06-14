@@ -1,7 +1,8 @@
 require "test_helper"
+require "shrine/plugins/data_uri"
 require "base64"
 
-describe "the data_uri plugin" do
+describe Shrine::Plugins::DataUri do
   before do
     @attacher = attacher { plugin :data_uri }
     @user = @attacher.record

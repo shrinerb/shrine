@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/restore_cached_data"
 
-describe "the restore_cached_data plugin" do
+describe Shrine::Plugins::RestoreCachedData do
   before do
     @attacher = attacher { plugin :restore_cached_data }
   end

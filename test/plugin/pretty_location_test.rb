@@ -1,7 +1,8 @@
 require "test_helper"
+require "shrine/plugins/pretty_location"
 require "ostruct"
 
-describe "the pretty_location plugin" do
+describe Shrine::Plugins::PrettyLocation do
   module NameSpaced
     class OpenStruct < ::OpenStruct; end
   end

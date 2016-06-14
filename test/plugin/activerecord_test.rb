@@ -1,11 +1,12 @@
 require "test_helper"
+require "shrine/plugins/activerecord"
 require "active_record"
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 ActiveRecord::Base.connection.create_table(:users) { |t| t.text :avatar_data }
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 
-describe "the activerecord plugin" do
+describe Shrine::Plugins::Activerecord do
   before do
     @uploader = uploader { plugin :activerecord }
 

@@ -1,7 +1,8 @@
 require "test_helper"
+require "shrine/plugins/determine_mime_type"
 require "stringio"
 
-describe "the determine_mime_type plugin" do
+describe Shrine::Plugins::DetermineMimeType do
   describe ":file" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :file }

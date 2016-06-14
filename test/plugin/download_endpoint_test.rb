@@ -1,7 +1,8 @@
 require "test_helper"
+require "shrine/plugins/download_endpoint"
 require "rack/test_app"
 
-describe "the download_endpoint plugin" do
+describe Shrine::Plugins::DownloadEndpoint do
   def app
     Rack::TestApp.wrap(Rack::Lint.new(@uploader.class::DownloadEndpoint))
   end

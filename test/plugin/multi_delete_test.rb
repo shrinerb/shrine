@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/multi_delete"
 
-describe "multi_delete plugin" do
+describe Shrine::Plugins::MultiDelete do
   before do
     @uploader = uploader { plugin :multi_delete }
   end

@@ -1,8 +1,9 @@
 require "test_helper"
+require "shrine/plugins/logging"
 require "stringio"
 require "logger"
 
-describe "the logging plugin" do
+describe Shrine::Plugins::Logging do
   def log
     @uploader.opts[:logging_stream].string
   end

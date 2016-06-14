@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/remove_attachment"
 
-describe "the remove_attachment plugin" do
+describe Shrine::Plugins::RemoveAttachment do
   before do
     @attacher = attacher { plugin :remove_attachment }
     @user = @attacher.record

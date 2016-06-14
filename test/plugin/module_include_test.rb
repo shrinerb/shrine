@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/module_include"
 
-describe "the module_include plugin" do
+describe Shrine::Plugins::ModuleInclude do
   before do
     @uploader = uploader { plugin :module_include }
   end

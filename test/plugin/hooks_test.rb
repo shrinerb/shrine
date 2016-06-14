@@ -1,6 +1,7 @@
 require "test_helper"
+require "shrine/plugins/hooks"
 
-describe "the hooks plugin" do
+describe Shrine::Plugins::Hooks do
   before do
     @uploader = uploader { plugin :hooks }
   end

@@ -1,4 +1,5 @@
 require "test_helper"
+require "shrine/plugins/backgrounding"
 require "sequel"
 
 db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
@@ -9,7 +10,7 @@ end
 
 Sequel.cache_anonymous_models = false
 
-describe "the backgrounding plugin" do
+describe Shrine::Plugins::Backgrounding do
   before do
     @uploader = uploader do
       plugin :sequel
