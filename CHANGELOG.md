@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make logging and parallelize plugins work properly when loaded in this order (janko-m)
+
 * Don't assert arity of IO methods, so that objects like `Rack::Test::UploadedFile` are allowed (janko-m)
 
 * Deprecate `#cached_<attachment>_data=` over using `<attachment>` for the hidden field (janko-m)

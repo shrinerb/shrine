@@ -1,5 +1,6 @@
 require "test_helper"
 require "tempfile"
+require "stringio"
 
 describe "the parallelize plugin" do
   before do
@@ -34,11 +35,33 @@ describe "the parallelize plugin" do
   end
 
   it "works with moving plugin" do
-    @uploader.class.plugin :moving
+    @uploader = uploader do
+      plugin :parallelize
+      plugin :moving
+    end
+
     memory_file = @uploader.upload(fakeio)
     uploaded_file = @uploader.upload(memory_file)
     assert uploaded_file.exists?
     refute memory_file.exists?
+  end
+
+  it "works with logging plugin" do
+    @uploader = uploader do
+      plugin :logging, stream: StringIO.new
+      plugin :parallelize
+    end
+
+    @uploader.instance_eval do
+      def with_pool(*)
+        super
+        opts[:logging_stream].puts("pool performed")
+      end
+    end
+
+    @uploader.upload(fakeio)
+    assert_match "pool performed", @uploader.opts[:logging_stream].string.lines[0]
+    assert_match "STORE",          @uploader.opts[:logging_stream].string.lines[1]
   end
 
   it "propagates any errors" do

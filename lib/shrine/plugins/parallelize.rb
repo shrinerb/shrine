@@ -15,13 +15,17 @@ class Shrine
         uploader.opts[:parallelize_threads] = opts.fetch(:threads, uploader.opts.fetch(:parallelize_threads, 3))
       end
 
+      def self.load_dependencies(uploader, opts = {})
+        uploader.plugin :hooks
+      end
+
       module InstanceMethods
-        def store(io, context = {})
-          with_pool { |pool| super(io, thread_pool: pool, **context) }
+        def around_store(io, context)
+          with_pool { |pool| super(io, context.update(thread_pool: pool)) }
         end
 
-        def delete(uploaded_file, context = {})
-          with_pool { |pool| super(uploaded_file, thread_pool: pool, **context) }
+        def around_delete(uploaded_file, context)
+          with_pool { |pool| super(uploaded_file, context.update(thread_pool: pool)) }
         end
 
         private

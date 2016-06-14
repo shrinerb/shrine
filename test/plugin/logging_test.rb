@@ -102,8 +102,8 @@ describe "the logging plugin" do
 
   it "works with hooks plugin in the right order" do
     @uploader = uploader do
-      plugin :hooks
       plugin :logging, stream: $out
+      plugin :hooks
     end
 
     @uploader.class.class_eval do
@@ -116,7 +116,7 @@ describe "the logging plugin" do
 
     stdout = capture { @uploader.upload(fakeio) }
     assert_match "before logging", stdout.lines[0]
-    assert_match "STORE",          stdout.lines[1]
-    assert_match "after logging",  stdout.lines[2]
+    assert_match "after logging",  stdout.lines[1]
+    assert_match "STORE",          stdout.lines[2]
   end
 end

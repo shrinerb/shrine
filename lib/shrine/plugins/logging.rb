@@ -82,19 +82,19 @@ class Shrine
       end
 
       module InstanceMethods
-        def around_process(io, context)
-          log("process", io, context) { super }
-        end
-
-        def around_store(io, context)
+        def store(io, context = {})
           log("store", io, context) { super }
         end
 
-        def around_delete(io, context)
+        def delete(io, context = {})
           log("delete", io, context) { super }
         end
 
         private
+
+        def processed(io, context = {})
+          log("process", io, context) { super }
+        end
 
         # Collects the data and sends it for logging.
         def log(action, input, context)
