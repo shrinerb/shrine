@@ -45,31 +45,31 @@ class Shrine
           pool.perform
           result
         end
+      end
 
-        class ThreadPool
-          def initialize(size)
-            @size = size
-            @tasks = Queue.new
-          end
+      class ThreadPool
+        def initialize(size)
+          @size = size
+          @tasks = Queue.new
+        end
 
-          def enqueue(&task)
-            @tasks.enq(task)
-          end
+        def enqueue(&task)
+          @tasks.enq(task)
+        end
 
-          def perform
-            threads = @size.times.map { spawn_thread }
-            threads.each(&:join)
-          end
+        def perform
+          threads = @size.times.map { spawn_thread }
+          threads.each(&:join)
+        end
 
-          private
+        private
 
-          def spawn_thread
-            Thread.new do
-              Thread.current.abort_on_exception = true
-              loop do
-                task = @tasks.deq(true) rescue break
-                task.call
-              end
+        def spawn_thread
+          Thread.new do
+            Thread.current.abort_on_exception = true
+            loop do
+              task = @tasks.deq(true) rescue break
+              task.call
             end
           end
         end
