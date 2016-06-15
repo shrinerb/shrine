@@ -75,7 +75,7 @@ class Shrine
     # [presigning]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
     # [aws-sdk]: https://github.com/aws/aws-sdk-ruby
     class S3
-      attr_reader :prefix, :bucket, :s3, :host, :upload_options
+      attr_reader :s3, :bucket, :prefix, :host, :upload_options
 
       # Initializes a storage for uploading to S3.
       #

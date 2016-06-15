@@ -1,13 +1,6 @@
 require "test_helper"
 require "shrine/plugins/sequel"
 require "sequel"
-require "sequel/extensions/pg_json"
-
-db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
-db.create_table :users do
-  primary_key :id
-  column :avatar_data, :text
-end
 
 Sequel.cache_anonymous_models = false
 
@@ -15,10 +8,16 @@ describe Shrine::Plugins::Sequel do
   before do
     @uploader = uploader { plugin :sequel }
 
-    user_class = Object.const_set("User", Sequel::Model(:users))
-    user_class.include @uploader.class[:avatar]
+    db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
+    db.create_table :users do
+      primary_key :id
+      column :avatar_data, :text
+    end
 
-    @user = user_class.new
+    User = Sequel::Model(db[:users])
+    User.include @uploader.class[:avatar]
+
+    @user = User.new
     @attacher = @user.avatar_attacher
   end
 
@@ -183,6 +182,8 @@ describe Shrine::Plugins::Sequel do
   end
 
   it "adds support for Postgres JSON columns" do
+    Sequel.extension :pg_json
+
     @user.class.plugin :serialization, [
       ->(value) { value },
       ->(value) { Sequel::Postgres::JSONBHash.new(JSON.parse(value)) }

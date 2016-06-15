@@ -322,8 +322,11 @@ class Shrine
 
         # Does the actual uploading, calling `#upload` on the storage.
         def copy(io, context)
-          context[:upload_options] = (context[:upload_options] || {}).merge(shrine_metadata: context[:metadata])
-          storage.upload(io, context[:location], context[:upload_options])
+          location = context[:location]
+          metadata = context[:metadata]
+          upload_options = context[:upload_options] || {}
+
+          storage.upload(io, location, shrine_metadata: metadata, **upload_options)
         ensure
           io.close rescue nil
         end

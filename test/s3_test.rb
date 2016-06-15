@@ -6,10 +6,10 @@ require "shrine/storage/linter"
 require "down"
 require "securerandom"
 
-describe Shrine::Storage::S3 do
-  require "dotenv"
-  Dotenv.load!
+require "dotenv"
+Dotenv.load!
 
+describe Shrine::Storage::S3 do
   def s3(**options)
     options[:bucket]            ||= ENV.fetch("S3_BUCKET")
     options[:region]            ||= ENV.fetch("S3_REGION")
@@ -136,4 +136,4 @@ describe Shrine::Storage::S3 do
       assert_equal "http://#{s3.bucket.name}.foo.com", presign.url
     end
   end
-end unless ENV["CI"]
+end

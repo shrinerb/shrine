@@ -7,17 +7,30 @@ class Shrine
     #
     # To add a module to a core class, call the appropriate method:
     #
-    #     Shrine.attachment_module CustomAttachmentMethods
-    #     Shrine.attacher_module CustomAttacherMethods
-    #     Shrine.file_module CustomFileMethods
+    #     attachment_module CustomAttachmentMethods
+    #     attacher_module CustomAttacherMethods
+    #     file_module CustomFileMethods
     #
     # Alternatively you can pass in a block (which internally creates a module):
     #
-    #     Shrine.file_module do
-    #       def base64
-    #         Base64.encode64(read)
+    #     attachment_module do
+    #       def included(model)
+    #         super
+    #
+    #         module_eval <<-RUBY, __FILE__, __LINE + 1
+    #           def #{@name}_size(version)
+    #             if #{@name}.is_a?(Hash)
+    #               #{@name}[version].size
+    #             else
+    #               #{@name}.size if #{@name}
+    #             end
+    #           end
+    #         RUBY
     #       end
     #     end
+    #
+    # The above defines an additional `#<attachment>_size` method on the
+    # attachment module, which is what is included in your model.
     module ModuleInclude
       module ClassMethods
         def attachment_module(mod = nil, &block)

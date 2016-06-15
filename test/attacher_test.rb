@@ -66,6 +66,11 @@ describe Shrine::Attacher do
       assert_equal @attacher.get.to_json, @attacher.record.avatar_data
     end
 
+    it "puts attacher into attached state" do
+      @attacher.assign(fakeio)
+      assert @attacher.attached?
+    end
+
     it "nullifies the attachment if nil is passed in" do
       @attacher.assign(fakeio)
       @attacher.set(nil)

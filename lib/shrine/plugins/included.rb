@@ -1,16 +1,12 @@
 class Shrine
   module Plugins
     # The included plugin allows you to hook up to the `.included` hook of the
-    # attachment module, and do additional action on the model which includes
+    # attachment module, and call additional methods on the model which includes
     # it.
     #
     #     plugin :included do |name|
-    #       define_method("#{name}_width") do
-    #         send(name).width if send(name)
-    #       end
-    #
-    #       define_method("#{name}_height") do
-    #         send(name).height if send(name)
+    #       before_save do
+    #         # ...
     #       end
     #     end
     #
