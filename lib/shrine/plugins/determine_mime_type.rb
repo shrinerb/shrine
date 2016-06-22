@@ -50,12 +50,12 @@ class Shrine
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
     module DetermineMimeType
       def self.configure(uploader, opts = {})
-        uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, :file)
+        uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:mime_type_analyzer, :file))
+        uploader.opts[:mime_type_magic_header] = opts.fetch(:magic_header, uploader.opts.fetch(:mime_type_magic_header, MAGIC_NUMBER))
       end
 
-      # How many bytes we have to read to get the magic file header which
-      # contains the MIME type of the file.
-      MAGIC_NUMBER = 1024
+      # How many bytes we need to read in order to determine the MIME type.
+      MAGIC_NUMBER = 256 * 1024
 
       module InstanceMethods
         private
@@ -83,12 +83,8 @@ class Shrine
         def _extract_mime_type_with_file(io)
           require "open3"
 
-          cmd = ["file", "--mime-type", "--brief", "-"]
-
-          data = io.read(MAGIC_NUMBER)
-          io.rewind
-
-          mime_type, status = Open3.capture2(*cmd, stdin_data: data, binmode: true)
+          mime_type, status = Open3.capture2("file", "--mime-type", "--brief", "-",
+            stdin_data: magic_header(io), binmode: true)
 
           mime_type.strip unless mime_type.empty?
         end
@@ -106,9 +102,7 @@ class Shrine
           require "filemagic"
 
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER))
-
-          io.rewind
+          mime_type = filemagic.buffer(magic_header(io))
           filemagic.close
 
           mime_type
@@ -125,6 +119,12 @@ class Shrine
             mime_type = MIME::Types.of(filename).first
             mime_type.to_s if mime_type
           end
+        end
+
+        def magic_header(io)
+          content = io.read(opts[:mime_type_magic_header])
+          io.rewind
+          content
         end
       end
     end

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Increase magic header length in determine_mime_type and make it configurable (janko-m)
+
 * Execute `file` command in determine_mime_type the same way for files as for general IOs (janko-m)
 
 * Make logging and parallelize plugins work properly when loaded in this order (janko-m)
