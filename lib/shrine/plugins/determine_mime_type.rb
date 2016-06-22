@@ -83,14 +83,12 @@ class Shrine
         def _extract_mime_type_with_file(io)
           require "open3"
 
-          cmd = ["file", "--mime-type", "--brief", "--"]
+          cmd = ["file", "--mime-type", "--brief", "-"]
 
-          if io.respond_to?(:path)
-            mime_type, * = Open3.capture2(*cmd, io.path)
-          else
-            mime_type, * = Open3.capture2(*cmd, "-", stdin_data: io.read(MAGIC_NUMBER), binmode: true)
-            io.rewind
-          end
+          data = io.read(MAGIC_NUMBER)
+          io.rewind
+
+          mime_type, status = Open3.capture2(*cmd, stdin_data: data, binmode: true)
 
           mime_type.strip unless mime_type.empty?
         end

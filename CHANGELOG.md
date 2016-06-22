@@ -1,5 +1,7 @@
 ## HEAD
 
+* Execute `file` command in determine_mime_type the same way for files as for general IOs (janko-m)
+
 * Make logging and parallelize plugins work properly when loaded in this order (janko-m)
 
 * Don't assert arity of IO methods, so that objects like `Rack::Test::UploadedFile` are allowed (janko-m)
