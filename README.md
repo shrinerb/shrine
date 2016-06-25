@@ -12,13 +12,70 @@ explains the motivation behind Shrine.
 - Bugs: [github.com/janko-m/shrine/issues](https://github.com/janko-m/shrine/issues)
 - Help & Discussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
 
-## Installation
+## Quick start
+
+Add Shrine to the Gemfile and write an initializer:
 
 ```rb
 gem "shrine"
 ```
 
-Shrine has been tested on MRI 2.1, MRI 2.2, MRI 2.3 and JRuby.
+```rb
+require "shrine"
+require "shrine/storage/file_system"
+
+Shrine.storages = {
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
+}
+
+Shrine.plugin :sequel # :activerecord
+Shrine.plugin :cached_attachment_data # for forms
+```
+
+Next write a migration to add a column which will hold attachment data, and run
+it:
+
+```rb
+Sequel.migration do                           # class AddImageDataToPhotos < ActiveRecord::Migration
+  change do                                   #   def change
+    add_column :photos, :image_data, :text    #     add_column :photos, :image_data, :text
+  end                                         #   end
+end                                           # end
+```
+
+Now you can create an uploader class for the type of files you want to upload,
+and make your model handle attachments:
+
+```rb
+class ImageUploader < Shrine
+  # plugins and uploading logic
+end
+```
+
+```rb
+class Photo < Sequel::Model # ActiveRecord::Base
+  include ImageUploader[:image]
+end
+```
+
+Finally, you can add the attachment fields to your form:
+
+```erb
+<form action="/photos" method="post" enctype="multipart/form-data">
+  <input name="photo[image]" type="hidden" value="<%= @photo.cached_image_data %>">
+  <input name="photo[image]" type="file">
+</form>
+
+<!-- Rails: -->
+
+<%= form_for @photo do |f| %>
+  <%= f.hidden_field :image, value: @photo.cached_image_data %>
+  <%= f.file_field :image %>
+<% end %>
+```
+
+----------
 
 ## Basics
 
@@ -170,10 +227,10 @@ Sequel and ActiveRecord ORMs. It uses the `<attachment>_data` column for
 storing data for uploaded files, so you'll need to add it in a migration.
 
 ```rb
-add_column :movies, :video_data, :text # or a JSON column
+Shrine.plugin :sequel # :activerecord
 ```
 ```rb
-Shrine.plugin :sequel # or :activerecord
+add_column :movies, :video_data, :text
 ```
 ```rb
 class Movie < Sequel::Model
@@ -533,7 +590,7 @@ See the documentation of the plugin for more details, as well as the
 [Roda](https://github.com/janko-m/shrine-example)/[Rails](https://github.com/erikdahlstrand/shrine-rails-example)
 example app which demonstrates multiple uploads directly to S3.
 
-## Background jobs
+## Backgrounding
 
 Shrine is the first file upload library designed for backgrounding support.
 Moving phases of managing attachments to background jobs is essential for
