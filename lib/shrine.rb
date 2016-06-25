@@ -469,7 +469,8 @@ class Shrine
         # Otherwise it assumes that it's an IO object and caches it.
         def assign(value)
           if value.is_a?(String)
-            assign_cached(value) unless value == "" || value == read
+            return if value == "" || value == read || !cache.uploaded?(uploaded_file(value))
+            assign_cached(uploaded_file(value))
           else
             uploaded_file = cache!(value, phase: :cache) if value
             set(uploaded_file)
@@ -593,9 +594,8 @@ class Shrine
         private
 
         # Assigns a cached file (refuses if the file is stored).
-        def assign_cached(value)
-          cached_file = uploaded_file(value)
-          set(cached_file) if cache.uploaded?(cached_file)
+        def assign_cached(cached_file)
+          set(cached_file)
         end
 
         # Sets and saves the uploaded file.
