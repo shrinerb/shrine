@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove `:names` from versions plugin, and deprecate generating versions in :cache phase (janko-m)
+
 * Pass a `Shrine::UploadedFile` in restore_cached_data instead of the raw IO (janko-m)
 
 * Increase magic header length in determine_mime_type and make it configurable (janko-m)

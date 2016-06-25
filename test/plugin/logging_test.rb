@@ -39,7 +39,7 @@ describe Shrine::Plugins::Logging do
   end
 
   it "counts versions" do
-    @uploader.class.plugin :versions, names: [:thumb, :original]
+    @uploader.class.plugin :versions
     @uploader.instance_eval do
       def process(io, context)
         {thumb: StringIO.new, original: StringIO.new}

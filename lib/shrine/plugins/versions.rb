@@ -9,7 +9,7 @@ class Shrine
     #
     #     class ImageUploader < Shrine
     #       include ImageProcessing::MiniMagick
-    #       plugin :versions, names: [:large, :medium, :small]
+    #       plugin :versions
     #
     #       def process(io, context)
     #         if context[:phase] == :store
@@ -77,9 +77,7 @@ class Shrine
     # If you already have some versions processed in the foreground when a
     # background job is kicked off, you can setup explicit URL fallbacks:
     #
-    #     plugin :versions,
-    #       names: [:thumb, :thumb_2x, :large, :large_2x],
-    #       fallbacks: {:thumb_2x => :thumb, :large_2x => :large}
+    #     plugin :versions, fallbacks: {:thumb_2x => :thumb, :large_2x => :large}
     #
     #     # ... (background job is kicked off)
     #
@@ -112,14 +110,15 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
+        warn "The versions Shrine plugin doesn't need the :names option anymore, you can safely remove it." if opts.key?(:names)
+
         uploader.opts[:version_names] = opts.fetch(:names, uploader.opts[:version_names])
         uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
-
-        raise Error, "The :names option is required for versions plugin" if uploader.opts[:version_names].nil?
       end
 
       module ClassMethods
         def version_names
+          warn "Shrine.version_names is deprecated and will be removed in Shrine 3."
           opts[:version_names]
         end
 
@@ -129,14 +128,14 @@ class Shrine
 
         # Checks that the identifier is a registered version.
         def version?(name)
-          version_names.map(&:to_s).include?(name.to_s)
+          warn "Shrine.version? is deprecated and will be removed in Shrine 3."
+          version_names.nil? || version_names.map(&:to_s).include?(name.to_s)
         end
 
         # Converts a hash of data into a hash of versions.
         def uploaded_file(object, &block)
           if (hash = object).is_a?(Hash) && !hash.key?("storage")
             hash.inject({}) do |result, (name, data)|
-              next result if !version?(name)
               result.update(name.to_sym => uploaded_file(data, &block))
             end
           else
@@ -165,7 +164,6 @@ class Shrine
           if (hash = io).is_a?(Hash)
             raise Error, ":location is not applicable to versions" if context.key?(:location)
             hash.inject({}) do |result, (name, version)|
-              raise Error, "unknown version: #{name.inspect}" if !self.class.version?(name)
               result.update(name => _store(version, version: name, **context))
             end
           else
@@ -190,7 +188,6 @@ class Shrine
         def url(version = nil, **options)
           if get.is_a?(Hash)
             if version
-              raise Error, "unknown version: #{version.inspect}" if !shrine_class.version?(version)
               if file = get[version]
                 file.url(**options)
               elsif fallback = shrine_class.version_fallbacks[version]
@@ -208,6 +205,14 @@ class Shrine
               default_url(**options, version: version)
             end
           end
+        end
+
+        private
+
+        def assign_cached(value)
+          cached_file = uploaded_file(value)
+          warn "Generating versions in the :cache phase is deprecated and will be forbidden in Shrine 3." if cached_file.is_a?(Hash) && cache.uploaded?(cached_file)
+          super(cached_file)
         end
       end
     end

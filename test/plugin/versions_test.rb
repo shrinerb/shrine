@@ -3,7 +3,7 @@ require "shrine/plugins/versions"
 
 describe Shrine::Plugins::Versions do
   before do
-    @attacher = attacher { plugin :versions, names: [:thumb, :medium, :large] }
+    @attacher = attacher { plugin :versions }
     @uploader = @attacher.store
   end
 
@@ -56,11 +56,6 @@ describe Shrine::Plugins::Versions do
 
     it "returns nil when a attachment doesn't exist" do
       assert_equal nil, @attacher.url(:thumb)
-    end
-
-    it "fails explicity when version isn't registered" do
-      @attacher.set(thumb: @uploader.upload(fakeio))
-      assert_raises(Shrine::Error) { @attacher.url(:unknown) }
     end
 
     it "doesn't fail if version is registered but missing" do
@@ -118,9 +113,9 @@ describe Shrine::Plugins::Versions do
   end
 
   describe "Attacher" do
-    it "enables assigning uploaded versions" do
-      @attacher.assign({thumb: @attacher.cache.upload(fakeio)}.to_json)
-      assert_kind_of Shrine::UploadedFile, @attacher.get.fetch(:thumb)
+    it "deprecates assigning cached versions" do
+      versions = {thumb: @attacher.cache!(fakeio)}
+      assert_output(nil, /deprecated/) { @attacher.assign(versions.to_json) }
     end
 
     it "destroys versions successfully" do
@@ -141,11 +136,6 @@ describe Shrine::Plugins::Versions do
       @attacher._promote
       assert @attacher.store.uploaded?(@attacher.get[:thumb])
     end
-
-    it "filters the hash to only registered version" do
-      @attacher.set(thumb: @uploader.upload(fakeio), malicious: @uploader.upload(fakeio))
-      assert_equal [:thumb], @attacher.get.keys
-    end
   end
 
   it "still catches invalid IOs" do
@@ -157,12 +147,6 @@ describe Shrine::Plugins::Versions do
   it "doesn't allow :location" do
     assert_raises(Shrine::Error) do
       @uploader.upload({thumb: fakeio}, location: "foobar")
-    end
-  end
-
-  it "requires :names option" do
-    assert_raises(Shrine::Error) do
-      @attacher.shrine_class.plugin :versions, names: nil
     end
   end
 end

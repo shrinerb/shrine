@@ -15,7 +15,7 @@ versions:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :versions, names: [:original, :thumb]
+  plugin :versions
 
   def process(io, context)
     case context[:phase]
@@ -75,7 +75,7 @@ update your processing code to generate it, and deploy it:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :versions, names: [:small, :medium, :new] # we add the ":new" version
+  plugin :versions
 
   def process(io, context)
     case context[:phase]

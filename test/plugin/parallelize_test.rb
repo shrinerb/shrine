@@ -6,7 +6,7 @@ require "stringio"
 describe Shrine::Plugins::Parallelize do
   before do
     @uploader = uploader do
-      plugin :versions, names: [:large, :medium, :small]
+      plugin :versions
       plugin :parallelize
     end
   end

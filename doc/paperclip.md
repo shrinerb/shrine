@@ -56,7 +56,7 @@ require "image_processing/mini_magick" # part of the "image_processing" gem
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
-  plugin :versions, names: [:original, :thumb]
+  plugin :versions
 
   def process(io, context)
     if context[:phase] == :store
