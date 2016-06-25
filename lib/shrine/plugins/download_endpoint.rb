@@ -1,4 +1,5 @@
 require "roda"
+require "down"
 
 class Shrine
   module Plugins
@@ -106,15 +107,17 @@ class Shrine
               response["Content-Disposition"] = "#{disposition}; filename=#{filename.inspect}"
               response["Content-Type"] = Rack::Mime.mime_type(extname)
 
-              stream = get_stream(id)
-              _, content_length = stream.peek
-              response['Content-Length'] = content_length.to_s if content_length
+              io = get_stream_io(id)
+              response['Content-Length'] = io.size.to_s if io.size
 
               chunks = Enumerator.new do |y|
-                loop do
-                  chunk, * = stream.next
-                  y << chunk
+                if io.respond_to?(:each_chunk)
+                  io.each_chunk { |chunk| y.yield(chunk) }
+                else
+                  y.yield io.read(16*1024, buffer ||= "") until io.eof?
                 end
+                io.close
+                io.delete if io.class.name == "Tempfile"
               end
 
               r.halt response.finish_with_body(chunks)
@@ -131,17 +134,14 @@ class Shrine
           shrine_class.find_storage(storage_key)
         end
 
-        def get_stream(id)
+        def get_stream_io(id)
           if storage.respond_to?(:stream)
-            storage.enum_for(:stream, id)
+            warn "Storage#stream is deprecated, in Shrine 3 the download_endpoint plugin will use only Storage#open. You should update your storage library."
+            stream = storage.enum_for(:stream, id)
+            chunks = Enumerator.new { |y| y << Array(stream.next)[0] }
+            Down::ChunkedIO.new(size: Array(stream.peek)[1], chunks: chunks)
           else
-            Enumerator.new do |y|
-              io = storage.open(id)
-              buffer = ""
-              y.yield(io.read(16*1024, buffer), io.size) until io.eof?
-              io.close
-              io.delete if io.class.name == "Tempfile"
-            end
+            storage.open(id)
           end
         end
 

@@ -90,30 +90,6 @@ class Shrine
 end
 ```
 
-## Streaming
-
-If your storage can stream files by yielding chunks, you can add an additional
-`#stream` method (used by the `download_endpoint` plugin):
-
-```rb
-class Shrine
-  module Storage
-    class MyStorage
-      # ...
-
-      def stream(id)
-        # yields chunks of the file
-      end
-
-      # ...
-    end
-  end
-end
-```
-
-You should also yield the total filesize as the second argument, so that
-download_endpoint can set `Content-Length` before it starts streaming.
-
 ## Moving
 
 If your storage can move files, you can add 2 additional methods, and they will

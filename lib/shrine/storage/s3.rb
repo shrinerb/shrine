@@ -133,15 +133,9 @@ class Shrine
         Down.download(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
       end
 
-      # Streams the object from S3, yielding downloaded chunks.
-      def stream(id)
-        object = object(id)
-        object.get { |chunk| yield chunk, object.content_length }
-      end
-
       # Alias for #download.
       def open(id)
-        download(id)
+        Down.open(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
       end
 
       # Returns the contents of the file as a String.
@@ -216,6 +210,17 @@ class Shrine
       def presign(id, **options)
         options = upload_options.merge(options)
         object(id).presigned_post(options)
+      end
+
+      # Catches the deprecated `#stream` method.
+      def method_missing(name, *args)
+        if name == :stream
+          warn "Shrine::Storage::S3#stream is deprecated over calling #each_chunk on S3#open."
+          object = object(*args)
+          object.get { |chunk| yield chunk, object.content_length }
+        else
+          super
+        end
       end
 
       protected

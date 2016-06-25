@@ -19,12 +19,40 @@ describe Shrine::Plugins::DownloadEndpoint do
     it "returns file contents in the response" do
       response = app.get "/store/#{@id}"
       assert_equal "image", response.body_binary
+      assert_equal "5", response.headers["Content-Length"]
     end
 
-    it "returns file contents when storage doesn't support streaming" do
-      @uploader.storage.instance_eval { undef stream }
+    it "returns file contents when opened IO responds to #each_chunk" do
+      @uploader.storage.instance_eval do
+        def open(*)
+          io = super
+          io.instance_eval { def each_chunk; yield read; end }
+          io
+        end
+      end
       response = app.get "/store/#{@id}"
       assert_equal "image", response.body_binary
+      assert_equal "5", response.headers["Content-Length"]
+    end
+
+    it "returns file contents with using #stream" do
+      @uploader.storage.instance_eval do
+        def stream(id)
+          yield read(id), read(id).length
+        end
+      end
+      response = app.get "/store/#{@id}"
+      assert_equal "image", response.body_binary
+      assert_equal "5", response.headers["Content-Length"]
+
+      @uploader.storage.instance_eval do
+        def stream(id)
+          yield read(id)
+        end
+      end
+      response = app.get "/store/#{@id}"
+      assert_equal "image", response.body_binary
+      assert_equal nil, response.headers["Content-Length"]
     end
 
     it "returns the inline content disposition by default" do
@@ -51,25 +79,6 @@ describe Shrine::Plugins::DownloadEndpoint do
       @id = @uploader.upload(fakeio("image")).id
       response = app.get "/store/#{@id}"
       assert_equal "application/octet-stream", response.headers["Content-Type"]
-    end
-
-    it "returns Content-Length" do
-      response = app.get "/store/#{@id}"
-      assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
-
-      @uploader.storage.instance_eval { undef stream }
-      response = app.get "/store/#{@id}"
-      assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
-
-      @uploader.storage.instance_eval { def stream(id); yield read(id); end }
-      response = app.get "/store/#{@id}"
-      refute_includes response.headers.keys, "Content-Length"
-    end
-
-    it "calls #stream on storage only once" do
-      @uploader.storage.instance_eval { def stream(id); raise if @called; @called = true; super; end }
-      response = app.get "/store/#{@id}"
-      assert_equal @uploaded_file.read, response.body_binary
     end
 
     it "refuses storages which are not allowed" do

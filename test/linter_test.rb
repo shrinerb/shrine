@@ -78,28 +78,6 @@ describe Shrine::Storage::Linter do
     end
   end
 
-  describe "stream" do
-    it "tests that chunks are yielded" do
-      @storage.instance_eval { def stream(id); end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "tests that chunks don't sum up to empty content" do
-      @storage.instance_eval { def stream(id); yield ""; end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "tests that yielded content length is a number" do
-      @storage.instance_eval { def stream(id); yield read(id), nil; end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "isn't tested if storage doesn't define it" do
-      @storage.instance_eval { undef stream }
-      @linter.call
-    end
-  end
-
   describe "delete" do
     it "tests that file doesn't exist anymore" do
       @storage.instance_eval { def delete(id); end }

@@ -40,7 +40,6 @@ class Shrine
         lint_read(id)
         lint_exists(id)
         lint_url(id)
-        lint_stream(id) if storage.respond_to?(:stream)
         lint_delete(id)
 
         if storage.respond_to?(:move)
@@ -67,6 +66,7 @@ class Shrine
         opened = storage.open(id)
         error :open, "doesn't return a valid IO object" if !io?(opened)
         error :open, "returns an empty IO object" if opened.read.empty?
+        opened.close
       end
 
       def lint_read(id)
@@ -83,20 +83,6 @@ class Shrine
         # just assert #url exists, it isn't required to return anything
         url = storage.url(id)
         error :url, "should return either nil or a string" if !(url.nil? || url.is_a?(String))
-      end
-
-      def lint_stream(id)
-        streamed = storage.enum_for(:stream, id).to_a
-        chunks = streamed.map { |(chunk, _)| chunk }
-        content_length = Array(streamed[0])[1]
-
-        error :stream, "doesn't yield any chunks" if chunks.empty?
-        error :stream, "yielded chunks sum up to empty content" if chunks.inject("", :+).empty?
-
-        if Array(streamed.first).size == 2
-          error :stream, "yielded content length isn't a number" if !content_length.is_a?(Integer)
-          error :stream, "yielded chunks don't sum up to given content length" if content_length != chunks.inject("", :+).length
-        end
       end
 
       def lint_delete(id)

@@ -25,7 +25,7 @@ column, and tying them to record's lifecycle.
   gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
-  gem.add_dependency "down", ">= 2.2.0"
+  gem.add_dependency "down", ">= 2.3.3"
 
   gem.add_development_dependency "rake", "~> 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"
@@ -34,7 +34,7 @@ column, and tying them to record's lifecycle.
   gem.add_development_dependency "webmock"
   gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "dotenv"
-  gem.add_development_dependency "shrine-memory", "~> 0.2.0"
+  gem.add_development_dependency "shrine-memory", ">= 0.2.1"
 
   gem.add_development_dependency "roda"
   gem.add_development_dependency "mimemagic"
