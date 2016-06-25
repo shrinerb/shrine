@@ -1,5 +1,7 @@
 ## HEAD
 
+* Pass a `Shrine::UploadedFile` in restore_cached_data instead of the raw IO (janko-m)
+
 * Increase magic header length in determine_mime_type and make it configurable (janko-m)
 
 * Execute `file` command in determine_mime_type the same way for files as for general IOs (janko-m)

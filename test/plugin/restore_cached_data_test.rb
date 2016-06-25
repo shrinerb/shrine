@@ -7,10 +7,10 @@ describe Shrine::Plugins::RestoreCachedData do
   end
 
   it "reextracts metadata of set cached files" do
-    cached_file = @attacher.cache.upload(fakeio("image"))
-    cached_file.metadata["size"] = 24354535
+    cached_file = @attacher.cache.upload(fakeio("a" * 1024))
+    cached_file.metadata["size"] = 5
     @attacher.assign(cached_file.to_json)
-    assert_equal 5, @attacher.get.metadata["size"]
+    assert_equal 1024, @attacher.get.metadata["size"]
   end
 
   it "skips extracting if the file is not cached" do

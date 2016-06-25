@@ -682,7 +682,7 @@ class Shrine
 
         # The filesize of the original file.
         def size
-          Integer(metadata["size"]) if metadata["size"]
+          (@io && @io.size) || (metadata["size"] && Integer(metadata["size"]))
         end
 
         # The MIME type of the original file.
