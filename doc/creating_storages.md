@@ -37,11 +37,11 @@ class Shrine
         # deletes the file from the storage
       end
 
-      def url(id, options = {})
+      def url(id, **options)
         # URL to the remote file, accepts options for customizing the URL
       end
 
-      def clear!(confirm = nil)
+      def clear!
         # deletes all the files in the storage
       end
     end
@@ -49,12 +49,19 @@ class Shrine
 end
 ```
 
+## Upload
+
+The job of `Storage#upload` is to upload the given IO object to the storage.
+It's good practice to test the storage with a [fake IO] object which responds
+only to required methods. Some HTTP libraries don't support uploading non-file
+IOs, although for [Faraday] and [REST client] you can work around that.
+
 If your storage doesn't control which id the uploaded file will have, you
-can modify the `id` variable:
+can modify the `id` variable before returning:
 
 ```rb
 def upload(io, id, shrine_metadata: {}, **upload_options)
-  actual_id = do_upload(io, id, metadata)
+  # ...
   id.replace(actual_id)
 end
 ```
@@ -64,12 +71,12 @@ you can modify the metadata hash:
 
 ```rb
 def upload(io, id, shrine_metadata: {}, **upload_options)
-  additional_metadata = do_upload(io, id, metadata)
-  metadata.merge!(additional_metadata)
+  # ...
+  shrine_metadata.merge!(returned_metadata)
 end
 ```
 
-## Updating
+## Update
 
 If your storage supports updating data of existing files (e.g. some metadata),
 the convention is to create an `#update` method:
@@ -90,7 +97,7 @@ class Shrine
 end
 ```
 
-## Moving
+## Move
 
 If your storage can move files, you can add 2 additional methods, and they will
 automatically get used by the `moving` plugin:
@@ -171,3 +178,7 @@ linter = Shrine::Storage::Linter.new(storage, action: :warn)
 Note that using the linter doesn't mean that you shouldn't write any manual
 tests for your storage. There will likely be some edge cases that won't be
 tested by the linter.
+
+[fake IO]: https://github.com/janko-m/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/test/test_helper.rb#L20-L27
+[REST client]: https://github.com/janko-m/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/lib/shrine/storage/cloudinary.rb#L138-L141
+[Faraday]: https://github.com/janko-m/shrine-uploadcare/blob/2038781ace0f54d82fa06cc04c4c2958919208ad/lib/shrine/storage/uploadcare.rb#L140

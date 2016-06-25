@@ -108,7 +108,7 @@ class Shrine
               response["Content-Type"] = Rack::Mime.mime_type(extname)
 
               io = get_stream_io(id)
-              response['Content-Length'] = io.size.to_s if io.size
+              response["Content-Length"] = io.size.to_s if io.size
 
               chunks = Enumerator.new do |y|
                 if io.respond_to?(:each_chunk)
