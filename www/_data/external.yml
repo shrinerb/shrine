@@ -1,63 +1,69 @@
 -
-  title: Blog posts
-  items:
-    -
-      name: Introducing Shrine
-      url: http://twin.github.io/introducing-shrine
-    -
-      name: Asynchronous File Management
-      url: http://twin.github.io/file-uploads-asynchronous-world
-    -
-      name: Rails File Uploading You Can Believe in with Shrine
-      url: http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/
-    -
-      name: Uploading files with Shrine in Hanami
-      url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
+  -
+    title: Blog posts
+    items:
+      -
+        name: Introducing Shrine
+        url: http://twin.github.io/introducing-shrine
+      -
+        name: Asynchronous File Management
+        url: http://twin.github.io/file-uploads-asynchronous-world
+      -
+        name: Rails File Uploading You Can Believe in with Shrine
+        url: http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/
+      -
+        name: Uploading files with Shrine in Hanami
+        url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
 -
-  title: Plugins & Storages
-  items:
-    -
-      name: hanami-shrine
-      url: https://github.com/katafrakt/hanami-shrine
-    -
-      name: shrine-cloudinary
-      url: https://github.com/janko-m/shrine-cloudinary
-    -
-      name: shrine-flickr
-      url: https://github.com/janko-m/shrine-flickr
-    -
-      name: shrine-fog
-      url: https://github.com/janko-m/shrine-fog
-    -
-      name: shrine-gridfs
-      url: https://github.com/janko-m/shrine-gridfs
-    -
-      name: shrine-imgix
-      url: https://github.com/janko-m/shrine-imgix
-    -
-      name: shrine-memory
-      url: https://github.com/janko-m/shrine-memory
-    -
-      name: shrine-mongoid
-      url: https://github.com/janko-m/shrine-mongoid
-    -
-      name: shrine-reform
-      url: https://github.com/janko-m/shrine-reform
-    -
-      name: shrine-sql
-      url: https://github.com/janko-m/shrine-sql
+  -
+    title: Storages
+    items:
+      -
+        name: shrine-cloudinary
+        url: https://github.com/janko-m/shrine-cloudinary
+      -
+        name: shrine-flickr
+        url: https://github.com/janko-m/shrine-flickr
+      -
+        name: shrine-fog
+        url: https://github.com/janko-m/shrine-fog
+      -
+        name: shrine-gridfs
+        url: https://github.com/janko-m/shrine-gridfs
+      -
+        name: shrine-imgix
+        url: https://github.com/janko-m/shrine-imgix
+      -
+        name: shrine-memory
+        url: https://github.com/janko-m/shrine-memory
+      -
+        name: shrine-sql
+        url: https://github.com/janko-m/shrine-sql
+  -
+    title: Plugins
+    items:
+      -
+        name: hanami-shrine
+        url: https://github.com/katafrakt/hanami-shrine
+      -
+        name: shrine-mongoid
+        url: https://github.com/janko-m/shrine-mongoid
+      -
+        name: shrine-reform
+        url: https://github.com/janko-m/shrine-reform
 -
-  title: Projects & Libraries
-  items:
-    -
-      name: Roda example app (official)
-      url: https://github.com/janko-m/shrine-example
-    -
-      name: Rails example app
-      url: https://github.com/erikdahlstrand/shrine-rails-example
-    -
-      name: Hanami example app
-      url: https://github.com/katafrakt/hanami-shrine-example
-    -
-      name: rails_admin_shrine
-      url: https://github.com/iquest/rails_admin_shrine
+  -
+    title: Projects & Libraries
+    items:
+      -
+        name: Roda example app (official)
+        url: https://github.com/janko-m/shrine-example
+      -
+        name: Rails example app
+        url: https://github.com/erikdahlstrand/shrine-rails-example
+      -
+        name: Hanami example app
+        url: https://github.com/katafrakt/hanami-shrine-example
+      -
+        name: rails_admin_shrine
+        url: https://github.com/iquest/rails_admin_shrine

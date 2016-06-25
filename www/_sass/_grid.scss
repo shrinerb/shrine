@@ -8,6 +8,10 @@
   margin-bottom: 1em;
 }
 
+.col h3:not(:first-child) {
+  margin-top: 0.5em;
+}
+
 .row:first-child .col:nth-child(1) {
   @include mq(sm) {
     width: (100%/3);

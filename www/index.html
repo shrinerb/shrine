@@ -83,8 +83,9 @@
       <h2 id="external">External</h2>
 
       <div class="row">
-        {% for section in site.data.external %}
+        {% for sections in site.data.external %}
         <div class="col">
+          {% for section in sections %}
           <h3>{{ section.title }}</h3>
           <ul>
             {% for item in section.items %}
@@ -95,6 +96,7 @@
             </li>
             {% endfor %}
           </ul>
+          {% endfor %}
         </div>
         {% endfor %}
       </div>
