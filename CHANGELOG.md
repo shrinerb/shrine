@@ -1,4 +1,4 @@
-## HEAD
+## 2.1.0 (2016-06-27)
 
 * Remove `:names` from versions plugin, and deprecate generating versions in :cache phase (janko-m)
 
