@@ -39,6 +39,9 @@
       -
         name: shrine-sql
         url: https://github.com/janko-m/shrine-sql
+      -
+        name: shrine-uploadcare
+        url: https://github.com/janko-m/shrine-uploadcare
   -
     title: Plugins
     items:
