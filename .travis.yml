@@ -20,4 +20,4 @@ script: bundle exec rake test
 cache: bundler
 
 env:
-  - "S3=1 RACK_ENV=development"
+  - "RACK_ENV=development"
