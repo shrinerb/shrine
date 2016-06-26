@@ -461,7 +461,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-size-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-size-source'><span class="ruby-comment"># File lib/shrine.rb, line 684</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">size</span>&#x000A;  <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-size-source'><span class="ruby-comment"># File lib/shrine.rb, line 684</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">size</span>&#x000A;  (<span class="ruby-ivar">@io</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">size</span>) <span class="ruby-operator">||</span> (<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-storage'>

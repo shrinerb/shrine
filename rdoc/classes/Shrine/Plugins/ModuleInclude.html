@@ -46,11 +46,14 @@
             
             <p>To add a module to a core class, call the appropriate method:</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">attachment_module</span> <span class="ruby-constant">CustomAttachmentMethods</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">attacher_module</span> <span class="ruby-constant">CustomAttacherMethods</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">file_module</span> <span class="ruby-constant">CustomFileMethods</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-constant">CustomAttachmentMethods</span>&#x000A;<span class="ruby-identifier">attacher_module</span> <span class="ruby-constant">CustomAttacherMethods</span>&#x000A;<span class="ruby-identifier">file_module</span> <span class="ruby-constant">CustomFileMethods</span></pre>
             
             <p>Alternatively you can pass in a block (which internally creates a module):</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">file_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">base64</span>&#x000A;    <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">read</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;      def #{@name}_size(version)&#x000A;        if #{@name}.is_a?(Hash)&#x000A;          #{@name}[version].size&#x000A;        else&#x000A;          #{@name}.size if #{@name}&#x000A;        end&#x000A;      end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-identifier">__LINE</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>The above defines an additional <code>#&lt;attachment&gt;_size</code>
+            method on the attachment module, which is what is included in your model.</p>
           </div>
           <div id='context'>
           </div>

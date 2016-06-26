@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-05-30 08:45:47 +0800</span>
+          <span class='datetime'>2016-06-09 23:45:18 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -62,7 +62,7 @@
             <p>While in Refile you configure attachments by passing options to
             <code>.attachment</code>, in <a href="../../classes/Shrine.html">Shrine</a>
             you define all your uploading logic inside uploaders, and then generate an
-            attacment module with that uploader which is included into the model:</p>
+            attachment module with that uploader which is included into the model:</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_files</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             

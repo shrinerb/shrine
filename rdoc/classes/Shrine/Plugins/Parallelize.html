@@ -53,6 +53,7 @@
             <h3>Public Class</h3>
             <ol>
               <li><a target="docwin" href="#method-c-configure">configure</a></li>
+              <li><a target="docwin" href="#method-c-load_dependencies">load_dependencies</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -61,6 +62,7 @@
             <h2>Classes and Modules</h2>
             <ol>
               <li><a target="docwin" href="Parallelize/InstanceMethods.html">Shrine::Plugins::Parallelize::InstanceMethods</a></li>
+              <li><a target="docwin" href="Parallelize/ThreadPool.html">Shrine::Plugins::Parallelize::ThreadPool</a></li>
             </ol>
           </div>
           <div id='section'>
@@ -80,6 +82,22 @@
                     [show source]
                   </a>
                   <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 14</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:parallelize_threads</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:threads</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:parallelize_threads</span>, <span class="ruby-value">3</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-class' id='method-method-c-load_dependencies'>
+                <a name='method-c-load_dependencies'></a>
+                <div class='synopsis'>
+                  <span class='name'>load_dependencies</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 18</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

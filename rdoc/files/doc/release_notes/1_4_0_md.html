@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-05-30 08:45:47 +0800</span>
+          <span class='datetime'>2016-06-25 18:42:12 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -48,7 +48,7 @@
             processing yet.</p>
             </li></ul>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>,&#x000A;    <span class="ruby-identifier">names</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">thumb</span>, :<span class="ruby-identifier">thumb_2x</span>, :<span class="ruby-identifier">large</span>, :<span class="ruby-identifier">large_2x</span>],&#x000A;    <span class="ruby-identifier">fallbacks</span><span class="ruby-operator">:</span> {:<span class="ruby-identifier">thumb_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">thumb</span>, :<span class="ruby-identifier">large_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">large</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>, <span class="ruby-identifier">fallbacks</span><span class="ruby-operator">:</span> {:<span class="ruby-identifier">thumb_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">thumb</span>, :<span class="ruby-identifier">large_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">large</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <pre class="ruby"><span class="ruby-comment"># ... (background job is working)</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(:<span class="ruby-identifier">thumb_2x</span>) <span class="ruby-comment"># returns :thumb URL until :thumb_2x becomes available</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(:<span class="ruby-identifier">large_2x</span>) <span class="ruby-comment"># returns :large URL until :large_2x becomes available</span></pre>
             <ul><li>

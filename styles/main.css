@@ -479,6 +479,9 @@ label {
 .col {
   margin-bottom: 1em; }
 
+.col h3:not(:first-child) {
+  margin-top: 0.5em; }
+
 @media (min-width: 768px) {
   .row:first-child .col:nth-child(1) {
     width: 33.33333%;

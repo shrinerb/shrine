@@ -40,10 +40,10 @@
           <div id='description'>
             
             <p>The included plugin allows you to hook up to the <code>.included</code>
-            hook of the attachment module, and do additional action on the model which
-            includes it.</p>
+            hook of the attachment module, and call additional methods on the model
+            which includes it.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">included</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">define_method</span>(<span class="ruby-node">&quot;#{name}_width&quot;</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">width</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">define_method</span>(<span class="ruby-node">&quot;#{name}_height&quot;</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">height</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">included</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>The block is evaluated in the context of the model via
             <code>instance_exec</code>. This means you cannot use keywords like
@@ -81,7 +81,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 17</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

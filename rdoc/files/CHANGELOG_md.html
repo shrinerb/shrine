@@ -31,12 +31,36 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-05-30 08:45:47 +0800</span>
+          <span class='datetime'>2016-06-25 18:42:12 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-HEAD">HEAD<span><a href="#label-HEAD">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Remove <code>:names</code> from versions plugin, and deprecate generating
+            versions in :cache phase (janko-m)</p>
+            </li><li>
+            <p>Pass a <code>Shrine::UploadedFile</code> in restore_cached_data instead of
+            the raw IO (janko-m)</p>
+            </li><li>
+            <p>Increase magic header length in determine_mime_type and make it
+            configurable (janko-m)</p>
+            </li><li>
+            <p>Execute <code>file</code> command in determine_mime_type the same way for
+            files as for general IOs (janko-m)</p>
+            </li><li>
+            <p>Make logging and parallelize plugins work properly when loaded in this
+            order (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t assert arity of IO methods, so that objects like
+            <code>Rack::Test::UploadedFile</code> are allowed (janko-m)</p>
+            </li><li>
+            <p>Deprecate <code>#cached_&lt;attachment&gt;_data=</code> over using
+            <code>&lt;attachment&gt;</code> for the hidden field (janko-m)</p>
+            </li></ul>
             
             <h2 id="label-2.0.1+-282016-05-30-29">2.0.1 (2016-05-30)<span><a href="#label-2.0.1+-282016-05-30-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>

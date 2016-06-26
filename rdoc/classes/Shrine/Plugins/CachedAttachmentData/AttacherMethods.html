@@ -63,7 +63,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-read_cached-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-read_cached-source'><span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read_cached</span>&#x000A;  <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-read_cached-source'><span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb, line 36</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read_cached</span>&#x000A;  <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">attached?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
