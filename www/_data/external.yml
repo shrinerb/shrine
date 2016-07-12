@@ -12,6 +12,12 @@
         name: Rails File Uploading You Can Believe in with Shrine
         url: http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/
       -
+        name: Shrine 2.0 Released
+        url: https://twin.github.io/shrine-2-0-released/
+      -
+        name: Shrine meets Transloadit
+        url: https://twin.github.io/shrine-meets-transloadit/
+      -
         name: Uploading files with Shrine in Hanami
         url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
 -
@@ -40,8 +46,14 @@
         name: shrine-sql
         url: https://github.com/janko-m/shrine-sql
       -
+        name: shrine-transloadit
+        url: https://github.com/janko-m/shrine-transloadit
+      -
         name: shrine-uploadcare
         url: https://github.com/janko-m/shrine-uploadcare
+      -
+        name: shrine-url
+        url: https://github.com/janko-m/shrine-url
   -
     title: Plugins
     items:
