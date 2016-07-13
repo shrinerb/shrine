@@ -1,3 +1,7 @@
+## 2.1.1 (2016-07-14)
+
+* Fix `S3#open` throwing a NameError if `net/http` isn't required (janko-m)
+
 ## 2.1.0 (2016-06-27)
 
 * Remove `:names` from versions plugin, and deprecate generating versions in :cache phase (janko-m)
