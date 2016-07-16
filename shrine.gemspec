@@ -40,7 +40,7 @@ column, and tying them to record's lifecycle.
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
-  gem.add_development_dependency "aws-sdk"
+  gem.add_development_dependency "aws-sdk", "~> 2.1"
 
   unless RUBY_ENGINE == "jruby" || ENV["CI"]
     gem.add_development_dependency "ruby-filemagic", "~> 0.7"
