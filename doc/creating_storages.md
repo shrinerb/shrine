@@ -13,7 +13,7 @@ class Shrine
         # initializing logic
       end
 
-      def upload(io, id, shrine_metadata: {}, **upload_options)
+      def upload(io, id, **options)
         # uploads `io` to the location `id`
       end
 
@@ -108,7 +108,7 @@ class Shrine
     class MyStorage
       # ...
 
-      def move(io, id, shrine_metadata: {}, **upload_options)
+      def move(io, id, **upload_options)
         # does the moving of the `io` to the location `id`
       end
 

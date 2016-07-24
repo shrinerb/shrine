@@ -593,7 +593,7 @@ class Shrine
 
         private
 
-        # Assigns a cached file (refuses if the file is stored).
+        # Assigns a cached file.
         def assign_cached(cached_file)
           set(cached_file)
         end
