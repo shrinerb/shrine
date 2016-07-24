@@ -97,18 +97,23 @@ class Shrine
       #     be passed to [`Aws::S3::Object#put`], [`Aws::S3::Object#copy_from`]
       #     and [`Aws::S3::Bucket#presigned_post`].
       #
+      # :multipart_threshold
+      # :   The file size over which the storage will use parallelized
+      #     multipart copy/upload. Default is `15*1024*1024` (15MB).
+      #
       # All other options are forwarded to [`Aws::S3::Client#initialize`].
       #
       # [`Aws::S3::Object#put`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
       # [`Aws::S3::Object#copy_from`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
-      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, **s3_options)
+      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: 15*1024*1024, **s3_options)
         @prefix = prefix
         @s3 = Aws::S3::Resource.new(**s3_options)
         @bucket = @s3.bucket(bucket)
         @host = host
         @upload_options = upload_options
+        @multipart_threshold = multipart_threshold
       end
 
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
@@ -239,13 +244,14 @@ class Shrine
 
       # Copies an existing S3 object to a new location.
       def copy(io, id, **options)
-        options = {multipart_copy: true, content_length: io.size}.update(options) if large?(io)
+        options = {multipart_copy: true, content_length: io.size}.update(options) if multipart?(io)
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
       # Uploads the file to S3.
       def put(io, id, **options)
         if io.respond_to?(:path)
+          options = {multipart_threshold: @multipart_threshold}.update(options)
           object(id).upload_file(io.path, **options)
         else
           object(id).put(body: io, **options)
@@ -259,9 +265,10 @@ class Shrine
         io.storage.access_key_id == access_key_id
       end
 
-      # Amazon requires multipart copy from S3 objects larger than 5 GB.
-      def large?(io)
-        io.size && io.size >= 5*1024*1024*1024 # 5GB
+      # Determines whether multipart upload/copy should be used from
+      # `:multipart_threshold`.
+      def multipart?(io)
+        io.size && io.size >= @multipart_threshold
       end
     end
   end

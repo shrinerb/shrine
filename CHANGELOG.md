@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:multipart_threshold` for when S3 storage should use parallelized multipart copy/upload (janko-m)
+
 * Automatically use optimized multipart S3 upload for files larger than 15MB (janko-m)
 
 * Avoid an additional HEAD request to determine content length in multipart S3 copy (janko-m)
