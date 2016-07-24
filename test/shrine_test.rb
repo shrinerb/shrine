@@ -169,6 +169,11 @@ describe Shrine do
   end
 
   describe "#store" do
+    it "returns instance of correct UploadedFile" do
+      uploaded_file = @uploader.store(fakeio)
+      assert_instance_of @uploader.class::UploadedFile, uploaded_file
+    end
+
     it "uploads the file without processing" do
       @uploader.instance_eval { def process(io, context); FakeIO.new(io.read.reverse); end }
       uploaded_file = @uploader.store(fakeio("original"))
