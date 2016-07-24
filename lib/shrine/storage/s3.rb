@@ -135,7 +135,11 @@ class Shrine
 
       # Downloads the file from S3, and returns a `Tempfile`.
       def download(id)
-        Down.download(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
+        tempfile = Tempfile.new(["s3", File.extname(id)], binmode: true)
+        (object = object(id)).get(response_target: tempfile.path)
+        tempfile.singleton_class.instance_eval { attr_accessor :content_type }
+        tempfile.content_type = object.content_type
+        tempfile.tap(&:open)
       end
 
       # Alias for #download.

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Use aws-sdk in `S3#download`, which will automatically retry failed downloads (janko-m)
+
 * Add `:multipart_threshold` for when S3 storage should use parallelized multipart copy/upload (janko-m)
 
 * Automatically use optimized multipart S3 upload for files larger than 15MB (janko-m)
