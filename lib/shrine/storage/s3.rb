@@ -245,7 +245,11 @@ class Shrine
 
       # Uploads the file to S3.
       def put(io, id, **options)
-        object(id).put(body: io, **options)
+        if io.respond_to?(:path)
+          object(id).upload_file(io.path, **options)
+        else
+          object(id).put(body: io, **options)
+        end
       end
 
       # The file is copyable if it's on S3 and on the same Amazon account.

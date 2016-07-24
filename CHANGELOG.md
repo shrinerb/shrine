@@ -1,5 +1,7 @@
 ## HEAD
 
+* Automatically use optimized multipart S3 upload for files larger than 15MB (janko-m)
+
 * Avoid an additional HEAD request to determine content length in multipart S3 copy (janko-m)
 
 ## 2.1.1 (2016-07-14)
