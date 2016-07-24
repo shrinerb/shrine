@@ -37,6 +37,7 @@ column, and tying them to record's lifecycle.
   gem.add_development_dependency "shrine-memory", ">= 0.2.1"
 
   gem.add_development_dependency "roda"
+  gem.add_development_dependency "rack", "~> 1.6.4"
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
