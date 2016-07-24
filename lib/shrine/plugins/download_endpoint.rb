@@ -110,17 +110,20 @@ class Shrine
               io = get_stream_io(id)
               response["Content-Length"] = io.size.to_s if io.size
 
-              chunks = Enumerator.new do |y|
+              body = Enumerator.new do |y|
                 if io.respond_to?(:each_chunk)
                   io.each_chunk { |chunk| y.yield(chunk) }
                 else
                   y.yield io.read(16*1024, buffer ||= "") until io.eof?
                 end
+              end
+
+              proxy = Rack::BodyProxy.new(body) do
                 io.close
                 io.delete if io.class.name == "Tempfile"
               end
 
-              r.halt response.finish_with_body(chunks)
+              r.halt response.finish_with_body(proxy)
             end
           end
         end
