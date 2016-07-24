@@ -105,7 +105,7 @@ var image = {
   }
 }
 
-$('input[type=file]').prev().value(JSON.stringify(image))
+$('input[type=file]').prev().val(JSON.stringify(image))
 ```
 
 It's generally a good idea to disable the submit button until the file is
