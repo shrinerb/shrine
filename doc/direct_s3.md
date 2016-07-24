@@ -170,6 +170,13 @@ load the restore_cached_data plugin.
 plugin :restore_cached_data
 ```
 
+## Clearing cache
+
+Since directly uploaded files will stay in your temporary storage, you will
+want to periodically delete the old ones that were already promoted. Luckily,
+Amazon provides [a built-in solution](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
+for that.
+
 ## Eventual consistency
 
 When uploading objects to Amazon S3, sometimes they may not be available
