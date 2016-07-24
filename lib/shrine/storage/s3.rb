@@ -204,7 +204,12 @@ class Shrine
 
       # Deletes all files from the storage.
       def clear!
-        bucket.object_versions(prefix: prefix).delete
+        objects = bucket.object_versions(prefix: prefix)
+        if objects.respond_to?(:batch_delete!)
+          objects.batch_delete!
+        else
+          objects.delete
+        end
       end
 
       # Returns a signature for direct uploads. Internally it calls
