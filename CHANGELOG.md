@@ -1,3 +1,7 @@
+## HEAD
+
+* Avoid an additional HEAD request to determine content length in multipart S3 copy (janko-m)
+
 ## 2.1.1 (2016-07-14)
 
 * Fix `S3#open` throwing a NameError if `net/http` isn't required (janko-m)

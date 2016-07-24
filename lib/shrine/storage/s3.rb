@@ -239,7 +239,7 @@ class Shrine
 
       # Copies an existing S3 object to a new location.
       def copy(io, id, **options)
-        options.update(multipart_copy: true) if large?(io)
+        options.update(multipart_copy: true, content_length: io.size) if large?(io)
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
