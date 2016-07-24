@@ -77,196 +77,110 @@ Finally, you can add the attachment fields to your form:
 
 ----------
 
-## Basics
+## Attachment
 
-Here's an example showing how basic file upload works in Shrine:
+When we assign an IO-like object to the record, Shrine will upload it to the
+registered `:cache` storage, which acts as a temporary storage, and write the
+location/storage/metadata of the uploaded file to a single `<attachment>_data`
+column:
 
 ```rb
-require "shrine"
-require "shrine/storage/file_system"
+photo = Photo.new
+photo.image = File.open("waterfall.jpg")
+photo.image_data #=> '{"storage":"cache","id":"9260ea09d8effd.jpg","metadata":{...}}'
 
-Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
-
-uploader = Shrine.new(:file_system)
-
-uploaded_file = uploader.upload(File.open("movie.mp4"))
-uploaded_file      #=> #<Shrine::UploadedFile>
-uploaded_file.data #=>
-# {
-#   "storage"  => "file_system",
-#   "id"       => "9260ea09d8effd.mp4",
-#   "metadata" => {...},
-# }
+photo.image      #=> #<Shrine::UploadedFile>
+photo.image_url  #=> "/uploads/cache/9260ea09d8effd.jpg"
 ```
 
-Let's see what's going on here:
+The Shrine attachment module added the following methods to the `Photo` model:
 
-First we registered the storage we want to use under a name. Storages are plain
-Ruby classes which encapsulate file management on a particular service. We can
-then instantiate `Shrine` as a wrapper around that storage. A call to `upload`
-uploads the given file to the underlying storage.
+* `#image=` – caches the file and saves the result into `image_data`
+* `#image` – returns `Shrine::UploadedFile` instantiated from `image_data`
+* `#image_url` – calls `image.url` if attachment is present, otherwise returns nil
+* `#image_attacher` - instance of `Shrine::Attacher` which handles attaching
 
-The argument to `upload` needs to be an IO-like object. So, `File`, `Tempfile`
-and `StringIO` are all valid arguments. The object doesn't have to be an actual
-IO, though, it's enough that it responds to these 5 methods: `#read(*args)`,
+In addition to assigning new files, you can also assign already uploaded files:
+
+```rb
+photo.image = '{"storage":"cache","id":"9260ea09d8effd.jpg","metadata":{...}}'
+```
+
+This allows Shrine to retain uploaded files in case of validation errors, and
+handle [direct uploads], via the hidden form field.
+
+The ORM plugin that we loaded will upload the attachment to permanent storage
+(`:store`) when the record is saved, and delete the attachment when record
+is destroyed:
+
+```rb
+photo.image = File.open("waterfall.jpg")
+photo.image_url #=> "/uploads/cache/0sdfllasfi842.jpg"
+
+photo.save
+photo.image_url #=> "/uploads/store/l02kladf8jlda.jpg"
+
+photo.destroy
+photo.image.exists? #=> false
+```
+
+In these examples we used `image` as the name of the attachment, but we can
+create attachment modules for any kind of attachments:
+
+```rb
+class VideoUploader < Shrine
+  # video attachment logic
+end
+
+class Movie < Sequel::Model
+  include VideoUploader[:video] # uses "video_data" column
+end
+```
+
+## Uploader
+
+"Uploaders" are subclasses of `Shrine`, and this is where we define all our
+attachment logic. Uploaders act as a wrappers around a storage, delegating all
+service-specific logic to the storage. They don't know anything about models
+and are stateless; they are only in charge of uploading, processing and
+deleting files.
+
+```rb
+uploader = DocumentUploader.new(:store)
+uploaded_file = uploader.upload(File.open("resume.pdf"))
+uploaded_file #=> #<Shrine::UploadedFile>
+uploaded_file.to_json #=> '{"storage":"store","id":"0sdfllasfi842.pdf","metadata":{...}}'
+```
+
+Shrine requires the input for uploading to be an IO-like object. So, `File`,
+`Tempfile` and `StringIO` instances are all valid inputs. The object doesn't
+have to be an actual IO, it's enough that it responds to: `#read(*args)`,
 `#size`, `#eof?`, `#rewind` and `#close`. `ActionDispatch::Http::UploadedFile`
 is one such object, as well as `Shrine::UploadedFile` itself.
 
 The result of uploading is a `Shrine::UploadedFile` object, which represents
-the uploaded file on the storage. It is defined solely by its data hash. We can
-do a lot with it:
+the uploaded file on the storage, and is defined by its underlying data hash.
 
 ```rb
 uploaded_file.url      #=> "uploads/938kjsdf932.mp4"
 uploaded_file.metadata #=> {...}
-uploaded_file.read     #=> "..."
-uploaded_file.exists?  #=> true
 uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4>
+uploaded_file.exists?  #=> true
 uploaded_file.delete
 # ...
 ```
 
-## Attachment
-
-In web applications we usually want work with files on a higher level. We want
-to treat them as "attachments" to records, by persisting their information to a
-database column and tying their lifecycle to the record. For this Shrine offers
-a higher-level attachment interface.
-
-First we need to register temporary and permanent storage which will be used
-internally:
+This is the same object that is returned when we access the attachment through
+the record:
 
 ```rb
-require "shrine"
-require "shrine/storage/file_system"
-
-Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
-}
+photo.image #=> #<Shrine::UploadedFile>
 ```
-
-The `:cache` and `:store` are only special in terms that they will be used
-automatically (but that can be changed with the default_storage plugin). Next,
-we create an uploader class specific to the type of attachment we want, so that
-later we can have different uploading logic for different attachment types.
-
-```rb
-class ImageUploader < Shrine
-  # your logic for uploading images
-end
-```
-
-Finally, to add an attachment to a model, we generate a named "attachment"
-module using the uploader and include it:
-
-```rb
-class Photo
-  include ImageUploader[:image] # requires "image_data" attribute
-end
-```
-
-Now our model has gained special methods for attaching files:
-
-```rb
-photo = Photo.new
-photo.image = File.open("nature.jpg") # uploads the file to cache
-photo.image      #=> #<Shrine::UploadedFile>
-photo.image_url  #=> "/uploads/cache/9260ea09d8effd.jpg"
-photo.image_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
-```
-
-The attachment module has added `#image`, `#image=` and `#image_url`
-methods to our `Photo`, using regular module inclusion.
-
-```rb
-Shrine[:image] #=> #<Shrine::Attachment(image)>
-Shrine[:image].is_a?(Module) #=> true
-Shrine[:image].instance_methods #=> [:image=, :image, :image_url, :image_attacher]
-
-Shrine[:document] #=> #<Shrine::Attachment(document)>
-Shrine[:document].instance_methods #=> [:document=, :document, :document_url, :document_attacher]
-
-# Expanded forms
-Shrine.attachment(:image)
-Shrine::Attachment.new(:document)
-```
-
-* `#image=` – caches the file and saves JSON data into `image_data`
-* `#image` – returns a `Shrine::UploadedFile` based on data from `image_data`
-* `#image_url` – calls `image.url` if attachment is present, otherwise returns nil.
-
-This is how you should create a form for a `@photo`:
-
-```rb
-Shrine.plugin :cached_attachment_data
-```
-```erb
-<form action="/photos" method="post" enctype="multipart/form-data">
-  <input name="photo[image]" type="hidden" value="<%= @photo.cached_image_data %>">
-  <input name="photo[image]" type="file">
-</form>
-```
-
-The "file" field is for file upload, while the "hidden" field is to make the
-file persist in case of validation errors, and for direct uploads. Note that
-the hidden field should always be *before* the file field.
-
-This code works because `#image=` also accepts an already cached file via its
-JSON representation (which is what `#cached_image_data` returns):
-
-```rb
-photo.image = '{"id":"9jsdf02kd", "storage":"cache", "metadata": {...}}'
-```
-
-### ORM
-
-Even though you can use Shrine's attachment interface with plain Ruby objects,
-it's much more common to use it with an ORM. Shrine ships with plugins for
-Sequel and ActiveRecord ORMs. It uses the `<attachment>_data` column for
-storing data for uploaded files, so you'll need to add it in a migration.
-
-```rb
-Shrine.plugin :sequel # :activerecord
-```
-```rb
-add_column :movies, :video_data, :text
-```
-```rb
-class Movie < Sequel::Model
-  include VideoUploader[:video]
-end
-```
-
-In addition to getters and setters, the ORM plugins add the appropriate
-callbacks:
-
-```rb
-movie.video = File.open("video.mp4")
-movie.video_url #=> "/uploads/cache/0sdfllasfi842.mp4"
-
-movie.save
-movie.video_url #=> "/uploads/store/l02kladf8jlda.mp4"
-
-movie.destroy
-movie.video.exists? #=> false
-```
-
-First the raw file is cached to temporary storage on assignment, then on saving
-the cached file is uploaded to permanent storage. Destroying the record
-destroys the attachment.
-
-*NOTE: The record will first be saved with the cached attachment, and
-afterwards (in an "after commit" hook) updated with the stored attachment. This
-is done so that processing/storing isn't performed inside a database
-transaction. If you're doing processing, there will be a period of time when
-the record will be saved with an unprocessed attachment, so you may need to
-account for that.*
 
 ## Processing
 
-Whenever a file is uploaded, `Shrine#process` is called, and this is where
-you're expected to define your processing.
+Whenever a file is uploaded through the uploader, `Shrine#process` is called,
+and this is where you're expected to define your processing.
 
 ```rb
 class ImageUploader < Shrine
@@ -313,13 +227,17 @@ end
 ```
 
 Since here `io` is a cached `Shrine::UploadedFile`, we need to download it to
-a file, as image_processing only accepts real files.
+a `File`, which is what image_processing recognizes.
 
 ### Versions
 
-If you're uploading images, often you'll want to store various thumbnails
-alongside your original image. You can do that by loading the versions plugin,
-and in `#process` simply returning a Hash of versions:
+Sometimes we want to generate multiple files as the result of processing. If
+we're uploading images, we might want to store various thumbnails alongside the
+original image. If we're uploading videos, we might want to save a screenshot
+or transcode it into different formats.
+
+To save multiple files, we just need to load the versions plugin, and then in
+`#process` we can return a Hash of files:
 
 ```rb
 require "image_processing/mini_magick"
@@ -340,16 +258,17 @@ class ImageUploader < Shrine
 end
 ```
 
-Being able to define processing on instance level provides a lot of flexibility,
-allowing things like choosing the order or adding parallelization. It is
-recommended to use the delete_raw plugin for automatically deleting processed
+Being able to define processing on instance-level like this provides a lot of
+flexibility. For example, you can choose to process files in a certain order
+for maximum performance, and you can also add parallelization. It is
+recommended to load the delete_raw plugin for automatically deleting processed
 files after uploading.
 
-The attachment getter will simply return the processed attachment as a Hash of
-versions:
+Each version will be saved to the attachment column, and the attachment getter
+will simply return a Hash of `Shrine::UploadedFile` objects:
 
 ```rb
-photo.image.class #=> Hash
+photo.image #=> {large: ..., medium: ..., small: ...}
 
 # With the store_dimensions plugin
 photo.image[:large].width  #=> 700
@@ -358,6 +277,38 @@ photo.image[:small].width  #=> 300
 
 # The plugin expands this method to accept version names.
 photo.image_url(:large) #=> "..."
+```
+
+### Custom processing
+
+Your processing tool doesn't have to be in any way designed for Shrine
+([image_processing] is a generic library), you only need to return processed
+files as IO objects, e.g. a `File`. Here's an example of processing a video
+with [ffmpeg]:
+
+```rb
+require "streamio-ffmpeg"
+
+class VideoUploader < Shrine
+  plugin :versions
+  plugin :delete_raw
+
+  def process(io, context)
+    return unless context[:phase] == :store
+
+    mov        = io.download
+    video      = Tempfile.new(["video", ".mp4"], binmode: true)
+    screenshot = Tempfile.new(["screenshot", ".jpg"], binmode: true)
+
+    movie = FFMPEG::Movie.new(mov.path)
+    movie.transcode(video.path)
+    movie.screenshot(screenshot.path)
+
+    mov.delete
+
+    {video: video, screenshot: screenshot}
+  end
+end
 ```
 
 ## Context
@@ -383,16 +334,16 @@ photo.save                           # "store"
 {:name=>:image, :record=>#<Photo:0x007fe1627f1138>, :phase=>:store}
 ```
 
-The `:name` is the name of the attachment, in this case "image". The `:record`
-is the model instance, in this case instance of `Photo`. Lastly, the `:phase`
-is a symbol which indicates the purpose of the upload (by default there are
-only `:cache` and `:store`, but some plugins add more of them).
+The `:record` is the model instance, in this case instance of `Photo`. The
+`:name` is the name of the attachment, in this case "image". Lastly, the
+`:phase` is a symbol which indicates the purpose of the upload (by default
+there are only `:cache` and `:store`, but some plugins add more of them).
 
 Context is useful for doing conditional processing and validation, since we
 have access to the record and attachment name, and it is also used by some
 plugins internally.
 
-## Validations
+## Validation
 
 Validations are registered by calling `Attacher.validate`, and are best done
 with the validation_helpers plugin:
@@ -424,6 +375,7 @@ Shrine automatically extracts and stores general file metadata:
 
 ```rb
 photo = Photo.create(image: image)
+
 photo.image.metadata #=>
 # {
 #   "filename"  => "nature.jpg",
@@ -458,20 +410,26 @@ photo.image.mime_type #=> "text/x-php"
 
 ### Custom metadata
 
-You can also extract and store custom metadata by overriding
+You can also extract and store completely custom metadata by overriding
 `Shrine#extract_metadata`:
 
 ```rb
+require "mini_magick"
+
 class ImageUploader < Shrine
   def extract_metadata(io, context)
-    metadata = super
-    metadata["custom"] = extract_custom(io)
-    metadata
+    metadata.update("exif" => extract_exif(io))
+  end
+
+  private
+
+  def extract_exif(io)
+    MiniMagick::Image.new(io.path).exif
   end
 end
 ```
 
-Note that you should always rewind the `io` after reading from it.
+Note that you should always rewind the `io` if you read from it.
 
 ## Locations
 
@@ -488,7 +446,7 @@ photo = Photo.create(image: File.open("nature.jpg"))
 photo.image.id #=> "photo/34/image/34krtreds2df.jpg"
 ```
 
-If you want to generate locations on your own, simply override
+If you want to generate locations on your own, you can override
 `Shrine#generate_location`:
 
 ```rb
@@ -503,8 +461,8 @@ class ImageUploader < Shrine
 end
 ```
 
-Note that there should always be a random component in the location, for dirty
-tracking to be detected properly (you can use `Shrine#generate_uid`). Inside
+Note that there should always be a random component in the location, so that
+dirty tracking is detected properly; you can use `Shrine#generate_uid`. Inside
 `#generate_location` you can access the extracted metadata through
 `context[:metadata]`.
 
@@ -512,13 +470,14 @@ When using the uploader directly, it's possible to bypass `#generate_location`
 by passing a `:location`:
 
 ```rb
-uploader = Shrine.new(:store)
+uploader = MyUploader.new(:store)
 file = File.open("nature.jpg")
 uploader.upload(file, location: "some/specific/location.jpg")
 ```
 
 ## Storage
 
+"Storages" are objects which know how to manage files on a particular service.
 Other than [FileSystem], Shrine also ships with Amazon [S3] storage:
 
 ```rb
@@ -536,27 +495,22 @@ Shrine.storages[:store] = Shrine::Storage::S3.new(
 ```
 
 ```rb
-movie = Movie.new(video: File.open("video.mp4"))
-movie.video_url #=> "/uploads/cache/j4k343ui12ls9.jpg"
-movie.save
-movie.video_url #=> "https://my-bucket.s3-eu-west-1.amazonaws.com/0943sf8gfk13.mp4"
+photo = Photo.new(image: File.open("image.png"))
+photo.image_url #=> "/uploads/cache/j4k343ui12ls9.png"
+photo.save
+photo.image_url #=> "https://my-bucket.s3.amazonaws.com/0943sf8gfk13.png"
 ```
 
-If you're using S3 both for cache and store, uploading a cached file to store
-will simply do an S3 COPY request instead of downloading and reuploading the
-file. Also, the versions plugin takes advantage of S3's MULTI DELETE
-capabilities, so versions are deleted with a single HTTP request.
-
 See the full documentation for [FileSystem] and [S3] storages. There are also
-many other Shrine storages available, see the [Plugins & Storages] section.
+many other Shrine storages available, see [External] section on the website.
 
-## Upload options
+### Upload options
 
 Many storages accept additional upload options, which you can pass via the
 upload_options plugin, or manually when uploading:
 
 ```rb
-uploader = Shrine.new(:store)
+uploader = MyUploader.new(:store)
 uploader.upload(file, upload_options: {acl: "private"})
 ```
 
@@ -588,7 +542,7 @@ $('[type="file"]').fileupload({
 The plugin also provides a route that can be used for doing direct S3 uploads.
 See the documentation of the plugin for more details, as well as the
 [Roda](https://github.com/janko-m/shrine-example)/[Rails](https://github.com/erikdahlstrand/shrine-rails-example)
-example app which demonstrates multiple uploads directly to S3.
+example apps which demonstrates multiple uploads directly to S3.
 
 ## Backgrounding
 
@@ -640,8 +594,8 @@ libraries are:
 
 ## Clearing cache
 
-You will want to periodically clean your temporary storage. Amazon S3 provides
-[a built-in solution](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html),
+From time to time you'll want to clean your temporary storage from old files.
+Amazon S3 provides [a built-in solution](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html),
 and for FileSystem you can put something like this in your Rake task:
 
 ```rb
@@ -693,5 +647,7 @@ The gem is available as open source under the terms of the [MIT License].
 [introductory blog post]: http://twin.github.io/introducing-shrine/
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
-[Plugins & Storages]: http://shrinerb.com#external
+[External]: http://shrinerb.com#external
 [`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html
+[direct uploads]: #direct-uploads
+[ffmpeg]: https://github.com/streamio/streamio-ffmpeg
