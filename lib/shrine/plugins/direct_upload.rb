@@ -117,18 +117,6 @@ class Shrine
     #
     #     plugin :direct_upload, allowed_storages: [:cache, :store]
     #
-    # ## Authentication
-    #
-    # If you want to authenticate the endpoint, you should be able to do it
-    # easily if your web framework has a good enough router. For example, in
-    # Rails you could add a `constraints` directive:
-    #
-    #     Rails.application.routes.draw do
-    #       constraints(->(r){r.env["warden"].authenticate!}) do
-    #         mount ImageUploader::UploadEndpoint => "/attachments/images"
-    #       end
-    #     end
-    #
     # ## Customizing endpoint
     #
     # Since the endpoint is a [Roda] app, it can be easily customized via
