@@ -47,18 +47,6 @@ describe Shrine::Storage::Linter do
     end
   end
 
-  describe "read" do
-    it "tests that returned object is a string" do
-      @storage.instance_eval { def read(id); []; end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "tests that returned object is not empty" do
-      @storage.instance_eval { def read(id); ""; end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-  end
-
   describe "exists" do
     it "tests that it returns true for uploaded files" do
       @storage.instance_eval { def exists?(id); false; end }
@@ -137,9 +125,9 @@ describe Shrine::Storage::Linter do
   end
 
   it "can print errors as warnings" do
-    @storage.instance_eval { def read(id); ""; end }
+    @storage.instance_eval { def exists?(id); true; end }
     linter = Shrine::Storage::Linter.new(@storage, action: :warn)
-    assert_output(nil, /empty/) { linter.call }
+    assert_output(nil, /file still #exists\?/) { linter.call }
   end
 
   it "accepts an IO factory" do

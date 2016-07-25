@@ -147,11 +147,6 @@ class Shrine
         Down.open(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
       end
 
-      # Returns the contents of the file as a String.
-      def read(id)
-        object(id).get.body.string
-      end
-
       # Returns true file exists on S3.
       def exists?(id)
         object(id).exists?

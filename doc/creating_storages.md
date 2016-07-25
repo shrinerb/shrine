@@ -25,10 +25,6 @@ class Shrine
         # returns the remote file as an IO-like object
       end
 
-      def read(id)
-        # returns the file contents as a string
-      end
-
       def exists?(id)
         # checks if the file exists on the storage
       end

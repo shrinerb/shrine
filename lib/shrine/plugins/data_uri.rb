@@ -103,7 +103,10 @@ class Shrine
 
         # Returns contents of the file base64-encoded.
         def base64
-          content = storage.read(id)
+          io = storage.open(id)
+          content = io.read
+          io.close
+
           Base64.encode64(content).chomp
         end
       end

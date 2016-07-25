@@ -1,5 +1,7 @@
 ## HEAD
 
+* Storage classes don't need to implement the `#read` method anymore (janko-m)
+
 * Use aws-sdk in `S3#download`, which will automatically retry failed downloads (janko-m)
 
 * Add `:multipart_threshold` for when S3 storage should use parallelized multipart copy/upload (janko-m)

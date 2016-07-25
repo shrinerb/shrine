@@ -37,7 +37,6 @@ class Shrine
 
         lint_download(id)
         lint_open(id)
-        lint_read(id)
         lint_exists(id)
         lint_url(id)
         lint_delete(id)
@@ -67,12 +66,6 @@ class Shrine
         error :open, "doesn't return a valid IO object" if !io?(opened)
         error :open, "returns an empty IO object" if opened.read.empty?
         opened.close
-      end
-
-      def lint_read(id)
-        read = storage.read(id)
-        error :read, "doesn't return a string" if !read.is_a?(String)
-        error :read, "returns an empty string" if read.empty?
       end
 
       def lint_exists(id)

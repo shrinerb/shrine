@@ -142,11 +142,6 @@ class Shrine
         path(id).open("rb", &block)
       end
 
-      # Returns the contents of the file as a String.
-      def read(id)
-        path(id).binread
-      end
-
       # Returns true if the file exists on the filesystem.
       def exists?(id)
         path(id).exist?
