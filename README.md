@@ -75,8 +75,6 @@ Finally, you can add the attachment fields to your form:
 <% end %>
 ```
 
-----------
-
 ## Attachment
 
 When we assign an IO-like object to the record, Shrine will upload it to the
