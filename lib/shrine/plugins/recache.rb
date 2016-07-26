@@ -7,7 +7,7 @@ class Shrine
     # in the promotion phase in a background job.
     #
     #     plugin :recache
-    #     plugin :process
+    #     plugin :processing
     #
     #     process(:recache) do |io, context|
     #       # perform cheap processing

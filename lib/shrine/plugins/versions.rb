@@ -9,7 +9,7 @@ class Shrine
     # [image_processing] gem:
     #
     #     include ImageProcessing::MiniMagick
-    #     plugin :process
+    #     plugin :processing
     #
     #     process(:store) do |io, context|
     #       size_700 = resize_to_limit(io.download, 700, 700)

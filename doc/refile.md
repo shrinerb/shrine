@@ -115,7 +115,7 @@ require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
-  plugin :process
+  plugin :processing
 
   process(:store) do |io, context|
     resize_to_fit!(io.download, 700, 700)
@@ -292,7 +292,7 @@ Shrine.plugin :logging
 
 ```rb
 class MyUploader < Shrine
-  plugin :process
+  plugin :processing
 
   process(:store) do |io, context|
     # ...

@@ -1,9 +1,9 @@
 require "test_helper"
-require "shrine/plugins/process"
+require "shrine/plugins/processing"
 
-describe Shrine::Plugins::Process do
+describe Shrine::Plugins::Processing do
   before do
-    @uploader = uploader { plugin :process }
+    @uploader = uploader { plugin :processing }
   end
 
   it "executes defined processing" do

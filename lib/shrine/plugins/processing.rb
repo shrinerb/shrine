@@ -20,7 +20,7 @@ class Shrine
     # where output from previous will be input to next. You can return `nil`
     # in any block to signal that no processing was performed and that the
     # original file should be used.
-    module Process
+    module Processing
       def self.configure(uploader)
         uploader.opts[:processing] = {}
       end
@@ -45,6 +45,6 @@ class Shrine
       end
     end
 
-    register_plugin(:process, Process)
+    register_plugin(:processing, Processing)
   end
 end
