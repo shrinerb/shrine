@@ -20,6 +20,9 @@ class Shrine
     # and this is what is passed to `Shrine#upload`.
     #
     #     plugin :rack_file
+    #
+    # Note that this plugin is not needed in Rails applications, because Rails
+    # already wraps Rack uploaded files in `ActionDispatch::Http::UploadedFile`.
     module RackFile
       module AttacherMethods
         # Checks whether a file is a Rack file hash, and in that case wraps the
