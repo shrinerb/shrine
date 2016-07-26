@@ -46,23 +46,21 @@ uploaded_file.original_filename #=> "nature.jpg"
 
 ### Processing
 
-In Shrine you do processing inside the uploader's `#process` method, and unlike
-Paperclip, the processing is done on instance-level, so you have maximum
-flexibility. In Shrine you generate versions by simply returning a hash, and
-also loading the `versions` plugin to make your uploader recognize versions:
+Unlike Paperclip, in Shrine you define and perform processing on
+instance-level, which gives a lot of flexibility. As the result you can return
+a single file or a hash of versions:
 
 ```rb
 require "image_processing/mini_magick" # part of the "image_processing" gem
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
+  plugin :processing_handler
   plugin :versions
 
-  def process(io, context)
-    if context[:phase] == :store
-      thumb = resize_to_limit(io.download, 300, 300)
-      {original: io, thumb: thumb}
-    end
+  process(:store) do |io, context|
+    thumbnail = resize_to_limit(io.download, 300, 300)
+    {original: io, thumbnail: thumbnail}
   end
 end
 ```

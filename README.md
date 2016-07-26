@@ -177,30 +177,21 @@ photo.image #=> #<Shrine::UploadedFile>
 
 ## Processing
 
-Whenever a file is uploaded through the uploader, `Shrine#process` is called,
-and this is where you're expected to define your processing.
+Shrine allows you to perform file processing in functional style; you receive
+the original file as the input, and return processed files as the output.
+
+Processing can be performed whenever a file is uploaded. On attaching this
+happens twice; first the raw file is cached to temporary storage ("cache"
+phase), then when the record is saved the cached file is "promoted" to
+permanent storage ("store" phase). We generally want to process on the "store"
+phase, because it happens after file validations and can be backgrounded.
 
 ```rb
 class ImageUploader < Shrine
-  def process(io, context)
+  plugin :processing_handler
+
+  process(:store) do |io, context|
     # ...
-  end
-end
-```
-
-Shrine's uploaders are stateless; the `#process` method is simply a function
-which takes an input `io` and returns processed file(s) as output. Since it's
-called for each upload, attaching the file will call it twice, first when
-raw file is cached to temporary storage on assignment, then when cached file
-is uploaded to permanent storage on saving. We usually want to process in the
-latter phase (after file validations):
-
-```rb
-class ImageUploader < Shrine
-  def process(io, context)
-    if context[:phase] == :store
-      # ...
-    end
   end
 end
 ```
@@ -215,11 +206,10 @@ require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
+  plugin :processing_handler
 
-  def process(io, context)
-    if context[:phase] == :store
-      resize_to_limit(io.download, 700, 700)
-    end
+  process(:store) do |io, context|
+    resize_to_limit(io.download, 700, 700)
   end
 end
 ```
@@ -242,16 +232,15 @@ require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
+  plugin :processing_handler
   plugin :versions
 
-  def process(io, context)
-    if context[:phase] == :store
-      size_700 = resize_to_limit(io.download, 700, 700)
-      size_500 = resize_to_limit(size_700,    500, 500)
-      size_300 = resize_to_limit(size_500,    300, 300)
+  process(:store) do |io, context|
+    size_700 = resize_to_limit(io.download, 700, 700)
+    size_500 = resize_to_limit(size_700,    500, 500)
+    size_300 = resize_to_limit(size_500,    300, 300)
 
-      {large: size_700, medium: size_500, small: size_300}
-    end
+    {large: size_700, medium: size_500, small: size_300}
   end
 end
 ```
@@ -281,19 +270,17 @@ photo.image_url(:large) #=> "..."
 
 Your processing tool doesn't have to be in any way designed for Shrine
 ([image_processing] is a generic library), you only need to return processed
-files as IO objects, e.g. a `File`. Here's an example of processing a video
-with [ffmpeg]:
+files as IO objects, e.g. `File` objects. Here's an example of processing a
+video with [ffmpeg]:
 
 ```rb
 require "streamio-ffmpeg"
 
 class VideoUploader < Shrine
+  plugin :processing_handler
   plugin :versions
-  plugin :delete_raw
 
-  def process(io, context)
-    return unless context[:phase] == :store
-
+  process(:store) do |io, context|
     mov        = io.download
     video      = Tempfile.new(["video", ".mp4"], binmode: true)
     screenshot = Tempfile.new(["screenshot", ".jpg"], binmode: true)
@@ -311,35 +298,19 @@ end
 
 ## Context
 
-You may have noticed the `context` variable as the second argument to
-`Shrine#process`. This variable contains information about the context in
-which the file is uploaded.
+You may have noticed the `context` variable floating around as the second
+argument for processing. This variable is present all the way from input file
+to uploaded file, and contains any additional information that can affect the
+upload:
 
-```rb
-class ImageUploader < Shrine
-  def process(io, context)
-    puts context
-  end
-end
-```
-```rb
-photo = Photo.new
-photo.image = File.open("image.jpg") # "cache"
-photo.save                           # "store"
-```
-```
-{:name=>:image, :record=>#<Photo:0x007fe1627f1138>, :phase=>:cache}
-{:name=>:image, :record=>#<Photo:0x007fe1627f1138>, :phase=>:store}
-```
+* `context[:record]` -- the model instance
+* `context[:name]` -- name of the attachment
+* `context[:phase]` -- phase of attaching (`:cache`, `:store`, ...)
+* `context[:version]` -- version name of the current IO
+* ...
 
-The `:record` is the model instance, in this case instance of `Photo`. The
-`:name` is the name of the attachment, in this case "image". Lastly, the
-`:phase` is a symbol which indicates the purpose of the upload (by default
-there are only `:cache` and `:store`, but some plugins add more of them).
-
-Context is useful for doing conditional processing and validation, since we
-have access to the record and attachment name, and it is also used by some
-plugins internally.
+The `context` is useful for doing conditional processing, validation,
+generating location etc, and it is also used by some plugins internally.
 
 ## Validation
 
@@ -571,9 +542,9 @@ class DeleteJob
 end
 ```
 
-The above puts all promoting (moving to store) and deleting of files into a
-background Sidekiq job. Obviously instead of Sidekiq you can use any other
-backgrounding library.
+The above puts all promoting (uploading cached file to permanent storage) and
+deleting of files into a background Sidekiq job. Obviously instead of Sidekiq
+you can use any other backgrounding library.
 
 The main advantages of Shrine's backgrounding support over other file upload
 libraries are:

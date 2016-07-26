@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add processing_handler plugin for simpler and more declarative definition of processing (janko-m)
+
 * Storage classes don't need to implement the `#read` method anymore (janko-m)
 
 * Use aws-sdk in `S3#download`, which will automatically retry failed downloads (janko-m)

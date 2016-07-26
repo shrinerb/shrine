@@ -15,14 +15,11 @@ versions:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :versions
+  # ...
 
-  def process(io, context)
-    case context[:phase]
-    when :store
-      thumb = process_thumb(io.download)
-      {original: io, thumb: thumb}
-    end
+  process(:store) do |io, context|
+    thumbnail = process_thumbnail(io.download)
+    {original: io, thumbnail: thumbnail}
   end
 end
 ```
@@ -75,15 +72,12 @@ update your processing code to generate it, and deploy it:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :versions
+  # ...
 
-  def process(io, context)
-    case context[:phase]
-    when :store
-      # ...
-      new = some_processing(io.download, *args)
-      {small: small, medium: medium, new: new} # we generate the ":new" version
-    end
+  process(:store) do |io, context|
+    # ...
+    new = some_processing(io.download, *args)
+    {small: small, medium: medium, new: new} # we generate the ":new" version
   end
 end
 ```

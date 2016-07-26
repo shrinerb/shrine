@@ -107,20 +107,18 @@ on upload (like CarrierWave and Paperclip). However, there are storages which
 you can use which support on-the-fly processing, like [shrine-cloudinary] or
 [shrine-imgix].
 
-In Shrine you do processing by overriding the `#process` method on your
-uploader (for images you can use the [image_processing] gem):
+Processing is defined and performed on the instance level, and the result of
+can be a single file or a hash of versions:
 
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
+  plugin :processing_handler
 
-  def process(io, context)
-    case context[:phase]
-    when :store
-      resize_to_fit!(io.download, 700, 700)
-    end
+  process(:store) do |io, context|
+    resize_to_fit!(io.download, 700, 700)
   end
 end
 ```
@@ -292,12 +290,11 @@ Shrine.plugin :logging
 
 #### `.processors`, `.processor`
 
-In Shrine processing is done by overriding the `#process` method in your
-uploader:
-
 ```rb
 class MyUploader < Shrine
-  def process(io, context)
+  plugin :processing_handler
+
+  process(:store) do |io, context|
     # ...
   end
 end

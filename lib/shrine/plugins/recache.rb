@@ -6,19 +6,15 @@ class Shrine
     # the user immediately sees them) and other versions you want to generate
     # in the promotion phase in a background job.
     #
-    # The phase will be set to `:recache`:
+    #     plugin :recache
+    #     plugin :processing_handler
     #
-    #     class ImageUploader
-    #       plugin :recache
+    #     process(:recache) do |io, context|
+    #       # perform cheap processing
+    #     end
     #
-    #       def process(io, context)
-    #         case context[:phase]
-    #         when :recache
-    #           # generate cheap versions
-    #         when :store
-    #           # generate more expensive versions
-    #         end
-    #       end
+    #     process(:store) do |io, context|
+    #       # perform more expensive processing
     #     end
     module Recache
       module AttacherMethods

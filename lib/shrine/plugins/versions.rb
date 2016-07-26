@@ -1,25 +1,22 @@
 class Shrine
   module Plugins
-    # The versions plugin enables your uploader to deal with versions. To
-    # generate versions, you simply return a hash of versions in `Shrine#process`.
+    # The versions plugin enables your uploader to deal with versions, by
+    # allowing you to return a Hash of files when processing.
+    #
+    #     plugin :versions
+    #
     # Here is an example of processing image thumbnails using the
     # [image_processing] gem:
     #
-    #     require "image_processing/mini_magick"
+    #     include ImageProcessing::MiniMagick
+    #     plugin :processing_handler
     #
-    #     class ImageUploader < Shrine
-    #       include ImageProcessing::MiniMagick
-    #       plugin :versions
+    #     process(:store) do |io, context|
+    #       size_700 = resize_to_limit(io.download, 700, 700)
+    #       size_500 = resize_to_limit(size_700,    500, 500)
+    #       size_300 = resize_to_limit(size_500,    300, 300)
     #
-    #       def process(io, context)
-    #         if context[:phase] == :store
-    #           size_700 = resize_to_limit(io.download, 700, 700)
-    #           size_500 = resize_to_limit(size_700,    500, 500)
-    #           size_300 = resize_to_limit(size_500,    300, 300)
-    #
-    #           {large: size_700, medium: size_500, small: size_300}
-    #         end
-    #       end
+    #       {large: size_700, medium: size_500, small: size_300}
     #     end
     #
     # Note that if you want to keep the original file, you can forward it as is
@@ -27,11 +24,9 @@ class Shrine
     # an IO-like object), which might avoid downloading depending on the
     # storage:
     #
-    #     def process(io, context)
-    #       if context[:phase] == :store
-    #         # ...
-    #         {original: io, thumb: thumb}
-    #       end
+    #     process(:store) do |io, context|
+    #       # processing thumbnail
+    #       {original: io, thumbnail: thumbnail}
     #     end
     #
     # Now when you access the stored attachment through the model, a hash of

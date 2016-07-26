@@ -41,22 +41,21 @@ own options that are specific to them.
 
 ### Processing
 
-In Shrine processing is done instance-level in the `#process` method, and can
-be specified for each phase. You can return a single processed file or a hash of
-versions (with the `versions` plugin):
+In Shrine processing is defined and performed on the instance-level, which
+gives a lot of flexibility. You can return a single processed file or a hash of
+versions:
 
 ```rb
 require "image_processing/mini_magick" # part of the "image_processing" gem
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
+  plugin :processing_handler
   plugin :versions
 
-  def process(io, context)
-    if context[:phase] == :store
-      thumb = resize_to_limit(io.download, 300, 300)
-      {original: io, thumb: thumb}
-    end
+  process(:store) do |io, context|
+    thumbnail = resize_to_limit(io.download, 300, 300)
+    {original: io, thumbnail: thumbnail}
   end
 end
 ```
@@ -496,23 +495,13 @@ them to validation errors.
 
 #### `validate_processing`, `ignore_processing_errors`
 
-Shrine doesn't offer any built-in ways of rescuing processing errors, because
-it completely depends on how you do your processing. You can easily add your
-own rescuing:
-
-```rb
-class ImageUploader < Shrine
-  def process(io, context)
-    # processing
-  rescue SomeProcessingError
-    # handling
-  end
-end
-```
+In Shrine processing is performed *after* validations, and typically
+asynchronously in a background job, so it is expected that you validate files
+before processing.
 
 #### `enable_processing`
 
-You can just do conditionals inside if `Shrine#process`.
+You can just add conditionals in processing code.
 
 #### `ensure_multipart_form`
 
