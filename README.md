@@ -379,20 +379,16 @@ photo.image.mime_type #=> "text/x-php"
 
 ### Custom metadata
 
-You can also extract and store completely custom metadata by overriding
-`Shrine#extract_metadata`:
+You can also extract and store completely custom metadata with the metadata
+plugin:
 
 ```rb
 require "mini_magick"
 
 class ImageUploader < Shrine
-  def extract_metadata(io, context)
-    metadata.update("exif" => extract_exif(io))
-  end
+  plugin :metadata
 
-  private
-
-  def extract_exif(io)
+  metadata "exif" do |io, context|
     MiniMagick::Image.new(io.path).exif
   end
 end

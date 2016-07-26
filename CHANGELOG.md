@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add metadata plugin for defining additional metadata values to be extracted (janko-m)
+
 * In determine_mime_type plugin raise error when file command wasn't found or errored (janko-m)
 
 * Add processing_handler plugin for simpler and more declarative definition of processing (janko-m)
