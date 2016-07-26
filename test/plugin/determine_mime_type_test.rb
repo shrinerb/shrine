@@ -18,11 +18,26 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", mime_type
     end
 
-    it "returns nil for unidentified MIME types" do
+    it "raises error if file command is not found" do
       require "open3"
-      Open3.stubs(:capture2).returns("", nil)
-      mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
-      assert_equal nil, mime_type
+      Open3.stubs(:capture3).raises(Errno::ENOENT)
+      assert_raises(Shrine::Error) { @uploader.send(:extract_mime_type, image) }
+    end
+
+    it "raises error if file command failed" do
+      require "open3"
+      failed_result = Open3.capture3("file", "--foo")
+      Open3.stubs(:capture3).returns(failed_result)
+      assert_raises(Shrine::Error) { @uploader.send(:extract_mime_type, image) }
+    end
+
+    it "fowards any warnings to stderr" do
+      assert_output(nil, "") { @uploader.send(:extract_mime_type, image) }
+
+      require "open3"
+      stderr_result = Open3.capture3("echo stderr 1>&2")
+      Open3.stubs(:capture3).returns(stderr_result)
+      assert_output(nil, "stderr\n") { @uploader.send(:extract_mime_type, image) }
     end
   end
 

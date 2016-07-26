@@ -83,10 +83,19 @@ class Shrine
         def _extract_mime_type_with_file(io)
           require "open3"
 
-          mime_type, status = Open3.capture2("file", "--mime-type", "--brief", "-",
-            stdin_data: magic_header(io), binmode: true)
+          cmd = ["file", "--mime-type", "--brief", "-"]
+          options = {stdin_data: magic_header(io), binmode: true}
 
-          mime_type.strip unless mime_type.empty?
+          begin
+            stdout, stderr, status = Open3.capture3(*cmd, options)
+          rescue Errno::ENOENT
+            raise Error, "The `file` command-line tool is not installed"
+          end
+
+          raise Error, stderr unless status.success?
+          $stderr.print(stderr)
+
+          stdout.strip
         end
 
         def _extract_mime_type_with_mimemagic(io)
