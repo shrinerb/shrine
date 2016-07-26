@@ -1,14 +1,15 @@
 class Shrine
   module Plugins
-    # The moving plugin makes so that when files are supposed to be uploaded,
-    # they are moved instead. For example, on FileSystem moving is
-    # instantaneous regardless of the filesize, so it's suitable for speeding
-    # up uploads for larger files.
+    # The moving plugin will *move* files to storages instead of copying them,
+    # when the storage supports it. For FileSystem this will issue a `mv`
+    # command, which is instantaneous regardless of the filesize, so in that
+    # case loading this plugin can significantly speed up the attachment
+    # process.
     #
     #     plugin :moving
     #
     # By default files will be moved whenever the storage supports it. If you
-    # want moving to happen only for certain storages, you can set `storages`:
+    # want moving to happen only for certain storages, you can set `:storages`:
     #
     #     plugin :moving, storages: [:cache]
     module Moving
