@@ -227,6 +227,48 @@ describe Shrine::UploadedFile do
     end
   end
 
+  describe "#open" do
+    it "yields to the block" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.open { @called = true }
+      assert @called
+    end
+
+    it "yields the opened IO" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      uploaded_file.open do |io|
+        refute_kind_of Shrine::UploadedFile, io
+        assert_equal "file", io.read
+      end
+    end
+
+    it "makes itself open as well" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.open do |io|
+        assert_equal uploaded_file.to_io, io
+      end
+    end
+
+    it "closes the IO after block finishes" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.open { |io| @io = io }
+      assert_raises(IOError) { @io.read }
+    end
+
+    it "resets the uploaded file ready to be opened again" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      uploaded_file.open { }
+      assert_equal "file", uploaded_file.read
+    end
+
+    it "opens even if it was closed" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      uploaded_file.read
+      uploaded_file.close
+      uploaded_file.open { |io| assert_equal "file", io.read }
+    end
+  end
+
   describe "#download" do
     it "delegates to underlying storage" do
       uploaded_file = @uploader.upload(fakeio)

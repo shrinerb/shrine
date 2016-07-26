@@ -12,10 +12,10 @@ class Shrine
 
         def assign_cached(cached_file)
           uploaded_file(cached_file) do |file|
-            file.to_io # open
-            real_metadata = cache.extract_metadata(file, context)
-            file.metadata.update(real_metadata)
-            file.close
+            file.open do
+              real_metadata = cache.extract_metadata(file, context)
+              file.metadata.update(real_metadata)
+            end
           end
 
           super(cached_file)

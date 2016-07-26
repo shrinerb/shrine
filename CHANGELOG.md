@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `UploadedFile#open` that mimics `File.open` with a block (janko-m)
+
 * In the storage linter don't require `#clear!` to be implemented (janko-m)
 
 * In backgrounding plugin don't require model to have attachment module included (janko-m)

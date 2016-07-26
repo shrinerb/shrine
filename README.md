@@ -163,6 +163,7 @@ the uploaded file on the storage, and is defined by its underlying data hash.
 uploaded_file.url      #=> "uploads/938kjsdf932.mp4"
 uploaded_file.metadata #=> {...}
 uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4>
+uploaded_file.open { |io| ... }
 uploaded_file.exists?  #=> true
 uploaded_file.delete
 # ...

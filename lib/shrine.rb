@@ -691,6 +691,21 @@ class Shrine
         end
         alias content_type mime_type
 
+        # Opens the underlying IO for reading and yields it to the block,
+        # closing it after the block finishes. Use #to_io for opening without a
+        # block.
+        #
+        #     uploaded_file.open do |io|
+        #       # ...
+        #     end
+        def open
+          @io = storage.open(id)
+          yield @io
+        ensure
+          @io.close
+          @io = nil
+        end
+
         # Part of Shrine::UploadedFile's complying to the IO interface.  It
         # delegates to the internally downloaded file.
         def read(*args)
@@ -743,7 +758,7 @@ class Shrine
           storage.delete(id)
         end
 
-        # Added as a Ruby conversion method. It typically downloads the file.
+        # Returns the underlying IO.
         def to_io
           io
         end
