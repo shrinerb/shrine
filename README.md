@@ -188,7 +188,7 @@ phase, because it happens after file validations and can be backgrounded.
 
 ```rb
 class ImageUploader < Shrine
-  plugin :processing_handler
+  plugin :process
 
   process(:store) do |io, context|
     # ...
@@ -206,7 +206,7 @@ require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
-  plugin :processing_handler
+  plugin :process
 
   process(:store) do |io, context|
     resize_to_limit(io.download, 700, 700)
@@ -232,7 +232,7 @@ require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
-  plugin :processing_handler
+  plugin :process
   plugin :versions
 
   process(:store) do |io, context|
@@ -277,7 +277,7 @@ video with [ffmpeg]:
 require "streamio-ffmpeg"
 
 class VideoUploader < Shrine
-  plugin :processing_handler
+  plugin :process
   plugin :versions
 
   process(:store) do |io, context|

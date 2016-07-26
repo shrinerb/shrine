@@ -50,7 +50,7 @@ require "image_processing/mini_magick" # part of the "image_processing" gem
 
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
-  plugin :processing_handler
+  plugin :process
   plugin :versions
 
   process(:store) do |io, context|

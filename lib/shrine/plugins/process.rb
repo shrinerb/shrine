@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The processing_handler plugin allows you to declaratively define
+    # The process plugin allows you to declaratively define
     # file processing for specified phases, allowing you to transform
     #
     #     def process(io, context)
@@ -20,7 +20,7 @@ class Shrine
     # where output from previous will be input to next. You can return `nil`
     # in any block to signal that no processing was performed and that the
     # original file should be used.
-    module ProcessingHandler
+    module Process
       def self.configure(uploader)
         uploader.opts[:processing] = {}
       end
@@ -45,6 +45,6 @@ class Shrine
       end
     end
 
-    register_plugin(:processing_handler, ProcessingHandler)
+    register_plugin(:process, Process)
   end
 end

@@ -56,9 +56,9 @@ Processing:
     path: Parallelize.html
     description: Allows you to parallelize uploads and deletes when using versions.
   -
-    name: processing_handler
-    path: ProcessingHandler.html
-    description: Allows you to specify processing declaratively depending on the phase.
+    name: process
+    path: Process.html
+    description: Allows you to define processing for a specific phase.
   -
     name: recache
     path: Recache.html

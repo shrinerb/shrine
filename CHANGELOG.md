@@ -4,7 +4,7 @@
 
 * In determine_mime_type plugin raise error when file command wasn't found or errored (janko-m)
 
-* Add processing_handler plugin for simpler and more declarative definition of processing (janko-m)
+* Add process plugin for simpler and more declarative definition of processing (janko-m)
 
 * Storage classes don't need to implement the `#read` method anymore (janko-m)
 
