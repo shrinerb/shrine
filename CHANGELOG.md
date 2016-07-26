@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't let the combination for delete_raw and moving plugins trigger any errors (janko-m)
+
 * Add `UploadedFile#open` that mimics `File.open` with a block (janko-m)
 
 * In the storage linter don't require `#clear!` to be implemented (janko-m)

@@ -22,7 +22,7 @@ class Shrine
         def copy(io, context)
           super
           if io.respond_to?(:delete) && !io.is_a?(UploadedFile)
-            io.delete if delete_uploaded?(io)
+            io.delete rescue nil if delete_uploaded?(io)
           end
         end
 
