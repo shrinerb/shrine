@@ -1,5 +1,7 @@
 ## HEAD
 
+* In the storage linter don't require `#clear!` to be implemented (janko-m)
+
 * In backgrounding plugin don't require model to have attachment module included (janko-m)
 
 * Add metadata plugin for defining additional metadata values to be extracted (janko-m)

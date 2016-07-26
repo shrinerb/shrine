@@ -51,8 +51,10 @@ class Shrine
           lint_multi_delete(id)
         end
 
-        storage.upload(io_factory.call, id = "quux")
-        lint_clear(id)
+        if storage.respond_to?(:clear!)
+          storage.upload(io_factory.call, id = "quux")
+          lint_clear(id)
+        end
       end
 
       def lint_download(id)

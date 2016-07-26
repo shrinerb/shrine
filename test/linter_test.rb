@@ -122,6 +122,11 @@ describe Shrine::Storage::Linter do
       @storage.instance_eval { def clear!; end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
+
+    it "doesn't require #clear! to be defined" do
+      @storage.instance_eval { undef clear! }
+      @linter.call
+    end
   end
 
   it "can print errors as warnings" do

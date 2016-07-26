@@ -3,7 +3,8 @@
 ## Essentials
 
 Shrine ships with the FileSystem and S3 storages, but it's also easy to create
-your own. A storage is a class which has at least the following methods:
+your own. A storage is a class which needs to implement to the following
+methods:
 
 ```rb
 class Shrine
@@ -35,10 +36,6 @@ class Shrine
 
       def url(id, **options)
         # URL to the remote file, accepts options for customizing the URL
-      end
-
-      def clear!
-        # deletes all the files in the storage
       end
     end
   end
@@ -139,6 +136,26 @@ class Shrine
   end
 end
 ```
+
+## Clearing
+
+While this method is not used by Shrine, it is good to give users the
+possibility to delete all files in a storage, and the conventional name for
+this method is `#clear!`:
+
+class Shrine
+  module Strorage
+    class MyStorage
+      # ...
+
+      def clear!
+        # deletes all files in the storage
+      end
+
+      # ...
+    end
+  end
+end
 
 ## Linter
 
