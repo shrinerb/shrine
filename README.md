@@ -621,6 +621,13 @@ idea of "backends" (here named "storages"), attachment interface, and direct
 uploads. From Roda it borrows the implementation of an extensible [plugin
 system].
 
+## Similar libraries
+
+* Paperclip
+* CarrierWave
+* Dragonfly
+* Refile
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License].
