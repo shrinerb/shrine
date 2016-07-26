@@ -135,6 +135,18 @@ describe Shrine::Plugins::Backgrounding do
       data = @attacher.class.dump(@attacher)
       assert_equal nil, data["attachment"]
     end
+
+    it "includes the shrine_class" do
+      Object.const_set(:MyUploader, @attacher.shrine_class)
+      data = @attacher.class.dump(@attacher)
+      assert_equal "MyUploader", data["shrine_class"]
+      Object.send(:remove_const, :MyUploader)
+    end
+
+    it "sets shrine_class to nil for anonymous classes" do
+      data = @attacher.class.dump(@attacher)
+      assert_equal nil, data["shrine_class"]
+    end
   end
 
   describe ".load" do
@@ -155,6 +167,14 @@ describe Shrine::Plugins::Backgrounding do
       attacher = @attacher.class.load(data)
       assert_equal @attacher.record.class, attacher.record.class
       assert_equal @attacher.record.id, attacher.record.id
+    end
+
+    it "loads attacher from shrine_class if available" do
+      Object.const_set(:MyUploader, @attacher.shrine_class)
+      data = @attacher.class.dump(@attacher)
+      User.class_eval { undef avatar_attacher }
+      attacher = @attacher.class.load(data)
+      Object.send(:remove_const, :MyUploader)
     end
   end
 end

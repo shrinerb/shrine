@@ -130,8 +130,14 @@ class Shrine
           record = find_record(record_class, record_id) ||
             record_class.new.tap { |object| object.id = record_id }
 
-          name = data["name"]
-          attacher = record.send("#{name}_attacher")
+          name = data["name"].to_sym
+
+          if data["shrine_class"]
+            shrine_class = Object.const_get(data["shrine_class"])
+            attacher = shrine_class::Attacher.new(record, name)
+          else
+            attacher = record.send("#{name}_attacher")
+          end
 
           attacher
         end
@@ -171,9 +177,10 @@ class Shrine
         # suitable for passing as an argument to background jobs.
         def dump
           {
-            "attachment" => (get && get.to_json),
-            "record"     => [record.class.to_s, record.id.to_s],
-            "name"       => name.to_s,
+            "attachment"   => (get && get.to_json),
+            "record"       => [record.class.to_s, record.id.to_s],
+            "name"         => name.to_s,
+            "shrine_class" => shrine_class.name,
           }
         end
       end
