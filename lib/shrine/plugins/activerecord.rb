@@ -46,6 +46,11 @@ class Shrine
     #       end
     #     end
     #
+    # If you don't want callbacks (e.g. you want to use the attacher object
+    # directly), you can turn them off:
+    #
+    #     plugin :activerecord, callbacks: false
+    #
     # ## Validations
     #
     # Additionally, any Shrine validation errors will be added to
@@ -56,32 +61,48 @@ class Shrine
     #       include ImageUploader[:avatar]
     #       validates_presence_of :avatar
     #     end
+    #
+    # If you're doing validation separately from your models, you can turn off
+    # validations for your models:
+    #
+    #     plugin :activerecord, validations: false
     module Activerecord
+      def self.configure(uploader, opts = {})
+        uploader.opts[:activerecord_callbacks] = opts.fetch(:callbacks, uploader.opts.fetch(:activerecord_callbacks, true))
+        uploader.opts[:activerecord_validations] = opts.fetch(:validations, uploader.opts.fetch(:activerecord_validations, true))
+      end
+
       module AttachmentMethods
         def included(model)
           super
 
           return unless model < ::ActiveRecord::Base
 
-          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-            validate do
-              #{@name}_attacher.errors.each do |message|
-                errors.add(:#{@name}, message)
+          if shrine_class.opts[:activerecord_validations]
+            model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              validate do
+                #{@name}_attacher.errors.each do |message|
+                  errors.add(:#{@name}, message)
+                end
               end
-            end
+            RUBY
+          end
 
-            before_save do
-              #{@name}_attacher.save if #{@name}_attacher.attached?
-            end
+          if shrine_class.opts[:activerecord_callbacks]
+            model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+              before_save do
+                #{@name}_attacher.save if #{@name}_attacher.attached?
+              end
 
-            after_commit on: [:create, :update] do
-              #{@name}_attacher.finalize if #{@name}_attacher.attached?
-            end
+              after_commit on: [:create, :update] do
+                #{@name}_attacher.finalize if #{@name}_attacher.attached?
+              end
 
-            after_commit on: [:destroy] do
-              #{@name}_attacher.destroy
-            end
-          RUBY
+              after_commit on: [:destroy] do
+                #{@name}_attacher.destroy
+              end
+            RUBY
+          end
         end
       end
 

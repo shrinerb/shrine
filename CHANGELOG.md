@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add ability to sequel and activerecord plugins to disable callbacks and validations (janko-m)
+
 * The direct_upload endpoint now always includes both upload and presign routes (janko-m)
 
 * Don't let the combination for delete_raw and moving plugins trigger any errors (janko-m)

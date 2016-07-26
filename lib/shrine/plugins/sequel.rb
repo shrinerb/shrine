@@ -41,6 +41,11 @@ class Shrine
     #       end
     #     end
     #
+    # If you don't want callbacks (e.g. you want to use the attacher object
+    # directly), you can turn them off:
+    #
+    #     plugin :sequel, callbacks: false
+    #
     # ## Validations
     #
     # Additionally, any Shrine validation errors will added to Sequel's
@@ -51,36 +56,52 @@ class Shrine
     #       include ImageUploader[:avatar]
     #       validates_presence_of :avatar
     #     end
+    #
+    # If you're doing validation separately from your models, you can turn off
+    # validations for your models:
+    #
+    #     plugin :sequel, validations: false
     module Sequel
+      def self.configure(uploader, opts = {})
+        uploader.opts[:sequel_callbacks] = opts.fetch(:callbacks, uploader.opts.fetch(:sequel_callbacks, true))
+        uploader.opts[:sequel_validations] = opts.fetch(:validations, uploader.opts.fetch(:sequel_validations, true))
+      end
+
       module AttachmentMethods
         def included(model)
           super
 
           return unless model < ::Sequel::Model
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def validate
-              super
-              #{@name}_attacher.errors.each do |message|
-                errors.add(:#{@name}, message)
+          if shrine_class.opts[:sequel_validations]
+            module_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def validate
+                super
+                #{@name}_attacher.errors.each do |message|
+                  errors.add(:#{@name}, message)
+                end
               end
-            end
+            RUBY
+          end
 
-            def before_save
-              super
-              #{@name}_attacher.save if #{@name}_attacher.attached?
-            end
+          if shrine_class.opts[:sequel_callbacks]
+            module_eval <<-RUBY, __FILE__, __LINE__ + 1
+              def before_save
+                super
+                #{@name}_attacher.save if #{@name}_attacher.attached?
+              end
 
-            def after_commit
-              super
-              #{@name}_attacher.finalize if #{@name}_attacher.attached?
-            end
+              def after_commit
+                super
+                #{@name}_attacher.finalize if #{@name}_attacher.attached?
+              end
 
-            def after_destroy_commit
-              super
-              #{@name}_attacher.destroy
-            end
-          RUBY
+              def after_destroy_commit
+                super
+                #{@name}_attacher.destroy
+              end
+            RUBY
+          end
         end
       end
 
