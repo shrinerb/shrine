@@ -80,10 +80,9 @@ class Shrine
     #       }
     #     }
     #
-    # If you want that the generated location includes a file extension, you can
-    # specify the `extension` query parameter:
-    #
-    #     GET /cache/presign?extension=.png
+    # If you want that the generated location includes a file extension, you
+    # can specify the `extension` query parameter: `GET
+    # /:storage/presign?extension=.png`.
     #
     # You can also completely change how the key is generated, with
     # `:presign_location`:
