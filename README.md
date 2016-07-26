@@ -75,6 +75,12 @@ Finally, you can add the attachment fields to your form:
 <% end %>
 ```
 
+Now given a Photo instance you can generate a URL to the image:
+
+```erb
+<img src="<%= @photo.image_url %>">
+```
+
 ## Attachment
 
 When we assign an IO-like object to the record, Shrine will upload it to the
@@ -467,8 +473,13 @@ photo.save
 photo.image_url #=> "https://my-bucket.s3.amazonaws.com/0943sf8gfk13.png"
 ```
 
-See the full documentation for [FileSystem] and [S3] storages. There are also
-many other Shrine storages available, see [External] section on the website.
+Note that any options passed to `image_url` will be forwarded to the underlying
+storage, see the documentation of the storage that you're using for which URL
+options it supports.
+
+You can see the full documentation for [FileSystem] and [S3] storages. There
+are also many other Shrine storages available, see [External] section on the
+website.
 
 ### Upload options
 

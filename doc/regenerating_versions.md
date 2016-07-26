@@ -113,8 +113,9 @@ old_versions = []
 User.paged_each do |user|
   attacher, attachment = user.avatar_attacher, user.avatar
   if attacher.stored? && attachment[:old_version]
-    old_versions << attachment.delete(:old_version)
-    attacher.swap(attachment)
+    old_version = attachment.delete(:old_version)
+    swapped = attacher.swap(attachment)
+    old_versions << old_version if swapped
   end
 end
 

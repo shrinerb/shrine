@@ -84,8 +84,12 @@ class Shrine
     #
     #     user.avatar_url(:medium, download: true)
     #
-    # You can also easily generate default URLs for specific versions, since
-    # the `context` will include the version name:
+    # The `context` will now also include the version name, which you can use
+    # when generating a location or a default URL:
+    #
+    #     def generate_location(io, context)
+    #       "uploads/#{context[:version]}-#{super}"
+    #     end
     #
     #     plugin :default_url do |context|
     #       "/images/defaults/#{context[:version]}.jpg"
