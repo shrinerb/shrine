@@ -10,16 +10,12 @@ methods:
 class Shrine
   module Storage
     class MyStorage
-      def initialize(*args)
-        # initializing logic
-      end
-
       def upload(io, id, **options)
         # uploads `io` to the location `id`
       end
 
-      def download(id)
-        # downloads the file from the storage
+      def url(id, **options)
+        # URL to the remote file, accepts options for customizing the URL
       end
 
       def open(id)
@@ -32,10 +28,6 @@ class Shrine
 
       def delete(id)
         # deletes the file from the storage
-      end
-
-      def url(id, **options)
-        # URL to the remote file, accepts options for customizing the URL
       end
     end
   end
@@ -66,6 +58,28 @@ you can modify the metadata hash:
 def upload(io, id, shrine_metadata: {}, **upload_options)
   # ...
   shrine_metadata.merge!(returned_metadata)
+end
+```
+
+## Download
+
+Shrine automatically downloads the file to a Tempfile using `#open`. However,
+if you would like to implement your own downloading, you can define `#download`
+and Shrine will use that instead:
+
+```rb
+class Shrine
+  module Storage
+    class MyStorage
+      # ...
+
+      def download(id)
+        # download the file to a Tempfile
+      end
+
+      # ...
+    end
+  end
 end
 ```
 

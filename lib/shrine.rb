@@ -706,6 +706,18 @@ class Shrine
           @io = nil
         end
 
+        # Calls `#download` on the storage if it is implemented, otherwise
+        # streams the underlying IO to a Tempfile.
+        def download
+          if storage.respond_to?(:download)
+            storage.download(id)
+          else
+            tempfile = Tempfile.new(["shrine", File.extname(id)], binmode: true)
+            open { |io| IO.copy_stream(io, tempfile.path) }
+            tempfile.tap(&:open)
+          end
+        end
+
         # Part of Shrine::UploadedFile's complying to the IO interface.  It
         # delegates to the internally downloaded file.
         def read(*args)
@@ -741,11 +753,6 @@ class Shrine
         # Calls `#exists?` on the storage, which checks that the file exists.
         def exists?
           storage.exists?(id)
-        end
-
-        # Calls `#download` on the storage, which downloads the file to disk.
-        def download
-          storage.download(id)
         end
 
         # Uploads a new file to this file's location and returns it.
