@@ -482,7 +482,7 @@ uploader.upload(file, upload_options: {acl: "private"})
 
 ## Direct uploads
 
-Shrine comes with a direct_upload plugin which provides a [Roda] endpoint that
+Shrine comes with a [direct_upload] plugin which provides a [Roda] endpoint that
 accepts file uploads. This allows you to asynchronously start caching the file
 the moment the user selects it via AJAX (e.g. using the [jQuery-File-Upload] JS
 library).
@@ -492,12 +492,12 @@ Shrine.plugin :direct_upload # Provides a Roda endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  mount VideoUploader::UploadEndpoint => "/attachments/videos"
+  mount VideoUploader::UploadEndpoint => "/videos"
 end
 ```
 ```js
 $('[type="file"]').fileupload({
-  url:       '/attachments/videos/cache/upload',
+  url:       '/videos/cache/upload',
   paramName: 'file',
   add:       function(e, data) { /* Disable the submit button */ },
   progress:  function(e, data) { /* Add a nice progress bar */ },
@@ -505,10 +505,11 @@ $('[type="file"]').fileupload({
 });
 ```
 
-The plugin also provides a route that can be used for doing direct S3 uploads.
-See the documentation of the plugin for more details, as well as the
+Along with the upload route, this endpoint also includes a route for generating
+presigns for direct uploads to 3rd-party services like Amazon S3. See the
+[direct_upload] plugin documentation for more details, as well as the
 [Roda](https://github.com/janko-m/shrine-example)/[Rails](https://github.com/erikdahlstrand/shrine-rails-example)
-example apps which demonstrates multiple uploads directly to S3.
+example apps which demonstrate multiple uploads directly to S3.
 
 ## Backgrounding
 
@@ -617,3 +618,4 @@ The gem is available as open source under the terms of the [MIT License].
 [`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html
 [direct uploads]: #direct-uploads
 [ffmpeg]: https://github.com/streamio/streamio-ffmpeg
+[direct_upload]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html

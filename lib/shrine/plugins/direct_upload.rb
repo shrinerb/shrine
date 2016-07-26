@@ -1,7 +1,5 @@
 require "roda"
-
 require "json"
-require "securerandom"
 
 class Shrine
   module Plugins
@@ -10,18 +8,33 @@ class Shrine
     #
     #     plugin :direct_upload
     #
-    # This is how you could mount the endpoint in a Rails application:
+    # The Roda endpoint provides two routes:
+    #
+    # * `POST /:storage/upload`
+    # * `GET /:storage/presign`
+    #
+    # This first route is for doing direct uploads to your app, the received
+    # file will be uploaded the underlying storage. The second route is for
+    # doing direct uploads to a 3rd-party service, it will return the URL where
+    # the file can be uploaded to, along with the necessary request parameters.
+    #
+    # This is how you can mount the endpoint in a Rails application:
     #
     #     Rails.application.routes.draw do
-    #       mount ImageUploader::UploadEndpoint => "/attachments/images"
+    #       mount ImageUploader::UploadEndpoint => "/images"
     #     end
     #
-    # You should always mount a new endpoint for each uploader that you want to
-    # enable direct uploads for. This now gives your Ruby application a `POST
-    # /attachments/images/:storage/upload` route, which accepts a "file" query
-    # parameter, and returns the uploaded file in JSON format:
+    # Now your application will get `POST /images/cache/upload` and `GET
+    # /images/cache/presign` routes. Whether you upload files to your app or to
+    # to a 3rd-party service, you'll probably want to use a JavaScript file
+    # upload library like [jQuery-File-Upload] or [Dropzone].
     #
-    #     # POST /attachments/images/cache/upload (file upload)
+    # ## Uploads
+    #
+    # The upload route accepts a "file" query parameter, and returns the
+    # uploaded file in JSON format:
+    #
+    #     # POST /images/cache/upload
     #     {
     #       "id": "43kewit94.jpg",
     #       "storage": "cache",
@@ -32,14 +45,13 @@ class Shrine
     #       }
     #     }
     #
+    # Once you've uploaded the file, you can assign the result to the hidden
+    # attachment field in the form, or immediately send it to the server.
+    #
     # Note that the endpoint uploads the file standalone, without any knowledge
     # of the record, so `context[:record]` and `context[:name]` will be nil.
     #
-    # Once you've uploaded the file, you need to assign the result to the
-    # hidden attachment field in the form. There are many great JavaScript
-    # libraries for file uploads, most popular being [jQuery-File-Upload].
-    #
-    # ## Limiting filesize
+    # ### Limiting filesize
     #
     # It's good idea to limit the maximum filesize of uploaded files, if you
     # set the `:max_size` option, files which are too big will get
@@ -47,22 +59,15 @@ class Shrine
     #
     #     plugin :direct_upload, max_size: 5*1024*1024 # 5 MB
     #
-    # Note that this option doesn't affect presigned uploads, but there you can
-    # limit the filesize with storage options.
+    # Note that this option doesn't affect presigned uploads, there you can
+    # apply filesize limit when generating a presign.
     #
-    # ## Presigning
+    # ## Presigns
     #
-    # An alternative to the direct endpoint is uploading directly to the
-    # underlying storage (currently only supported by Amazon S3). These uploads
-    # usually require extra information from the server, you can enable that
-    # route by passing `presign: true`:
+    # The presign route returns the URL to the 3rd-party service to which you
+    # can upload the file, along with the necessary query parameters.
     #
-    #     plugin :direct_upload, presign: true
-    #
-    # This will add `GET /:storage/presign`, and disable the default `POST
-    # /:storage/:name` (for security reasons) The response for that request
-    # looks something like this:
-    #
+    #     # GET /images/cache/presign
     #     {
     #       "url" => "https://my-bucket.s3-eu-west-1.amazonaws.com",
     #       "fields" => {
@@ -75,39 +80,41 @@ class Shrine
     #       }
     #     }
     #
-    # The `url` is where the file needs to be uploaded to, and `fields` is
-    # additional data that needs to be send on the upload. The `fields.key`
-    # attribute is the location where the file will be uploaded to, it is
-    # generated randomly without an extension, but you can add it:
+    # If you want that the generated location includes a file extension, you can
+    # specify the `extension` query parameter:
     #
     #     GET /cache/presign?extension=.png
     #
-    # You can change how the key is generated with `:presign_location`:
+    # You can also completely change how the key is generated, with
+    # `:presign_location`:
     #
-    #     plugin :direct_upload, presign: true, presign_location: ->(request) { "${filename}" }
+    #     plugin :direct_upload, presign_location: ->(request) { "${filename}" }
     #
-    # If you want additional options to be passed to Storage::S3#presign, you
-    # can pass `:presign_options` with a hash or a block (which gets yielded
-    # Roda's request object):
+    # This presign route internally calls `#presign` on the storage, which also
+    # accepts some service-specific options. You can generate these additional
+    # options per-request with `:presign_options`:
     #
-    #     plugin :direct_upload, presign: true, presign_options: {acl: "public-read"}
+    #     plugin :direct_upload, presign_options: {acl: "public-read"}
     #
-    #     plugin :direct_upload, presign: true, presign_options: ->(request) do
+    #     plugin :direct_upload, presign_options: ->(request) do
     #       options = {}
     #       options[:content_length_range] = 0..(5*1024*1024)       # limit the filesize to 5 MB
     #       options[:content_type] = request.params["content_type"] # use "content_type" query parameter
     #       options
     #     end
     #
+    # Both `:presign_location` and `:presign_options` in their block versions
+    # are yielded an instance of [`Roda::Request`].
+    #
     # See the [Direct Uploads to S3] guide for further instructions on how to
     # hook the presigned uploads to a form.
     #
     # ### Testing presigns
     #
-    # If you want to test presigned uploads, but don't want to pay the
-    # performance cost of using Amazon S3 storage in tests, you can simply swap
-    # out S3 with a storage like FileSystem. The presigns will still get
-    # generated, but will simply point to this endpoint's upload route.
+    # If you want to test presigned uploads, but don't want to use Amazon S3 in
+    # tests for performance reasons, you can simply swap out S3 with a storage
+    # like FileSystem. The presigns will still get generated, but will simply
+    # point to this endpoint's upload route instead.
     #
     # ## Allowed storages
     #
@@ -138,6 +145,7 @@ class Shrine
     #
     # [Roda]: https://github.com/jeremyevans/roda
     # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+    # [Dropzone]: https://github.com/enyo/dropzone
     # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
     # ["accept" attribute]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
     # [`Roda::RodaRequest`]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
@@ -149,7 +157,6 @@ class Shrine
 
       def self.configure(uploader, opts = {})
         uploader.opts[:direct_upload_allowed_storages] = opts.fetch(:allowed_storages, uploader.opts.fetch(:direct_upload_allowed_storages, [:cache]))
-        uploader.opts[:direct_upload_presign] = opts.fetch(:presign, uploader.opts[:direct_upload_presign])
         uploader.opts[:direct_upload_presign_options] = opts.fetch(:presign_options, uploader.opts.fetch(:direct_upload_presign_options, {}))
         uploader.opts[:direct_upload_presign_location] = opts.fetch(:presign_location, uploader.opts[:direct_upload_presign_location])
         uploader.opts[:direct_upload_max_size] = opts.fetch(:max_size, uploader.opts[:direct_upload_max_size])
@@ -189,7 +196,7 @@ class Shrine
               uploaded_file = upload(file, context)
 
               json uploaded_file
-            end unless presign? && presign_storage?
+            end
 
             r.get "presign" do
               location = get_presign_location
@@ -198,7 +205,7 @@ class Shrine
               presign_data = generate_presign(location, options)
 
               json presign_data
-            end if presign?
+            end
           end
         end
 
@@ -221,7 +228,7 @@ class Shrine
             context[:name] = name
           end
 
-          if presign? && !presign_storage?
+          unless presign_storage?
             context[:location] = request.params["key"]
           end
 
@@ -325,10 +332,6 @@ class Shrine
 
         def allowed_storages
           shrine_class.opts[:direct_upload_allowed_storages]
-        end
-
-        def presign?
-          shrine_class.opts[:direct_upload_presign]
         end
 
         def presign_options

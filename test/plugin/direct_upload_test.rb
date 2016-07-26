@@ -79,12 +79,6 @@ describe Shrine::Plugins::DirectUpload do
       @uploader.class.class_eval { def process(io, context); raise; end }
       assert_raises(RuntimeError) { app.post "/cache/upload", multipart: {file: image} }
     end
-
-    it "exists if :presign is set for fake presigns" do
-      @uploader.opts[:direct_upload_presign] = true
-      response = app.post "/cache/upload", multipart: {file: image}
-      assert_equal 200, response.status
-    end
   end
 
   describe "GET /:storage/presign" do
@@ -95,7 +89,6 @@ describe Shrine::Plugins::DirectUpload do
         access_key_id:     "abc123",
         secret_access_key: "xyz123",
       )
-      @uploader.class.plugin :direct_upload, presign: true
     end
 
     it "returns a presign object" do
@@ -128,16 +121,9 @@ describe Shrine::Plugins::DirectUpload do
       response = app.get "/cache/presign"
       assert_equal 200, response.status
     end
-
-    it "doesn't exist if :presign wasn't set" do
-      @uploader.opts[:direct_upload_presign] = false
-      response = app.get "/cache/presign"
-      assert_equal 404, response.status
-    end
   end
 
   it "supports fake presigns" do
-    @uploader.opts[:direct_upload_presign] = true
     response = app.get "/cache/presign"
     assert_equal "http://localhost/cache/upload", response.body_json["url"]
     refute_empty (location = response.body_json["fields"]["key"])

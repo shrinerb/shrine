@@ -49,7 +49,7 @@ Shrine's JSON representation of an uploaded file looks like this:
 The `id`, `storage` fields are optional, while the `metadata` values are
 optional (`metadata.size` is only required to later upload that file to a
 non-S3 storage). After uploading the file to S3, you need to construct this
-JSON and assign it to the hidden attachment field in the form.
+JSON, and then you can assign it to the hidden attachment field in the form.
 
 ## Strategy A (dynamic)
 
@@ -57,22 +57,26 @@ JSON and assign it to the hidden attachment field in the form.
 * Single or multiple file uploads
 * Some JavaScript needed
 
-You can configure the `direct_upload` plugin to expose the presign route, and
-mount the endpoint:
+When the user selects the file, we dynamically request the presign from the
+server, and use this information to start uploading the file to S3. The
+direct_upload plugin gives us this presign route, so we just need to mount it
+in our application:
 
 ```rb
-plugin :direct_upload, presign: true
+plugin :direct_upload
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader::UploadEndpoint => "attachments/image"
+  mount ImageUploader::UploadEndpoint => "/image"
 end
 ```
 
-This gives the endpoint a `GET /:storage/presign` route, which generates a
-presign object and returns it as JSON:
+This gives your application a `GET /images/cache/presign` route, which
+returns the S3 URL which the file should be uploaded to, along with the
+necessary request parameters:
 
 ```rb
+# GET /images/cache/presign
 {
   "url" => "https://my-bucket.s3-eu-west-1.amazonaws.com",
   "fields" => {
@@ -86,22 +90,19 @@ presign object and returns it as JSON:
 }
 ```
 
-When the user attaches a file, you should first request the presign object from
-the direct endpoint, and then upload the file to the given URL with the given
-fields. For uploading to S3 you can use any of the great JavaScript libraries
-out there, [jQuery-File-Upload] for example.
-
-After the upload you create a JSON representation of the uploaded file and
-usually write it to the hidden attachment field in the form:
+For uploading to S3 you'll probably want to use a JavaScript file upload
+library like [jQuery-File-Upload] or [Dropzone]. After the upload you should
+create a JSON representation of the uploaded file, which you can write to
+the hidden attachment field:
 
 ```js
 var image = {
-  id: key.match(/cache\/(.+)/)[1], # we have to remove the prefix part
+  id: key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
   storage: 'cache',
   metadata: {
     size:      data.files[0].size,
-    filename:  data.files[0].name,
-    mime_type: data.files[0].type,
+    filename:  data.files[0].name.match(/[^\/\\]+$/)[0], // IE returns full path
+    mime_type: data.files[0].type
   }
 }
 
@@ -109,7 +110,7 @@ $('input[type=file]').prev().val(JSON.stringify(image))
 ```
 
 It's generally a good idea to disable the submit button until the file is
-uploaded, as well as display a progress bar. See the [example app] for the
+uploaded, as well as display a progress bar. See the [example app] for a
 working implementation of multiple direct S3 uploads.
 
 ## Strategy B (static)
@@ -118,10 +119,11 @@ working implementation of multiple direct S3 uploads.
 * Only for single uploads
 * No JavaScript needed
 
-An alternative to the previous strategy is generating a file upload form that
-submits synchronously to S3, and then redirects back to your application.
-For that you can use `Shrine::Storage::S3#presign`, which returns a
-[`Aws::S3::PresignedPost`] object, which has `#url` and `#fields`:
+An alternative to the previous strategy is generating a file upload form
+immediately when the page is rendered, and then file upload can be either
+asynchronous, or synchronous with redirection. For generating the form we can
+use `Shrine::Storage::S3#presign`, which returns a [`Aws::S3::PresignedPost`]
+object, which has `#url` and `#fields` methods:
 
 ```erb
 <% presign = Shrine.storages[:cache].presign(SecureRandom.hex, success_action_redirect: new_album_url) %>
@@ -135,8 +137,9 @@ For that you can use `Shrine::Storage::S3#presign`, which returns a
 </form>
 ```
 
-After the file is submitted, S3 will redirect to the URL you specified and
-include the object key as a query param:
+If you're doing synchronous upload with redirection, the redirect URL will
+include the object key in the query parameters, which you can use to generate
+Shrine's uploaded file representation:
 
 ```erb
 <%
@@ -152,10 +155,6 @@ include the object key as a query param:
   <input type="submit" value="Save">
 </form>
 ```
-
-Notice that we needed to fetch and assign the size of the uploaded file. This
-is because this hash is later transformed into an IO which requires `#size`
-to be non-nil (and it is read from the metadata field).
 
 ## Metadata
 
@@ -200,6 +199,7 @@ backgrounding library to perform the job with a delay:
 
 ```rb
 Shrine.plugin :backgrounding
+
 Shrine::Attacher.promote do |data|
   PromoteJob.perform_in(60, data) # tells a Sidekiq worker to perform in 1 minute
 end
@@ -207,5 +207,6 @@ end
 
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
 [example app]: https://github.com/janko-m/shrine-example
+[Dropzone]: https://github.com/enyo/dropzone
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
