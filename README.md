@@ -59,7 +59,7 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-Finally, you can add the attachment fields to your form:
+And add attachment fields to the Photo form:
 
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
@@ -75,7 +75,8 @@ Finally, you can add the attachment fields to your form:
 <% end %>
 ```
 
-Now given a Photo instance you can generate a URL to the image:
+Now when a Photo is created with the image attached, you can get the URL to
+the image:
 
 ```erb
 <img src="<%= @photo.image_url %>">
