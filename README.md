@@ -599,6 +599,21 @@ class ImageUploader < Shrine
 end
 ```
 
+## On-the-fly processing
+
+Shrine allows you to define processing that will be performed on upload.
+However, what if want to perform processing on-the-fly, only when the URL is
+requested? Unlike Refile or Dragonfly, Shrine doesn't come with an image server
+built in, instead it expects you to integrate any of the existing generic image
+servers.
+
+Shrine has integrations for many commercial on-the-fly processing services, so
+you can use [shrine-cloudinary], [shrine-imgix] or [shrine-uploadcare].
+
+If you don't want to use a commercial service, [Attache] is a great open-source
+image server. There isn't a Shrine integration written for it yet, but it
+should be fairly easy to write one.
+
 ## Inspiration
 
 Shrine was heavily inspired by [Refile] and [Roda]. From Refile it borrows the
@@ -630,3 +645,7 @@ The gem is available as open source under the terms of the [MIT License].
 [direct uploads]: #direct-uploads
 [ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [direct_upload]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html
+[shrine-cloudinary]: https://github.com/janko-m/shrine-cloudinary
+[shrine-imgix]: https://github.com/janko-m/shrine-imgix
+[shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[Attache]: https://github.com/choonkeat/attache
