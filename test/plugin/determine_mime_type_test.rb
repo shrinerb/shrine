@@ -24,14 +24,6 @@ describe Shrine::Plugins::DetermineMimeType do
       mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
       assert_equal nil, mime_type
     end
-
-    it "handles filenames which start with '-' and look like an option" do
-      FileUtils.cp(image, "-image.jpg")
-      dashed_image = File.open("-image.jpg")
-      mime_type = @uploader.send(:extract_mime_type, dashed_image)
-      assert_equal "image/jpeg", mime_type
-      FileUtils.rm("-image.jpg")
-    end
   end
 
   describe ":filemagic" do
