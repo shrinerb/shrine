@@ -38,15 +38,15 @@ describe Shrine::Plugins::Backgrounding do
       assert_equal "store", @user.reload.avatar.storage_key
     end
 
-    it "passes the correct phase" do
+    it "passes the correct :action" do
       @attacher.class.promote { |data| self.class.promote(data) }
       @user.avatar = fakeio
-      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, phase: :store)
+      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, {action: :store})
       @user.save
 
-      @attacher.class.promote { |data| self.class.promote(data.merge("phase" => "foo")) }
+      @attacher.class.promote { |data| self.class.promote(data.merge("action" => "foo")) }
       @user.avatar = fakeio
-      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, phase: :foo)
+      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, {action: :foo})
       @user.save
     end
 

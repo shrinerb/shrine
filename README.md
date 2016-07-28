@@ -190,9 +190,9 @@ the original file as the input, and return processed files as the output.
 
 Processing can be performed whenever a file is uploaded. On attaching this
 happens twice; first the raw file is cached to temporary storage ("cache"
-phase), then when the record is saved the cached file is "promoted" to
-permanent storage ("store" phase). We generally want to process on the "store"
-phase, because it happens after file validations and can be backgrounded.
+action), then when the record is saved the cached file is "promoted" to
+permanent storage ("store" action). We generally want to process on the "store"
+action, because it happens after file validations and can be backgrounded.
 
 ```rb
 class ImageUploader < Shrine
@@ -312,9 +312,9 @@ to uploaded file, and contains any additional information that can affect the
 upload:
 
 * `context[:record]` -- the model instance
-* `context[:name]` -- name of the attachment
-* `context[:phase]` -- phase of attaching (`:cache`, `:store`, ...)
-* `context[:version]` -- version name of the current IO
+* `context[:name]` -- attachment name on the model
+* `context[:action]` -- identifier for the action being performed (`:cache`, `:store`, `:recache`, `:backup`, ...)
+* `context[:version]` -- version name of the IO in the argument
 * ...
 
 The `context` is useful for doing conditional processing, validation,

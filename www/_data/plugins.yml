@@ -58,7 +58,7 @@ Processing:
   -
     name: processing
     path: Processing.html
-    description: Allows you to define processing performed for a specific phase.
+    description: Allows you to define processing performed for a specific action.
   -
     name: recache
     path: Recache.html

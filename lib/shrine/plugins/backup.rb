@@ -64,12 +64,13 @@ class Shrine
 
         # Upload the stored file to the backup storage.
         def store_backup!(stored_file)
-          backup_store.upload(stored_file, context.merge(phase: :backup))
+          options = _equalize_phase_and_action(action: :backup)
+          backup_store.upload(stored_file, context.merge(options))
         end
 
         # Deleted the stored file from the backup storage.
         def delete_backup!(deleted_file)
-          _delete(backup_file(deleted_file), phase: :backup)
+          _delete(backup_file(deleted_file), action: :backup)
         end
 
         def backup_store
@@ -90,7 +91,7 @@ class Shrine
 
         # We preserve the location when uploading from store to backup.
         def get_location(io, context)
-          if context[:phase] == :backup
+          if context[:action] == :backup
             io.id
           else
             super

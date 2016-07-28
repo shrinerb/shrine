@@ -20,12 +20,12 @@ Shrine.plugin :delete_promoted
 
 User.paged_each do |user|
   attacher = user.avatar_attacher
-  attacher.promote(phase: :migrate) if attacher.stored?
-  # use `attacher._promote(phase: :migrate)` if you want promoting to be backgrounded
+  attacher.promote(action: :migrate) if attacher.stored?
+  # use `attacher._promote(action: :migrate)` if you want promoting to be backgrounded
 end
 ```
 
-The `:phase` is not mandatory, it's just for better introspection when
+The `:action` is not mandatory, it's just for better introspection when
 monitoring background jobs and logs.
 
 Now all your existing attachments should be happily living on new locations.

@@ -24,7 +24,7 @@ describe Shrine::Attacher do
 
     it "passes context hash on caching" do
       io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, phase: :cache}
+      context = {name: @attacher.name, record: @attacher.record, action: :cache, phase: :cache}
       @attacher.cache.expects(:upload).with(io, context)
       @attacher.assign(io)
     end
@@ -152,10 +152,10 @@ describe Shrine::Attacher do
 
     it "passes context hash on storing" do
       io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, phase: :foo}
+      context = {name: @attacher.name, record: @attacher.record, action: :foo, phase: :foo}
       @attacher.assign(io)
       @attacher.store.expects(:upload).with(@attacher.get, context).returns(@attacher.get)
-      @attacher.promote(@attacher.get, phase: :foo)
+      @attacher.promote(@attacher.get, action: :foo)
     end
 
     it "returns the promoted file" do
@@ -186,7 +186,7 @@ describe Shrine::Attacher do
     end
 
     it "passes context hash to delete" do
-      context = {name: @attacher.name, record: @attacher.record, phase: :replace}
+      context = {name: @attacher.name, record: @attacher.record, action: :replace, phase: :replace}
       @attacher.set(@attacher.store.upload(fakeio))
       @attacher.store.expects(:delete).with(@attacher.get, context)
       @attacher.set(nil)
@@ -213,7 +213,7 @@ describe Shrine::Attacher do
     end
 
     it "passes context hash to delete" do
-      context = {name: @attacher.name, record: @attacher.record, phase: :destroy}
+      context = {name: @attacher.name, record: @attacher.record, action: :destroy, phase: :destroy}
       @attacher.set(@attacher.store.upload(fakeio))
       @attacher.store.expects(:delete).with(@attacher.get, context)
       @attacher.destroy

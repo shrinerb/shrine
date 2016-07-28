@@ -20,7 +20,7 @@ class Shrine
       module AttacherMethods
         def save
           if get && cache.uploaded?(get)
-            _set cache!(get, phase: :recache)
+            _set cache!(get, action: :recache)
           end
           super
         end

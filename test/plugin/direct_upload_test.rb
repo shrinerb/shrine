@@ -24,10 +24,10 @@ describe Shrine::Plugins::DirectUpload do
       assert @uploader.storage.exists?(response.body_json["id"])
     end
 
-    it "adds the :phase parameter to context" do
-      @uploader.class.class_eval { def extract_metadata(io, context); {"phase" => context[:phase]}; end }
+    it "adds the :action parameter to context" do
+      @uploader.class.class_eval { def extract_metadata(io, context); {"action" => context[:action]}; end }
       response = app.post "/cache/upload", multipart: {file: image}
-      assert_equal "cache", response.body_json["metadata"]["phase"]
+      assert_equal "cache", response.body_json["metadata"]["action"]
     end
 
     it "assigns metadata" do

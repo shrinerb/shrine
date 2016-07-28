@@ -220,7 +220,7 @@ class Shrine
 
         # Retrieves the context for the upload.
         def get_context(name)
-          context = {phase: :cache}
+          context = {action: :cache, phase: :cache}
 
           if name != "upload"
             warn "The \"POST /:storage/:name\" route of the direct_upload Shrine plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead."

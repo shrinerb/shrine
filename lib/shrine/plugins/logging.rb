@@ -102,7 +102,7 @@ class Shrine
 
           _log(
             action:       action,
-            phase:        context[:phase],
+            phase:        context[:action],
             uploader:     self.class,
             attachment:   context[:name],
             record_class: (context[:record].class if context[:record]),

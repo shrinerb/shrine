@@ -10,7 +10,7 @@ describe Shrine::Plugins::Logging do
 
   before do
     @uploader = uploader { plugin :logging, stream: StringIO.new }
-    @context = {name: :avatar, phase: :store}
+    @context = {name: :avatar, action: :store}
     @context[:record] = Object.const_set("User", Struct.new(:id)).new(16)
   end
 

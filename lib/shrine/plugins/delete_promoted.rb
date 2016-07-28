@@ -10,7 +10,7 @@ class Shrine
       module AttacherMethods
         def promote(uploaded_file = get, **options)
           result = super
-          _delete(uploaded_file, phase: :promote)
+          _delete(uploaded_file, action: :promote)
           result
         end
       end

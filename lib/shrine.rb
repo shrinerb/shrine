@@ -209,13 +209,11 @@ class Shrine
 
         # User is expected to perform processing inside of this method, and
         # return the processed files. Returning nil signals that no proccessing
-        # has been done and that the original file should be used.  When used
-        # with Shrine::Attachment, the context variable will hold the record,
-        # name of the attachment and the phase.
+        # has been done and that the original file should be used.
         #
         #     class ImageUploader < Shrine
         #       def process(io, context)
-        #         case context[:phase]
+        #         case context[:action]
         #         when :cache
         #           # do processing
         #         when :store
@@ -472,7 +470,7 @@ class Shrine
             return if value == "" || value == read || !cache.uploaded?(uploaded_file(value))
             assign_cached(uploaded_file(value))
           else
-            uploaded_file = cache!(value, phase: :cache) if value
+            uploaded_file = cache!(value, action: :cache) if value
             set(uploaded_file)
           end
         end
@@ -504,19 +502,19 @@ class Shrine
         def finalize
           replace
           remove_instance_variable(:@old)
-          _promote(phase: :store) if cached?
+          _promote(action: :store) if cached?
         end
 
         # Promotes the file.
-        def _promote(uploaded_file = get, phase: nil)
-          promote(uploaded_file, phase: phase)
+        def _promote(uploaded_file = get, **options)
+          promote(uploaded_file, **options)
         end
 
         # Uploads the cached file to store, and updates the record with the
         # stored file.
         def promote(uploaded_file = get, **options)
           stored_file = store!(uploaded_file, **options)
-          result = swap(stored_file) or _delete(stored_file, phase: :abort)
+          result = swap(stored_file) or _delete(stored_file, action: :abort)
           result
         end
 
@@ -530,18 +528,18 @@ class Shrine
         # by ORM integrations. If also removes `@old` so that #save and #finalize
         # don't get called for the current attachment anymore.
         def replace
-          _delete(@old, phase: :replace) if @old && !cache.uploaded?(@old)
+          _delete(@old, action: :replace) if @old && !cache.uploaded?(@old)
         end
 
         # Deletes the attachment. Typically this should be called after
         # destroying a record.
         def destroy
-          _delete(get, phase: :destroy) if get && !cache.uploaded?(get)
+          _delete(get, action: :destroy) if get && !cache.uploaded?(get)
         end
 
         # Deletes the uploaded file.
-        def _delete(uploaded_file, phase: nil)
-          delete!(uploaded_file, phase: phase)
+        def _delete(uploaded_file, **options)
+          delete!(uploaded_file, **options)
         end
 
         # Returns the URL to the attached file (internally calls `#url` on the
@@ -573,17 +571,20 @@ class Shrine
 
         # Uploads the file to cache passing context.
         def cache!(io, **options)
-          cache.upload(io, context.merge(options))
+          warn "Sending :phase to Shrine::Attacher#cache! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
+          cache.upload(io, context.merge(_equalize_phase_and_action(options)))
         end
 
         # Uploads the file to store passing context.
         def store!(io, **options)
-          store.upload(io, context.merge(options))
+          warn "Sending :phase to Shrine::Attacher#store! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
+          store.upload(io, context.merge(_equalize_phase_and_action(options)))
         end
 
         # Deletes the file passing context.
         def delete!(uploaded_file, **options)
-          store.delete(uploaded_file, context.merge(options))
+          warn "Sending :phase to Shrine::Attacher#delete! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
+          store.delete(uploaded_file, context.merge(_equalize_phase_and_action(options)))
         end
 
         # Returns the Shrine class related to this attacher.
@@ -628,6 +629,13 @@ class Shrine
         # record and the name of the attachment.
         def context
           {name: name, record: record}
+        end
+
+        # Temporary method used for transitioning from :phase to :action.
+        def _equalize_phase_and_action(options)
+          options[:phase]  = options[:action] if options.key?(:action)
+          options[:action] = options[:phase] if options.key?(:phase)
+          options
         end
       end
 

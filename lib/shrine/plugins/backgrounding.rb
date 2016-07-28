@@ -92,10 +92,10 @@ class Shrine
           else
             attacher = load(data)
             cached_file = attacher.uploaded_file(data["attachment"])
-            phase = data["phase"].to_sym if data["phase"]
+            action = data["action"].to_sym if data["action"]
 
             return if cached_file != attacher.get
-            attacher.promote(cached_file, phase: phase) or return
+            attacher.promote(cached_file, action: action) or return
 
             attacher
           end
@@ -109,9 +109,9 @@ class Shrine
           else
             attacher = load(data)
             uploaded_file = attacher.uploaded_file(data["attachment"])
-            phase = data["phase"].to_sym if data["phase"]
+            action = data["action"].to_sym if data["action"]
 
-            attacher.delete!(uploaded_file, phase: phase)
+            attacher.delete!(uploaded_file, action: action)
 
             attacher
           end
@@ -146,11 +146,12 @@ class Shrine
       module AttacherMethods
         # Calls the promoting block (if registered) with a serializable data
         # hash.
-        def _promote(uploaded_file = get, phase: nil)
+        def _promote(uploaded_file = get, phase: nil, action: phase)
           if background_promote = shrine_class.opts[:backgrounding_promote]
             data = self.class.dump(self).merge(
               "attachment" => uploaded_file.to_json,
-              "phase"      => (phase.to_s if phase),
+              "phase"      => (action.to_s if action),
+              "action"     => (action.to_s if action),
             )
             instance_exec(data, &background_promote)
           else
@@ -160,11 +161,12 @@ class Shrine
 
         # Calls the deleting block (if registered) with a serializable data
         # hash.
-        def _delete(uploaded_file, phase: nil)
+        def _delete(uploaded_file, phase: nil, action: phase)
           if background_delete = shrine_class.opts[:backgrounding_delete]
             data = self.class.dump(self).merge(
               "attachment" => uploaded_file.to_json,
-              "phase"      => (phase.to_s if phase),
+              "phase"      => (action.to_s if action),
+              "action"     => (action.to_s if action),
             )
             instance_exec(data, &background_delete)
             uploaded_file

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Soft deprecate `:phase` over `:action` in `context` (janko-m)
+
 * Add ability to sequel and activerecord plugins to disable callbacks and validations (janko-m)
 
 * The direct_upload endpoint now always includes both upload and presign routes (janko-m)
