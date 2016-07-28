@@ -14,7 +14,7 @@
 
 * In backgrounding plugin don't require model to have attachment module included (janko-m)
 
-* Add metadata plugin for defining additional metadata values to be extracted (janko-m)
+* Add add_metadata plugin for defining additional metadata values to be extracted (janko-m)
 
 * In determine_mime_type plugin raise error when file command wasn't found or errored (janko-m)
 

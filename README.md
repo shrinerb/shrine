@@ -136,7 +136,8 @@ create attachment modules for any kind of attachments:
 class VideoUploader < Shrine
   # video attachment logic
 end
-
+```
+```rb
 class Movie < Sequel::Model
   include VideoUploader[:video] # uses "video_data" column
 end
@@ -394,9 +395,9 @@ plugin:
 require "mini_magick"
 
 class ImageUploader < Shrine
-  plugin :metadata
+  plugin :add_metadata
 
-  metadata "exif" do |io, context|
+  add_metadata "exif" do |io, context|
     MiniMagick::Image.new(io.path).exif
   end
 end

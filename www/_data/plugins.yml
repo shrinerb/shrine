@@ -74,9 +74,9 @@ Metadata:
     path: DetermineMimeType.html
     description: Allows you to determine the actual MIME type from file contents.
   -
-    name: metadata
-    path: Metadata.html
-    description: Allows defining additional metadata values to be extracted.
+    name: add_metadata
+    path: AddMetadata.html
+    description: Allows extracting additional metadata values.
   -
     name: restore_cached_data
     path: RestoreCachedData.html
