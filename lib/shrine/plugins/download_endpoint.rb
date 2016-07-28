@@ -25,7 +25,8 @@ class Shrine
     #     user.avatar.url #=> "/attachments/store/sdg0lsf8.jpg"
     #
     # :storages
-    # :  An array of storage keys which the download endpoint should be used for.
+    # :  An array of storage keys which the download endpoint should be applied
+    #    on.
     #
     # :prefix
     # :  The location where the download endpoint was mounted. If it was
