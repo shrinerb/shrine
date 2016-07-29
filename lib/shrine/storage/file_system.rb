@@ -51,10 +51,11 @@ class Shrine
     #
     # ## Permissions
     #
-    # If you want your files and folders to have certain permissions, you can
-    # pass the `:permissions` option:
+    # The storage sets the default UNIX permissions to 0644 for files and 0755
+    # for directories, but you can change that:
     #
-    #     Shrine::Storage::FileSystem.new("directory", permissions: 0755)
+    #     Shrine::Storage::FileSystem.new("directory", permissions: 0644)
+    #     Shrine::Storage::FileSystem.new("directory", directory_permissions: 0755)
     #
     # ## Heroku
     #
@@ -84,8 +85,10 @@ class Shrine
       #    can use this option to set a CDN host (e.g. `//abc123.cloudfront.net`).
       #
       # :permissions
-      # :  The generated files and folders will have default UNIX permissions,
-      #    but if you want specific ones you can use this option (e.g. `0755`).
+      # :  Changes the UNIX permissions of created files (default is 0644).
+      #
+      # :directory_permissions
+      # :  Changes the UNIX permissions of created directories (default is 0755).
       #
       # :clean
       # :  By default empty folders inside the directory are automatically
