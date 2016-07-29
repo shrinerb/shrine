@@ -402,6 +402,11 @@ class ImageUploader < Shrine
   end
 end
 ```
+```rb
+photo.image.metadata["exif"]
+# or
+photo.image.exif
+```
 
 ## Locations
 
