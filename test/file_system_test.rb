@@ -44,8 +44,8 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "sets directory permissions" do
-      @storage = file_system(root, permissions: 0755)
-      assert_permissions 0755, root
+      @storage = file_system(root, directory_permissions: 0600)
+      assert_permissions 0600, root
     end
   end
 
@@ -175,9 +175,9 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "reestablishes directory permissions" do
-      @storage = file_system(root, permissions: 0755)
+      @storage = file_system(root, directory_permissions: 0600)
       @storage.clear!
-      assert_permissions 0755, root
+      assert_permissions 0600, root
     end
   end
 

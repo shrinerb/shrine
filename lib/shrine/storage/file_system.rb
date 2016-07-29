@@ -71,7 +71,7 @@ class Shrine
     # generate URLs to files in the "tmp" directory, but you can with the
     # download_endpoint plugin.
     class FileSystem
-      attr_reader :directory, :prefix, :host, :permissions
+      attr_reader :directory, :prefix, :host, :permissions, :directory_permissions
 
       # Initializes a storage for uploading to the filesystem.
       #
@@ -91,7 +91,7 @@ class Shrine
       # :  By default empty folders inside the directory are automatically
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
-      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: nil)
+      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: nil, directory_permissions: nil)
         if prefix
           @prefix = Pathname(relative(prefix))
           @directory = Pathname(directory).join(@prefix)
@@ -101,10 +101,11 @@ class Shrine
 
         @host = host
         @permissions = permissions
+        @directory_permissions = directory_permissions
         @clean = clean
 
         @directory.mkpath
-        @directory.chmod(permissions) if permissions
+        @directory.chmod(directory_permissions) if directory_permissions
       end
 
       # Copies the file into the given location.
@@ -173,7 +174,7 @@ class Shrine
         else
           directory.rmtree
           directory.mkpath
-          directory.chmod(permissions) if permissions
+          directory.chmod(directory_permissions) if directory_permissions
         end
       end
 
