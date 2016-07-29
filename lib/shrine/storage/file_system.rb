@@ -91,7 +91,7 @@ class Shrine
       # :  By default empty folders inside the directory are automatically
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
-      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: nil, directory_permissions: nil)
+      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: 0644, directory_permissions: 0755)
         if prefix
           @prefix = Pathname(relative(prefix))
           @directory = Pathname(directory).join(@prefix)

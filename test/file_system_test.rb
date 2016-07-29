@@ -44,8 +44,8 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "sets directory permissions" do
-      @storage = file_system(root, directory_permissions: 0600)
-      assert_permissions 0600, root
+      @storage = file_system(root, directory_permissions: 0777)
+      assert_permissions 0777, root
     end
   end
 
@@ -61,9 +61,10 @@ describe Shrine::Storage::FileSystem do
    end
 
     it "sets file permissions" do
-      @storage = file_system(root, permissions: 0755)
+      @storage = file_system(root, permissions: 0600)
       @storage.upload(fakeio, "foo.jpg")
-      assert_permissions 0755, @storage.open("foo.jpg").path
+      assert_permissions 0600, @storage.open("foo.jpg").path
+    end
 
     it "sets directory permissions on intermediary directories" do
       @storage = file_system(root, directory_permissions: 0777)
@@ -117,10 +118,10 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "sets file permissions" do
-      @storage = file_system(root, permissions: 0755)
+      @storage = file_system(root, permissions: 0600)
       file = Down.copy_to_tempfile("", image)
       @storage.move(file, "bar.jpg")
-      assert_permissions 0755, @storage.open("bar.jpg").path
+      assert_permissions 0600, @storage.open("bar.jpg").path
     end
   end
 
@@ -182,9 +183,9 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "reestablishes directory permissions" do
-      @storage = file_system(root, directory_permissions: 0600)
+      @storage = file_system(root, directory_permissions: 0777)
       @storage.clear!
-      assert_permissions 0600, root
+      assert_permissions 0777, root
     end
   end
 
