@@ -70,13 +70,13 @@ Processing:
 
 Metadata:
   -
-    name: determine_mime_type
-    path: DetermineMimeType.html
-    description: Allows you to determine the actual MIME type from file contents.
-  -
     name: add_metadata
     path: AddMetadata.html
     description: Allows extracting additional metadata values.
+  -
+    name: determine_mime_type
+    path: DetermineMimeType.html
+    description: Allows you to determine the actual MIME type from file contents.
   -
     name: restore_cached_data
     path: RestoreCachedData.html

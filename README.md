@@ -388,7 +388,7 @@ photo.image.mime_type #=> "text/x-php"
 
 ### Custom metadata
 
-You can also extract and store completely custom metadata with the metadata
+You can also extract and store completely custom metadata with the add_metadata
 plugin:
 
 ```rb
