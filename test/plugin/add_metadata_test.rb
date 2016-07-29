@@ -22,9 +22,9 @@ describe Shrine::Plugins::AddMetadata do
     @uploader.upload(fakeio, foo: "bar")
   end
 
-  it "allows overriding existing metadata" do
-    @uploader.class.add_metadata("mime_type") { |io, context| "overriden" }
-    uploaded_file = @uploader.upload(fakeio(content_type: "value"))
-    assert_equal "overriden", uploaded_file.mime_type
+  it "adds the metadata method to UploadedFile" do
+    @uploader.class.add_metadata("custom") { |io, context| "value" }
+    uploaded_file = @uploader.upload(fakeio)
+    assert_equal "value", uploaded_file.custom
   end
 end

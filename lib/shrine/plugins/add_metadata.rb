@@ -9,9 +9,12 @@ class Shrine
     #       MiniMagick::Image.new(io.path).exif
     #     end
     #
-    # If the result of the block is nil, the metadata value won't be assigned.
+    # The above will add "exif" to the metadata hash, and also add the `#exif`
+    # method to the `UploadedFile`:
     #
-    # This plugin can also be used to override existing metadata values.
+    #     uploaded_file.metadata["exif"]
+    #     # or
+    #     uploaded_file.exif
     module AddMetadata
       def self.configure(uploader)
         uploader.opts[:metadata] = {}
@@ -20,6 +23,10 @@ class Shrine
       module ClassMethods
         def add_metadata(name, &block)
           opts[:metadata][name] = block
+
+          self::UploadedFile.send(:define_method, name) do
+            metadata[name]
+          end
         end
       end
 
