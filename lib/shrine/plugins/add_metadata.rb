@@ -5,7 +5,7 @@ class Shrine
     #
     #     plugin :add_metadata
     #
-    #     add_metadata "exif" do |io, context|
+    #     add_metadata :exif do |io, context|
     #       MiniMagick::Image.new(io.path).exif
     #     end
     #
@@ -25,7 +25,7 @@ class Shrine
           opts[:metadata][name] = block
 
           self::UploadedFile.send(:define_method, name) do
-            metadata[name]
+            metadata[name.to_s]
           end
         end
       end
@@ -36,7 +36,7 @@ class Shrine
 
           opts[:metadata].each do |name, block|
             value = instance_exec(io, context, &block)
-            metadata[name] = value unless value.nil?
+            metadata[name.to_s] = value unless value.nil?
           end
 
           metadata
