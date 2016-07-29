@@ -48,6 +48,10 @@
             this is what is passed to <code>Shrine#upload</code>.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">rack_file</span></pre>
+            
+            <p>Note that this plugin is not needed in Rails applications, because Rails
+            already wraps Rack uploaded files in
+            <code>ActionDispatch::Http::UploadedFile</code>.</p>
           </div>
           <div id='context'>
           </div>

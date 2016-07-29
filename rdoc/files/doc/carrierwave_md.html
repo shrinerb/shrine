@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-06-25 18:42:12 +0800</span>
+          <span class='datetime'>2016-07-26 15:55:38 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -74,12 +74,11 @@
             
             <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
-            <p>In <a href="../../classes/Shrine.html">Shrine</a> processing is done
-            instance-level in the <code>#process</code> method, and can be specified
-            for each phase. You can return a single processed file or a hash of
-            versions (with the <code>versions</code> plugin):</p>
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> processing is defined and
+            performed on the instance-level, which gives a lot of flexibility. You can
+            return a single processed file or a hash of versions:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span> <span class="ruby-comment"># part of the &quot;image_processing&quot; gem</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">phase</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-identifier">thumb</span> = <span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;      {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">thumb</span><span class="ruby-operator">:</span> <span class="ruby-identifier">thumb</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span> <span class="ruby-comment"># part of the &quot;image_processing&quot; gem</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">thumbnail</span> = <span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;    {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">thumbnail</span><span class="ruby-operator">:</span> <span class="ruby-identifier">thumbnail</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Attachments">Attachments<span><a href="#label-Attachments">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -375,15 +374,13 @@
             
             <h4 id="label-validate_processing-2C+ignore_processing_errors"><code>validate_processing</code>, <code>ignore_processing_errors</code><span><a href="#label-validate_processing-2C+ignore_processing_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
-            <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t offer any
-            built-in ways of rescuing processing errors, because it completely depends
-            on how you do your processing. You can easily add your own rescuing:</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># processing</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">SomeProcessingError</span>&#x000A;    <span class="ruby-comment"># handling</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <p>In <a href="../../classes/Shrine.html">Shrine</a> processing is performed
+            <em>after</em> validations, and typically asynchronously in a background
+            job, so it is expected that you validate files before processing.</p>
             
             <h4 id="label-enable_processing"><code>enable_processing</code><span><a href="#label-enable_processing">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
-            <p>You can just do conditionals inside if <code>Shrine#process</code>.</p>
+            <p>You can just add conditionals in processing code.</p>
             
             <h4 id="label-ensure_multipart_form"><code>ensure_multipart_form</code><span><a href="#label-ensure_multipart_form">&para;</a> <a href="#top">&uarr;</a></span></h4>
             

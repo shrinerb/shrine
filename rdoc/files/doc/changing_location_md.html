@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-05-30 08:49:41 +0800</span>
+          <span class='datetime'>2016-07-28 16:09:16 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -57,9 +57,9 @@
             someone attaches a new file during “moving” (since we&#39;re running this
             script on live production).</p>
             
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_promoted</span>&#x000A;&#x000A;<span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">migrate</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;  <span class="ruby-comment"># use `attacher._promote(phase: :migrate)` if you want promoting to be backgrounded</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">delete_promoted</span>&#x000A;&#x000A;<span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>&#x000A;  <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">action</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">migrate</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;  <span class="ruby-comment"># use `attacher._promote(action: :migrate)` if you want promoting to be backgrounded</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>The <code>:phase</code> is not mandatory, it&#39;s just for better
+            <p>The <code>:action</code> is not mandatory, it&#39;s just for better
             introspection when monitoring background jobs and logs.</p>
             
             <p>Now all your existing attachments should be happily living on new

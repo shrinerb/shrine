@@ -74,6 +74,11 @@
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;&#x000A;  <span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">avatar_data_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;      <span class="ruby-comment"># cached</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">avatar_data_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;      <span class="ruby-comment"># promoted</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
+            <p>If you don&#39;t want callbacks (e.g. you want to use the attacher object
+            directly), you can turn them off:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span>, <span class="ruby-identifier">callbacks</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
+            
             <h2 id="module-Shrine::Plugins::Activerecord-label-Validations">Validations<span><a href="#module-Shrine::Plugins::Activerecord-label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>Additionally, any <a href="../../Shrine.html">Shrine</a> validation errors
@@ -81,6 +86,18 @@
             validate presence of the attachment, you can do it directly on the model.</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;  <span class="ruby-identifier">validates_presence_of</span> :<span class="ruby-identifier">avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>If you&#39;re doing validation separately from your models, you can turn
+            off validations for your models:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span>, <span class="ruby-identifier">validations</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
+          </div>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>Public Class</h3>
+            <ol>
+              <li><a target="docwin" href="#method-c-configure">configure</a></li>
+            </ol>
           </div>
           <div id='context'>
           </div>
@@ -93,6 +110,25 @@
             </ol>
           </div>
           <div id='section'>
+            <div id='methods'>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-configure'>
+                <a name='method-c-configure'></a>
+                <div class='synopsis'>
+                  <span class='name'>configure</span>
+                  <span class='arguments'>(uploader, opts = {})</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/activerecord.rb, line 70</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:activerecord_callbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:callbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:activerecord_callbacks</span>, <span class="ruby-keyword">true</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:activerecord_validations</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:validations</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:activerecord_validations</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

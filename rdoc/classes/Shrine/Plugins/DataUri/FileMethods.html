@@ -65,7 +65,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-base64-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-base64-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">base64</span>&#x000A;  <span class="ruby-identifier">content</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">read</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">content</span>).<span class="ruby-identifier">chomp</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-base64-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">base64</span>&#x000A;  <span class="ruby-identifier">content</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }&#x000A;  <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">content</span>).<span class="ruby-identifier">chomp</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-data_uri'>

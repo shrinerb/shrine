@@ -31,14 +31,68 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-06-25 18:42:12 +0800</span>
+          <span class='datetime'>2016-07-29 16:07:55 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
             
-            <h2 id="label-HEAD">HEAD<span><a href="#label-HEAD">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="label-2.2.0+-282016-07-29-29">2.2.0 (2016-07-29)<span><a href="#label-2.2.0+-282016-07-29-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Soft deprecate <code>:phase</code> over <code>:action</code> in
+            <code>context</code> (janko-m)</p>
+            </li><li>
+            <p>Add ability to sequel and activerecord plugins to disable callbacks and
+            validations (janko-m)</p>
+            </li><li>
+            <p>The direct_upload endpoint now always includes both upload and presign
+            routes (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t let the combination for delete_raw and moving plugins trigger any
+            errors (janko-m)</p>
+            </li><li>
+            <p>Add <code>UploadedFile#open</code> that mimics <code>File.open</code> with
+            a block (janko-m)</p>
+            </li><li>
+            <p>In the storage linter don&#39;t require <code>#clear!</code> to be
+            implemented (janko-m)</p>
+            </li><li>
+            <p>In backgrounding plugin don&#39;t require model to have attachment module
+            included (janko-m)</p>
+            </li><li>
+            <p>Add add_metadata plugin for defining additional metadata values to be
+            extracted (janko-m)</p>
+            </li><li>
+            <p>In determine_mime_type plugin raise error when file command wasn&#39;t
+            found or errored (janko-m)</p>
+            </li><li>
+            <p>Add processing plugin for simpler and more declarative definition of
+            processing (janko-m)</p>
+            </li><li>
+            <p>Storage classes don&#39;t need to implement the <code>#read</code> method
+            anymore (janko-m)</p>
+            </li><li>
+            <p>Use aws-sdk in <code>S3#download</code>, which will automatically retry
+            failed downloads (janko-m)</p>
+            </li><li>
+            <p>Add <code>:multipart_threshold</code> for when S3 storage should use
+            parallelized multipart copy/upload (janko-m)</p>
+            </li><li>
+            <p>Automatically use optimized multipart S3 upload for files larger than 15MB
+            (janko-m)</p>
+            </li><li>
+            <p>Avoid an additional HEAD request to determine content length in multipart
+            S3 copy (janko-m)</p>
+            </li></ul>
+            
+            <h2 id="label-2.1.1+-282016-07-14-29">2.1.1 (2016-07-14)<span><a href="#label-2.1.1+-282016-07-14-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Fix <code>S3#open</code> throwing a NameError if <code>net/http</code>
+            isn&#39;t required (janko-m)</p>
+            </li></ul>
+            
+            <h2 id="label-2.1.0+-282016-06-27-29">2.1.0 (2016-06-27)<span><a href="#label-2.1.0+-282016-06-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>
             <p>Remove <code>:names</code> from versions plugin, and deprecate generating
             versions in :cache phase (janko-m)</p>
@@ -329,7 +383,7 @@
             <p>Close the <code>UploadedFile</code> on upload only if it was previously
             opened, which doesn&#39;t happen on S3 COPY (reidab)</p>
             </li><li>
-            <p>Fix <code>NameError</code> when silencing "missing record" errors in
+            <p>Fix <code>NameError</code> when silencing “missing record” errors in
             backgrounding (janko-m)</p>
             </li></ul>
             

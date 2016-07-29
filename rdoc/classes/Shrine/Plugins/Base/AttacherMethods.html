@@ -134,7 +134,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 458</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-value">:cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-value">:store</span>)&#x000A;  <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>&#x000A;  <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>&#x000A;  <span class="ruby-ivar">@cache</span>  = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache</span>)&#x000A;  <span class="ruby-ivar">@store</span>  = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store</span>)&#x000A;  <span class="ruby-ivar">@errors</span> = []&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 456</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-value">:cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-value">:store</span>)&#x000A;  <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>&#x000A;  <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>&#x000A;  <span class="ruby-ivar">@cache</span>  = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">cache</span>)&#x000A;  <span class="ruby-ivar">@store</span>  = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store</span>)&#x000A;  <span class="ruby-ivar">@errors</span> = []&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <h2>Public Instance methods</h2>
@@ -142,7 +142,7 @@
                 <a name='method-i-_delete'></a>
                 <div class='synopsis'>
                   <span class='name'>_delete</span>
-                  <span class='arguments'>(uploaded_file, phase: nil)</span>
+                  <span class='arguments'>(uploaded_file, **options)</span>
                 </div>
                 <div class='description'>
                   
@@ -152,14 +152,14 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-_delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-_delete-source'><span class="ruby-comment"># File lib/shrine.rb, line 543</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-identifier">phase</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-_delete-source'><span class="ruby-comment"># File lib/shrine.rb, line 541</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-_promote'>
                 <a name='method-i-_promote'></a>
                 <div class='synopsis'>
                   <span class='name'>_promote</span>
-                  <span class='arguments'>(uploaded_file = get, phase: nil)</span>
+                  <span class='arguments'>(uploaded_file = get, **options)</span>
                 </div>
                 <div class='description'>
                   
@@ -169,7 +169,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-_promote-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine.rb, line 511</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-identifier">phase</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine.rb, line 509</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-assign'>
@@ -189,7 +189,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-assign-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-assign-source'><span class="ruby-comment"># File lib/shrine.rb, line 470</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;    <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">read</span> <span class="ruby-operator">||</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>))&#x000A;    <span class="ruby-identifier">assign_cached</span>(<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>))&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:cache</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>&#x000A;    <span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-assign-source'><span class="ruby-comment"># File lib/shrine.rb, line 468</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;    <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">read</span> <span class="ruby-operator">||</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>))&#x000A;    <span class="ruby-identifier">assign_cached</span>(<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>))&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:cache</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>&#x000A;    <span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-attached-3F'>
@@ -206,7 +206,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-attached-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-attached-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 494</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">attached?</span>&#x000A;  <span class="ruby-identifier">instance_variable_defined?</span>(<span class="ruby-value">:@old</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-attached-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 492</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">attached?</span>&#x000A;  <span class="ruby-identifier">instance_variable_defined?</span>(<span class="ruby-value">:@old</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-cache-21'>
@@ -223,7 +223,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-cache-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-cache-21-source'><span class="ruby-comment"># File lib/shrine.rb, line 575</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-cache-21-source'><span class="ruby-comment"># File lib/shrine.rb, line 573</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Sending :phase to Shrine::Attacher#cache! is deprecated and will not be supported in Shrine 3. Use :action instead.&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:phase</span>]&#x000A;  <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">_equalize_phase_and_action</span>(<span class="ruby-identifier">options</span>)))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-cached-3F'>
@@ -240,7 +240,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-cached-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-cached-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 554</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">cached?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-cached-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 552</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">cached?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-delete-21'>
@@ -257,7 +257,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-delete-21-source'><span class="ruby-comment"># File lib/shrine.rb, line 585</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-21-source'><span class="ruby-comment"># File lib/shrine.rb, line 585</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Sending :phase to Shrine::Attacher#delete! is deprecated and will not be supported in Shrine 3. Use :action instead.&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:phase</span>]&#x000A;  <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">_equalize_phase_and_action</span>(<span class="ruby-identifier">options</span>)))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-destroy'>
@@ -275,7 +275,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-destroy-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine.rb, line 538</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">get</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:destroy</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine.rb, line 536</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">get</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:destroy</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-finalize'>
@@ -293,7 +293,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-finalize-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-finalize-source'><span class="ruby-comment"># File lib/shrine.rb, line 504</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">finalize</span>&#x000A;  <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-identifier">remove_instance_variable</span>(<span class="ruby-value">:@old</span>)&#x000A;  <span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:store</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-finalize-source'><span class="ruby-comment"># File lib/shrine.rb, line 502</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">finalize</span>&#x000A;  <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-identifier">remove_instance_variable</span>(<span class="ruby-value">:@old</span>)&#x000A;  <span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:store</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-get'>
@@ -310,7 +310,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-get-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-get-source'><span class="ruby-comment"># File lib/shrine.rb, line 489</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">get</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">read</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-get-source'><span class="ruby-comment"># File lib/shrine.rb, line 487</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">get</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">read</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-promote'>
@@ -328,7 +328,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-promote-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine.rb, line 517</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">stored_file</span> = <span class="ruby-identifier">store!</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">stored_file</span>) <span class="ruby-keyword">or</span> <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">stored_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:abort</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine.rb, line 515</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">stored_file</span> = <span class="ruby-identifier">store!</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">stored_file</span>) <span class="ruby-keyword">or</span> <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">stored_file</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:abort</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-replace'>
@@ -349,7 +349,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-replace-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine.rb, line 532</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-ivar">@old</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-value">:replace</span>) <span class="ruby-keyword">if</span> <span class="ruby-ivar">@old</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-ivar">@old</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine.rb, line 530</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-ivar">@old</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:replace</span>) <span class="ruby-keyword">if</span> <span class="ruby-ivar">@old</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">cache</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-ivar">@old</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-save'>
@@ -367,7 +367,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-save-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-save-source'><span class="ruby-comment"># File lib/shrine.rb, line 499</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">save</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-save-source'><span class="ruby-comment"># File lib/shrine.rb, line 497</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">save</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-set'>
@@ -385,7 +385,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-set-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-set-source'><span class="ruby-comment"># File lib/shrine.rb, line 482</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-ivar">@old</span> = <span class="ruby-identifier">get</span>&#x000A;  <span class="ruby-identifier">_set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">validate</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-set-source'><span class="ruby-comment"># File lib/shrine.rb, line 480</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-ivar">@old</span> = <span class="ruby-identifier">get</span>&#x000A;  <span class="ruby-identifier">_set</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">validate</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-shrine_class'>
@@ -403,7 +403,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-shrine_class-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine.rb, line 590</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine.rb, line 591</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-store-21'>
@@ -420,7 +420,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-store-21-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-store-21-source'><span class="ruby-comment"># File lib/shrine.rb, line 580</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store!</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-store-21-source'><span class="ruby-comment"># File lib/shrine.rb, line 579</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store!</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Sending :phase to Shrine::Attacher#store! is deprecated and will not be supported in Shrine 3. Use :action instead.&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:phase</span>]&#x000A;  <span class="ruby-identifier">store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">_equalize_phase_and_action</span>(<span class="ruby-identifier">options</span>)))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-stored-3F'>
@@ -437,7 +437,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-stored-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-stored-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 559</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">stored?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">store</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-stored-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 557</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">stored?</span>&#x000A;  <span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">store</span>.<span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">get</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-swap'>
@@ -454,7 +454,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-swap-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-swap-source'><span class="ruby-comment"># File lib/shrine.rb, line 524</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">update</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-swap-source'><span class="ruby-comment"># File lib/shrine.rb, line 522</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">update</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploaded_file</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-uploaded_file'>
@@ -471,7 +471,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-uploaded_file-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-uploaded_file-source'><span class="ruby-comment"># File lib/shrine.rb, line 570</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-uploaded_file-source'><span class="ruby-comment"># File lib/shrine.rb, line 568</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-url'>
@@ -489,7 +489,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-url-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine.rb, line 549</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">get</span>.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine.rb, line 547</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">get</span>.<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">read</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-validate'>
@@ -506,7 +506,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-validate-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-validate-source'><span class="ruby-comment"># File lib/shrine.rb, line 564</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">validate</span>&#x000A;  <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span>&#x000A;  <span class="ruby-identifier">instance_exec</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">validate_block</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_block</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-validate-source'><span class="ruby-comment"># File lib/shrine.rb, line 562</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">validate</span>&#x000A;  <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span>&#x000A;  <span class="ruby-identifier">instance_exec</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">validate_block</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_block</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">get</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
