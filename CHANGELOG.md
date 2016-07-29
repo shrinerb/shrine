@@ -1,4 +1,4 @@
-## HEAD
+## 2.2.0 (2016-07-29)
 
 * Soft deprecate `:phase` over `:action` in `context` (janko-m)
 
