@@ -204,7 +204,7 @@ class Shrine
 
       # Creates all intermediate directories for that location.
       def path!(id)
-        path(id).dirname.mkpath
+        FileUtils.mkdir_p(path(id).dirname, mode: directory_permissions)
         path(id)
       end
 

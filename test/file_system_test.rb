@@ -64,6 +64,13 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root, permissions: 0755)
       @storage.upload(fakeio, "foo.jpg")
       assert_permissions 0755, @storage.open("foo.jpg").path
+
+    it "sets directory permissions on intermediary directories" do
+      @storage = file_system(root, directory_permissions: 0777)
+      @storage.upload(fakeio, "a/b/c/file.jpg")
+      assert_permissions 0777, "#{root}/a"
+      assert_permissions 0777, "#{root}/a/b"
+      assert_permissions 0777, "#{root}/a/b/c"
     end
   end
 

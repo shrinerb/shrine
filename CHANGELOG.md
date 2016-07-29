@@ -1,5 +1,7 @@
 ## HEAD
 
+* Apply directory permissions to all subfolders inside the main folder (janko-m)
+
 * Add `:directory_permissions` to `Storage::FileSystem` (janko-m)
 
 ## 2.2.0 (2016-07-29)
