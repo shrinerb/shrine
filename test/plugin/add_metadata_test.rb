@@ -22,6 +22,12 @@ describe Shrine::Plugins::AddMetadata do
     @uploader.upload(fakeio, foo: "bar")
   end
 
+  it "rewinds the IO after extracting metadata" do
+    @uploader.class.add_metadata(:custom) { |io, context| io.read }
+    uploaded_file = @uploader.upload(fakeio("file"))
+    assert_equal "file", uploaded_file.read
+  end
+
   it "adds the metadata method to UploadedFile" do
     @uploader.class.add_metadata(:custom) { |io, context| "value" }
     uploaded_file = @uploader.upload(fakeio)

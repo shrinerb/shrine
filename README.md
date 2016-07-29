@@ -403,8 +403,6 @@ class ImageUploader < Shrine
 end
 ```
 
-Note that you should always rewind the `io` if you read from it.
-
 ## Locations
 
 Before Shrine uploads a file, it generates a random location for it. By

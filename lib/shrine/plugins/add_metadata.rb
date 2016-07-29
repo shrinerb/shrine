@@ -37,6 +37,7 @@ class Shrine
           opts[:metadata].each do |name, block|
             value = instance_exec(io, context, &block)
             metadata[name.to_s] = value unless value.nil?
+            io.rewind
           end
 
           metadata
