@@ -73,35 +73,33 @@ class Shrine
 
           return unless model < ::Sequel::Model
 
-          if shrine_class.opts[:sequel_validations]
-            module_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def validate
-                super
-                #{@name}_attacher.errors.each do |message|
-                  errors.add(:#{@name}, message)
-                end
-              end
-            RUBY
-          end
+          opts = shrine_class.opts
 
-          if shrine_class.opts[:sequel_callbacks]
-            module_eval <<-RUBY, __FILE__, __LINE__ + 1
-              def before_save
-                super
-                #{@name}_attacher.save if #{@name}_attacher.attached?
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:sequel_validations]
+            def validate
+              super
+              #{@name}_attacher.errors.each do |message|
+                errors.add(:#{@name}, message)
               end
+            end
+          RUBY
 
-              def after_commit
-                super
-                #{@name}_attacher.finalize if #{@name}_attacher.attached?
-              end
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:sequel_callbacks]
+            def before_save
+              super
+              #{@name}_attacher.save if #{@name}_attacher.attached?
+            end
 
-              def after_destroy_commit
-                super
-                #{@name}_attacher.destroy
-              end
-            RUBY
-          end
+            def after_commit
+              super
+              #{@name}_attacher.finalize if #{@name}_attacher.attached?
+            end
+
+            def after_destroy_commit
+              super
+              #{@name}_attacher.destroy
+            end
+          RUBY
         end
       end
 

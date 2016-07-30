@@ -78,31 +78,29 @@ class Shrine
 
           return unless model < ::ActiveRecord::Base
 
-          if shrine_class.opts[:activerecord_validations]
-            model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              validate do
-                #{@name}_attacher.errors.each do |message|
-                  errors.add(:#{@name}, message)
-                end
-              end
-            RUBY
-          end
+          opts = shrine_class.opts
 
-          if shrine_class.opts[:activerecord_callbacks]
-            model.class_eval <<-RUBY, __FILE__, __LINE__ + 1
-              before_save do
-                #{@name}_attacher.save if #{@name}_attacher.attached?
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:activerecord_validations]
+            validate do
+              #{@name}_attacher.errors.each do |message|
+                errors.add(:#{@name}, message)
               end
+            end
+          RUBY
 
-              after_commit on: [:create, :update] do
-                #{@name}_attacher.finalize if #{@name}_attacher.attached?
-              end
+          model.class_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:activerecord_callbacks]
+            before_save do
+              #{@name}_attacher.save if #{@name}_attacher.attached?
+            end
 
-              after_commit on: [:destroy] do
-                #{@name}_attacher.destroy
-              end
-            RUBY
-          end
+            after_commit on: [:create, :update] do
+              #{@name}_attacher.finalize if #{@name}_attacher.attached?
+            end
+
+            after_commit on: [:destroy] do
+              #{@name}_attacher.destroy
+            end
+          RUBY
         end
       end
 
