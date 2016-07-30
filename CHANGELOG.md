@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't make `Attacher#promote` private in sequel and activerecord plugins (janko-m)
+
 * Set default UNIX permissions to 0644 for files and 0755 for directories (janko-m)
 
 * Apply directory permissions to all subfolders inside the main folder (janko-m)

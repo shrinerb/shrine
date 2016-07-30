@@ -114,14 +114,14 @@ class Shrine
       end
 
       module AttacherMethods
-        private
-
         # Proceeds with updating the record unless the attachment has changed.
         def swap(uploaded_file)
           return if record.send(:"#{name}_data") != record.reload.send(:"#{name}_data")
           super
         rescue ::ActiveRecord::RecordNotFound
         end
+
+        private
 
         # Saves the record after assignment, skipping validations.
         def update(uploaded_file)
