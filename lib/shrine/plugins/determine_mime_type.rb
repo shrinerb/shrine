@@ -37,7 +37,8 @@ class Shrine
     #   "Content-Type" request header, which might not hold the actual MIME type
     #   of the file.
     #
-    # If none of these quite suit your needs, you can build a custom analyzer:
+    # Not all analyzers can recognize all types of files. For those cases you
+    # can build your own analyzer, where you can reuse built-in analyzers:
     #
     #     plugin :determine_mime_type, analyzer: ->(io, analyzers) do
     #       analyzers[:mimemagic].call(io) || analyzers[:file].call(io)
