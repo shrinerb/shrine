@@ -483,9 +483,10 @@ class Shrine
           validate
         end
 
-        # Retrieves the uploaded file from the record column.
-        def get
-          uploaded_file(read) if read
+        # Runs the validations defined by `Attacher.validate`.
+        def validate
+          errors.clear
+          instance_exec(&validate_block) if validate_block && get
         end
 
         # Returns true if a new file has been attached.
@@ -558,15 +559,9 @@ class Shrine
           get && store.uploaded?(get)
         end
 
-        # Runs the validations defined by `Attacher.validate`.
-        def validate
-          errors.clear
-          instance_exec(&validate_block) if validate_block && get
-        end
-
-        # Delegates to `Shrine.uploaded_file`.
-        def uploaded_file(*args, &block)
-          shrine_class.uploaded_file(*args, &block)
+        # Retrieves the uploaded file from the record column.
+        def get
+          uploaded_file(read) if read
         end
 
         # Uploads the file to cache passing context.
@@ -585,6 +580,11 @@ class Shrine
         def delete!(uploaded_file, **options)
           warn "Sending :phase to Shrine::Attacher#delete! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
           store.delete(uploaded_file, context.merge(_equalize_phase_and_action(options)))
+        end
+
+        # Delegates to `Shrine.uploaded_file`.
+        def uploaded_file(*args, &block)
+          shrine_class.uploaded_file(*args, &block)
         end
 
         # Returns the Shrine class related to this attacher.
