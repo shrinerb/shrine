@@ -1,12 +1,26 @@
 # Direct Uploads to S3
 
-Shrine gives you the ability to upload files directly to S3, which frees your
-server from accepting file uploads. If on saving the record you need to do some
-file processing, you can kick that into a background job using the
-`backgrounding` plugin. If you're not doing any processing and your permanent
-storage is also S3, saving the record will perform an S3 COPY request from
-cache to store, without any downloading and uploading (which is both fast and
-memory-efficient).
+Shrine gives you the ability to upload files directly to Amazon S3, which is
+beneficial for several use cases:
+
+* accepting uploads is resource-intensive for the server, and delegating it to
+  an external service makes scaling easier
+
+* if both temporary and permanent storage are S3, promoting an S3 file to
+  permanent storage will simply issue an S3 copy request, without any
+  downloading and reuploading
+
+* with multiple servers it's generally not possible to cache files to the disk,
+  unless you're using a distibuted filesystem that's shared between servers
+
+* Heroku restricts file uploads to disk, allowing you to saves files only in
+  the temporary folder, which gets wiped out between deploys
+
+* Heroku has a 30-second request limit, so if the client has a slow connection
+  and/or your files are larger, uploads to your app can easily hit that limit
+
+You can start by setting both temporary and permanent storage to S3 with
+different prefixes (or even buckets):
 
 ```rb
 require "shrine/storage/s3"
@@ -21,9 +35,10 @@ Shrine.storages = {
 
 ## Enabling CORS
 
-First thing that you need to do is enable CORS on your S3 bucket. You can do
-that by clicking on "Properties > Permissions > Add CORS Configuration", and
-then just follow the Amazon documentation on how to write a CORS file.
+In order to be able upload files directly to your S3 bucket, you need enable
+CORS. You can do that in the AWS S3 Console by clicking on "Properties >
+Permissions > Add CORS Configuration", and then just follow the Amazon
+documentation on how to write a CORS file.
 
 http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 
@@ -32,7 +47,8 @@ DNS propagation.
 
 ## File hash
 
-Shrine's JSON representation of an uploaded file looks like this:
+After direct S3 uploads we'll need to manually construct Shrine's
+representation of an uploaded file:
 
 ```rb
 {
@@ -46,10 +62,9 @@ Shrine's JSON representation of an uploaded file looks like this:
 }
 ```
 
-The `id`, `storage` fields are optional, while the `metadata` values are
-optional (`metadata.size` is only required to later upload that file to a
-non-S3 storage). After uploading the file to S3, you need to construct this
-JSON, and then you can assign it to the hidden attachment field in the form.
+* `id` -- location of the file on S3 (minus the `:prefix`)
+* `storage` -- direct uploads typically use the `:cache` storage
+* `metadata` -- hash of metadata extracted from the file
 
 ## Strategy A (dynamic)
 
