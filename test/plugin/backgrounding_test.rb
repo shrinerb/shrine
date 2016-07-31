@@ -62,10 +62,22 @@ describe Shrine::Plugins::Backgrounding do
       refute @attacher.instance_variable_defined?("@f")
     end
 
-    it "doesn't error when record wasn't found" do
+    it "doesn't error when record was deleted before promoting" do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.update(avatar: fakeio)
       @user.destroy
+      @attacher.instance_variable_get("@f").resume
+    end
+
+    it "doesn't error when record was deleted during promoting" do
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @attacher.class.class_eval do
+        def swap(*)
+          record.this.delete
+          super
+        end
+      end
+      @user.update(avatar: fakeio)
       @attacher.instance_variable_get("@f").resume
     end
 
@@ -75,6 +87,20 @@ describe Shrine::Plugins::Backgrounding do
       @user.this.update(avatar_data: nil)
       Shrine.any_instance.expects(:upload).never
       refute @attacher.instance_variable_get("@f").resume
+      assert @user.reload.avatar.nil?
+    end
+
+    it "aborts promoting if attachment has changed during" do
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @attacher.class.class_eval do
+        def swap(*)
+          record.this.update(avatar_data: nil)
+          super
+        end
+      end
+      @user.update(avatar: fakeio)
+      refute @attacher.instance_variable_get("@f").resume
+      assert @user.reload.avatar.nil?
     end
 
     it "doesn't return the record if promoting aborted" do

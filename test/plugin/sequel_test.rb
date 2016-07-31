@@ -11,6 +11,7 @@ describe Shrine::Plugins::Sequel do
     db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
     db.create_table :users do
       primary_key :id
+      column :name, :text
       column :avatar_data, :text
     end
 
@@ -22,7 +23,6 @@ describe Shrine::Plugins::Sequel do
   end
 
   after do
-    User.dataset.delete
     Object.send(:remove_const, "User")
   end
 
@@ -72,39 +72,6 @@ describe Shrine::Plugins::Sequel do
       @attacher.class.promote { |data| self.class.promote(data) }
       @user.update(avatar: fakeio)
       assert_equal "store", @user.reload.avatar.storage_key
-    end
-
-    it "is terminated when attachment changed before update" do
-      @attacher.instance_eval do
-        def swap(*)
-          record.this.update(avatar_data: nil)
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      assert_equal nil, @user.reload.avatar
-    end
-
-    it "is terminated when record was deleted before update" do
-      @attacher.instance_eval do
-        def swap(*)
-          record.this.delete
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-    end
-
-    it "is terminated when record was deleted during update" do
-      @user.instance_eval do
-        def save(*)
-          if avatar && avatar.storage_key == "store"
-            this.delete
-          end
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
     end
   end
 
@@ -176,8 +143,21 @@ describe Shrine::Plugins::Sequel do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.update(avatar: fakeio)
       fiber = @user.avatar_attacher.instance_variable_get("@f")
-      @user.save
+      @user.update(name: "Name")
       assert_equal fiber, @user.avatar_attacher.instance_variable_get("@f")
+    end
+
+    it "doesn't overwrite column updates during background job" do
+      @uploader.class.plugin :backgrounding
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @attacher.class.class_eval do
+        def swap(*)
+          record.this.update(name: "Name")
+        end
+      end
+      @user.update(avatar: fakeio)
+      @user.avatar_attacher.instance_variable_get("@f").resume
+      assert_equal "Name", @user.reload.name
     end
   end
 
