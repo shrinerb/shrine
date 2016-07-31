@@ -19,8 +19,9 @@ class Shrine
     module Recache
       module AttacherMethods
         def save
-          if get && cache.uploaded?(get)
-            _set cache!(get, action: :recache)
+          if cached?
+            recached = cache!(get, action: :recache)
+            _set(recached)
           end
           super
         end

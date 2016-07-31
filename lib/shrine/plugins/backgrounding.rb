@@ -140,6 +140,7 @@ class Shrine
             shrine_class = Object.const_get(data["shrine_class"])
             attacher = shrine_class::Attacher.new(record, name)
           else
+            # anonymous uploader class, try to retrieve attacher from record
             attacher = record.send("#{name}_attacher")
           end
 
@@ -154,8 +155,8 @@ class Shrine
           if background_promote = shrine_class.opts[:backgrounding_promote]
             data = self.class.dump(self).merge(
               "attachment" => uploaded_file.to_json,
-              "phase"      => (action.to_s if action),
               "action"     => (action.to_s if action),
+              "phase"      => (action.to_s if action), # legacy
             )
             instance_exec(data, &background_promote)
           else
@@ -169,8 +170,8 @@ class Shrine
           if background_delete = shrine_class.opts[:backgrounding_delete]
             data = self.class.dump(self).merge(
               "attachment" => uploaded_file.to_json,
-              "phase"      => (action.to_s if action),
               "action"     => (action.to_s if action),
+              "phase"      => (action.to_s if action), # legacy
             )
             instance_exec(data, &background_delete)
             uploaded_file
