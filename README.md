@@ -59,8 +59,8 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-You can then allow your users to attach files through the form (the hidden field
-is explained later):
+This creates an `image` attachment attribute which accepts files. Let's now
+add the required form fields for attaching files:
 
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
@@ -96,8 +96,8 @@ its URL:
 
 When we assign an IO-like object to the record, Shrine will upload it to the
 registered `:cache` storage, which acts as a temporary storage, and write the
-location/storage/metadata of the uploaded file to a single `<attachment>_data`
-column:
+location, storage, and metadata of the uploaded file to a single
+`<attachment>_data` column:
 
 ```rb
 photo = Photo.new
@@ -160,6 +160,21 @@ class Movie < Sequel::Model
   include VideoUploader[:video] # uses "video_data" column
 end
 ```
+
+### Multiple files
+
+Sometimes we want to allow users to upload multiple files at once. This can be
+achieved with by adding a `multiple` HTML attribute to the file field: `<input
+type="file" multiple>`.
+
+Shrine doesn't accept multiple files on single a attachment attribute, but you
+can instead attach each file to a separate database record, which is a much
+more flexible solution. One way is to send all files at once, and then in
+the router/controller map them to separate database records.
+
+Another way is to use [direct uploads] to upload each file separately, and
+then send their information though the form as nested attributes for the parent
+record.
 
 ## Uploader
 
