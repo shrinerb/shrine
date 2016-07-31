@@ -114,9 +114,9 @@ photo.image = '{"storage":"cache","id":"9260ea09d8effd.jpg","metadata":{...}}'
 This allows Shrine to retain uploaded files in case of validation errors, and
 handle [direct uploads], via the hidden form field.
 
-The ORM plugin that we loaded will upload the attachment to permanent storage
-(`:store`) when the record is saved, and delete the attachment when record
-is destroyed:
+The ORM plugin that we loaded adds appropriate callbacks, so when record is
+saved the attachment is uploaded to permanent storge (`:store`), and when
+record is destroyed the attachment is destroyed as well:
 
 ```rb
 photo.image = File.open("waterfall.jpg")
@@ -129,7 +129,15 @@ photo.destroy
 photo.image.exists? #=> false
 ```
 
-In these examples we used `image` as the name of the attachment, but we can
+The ORM plugin will also delete replaced attachments:
+
+```rb
+photo.update(image: new_file) # changes the attachment
+# or
+photo.update(image: nil)      # removes the attachment
+```
+
+In all these examples we used `image` as the name of the attachment, but we can
 create attachment modules for any kind of attachments:
 
 ```rb

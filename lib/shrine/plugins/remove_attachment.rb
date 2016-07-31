@@ -7,7 +7,7 @@ class Shrine
     #
     # If for example your attachment is called "avatar", this plugin will add
     # `#remove_avatar` and `#remove_avatar=` methods to your model. This allows
-    # you to easily enable deleting attached files through the form:
+    # you to easily delete attached files through the form:
     #
     #     <%= form_for @user do |f| %>
     #       <%= f.hidden_field :avatar, value: @user.avatar_data %>
@@ -16,8 +16,7 @@ class Shrine
     #     <% end %>
     #
     # Now when the checkbox is ticked and the form is submitted, the attached
-    # file will be removed. Note that the "remove_avatar" field needs to be
-    # declared somewhere after the hidden field.
+    # file will be removed.
     module RemoveAttachment
       module AttachmentMethods
         def initialize(*)
