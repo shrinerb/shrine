@@ -111,19 +111,19 @@ class Shrine
       end
 
       module AttacherMethods
+        # Support for Postgres JSON columns.
+        def read
+          value = super
+          value = value.to_hash if value.respond_to?(:to_hash)
+          value
+        end
+
         private
 
         # Saves the record after assignment, skipping validations.
         def update(uploaded_file)
           super
           record.save(validate: false)
-        end
-
-        # Support for Postgres JSON columns.
-        def read
-          value = super
-          value = value.to_hash if value.respond_to?(:to_hash)
-          value
         end
       end
     end

@@ -564,6 +564,12 @@ class Shrine
           uploaded_file(read) if read
         end
 
+        # It reads from the record's `<attachment>_data` column.
+        def read
+          value = record.send(:"#{name}_data")
+          value unless value.nil? || value.empty?
+        end
+
         # Uploads the file to cache passing context.
         def cache!(io, **options)
           warn "Sending :phase to Shrine::Attacher#cache! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
@@ -617,12 +623,6 @@ class Shrine
         # It writes to record's `<attachment>_data` column.
         def write(value)
           record.send(:"#{name}_data=", value)
-        end
-
-        # It reads from the record's `<attachment>_data` column.
-        def read
-          value = record.send(:"#{name}_data")
-          value unless value.nil? || value.empty?
         end
 
         # The context that's sent to Shrine on upload and delete. It holds the

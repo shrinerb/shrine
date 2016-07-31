@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `Attacher#read` for reading the attachment column public (janko-m)
+
 * Don't rely on the `#id` writer on a model instance in backgrounding plugin (janko-m)
 
 * Don't make `Attacher#swap` private in sequel and activerecord plugins (janko-m)
