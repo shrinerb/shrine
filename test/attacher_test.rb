@@ -326,6 +326,14 @@ describe Shrine::Attacher do
     end
   end
 
+  it "allows modifying context" do
+    @attacher.context[:record] = :record
+    assert_equal :record, @attacher.context[:record]
+
+    @attacher.context[:name] = :name
+    assert_equal :name, @attacher.context[:name]
+  end
+
   it "has smarter .inspect" do
     assert_includes @attacher.class.inspect, "::Attacher"
   end

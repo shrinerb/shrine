@@ -451,15 +451,19 @@ class Shrine
       end
 
       module AttacherMethods
-        attr_reader :record, :name, :cache, :store, :errors
+        attr_reader :cache, :store, :context, :errors
 
         def initialize(record, name, cache: :cache, store: :store)
-          @record = record
-          @name   = name
-          @cache  = shrine_class.new(cache)
-          @store  = shrine_class.new(store)
-          @errors = []
+          @cache   = shrine_class.new(cache)
+          @store   = shrine_class.new(store)
+          @context = {record: record, name: name}
+          @errors  = []
         end
+
+        # Returns the model instance associated with the attacher.
+        def record; context[:record]; end
+        # Returns the attachment name associated with the attacher.
+        def name;   context[:name];   end
 
         # Receives the attachment value from the form.  If it receives a JSON
         # string or a hash, it will assume this refrences an already cached
@@ -623,12 +627,6 @@ class Shrine
         # It writes to record's `<attachment>_data` column.
         def write(value)
           record.send(:"#{name}_data=", value)
-        end
-
-        # The context that's sent to Shrine on upload and delete. It holds the
-        # record and the name of the attachment.
-        def context
-          {name: name, record: record}
         end
 
         # Temporary method used for transitioning from :phase to :action.

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow changing `Shrine::Attacher#context` once the attacher is instantiated (janko-m)
+
 * Make `Attacher#read` for reading the attachment column public (janko-m)
 
 * Don't rely on the `#id` writer on a model instance in backgrounding plugin (janko-m)
