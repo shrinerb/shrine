@@ -1,6 +1,6 @@
 # Shrine
 
-Shrine is a toolkit for handling file uploads in Ruby applications.
+Shrine is a toolkit for file attachments in Ruby applications.
 
 If you're new, you're encouraged to read the [introductory blog post] which
 explains the motivation behind Shrine.
