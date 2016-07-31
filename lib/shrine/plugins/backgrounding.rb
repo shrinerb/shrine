@@ -193,7 +193,7 @@ class Shrine
         # Updates with the new file only if the attachment hasn't changed.
         def swap(new_file)
           reloaded = self.class.find_record(record.class, record.id)
-          return if reloaded.nil? || reloaded.send(:"#{name}_data") != read
+          return if reloaded.nil? || self.class.new(reloaded, name).read != read
           super
         end
       end
