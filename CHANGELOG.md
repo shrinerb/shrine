@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `Attacher#recache` from the recache plugin public for standalone usage (janko-m)
+
 * Allow changing `Shrine::Attacher#context` once the attacher is instantiated (janko-m)
 
 * Make `Attacher#read` for reading the attachment column public (janko-m)

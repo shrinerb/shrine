@@ -16,14 +16,23 @@ class Shrine
     #     process(:store) do |io, context|
     #       # perform more expensive processing
     #     end
+    #
+    # Recaching will be automatically triggered in a "before save" callback,
+    # but if you're using the attacher directly, you can call it manually:
+    #
+    #     attacher.recache if attacher.attached?
     module Recache
       module AttacherMethods
         def save
+          recache
+          super
+        end
+
+        def recache
           if cached?
             recached = cache!(get, action: :recache)
             _set(recached)
           end
-          super
         end
       end
     end
