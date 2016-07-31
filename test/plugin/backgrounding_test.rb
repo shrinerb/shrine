@@ -192,7 +192,7 @@ describe Shrine::Plugins::Backgrounding do
       data = @attacher.class.dump(@attacher)
       attacher = @attacher.class.load(data)
       assert_equal @attacher.record.class, attacher.record.class
-      assert_equal @attacher.record.id, attacher.record.id
+      assert_equal @attacher.record.id.to_s, attacher.record.id
     end
 
     it "loads attacher from shrine_class if available" do

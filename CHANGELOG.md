@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't rely on the `#id` writer on a model instance in backgrounding plugin (janko-m)
+
 * Don't make `Attacher#swap` private in sequel and activerecord plugins (janko-m)
 
 * Set default UNIX permissions to 0644 for files and 0755 for directories (janko-m)

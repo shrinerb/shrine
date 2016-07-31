@@ -127,8 +127,12 @@ class Shrine
         def load(data)
           record_class, record_id = data["record"]
           record_class = Object.const_get(record_class)
-          record = find_record(record_class, record_id) ||
-            record_class.new.tap { |object| object.id = record_id }
+
+          record   = find_record(record_class, record_id)
+          record ||= record_class.new.tap do |instance|
+            # so that the id is always included in file deletion logs
+            instance.singleton_class.send(:define_method, :id) { record_id }
+          end
 
           name = data["name"].to_sym
 
