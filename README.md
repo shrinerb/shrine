@@ -59,7 +59,8 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-And add attachment fields to the Photo form:
+You can then allow your users to attach files through the form (the hidden field
+is explained later):
 
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
@@ -75,8 +76,17 @@ And add attachment fields to the Photo form:
 <% end %>
 ```
 
-Now when a Photo is created with the image attached, you can get the URL to
-the image:
+Now assigning the request parameters in your router/controller will
+automatically handle the image attachment:
+
+```rb
+post "/photos" do
+  Photo.create(params[:photo])
+end
+```
+
+When a Photo is created with the image attached, you can display the image via
+its URL:
 
 ```erb
 <img src="<%= @photo.image_url %>">
@@ -340,7 +350,7 @@ class DocumentUploader < Shrine
 
   Attacher.validate do
     # Evaluated inside an instance of Shrine::Attacher.
-    if record.resume?
+    if record.applicant?
       validate_max_size 10*1024*1024, message: "is too large (max is 10 MB)"
       validate_mime_type_inclusion ["application/pdf"]
     end
