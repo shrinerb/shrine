@@ -1,7 +1,7 @@
 # Shrine for CarrierWave Users
 
 This guide is aimed at helping CarrierWave users transition to Shrine. First we
-will explain some key differences in the design between the two libraries.
+will explain some key differences in design between the two libraries.
 Afterwards we'll show how you can transition an existing app that uses
 CarrierWave to Shrine. Then we finish off with an extensive reference of
 CarrierWave's interface and what is the equivalent in Shrine.
@@ -18,7 +18,6 @@ CarrierWave.configure do |config|
     provider:              "AWS",
     aws_access_key_id:     "abc",
     aws_secret_access_key: "xyz",
-    region:                "eu-west-1",
   }
   config.fog_directory = "my-bucket"
 end
@@ -26,7 +25,6 @@ end
 ```rb
 Shrine.storages[:store] = Shrine::Storage::S3.new(
   bucket:                "my-bucket",
-  region:                "eu-west-1",
   aws_access_key_id:     "abc",
   aws_secret_access_key: "xyz",
 )
@@ -103,18 +101,25 @@ class ImageUploader < Shrine
 end
 ```
 
-This allows you to have full control over how files are processed, and specify
-exactly which files are processed from which, conditionals, or even have
-processing parallelized.
+This allows you to fully optimize processing, because you can easily specify
+which files are processed from which, and even add parallelization.
 
 CarrierWave performs processing before validations, which is a huge security
 issue, as it allows users to give arbitrary files to your processing tool, even
 if you have validations. Shrine performs processing after validations.
 
+#### Reprocessing versions
+
+Shrine doesn't have a built-in way of regenerating versions, because that has
+to be written and optimized differently depending on whether you're adding or
+removing a version, what ORM are you using, how many records there are in the
+database etc. The [Reprocessing versions] guide provides some useful tips on
+this task.
+
 ### Validations
 
 Like with processing, validations in Shrine are also defined and performed on
-the instance-level.
+instance-level:
 
 ```rb
 class ImageUploader < CarrierWave::Uploader::Base
@@ -139,7 +144,7 @@ class ImageUploader < Shrine
   Attacher.validate do
     validate_extension_inclusion [/jpe?g/, "gif", "png"]
     validate_mime_type_inclusion %w[image/jpeg image/gif image/png]
-    validate_max_size 10*1024*1024
+    validate_max_size 10*1024*1024 unless record.admin?
   end
 end
 ```
@@ -189,7 +194,6 @@ photo.image_data #=>
 }
 
 photo.image.original_filename #=> "nature.png"
-photo.image.extension         #=> "png"
 photo.image.size              #=> 49349138
 photo.image.mime_type         #=> "image/png"
 ```
@@ -198,8 +202,8 @@ This is much more powerful than storing only the filename like CarrierWave
 does, as it allows you to also store any additional metadata that you might
 want to extract.
 
-Unlike CarrierWave, Shrine also stores all information about the processed
-versions, making versions first-class citizens:
+Unlike CarrierWave, Shrine will store this information for each processed
+version, making them first-class citizens:
 
 ```rb
 photo.image[:original]       #=> #<Shrine::UploadedFile>
@@ -210,10 +214,10 @@ photo.image[:thumb].width    #=> 300
 ```
 
 Also, since CarrierWave stores only the filename, it has to recalculate the
-full location each time it wants to generate the URL. That makes it difficult
-to move files to a new location, because changing how the location is generated
-will invalidate all existing files. Shrine calculates the location only once
-and saves it to the column.
+full location each time it wants to generate the URL. That makes it really
+difficult to move files to a new location, because changing how the location is
+generated will now cause incorrect URLs to be generated for all existing files.
+Shrine calculates the whole location only once and saves it to the column.
 
 ### Multiple uploads
 
@@ -641,6 +645,6 @@ multipart or not.
 
 [image_processing]: https://github.com/janko-m/image_processing
 [example app]: https://github.com/janko-m/shrine-example
-[Regenerating versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [shrine-fog]: https://github.com/janko-m/shrine-fog
 [direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html

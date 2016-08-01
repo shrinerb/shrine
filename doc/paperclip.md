@@ -1,54 +1,97 @@
 # Shrine for Paperclip Users
 
-This guide is aimed at helping Paperclip users transition to Shrine. We will
-first generally mention what are the key differences. Afterwards there is a
-complete reference of Paperclip's interface and what is the equivalent in
-Shrine.
+This guide is aimed at helping Paperclip users transition to Shrine. First we
+will explain some key differences in design between the two libraries.
+Afterwards we'll show how you can transition an existing app that uses
+Paperclip to Shrine. Then we finish off with an extensive reference of
+Paperclip's interface and what is the equivalent in Shrine.
+
+## Storages
+
+While in Paperclip you configure storage in the model, a Shrine storage is just
+a class which you configure individually:
+
+```rb
+class Photo < ActiveRecord::Base
+  has_attached_file :image,
+    storage: :s3,
+    s3_credentials: {
+      bucket:            "my-bucket",
+      access_key_id:     "abc",
+      secret_access_key: "xyz",
+    },
+    s3_host_alias: "http://abc123.cloudfront.net",
+end
+```
+```rb
+Shrine.storages[:store] = Shrine::Storage::S3.new(
+  bucket:            "my-bucket",
+  access_key_id:     "abc",
+  secret_access_key: "xyz",
+  host:              "http://abc123.cloudfront.net",
+)
+```
+
+Paperclip doesn't have a concept of "temporary" storage, so it cannot retain
+uploaded files in case of validation errors, and [direct S3 uploads] cannot be
+implemented in a safe way. Shrine conceptually separates a "temporary" and
+"permanent" storage:
+
+```rb
+Shrine.storages = {
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
+  store: Shrine::Storage::S3.new(bucket: "my-bucket", **s3_options),
+}
+```
 
 ## Uploaders
 
-While in Paperclip you write your uploading logic as a list of options inside
-your models, in Shrine you instead have "uploader" classes where you put all
-your uploading logic.
+While in Paperclip you define all your uploading logic inside your models,
+Shrine takes a more object-oriented approach and lets you define uploading logic
+inside "uploader" classes:
 
 ```rb
-class ImageUploader < Shrine
-  plugin :validation_helpers
-
-  Attacher.validate do
-    validate_mime_type_inclusion [/^image/]
-  end
-
-  def process(io, context)
-    # processing
-  end
+class Photo < ActiveRecord::Base
+  has_attached_file :image
 end
 ```
 
-Unlike Paperclip, in Shrine you can use these uploaders directly if you have
-to do some lower-level logic. First you need to register storages, and then
-you can instantiate uploaders with a specific storage:
-
 ```rb
-require "shrine/storage/file_system"
+class ImageUploader < Shrine
+  # ...
+end
 
-Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
-}
+class Photo < ActiveRecord::Base
+  include ImageUploader[:image]
+end
 ```
+
+Among other things, this allows you to use uploader classes standalone, which
+gives you more power:
+
 ```rb
-uploader = Shrine.new(:cache)
+uploader = ImageUploader.new(:store)
 uploaded_file = uploader.upload(File.open("nature.jpg"))
-uploaded_file.path #=> "/uploads/cache/s9ffdkfd02kd.jpg"
-uploaded_file.original_filename #=> "nature.jpg"
+uploaded_file     #=> #<Shrine::UploadedFile>
+uploaded_file.url #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
 ```
 
 ### Processing
 
-Unlike Paperclip, in Shrine you define and perform processing on
-instance-level, which gives a lot of flexibility. As the result you can return
-a single file or a hash of versions:
+In contrast to Paperclip's static options, in Shrine you define and perform
+processing on instance-level. The result of processing can be a single file
+or a hash of versions:
+
+```rb
+class Photo < ActiveRecord::Base
+  has_attached_file :image,
+    styles: {
+      large:  "800x800>",
+      medium: "500x500>",
+      small:  "300x300>",
+    }
+end
+```
 
 ```rb
 require "image_processing/mini_magick" # part of the "image_processing" gem
@@ -59,100 +102,151 @@ class ImageUploader < Shrine
   plugin :versions
 
   process(:store) do |io, context|
-    thumbnail = resize_to_limit(io.download, 300, 300)
-    {original: io, thumbnail: thumbnail}
+    size_800 = resize_to_limit(io.download, 800, 800)
+    size_500 = resize_to_limit(size_800, 500, 500)
+    size_300 = resize_to_limit(size_500, 300, 300)
+
+    {large: size_800, medium: size_500, small: size_300}
   end
 end
 ```
 
-#### Regenerating versions
+This allows you to fully optimize processing, because you can easily specify
+which files are processed from which, and even add parallelization.
 
-Shrine doesn't have a built-in way of regenerating versions, because that's
-very individual and depends on what versions you want regenerated, what ORM are
-you using, how many records there are in your database etc. The [Regenerating
-versions] guide provides some useful tips on this task.
+#### Reprocessing versions
 
-### Logging
-
-In Paperclip you enable logging by setting `Paperclip.options[:log] = true`.
-Shrine also provides logging with the `logging` plugin:
-
-```rb
-Shrine.plugin :logging
-```
-
-## Attachments
-
-The uploaders can then integrate with models by generating attachment modules
-which are included into the models. Shrine ships with plugins for Sequel and
-ActiveRecord ORMs, so you first have to load the one for your ORM:
-
-```rb
-Shrine.plugin :sequel       # If you're using Sequel
-Shrine.plugin :activerecord # If you're using ActiveRecord
-```
-
-Now you use your uploaders to generate "attachment modules", which you can then
-include in your models:
-
-```rb
-class User < Sequel::Model
-  include ImageUploader[:avatar] # adds `avatar`, `avatar=` and `avatar_url` methods
-end
-```
-
-Unlike in Paperclip which requires you to have 4 `<attachment>_*` columns, in
-Shrine you only need to have an `<attachment>_data` text column, and all
-information will be stored there (in the above case `avatar_data`).
-
-The attachments use `:store` for storing the files, and `:cache` for caching.
-The latter is something Paperclip doesn't do, but caching before storing is
-really great because the file then persists on validation errors, and also in
-backgrounding you can show the users the cached version before the file is
-finished storing.
+Shrine doesn't have a built-in way of regenerating versions, because that has
+to be written and optimized differently depending on whether you're adding or
+removing a version, what ORM are you using, how many records there are in the
+database etc. The [Reprocessing versions] guide provides some useful tips on
+this task.
 
 ### Validations
 
-In Shrine validations are done inside uploader classes, and validation methods
-are provided by the `validation_helpers` plugin:
+Validations are also defined inside the uploader on the instance-level, which
+allows you to do conditional validations:
+
+```rb
+class Photo < ActiveRecord::Base
+  has_attached_file :image
+  validates_attachment :image,
+    content_type: {content_type: %w[image/jpeg image/png image/gif]},
+    size: {in: 0..10.megabytes}
+end
+```
 
 ```rb
 class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_max_size 5*1024*1024
-    validate_mime_type_inclusion [/^image/]
-  end
-end
-```
-
-For presence validation you should use the one provided by your ORM:
-
-```rb
-class User < Sequel::Model
-  include ImageUploader[:avatar]
-
-  def validate
-    validates_presence [:avatar]
+    validate_mime_type_inclusion %w[image/jpeg image/gif image/png]
+    validate_max_size 10*1024*1024 unless record.admin?
   end
 end
 ```
 
 #### MIME type spoofing
 
-By default Shrine will extract the MIME type from the `Content-Type` header of
-the uploaded file, which is solely determined from the file extension, so it's
-prone to spoofing. Shrine provides the `determine_mime_type` plugin which
-determines the MIME type from the file *contents* instead:
+Paperclip detects MIME type spoofing, in the way that it extracts the MIME type
+from file contents using the `file` command and MimeMagic, compares it to the
+value that the `mime-types` gem determined from file extension, and raises a
+validation error if these two values mismatch.
+
+However, this turned out to be very problematic, leading to a lot of valid
+files being classified as "spoofed", because of the differences of MIME
+type databases between the `mime-types` gem, `file` command, and MimeMagic.
+
+Shrine takes a different approach here. By default it will extract MIME
+type from file extension, but it has a plugin for determining MIME type from
+file contents, which by default uses the `file` command:
 
 ```rb
 Shrine.plugin :determine_mime_type
 ```
 
-By default the UNIX [file] utility is used, but you can choose other analyzers.
-Unlike Paperclip, you won't get any errors if the MIME type is "spoofed",
-instead it's better if you simply validate allowed MIME types.
+However, it doesn't try to compare this value with the one from file extension,
+it just means that now this value will be used for your MIME type validations.
+With this approach you can still prevent malicious files from being attached,
+but without the possibility of false negatives.
+
+### Logging
+
+In Paperclip you enable logging by setting `Paperclip.options[:log] = true`,
+however, this only logs ImageMagick commands. Shrine has full logging support,
+which measures processing, uploading and deleting individually, along with
+context for debugging:
+
+```rb
+Shrine.plugin :logging
+```
+```
+2015-10-09T20:06:06.676Z #25602: STORE[cache] ImageUploader[:avatar] User[29543] 1 file (0.1s)
+2015-10-09T20:06:06.854Z #25602: PROCESS[store]: ImageUploader[:avatar] User[29543] 1-3 files (0.22s)
+2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)
+```
+
+## Attachments
+
+While Paperclip is designed to only integrate with ActiveRecord, Shrine is
+designed to be completely generic and integrate with any ORM. It ships with
+plugins for ActiveRecord and Sequel:
+
+```rb
+Shrine.plugin :activerecord # if you're using ActiveRecord
+Shrine.plugin :sequel       # if you're using Sequel
+```
+
+Instead of giving you class methods for defining attachments, in Shrine you
+generate attachment modules which you simply include in your models, which
+gives your models similar set of methods that Paperclip gives:
+
+```rb
+class Photo < Sequel::Model
+  include ImageUploader[:image]
+end
+```
+
+### Attachment column
+
+Unlike in Paperclip which requires you to have 4 `<attachment>_*` columns, in
+Shrine you only need to have a single `<attachment>_data` text column (in the
+above case `image_data`), and all information will be stored there.
+
+```rb
+photo.image_data #=>
+{
+  "storage" => "store",
+  "id" => "photo/1/image/0d9o8dk42.png",
+  "metadata" => {
+    "filename"  => "nature.png",
+    "size"      => 49349138,
+    "mime_type" => "image/png"
+  }
+}
+
+photo.image.original_filename #=> "nature.png"
+photo.image.size              #=> 49349138
+photo.image.mime_type         #=> "image/png"
+```
+
+Unlike Paperclip, Shrine will store this information for each processed
+version, making them first-class citizens:
+
+```rb
+photo.image[:original]       #=> #<Shrine::UploadedFile>
+photo.image[:original].width #=> 800
+
+photo.image[:thumb]          #=> #<Shrine::UploadedFile>
+photo.image[:thumb].width    #=> 300
+```
+
+Also, since Paperclip stores only the filename, it has to recalculate the full
+location each time it wants to generate the URL. That makes it really difficult
+to move files to a new location, because changing how the location is generated
+will now cause incorrect URLs to be generated for all existing files. Shrine
+calculates the whole location only once and saves it to the column.
 
 ### Hooks/Callbacks
 
@@ -411,4 +505,5 @@ Shrine doesn't have an equivalent to this, but the [Regenerating versions]
 guide provides some useful tips on how to do this.
 
 [file]: http://linux.die.net/man/1/file
-[Regenerating versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[direct S3 uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html

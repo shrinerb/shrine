@@ -69,7 +69,6 @@ add the form fields needed for attaching files:
 </form>
 
 <!-- Rails: -->
-
 <%= form_for @photo do |f| %>
   <%= f.hidden_field :image, value: @photo.cached_image_data %>
   <%= f.file_field :image %>
