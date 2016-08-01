@@ -62,9 +62,9 @@ representation of an uploaded file:
 }
 ```
 
-* `id` -- location of the file on S3 (minus the `:prefix`)
-* `storage` -- direct uploads typically use the `:cache` storage
-* `metadata` -- hash of metadata extracted from the file
+* `id` – location of the file on S3 (minus the `:prefix`)
+* `storage` – direct uploads typically use the `:cache` storage
+* `metadata` – hash of metadata extracted from the file
 
 ## Strategy A (dynamic)
 

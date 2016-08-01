@@ -1,49 +1,90 @@
 # Shrine for CarrierWave Users
 
-This guide is aimed at helping CarrierWave users transition to Shrine. First it
-explains some key differences in the design between the two libraries.
-Afterwards it explains how you can transition an existing app that uses
-CarrierWave to Shrine. It then finishes off with an extensive reference of
+This guide is aimed at helping CarrierWave users transition to Shrine. First we
+will explain some key differences in the design between the two libraries.
+Afterwards we'll show how you can transition an existing app that uses
+CarrierWave to Shrine. Then we finish off with an extensive reference of
 CarrierWave's interface and what is the equivalent in Shrine.
 
-## Uploaders
+## Storage
 
-Shrine has a concept of uploaders similar to CarrierWave's, which allows you to
-have different uploading logic for different types of files:
+While in CarrierWave you configure storage in global configuration, in Shrine
+storage is a class which you can pass options to during initialization:
+
+```rb
+CarrierWave.configure do |config|
+  config.fog_provider = "fog/aws"
+  config.fog_credentials = {
+    provider:              "AWS",
+    aws_access_key_id:     "abc",
+    aws_secret_access_key: "xyz",
+    region:                "eu-west-1",
+  }
+  config.fog_directory = "my-bucket"
+end
+```
+```rb
+Shrine.storages[:store] = Shrine::Storage::S3.new(
+  bucket:                "my-bucket",
+  region:                "eu-west-1",
+  aws_access_key_id:     "abc",
+  aws_secret_access_key: "xyz",
+)
+```
+
+In CarrierWave temporary storage cannot be configured; it saves and retrieves
+files from the filesystem, you can only set the directory. With Shrine both
+temporary (`:cache`) and permanent (`:store`) storage are first-class citizens
+and fully configurable, so you can also have files *cached* on S3 (preferrably
+via [direct uploads]):
+
+```rb
+Shrine.storages = {
+  cache: Shrine::Storages::S3.new(prefix: "cache", **s3_options),
+  store: Shrine::Storages::S3.new(prefix: "store", **s3_options),
+}
+```
+
+## Uploader
+
+Shrine shares CarrierWave's concept of *uploaders*, classes which encapsulate
+file attachment logic for different file types:
 
 ```rb
 class ImageUploader < Shrine
-  # uploading logic
+  # attachment logic
 end
 ```
 
-While in CarrierWave you choose a storages for uploaders directly, in Shrine
-you first register storages globally (under a symbol name), and then you can
-instantiate uploaders with a specific storage.
+However, uploaders in CarrierWave are very broad; in addition to uploading and
+deleting files, they also represent the uploaded file. Shrine has a separate
+`Shrine::UploadedFile` class which represents the uploaded file.
 
 ```rb
-require "shrine/storage/file_system"
-
-Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
-}
+uploader = ImageUploader.new(:store)
+uploaded_file = uploader.upload(image)
+uploaded_file          #=> #<Shrine::UploadedFile>
+uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
+uploaded_file.download #=> #<Tempfile>
 ```
-```rb
-cache_uploader = Shrine.new(:cache)
-store_uploader = Shrine.new(:store)
-```
-
-CarrierWave uses symbols for referencing storages (`:file`, `:fog`, ...), but
-in Shrine storages are simple Ruby classes which you can instantiate directly.
-This makes storages much more flexible, because this way they can have their
-own options that are specific to them.
 
 ### Processing
 
-In Shrine processing is defined and performed on the instance-level, which
-gives a lot of flexibility. You can return a single processed file or a hash of
-versions:
+In contrast to CarrierWave's class-level DSL, in Shrine processing is defined
+and performed on the instance-level. The result of processing can be a single
+file or a hash of versions:
+
+```rb
+class ImageUploader < CarrierWave::Uploader::Base
+  include CarrierWave::MiniMagick
+
+  process resize_to_fit: [800, 800]
+
+  version :thumb, if: -> { model.is_a?(Photo) } do
+    process resize_to_fit: [300, 300]
+  end
+end
+```
 
 ```rb
 require "image_processing/mini_magick" # part of the "image_processing" gem
@@ -54,44 +95,134 @@ class ImageUploader < Shrine
   plugin :versions
 
   process(:store) do |io, context|
-    thumbnail = resize_to_limit(io.download, 300, 300)
-    {original: io, thumbnail: thumbnail}
+    versions = {}
+    versions[:original] = resize_to_limit(io.download, 800, 800)
+    versions[:thumb]    = resize_to_limit(original, 300, 300) if context[:record].is_a?(Photo)
+    versions
+  end
+end
+```
+
+This allows you to have full control over how files are processed, and specify
+exactly which files are processed from which, conditionals, or even have
+processing parallelized.
+
+CarrierWave performs processing before validations, which is a huge security
+issue, as it allows users to give arbitrary files to your processing tool, even
+if you have validations. Shrine performs processing after validations.
+
+### Validations
+
+Like with processing, validations in Shrine are also defined and performed on
+the instance-level.
+
+```rb
+class ImageUploader < CarrierWave::Uploader::Base
+  def extension_whitelist
+    %w[jpg jpeg gif png]
+  end
+
+  def content_type_whitelist
+    /image\//
+  end
+
+  def size_range
+    0..(10*1024*1024)
+  end
+end
+```
+
+```rb
+class ImageUploader < Shrine
+  plugin :validation_helpers
+
+  Attacher.validate do
+    validate_extension_inclusion [/jpe?g/, "gif", "png"]
+    validate_mime_type_inclusion %w[image/jpeg image/gif image/png]
+    validate_max_size 10*1024*1024
   end
 end
 ```
 
 ## Attachments
 
-Like CarrierWave, Shrine also provides integrations with ORMs, it ships with
-plugins for both Sequel and ActiveRecord (but it can also be used with simple
-PORO models).
+Like CarrierWave, Shrine also provides integrations with ORMs. It ships with
+plugins for both Sequel and ActiveRecord, but can also be used with just PORO
+models.
 
 ```rb
-Shrine.plugin :sequel       # If you're using Sequel
-Shrine.plugin :activerecord # If you're using ActiveRecord
+Shrine.plugin :sequel       # if you're using Sequel
+Shrine.plugin :activerecord # if you're using ActiveRecord
 ```
 
 Instead of giving you class methods for "mounting" uploaders, in Shrine you
-generate attachment modules which you simply include in your models:
+generate attachment modules which you simply include in your models, which
+gives your models similar set of methods that CarrierWave gives:
 
 ```rb
-class User < Sequel::Model
-  include ImageUploader[:avatar] # adds `avatar`, `avatar=` and `avatar_url` methods
+class Photo < ActiveRecord::Base
+  extend CarrierWave::ActiveRecord # done automatically by CarrierWave
+  mount_uploader :image, ImageUploader
+end
+```
+```rb
+class Photo < ActiveRecord::Base
+  include ImageUploader[:avatar]
 end
 ```
 
-You models are required to have the `<attachment>_data` column, in the above
-case `avatar_data`. Shrine stores storage, location, and additional metadata of
-the uploaded file to that column.
+### Attachment column
+
+You models are required to have the `<attachment>_data` column, which Shrine
+uses to save storage, location, and metadata of the uploaded file.
+
+```rb
+photo.image_data #=>
+{
+  "storage" => "store",
+  "id" => "photo/1/image/0d9o8dk42.png",
+  "metadata" => {
+    "filename"  => "nature.png",
+    "size"      => 49349138,
+    "mime_type" => "image/png"
+  }
+}
+
+photo.image.original_filename #=> "nature.png"
+photo.image.extension         #=> "png"
+photo.image.size              #=> 49349138
+photo.image.mime_type         #=> "image/png"
+```
+
+This is much more powerful than storing only the filename like CarrierWave
+does, as it allows you to also store any additional metadata that you might
+want to extract.
+
+Unlike CarrierWave, Shrine also stores all information about the processed
+versions, making versions first-class citizens:
+
+```rb
+photo.image[:original]       #=> #<Shrine::UploadedFile>
+photo.image[:original].width #=> 800
+
+photo.image[:thumb]          #=> #<Shrine::UploadedFile>
+photo.image[:thumb].width    #=> 300
+```
+
+Also, since CarrierWave stores only the filename, it has to recalculate the
+full location each time it wants to generate the URL. That makes it difficult
+to move files to a new location, because changing how the location is generated
+will invalidate all existing files. Shrine calculates the location only once
+and saves it to the column.
 
 ### Multiple uploads
 
 Shrine doesn't have support for multiple uploads like CarrierWave does, instead
-it expects that you will implement multiple uploads yourself using a separate
-model. This is a good thing, because the implementation is specific to the ORM
-you're using, and it's analogous to how you would implement adding items to any
-dynamic one-to-many relationship. Take a look at the [example app] which
-demonstrates how easy it is to implement multiple uploads.
+it expects that you will attach each file to a separate database record. This
+is a good thing, because the implementation is specific to the ORM you're
+using, and it's analogous to how you would implement any nested one-to-many
+associations. Take a look at the [example app] which demonstrates how easy it
+is to implement multiple uploads.
 
 ## Migrating from CarrierWave
 
@@ -512,3 +643,4 @@ multipart or not.
 [example app]: https://github.com/janko-m/shrine-example
 [Regenerating versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [shrine-fog]: https://github.com/janko-m/shrine-fog
+[direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html

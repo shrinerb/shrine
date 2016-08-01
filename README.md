@@ -60,7 +60,7 @@ end
 ```
 
 This creates an `image` attachment attribute which accepts files. Let's now
-add the required form fields for attaching files:
+add the form fields needed for attaching files:
 
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
