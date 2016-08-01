@@ -76,10 +76,14 @@ file or a hash of versions:
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  process resize_to_fit: [800, 800]
+  process resize_to_limit: [800, 800]
 
-  version :thumb, if: -> { model.is_a?(Photo) } do
-    process resize_to_fit: [300, 300]
+  version :medium do
+    process resize_to_limit: [500, 500]
+  end
+
+  version :small, from_version: :medium do
+    process resize_to_limit: [300, 300]
   end
 end
 ```
@@ -93,10 +97,11 @@ class ImageUploader < Shrine
   plugin :versions
 
   process(:store) do |io, context|
-    versions = {}
-    versions[:original] = resize_to_limit(io.download, 800, 800)
-    versions[:thumb]    = resize_to_limit(original, 300, 300) if context[:record].is_a?(Photo)
-    versions
+    size_800 = resize_to_limit(io.download, 800, 800)
+    size_500 = resize_to_limit(size_800,    500, 500)
+    size_300 = resize_to_limit(size_500,    300, 300)
+
+    {original: size_800, medium: size_500, small: size_300}
   end
 end
 ```
@@ -183,15 +188,15 @@ uses to save storage, location, and metadata of the uploaded file.
 
 ```rb
 photo.image_data #=>
-{
-  "storage" => "store",
-  "id" => "photo/1/image/0d9o8dk42.png",
-  "metadata" => {
-    "filename"  => "nature.png",
-    "size"      => 49349138,
-    "mime_type" => "image/png"
-  }
-}
+# {
+#   "storage" => "store",
+#   "id" => "photo/1/image/0d9o8dk42.png",
+#   "metadata" => {
+#     "filename"  => "nature.png",
+#     "size"      => 49349138,
+#     "mime_type" => "image/png"
+#   }
+# }
 
 photo.image.original_filename #=> "nature.png"
 photo.image.size              #=> 49349138

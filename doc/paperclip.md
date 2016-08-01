@@ -103,8 +103,8 @@ class ImageUploader < Shrine
 
   process(:store) do |io, context|
     size_800 = resize_to_limit(io.download, 800, 800)
-    size_500 = resize_to_limit(size_800, 500, 500)
-    size_300 = resize_to_limit(size_500, 300, 300)
+    size_500 = resize_to_limit(size_800,    500, 500)
+    size_300 = resize_to_limit(size_500,    300, 300)
 
     {large: size_800, medium: size_500, small: size_300}
   end
@@ -216,15 +216,15 @@ above case `image_data`), and all information will be stored there.
 
 ```rb
 photo.image_data #=>
-{
-  "storage" => "store",
-  "id" => "photo/1/image/0d9o8dk42.png",
-  "metadata" => {
-    "filename"  => "nature.png",
-    "size"      => 49349138,
-    "mime_type" => "image/png"
-  }
-}
+# {
+#   "storage" => "store",
+#   "id" => "photo/1/image/0d9o8dk42.png",
+#   "metadata" => {
+#     "filename"  => "nature.png",
+#     "size"      => 49349138,
+#     "mime_type" => "image/png"
+#   }
+# }
 
 photo.image.original_filename #=> "nature.png"
 photo.image.size              #=> 49349138
