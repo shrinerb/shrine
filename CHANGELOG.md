@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add copy plugin for copying files from one record to another (janko-m)
+
 * Disable moving when uploading stored file to backup storage (janko-m)
 
 * Make `Attacher#recache` from the recache plugin public for standalone usage (janko-m)

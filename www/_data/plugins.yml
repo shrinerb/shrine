@@ -18,6 +18,10 @@ Model:
     path: CachedAttachmentData.html
     description: Adds a convenient model method for the hidden form cache field.
   -
+    name: copy
+    path: Copy.html
+    description: Allows copying attachments from one record to another.
+  -
     name: data_uri
     path: DataUri.html
     description: Adds ability to upload files via a data URI.

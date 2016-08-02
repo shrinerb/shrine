@@ -64,7 +64,7 @@ class Shrine
 
         # Upload the stored file to the backup storage.
         def store_backup!(stored_file)
-          options = _equalize_phase_and_action(action: :backup)
+          options = _equalize_phase_and_action(action: :backup, move: false)
           backup_store.upload(stored_file, context.merge(options))
         end
 
