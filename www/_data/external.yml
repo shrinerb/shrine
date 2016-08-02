@@ -72,7 +72,7 @@
     items:
       -
         name: Roda example app (official)
-        url: https://github.com/janko-m/shrine-example
+        url: https://github.com/janko-m/shrine/tree/master/demo
       -
         name: Rails example app
         url: https://github.com/erikdahlstrand/shrine-rails-example

@@ -125,7 +125,7 @@ $('input[type=file]').prev().val(JSON.stringify(image))
 ```
 
 It's generally a good idea to disable the submit button until the file is
-uploaded, as well as display a progress bar. See the [example app] for a
+uploaded, as well as display a progress bar. See the [demo app] for a
 working implementation of multiple direct S3 uploads.
 
 ## Strategy B (static)
@@ -221,7 +221,7 @@ end
 ```
 
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
-[example app]: https://github.com/janko-m/shrine-example
+[demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Dropzone]: https://github.com/enyo/dropzone
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode

@@ -230,8 +230,8 @@ Shrine doesn't have support for multiple uploads like CarrierWave does, instead
 it expects that you will attach each file to a separate database record. This
 is a good thing, because the implementation is specific to the ORM you're
 using, and it's analogous to how you would implement any nested one-to-many
-associations. Take a look at the [example app] which demonstrates how easy it
-is to implement multiple uploads.
+associations. Take a look at the [demo app] which shows how easy it is to
+implement multiple uploads.
 
 ## Migrating from CarrierWave
 
@@ -649,7 +649,7 @@ No equivalent, it depends on your application whether you need the form to be
 multipart or not.
 
 [image_processing]: https://github.com/janko-m/image_processing
-[example app]: https://github.com/janko-m/shrine-example
+[demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [shrine-fog]: https://github.com/janko-m/shrine-fog
 [direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html

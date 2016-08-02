@@ -183,7 +183,7 @@ details read the [Direct Uploads to S3] guide.
 ### Multiple uploads
 
 Shrine doesn't have a built-in solution for accepting multiple uploads, but
-it's actually very easy to do manually, see the [example app] on how you can do
+it's actually very easy to do manually, see the [demo app] on how you can do
 multiple uploads directly to S3.
 
 ## Migrating from Refile
@@ -393,4 +393,4 @@ No equivalent currently exists in Shrine.
 [image_processing]: https://github.com/janko-m/image_processing
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[example app]: https://github.com/janko-m/shrine-example
+[demo app]: https://github.com/janko-m/shrine/tree/master/demo

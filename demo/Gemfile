@@ -1,0 +1,25 @@
+source "https://rubygems.org"
+
+# Web framework
+gem "roda", "~> 2.15"
+gem "tilt"
+gem "rack_csrf"
+
+# Database
+gem "sequel"
+gem "sqlite3"
+
+# Attachments
+gem "shrine", path: ".."
+gem "aws-sdk", "~> 2.1"
+gem "dotenv"
+
+# Processing
+gem "image_processing"
+gem "mini_magick"
+
+# Background jobs
+gem "sucker_punch", "~> 2.0"
+
+# Debugging
+gem "pry-byebug"

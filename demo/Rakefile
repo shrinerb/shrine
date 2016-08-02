@@ -1,0 +1,10 @@
+require "sequel"
+
+namespace :db do
+  task :migrate, [:version] do |task, args|
+    db = Sequel.sqlite("database.sqlite3")
+    Sequel.extension :migration
+    version = Integer(args[:version]) if args[:version]
+    Sequel::Migrator.apply(db, "db/migrations", version)
+  end
+end

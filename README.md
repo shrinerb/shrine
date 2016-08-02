@@ -556,8 +556,8 @@ $('[type="file"]').fileupload({
 Along with the upload route, this endpoint also includes a route for generating
 presigns for direct uploads to 3rd-party services like Amazon S3. See the
 [direct_upload] plugin documentation for more details, as well as the
-[Roda](https://github.com/janko-m/shrine-example)/[Rails](https://github.com/erikdahlstrand/shrine-rails-example)
-example apps which demonstrate multiple uploads directly to S3.
+[Roda](/demo)/[Rails](https://github.com/erikdahlstrand/shrine-rails-example)
+demo apps which implement multiple uploads directly to S3.
 
 ## Backgrounding
 
@@ -679,7 +679,6 @@ The gem is available as open source under the terms of the [MIT License].
 [Refile]: https://github.com/refile/refile
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [MIT License]: http://opensource.org/licenses/MIT
-[example app]: https://github.com/janko-m/shrine-example
 [ships with over 35 plugins]: http://shrinerb.com#plugins
 [introductory blog post]: http://twin.github.io/introducing-shrine/
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html

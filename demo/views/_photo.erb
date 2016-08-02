@@ -1,0 +1,9 @@
+<% name = "album[photos_attributes][#{idx}]" %>
+
+<li>
+  <div style="display: inline-block">
+    <img src="<%= photo.image_url(:small) %>" width=300 class="img-thumbnail"><br>
+    <input type="hidden" name="<%= name %>[id]", value=<%= photo.id %>>
+    <span class="pull-right">Remove photo: <input type="checkbox" name="<%= name %>[_delete]" value="true"></span>
+  </div>
+</li>
