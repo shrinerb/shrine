@@ -1,10 +1,11 @@
 # Shrine for CarrierWave Users
 
-This guide is aimed at helping CarrierWave users transition to Shrine. First we
-will explain some key differences in design between the two libraries.
-Afterwards we'll show how you can transition an existing app that uses
-CarrierWave to Shrine. Then we finish off with an extensive reference of
-CarrierWave's interface and what is the equivalent in Shrine.
+This guide is aimed at helping CarrierWave users transition to Shrine, and it
+consists of three parts:
+
+1. Explanation of the key differences in design between CarrierWave and Shrine
+2. Instructions how to migrate and existing app that uses CarrierWave to Shrine
+3. Extensive reference of CarrierWave's interface with Shrine equivalents
 
 ## Storage
 
@@ -89,8 +90,6 @@ end
 ```
 
 ```rb
-require "image_processing/mini_magick" # part of the "image_processing" gem
-
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
   plugin :processing

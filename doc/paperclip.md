@@ -1,10 +1,11 @@
 # Shrine for Paperclip Users
 
-This guide is aimed at helping Paperclip users transition to Shrine. First we
-will explain some key differences in design between the two libraries.
-Afterwards we'll show how you can transition an existing app that uses
-Paperclip to Shrine. Then we finish off with an extensive reference of
-Paperclip's interface and what is the equivalent in Shrine.
+This guide is aimed at helping Paperclip users transition to Shrine, and it
+consists of three parts:
+
+1. Explanation of the key differences in design between Paperclip and Shrine
+2. Instructions how to migrate and existing app that uses Paperclip to Shrine
+3. Extensive reference of Paperclip's interface with Shrine equivalents
 
 ## Storages
 
@@ -94,8 +95,6 @@ end
 ```
 
 ```rb
-require "image_processing/mini_magick" # part of the "image_processing" gem
-
 class ImageUploader < Shrine
   include ImageProcessing::MiniMagick
   plugin :processing
@@ -406,8 +405,6 @@ In Shrine attachments will automatically use `:cache` and `:store` storages
 which you have to register:
 
 ```rb
-require "shrine/storage/file_system"
-
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
   store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),

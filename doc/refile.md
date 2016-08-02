@@ -1,31 +1,103 @@
 # Shrine for Refile Users
 
-This guide is aimed at helping Refile users transition to Shrine. We will first
-generally mention what are the key differences, and afterwards we will give a
-complete reference of Refile's interface and note what is the equivalent in
-Shrine.
+This guide is aimed at helping Refile users transition to Shrine, and it consists
+of three parts:
+
+1. Explanation of the key differences in design between Refile and Shrine
+2. Instructions how to migrate and existing app that uses Refile to Shrine
+3. Extensive reference of Refile's interface with Shrine equivalents
 
 ## Uploaders
 
-Shrine has the concept of storages very similar to Refile's backends. However,
-while in Refile you usually work with storages directly, in Shrine you use
-*uploaders* which act as wrappers around storages, and they are subclasses of
-`Shrine`:
+Shrine borrows many great concepts from Refile: Refile's "backends" are here
+named "storages", it uses the same IO abstraction for uploading and representing
+uploaded files, similar attachment logic, and direct uploads are also supported.
+
+While in Refile you work with storages directly, Shrine uses *uploaders* which
+act as wrappers around storages:
 
 ```rb
-require "shrine/storage/file_system"
-require "shrine/storage/s3"
+storage = Shrine.storages[:store]
+storage #=> #<Shrine::Storage::S3 ...>
 
-Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(*args),
-  store: Shrine::Storage::S3.new(*args),
-}
+uploader = Shrine.new(:store)
+uploader         #=> #<Shrine @storage_key=:store @storage=#<Shrine::Storage::S3>>
+uploader.storage #=> #<Shrine::Storage::S3 ...>
+
+uploaded_file = uploader.upload(image)
+uploaded_file #=> #<Shrine::UploadedFile>
 ```
+
+This way Shrine can perform tasks like generating location, extracting
+metadata, processing, and logging, which are all storage-agnostic, and leave
+storages to deal only with actual file storage. And these tasks can be
+configured differently depending on the types of files you're uploading:
+
 ```rb
 class ImageUploader < Shrine
-  # uploading logic
+  add_metadata :exif do |io, context|
+    MiniMagick::Image.new(io).exif
+  end
 end
 ```
+```rb
+class VideoUploader < Shrine
+  add_metadata :duration do |io, context|
+    FFMPEG::Movie.new(io.path).duration
+  end
+end
+```
+
+### Processing
+
+Refile implements on-the-fly processing, serving all files through the Rack
+endpoint. However, it doesn't offer any abilities for processing on upload.
+Shrine, on the other hand, generates URLs to specific storages and offers
+processing on upload (like CarrierWave and Paperclip), but doesn't support
+on-the-fly processing.
+
+The reason for this decision is that an image server is a completely separate
+responsibility, and it's better to use any of the generic services for
+on-the-fly processing. Shrine already has integrations for many such services:
+[shrine-cloudinary], [shrine-imgix], and [shrine-uploadcare]. There is even
+an open-source solution, [Attache], which you can also use with Shrine.
+
+This is how you would process multiple versions in Shrine:
+
+```rb
+class ImageUploader < Shrine
+  include ImageProcessing::MiniMagick
+  plugin :processing
+  plugin :versions
+
+  process(:store) do |io, context|
+    size_800 = resize_to_limit(io.download, 800, 800)
+    size_500 = resize_to_limit(size_800,    500, 500)
+    size_300 = resize_to_limit(size_500,    300, 300)
+
+    {original: size_800, medium: size_500, small: size_300}
+  end
+end
+```
+
+### URL
+
+While Refile serves all files through the Rack endpoint mounted in your app,
+Shrine serves files directly from storage services:
+
+```rb
+Refile.attachment_url(@photo, :image) #=> "/attachments/cache/50dfl833lfs0gfh.jpg"
+```
+
+```rb
+@photo.image.url #=> "https://my-bucket.s3.amazonaws.com/cache/50dfl833lfs0gfh.jpg"
+```
+
+If you're using storage which don't expose files over URL (e.g. a database
+storage), or you want to secure your downloads, you can also serve files
+through your app using the download_endpoint plugin.
+
+## Attachments
 
 While in Refile you configure attachments by passing options to `.attachment`,
 in Shrine you define all your uploading logic inside uploaders, and then
@@ -33,158 +105,108 @@ generate an attachment module with that uploader which is included into the
 model:
 
 ```rb
+class Photo < Sequel::Model
+  extend Shrine::Sequel::Attachment
+  attachment :image, destroy: false
+end
+```
+
+```rb
 class ImageUploader < Shrine
-  plugin :store_dimensions
-  plugin :determine_mime_type
+  plugin :sequel
   plugin :keep_files, destroyed: true
 end
-```
-```rb
-class User
-  include ImageUploader[:avatar] # requires "avatar_data" column
-end
-```
 
-Unlike Refile which has just a few options of configuring attachments, Shrine
-has a very rich arsenal of features via plugins, and allows you to share your
-uploading logic between uploaders through inheritance.
-
-### ORMs
-
-In Refile you extend the model with an Attachment module specific to the ORM
-you're using. In Shrine you load the appropriate ORM plugin:
-
-```rb
-Shrine.plugin :sequel # or :activerecord
-```
-```rb
 class Photo < Sequel::Model
   include ImageUploader[:image]
 end
 ```
 
-These integrations work much like Refile; on assignment the file is cached,
-and on saving the record file is moved from cache to store. Shrine doesn't
-provide form helpers for Rails, because it's so easy to do it yourself:
-
-```erb
-<%= form_for @photo do |f| %>
-  <%= f.hidden_field :image, value: @photo.image_data %>
-  <%= f.file_field :image %>
-<% end %>
-```
-
-### URLs
-
-To get file URLs, in Shrine you just call `#url` on the file:
-
-```rb
-@photo.image.url
-@photo.image_url # returns nil if attachment is missing
-```
-
-If you're using storages which don't expose files over URL, or you want to
-secure your downloads, you can use the `download_endpoint` plugin.
+This way we can encapsulate all attachment logic inside a class and share it
+between different models.
 
 ### Metadata
 
-While in Refile you're required to have a separate column for each metadata you
-want to save (filename, size, content type), in Shrine all of the metadata are
-stored in a single column (for "avatar" it's `avatar_data` column) as JSON.
+Refile allows you to save additional metadata about uploaded files in additional
+columns, so you can define `<attachment>_filename`, `<attachment>_content_type`,
+or `<attachment>_size`.
+
+Shrine, on the other hand, saves all metadata into a single `<attachment>_data`
+column:
 
 ```rb
-user.avatar_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
+photo.image_data #=>
+# {
+#   "storage" => "store",
+#   "id" => "photo/1/image/0d9o8dk42.png",
+#   "metadata" => {
+#     "filename"  => "nature.png",
+#     "size"      => 49349138,
+#     "mime_type" => "image/png"
+#   }
+# }
+
+photo.image.original_filename #=> "nature.png"
+photo.image.size              #=> 49349138
+photo.image.mime_type         #=> "image/png"
 ```
 
-By default Shrine stores "filename", "size" and "mime_type" metadata, but you
-can also store image dimensions by loading the `store_dimensions` plugin.
-
-### Processing
-
-One of the key differences between Refile and Shrine is that in Refile you do
-processing on-the-fly (like Dragonfly), while in Shrine you do your processing
-on upload (like CarrierWave and Paperclip). However, there are storages which
-you can use which support on-the-fly processing, like [shrine-cloudinary] or
-[shrine-imgix].
-
-Processing is defined and performed on the instance level, and the result of
-can be a single file or a hash of versions:
-
-```rb
-require "image_processing/mini_magick"
-
-class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
-  plugin :processing
-
-  process(:store) do |io, context|
-    resize_to_fit!(io.download, 700, 700)
-  end
-end
-```
+By default "filename", "size" and "mime_type" is stored, but you can also store
+image dimensions, or define any other custom metadata. This also allow storages
+to add their own metadata.
 
 ### Validations
 
-While in Refile you can do extension, mime type and filesize validation by
-passing options to `.attachment`, in Shrine you do this logic instance level,
-with the help of the `validation_helpers` plugin:
+In Refile you define validations by passing options to `.attachment`, while
+in Shrine you define validations on the instance-level, which allows them to
+be dynamic:
+
+```rb
+class Photo < Sequel::Model
+  attachment :image,
+    extension: %w[jpg jpeg png gif],
+    content_type: %w[image/jpeg image/png image/gif]
+end
+```
 
 ```rb
 class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_mime_type_inclusion ["image/jpeg", "image/png", "image/gif"]
+    validate_extension_inclusion %w[jpg jpeg png gif]
+    validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
+    validate_max_size 10*1024*1024 unless record.admin?
   end
 end
 ```
 
-### Direct uploads
-
-Shrine borrows Refile's idea of direct uploads, and ships with a
-`direct_upload` plugin which provides the endpoint that you can mount:
-
-```rb
-class ImageUploader < Shrine
-  plugin :direct_upload
-end
-```
-```rb
-# config/routes.rb
-Rails.application.routes.draw do
-  mount ImageUploader::UploadEndpoint => "/attachments/images"
-end
-```
-```rb
-# POST /attachments/images/cache/upload
-{
-  "id": "43kewit94.jpg",
-  "storage": "cache",
-  "metadata": {
-    "size": 384393,
-    "filename": "nature.jpg",
-    "mime_type": "image/jpeg"
-  }
-}
-```
-
-Unlike Refile, Shrine doesn't ship with a JavaScript script which you can just
-include to make it work. Instead, you're expected to use one of the many
-excellent JavaScript libraries for generic file uploads, for example
-[jQuery-File-Upload].
-
-#### Presigned S3 uploads
-
-The `direct_upload` plugin also provides an endpoint for getting S3 presigns,
-you just need to pass the `presign: true` option. In the same way as with regular
-direct uploads, you can use a generic JavaScript file upload library. For the
-details read the [Direct Uploads to S3] guide.
+Refile extracts the MIME type from the file extension, which means it can
+easily be spoofed (just give a PHP file a `.jpg` extension). Shrine has the
+determine_mime_type plugin for determining MIME type from file *content*.
 
 ### Multiple uploads
 
 Shrine doesn't have a built-in solution for accepting multiple uploads, but
 it's actually very easy to do manually, see the [demo app] on how you can do
 multiple uploads directly to S3.
+
+## Direct uploads
+
+Shrine borrows Refile's idea of direct uploads, and ships with a
+direct_upload plugin which provides an endpoint for uploading files and
+generating presigns.
+
+```rb
+Shrine.plugin :direct_upload
+# POST /:storage/upload
+# GET /:storage/presign
+```
+
+Unlike Refile, Shrine doesn't ship with complete JavaScript which you can just
+include to make it work. Instead, you're expected to use one of the excellent
+JavaScript libraries for generic file uploads like [jQuery-File-Upload]. See
+also the [Direct Uploads to S3] guide.
 
 ## Migrating from Refile
 
@@ -390,6 +412,8 @@ No equivalent currently exists in Shrine.
 
 [shrine-cloudinary]: https://github.com/janko-m/shrine-cloudinary
 [shrine-imgix]: https://github.com/janko-m/shrine-imgix
+[shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[Attache]: https://github.com/choonkeat/attache
 [image_processing]: https://github.com/janko-m/image_processing
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
