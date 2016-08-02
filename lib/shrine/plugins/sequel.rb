@@ -123,7 +123,7 @@ class Shrine
         # Saves the record after assignment, skipping validations.
         def update(uploaded_file)
           super
-          record.save(validate: false)
+          record.save_changes(validate: false)
         end
       end
     end

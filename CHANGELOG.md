@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make Sequel update only the attachment in background job (janko-m)
+
 * Add copy plugin for copying files from one record to another (janko-m)
 
 * Disable moving when uploading stored file to backup storage (janko-m)
