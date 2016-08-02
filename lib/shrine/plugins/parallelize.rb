@@ -2,8 +2,8 @@ require "thread"
 
 class Shrine
   module Plugins
-    # The parallelize plugin parallelizes uploads and deletes when handling
-    # versions, using threads.
+    # The parallelize plugin parallelizes uploads and deletes of multiple
+    # versions using threads.
     #
     #     plugin :parallelize
     #

@@ -10,9 +10,8 @@ class Shrine
     #       end
     #     end
     #
-    # The block is evaluated in the context of the model via `instance_exec`.
-    # This means you cannot use keywords like `def`, instead you should use the
-    # metaprogramming equivalents like `define_method`.
+    # If you want to define additional methods on the model, it's recommended
+    # to use the module_include plugin instead.
     module Included
       def self.configure(uploader, &block)
         uploader.opts[:included_block] = block

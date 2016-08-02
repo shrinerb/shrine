@@ -29,6 +29,7 @@ class Shrine
           end
         end
 
+        # Generates upload options and calls `#move` on the storage.
         def move(io, context)
           location = context[:location]
           metadata = context[:metadata]
@@ -37,14 +38,17 @@ class Shrine
           storage.move(io, location, shrine_metadata: metadata, **upload_options)
         end
 
-        def movable?(io, context)
-          storage.respond_to?(:move) && storage.movable?(io, context[:location])
-        end
-
+        # Returns true if file should be moved and is movable.
         def move?(io, context)
           moving_storage? && movable?(io, context)
         end
 
+        # Returns true if storage can move this file.
+        def movable?(io, context)
+          storage.respond_to?(:move) && storage.movable?(io, context[:location])
+        end
+
+        # Returns true if file should be moved.
         def moving_storage?
           opts[:moving_storages].nil? ||
           opts[:moving_storages].include?(storage_key)

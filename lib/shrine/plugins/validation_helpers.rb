@@ -7,9 +7,8 @@ class Shrine
     #       plugin :validation_helpers
     #
     #       Attacher.validate do
-    #         if record.guest?
-    #           validate_max_size 5*1024*1024
-    #         end
+    #         validat_mime_type_inclusion %w[image/jpeg image/png image/gif]
+    #         validate_max_size 5*1024*1024 if record.guest?
     #       end
     #     end
     #

@@ -56,12 +56,46 @@ class Shrine
     # Note that these aren't applied to presigns, since presigns are generated
     # using the storage directly.
     #
+    # ## URL options
+    #
+    # This storage supports various URL options that will be forwarded from
+    # uploaded file.
+    #
+    #     uploaded_file.url(public: true)   # public URL without signed parameters
+    #     uploaded_file.url(download: true) # forced download URL
+    #
+    # All other options are forwarded to the [aws-sdk] gem:
+    #
+    #     uploaded_file.url(expires_in: 15)
+    #     uploaded_file.urL(virtual_host: true)
+    #
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
     # the `:host` option to have all your URLs use the CDN host:
     #
     #     Shrine::Storage::S3.new(host: "http://abc123.cloudfront.net", **s3_options)
+    #
+    # ## Presigns
+    #
+    # This storage can generate presigns for direct uploads to Amazon S3, and
+    # it accepts additional options which are passed to [aws-sdk]. There are
+    # three places in which you can specify presign options:
+    #
+    # * in `:upload_options` option on this storage
+    # * in direct_upload plugin through `:presign_options`
+    # * in `Storage::S3#presign` by forwarding options
+    #
+    # ## Large files
+    #
+    # The [aws-sdk] gem has the ability to automatically use multipart
+    # upload/copy for larger files, where the file is split into multiple chunks
+    # which are uploaded/copied in parallel.
+    #
+    # By default any files that are larger than 15MB will use this multipart
+    # upload/copy, but you change this threshold:
+    #
+    #     Shrine::Storage::S3.new(multipart_threshold: 30*1024*1024) # 30MB
     #
     # ## Clearing cache
     #

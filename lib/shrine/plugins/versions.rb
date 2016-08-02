@@ -19,16 +19,6 @@ class Shrine
     #       {large: size_700, medium: size_500, small: size_300}
     #     end
     #
-    # Note that if you want to keep the original file, you can forward it as is
-    # without explicitly downloading it (since `Shrine::UploadedFile` itself is
-    # an IO-like object), which might avoid downloading depending on the
-    # storage:
-    #
-    #     process(:store) do |io, context|
-    #       # processing thumbnail
-    #       {original: io, thumbnail: thumbnail}
-    #     end
-    #
     # Now when you access the stored attachment through the model, a hash of
     # uploaded files will be returned:
     #
@@ -54,25 +44,40 @@ class Shrine
     # You probably want to load the delete_raw plugin to automatically
     # delete processed files after they have been uploaded.
     #
-    # The plugin also extends the `avatar_url` method to accept versions:
+    # ## Original file
+    #
+    # If you want to keep the original file, you can forward it as is without
+    # explicitly downloading it (since `Shrine::UploadedFile` itself is an
+    # IO-like object), which might avoid downloading depending on the storage:
+    #
+    #     process(:store) do |io, context|
+    #       # processing thumbnail
+    #       {original: io, thumbnail: thumbnail}
+    #     end
+    #
+    # ## Fallbacks
+    #
+    # The plugin also extends the `<attachmen>_url` method to accept versions,
+    # and adds automatic fallbacks:
     #
     #     user.avatar_url(:medium)
     #
-    # This method plays nice when generating versions in a background job,
-    # since it will just point to the original cached file until the versions
-    # are done processing:
+    #     # returns URL of that version if versions have been created,
+    #     # otherwise returns original URL if attachment exists,
+    #     # otherwise returns nil
     #
-    #     user.avatar #=> #<Shrine::UploadedFile>
-    #     user.avatar_url(:medium) #=> "http://example.com/original.jpg"
-    #
-    #     # the background job has finished generating versions
-    #
-    #     user.avatar_url(:medium) #=> "http://example.com/medium.jpg"
+    # This behaviour is convenient when using background jobs, as it allows you
+    # to gracefully degrade before the background job finishes.
     #
     # If you already have some versions processed in the foreground when a
-    # background job is kicked off, you can setup explicit URL fallbacks:
+    # background job is kicked off (with the recache plugin), the
+    # `<attachment>_url` method won't know which version to use as a fallback.
+    # In that case you can specify `:fallbacks` when loading the plugin:
     #
-    #     plugin :versions, fallbacks: {:thumb_2x => :thumb, :large_2x => :large}
+    #     plugin :versions, fallbacks: {
+    #       :thumb_2x => :thumb,
+    #       :large_2x => :large,
+    #     }
     #
     #     # ... (background job is kicked off)
     #
@@ -83,6 +88,8 @@ class Shrine
     # storage:
     #
     #     user.avatar_url(:medium, download: true)
+    #
+    # ## Context
     #
     # The `context` will now also include the version name, which you can use
     # when generating a location or a default URL:
@@ -95,13 +102,7 @@ class Shrine
     #       "/images/defaults/#{context[:version]}.jpg"
     #     end
     #
-    # When deleting versions, any multi delete capabilities will be leveraged,
-    # so when using Storage::S3, deleting versions will issue only a single HTTP
-    # request. If you want to delete versions manually, you can use
-    # `Shrine#delete`:
-    #
-    #     versions.keys #=> [:small, :medium, :large]
-    #     ImageUploader.new(:storage).delete(versions) # deletes a hash of versions
+    # [image_processing]: https://github.com/janko-m/image_processing
     module Versions
       def self.load_dependencies(uploader, *)
         uploader.plugin :multi_delete
