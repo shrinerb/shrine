@@ -89,17 +89,19 @@ class Shrine
     #
     #     plugin :direct_upload, presign_location: ->(request) { "${filename}" }
     #
-    # This presign route internally calls `#presign` on the storage, which also
-    # accepts some service-specific options. You can generate these additional
-    # options per-request with `:presign_options`:
+    # This presign route internally calls `#presign` on the storage, and many
+    # storages accept additional service-specific options. You can generate
+    # these additional options per-request through `:presign_options`:
     #
     #     plugin :direct_upload, presign_options: {acl: "public-read"}
     #
     #     plugin :direct_upload, presign_options: ->(request) do
-    #       options = {}
-    #       options[:content_length_range] = 0..(5*1024*1024)       # limit the filesize to 5 MB
-    #       options[:content_type] = request.params["content_type"] # use "content_type" query parameter
-    #       options
+    #       filename = request.params["filename"].inspect
+    #
+    #       {
+    #         content_length_range: 0..(10*1024*1024),                 # limit filesize to 10MB
+    #         content_disposition: "attachment; filename=#{filename}", # download with original filename
+    #       }
     #     end
     #
     # Both `:presign_location` and `:presign_options` in their block versions
