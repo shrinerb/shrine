@@ -40,6 +40,7 @@ class Shrine
 
         # Returns true if file should be moved and is movable.
         def move?(io, context)
+          return false if context[:move] == false
           moving_storage? && movable?(io, context)
         end
 

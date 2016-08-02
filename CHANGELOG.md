@@ -1,5 +1,7 @@
 ## HEAD
 
+* Disable moving when uploading stored file to backup storage (janko-m)
+
 * Make `Attacher#recache` from the recache plugin public for standalone usage (janko-m)
 
 * Allow changing `Shrine::Attacher#context` once the attacher is instantiated (janko-m)

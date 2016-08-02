@@ -51,7 +51,7 @@ describe Shrine::Plugins::Backup do
     assert backup_file(@attacher.get).exists?
   end
 
-  it "makes delete work with backgrounding" do
+  it "works with backgrounding" do
     @attacher.shrine_class.plugin :backgrounding
     @attacher.class.stubs(:find_record).returns(@attacher.record)
     @attacher.class.delete { |data| (@f ||= []) << Fiber.new{self.class.delete(data)} }
@@ -73,6 +73,14 @@ describe Shrine::Plugins::Backup do
     @attacher.instance_variable_get("@f").reject!(&:resume)
     refute destroyed.exists?
     refute @attacher.backup_file(destroyed).exists?
+  end
+
+  it "works with moving" do
+    @attacher.shrine_class.plugin :moving
+    @attacher.assign(fakeio)
+    @attacher._promote
+    assert @attacher.get.exists?
+    assert @attacher.backup_file(@attacher.get).exists?
   end
 
   it "requires the :storage option" do
