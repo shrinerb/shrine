@@ -143,6 +143,7 @@ describe Shrine::Plugins::Activerecord do
       @attacher.class.class_eval do
         def swap(*)
           record.class.update_all(name: "Name")
+          super
         end
       end
       @user.update(avatar: fakeio)

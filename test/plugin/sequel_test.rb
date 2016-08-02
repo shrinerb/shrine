@@ -153,6 +153,7 @@ describe Shrine::Plugins::Sequel do
       @attacher.class.class_eval do
         def swap(*)
           record.this.update(name: "Name")
+          super
         end
       end
       @user.update(avatar: fakeio)
