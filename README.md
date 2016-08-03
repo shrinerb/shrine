@@ -298,7 +298,7 @@ will simply return a Hash of `Shrine::UploadedFile` objects:
 ```rb
 photo.image #=> {large: ..., medium: ..., small: ...}
 
-# With the store_dimensions plugin
+# With the store_dimensions plugin (requires fastimage gem)
 photo.image[:large].width  #=> 700
 photo.image[:medium].width #=> 500
 photo.image[:small].width  #=> 300
@@ -632,7 +632,7 @@ be applied to which uploaders:
 Shrine.plugin :logging # enables logging for all uploaders
 
 class ImageUploader < Shrine
-  plugin :store_dimensions # stores dimensions only for this uploader and its descendants
+  plugin :store_dimensions # stores dimensions only for this uploader and its descendants (requires fastimage gem)
 end
 ```
 
