@@ -632,7 +632,7 @@ be applied to which uploaders:
 Shrine.plugin :logging # enables logging for all uploaders
 
 class ImageUploader < Shrine
-  plugin :store_dimensions # stores dimensions only for this uploader and its descendants (requires fastimage gem)
+  plugin :backup # stores backups only for this uploader and its descendants
 end
 ```
 
