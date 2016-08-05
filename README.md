@@ -429,7 +429,7 @@ require "mini_magick"
 class ImageUploader < Shrine
   plugin :add_metadata
 
-  add_metadata "exif" do |io, context|
+  add_metadata :exif do |io, context|
     MiniMagick::Image.new(io.path).exif
   end
 end

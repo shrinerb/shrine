@@ -84,7 +84,7 @@ Metadata:
   -
     name: restore_cached_data
     path: RestoreCachedData.html
-    description: Restores cached file's metadata on model assignment to prevent tampering.
+    description: Re-extracts cached file's metadata on model assignment.
   -
     name: store_dimensions
     path: StoreDimensions.html
