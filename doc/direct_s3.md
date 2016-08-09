@@ -13,7 +13,7 @@ beneficial for several use cases:
 * with multiple servers it's generally not possible to cache files to the disk,
   unless you're using a distibuted filesystem that's shared between servers
 
-* Heroku restricts file uploads to disk, allowing you to saves files only in
+* Heroku restricts file uploads to disk, allowing you to save files only in
   the temporary folder, which gets wiped out between deploys
 
 * Heroku has a 30-second request limit, so if the client has a slow connection
