@@ -341,8 +341,7 @@ end
 
 You may have noticed the `context` variable floating around as the second
 argument for processing. This variable is present all the way from input file
-to uploaded file, and contains any additional information that can affect the
-upload:
+to uploaded file, and can contain useful information depending on the situation:
 
 * `context[:record]` -- the model instance
 * `context[:name]` -- attachment name on the model
