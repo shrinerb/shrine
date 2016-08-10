@@ -12,7 +12,8 @@ class Shrine
     # This method will automatically be called when the record is duplicated:
     #
     #     duplicated_photo = photo.dup
-    #     duplicated_photo.image.id != photo.image.id
+    #     duplicated_photo.image #=> #<Shrine::UploadedFile>
+    #     duplicated_photo.image != photo.image
     module Copy
       module AttachmentMethods
         def initialize(*)
@@ -22,6 +23,7 @@ class Shrine
             def initialize_copy(record)
               super
               @#{@name}_attacher = nil # reload the attacher
+              self.#{@name}_data = nil # remove original attachment
               #{@name}_attacher.copy(record.#{@name}_attacher)
             end
           RUBY
@@ -33,10 +35,14 @@ class Shrine
           options = {action: :copy, move: false}
 
           if attacher.cached?
-            set cache!(attacher.get, **options)
+            copied_attachment = cache!(attacher.get, **options)
           elsif attacher.stored?
-            set store!(attacher.get, **options)
+            copied_attachment = store!(attacher.get, **options)
+          else
+            copied_attachment = nil
           end
+
+          set(copied_attachment)
         end
       end
     end
