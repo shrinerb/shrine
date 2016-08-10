@@ -22,11 +22,6 @@ describe Shrine::Plugins::Copy do
     it "keeps #initialize_copy a private method" do
       refute @user.respond_to?(:initialize_copy)
     end
-
-    it "doesn't error if attachment module isn't included" do
-      @user.class.class_eval { undef avatar_attacher }
-      @user.dup
-    end
   end
 
   describe "attacher copy" do

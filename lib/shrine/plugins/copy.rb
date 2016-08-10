@@ -21,10 +21,8 @@ class Shrine
           module_eval <<-RUBY
             def initialize_copy(record)
               super
-              if respond_to?(:#{@name}_attacher)
-                @#{@name}_attacher = nil
-                #{@name}_attacher.copy(record.#{@name}_attacher)
-              end
+              @#{@name}_attacher = nil # reload the attacher
+              #{@name}_attacher.copy(record.#{@name}_attacher)
             end
           RUBY
         end
