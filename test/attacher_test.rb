@@ -30,13 +30,13 @@ describe Shrine::Attacher do
     end
 
     it "accepts already uploaded files via a JSON string" do
-      cached_file = @attacher.cache.upload(fakeio)
+      cached_file = @attacher.cache!(fakeio)
       @attacher.assign(cached_file.to_json)
       assert_equal cached_file, @attacher.get
     end
 
     it "rejects stored files for security reasons" do
-      stored_file = @attacher.store.upload(fakeio)
+      stored_file = @attacher.store!(fakeio)
       @attacher.assign(stored_file.to_json)
       assert_equal nil, @attacher.get
     end
@@ -54,7 +54,7 @@ describe Shrine::Attacher do
     end
 
     it "doesn't dirty if attachment didn't change" do
-      @attacher.record.avatar_data = @attacher.cache.upload(fakeio).to_json
+      @attacher.record.avatar_data = @attacher.cache!(fakeio).to_json
       @attacher.assign(@attacher.get.to_json)
       refute @attacher.attached?
     end
@@ -79,7 +79,7 @@ describe Shrine::Attacher do
     end
 
     it "allows setting stored files" do
-      stored_file = @attacher.store.upload(fakeio)
+      stored_file = @attacher.store!(fakeio)
       @attacher.set(stored_file)
       assert @attacher.get
     end
@@ -93,7 +93,7 @@ describe Shrine::Attacher do
 
   describe "#get" do
     it "reads from the database column" do
-      uploaded_file = @attacher.cache.upload(fakeio)
+      uploaded_file = @attacher.cache!(fakeio)
 
       @attacher.record.avatar_data = uploaded_file.data.to_json
       assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
@@ -119,7 +119,7 @@ describe Shrine::Attacher do
     end
 
     it "doesn't call #_promote if assigned file is not cached" do
-      stored_file = @attacher.store.upload(fakeio)
+      stored_file = @attacher.store!(fakeio)
       @attacher.set(stored_file)
       @attacher.expects(:promote).never
       @attacher.finalize
@@ -135,7 +135,7 @@ describe Shrine::Attacher do
 
   describe "#_promote" do
     it "calls #promote if assigned file is cached" do
-      cached_file = @attacher.cache.upload(fakeio)
+      cached_file = @attacher.cache!(fakeio)
       @attacher.record.avatar_data = cached_file.to_json
       @attacher.expects(:promote)
       @attacher._promote
@@ -179,27 +179,27 @@ describe Shrine::Attacher do
 
   describe "#replace" do
     it "deletes replaced files" do
-      @attacher.set(uploaded_file = @attacher.store.upload(fakeio))
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(uploaded_file = @attacher.store!(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.replace
       refute uploaded_file.exists?
     end
 
     it "passes context hash to delete" do
       context = {name: @attacher.name, record: @attacher.record, action: :replace, phase: :replace}
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.store.expects(:delete).with(@attacher.get, context)
       @attacher.set(nil)
       @attacher.replace
     end
 
     it "doesn't trip if there was no previous file" do
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.replace
     end
 
     it "doesn't replace cached files" do
-      @attacher.set(cached_file = @attacher.cache.upload(fakeio))
+      @attacher.set(cached_file = @attacher.cache!(fakeio))
       @attacher.replace
       assert cached_file.exists?
     end
@@ -207,14 +207,14 @@ describe Shrine::Attacher do
 
   describe "#destroy" do
     it "deletes the attached file" do
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.destroy
       refute @attacher.get.exists?
     end
 
     it "passes context hash to delete" do
       context = {name: @attacher.name, record: @attacher.record, action: :destroy, phase: :destroy}
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.store.expects(:delete).with(@attacher.get, context)
       @attacher.destroy
     end
@@ -224,7 +224,7 @@ describe Shrine::Attacher do
     end
 
     it "doesn't delete cached files" do
-      @attacher.set(@attacher.cache.upload(fakeio))
+      @attacher.set(@attacher.cache!(fakeio))
       @attacher.destroy
       assert @attacher.get.exists?
     end
@@ -232,7 +232,7 @@ describe Shrine::Attacher do
 
   describe "#_delete" do
     it "deletes the uploaded file" do
-      uploaded_file = @attacher.store.upload(fakeio)
+      uploaded_file = @attacher.store!(fakeio)
       @attacher._delete(uploaded_file)
       refute uploaded_file.exists?
     end
@@ -259,9 +259,9 @@ describe Shrine::Attacher do
 
   describe "#cached?" do
     it "returns true if attachment is cached" do
-      @attacher.set(@attacher.cache.upload(fakeio))
+      @attacher.set(@attacher.cache!(fakeio))
       assert @attacher.cached?
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       refute @attacher.cached?
       @attacher.set(nil)
       refute @attacher.cached?
@@ -270,9 +270,9 @@ describe Shrine::Attacher do
 
   describe "#stored?" do
     it "returns true if attachment is cached" do
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       assert @attacher.stored?
-      @attacher.set(@attacher.cache.upload(fakeio))
+      @attacher.set(@attacher.cache!(fakeio))
       refute @attacher.stored?
       @attacher.set(nil)
       refute @attacher.stored?

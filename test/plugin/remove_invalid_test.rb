@@ -8,14 +8,14 @@ describe Shrine::Plugins::RemoveInvalid do
 
   it "deletes and removes invalid files" do
     @attacher.class.validate { errors << :foo }
-    @attacher.set(cached_file = @attacher.cache.upload(fakeio))
+    @attacher.set(cached_file = @attacher.cache!(fakeio))
     refute cached_file.exists?
     refute @attacher.get
   end
 
   it "doesn't remove stored files" do
     @attacher.class.validate { errors << :foo }
-    @attacher.set(stored_file = @attacher.store.upload(fakeio))
+    @attacher.set(stored_file = @attacher.store!(fakeio))
     assert stored_file.exists?
     assert @attacher.get
   end

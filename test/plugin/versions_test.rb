@@ -84,16 +84,16 @@ describe Shrine::Plugins::Versions do
     end
 
     it "forwards url options" do
-      @attacher.set(thumb: @attacher.store.upload(fakeio))
+      @attacher.set(thumb: @attacher.store!(fakeio))
       Shrine::UploadedFile.any_instance.expects(:url).with(foo: "foo")
       @attacher.url(:thumb, foo: "foo")
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       Shrine::UploadedFile.any_instance.expects(:url).with(foo: "foo")
       @attacher.url(:thumb, foo: "foo")
       Shrine::UploadedFile.any_instance.expects(:url).with(foo: "foo")
       @attacher.url(foo: "foo")
 
-      @attacher.set(original: @attacher.store.upload(fakeio))
+      @attacher.set(original: @attacher.store!(fakeio))
       @attacher.expects(:default_url).with(version: :thumb, foo: "foo")
       @attacher.url(:thumb, foo: "foo")
       @attacher.set(nil)
@@ -106,7 +106,7 @@ describe Shrine::Plugins::Versions do
         medium: :thumb,
         large:  :medium,
       }
-      @attacher.set(thumb: @attacher.store.upload(fakeio))
+      @attacher.set(thumb: @attacher.store!(fakeio))
       assert_equal @attacher.url(:thumb), @attacher.url(:medium)
       assert_equal @attacher.url(:thumb), @attacher.url(:large)
     end
@@ -132,7 +132,7 @@ describe Shrine::Plugins::Versions do
     end
 
     it "promotes versions successfully" do
-      @attacher.set(thumb: @attacher.cache.upload(fakeio))
+      @attacher.set(thumb: @attacher.cache!(fakeio))
       @attacher._promote
       assert @attacher.store.uploaded?(@attacher.get[:thumb])
     end

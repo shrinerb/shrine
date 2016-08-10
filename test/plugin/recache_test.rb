@@ -17,7 +17,7 @@ describe "the recache plugin" do
   end
 
   it "recaches only cached files" do
-    @attacher.set(@attacher.store.upload(fakeio))
+    @attacher.set(@attacher.store!(fakeio))
     stored_file = @attacher.get
     @attacher.save
     assert_equal stored_file, @attacher.get

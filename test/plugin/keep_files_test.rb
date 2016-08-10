@@ -10,7 +10,7 @@ describe Shrine::Plugins::KeepFiles do
     end
 
     it "keeps files which are deleted on destroy" do
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.destroy
       assert @attacher.get.exists?
     end
@@ -24,8 +24,8 @@ describe Shrine::Plugins::KeepFiles do
     end
 
     it "keeps files which were replaced during saving" do
-      @attacher.set(uploaded_file = @attacher.store.upload(fakeio))
-      @attacher.set(@attacher.store.upload(fakeio))
+      @attacher.set(uploaded_file = @attacher.store!(fakeio))
+      @attacher.set(@attacher.store!(fakeio))
       @attacher.replace
       assert uploaded_file.exists?
 
@@ -43,8 +43,8 @@ describe Shrine::Plugins::KeepFiles do
     end
 
     @attacher.class.delete { |data| fail }
-    @attacher.set(replaced = @attacher.store.upload(fakeio))
-    @attacher.set(destroyed = @attacher.store.upload(fakeio))
+    @attacher.set(replaced = @attacher.store!(fakeio))
+    @attacher.set(destroyed = @attacher.store!(fakeio))
     @attacher.replace
     @attacher.destroy
     assert replaced.exists?

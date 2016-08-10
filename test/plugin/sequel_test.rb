@@ -133,7 +133,7 @@ describe Shrine::Plugins::Sequel do
       @user.avatar_attacher.instance_variable_get("@f").resume
       @user = @user.class.new
 
-      @user.update(avatar_data: @user.avatar_attacher.store.upload(fakeio).to_json)
+      @user.update(avatar_data: @user.avatar_attacher.store!(fakeio).to_json)
       @user.destroy
       @user.avatar_attacher.instance_variable_get("@f").resume
     end
