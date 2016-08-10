@@ -11,6 +11,7 @@ describe Shrine::Plugins::Activerecord do
       t.string :name
       t.text :avatar_data
     end
+    ActiveRecord::Base.raise_in_transactional_callbacks = true
 
     user_class = Object.const_set("User", Class.new(ActiveRecord::Base))
     user_class.table_name = :users
@@ -82,7 +83,7 @@ describe Shrine::Plugins::Activerecord do
     it "isn't triggered when callback chain is halted" do
       @user.update(avatar: fakeio)
       uploaded_file = @user.avatar
-      @user.class.before_save { throw :abort }
+      @user.class.before_save { false }
       @user.update(avatar: fakeio)
       assert uploaded_file.exists?
     end
