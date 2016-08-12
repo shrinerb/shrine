@@ -114,7 +114,8 @@ The Shrine attachment module added the following methods to the `Photo` model:
 * `#image_url` – calls `image.url` if attachment is present, otherwise returns nil
 * `#image_attacher` - instance of `Shrine::Attacher` which handles attaching
 
-In addition to assigning new files, you can also assign already uploaded files:
+In addition to assigning new files, you can also assign already cached files
+using their JSON representation:
 
 ```rb
 photo.image = '{"storage":"cache","id":"9260ea09d8effd.jpg","metadata":{...}}'
