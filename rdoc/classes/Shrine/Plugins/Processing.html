@@ -39,20 +39,24 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The process plugin allows you to declaratively define file processing for
-            specified actions, allowing you to transform</p>
+            <p>The <code>processing</code> plugin allows you to declaratively define file
+            processing for specified actions.</p>
             
-            <pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>into</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <p>The <code>io</code> is the original file, while the <code>context</code>
+            contains some additional information about the upload. The result of the
+            processing block should be an IO-like object, which will continue being
+            uploaded instead of the original.</p>
             
             <p>The declarations are additive and inherited, so for the same action you can
             declare multiple blocks, and they will be performed in the same order,
             where output from previous will be input to next. You can return
             <code>nil</code> in any block to signal that no processing was performed
             and that the original file should be used.</p>
+            
+            <p>If you want the result of processing to be multiple files, use the
+            <code>versions</code> plugin.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -86,7 +90,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>] = {}&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 26</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>] = {}&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

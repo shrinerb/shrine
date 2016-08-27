@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-07-29 16:05:59 +0800</span>
+          <span class='datetime'>2016-08-27 18:36:57 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -40,8 +40,8 @@
             
             <h1 id="label-Shrine"><a href="../classes/Shrine.html">Shrine</a><span><a href="#label-Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
             
-            <p><a href="../classes/Shrine.html">Shrine</a> is a toolkit for handling file
-            uploads in Ruby applications.</p>
+            <p><a href="../classes/Shrine.html">Shrine</a> is a toolkit for file
+            attachments in Ruby applications.</p>
             
             <p>If you&#39;re new, you&#39;re encouraged to read the <a
             href="http://twin.github.io/introducing-shrine/">introductory blog post</a>
@@ -83,12 +83,18 @@
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span> <span class="ruby-comment"># ActiveRecord::Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">image</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>And add attachment fields to the Photo form:</p>
+            <p>This creates an <code>image</code> attachment attribute which accepts
+            files. Let&#39;s now add the form fields needed for attaching files:</p>
             
-            <pre>&lt;form action=&quot;/photos&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;&#x000A;  &lt;input name=&quot;photo[image]&quot; type=&quot;hidden&quot; value=&quot;&lt;%= @photo.cached_image_data %&gt;&quot;&gt;&#x000A;  &lt;input name=&quot;photo[image]&quot; type=&quot;file&quot;&gt;&#x000A;&lt;/form&gt;&#x000A;&lt;!-- Rails: --&gt;&#x000A;&#x000A;&lt;%= form_for @photo do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :image, value: @photo.cached_image_data %&gt;&#x000A;  &lt;%= f.file_field :image %&gt;&#x000A;&lt;% end %&gt;</pre>
+            <pre>&lt;form action=&quot;/photos&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;&#x000A;  &lt;input name=&quot;photo[image]&quot; type=&quot;hidden&quot; value=&quot;&lt;%= @photo.cached_image_data %&gt;&quot;&gt;&#x000A;  &lt;input name=&quot;photo[image]&quot; type=&quot;file&quot;&gt;&#x000A;&lt;/form&gt;&#x000A;&lt;!-- Rails: --&gt;&#x000A;&lt;%= form_for @photo do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :image, value: @photo.cached_image_data %&gt;&#x000A;  &lt;%= f.file_field :image %&gt;&#x000A;&lt;% end %&gt;</pre>
             
-            <p>Now when a Photo is created with the image attached, you can get the URL to
-            the image:</p>
+            <p>Now assigning the request parameters in your router/controller will
+            automatically handle the image attachment:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">params</span>[:<span class="ruby-identifier">photo</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>When a Photo is created with the image attached, you can display the image
+            via its URL:</p>
             
             <pre>&lt;img src=&quot;&lt;%= @photo.image_url %&gt;&quot;&gt;</pre>
             
@@ -97,23 +103,29 @@
             <p>When we assign an IO-like object to the record, <a
             href="../classes/Shrine.html">Shrine</a> will upload it to the registered
             <code>:cache</code> storage, which acts as a temporary storage, and write
-            the location/storage/metadata of the uploaded file to a single
+            the location, storage, and metadata of the uploaded file to a single
             <code>&lt;attachment&gt;_data</code> column:</p>
             
             <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;waterfall.jpg&quot;</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;storage&quot;:&quot;cache&quot;,&quot;id&quot;:&quot;9260ea09d8effd.jpg&quot;,&quot;metadata&quot;:{...}}&#39;</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>      <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>  <span class="ruby-comment">#=&gt; &quot;/uploads/cache/9260ea09d8effd.jpg&quot;</span></pre>
             
             <p>The <a href="../classes/Shrine.html">Shrine</a> attachment module added the
             following methods to the <code>Photo</code> model:</p>
-            
+            <ul><li>
             <p><code>#image=</code> – caches the file and saves the result into
-            <code>image_data</code>  <code>#image</code> – returns
-            <code>Shrine::UploadedFile</code> instantiated from <code>image_data</code>
-            <code>#image_url</code> – calls <code>image.url</code> if attachment is
-            present, otherwise returns nil  <code>#image_attacher</code> - instance of
-            <code>Shrine::Attacher</code> which handles attaching</p>
+            <code>image_data</code></p>
+            </li><li>
+            <p><code>#image</code> – returns <code>Shrine::UploadedFile</code>
+            instantiated from <code>image_data</code></p>
+            </li><li>
+            <p><code>#image_url</code> – calls <code>image.url</code> if attachment is
+            present, otherwise returns nil</p>
+            </li><li>
+            <p><code>#image_attacher</code> - instance of <code>Shrine::Attacher</code>
+            which handles attaching</p>
+            </li></ul>
             
-            <p>In addition to assigning new files, you can also assign already uploaded
-            files:</p>
+            <p>In addition to assigning new files, you can also assign already cached
+            files using their JSON representation:</p>
             
             <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-string">&#39;{&quot;storage&quot;:&quot;cache&quot;,&quot;id&quot;:&quot;9260ea09d8effd.jpg&quot;,&quot;metadata&quot;:{...}}&#39;</span></pre>
             
@@ -121,18 +133,39 @@
             files in case of validation errors, and handle <a
             href="#direct-uploads">direct uploads</a>, via the hidden form field.</p>
             
-            <p>The ORM plugin that we loaded will upload the attachment to permanent
-            storage (<code>:store</code>) when the record is saved, and delete the
-            attachment when record is destroyed:</p>
+            <p>The ORM plugin that we loaded adds appropriate callbacks, so when record is
+            saved the attachment is uploaded to permanent storge (<code>:store</code>),
+            and when record is destroyed the attachment is destroyed as well:</p>
             
             <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;waterfall.jpg&quot;</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span> <span class="ruby-comment">#=&gt; &quot;/uploads/cache/0sdfllasfi842.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span> <span class="ruby-comment">#=&gt; &quot;/uploads/store/l02kladf8jlda.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">destroy</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">exists?</span> <span class="ruby-comment">#=&gt; false</span></pre>
             
-            <p>In these examples we used <code>image</code> as the name of the attachment,
-            but we can create attachment modules for any kind of attachments:</p>
+            <p>The ORM plugin will also delete replaced attachments:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-identifier">new_file</span>) <span class="ruby-comment"># changes the attachment and deletes previous</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)      <span class="ruby-comment"># removes the attachment and deletes previous</span></pre>
+            
+            <p>In all these examples we used <code>image</code> as the name of the
+            attachment, but we can create attachment modules for any kind of
+            attachments:</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">VideoUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># video attachment logic</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Movie</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">VideoUploader</span>[:<span class="ruby-identifier">video</span>] <span class="ruby-comment"># uses &quot;video_data&quot; column</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <h3 id="label-Multiple+files">Multiple files<span><a href="#label-Multiple+files">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p>Sometimes we want to allow users to upload multiple files at once. This can
+            be achieved with by adding a <code>multiple</code> HTML attribute to the
+            file field: <code>&lt;input type=&quot;file&quot; multiple&gt;</code>.</p>
+            
+            <p><a href="../classes/Shrine.html">Shrine</a> doesn&#39;t accept multiple
+            files on single a attachment attribute, but you can instead attach each
+            file to a separate database record, which is a much more flexible solution.</p>
+            
+            <p>The best way is to <a href="#direct-uploads">directly upload</a> selected
+            files, and then send the data of uploaded files as nested attributes for
+            associated records. Alternatively you can send all selected files at once,
+            and then transform them into nested association attributes in the
+            controller.</p>
             
             <h2 id="label-Uploader">Uploader<span><a href="#label-Uploader">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -163,6 +196,19 @@
             through the record:</p>
             
             <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+            
+            <h3 id="label-Plugins">Plugins<span><a href="#label-Plugins">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p><a href="../classes/Shrine.html">Shrine</a> comes with a small core which
+            provides only the essential functionality, and any additional features are
+            available via plugins. This way you can choose exactly what and how much <a
+            href="../classes/Shrine.html">Shrine</a> does for you. See the <a
+            href="http://shrinerb.com">website</a> for a complete list of plugins.</p>
+            
+            <p>The plugin system respects inheritance, so you can choose which plugins
+            will be applied to which uploaders:</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span> <span class="ruby-comment"># enables logging for all uploaders</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span> <span class="ruby-comment"># stores backups only for this uploader and its descendants</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -200,22 +246,22 @@
             alongside the original image. If we&#39;re uploading videos, we might want
             to save a screenshot or transcode it into different formats.</p>
             
-            <p>To save multiple files, we just need to load the versions plugin, and then
-            in <code>#process</code> we can return a Hash of files:</p>
+            <p>To save multiple files, we just need to load the <code>versions</code>
+            plugin, and then in <code>#process</code> we can return a Hash of files:</p>
             
             <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">size_700</span> = <span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-value">700</span>, <span class="ruby-value">700</span>)&#x000A;    <span class="ruby-identifier">size_500</span> = <span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-identifier">size_700</span>,    <span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;    <span class="ruby-identifier">size_300</span> = <span class="ruby-identifier">resize_to_limit</span>(<span class="ruby-identifier">size_500</span>,    <span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;&#x000A;    {<span class="ruby-identifier">large</span><span class="ruby-operator">:</span> <span class="ruby-identifier">size_700</span>, <span class="ruby-identifier">medium</span><span class="ruby-operator">:</span> <span class="ruby-identifier">size_500</span>, <span class="ruby-identifier">small</span><span class="ruby-operator">:</span> <span class="ruby-identifier">size_300</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>Being able to define processing on instance-level like this provides a lot
             of flexibility. For example, you can choose to process files in a certain
             order for maximum performance, and you can also add parallelization. It is
-            recommended to load the delete_raw plugin for automatically deleting
-            processed files after uploading.</p>
+            recommended to load the <code>delete_raw</code> plugin for automatically
+            deleting processed files after uploading.</p>
             
             <p>Each version will be saved to the attachment column, and the attachment
             getter will simply return a Hash of <code>Shrine::UploadedFile</code>
             objects:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; {large: ..., medium: ..., small: ...}</span>&#x000A;&#x000A;<span class="ruby-comment"># With the store_dimensions plugin</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[:<span class="ruby-identifier">large</span>].<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 700</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[:<span class="ruby-identifier">medium</span>].<span class="ruby-identifier">width</span> <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[:<span class="ruby-identifier">small</span>].<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 300</span>&#x000A;&#x000A;<span class="ruby-comment"># The plugin expands this method to accept version names.</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>(:<span class="ruby-identifier">large</span>) <span class="ruby-comment">#=&gt; &quot;...&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; {large: ..., medium: ..., small: ...}</span>&#x000A;&#x000A;<span class="ruby-comment"># With the store_dimensions plugin (requires fastimage gem)</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[:<span class="ruby-identifier">large</span>].<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 700</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[:<span class="ruby-identifier">medium</span>].<span class="ruby-identifier">width</span> <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[:<span class="ruby-identifier">small</span>].<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 300</span>&#x000A;&#x000A;<span class="ruby-comment"># The plugin expands this method to accept version names.</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>(:<span class="ruby-identifier">large</span>) <span class="ruby-comment">#=&gt; &quot;...&quot;</span></pre>
             
             <h3 id="label-Custom+processing">Custom processing<span><a href="#label-Custom+processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
@@ -232,15 +278,21 @@
             
             <p>You may have noticed the <code>context</code> variable floating around as
             the second argument for processing. This variable is present all the way
-            from input file to uploaded file, and contains any additional information
-            that can affect the upload:</p>
-            
-            <p><code>context[:record]</code> – the model instance 
-            <code>context[:name]</code> – attachment name on the model 
-            <code>context[:action]</code> – identifier for the action being performed
+            from input file to uploaded file, and can contain useful information
+            depending on the situation:</p>
+            <ul><li>
+            <p><code>context[:record]</code> – the model instance</p>
+            </li><li>
+            <p><code>context[:name]</code> – attachment name on the model</p>
+            </li><li>
+            <p><code>context[:action]</code> – identifier for the action being performed
             (<code>:cache</code>, <code>:store</code>, <code>:recache</code>,
-            <code>:backup</code>, …)  <code>context[:version]</code> – version name of
-            the IO in the argument  …</p>
+            <code>:backup</code>, …)</p>
+            </li><li>
+            <p><code>context[:version]</code> – version name of the IO in the argument</p>
+            </li><li>
+            <p>…</p>
+            </li></ul>
             
             <p>The <code>context</code> is useful for doing conditional processing,
             validation, generating location etc, and it is also used by some plugins
@@ -248,12 +300,22 @@
             
             <h2 id="label-Validation">Validation<span><a href="#label-Validation">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
-            <p>Validations are registered by calling <code>Attacher.validate</code>, and
-            are best done with the validation_helpers plugin:</p>
+            <p>Validations are registered inside a <code>Attacher.validate</code> block,
+            and you can load the <code>validation_helpers</code> plugin to get some
+            convenient file validation methods:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DocumentUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># Evaluated inside an instance of Shrine::Attacher.</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">resume?</span>&#x000A;      <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;is too large (max is 10 MB)&quot;</span>&#x000A;      <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;application/pdf&quot;</span>]&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">VideoUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">50</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;is too large (max is 50 MB)&quot;</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;video/mp4&quot;</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre class="ruby"><span class="ruby-identifier">document</span> = <span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">resume</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;resume.pdf&quot;</span>)&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">valid?</span> <span class="ruby-comment">#=&gt; false</span>&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">errors</span>.<span class="ruby-identifier">to_hash</span> <span class="ruby-comment">#=&gt; {file: [&quot;is too large (max is 2 MB)&quot;]}</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">trailer</span> = <span class="ruby-constant">Trailer</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">trailer</span>.<span class="ruby-identifier">video</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;matrix.mp4&quot;</span>)&#x000A;<span class="ruby-identifier">trailer</span>.<span class="ruby-identifier">valid?</span> <span class="ruby-comment">#=&gt; false</span>&#x000A;<span class="ruby-identifier">trailer</span>.<span class="ruby-identifier">errors</span>.<span class="ruby-identifier">to_hash</span> <span class="ruby-comment">#=&gt; {video: [&quot;is too large (max is 50 MB)&quot;]}</span></pre>
+            
+            <p>You can also do custom validations:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">VideoUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">errors</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;is longer than 5 minutes&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">duration</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">300</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>The <code>Attacher.validate</code> block is executed in context of a
+            <code>Shrine::Attacher</code> instance:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">VideoUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">self</span>   <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>&#x000A;&#x000A;    <span class="ruby-identifier">get</span>    <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;    <span class="ruby-identifier">record</span> <span class="ruby-comment"># the model instance</span>&#x000A;    <span class="ruby-identifier">errors</span> <span class="ruby-comment"># array of error messages for this file</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Metadata">Metadata<span><a href="#label-Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -271,7 +333,7 @@
             the actual MIME type of the file.</p>
             
             <p>To help with that <a href="../classes/Shrine.html">Shrine</a> provides the
-            determine_mime_type plugin, which by default uses the UNIX <a
+            <code>determine_mime_type</code> plugin, which by default uses the UNIX <a
             href="http://linux.die.net/man/1/file">file</a> utility to determine the
             actual MIME type:</p>
             
@@ -281,10 +343,10 @@
             
             <h3 id="label-Custom+metadata">Custom metadata<span><a href="#label-Custom+metadata">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
-            <p>You can also extract and store completely custom metadata with the metadata
-            plugin:</p>
+            <p>You can also extract and store completely custom metadata with the
+            <code>add_metadata</code> plugin:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;  <span class="ruby-identifier">add_metadata</span> <span class="ruby-string">&quot;exif&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;  <span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">exif</span></pre>
             
@@ -293,7 +355,8 @@
             <p>Before <a href="../classes/Shrine.html">Shrine</a> uploads a file, it
             generates a random location for it. By default the hierarchy is flat, all
             files are stored in the root of the storage. If you want that each
-            attachment has its own directory, you can load the pretty_location plugin:</p>
+            attachment has its own directory, you can load the
+            <code>pretty_location</code> plugin:</p>
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span></pre>
             
@@ -345,34 +408,46 @@
             <h3 id="label-Upload+options">Upload options<span><a href="#label-Upload+options">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
             <p>Many storages accept additional upload options, which you can pass via the
-            upload_options plugin, or manually when uploading:</p>
+            <code>upload_options</code> plugin, or manually when uploading:</p>
             
             <pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">MyUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>)&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-identifier">upload_options</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;private&quot;</span>})</pre>
             
             <h2 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
-            <p><a href="../classes/Shrine.html">Shrine</a> comes with a <a
+            <p><a href="../classes/Shrine.html">Shrine</a> comes with a
+            <code>direct_upload</code> plugin for asynchronous uploads to your app or
+            an external service. It provides a <a
+            href="https://github.com/jeremyevans/roda">Roda</a> endpoint which you can
+            mount in your app:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;roda&quot;</span></pre>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span></pre>
+            
+            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>This endpoint provides the following routes:</p>
+            <ul><li>
+            <p><code>POST /images/cache/upload</code> - for direct uploads to your app</p>
+            </li><li>
+            <p><code>GET /images/cache/presign</code> - for direct uploads to external
+            service</p>
+            </li></ul>
+            
+            <p>These routes can be used to asynchronously start caching the file the
+            moment the user selects it, using JavaScript file upload libraries like <a
+            href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>,
+            <a href="https://github.com/enyo/dropzone">Dropzone</a> or <a
+            href="https://github.com/FineUploader/fine-uploader">FineUploader</a>.</p>
+            
+            <p>See the <a
             href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">direct_upload</a>
-            plugin which provides a <a
-            href="https://github.com/jeremyevans/roda">Roda</a> endpoint that accepts
-            file uploads. This allows you to asynchronously start caching the file the
-            moment the user selects it via AJAX (e.g. using the <a
-            href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
-            JS library).</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span> <span class="ruby-comment"># Provides a Roda endpoint</span></pre>
-            
-            <pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">VideoUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/videos&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <pre>$(&#39;[type=&quot;file&quot;]&#39;).fileupload({&#x000A;  url:       &#39;/videos/cache/upload&#39;,&#x000A;  paramName: &#39;file&#39;,&#x000A;  add:       function(e, data) {    Disable the submit button    },&#x000A;  progress:  function(e, data) {    Add a nice progress bar    },&#x000A;  done:      function(e, data) { /* Fill in the hidden field with the result */ }&#x000A;});</pre>
-            
-            <p>Along with the upload route, this endpoint also includes a route for
-            generating presigns for direct uploads to 3rd-party services like Amazon
-            S3. See the <a
-            href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">direct_upload</a>
-            plugin documentation for more details, as well as the <a
-            href="https://github.com/erikdahlstrand/shrine-rails-example">Roda}[https://github.com/janko-m/shrine-example]/{Rails</a>
-            example apps which demonstrate multiple uploads directly to S3.</p>
+            plugin documentation and <a
+            href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">Direct Uploads
+            to S3</a> guide for more details, as well as the <a href="/demo">Roda</a>
+            and <a
+            href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a>
+            demo apps which implement multiple uploads directly to S3.</p>
             
             <h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -380,8 +455,8 @@
             library designed for backgrounding support. Moving phases of managing
             attachments to background jobs is essential for scaling and good user
             experience, and <a href="../classes/Shrine.html">Shrine</a> provides a
-            backgrounding plugin which makes it really easy to plug in your favourite
-            backgrounding library:</p>
+            <code>backgrounding</code> plugin which makes it really easy to plug in
+            your favourite backgrounding library:</p>
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
             
@@ -395,18 +470,24 @@
             
             <p>The main advantages of Shrine&#39;s backgrounding support over other file
             upload libraries are:</p>
-            
-            <p><em>User experience</em>* – After starting the background job, <a
+            <ul><li>
+            <p><strong>User experience</strong> – After starting the background job, <a
             href="../classes/Shrine.html">Shrine</a> will save the  record with the
             cached attachment so that it can be immediately shown to the  user. With
             other file upload libraries users cannot see the file until the  background
-            job has finished.  <em>Simplicity</em>* – Instead of writing the workers
-            for you, <a href="../classes/Shrine.html">Shrine</a> allows you  to use
-            your own workers in a very simple way. Also, no extra columns are 
-            required.  <em>Generality</em>* – The above solution will automatically
-            work for all uploaders,  types of files and models.  <em>Safety</em>* – All
-            of Shrine&#39;s code has been designed to take delayed storing  into
-            account, and concurrent requests are handled well.</p>
+            job has finished.</p>
+            </li><li>
+            <p><strong>Simplicity</strong> – Instead of writing the workers for you, <a
+            href="../classes/Shrine.html">Shrine</a> allows you  to use your own
+            workers in a very simple way. Also, no extra columns are  required.</p>
+            </li><li>
+            <p><strong>Generality</strong> – The above solution will automatically work
+            for all uploaders,  types of files and models.</p>
+            </li><li>
+            <p><strong>Safety</strong> – All of Shrine&#39;s code has been designed to
+            take delayed storing  into account, and concurrent requests are handled
+            well.</p>
+            </li></ul>
             
             <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -418,35 +499,20 @@
             
             <pre class="ruby"><span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span>) <span class="ruby-comment"># delete files older than 1 week</span></pre>
             
-            <h2 id="label-Plugins">Plugins<span><a href="#label-Plugins">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p><a href="../classes/Shrine.html">Shrine</a> comes with a small core which
-            provides only the essential functionality, and any additional features are
-            available via plugins. This way you can choose exactly what and how much <a
-            href="../classes/Shrine.html">Shrine</a> does for you. <a
-            href="../classes/Shrine.html">Shrine</a> itself <a
-            href="http://shrinerb.com#plugins">ships with over 35 plugins</a>, most of
-            which I didn&#39;t cover here.</p>
-            
-            <p>The plugin system respects inheritance, so you can choose which plugins
-            will be applied to which uploaders:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span> <span class="ruby-comment"># enables logging for all uploaders</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span> <span class="ruby-comment"># stores dimensions only for this uploader and its descendants</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
             <h2 id="label-On-the-fly+processing">On-the-fly processing<span><a href="#label-On-the-fly+processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p><a href="../classes/Shrine.html">Shrine</a> allows you to define processing
-            that will be performed on upload. However, what if want to perform
-            processing on-the-fly, only when the URL is requested? Unlike Refile or
+            that will be performed on upload. However, what if you want to have
+            processing performed on-the-fly when the URL is requested? Unlike Refile or
             Dragonfly, <a href="../classes/Shrine.html">Shrine</a> doesn&#39;t come
-            with an image server built in, instead it expects you to integrate any of
+            with an image server built in; instead it expects you to integrate any of
             the existing generic image servers.</p>
             
             <p><a href="../classes/Shrine.html">Shrine</a> has integrations for many
-            commercial on-the-fly processing services, so you can use <a
-            href="https://github.com/janko-m/shrine-cloudinary">shrine-cloudinary</a>,
-            <a href="https://github.com/janko-m/shrine-imgix">shrine-imgix</a> or <a
-            href="https://github.com/janko-m/shrine-uploadcare">shrine-uploadcare</a>.</p>
+            commercial on-the-fly processing services, including <a
+            href="https://github.com/janko-m/shrine-cloudinary">Cloudinary</a>, <a
+            href="https://github.com/janko-m/shrine-imgix">Imgix</a> and <a
+            href="https://github.com/janko-m/shrine-uploadcare">Uploadcare</a>.</p>
             
             <p>If you don&#39;t want to use a commercial service, <a
             href="https://github.com/choonkeat/attache">Attache</a> is a great
@@ -465,8 +531,15 @@
             system</a>.</p>
             
             <h2 id="label-Similar+libraries">Similar libraries<span><a href="#label-Similar+libraries">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>Paperclip  CarrierWave  Dragonfly  Refile</p>
+            <ul><li>
+            <p>Paperclip</p>
+            </li><li>
+            <p>CarrierWave</p>
+            </li><li>
+            <p>Dragonfly</p>
+            </li><li>
+            <p>Refile</p>
+            </li></ul>
             
             <h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

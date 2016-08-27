@@ -39,12 +39,20 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The restore_cached_data plugin ensures the cached file metadata hasn&#39;t
-            been tampered with, which can be done by modifying the hidden field before
-            submitting the form. The cached file&#39;s metadata will be reextracted
-            during assignment and replaced with potentially tampered one.</p>
+            <p>The <code>restore_cached_data</code> plugin re-extracts cached file&#39;s
+            metadata on assignment. This happens when an uploaded file is retained on
+            validation errors, or when assigning direct uploaded files. In both cases
+            you usually want to re-extract metadata on the server side, mainly to
+            prevent tempering, but also in case of direct uploads to obtain metadata
+            that couldn&#39;t be extracted on the client side.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">restore_cached_data</span></pre>
+            
+            <p>This will give an opened <code>UploadedFile</code> for metadata extraction.
+            For remote storages this will make an HTTP request, and since metadata is
+            typically found in the beginning of the file, <a
+            href="../../Shrine.html">Shrine</a> will download only the amount of bytes
+            necessary for extracting the metadata.</p>
           </div>
           <div id='context'>
           </div>

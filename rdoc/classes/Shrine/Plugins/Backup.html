@@ -39,8 +39,8 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The backup plugin allows you to automatically back up stored files to an
-            additional storage.</p>
+            <p>The <code>backup</code> plugin allows you to automatically back up stored
+            files to an additional storage.</p>
             
             <pre class="ruby"><span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">backup_store</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span></pre>
             

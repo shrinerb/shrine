@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Shrine</title>
-    <meta name="description" content="Toolkit for handling file uploads in Ruby">
+    <meta name="description" content="File Attachments toolkit for Ruby applications">
     <link rel="canonical" href="shrinerb.com/">
     <link rel="stylesheet" href="/styles/main.css">
     <script>
@@ -25,8 +25,8 @@
     <header class="header">
   <div class="container">
     <div>
-      <h1>Shrine (v2.2.0)</h1>
-      <p>Toolkit for handling file uploads in Ruby</p>
+      <h1>Shrine (v2.3.0)</h1>
+      <p>File Attachments toolkit for Ruby applications</p>
     </div>
     <a class="btn" href="http://shrinerb.com/rdoc/files/README_md.html">README</a>
   </div>
@@ -211,6 +211,15 @@
           
             <dl>
               <dt>
+                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Copy.html">copy</a>:
+              </dt>
+              <dd>
+                <div>Allows copying attachments from one record to another.</div>
+              </dd>
+            </dl>
+          
+            <dl>
+              <dt>
                 <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DataUri.html">data_uri</a>:
               </dt>
               <dd>
@@ -329,15 +338,6 @@
           
             <dl>
               <dt>
-                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html">determine_mime_type</a>:
-              </dt>
-              <dd>
-                <div>Allows you to determine the actual MIME type from file contents.</div>
-              </dd>
-            </dl>
-          
-            <dl>
-              <dt>
                 <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/AddMetadata.html">add_metadata</a>:
               </dt>
               <dd>
@@ -347,10 +347,19 @@
           
             <dl>
               <dt>
+                <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html">determine_mime_type</a>:
+              </dt>
+              <dd>
+                <div>Allows you to determine the actual MIME type from file contents.</div>
+              </dd>
+            </dl>
+          
+            <dl>
+              <dt>
                 <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RestoreCachedData.html">restore_cached_data</a>:
               </dt>
               <dd>
-                <div>Restores cached file's metadata on model assignment to prevent tampering.</div>
+                <div>Re-extracts cached file's metadata on model assignment.</div>
               </dd>
             </dl>
           
@@ -542,6 +551,9 @@
         
         <li>
           
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_3_0_md.html">2.3.0</a>
+          |
+          
           <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_2_0_md.html">2.2.0</a>
           |
           
@@ -708,6 +720,12 @@
           <ul>
             
             <li>
+              <a href="https://github.com/jnylen/shrine-color">
+                shrine-color
+              </a>
+            </li>
+            
+            <li>
               <a href="https://github.com/katafrakt/hanami-shrine">
                 hanami-shrine
               </a>
@@ -735,7 +753,7 @@
           <ul>
             
             <li>
-              <a href="https://github.com/janko-m/shrine-example">
+              <a href="https://github.com/janko-m/shrine/tree/master/demo">
                 Roda example app (official)
               </a>
             </li>
@@ -755,6 +773,12 @@
             <li>
               <a href="https://github.com/iquest/rails_admin_shrine">
                 rails_admin_shrine
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-tus-demo">
+                Shrine Tus Demo
               </a>
             </li>
             

@@ -39,16 +39,14 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The included plugin allows you to hook up to the <code>.included</code>
-            hook of the attachment module, and call additional methods on the model
-            which includes it.</p>
+            <p>The <code>included</code> plugin allows you to hook up to the
+            <code>.included</code> hook of the attachment module, and call additional
+            methods on the model which includes it.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">included</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>The block is evaluated in the context of the model via
-            <code>instance_exec</code>. This means you cannot use keywords like
-            <code>def</code>, instead you should use the metaprogramming equivalents
-            like <code>define_method</code>.</p>
+            <p>If you want to define additional methods on the model, it&#39;s recommended
+            to use the <code>module_include</code> plugin instead.</p>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -81,7 +79,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 17</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

@@ -39,10 +39,10 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The backgrounding plugin enables you to remove processing/storing/deleting
-            of files from record&#39;s lifecycle, and put them into background jobs.
-            This is generally useful if you&#39;re doing processing and/or your store
-            is something other than <a
+            <p>The <code>backgrounding</code> plugin enables you to remove
+            processing/storing/deleting of files from record&#39;s lifecycle, and put
+            them into background jobs. This is generally useful if you&#39;re doing
+            processing and/or your store is something other than <a
             href="../Storage/FileSystem.html">Storage::FileSystem</a>.</p>
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
@@ -63,10 +63,10 @@
             other backgrounding library. This setup will work globally for all
             uploaders.</p>
             
-            <p>The backgrounding plugin affects the <code>Shrine::Attacher</code> in a way
-            that <code>#_promote</code> and <code>#_delete</code> spawn background
-            jobs, while <code>#promote</code> and <code>#delete!</code> are always
-            synchronous:</p>
+            <p>The <code>backgrounding</code> plugin affects the
+            <code>Shrine::Attacher</code> in a way that <code>#_promote</code> and
+            <code>#_delete</code> spawn background jobs, while <code>#promote</code>
+            and <code>#delete!</code> are always synchronous:</p>
             
             <pre class="ruby"><span class="ruby-comment"># asynchronous (spawn background jobs)</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_promote</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">attachment</span>)&#x000A;&#x000A;<span class="ruby-comment"># synchronous</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">attachment</span>)</pre>
             
@@ -81,8 +81,8 @@
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">after_commit</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">some_condition</span>&#x000A;      <span class="ruby-identifier">data</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">avatar_attacher</span>)&#x000A;      <span class="ruby-constant">SomethingJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">SomethingJob</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Worker</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">perform</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>If you&#39;re generating versions, and you want to process some versions in
-            the foreground before kicking off a background job, you can use the recache
-            plugin.</p>
+            the foreground before kicking off a background job, you can use the
+            <code>recache</code> plugin.</p>
           </div>
           <div id='context'>
           </div>

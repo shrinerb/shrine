@@ -31,12 +31,48 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-07-29 16:07:55 +0800</span>
+          <span class='datetime'>2016-08-27 19:17:59 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-2.3.0+-282016-08-27-29">2.3.0 (2016-08-27)<span><a href="#label-2.3.0+-282016-08-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Prevent client from caching the presign response in direct_upload plugin
+            (janko-m)</p>
+            </li><li>
+            <p>Make Sequel update only the attachment in background job (janko-m)</p>
+            </li><li>
+            <p>Add copy plugin for copying files from one record to another (janko-m)</p>
+            </li><li>
+            <p>Disable moving when uploading stored file to backup storage (janko-m)</p>
+            </li><li>
+            <p>Make <code>Attacher#recache</code> from the recache plugin public for
+            standalone usage (janko-m)</p>
+            </li><li>
+            <p>Allow changing <code>Shrine::Attacher#context</code> once the attacher is
+            instantiated (janko-m)</p>
+            </li><li>
+            <p>Make <code>Attacher#read</code> for reading the attachment column public
+            (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t rely on the <code>#id</code> writer on a model instance in
+            backgrounding plugin (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t make <code>Attacher#swap</code> private in sequel and
+            activerecord plugins (janko-m)</p>
+            </li><li>
+            <p>Set default UNIX permissions to 0644 for files and 0755 for directories
+            (janko-m)</p>
+            </li><li>
+            <p>Apply directory permissions to all subfolders inside the main folder
+            (janko-m)</p>
+            </li><li>
+            <p>Add <code>:directory_permissions</code> to <code>Storage::FileSystem</code>
+            (janko-m)</p>
+            </li></ul>
             
             <h2 id="label-2.2.0+-282016-07-29-29">2.2.0 (2016-07-29)<span><a href="#label-2.2.0+-282016-07-29-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>

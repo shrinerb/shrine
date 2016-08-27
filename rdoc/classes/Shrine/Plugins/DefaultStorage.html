@@ -39,15 +39,15 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The default_storage plugin enables you to change which storages are going
-            to be used for this uploader&#39;s attacher (the default is
-            <code>:cache</code> and <code>:store</code>).</p>
+            <p>The <code>default_storage</code> plugin enables you to change which
+            storages are going to be used for this uploader&#39;s attacher (the default
+            is <code>:cache</code> and <code>:store</code>).</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">special_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">special_store</span></pre>
             
             <p>You can also pass a block and choose the values depending on the record
             values and the name of the attachment. This is useful if you&#39;re using
-            the dynamic_storage plugin. Example:</p>
+            the <code>dynamic_storage</code> plugin. Example:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>) { :<span class="ruby-node">&quot;store_#{record.username}&quot;</span> }</pre>
           </div>

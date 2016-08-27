@@ -39,8 +39,8 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The rack_file plugin enables models to accept Rack file hashes as
-            attachments.</p>
+            <p>The <code>rack_file</code> plugin enables models to accept Rack file hashes
+            as attachments.</p>
             
             <pre class="ruby"><span class="ruby-identifier">rack_file</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   filename: &quot;cats.png&quot;,</span>&#x000A;<span class="ruby-comment">#   type: &quot;image/png&quot;,</span>&#x000A;<span class="ruby-comment">#   tempfile: #&lt;Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   head: &quot;Content-Disposition: form-data; ...&quot;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">rack_file</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cats.png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span></pre>
             

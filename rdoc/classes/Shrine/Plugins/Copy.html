@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::RemoveAttachment</title>
+    <title>Shrine::Plugins::Copy</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::RemoveAttachment
+          Shrine::Plugins::Copy
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../files/lib/shrine/plugins/remove_attachment_rb.html">lib/shrine/plugins/remove_attachment.rb</a>
+            <a target="docwin" href="../../../files/lib/shrine/plugins/copy_rb.html">lib/shrine/plugins/copy.rb</a>
           </li>
         </ol>
       </div>
@@ -39,28 +39,27 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The <code>remove_attachment</code> plugin allows you to delete attachments
-            through checkboxes on the web form.</p>
+            <p>The <code>copy</code> plugin allows copying attachment from one record to
+            another.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remove_attachment</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">copy</span></pre>
             
-            <p>If for example your attachment is called “avatar”, this plugin will add
-            <code>#remove_avatar</code> and <code>#remove_avatar=</code> methods to
-            your model. This allows you to easily delete attached files through the
-            form:</p>
+            <p>It adds a <code>Attacher#copy</code> method, which accepts another
+            attacher, and copies the attachment from it:</p>
             
-            <pre>&lt;%= form_for @user do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :avatar, value: @user.avatar_data %&gt;&#x000A;  &lt;%= f.file_field :avatar %&gt;&#x000A;  Remove attachment: &lt;%= f.check_box :remove_avatar %&gt;&#x000A;&lt;% end %&gt;</pre>
+            <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>.<span class="ruby-identifier">copy</span>(<span class="ruby-identifier">other_photo</span>.<span class="ruby-identifier">image_attacher</span>)</pre>
             
-            <p>Now when the checkbox is ticked and the form is submitted, the attached
-            file will be removed.</p>
+            <p>This method will automatically be called when the record is duplicated:</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">duplicated_photo</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">dup</span>&#x000A;<span class="ruby-identifier">duplicated_photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">duplicated_photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span></pre>
           </div>
           <div id='context'>
           </div>
           <div id='class-list'>
             <h2>Classes and Modules</h2>
             <ol>
-              <li><a target="docwin" href="RemoveAttachment/AttacherMethods.html">Shrine::Plugins::RemoveAttachment::AttacherMethods</a></li>
-              <li><a target="docwin" href="RemoveAttachment/AttachmentMethods.html">Shrine::Plugins::RemoveAttachment::AttachmentMethods</a></li>
+              <li><a target="docwin" href="Copy/AttacherMethods.html">Shrine::Plugins::Copy::AttacherMethods</a></li>
+              <li><a target="docwin" href="Copy/AttachmentMethods.html">Shrine::Plugins::Copy::AttachmentMethods</a></li>
             </ol>
           </div>
           <div id='section'>

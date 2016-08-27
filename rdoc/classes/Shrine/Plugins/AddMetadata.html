@@ -39,8 +39,8 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The metadata plugin provides a convenient method for extracting and adding
-            custom metadata values.</p>
+            <p>The <code>add_metadata</code> plugin provides a convenient method for
+            extracting and adding custom metadata values.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             

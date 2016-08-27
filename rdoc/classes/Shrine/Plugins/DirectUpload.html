@@ -39,9 +39,9 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The direct_upload plugin provides a <a
-            href="https://github.com/jeremyevans/roda">Roda</a> endpoint which can be
-            used for uploading individual files asynchronously.</p>
+            <p>The <code>direct_upload</code> plugin provides a Rack endpoint which can be
+            used for uploading individual files asynchronously. It requires the <a
+            href="https://github.com/jeremyevans/roda">Roda</a> gem.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span></pre>
             
@@ -65,8 +65,9 @@
             <code>GET /images/cache/presign</code> routes. Whether you upload files to
             your app or to to a 3rd-party service, you&#39;ll probably want to use a
             JavaScript file upload library like <a
-            href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
-            or <a href="https://github.com/enyo/dropzone">Dropzone</a>.</p>
+            href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>,
+            <a href="https://github.com/enyo/dropzone">Dropzone</a> or <a
+            href="https://github.com/FineUploader/fine-uploader">FineUploader</a>.</p>
             
             <h2 id="module-Shrine::Plugins::DirectUpload-label-Uploads">Uploads<span><a href="#module-Shrine::Plugins::DirectUpload-label-Uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -109,14 +110,16 @@
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign_location</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) { <span class="ruby-string">&quot;${filename}&quot;</span> }</pre>
             
             <p>This presign route internally calls <code>#presign</code> on the storage,
-            which also accepts some service-specific options. You can generate these
-            additional options per-request with <code>:presign_options</code>:</p>
+            and many storages accept additional service-specific options. You can
+            generate these additional options per-request through
+            <code>:presign_options</code>:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign_options</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign_options</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">options</span> = {}&#x000A;  <span class="ruby-identifier">options</span>[:<span class="ruby-identifier">content_length_range</span>] = <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)       <span class="ruby-comment"># limit the filesize to 5 MB</span>&#x000A;  <span class="ruby-identifier">options</span>[:<span class="ruby-identifier">content_type</span>] = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;content_type&quot;</span>] <span class="ruby-comment"># use &quot;content_type&quot; query parameter</span>&#x000A;  <span class="ruby-identifier">options</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign_options</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign_options</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">filename</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>].<span class="ruby-identifier">inspect</span>&#x000A;&#x000A;  {&#x000A;    <span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>),                 <span class="ruby-comment"># limit filesize to 10MB</span>&#x000A;    <span class="ruby-identifier">content_disposition</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;attachment; filename=#{filename}&quot;</span>, <span class="ruby-comment"># download with original filename</span>&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>Both <code>:presign_location</code> and <code>:presign_options</code> in
-            their block versions are yielded an instance of
-            [<code>Roda::Request</code>].</p>
+            their block versions are yielded an instance of <a
+            href="http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html">Roda
+            request</a>, which is a subclass of <code>Rack::Request</code>.</p>
             
             <p>See the <a
             href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">Direct Uploads
@@ -132,19 +135,20 @@
             
             <h2 id="module-Shrine::Plugins::DirectUpload-label-Allowed+storages">Allowed storages<span><a href="#module-Shrine::Plugins::DirectUpload-label-Allowed+storages">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
-            <p>While <a href="../../Shrine.html">Shrine</a> only accepts cached
-            attachments on form submits (for security reasons), you can use this
-            endpoint to upload files to any storage, just add it to allowed storages:</p>
+            <p>By default only uploads to <code>:cache</code> are allowed, to prevent the
+            possibility of having orphan files in your main storage. But you can allow
+            more storages:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">allowed_storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">cache</span>, :<span class="ruby-identifier">store</span>]</pre>
             
             <h2 id="module-Shrine::Plugins::DirectUpload-label-Customizing+endpoint">Customizing endpoint<span><a href="#module-Shrine::Plugins::DirectUpload-label-Customizing+endpoint">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>Since the endpoint is a <a
-            href="https://github.com/jeremyevans/roda">Roda</a> app, it can be easily
-            customized via plugins:</p>
+            href="https://github.com/jeremyevans/roda">Roda</a> app, it is very
+            customizable. For example, you can add a Rack middleware to change the
+            response status and headers:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span>&#x000A;  <span class="ruby-keyword">class</span> <span class="ruby-constant">UploadEndpoint</span>&#x000A;    <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span>&#x000A;&#x000A;    <span class="ruby-identifier">after</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">response</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ShrineUploadMiddleware</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">app</span>)&#x000A;    <span class="ruby-ivar">@app</span> = <span class="ruby-identifier">app</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;    <span class="ruby-identifier">result</span> = <span class="ruby-ivar">@app</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-value">200</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>].<span class="ruby-identifier">end_with?</span>(<span class="ruby-string">&quot;upload&quot;</span>)&#x000A;      <span class="ruby-identifier">result</span>[<span class="ruby-value">0</span>] = <span class="ruby-value">201</span>&#x000A;      <span class="ruby-identifier">result</span>[<span class="ruby-value">1</span>][<span class="ruby-string">&quot;Location&quot;</span>] = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">result</span>[<span class="ruby-value">2</span>].<span class="ruby-identifier">first</span>).<span class="ruby-identifier">url</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">result</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>.<span class="ruby-identifier">use</span> <span class="ruby-constant">ShrineUploadMiddleware</span></pre>
             
             <p>Upon subclassing uploader the upload endpoint is also subclassed. You can
             also call the plugin again in an uploader subclass to change its
@@ -183,7 +187,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 157</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_allowed_storages</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:allowed_storages</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:direct_upload_allowed_storages</span>, [<span class="ruby-value">:cache</span>]))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign_options</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_options</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:direct_upload_presign_options</span>, {}))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign_location</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_location</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign_location</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_max_size</span>])&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-constant">App</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">const_defined?</span>(<span class="ruby-value">:UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 168</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_allowed_storages</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:allowed_storages</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:direct_upload_allowed_storages</span>, [<span class="ruby-value">:cache</span>]))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign_options</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_options</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:direct_upload_presign_options</span>, {}))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign_location</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_location</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_presign_location</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:direct_upload_max_size</span>])&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-constant">App</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">const_defined?</span>(<span class="ruby-value">:UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -199,7 +203,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 153</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 164</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

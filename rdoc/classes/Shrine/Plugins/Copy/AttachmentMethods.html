@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::Included::AttachmentMethods</title>
+    <title>Shrine::Plugins::Copy::AttachmentMethods</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -27,11 +27,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::Included::AttachmentMethods
+          Shrine::Plugins::Copy::AttachmentMethods
         </h1>
         <ol class='paths'>
           <li>
-            <a target="docwin" href="../../../../files/lib/shrine/plugins/included_rb.html">lib/shrine/plugins/included.rb</a>
+            <a target="docwin" href="../../../../files/lib/shrine/plugins/copy_rb.html">lib/shrine/plugins/copy.rb</a>
           </li>
         </ol>
       </div>
@@ -40,30 +40,30 @@
           <div id='description'></div>
           <div id='method-list'>
             <h2>Methods</h2>
-            <h3>Public Instance</h3>
+            <h3>Public Class</h3>
             <ol>
-              <li><a target="docwin" href="#method-i-included">included</a></li>
+              <li><a target="docwin" href="#method-c-new">new</a></li>
             </ol>
           </div>
           <div id='context'>
           </div>
           <div id='section'>
             <div id='methods'>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-included'>
-                <a name='method-i-included'></a>
+              <h2>Public Class methods</h2>
+              <div class='method public-class' id='method-method-c-new'>
+                <a name='method-c-new'></a>
                 <div class='synopsis'>
-                  <span class='name'>included</span>
-                  <span class='arguments'>(model)</span>
+                  <span class='name'>new</span>
+                  <span class='arguments'>(*)</span>
                 </div>
                 <div class='description'>
                   
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-included-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-included-source'><span class="ruby-comment"># File lib/shrine/plugins/included.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">included</span>(<span class="ruby-identifier">model</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">model</span>.<span class="ruby-identifier">instance_exec</span>(<span class="ruby-ivar">@name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:included_block</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/copy.rb, line 19</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;&#x000A;  <span class="ruby-identifier">module_eval</span> <span class="ruby-value">&lt;&lt;-RUBY&#x000A;    def initialize_copy(record)&#x000A;      super&#x000A;      @#{@name}_attacher = nil # reload the attacher&#x000A;      self.#{@name}_data = nil # remove original attachment&#x000A;      #{@name}_attacher.copy(record.#{@name}_attacher)&#x000A;    end&#x000A;  RUBY</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
