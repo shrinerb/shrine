@@ -3,14 +3,14 @@ require "down"
 
 class Shrine
   module Plugins
-    # The download_endpoint plugin provides a [Roda] endpoint for downloading
+    # The `download_endpoint` plugin provides a Rack endpoint for downloading
     # uploaded files from specified storages. This can be useful when files
     # from your storages aren't accessible over URL (e.g. database storages) or
-    # if you want to authenticate your downloads.
+    # if you want to authenticate your downloads. It requires the [Roda] gem.
     #
     #     plugin :download_endpoint, storages: [:store], prefix: "attachments"
     #
-    # After loading the plugin the endpoint should be mounted:
+    # After loading the plugin the endpoint can be mounted:
     #
     #     Rails.appliations.routes.draw do
     #       mount Shrine::DownloadEndpoint => "/attachments"

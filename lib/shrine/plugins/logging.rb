@@ -4,7 +4,7 @@ require "json"
 
 class Shrine
   module Plugins
-    # The logging plugin logs any storing/processing/deleting that is performed.
+    # The `logging` plugin logs any storing/processing/deleting that is performed.
     #
     #     plugin :logging
     #

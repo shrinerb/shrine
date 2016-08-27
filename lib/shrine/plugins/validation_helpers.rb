@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The validation_helpers plugin provides helper methods for validating
+    # The `validation_helpers` plugin provides helper methods for validating
     # attached files.
     #
     #     class ImageUploader < Shrine
@@ -71,7 +71,7 @@ class Shrine
         end
 
         # Validates that the file is not wider than `max`. Requires the
-        # store_dimensions plugin.
+        # `store_dimensions` plugin.
         def validate_max_width(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
           if get.width && get.width > max
@@ -80,7 +80,7 @@ class Shrine
         end
 
         # Validates that the file is not narrower than `min`. Requires the
-        # store_dimensions plugin.
+        # `store_dimensions` plugin.
         def validate_min_width(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
           if get.width && get.width < min
@@ -89,7 +89,7 @@ class Shrine
         end
 
         # Validates that the file is not taller than `max`. Requires the
-        # store_dimensions plugin.
+        # `store_dimensions` plugin.
         def validate_max_height(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
           if get.height && get.height > max
@@ -98,7 +98,7 @@ class Shrine
         end
 
         # Validates that the file is not shorter than `min`. Requires the
-        # store_dimensions plugin.
+        # `store_dimensions` plugin.
         def validate_min_height(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
           if get.height && get.height < min

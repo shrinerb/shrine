@@ -1,5 +1,5 @@
 title: Shrine
-description: Toolkit for file attachments in Ruby applications
+description: File Attachments toolkit for Ruby applications
 baseurl: ""
 url: shrinerb.com
 markdown: kramdown

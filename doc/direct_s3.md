@@ -23,6 +23,9 @@ You can start by setting both temporary and permanent storage to S3 with
 different prefixes (or even buckets):
 
 ```rb
+gem "aws-sdk", "~> 2.1"
+```
+```rb
 require "shrine/storage/s3"
 
 s3_options = {access_key_id: "...", secret_access_key: "...", region: "..."}
@@ -72,17 +75,20 @@ representation of an uploaded file:
 * Single or multiple file uploads
 * Some JavaScript needed
 
-When the user selects the file, we dynamically request the presign from the
+When the user selects the file, we dynamically fetch the presign from the
 server, and use this information to start uploading the file to S3. The
-direct_upload plugin gives us this presign route, so we just need to mount it
+`direct_upload` plugin gives us this presign route, so we just need to mount it
 in our application:
 
+```rb
+gem "roda"
+```
 ```rb
 plugin :direct_upload
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader::UploadEndpoint => "/image"
+  mount ImageUploader::UploadEndpoint => "/images"
 end
 ```
 
@@ -106,27 +112,24 @@ necessary request parameters:
 ```
 
 For uploading to S3 you'll probably want to use a JavaScript file upload
-library like [jQuery-File-Upload] or [Dropzone]. After the upload you should
-create a JSON representation of the uploaded file, which you can write to
-the hidden attachment field:
+library like [jQuery-File-Upload], [Dropzone] or [FineUploader]. After the
+upload you should create a JSON representation of the uploaded file, which you
+can write to the hidden attachment field:
 
-```js
-var image = {
-  id: key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
-  storage: 'cache',
-  metadata: {
-    size:      data.files[0].size,
-    filename:  data.files[0].name.match(/[^\/\\]+$/)[0], // IE returns full path
-    mime_type: data.files[0].type
+```html
+<input type='hidden' name='photo[image]' value='{
+  "id": "302858ldg9agjad7f3ls.jpg",
+  "storage": "cache",
+  "metadata": {
+    "size": 943483,
+    "filename": "nature.jpg",
+    "mime_type": "image/jpeg",
   }
-}
-
-$('input[type=file]').prev().val(JSON.stringify(image))
+}'>
 ```
 
-It's generally a good idea to disable the submit button until the file is
-uploaded, as well as display a progress bar. See the [demo app] for a
-working implementation of multiple direct S3 uploads.
+See the [demo app] for an example JavaScript implementation of multiple direct
+S3 uploads.
 
 ## Strategy B (static)
 
@@ -178,7 +181,7 @@ caching the file doesn't touch your application. When the cached file is stored,
 Shrine's default behaviour is to simply copy over cached file's metadata.
 
 If you want to extract metadata on the server before storing, you can just
-load the restore_cached_data plugin.
+load the `restore_cached_data` plugin.
 
 ```rb
 plugin :restore_cached_data
@@ -216,7 +219,7 @@ backgrounding library to perform the job with a delay:
 Shrine.plugin :backgrounding
 
 Shrine::Attacher.promote do |data|
-  PromoteJob.perform_in(60, data) # tells a Sidekiq worker to perform in 1 minute
+  PromoteJob.perform_in(3, data) # tells a Sidekiq worker to perform in 3 seconds
 end
 ```
 

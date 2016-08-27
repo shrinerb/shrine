@@ -70,7 +70,7 @@ class Shrine
     # restarts. This also means that deploying the app can cancel someone's
     # uploading if you're using backgrounding. Also, by default you cannot
     # generate URLs to files in the "tmp" directory, but you can with the
-    # download_endpoint plugin.
+    # `download_endpoint` plugin.
     class FileSystem
       attr_reader :directory, :prefix, :host, :permissions, :directory_permissions
 
@@ -122,7 +122,7 @@ class Shrine
         open(id) { |file| Down.copy_to_tempfile(id, file) }
       end
 
-      # Moves the file to the given location. This gets called by the "moving"
+      # Moves the file to the given location. This gets called by the `moving`
       # plugin.
       def move(io, id, shrine_metadata: {}, **upload_options)
         if io.respond_to?(:path)

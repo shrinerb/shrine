@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The versions plugin enables your uploader to deal with versions, by
+    # The `versions` plugin enables your uploader to deal with versions, by
     # allowing you to return a Hash of files when processing.
     #
     #     plugin :versions
@@ -41,7 +41,7 @@ class Shrine
     #     user.avatar[:medium].width #=> 500
     #     user.avatar[:small].width  #=> 300
     #
-    # You probably want to load the delete_raw plugin to automatically
+    # You probably want to load the `delete_raw` plugin to automatically
     # delete processed files after they have been uploaded.
     #
     # ## Original file
@@ -70,7 +70,7 @@ class Shrine
     # to gracefully degrade before the background job finishes.
     #
     # If you already have some versions processed in the foreground when a
-    # background job is kicked off (with the recache plugin), the
+    # background job is kicked off (with the `recache` plugin), the
     # `<attachment>_url` method won't know which version to use as a fallback.
     # In that case you can specify `:fallbacks` when loading the plugin:
     #

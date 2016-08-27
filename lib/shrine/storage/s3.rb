@@ -4,8 +4,8 @@ require "uri"
 
 class Shrine
   module Storage
-    # The S3 storage handles uploads to Amazon S3 service, it depends on the
-    # [aws-sdk] gem:
+    # The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk]
+    # gem:
     #
     #     gem "aws-sdk", "~> 2.1"
     #
@@ -83,7 +83,7 @@ class Shrine
     # three places in which you can specify presign options:
     #
     # * in `:upload_options` option on this storage
-    # * in direct_upload plugin through `:presign_options`
+    # * in `direct_upload` plugin through `:presign_options`
     # * in `Storage::S3#presign` by forwarding options
     #
     # ## Large files

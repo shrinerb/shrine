@@ -2,7 +2,7 @@ require "active_record"
 
 class Shrine
   module Plugins
-    # The activerecord plugin extends the "attachment" interface with support
+    # The `activerecord` plugin extends the "attachment" interface with support
     # for ActiveRecord.
     #
     #     plugin :activerecord
@@ -27,7 +27,7 @@ class Shrine
     # you should first disable transactions for those tests.
     #
     # If you want to put promoting/deleting into a background job, see the
-    # backgrounding plugin.
+    # `backgrounding` plugin.
     #
     # Since attaching first saves the record with a cached attachment, then
     # saves again with a stored attachment, you can detect this in callbacks:
@@ -105,7 +105,7 @@ class Shrine
       end
 
       module AttacherClassMethods
-        # Needed by the backgrounding plugin.
+        # Needed by the `backgrounding` plugin.
         def find_record(record_class, record_id)
           record_class.where(id: record_id).first
         end

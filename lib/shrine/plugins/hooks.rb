@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The hooks plugin allows you to trigger some code around
+    # The `hooks` plugin allows you to trigger some code around
     # processing/storing/deleting of each file.
     #
     #     plugin :hooks

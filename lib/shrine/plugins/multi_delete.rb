@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The multi_delete plugins allows you to leverage your storage's multi
+    # The `multi_delete` plugins allows you to leverage your storage's multi
     # delete capabilities.
     #
     #     plugin :multi_delete
@@ -11,7 +11,7 @@ class Shrine
     #
     # Now if you're using Storage::S3, deleting an array of files will issue a
     # single HTTP request. Some other storages may support multi deletes as
-    # well. The versions plugin uses this plugin for deleting multiple versions
+    # well. The `versions` plugin uses this plugin for deleting multiple versions
     # at once.
     module MultiDelete
       module InstanceMethods

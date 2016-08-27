@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The module_include plugin allows you to extend Shrine's core classes for
+    # The `module_include` plugin allows you to extend Shrine's core classes for
     # the given uploader with modules/methods.
     #
     #     plugin :module_include

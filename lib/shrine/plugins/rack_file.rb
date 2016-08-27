@@ -2,7 +2,7 @@ require "forwardable"
 
 class Shrine
   module Plugins
-    # The rack_file plugin enables models to accept Rack file hashes as
+    # The `rack_file` plugin enables models to accept Rack file hashes as
     # attachments.
     #
     #     rack_file #=>

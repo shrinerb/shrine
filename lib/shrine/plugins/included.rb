@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The included plugin allows you to hook up to the `.included` hook of the
+    # The `included` plugin allows you to hook up to the `.included` hook of the
     # attachment module, and call additional methods on the model which includes
     # it.
     #
@@ -11,7 +11,7 @@ class Shrine
     #     end
     #
     # If you want to define additional methods on the model, it's recommended
-    # to use the module_include plugin instead.
+    # to use the `module_include` plugin instead.
     module Included
       def self.configure(uploader, &block)
         uploader.opts[:included_block] = block

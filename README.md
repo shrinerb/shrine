@@ -142,9 +142,9 @@ photo.image.exists? #=> false
 The ORM plugin will also delete replaced attachments:
 
 ```rb
-photo.update(image: new_file) # changes the attachment
+photo.update(image: new_file) # changes the attachment and deletes previous
 # or
-photo.update(image: nil)      # removes the attachment
+photo.update(image: nil)      # removes the attachment and deletes previous
 ```
 
 In all these examples we used `image` as the name of the attachment, but we can
@@ -169,12 +169,12 @@ type="file" multiple>`.
 
 Shrine doesn't accept multiple files on single a attachment attribute, but you
 can instead attach each file to a separate database record, which is a much
-more flexible solution. One way is to send all files at once, and then in
-the router/controller map them to separate database records.
+more flexible solution.
 
-Another way is to use [direct uploads] to upload each file separately, and
-then send their information though the form as nested attributes for the parent
-record.
+The best way is to [directly upload][direct uploads] selected files, and then
+send the data of uploaded files as nested attributes for associated records.
+Alternatively you can send all selected files at once, and then transform them
+into nested association attributes in the controller.
 
 ## Uploader
 
@@ -215,6 +215,24 @@ the record:
 
 ```rb
 photo.image #=> #<Shrine::UploadedFile>
+```
+
+### Plugins
+
+Shrine comes with a small core which provides only the essential functionality,
+and any additional features are available via plugins. This way you can choose
+exactly what and how much Shrine does for you. See the [website] for a complete
+list of plugins.
+
+The plugin system respects inheritance, so you can choose which plugins will
+be applied to which uploaders:
+
+```rb
+Shrine.plugin :logging # enables logging for all uploaders
+
+class ImageUploader < Shrine
+  plugin :backup # stores backups only for this uploader and its descendants
+end
 ```
 
 ## Processing
@@ -266,7 +284,7 @@ we're uploading images, we might want to store various thumbnails alongside the
 original image. If we're uploading videos, we might want to save a screenshot
 or transcode it into different formats.
 
-To save multiple files, we just need to load the versions plugin, and then in
+To save multiple files, we just need to load the `versions` plugin, and then in
 `#process` we can return a Hash of files:
 
 ```rb
@@ -290,7 +308,7 @@ end
 Being able to define processing on instance-level like this provides a lot of
 flexibility. For example, you can choose to process files in a certain order
 for maximum performance, and you can also add parallelization. It is
-recommended to load the delete_raw plugin for automatically deleting processed
+recommended to load the `delete_raw` plugin for automatically deleting processed
 files after uploading.
 
 Each version will be saved to the attachment column, and the attachment getter
@@ -356,7 +374,7 @@ generating location etc, and it is also used by some plugins internally.
 ## Validation
 
 Validations are registered inside a `Attacher.validate` block, and you can load
-the validation_helpers plugin to get some convenient file validation methods:
+the `validation_helpers` plugin to get some convenient file validation methods:
 
 ```rb
 class VideoUploader < Shrine
@@ -428,7 +446,7 @@ which is set from the "Content-Type" request header, which is determined by the
 browser solely based on the file extension. This means that by default Shrine's
 "mime_type" is *not* guaranteed to hold the actual MIME type of the file.
 
-To help with that Shrine provides the determine_mime_type plugin, which by
+To help with that Shrine provides the `determine_mime_type` plugin, which by
 default uses the UNIX [file] utility to determine the actual MIME type:
 
 ```rb
@@ -442,8 +460,8 @@ photo.image.mime_type #=> "text/x-php"
 
 ### Custom metadata
 
-You can also extract and store completely custom metadata with the add_metadata
-plugin:
+You can also extract and store completely custom metadata with the
+`add_metadata` plugin:
 
 ```rb
 require "mini_magick"
@@ -467,7 +485,7 @@ photo.image.exif
 Before Shrine uploads a file, it generates a random location for it. By
 default the hierarchy is flat, all files are stored in the root of the storage.
 If you want that each attachment has its own directory, you can load the
-pretty_location plugin:
+`pretty_location` plugin:
 
 ```rb
 Shrine.plugin :pretty_location
@@ -543,7 +561,7 @@ website.
 ### Upload options
 
 Many storages accept additional upload options, which you can pass via the
-upload_options plugin, or manually when uploading:
+`upload_options` plugin, or manually when uploading:
 
 ```rb
 uploader = MyUploader.new(:store)
@@ -552,40 +570,40 @@ uploader.upload(file, upload_options: {acl: "private"})
 
 ## Direct uploads
 
-Shrine comes with a [direct_upload] plugin which provides a [Roda] endpoint that
-accepts file uploads. This allows you to asynchronously start caching the file
-the moment the user selects it via AJAX (e.g. using the [jQuery-File-Upload] JS
-library).
+Shrine comes with a `direct_upload` plugin for asynchronous uploads to your
+app or an external service. It provides a [Roda] endpoint which you can mount
+in your app:
 
 ```rb
-Shrine.plugin :direct_upload # Provides a Roda endpoint
+gem "roda"
+```
+```rb
+Shrine.plugin :direct_upload
 ```
 ```rb
 Rails.application.routes.draw do
-  mount VideoUploader::UploadEndpoint => "/videos"
+  mount ImageUploader::UploadEndpoint => "/images"
 end
 ```
-```js
-$('[type="file"]').fileupload({
-  url:       '/videos/cache/upload',
-  paramName: 'file',
-  add:       function(e, data) { /* Disable the submit button */ },
-  progress:  function(e, data) { /* Add a nice progress bar */ },
-  done:      function(e, data) { /* Fill in the hidden field with the result */ }
-});
-```
 
-Along with the upload route, this endpoint also includes a route for generating
-presigns for direct uploads to 3rd-party services like Amazon S3. See the
-[direct_upload] plugin documentation for more details, as well as the
-[Roda](/demo)/[Rails](https://github.com/erikdahlstrand/shrine-rails-example)
+This endpoint provides the following routes:
+
+* `POST /images/cache/upload` - for direct uploads to your app
+* `GET /images/cache/presign` - for direct uploads to external service
+
+These routes can be used to asynchronously start caching the file the moment
+the user selects it, using JavaScript file upload libraries like
+[jQuery-File-Upload], [Dropzone] or [FineUploader].
+
+See the [direct_upload] plugin documentation and [Direct Uploads to S3] guide
+for more details, as well as the [Roda][roda_demo] and [Rails][rails_demo]
 demo apps which implement multiple uploads directly to S3.
 
 ## Backgrounding
 
 Shrine is the first file upload library designed for backgrounding support.
 Moving phases of managing attachments to background jobs is essential for
-scaling and good user experience, and Shrine provides a backgrounding plugin
+scaling and good user experience, and Shrine provides a `backgrounding` plugin
 which makes it really easy to plug in your favourite backgrounding library:
 
 ```rb
@@ -640,34 +658,16 @@ file_system = Shrine.storages[:cache]
 file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
 ```
 
-## Plugins
-
-Shrine comes with a small core which provides only the essential functionality,
-and any additional features are available via plugins. This way you can choose
-exactly what and how much Shrine does for you. Shrine itself [ships with over
-35 plugins], most of which I didn't cover here.
-
-The plugin system respects inheritance, so you can choose which plugins will
-be applied to which uploaders:
-
-```rb
-Shrine.plugin :logging # enables logging for all uploaders
-
-class ImageUploader < Shrine
-  plugin :backup # stores backups only for this uploader and its descendants
-end
-```
-
 ## On-the-fly processing
 
 Shrine allows you to define processing that will be performed on upload.
-However, what if want to perform processing on-the-fly, only when the URL is
-requested? Unlike Refile or Dragonfly, Shrine doesn't come with an image server
-built in, instead it expects you to integrate any of the existing generic image
-servers.
+However, what if you want to have processing performed on-the-fly when the URL
+is requested? Unlike Refile or Dragonfly, Shrine doesn't come with an image
+server built in; instead it expects you to integrate any of the existing
+generic image servers.
 
-Shrine has integrations for many commercial on-the-fly processing services, so
-you can use [shrine-cloudinary], [shrine-imgix] or [shrine-uploadcare].
+Shrine has integrations for many commercial on-the-fly processing services,
+including [Cloudinary], [Imgix] and [Uploadcare].
 
 If you don't want to use a commercial service, [Attache] is a great open-source
 image server. There isn't a Shrine integration written for it yet, but it
@@ -697,6 +697,8 @@ The gem is available as open source under the terms of the [MIT License].
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
 [aws-sdk]: https://github.com/aws/aws-sdk-ruby
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+[Dropzone]: https://github.com/enyo/dropzone
+[FineUploader]: https://github.com/FineUploader/fine-uploader
 [Roda]: https://github.com/jeremyevans/roda
 [Refile]: https://github.com/refile/refile
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
@@ -710,7 +712,11 @@ The gem is available as open source under the terms of the [MIT License].
 [direct uploads]: #direct-uploads
 [ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [direct_upload]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html
-[shrine-cloudinary]: https://github.com/janko-m/shrine-cloudinary
-[shrine-imgix]: https://github.com/janko-m/shrine-imgix
-[shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[Cloudinary]: https://github.com/janko-m/shrine-cloudinary
+[Imgix]: https://github.com/janko-m/shrine-imgix
+[Uploadcare]: https://github.com/janko-m/shrine-uploadcare
 [Attache]: https://github.com/choonkeat/attache
+[roda_demo]: /demo
+[rails_demo]: https://github.com/erikdahlstrand/shrine-rails-example
+[Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[website]: http://shrinerb.com

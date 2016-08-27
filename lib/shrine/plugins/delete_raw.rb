@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The delete_raw plugin will automatically delete raw files that have been
+    # The `delete_raw` plugin will automatically delete raw files that have been
     # uploaded. This is especially useful when doing processing, to ensure that
     # temporary files have been deleted after upload.
     #

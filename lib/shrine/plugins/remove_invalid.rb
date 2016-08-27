@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The remove_invalid plugin automatically deletes a cached file if it was
+    # The `remove_invalid` plugin automatically deletes a cached file if it was
     # invalid and deassigns it from the record.
     #
     #     plugin :remove_invalid

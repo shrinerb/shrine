@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The recache plugin allows you to process your attachment after
+    # The `recache` plugin allows you to process your attachment after
     # validations succeed, but before the attachment is promoted. This is
     # useful for example when you want to generate some versions upfront (so
     # the user immediately sees them) and other versions you want to generate

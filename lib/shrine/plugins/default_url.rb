@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The default_url plugin allows setting the URL which will be returned when
+    # The `default_url` plugin allows setting the URL which will be returned when
     # the attachment is missing.
     #
     #     plugin :default_url do |context|

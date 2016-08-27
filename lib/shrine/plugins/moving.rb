@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The moving plugin will *move* files to storages instead of copying them,
+    # The `moving` plugin will *move* files to storages instead of copying them,
     # when the storage supports it. For FileSystem this will issue a `mv`
     # command, which is instantaneous regardless of the filesize, so in that
     # case loading this plugin can significantly speed up the attachment

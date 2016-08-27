@@ -3,8 +3,8 @@ require "json"
 
 class Shrine
   module Plugins
-    # The direct_upload plugin provides a [Roda] endpoint which can be used for
-    # uploading individual files asynchronously.
+    # The `direct_upload` plugin provides a Rack endpoint which can be used for
+    # uploading individual files asynchronously. It requires the [Roda] gem.
     #
     #     plugin :direct_upload
     #
@@ -27,7 +27,7 @@ class Shrine
     # Now your application will get `POST /images/cache/upload` and `GET
     # /images/cache/presign` routes. Whether you upload files to your app or to
     # to a 3rd-party service, you'll probably want to use a JavaScript file
-    # upload library like [jQuery-File-Upload] or [Dropzone].
+    # upload library like [jQuery-File-Upload], [Dropzone] or [FineUploader].
     #
     # ## Uploads
     #
@@ -105,7 +105,8 @@ class Shrine
     #     end
     #
     # Both `:presign_location` and `:presign_options` in their block versions
-    # are yielded an instance of [`Roda::Request`].
+    # are yielded an instance of [Roda request], which is a subclass of
+    # `Rack::Request`.
     #
     # See the [Direct Uploads to S3] guide for further instructions on how to
     # hook the presigned uploads to a form.
@@ -119,26 +120,35 @@ class Shrine
     #
     # ## Allowed storages
     #
-    # While Shrine only accepts cached attachments on form submits (for security
-    # reasons), you can use this endpoint to upload files to any storage, just
-    # add it to allowed storages:
+    # By default only uploads to `:cache` are allowed, to prevent the
+    # possibility of having orphan files in your main storage. But you can
+    # allow more storages:
     #
     #     plugin :direct_upload, allowed_storages: [:cache, :store]
     #
     # ## Customizing endpoint
     #
-    # Since the endpoint is a [Roda] app, it can be easily customized via
-    # plugins:
+    # Since the endpoint is a [Roda] app, it is very customizable. For example,
+    # you can add a Rack middleware to change the response status and headers:
     #
-    #     class MyUploader
-    #       class UploadEndpoint
-    #         plugin :hooks
+    #     class ShrineUploadMiddleware
+    #       def initialize(app)
+    #         @app = app
+    #       end
     #
-    #         after do |response|
-    #           # ...
+    #       def call(env)
+    #         result = @app.call(env)
+    #
+    #         if result[0] == 200 && env["PATH_INFO"].end_with?("upload")
+    #           result[0] = 201
+    #           result[1]["Location"] = Shrine.uploaded_file(result[2].first).url
     #         end
+    #
+    #         result
     #       end
     #     end
+    #
+    #     Shrine::UploadEndpoint.use ShrineUploadMiddleware
     #
     # Upon subclassing uploader the upload endpoint is also subclassed. You can
     # also call the plugin again in an uploader subclass to change its
@@ -147,9 +157,8 @@ class Shrine
     # [Roda]: https://github.com/jeremyevans/roda
     # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
     # [Dropzone]: https://github.com/enyo/dropzone
-    # [supports]: https://github.com/blueimp/jQuery-File-Upload/wiki/Options#progress
-    # ["accept" attribute]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept
-    # [`Roda::RodaRequest`]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
+    # [FineUploader]: https://github.com/FineUploader/fine-uploader
+    # [Roda request]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
     # [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
     module DirectUpload
       def self.load_dependencies(uploader, *)

@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The backgrounding plugin enables you to remove processing/storing/deleting
+    # The `backgrounding` plugin enables you to remove processing/storing/deleting
     # of files from record's lifecycle, and put them into background jobs.
     # This is generally useful if you're doing processing and/or your store is
     # something other than Storage::FileSystem.
@@ -38,7 +38,7 @@ class Shrine
     # any other backgrounding library. This setup will work globally for all
     # uploaders.
     #
-    # The backgrounding plugin affects the `Shrine::Attacher` in a way that
+    # The `backgrounding` plugin affects the `Shrine::Attacher` in a way that
     # `#_promote` and `#_delete` spawn background jobs, while `#promote` and
     # `#delete!` are always synchronous:
     #
@@ -81,7 +81,7 @@ class Shrine
     #
     # If you're generating versions, and you want to process some versions in
     # the foreground before kicking off a background job, you can use the
-    # recache plugin.
+    # `recache` plugin.
     module Backgrounding
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise

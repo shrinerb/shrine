@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The dynamic_storage plugin allows you to register a storage using a
+    # The `dynamic_storage` plugin allows you to register a storage using a
     # regex, and evaluate the storage class dynamically depending on the regex.
     #
     # Example:
@@ -16,7 +16,7 @@ class Shrine
     # saves files to the bucket "foo". The block is yielded an instance of
     # `MatchData`.
     #
-    # This can be useful in combination with the default_storage plugin.
+    # This can be useful in combination with the `default_storage` plugin.
     module DynamicStorage
       module ClassMethods
         def dynamic_storages

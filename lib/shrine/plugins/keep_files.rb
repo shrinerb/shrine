@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The keep_files plugin gives you the ability to prevent files from being
+    # The `keep_files` plugin gives you the ability to prevent files from being
     # deleted. This functionality is useful when implementing soft deletes, or
     # when implementing some kind of [event store] where you need to track
     # history.

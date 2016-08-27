@@ -1,11 +1,11 @@
 class Shrine
   module Plugins
-    # The restore_cached_data re-extracts cached file's metadata on assignment.
-    # This happens when an uploaded file is retained on validation errors, or
-    # when assigning direct uploaded files. In both cases you usually want to
-    # re-extract metadata on the server side, mainly to prevent tempering, but
-    # also in case of direct uploads to obtain metadata that couldn't be
-    # extracted on the client side.
+    # The `restore_cached_data` plugin re-extracts cached file's metadata on
+    # assignment. This happens when an uploaded file is retained on validation
+    # errors, or when assigning direct uploaded files. In both cases you
+    # usually want to re-extract metadata on the server side, mainly to prevent
+    # tempering, but also in case of direct uploads to obtain metadata that
+    # couldn't be extracted on the client side.
     #
     #     plugin :restore_cached_data
     #

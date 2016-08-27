@@ -1,7 +1,7 @@
 class Shrine
   module Plugins
-    # The upload_options allows you to automatically pass additional upload
-    # options to storage on every upload:
+    # The `upload_options` plugin allows you to automatically pass additional
+    # upload options to storage on every upload:
     #
     #     plugin :upload_options, cache: {acl: "private"}
     #

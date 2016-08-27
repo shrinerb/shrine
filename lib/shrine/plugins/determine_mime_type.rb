@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The determine_mime_type plugin stores the actual MIME type of the
+    # The `determine_mime_type` plugin stores the actual MIME type of the
     # uploaded file.
     #
     #     plugin :determine_mime_type

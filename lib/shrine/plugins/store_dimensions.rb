@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The store_dimensions plugin extracts and stores dimensions of the
+    # The `store_dimensions` plugin extracts and stores dimensions of the
     # uploaded image using the [fastimage] gem.
     #
     #     plugin :store_dimensions

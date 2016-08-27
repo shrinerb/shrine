@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The default_url_options plugin allows you to specify URL options that
+    # The `default_url_options` plugin allows you to specify URL options that
     # will be applied by default for uploaded files of specified storages.
     #
     #     plugin :default_url_options, store: {download: true}

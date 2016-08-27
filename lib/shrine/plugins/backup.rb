@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The backup plugin allows you to automatically back up stored files to
+    # The `backup` plugin allows you to automatically back up stored files to
     # an additional storage.
     #
     #     storages[:backup_store] = Shrine::Storage::S3.new(options)

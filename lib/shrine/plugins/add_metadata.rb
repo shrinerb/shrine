@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The add_metadata plugin provides a convenient method for extracting and
+    # The `add_metadata` plugin provides a convenient method for extracting and
     # adding custom metadata values.
     #
     #     plugin :add_metadata

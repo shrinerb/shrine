@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The cached_attachment_data plugin adds the ability to retain the cached
+    # The `cached_attachment_data` plugin adds the ability to retain the cached
     # file across form redisplays, which means the file doesn't have to be
     # reuploaded in case of validation errors.
     #

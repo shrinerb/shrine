@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The copy plugin allows copying attachment from one record to another.
+    # The `copy` plugin allows copying attachment from one record to another.
     #
     #     plugin :copy
     #

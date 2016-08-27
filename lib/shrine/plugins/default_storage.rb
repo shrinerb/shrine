@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The default_storage plugin enables you to change which storages are going
+    # The `default_storage` plugin enables you to change which storages are going
     # to be used for this uploader's attacher (the default is `:cache` and
     # `:store`).
     #
@@ -8,7 +8,7 @@ class Shrine
     #
     # You can also pass a block and choose the values depending on the record
     # values and the name of the attachment. This is useful if you're using the
-    # dynamic_storage plugin. Example:
+    # `dynamic_storage` plugin. Example:
     #
     #     plugin :default_storage, store: ->(record, name) { :"store_#{record.username}" }
     module DefaultStorage

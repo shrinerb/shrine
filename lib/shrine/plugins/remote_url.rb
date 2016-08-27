@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The remote_url plugin allows you to attach files from a remote location.
+    # The `remote_url` plugin allows you to attach files from a remote location.
     #
     #     plugin :remote_url, max_size: 20*1024*1024
     #

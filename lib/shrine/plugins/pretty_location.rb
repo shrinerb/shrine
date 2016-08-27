@@ -1,6 +1,6 @@
 class Shrine
   module Plugins
-    # The pretty_location plugin attempts to generate a nicer folder structure
+    # The `pretty_location` plugin attempts to generate a nicer folder structure
     # for uploaded files.
     #
     #     plugin :pretty_location
