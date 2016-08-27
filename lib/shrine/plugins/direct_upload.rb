@@ -213,6 +213,7 @@ class Shrine
               options = get_presign_options
 
               presign_data = generate_presign(location, options)
+              response.headers["Cache-Control"] = "no-store"
 
               json presign_data
             end

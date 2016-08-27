@@ -121,6 +121,11 @@ describe Shrine::Plugins::DirectUpload do
       response = app.get "/cache/presign"
       assert_equal 200, response.status
     end
+
+    it "sets Cache-Control header to no-store" do
+      response = app.get "/cache/presign"
+      assert_equal "no-store", response.headers["Cache-Control"]
+    end
   end
 
   it "supports fake presigns" do

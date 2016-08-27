@@ -1,5 +1,7 @@
 ## HEAD
 
+* Prevent client from caching the presign response in direct_upload plugin (janko-m)
+
 * Make Sequel update only the attachment in background job (janko-m)
 
 * Add copy plugin for copying files from one record to another (janko-m)
