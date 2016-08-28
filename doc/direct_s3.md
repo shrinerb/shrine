@@ -227,4 +227,5 @@ end
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Dropzone]: https://github.com/enyo/dropzone
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+[FineUploader]: https://github.com/FineUploader/fine-uploader
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
