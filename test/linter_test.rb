@@ -33,6 +33,11 @@ describe Shrine::Storage::Linter do
       @storage.instance_eval { def download(id); Tempfile.new(""); end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
+
+    it "doesn't require #download to be defined" do
+      @storage.instance_eval { undef download }
+      @linter.call
+    end
   end
 
   describe "open" do

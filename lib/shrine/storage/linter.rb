@@ -35,7 +35,7 @@ class Shrine
       def call(io_factory = default_io_factory)
         storage.upload(io_factory.call, id = "foo", {})
 
-        lint_download(id)
+        lint_download(id) if storage.respond_to?(:download)
         lint_open(id)
         lint_exists(id)
         lint_url(id)
