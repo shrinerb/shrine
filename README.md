@@ -602,9 +602,10 @@ demo apps which implement multiple uploads directly to S3.
 ## Backgrounding
 
 Shrine is the first file upload library designed for backgrounding support.
-Moving phases of managing attachments to background jobs is essential for
+Moving phases of managing file attachments to background jobs is essential for
 scaling and good user experience, and Shrine provides a `backgrounding` plugin
-which makes it really easy to plug in your favourite backgrounding library:
+which makes it [really easy][backgrounding libraries] to plug in your favourite
+backgrounding library:
 
 ```rb
 Shrine.plugin :backgrounding
@@ -720,3 +721,4 @@ The gem is available as open source under the terms of the [MIT License].
 [rails_demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [website]: http://shrinerb.com
+[backgrounding libraries]: https://github.com/janko-m/shrine/wiki/Backgrounding-libraries
