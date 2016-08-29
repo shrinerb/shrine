@@ -604,8 +604,7 @@ demo apps which implement multiple uploads directly to S3.
 Shrine is the first file upload library designed for backgrounding support.
 Moving phases of managing file attachments to background jobs is essential for
 scaling and good user experience, and Shrine provides a `backgrounding` plugin
-which makes it [really easy][backgrounding libraries] to plug in your favourite
-backgrounding library:
+which makes it really easy to plug in your favourite backgrounding library:
 
 ```rb
 Shrine.plugin :backgrounding
@@ -631,7 +630,7 @@ end
 
 The above puts all promoting (uploading cached file to permanent storage) and
 deleting of files into a background Sidekiq job. Obviously instead of Sidekiq
-you can use any other backgrounding library.
+you can use [any other backgrounding library][backgrounding libraries].
 
 The main advantages of Shrine's backgrounding support over other file upload
 libraries are:
