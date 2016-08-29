@@ -10,12 +10,12 @@ methods:
 class Shrine
   module Storage
     class MyStorage
-      def upload(io, id, **options)
-        # uploads `io` to the location `id`
+      def upload(io, id, shrine_metadata: {}, **upload_options)
+        # uploads `io` to the location `id`, can accept upload options
       end
 
       def url(id, **options)
-        # URL to the remote file, accepts options for customizing the URL
+        # returns URL to the remote file, accepts options for customizing the URL
       end
 
       def open(id)
@@ -64,8 +64,8 @@ end
 ## Download
 
 Shrine automatically downloads the file to a Tempfile using `#open`. However,
-if you would like to implement your own downloading, you can define `#download`
-and Shrine will use that instead:
+if you would like to do custom downloading, you can define `#download` and
+Shrine will use that instead:
 
 ```rb
 class Shrine
@@ -83,10 +83,15 @@ class Shrine
 end
 ```
 
-## Update
+## Presign
 
-If your storage supports updating data of existing files (e.g. some metadata),
-the convention is to create an `#update` method:
+If the storage service supports direct uploads, and requires fetching
+additional information from the server, you can implement a `#presign` method,
+which will be used by the `direct_upload` plugin. The method should return an
+object which responds to
+
+* `#url` – returns the URL to which the file should be uploaded to
+* `#fields` – returns a hash of request parameters for the upload
 
 ```rb
 class Shrine
@@ -94,8 +99,8 @@ class Shrine
     class MyStorage
       # ...
 
-      def update(id, options = {})
-        # update data of the file
+      def presign(id, **options)
+        # returns an object which responds to #url and #presign
       end
 
       # ...
@@ -157,6 +162,7 @@ While this method is not used by Shrine, it is good to give users the
 possibility to delete all files in a storage, and the conventional name for
 this method is `#clear!`:
 
+```rb
 class Shrine
   module Strorage
     class MyStorage
@@ -170,6 +176,28 @@ class Shrine
     end
   end
 end
+```
+
+## Update
+
+If your storage supports updating data of existing files (e.g. some metadata),
+the convention is to create an `#update` method:
+
+```rb
+class Shrine
+  module Storage
+    class MyStorage
+      # ...
+
+      def update(id, options = {})
+        # update data of the file
+      end
+
+      # ...
+    end
+  end
+end
+```
 
 ## Linter
 

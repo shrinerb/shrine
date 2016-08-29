@@ -3,21 +3,21 @@
 Shrine gives you the ability to upload files directly to Amazon S3, which is
 beneficial for several use cases:
 
-* accepting uploads is resource-intensive for the server, and delegating it to
-  an external service makes scaling easier
+* Accepting uploads is resource-intensive for the server, and delegating it to
+  an external service makes scaling easier.
 
-* if both temporary and permanent storage are S3, promoting an S3 file to
+* If both temporary and permanent storage are S3, promoting an S3 file to
   permanent storage will simply issue an S3 copy request, without any
-  downloading and reuploading
+  downloading and reuploading.
 
-* with multiple servers it's generally not possible to cache files to the disk,
-  unless you're using a distibuted filesystem that's shared between servers
+* With multiple servers it's generally not possible to cache files to the disk,
+  unless you're using a distibuted filesystem that's shared between servers.
 
 * Heroku restricts file uploads to disk, allowing you to save files only in
-  the temporary folder, which gets wiped out between deploys
+  the temporary folder, which gets wiped out between deploys.
 
 * Heroku has a 30-second request limit, so if the client has a slow connection
-  and/or your files are larger, uploads to your app can easily hit that limit
+  and/or your files are larger, uploads to your app can easily hit that limit.
 
 You can start by setting both temporary and permanent storage to S3 with
 different prefixes (or even buckets):
@@ -28,7 +28,12 @@ gem "aws-sdk", "~> 2.1"
 ```rb
 require "shrine/storage/s3"
 
-s3_options = {access_key_id: "...", secret_access_key: "...", region: "..."}
+s3_options = {
+  access_key_id:     "abc",
+  secret_access_key: "123",
+  region:            "my-region",
+  bucket:            "my-bucket",
+}
 
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
