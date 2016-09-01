@@ -35,6 +35,10 @@ describe Shrine::Storage::FileSystem do
   end
 
   describe "#initialize" do
+    before do
+      FileUtils.rmdir(root)
+    end
+
     it "creates the given directory" do
       @storage = file_system(root)
       assert File.directory?(root)
@@ -45,6 +49,12 @@ describe Shrine::Storage::FileSystem do
 
     it "sets directory permissions" do
       @storage = file_system(root, directory_permissions: 0777)
+      assert_permissions 0777, root
+    end
+
+    it "doesn't change permissions of existing directories" do
+      FileUtils.mkdir(root, mode: 0777)
+      file_system(root)
       assert_permissions 0777, root
     end
   end

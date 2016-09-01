@@ -85,10 +85,10 @@ class Shrine
       #    can use this option to set a CDN host (e.g. `//abc123.cloudfront.net`).
       #
       # :permissions
-      # :  Changes the UNIX permissions of created files (default is 0644).
+      # :  The UNIX permissions applied to created files (default is 0644).
       #
       # :directory_permissions
-      # :  Changes the UNIX permissions of created directories (default is 0755).
+      # :  The UNIX permissions applied to created directories (default is 0755).
       #
       # :clean
       # :  By default empty folders inside the directory are automatically
@@ -107,8 +107,10 @@ class Shrine
         @directory_permissions = directory_permissions
         @clean = clean
 
-        @directory.mkpath
-        @directory.chmod(directory_permissions) if directory_permissions
+        unless @directory.exist?
+          @directory.mkpath
+          @directory.chmod(directory_permissions) if directory_permissions
+        end
       end
 
       # Copies the file into the given location.

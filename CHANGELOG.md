@@ -1,3 +1,7 @@
+## HEAD
+
+* Don't change permissions of existing directories in FileSystem storage (janko-m)
+
 ## 2.3.0 (2016-08-27)
 
 * Prevent client from caching the presign response in direct_upload plugin (janko-m)
