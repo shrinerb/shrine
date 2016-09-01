@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-08-27 18:39:30 +0800</span>
+          <span class='datetime'>2016-08-30 02:18:36 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -44,23 +44,23 @@
             upload files directly to Amazon S3, which is beneficial for several use
             cases:</p>
             <ul><li>
-            <p>accepting uploads is resource-intensive for the server, and delegating it
-            to  an external service makes scaling easier</p>
+            <p>Accepting uploads is resource-intensive for the server, and delegating it
+            to  an external service makes scaling easier.</p>
             </li><li>
-            <p>if both temporary and permanent storage are S3, promoting an S3 file to 
+            <p>If both temporary and permanent storage are S3, promoting an S3 file to 
             permanent storage will simply issue an S3 copy request, without any 
-            downloading and reuploading</p>
+            downloading and reuploading.</p>
             </li><li>
-            <p>with multiple servers it&#39;s generally not possible to cache files to the
+            <p>With multiple servers it&#39;s generally not possible to cache files to the
             disk,  unless you&#39;re using a distibuted filesystem that&#39;s shared
-            between servers</p>
+            between servers.</p>
             </li><li>
             <p>Heroku restricts file uploads to disk, allowing you to save files only in 
-            the temporary folder, which gets wiped out between deploys</p>
+            the temporary folder, which gets wiped out between deploys.</p>
             </li><li>
             <p>Heroku has a 30-second request limit, so if the client has a slow
             connection  and/or your files are larger, uploads to your app can easily
-            hit that limit</p>
+            hit that limit.</p>
             </li></ul>
             
             <p>You can start by setting both temporary and permanent storage to S3 with
@@ -68,7 +68,7 @@
             
             <pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.1&quot;</span></pre>
             
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {<span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;...&quot;</span>, <span class="ruby-identifier">region</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;...&quot;</span>}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;abc&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;123&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;my-region&quot;</span>,&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;my-bucket&quot;</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
             
             <h2 id="label-Enabling+CORS">Enabling CORS<span><a href="#label-Enabling+CORS">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -128,7 +128,8 @@
             <p>For uploading to S3 you&#39;ll probably want to use a JavaScript file
             upload library like <a
             href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>,
-            <a href="https://github.com/enyo/dropzone">Dropzone</a> or [FineUploader].
+            <a href="https://github.com/enyo/dropzone">Dropzone</a> or <a
+            href="https://github.com/FineUploader/fine-uploader">FineUploader</a>.
             After the upload you should create a JSON representation of the uploaded
             file, which you can write to the hidden attachment field:</p>
             

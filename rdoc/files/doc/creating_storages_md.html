@@ -31,7 +31,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-08-10 01:01:48 +0800</span>
+          <span class='datetime'>2016-08-30 02:35:36 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -46,7 +46,7 @@
             and S3 storages, but it&#39;s also easy to create your own. A storage is a
             class which needs to implement to the following methods:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;        <span class="ruby-comment"># uploads `io` to the location `id`</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;        <span class="ruby-comment"># URL to the remote file, accepts options for customizing the URL</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># returns the remote file as an IO-like object</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># checks if the file exists on the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># deletes the file from the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">shrine_metadata</span><span class="ruby-operator">:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;        <span class="ruby-comment"># uploads `io` to the location `id`, can accept upload options</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;        <span class="ruby-comment"># returns URL to the remote file, accepts options for customizing the URL</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># returns the remote file as an IO-like object</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># checks if the file exists on the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># deletes the file from the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Upload">Upload<span><a href="#label-Upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -74,17 +74,25 @@
             
             <p><a href="../../classes/Shrine.html">Shrine</a> automatically downloads the
             file to a Tempfile using <code>#open</code>. However, if you would like to
-            implement your own downloading, you can define <code>#download</code> and
-            <a href="../../classes/Shrine.html">Shrine</a> will use that instead:</p>
+            do custom downloading, you can define <code>#download</code> and <a
+            href="../../classes/Shrine.html">Shrine</a> will use that instead:</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;        <span class="ruby-comment"># download the file to a Tempfile</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <h2 id="label-Update">Update<span><a href="#label-Update">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="label-Presign">Presign<span><a href="#label-Presign">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
-            <p>If your storage supports updating data of existing files (e.g. some
-            metadata), the convention is to create an <code>#update</code> method:</p>
+            <p>If the storage service supports direct uploads, and requires fetching
+            additional information from the server, you can implement a
+            <code>#presign</code> method, which will be used by the
+            <code>direct_upload</code> plugin. The method should return an object which
+            responds to</p>
+            <ul><li>
+            <p><code>#url</code> – returns the URL to which the file should be uploaded to</p>
+            </li><li>
+            <p><code>#fields</code> – returns a hash of request parameters for the upload</p>
+            </li></ul>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">options</span> = {})&#x000A;        <span class="ruby-comment"># update data of the file</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">presign</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;        <span class="ruby-comment"># returns an object which responds to #url and #presign</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Move">Move<span><a href="#label-Move">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -108,12 +116,14 @@
             possibility to delete all files in a storage, and the conventional name for
             this method is <code>#clear!</code>:</p>
             
-            <p>class <a href="../../classes/Shrine.html">Shrine</a>  module Strorage 
-            class MyStorage  # …</p>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Strorage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">clear!</span>&#x000A;        <span class="ruby-comment"># deletes all files in the storage</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre>  def clear!&#x000A;    # deletes all files in the storage&#x000A;  end&#x000A;  # ...&#x000A;end</pre>
+            <h2 id="label-Update">Update<span><a href="#label-Update">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
-            <p>end end</p>
+            <p>If your storage supports updating data of existing files (e.g. some
+            metadata), the convention is to create an <code>#update</code> method:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Storage</span>&#x000A;    <span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;&#x000A;      <span class="ruby-keyword">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">options</span> = {})&#x000A;        <span class="ruby-comment"># update data of the file</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Linter">Linter<span><a href="#label-Linter">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

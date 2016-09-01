@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>shrine.rb</title>
+    <title>2.3.1.md</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
       //<![CDATA[
         function popupCode(url) {
@@ -25,27 +25,32 @@
   <body class='page'>
     <div class='file' id='wrapper'>
       <div class='header'>
-        <h1 class='name'>shrine.rb</h1>
+        <h1 class='name'>2.3.1.md</h1>
         <div class='paths'>
-          lib/shrine.rb
+          doc/release_notes/2.3.1.md
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-08-29 16:00:46 +0800</span>
+          <span class='datetime'>2016-09-01 12:31:37 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
-          <div id='description'></div>
+          <div id='description'>
+            
+            <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+            <ul><li>
+            <p>The previous version introduced explicit default permissions for created 
+            files and directories in FileSystem storage. However, the current behaviour
+            was applying directory permissions to the directory the storage is 
+            initialized with. This would raise a <code>Errno::EPERM</code> exception
+            for directories  for which the permissions cannot be changed, for example
+            <code>Dir.tmpdir</code>. This  is now changed; when FileSystem storage is
+            now initialized with a directory,  the permissions won&#39;t be changed if
+            this directory already exists.</p>
+            </li></ul>
+          </div>
           <div id='context'>
-            <div id='requires'>
-              <h2>Required files</h2>
-              <ol>
-                <li>shrine/version</li>
-                <li>securerandom</li>
-                <li>json</li>
-              </ol>
-            </div>
           </div>
         </div>
       </div>
