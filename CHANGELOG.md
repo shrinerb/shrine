@@ -1,4 +1,4 @@
-## HEAD
+## 2.3.1 (2016-09-01)
 
 * Don't change permissions of existing directories in FileSystem storage (janko-m)
 
