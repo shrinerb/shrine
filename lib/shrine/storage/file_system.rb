@@ -85,10 +85,14 @@ class Shrine
       #    can use this option to set a CDN host (e.g. `//abc123.cloudfront.net`).
       #
       # :permissions
-      # :  The UNIX permissions applied to created files (default is 0644).
+      # :  The UNIX permissions applied to created files. Can be set to `nil`,
+      #    in which case the default permissions will be applied. Defaults to
+      #    `0644`.
       #
       # :directory_permissions
-      # :  The UNIX permissions applied to created directories (default is 0755).
+      # :  The UNIX permissions applied to created directories. Can be set to
+      #    `nil`, in which case the default permissions will be applied. Defaults
+      #    to `0755`.
       #
       # :clean
       # :  By default empty folders inside the directory are automatically
