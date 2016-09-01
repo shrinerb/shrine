@@ -143,18 +143,18 @@ describe Shrine::Storage::FileSystem do
 
     it "sets file permissions" do
       @storage = file_system(root, permissions: 0600)
-      @storage.move(Tempfile.new, "bar.jpg")
+      @storage.move(Tempfile.new(""), "bar.jpg")
       assert_permissions 0600, @storage.open("bar.jpg").path
     end
 
     it "handles file permissions being nil" do
       @storage = file_system(root, permissions: nil)
-      @storage.move(Tempfile.new, "bar.jpg")
+      @storage.move(Tempfile.new(""), "bar.jpg")
     end
 
     it "sets directory permissions on intermediary directories" do
       @storage = file_system(root, directory_permissions: 0777)
-      @storage.move(Tempfile.new, "a/b/c/file.jpg")
+      @storage.move(Tempfile.new(""), "a/b/c/file.jpg")
       assert_permissions 0777, "#{root}/a"
       assert_permissions 0777, "#{root}/a/b"
       assert_permissions 0777, "#{root}/a/b/c"
@@ -162,7 +162,7 @@ describe Shrine::Storage::FileSystem do
 
     it "handles directory permissions being nil" do
       @storage = file_system(root, directory_permissions: nil)
-      @storage.move(Tempfile.new, "a/b/c/file.jpg")
+      @storage.move(Tempfile.new(""), "a/b/c/file.jpg")
     end
   end
 
