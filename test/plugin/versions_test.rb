@@ -25,9 +25,9 @@ describe Shrine::Plugins::Versions do
   end
 
   it "makes #uploaded_file recognize versions" do
-    versions = @uploader.upload(thumb: fakeio)
-    retrieved = @uploader.class.uploaded_file(versions.to_json)
-    assert_equal versions, retrieved
+    uploaded_file = @uploader.upload(fakeio)
+    retrieved = @uploader.class.uploaded_file("thumb" => uploaded_file.data)
+    assert_equal Hash[thumb: uploaded_file], retrieved
   end
 
   it "passes the version name to location generator" do

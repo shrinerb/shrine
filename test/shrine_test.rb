@@ -73,12 +73,6 @@ describe Shrine do
   end
 
   describe ".uploaded_file" do
-    it "accepts data as JSON string" do
-      uploaded_file = @uploader.upload(fakeio)
-      retrieved = @uploader.class.uploaded_file(uploaded_file.to_json)
-      assert_equal uploaded_file, retrieved
-    end
-
     it "accepts data as Hash" do
       uploaded_file = @uploader.upload(fakeio)
       retrieved = @uploader.class.uploaded_file(uploaded_file.data)

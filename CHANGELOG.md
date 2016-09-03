@@ -1,3 +1,7 @@
+## HEAD
+
+* Deprecate accepting a JSON string in `Shrine.uploaded_file` (janko-m)
+
 ## 2.3.1 (2016-09-01)
 
 * Don't change permissions of existing directories in FileSystem storage (janko-m)

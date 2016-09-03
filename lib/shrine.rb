@@ -157,17 +157,15 @@ class Shrine
         end
         alias [] attachment
 
-        # Instantiates a Shrine::UploadedFile from a JSON string or a hash, and
-        # optionally yields the returned objects (useful with versions).  This
-        # is used internally by Shrine::Attacher, but it's also useful when you
-        # need to deserialize the uploaded file in background jobs.
+        # Instantiates a Shrine::UploadedFile from a hash, and optionally
+        # yields the returned object.
         #
-        #     uploaded_file #=> #<Shrine::UploadedFile>
-        #     json = uploaded_file.to_json #=> '{"storage":"cache","id":"...","metadata":{...}}'
-        #     Shrine.uploaded_file(json) #=> #<Shrine::UploadedFile>
+        #     data = {"storage" => "cache", "id" => "abc123.jpg", "metadata" => {}}
+        #     Shrine.uploaded_file(data) #=> #<Shrine::UploadedFile>
         def uploaded_file(object, &block)
           case object
           when String
+            warn "Giving a string to Shrine.uploaded_file is deprecated and won't be possible in Shrine 3. Use Attacher#uploaded_file instead."
             uploaded_file(JSON.parse(object), &block)
           when Hash
             uploaded_file(self::UploadedFile.new(object), &block)
@@ -592,9 +590,14 @@ class Shrine
           store.delete(uploaded_file, context.merge(_equalize_phase_and_action(options)))
         end
 
-        # Delegates to `Shrine.uploaded_file`.
-        def uploaded_file(*args, &block)
-          shrine_class.uploaded_file(*args, &block)
+        # Delegates to `Shrine.uploaded_file`, additionally accepting uploaded
+        # file as a JSON string.
+        def uploaded_file(object, &block)
+          if object.is_a?(String)
+            uploaded_file(JSON.parse(object), &block)
+          else
+            shrine_class.uploaded_file(object, &block)
+          end
         end
 
         # Returns the Shrine class related to this attacher.

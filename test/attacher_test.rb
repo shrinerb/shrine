@@ -299,6 +299,36 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#uploaded_file" do
+    it "accepts data as JSON string" do
+      uploaded_file = @attacher.cache!(fakeio)
+      retrieved = @attacher.uploaded_file(uploaded_file.to_json)
+      assert_equal uploaded_file, retrieved
+    end
+
+    it "accepts data as Hash" do
+      uploaded_file = @attacher.cache!(fakeio)
+      retrieved = @attacher.uploaded_file(uploaded_file.data)
+      assert_equal uploaded_file, retrieved
+    end
+
+    it "accepts an UploadedFile" do
+      uploaded_file = @attacher.cache!(fakeio)
+      retrieved = @attacher.uploaded_file(uploaded_file)
+      assert_equal uploaded_file, retrieved
+    end
+
+    it "yields the converted file" do
+      uploaded_file = @attacher.cache!(fakeio)
+      @attacher.uploaded_file(uploaded_file.data) { |o| @yielded = o }
+      assert_equal uploaded_file, @yielded
+    end
+
+    it "raises an error on invalid input" do
+      assert_raises(Shrine::Error) { @attacher.uploaded_file(:foo) }
+    end
+  end
+
   describe "#cache!" do
     it "uploads the IO to cache and passes context" do
       io = fakeio
