@@ -118,7 +118,11 @@ In addition to assigning new files, you can also assign already cached files
 using their JSON representation:
 
 ```rb
-photo.image = '{"storage":"cache","id":"9260ea09d8effd.jpg","metadata":{...}}'
+photo.image = '{
+  "storage": "cache",
+  "id": "9260ea09d8effd.jpg",
+  "metadata": { ... }
+}'
 ```
 
 This allows Shrine to retain uploaded files in case of validation errors, and
@@ -371,57 +375,9 @@ to uploaded file, and can contain useful information depending on the situation:
 The `context` is useful for doing conditional processing, validation,
 generating location etc, and it is also used by some plugins internally.
 
-## Validation
-
-Validations are registered inside a `Attacher.validate` block, and you can load
-the `validation_helpers` plugin to get some convenient file validation methods:
-
-```rb
-class VideoUploader < Shrine
-  plugin :validation_helpers
-
-  Attacher.validate do
-    validate_max_size 50*1024*1024, message: "is too large (max is 50 MB)"
-    validate_mime_type_inclusion ["video/mp4"]
-  end
-end
-```
-
-```rb
-trailer = Trailer.new
-trailer.video = File.open("matrix.mp4")
-trailer.valid? #=> false
-trailer.errors.to_hash #=> {video: ["is too large (max is 50 MB)"]}
-```
-
-You can also do custom validations:
-
-```rb
-class VideoUploader < Shrine
-  Attacher.validate do
-    errors << "is longer than 5 minutes" if get.duration > 300
-  end
-end
-```
-
-The `Attacher.validate` block is executed in context of a `Shrine::Attacher`
-instance:
-
-```rb
-class VideoUploader < Shrine
-  Attacher.validate do
-    self   #=> #<Shrine::Attacher>
-
-    get    #=> #<Shrine::UploadedFile>
-    record # the model instance
-    errors # array of error messages for this file
-  end
-end
-```
-
 ## Metadata
 
-Shrine automatically extracts and stores general file metadata:
+Shrine automatically extracts and stores available file metadata:
 
 ```rb
 photo = Photo.create(image: image)
@@ -478,6 +434,54 @@ end
 photo.image.metadata["exif"]
 # or
 photo.image.exif
+```
+
+## Validation
+
+Validations are registered inside a `Attacher.validate` block, and you can load
+the `validation_helpers` plugin to get some convenient file validation methods:
+
+```rb
+class VideoUploader < Shrine
+  plugin :validation_helpers
+
+  Attacher.validate do
+    validate_max_size 50*1024*1024, message: "is too large (max is 50 MB)"
+    validate_mime_type_inclusion ["video/mp4"]
+  end
+end
+```
+
+```rb
+trailer = Trailer.new
+trailer.video = File.open("matrix.mp4")
+trailer.valid? #=> false
+trailer.errors.to_hash #=> {video: ["is too large (max is 50 MB)"]}
+```
+
+You can also do custom validations:
+
+```rb
+class VideoUploader < Shrine
+  Attacher.validate do
+    errors << "is longer than 5 minutes" if get.duration > 300
+  end
+end
+```
+
+The `Attacher.validate` block is executed in context of a `Shrine::Attacher`
+instance:
+
+```rb
+class VideoUploader < Shrine
+  Attacher.validate do
+    self   #=> #<Shrine::Attacher>
+
+    get    #=> #<Shrine::UploadedFile>
+    record # the model instance
+    errors # array of error messages for this file
+  end
+end
 ```
 
 ## Locations
