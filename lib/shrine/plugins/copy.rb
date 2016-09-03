@@ -34,13 +34,14 @@ class Shrine
         def copy(attacher)
           options = {action: :copy, move: false}
 
-          if attacher.cached?
-            copied_attachment = cache!(attacher.get, **options)
-          elsif attacher.stored?
-            copied_attachment = store!(attacher.get, **options)
-          else
-            copied_attachment = nil
-          end
+          copied_attachment =
+            if attacher.cached?
+              cache!(attacher.get, **options)
+            elsif attacher.stored?
+              store!(attacher.get, **options)
+            else
+              nil
+            end
 
           set(copied_attachment)
         end
