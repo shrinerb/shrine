@@ -301,7 +301,7 @@ class Shrine
 
           put(io, context.merge(location: location, metadata: metadata))
 
-          self.class::UploadedFile.new(
+          self.class.uploaded_file(
             "id"       => location,
             "storage"  => storage_key.to_s,
             "metadata" => metadata,
