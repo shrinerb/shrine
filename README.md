@@ -677,6 +677,23 @@ If you don't want to use a commercial service, [Attache] is a great open-source
 image server. There isn't a Shrine integration written for it yet, but it
 should be fairly easy to write one.
 
+## Chunked & Resumable uploads
+
+When you're accepting large file uploads, you normally want to split it into
+multiple chunks. This way if an upload fails, it is just for one chunk and can
+be retried, while the previous chunks remain uploaded.
+
+[Tus][tus] is an open protocol for resumable file uploads, which enables the
+client and the server to achieve reliable file uploads, even on unstable
+networks, with the possibility to resume the upload even after the browser is
+closed or the device shut down. You can use a client library like
+[tus-js-client] to upload the file to [tus-ruby-server], and attach the
+uploaded file to a record using [shrine-url]. See [shrine-tus-demo] for an
+example integration.
+
+Another option might be to do chunked uploads directly to your storage service,
+if the storage service supports it (e.g. Amazon S3 or Google Cloud Storage).
+
 ## Inspiration
 
 Shrine was heavily inspired by [Refile] and [Roda]. From Refile it borrows the
@@ -725,3 +742,8 @@ The gem is available as open source under the terms of the [MIT License].
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [website]: http://shrinerb.com
 [backgrounding libraries]: https://github.com/janko-m/shrine/wiki/Backgrounding-libraries
+[tus]: http://tus.io
+[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[tus-js-client]: https://github.com/tus/tus-js-client
+[shrine-tus-demo]: https://github.com/janko-m/shrine-tus-demo
+[shrine-url]: https://github.com/janko-m/shrine-url
