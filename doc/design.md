@@ -28,24 +28,12 @@ A storage is a PORO which responds to certain methods:
 class Shrine
   module Storage
     class MyStorage
-      def initialize(*args)
-        # initializing logic
-      end
-
       def upload(io, id, shrine_metadata: {}, **upload_options)
         # uploads `io` to the location `id`
       end
 
-      def download(id)
-        # downloads the file from the storage
-      end
-
       def open(id)
         # returns the remote file as an IO-like object
-      end
-
-      def read(id)
-        # returns the file contents as a string
       end
 
       def exists?(id)
@@ -59,12 +47,6 @@ class Shrine
       def url(id, options = {})
         # URL to the remote file, accepts options for customizing the URL
       end
-
-      def clear!(confirm = nil)
-        # deletes all the files in the storage
-      end
-
-      # ...
     end
   end
 end
