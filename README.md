@@ -572,6 +572,17 @@ uploader = MyUploader.new(:store)
 uploader.upload(file, upload_options: {acl: "private"})
 ```
 
+### Clearing cache
+
+From time to time you'll want to clean your temporary storage from old files.
+Amazon S3 provides [a built-in solution][s3 lifecycle], and for FileSystem you
+can put something like this in your Rake task:
+
+```rb
+file_system = Shrine.storages[:cache]
+file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
+```
+
 ## Direct uploads
 
 Shrine comes with a `direct_upload` plugin for asynchronous uploads to your
@@ -650,17 +661,6 @@ libraries are:
   types of files and models.
 * **Safety** – All of Shrine's code has been designed to take delayed storing
   into account, and concurrent requests are handled well.
-
-## Clearing cache
-
-From time to time you'll want to clean your temporary storage from old files.
-Amazon S3 provides [a built-in solution](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html),
-and for FileSystem you can put something like this in your Rake task:
-
-```rb
-file_system = Shrine.storages[:cache]
-file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
-```
 
 ## On-the-fly processing
 
@@ -747,3 +747,4 @@ The gem is available as open source under the terms of the [MIT License].
 [tus-js-client]: https://github.com/tus/tus-js-client
 [shrine-tus-demo]: https://github.com/janko-m/shrine-tus-demo
 [shrine-url]: https://github.com/janko-m/shrine-url
+[s3 lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
