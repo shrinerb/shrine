@@ -2,8 +2,8 @@
 
 Shrine is a toolkit for file attachments in Ruby applications.
 
-If you're new, you're encouraged to read the [introductory blog post] which
-explains the motivation behind Shrine.
+If you're not sure why you should care, you're encouraged to read the
+[motivation behind creating Shrine][motivation].
 
 ## Resources
 
@@ -725,7 +725,7 @@ The gem is available as open source under the terms of the [MIT License].
 [plugin system]: http://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [MIT License]: http://opensource.org/licenses/MIT
 [ships with over 35 plugins]: http://shrinerb.com#plugins
-[introductory blog post]: http://twin.github.io/introducing-shrine/
+[motivation]: https://twin.github.io/better-file-uploads-with-shrine-motivation/
 [FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
 [External]: http://shrinerb.com#external

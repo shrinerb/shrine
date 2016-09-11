@@ -6,7 +6,10 @@
         name: Introducing Shrine
         url: http://twin.github.io/introducing-shrine
       -
-        name: Asynchronous File Management
+        name: Uploading files with Shrine in Hanami
+        url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
+      -
+        name: Asynchronous File Uploads
         url: http://twin.github.io/file-uploads-asynchronous-world
       -
         name: Rails File Uploading...with Shrine
@@ -18,8 +21,8 @@
         name: Shrine meets Transloadit
         url: https://twin.github.io/shrine-meets-transloadit/
       -
-        name: Uploading files with Shrine in Hanami
-        url: http://katafrakt.me/2016/02/04/shrine-hanami-uploads/
+        name: "Better File Uploads with Shrine: Motivation"
+        url: https://twin.github.io/better-file-uploads-with-shrine-motivation/
 -
   -
     title: Storages
