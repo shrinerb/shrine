@@ -26,7 +26,7 @@ direct uploads for fully asynchronous user experience.
   gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
-  gem.add_dependency "down", ">= 2.3.5"
+  gem.add_dependency "down", ">= 2.3.6"
 
   gem.add_development_dependency "rake", "~> 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"

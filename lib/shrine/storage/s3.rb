@@ -156,7 +156,12 @@ class Shrine
       # It assigns the correct "Content-Type" taken from the MIME type, because
       # by default S3 sets everything to "application/octet-stream".
       def upload(io, id, shrine_metadata: {}, **upload_options)
-        options = {content_type: shrine_metadata["mime_type"]}
+        content_type, filename = shrine_metadata.values_at("mime_type", "filename")
+
+        options = {}
+        options[:content_type] = content_type if content_type
+        options[:content_disposition] = "inline; filename=#{filename.inspect}" if filename
+
         options.update(@upload_options)
         options.update(upload_options)
 

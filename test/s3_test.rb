@@ -58,6 +58,16 @@ describe Shrine::Storage::S3 do
       assert_equal "foo/bar", tempfile.content_type
     end
 
+    it "preserves the filename" do
+      uploaded_file = @uploader.upload(fakeio(filename: "file.txt"), location: "foo")
+      tempfile = Down.download(@s3.url("foo"))
+      assert_equal "file.txt", tempfile.original_filename
+
+      @uploader.upload(uploaded_file, location: "bar")
+      tempfile = Down.download(@s3.url("bar"))
+      assert_equal "file.txt", tempfile.original_filename
+    end
+
     it "applies upload options" do
       @s3 = s3(upload_options: {content_type: "foo/bar"})
       @s3.upload(fakeio, "foo")
