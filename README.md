@@ -673,9 +673,9 @@ generic image servers.
 Shrine has integrations for many commercial on-the-fly processing services,
 including [Cloudinary], [Imgix] and [Uploadcare].
 
-If you don't want to use a commercial service, [Attache] is a great open-source
-image server. There isn't a Shrine integration written for it yet, but it
-should be fairly easy to write one.
+If you don't want to use a commercial service, [Attache] and [Dragonfly] are
+great open-source image servers. For Attache a Shrine integration is in
+progress, while for Dragonfly it is not needed.
 
 ## Chunked & Resumable uploads
 
@@ -748,3 +748,4 @@ The gem is available as open source under the terms of the [MIT License].
 [shrine-tus-demo]: https://github.com/janko-m/shrine-tus-demo
 [shrine-url]: https://github.com/janko-m/shrine-url
 [s3 lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
+[Dragonfly]: http://markevans.github.io/dragonfly/
