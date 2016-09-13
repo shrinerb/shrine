@@ -201,5 +201,5 @@ automatically:
 
 * syncs Shrine's validation errors with the record
 * triggers promoting after record is saved
-* deletes the uploaded file if attachment was replaced, removed or the record
+* deletes the uploaded file if attachment was replaced/removed or the record
   destroyed

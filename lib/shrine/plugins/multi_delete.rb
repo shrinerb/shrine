@@ -7,7 +7,7 @@ class Shrine
     #
     # This plugin allows you pass an array of files to `Shrine#delete`.
     #
-    #     Shrine.new(:storage).delete([file1, file2, file3])
+    #     uploader.delete([file1, file2, file3])
     #
     # Now if you're using Storage::S3, deleting an array of files will issue a
     # single HTTP request. Some other storages may support multi deletes as

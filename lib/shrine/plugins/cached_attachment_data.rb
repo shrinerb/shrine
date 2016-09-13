@@ -8,12 +8,9 @@ class Shrine
     #
     # The plugin adds `#cached_<attachment>_data` to the model, which returns
     # the cached file as JSON, and should be used to set the value of the
-    # hidden form field:
+    # hidden form field.
     #
-    #     <%= form_for @user do |f| %>
-    #       <%= f.hidden_field :avatar, value: @user.cached_avatar_data %>
-    #       <%= f.field_field :avatar %>
-    #     <% end %>
+    #     @user.cached_avatar_data #=> '{"storage":"cache","id":"...","metadata":{...}}'
     module CachedAttachmentData
       module AttachmentMethods
         def initialize(*)
