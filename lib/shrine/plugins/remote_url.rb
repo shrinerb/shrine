@@ -15,6 +15,11 @@ class Shrine
     #     user.avatar.size              #=> 43423
     #     user.avatar.original_filename #=> "cool-image.png"
     #
+    # You can also use `#remote_url=` and `#remote_url` methods directly on the
+    # `Shrine::Attacher`:
+    #
+    #     attacher.remote_url = "http://example.com/cool-image.png"
+    #
     # The file will by default be downloaded using [Down], which is a wrapper
     # around the open-uri standard library. It's a good practice to limit the
     # maximum filesize of the remote file:

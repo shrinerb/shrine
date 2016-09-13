@@ -18,6 +18,11 @@ class Shrine
     #     user.avatar.mime_type         #=> "image/png"
     #     user.avatar.size              #=> 43423
     #
+    # You can also use `#data_uri=` and `#data_uri` methods directly on the
+    # `Shrine::Attacher`:
+    #
+    #     attacher.data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    #
     # If you want the uploaded file to have an extension, you can generate a
     # filename based on the content type of the data URI:
     #

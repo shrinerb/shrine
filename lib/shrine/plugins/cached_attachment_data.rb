@@ -11,6 +11,10 @@ class Shrine
     # hidden form field.
     #
     #     @user.cached_avatar_data #=> '{"storage":"cache","id":"...","metadata":{...}}'
+    #
+    # This method delegates to `Attacher#read_cached`:
+    #
+    #     attacher.read_cached #=> '{"storage":"cache","id":"...","metadata":{...}}'
     module CachedAttachmentData
       module AttachmentMethods
         def initialize(*)

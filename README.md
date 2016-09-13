@@ -165,6 +165,20 @@ class Movie < Sequel::Model
 end
 ```
 
+### Attacher
+
+The model attachment interface under-the-hood just delegates to a
+`Shrine::Attacher` object. If you don't want to add additional methods to your
+model, or you prefer explicitness, you can use `Shrine::Attacher` directly:
+
+```rb
+attacher = ImageUploader::Attacher.new(photo, :image) # equivalent to `photo.image_attacher`
+attacher.assign(file)                                 # equivalent to `photo.image = file`
+attacher.get                                          # equivalent to `photo.image`
+```
+
+See [Using Attacher] guide for more details.
+
 ### Multiple files
 
 Sometimes we want to allow users to upload multiple files at once. This can be
@@ -749,3 +763,4 @@ The gem is available as open source under the terms of the [MIT License].
 [shrine-url]: https://github.com/janko-m/shrine-url
 [s3 lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [Dragonfly]: http://markevans.github.io/dragonfly/
+[Using Attacher]: http://shrinerb.com/rdoc/files/doc/attacher_md.html

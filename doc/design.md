@@ -164,6 +164,8 @@ to `Shrine#upload`, which works because `Shrine::UploadedFile` is an IO-like
 object. After both caching and promoting the data hash of the uploaded file is
 assigned to the record's column as JSON.
 
+For more details see [Using Attacher].
+
 ## `Shrine::Attachment`
 
 `Shrine::Attachment` is the highest level of abstraction. A
@@ -203,3 +205,5 @@ automatically:
 * triggers promoting after record is saved
 * deletes the uploaded file if attachment was replaced/removed or the record
   destroyed
+
+[Using Attacher]: http://shrinerb.com/rdoc/files/doc/attacher_md.html
