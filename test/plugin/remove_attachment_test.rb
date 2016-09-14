@@ -19,6 +19,12 @@ describe Shrine::Plugins::RemoveAttachment do
     refute_equal nil, @user.avatar
   end
 
+  it "doesn't nullify files if set to 0" do
+    @user.avatar = fakeio
+    @user.remove_avatar = "0"
+    refute_equal nil, @user.avatar
+  end
+
   it "keeps the remove value" do
     @user.remove_avatar = true
     assert_equal true, @user.remove_avatar
