@@ -42,7 +42,7 @@ class Shrine
 
         # Rails sends "0" or "false" if the checkbox hasn't been ticked.
         def remove?
-          remove && remove != "" && remove !~ /\A0|false$\z/
+          remove && remove != "" && remove !~ /\A(0|false)\z/
         end
       end
     end
