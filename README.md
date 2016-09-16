@@ -25,8 +25,8 @@ require "shrine"
 require "shrine/storage/file_system"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"), # temporary
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"), # permanent
 }
 
 Shrine.plugin :sequel # :activerecord
@@ -242,8 +242,8 @@ and any additional features are available via plugins. This way you can choose
 exactly what and how much Shrine does for you. See the [website] for a complete
 list of plugins.
 
-The plugin system respects inheritance, so you can choose which plugins will
-be applied to which uploaders:
+The plugin system respects inheritance, so you can choose to load a plugin
+globally or only for a specific uploader.
 
 ```rb
 Shrine.plugin :logging # enables logging for all uploaders
