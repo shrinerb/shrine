@@ -23,6 +23,9 @@
       -
         name: "Better File Uploads with Shrine: Motivation"
         url: https://twin.github.io/better-file-uploads-with-shrine-motivation/
+      -
+        name: "Better File Uploads with Shrine: Uploader"
+        url: https://twin.github.io/better-file-uploads-with-shrine-uploader/
 -
   -
     title: Storages
