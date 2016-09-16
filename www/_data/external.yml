@@ -94,3 +94,6 @@
       -
         name: Shrine Tus Demo
         url: https://github.com/janko-m/shrine-tus-demo
+      -
+        name: ROM/dry-rb example app
+        url: https://github.com/janko-m/shrine-rom-example
