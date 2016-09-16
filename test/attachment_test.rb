@@ -48,6 +48,12 @@ describe Shrine::Attachment do
     assert_equal "image", admin.avatar.read
   end
 
+  describe "#to_s" do
+    it "is pretty" do
+      assert_match "Attachment(avatar)", @user.class.ancestors[1].to_s
+    end
+  end
+
   describe "#inspect" do
     it "is pretty" do
       assert_match "Attachment(avatar)", @user.class.ancestors[1].inspect

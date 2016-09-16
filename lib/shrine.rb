@@ -413,7 +413,14 @@ class Shrine
 
         # Displays the attachment name.
         #
-        #     Shrine[:avatar] #=> #<Shrine::Attachment(avatar)>
+        #     Shrine[:avatar].to_s #=> "#<Shrine::Attachment(avatar)>"
+        def to_s
+          "#<#{self.class.inspect}(#{@name})>"
+        end
+
+        # Displays the attachment name.
+        #
+        #     Shrine[:avatar].inspect #=> "#<Shrine::Attachment(avatar)>"
         def inspect
           "#<#{self.class.inspect}(#{@name})>"
         end
