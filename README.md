@@ -112,7 +112,7 @@ The Shrine attachment module added the following methods to the `Photo` model:
 * `#image=` – caches the file and saves the result into `image_data`
 * `#image` – returns `Shrine::UploadedFile` instantiated from `image_data`
 * `#image_url` – calls `image.url` if attachment is present, otherwise returns nil
-* `#image_attacher` - instance of `Shrine::Attacher` which handles attaching
+* `#image_attacher` – returns instance of `Shrine::Attacher` which handles attaching
 
 In addition to assigning new files, you can also assign already cached files
 using their JSON representation:
@@ -173,8 +173,10 @@ model, or you prefer explicitness, you can use `Shrine::Attacher` directly:
 
 ```rb
 attacher = ImageUploader::Attacher.new(photo, :image) # equivalent to `photo.image_attacher`
-attacher.assign(file)                                 # equivalent to `photo.image = file`
-attacher.get                                          # equivalent to `photo.image`
+
+attacher.assign(file) # equivalent to `photo.image = file`
+attacher.get          # equivalent to `photo.image`
+attacher.url          # equivalent to `photo.image_url`
 ```
 
 See [Using Attacher] guide for more details.
