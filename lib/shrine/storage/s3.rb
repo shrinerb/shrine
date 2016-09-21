@@ -76,6 +76,15 @@ class Shrine
     #
     #     Shrine::Storage::S3.new(host: "http://abc123.cloudfront.net", **s3_options)
     #
+    # ## Accelerate endpoint
+    #
+    # To use Amazon S3's [Transfer Acceleration] feature, you can change the
+    # `:endpoint` of the underlying client to the accelerate endpoint, and this
+    # will be applied both to regular and presigned uploads, as well as
+    # download URLs.
+    #
+    #     Shrine::Stroage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com")
+    #
     # ## Presigns
     #
     # This storage can generate presigns for direct uploads to Amazon S3, and
@@ -108,6 +117,7 @@ class Shrine
     # [copying]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
     # [presigning]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
     # [aws-sdk]: https://github.com/aws/aws-sdk-ruby
+    # [Transfer Acceleration]: http://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
     class S3
       attr_reader :s3, :bucket, :prefix, :host, :upload_options
 
