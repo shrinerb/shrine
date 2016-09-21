@@ -14,6 +14,9 @@ class Shrine
     # block should be an IO-like object, which will continue being uploaded
     # instead of the original.
     #
+    # Processing registered under a specific action will only be called if the
+    # `:action` parameter with that value is included.
+    #
     # The declarations are additive and inherited, so for the same action you
     # can declare multiple blocks, and they will be performed in the same order,
     # where output from previous will be input to next. You can return `nil`

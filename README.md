@@ -93,7 +93,7 @@ its URL:
 
 ## Attachment
 
-When we assign an IO-like object to the record, Shrine will upload it to the
+When we assign an IO object to the record, Shrine will upload it to the
 registered `:cache` storage, which acts as a temporary storage, and write the
 location, storage, and metadata of the uploaded file to a single
 `<attachment>_data` column:
@@ -168,8 +168,9 @@ end
 ### Attacher
 
 The model attachment interface under-the-hood just delegates to a
-`Shrine::Attacher` object. If you don't want to add additional methods to your
-model, or you prefer explicitness, you can use `Shrine::Attacher` directly:
+`Shrine::Attacher` object. If whether you don't want to add additional methods
+to your model, prefer explicitness over callbacks, or use Shrine with custom
+models, you can use `Shrine::Attacher` directly:
 
 ```rb
 attacher = ImageUploader::Attacher.new(photo, :image) # equivalent to `photo.image_attacher`
@@ -177,6 +178,9 @@ attacher = ImageUploader::Attacher.new(photo, :image) # equivalent to `photo.ima
 attacher.assign(file) # equivalent to `photo.image = file`
 attacher.get          # equivalent to `photo.image`
 attacher.url          # equivalent to `photo.image_url`
+
+attacher.finalize     # promotes cached file to store, deletes old attachment (after save callback)
+attacher.destroy      # deletes attachment (after destory callback)
 ```
 
 See [Using Attacher] guide for more details.
@@ -199,17 +203,28 @@ into nested association attributes in the controller.
 ## Uploader
 
 "Uploaders" are subclasses of `Shrine`, and this is where we define all our
-attachment logic. Uploaders act as a wrappers around a storage, delegating all
-service-specific logic to the storage. They don't know anything about models
-and are stateless; they are only in charge of uploading, processing and
-deleting files.
+attachment logic. Uploader objects act as a wrappers around a storage; they
+don't know anything about models, and are stateless.
 
+```rb
+class DocumentUploader < Shrine
+  # document uploading logic
+end
+```
 ```rb
 uploader = DocumentUploader.new(:store)
 uploaded_file = uploader.upload(File.open("resume.pdf"))
 uploaded_file #=> #<Shrine::UploadedFile>
 uploaded_file.to_json #=> '{"storage":"store","id":"0sdfllasfi842.pdf","metadata":{...}}'
 ```
+
+The `Shrine#upload` method does the following:
+
+* calls processing
+* extracts metadata
+* generates unique location
+* uploads file(s) (this is where the storage is called)
+* closes uploaded file(s)
 
 Shrine requires the input for uploading to be an IO-like object. So, `File`,
 `Tempfile` and `StringIO` instances are all valid inputs. The object doesn't
@@ -225,7 +240,7 @@ uploaded_file.url      #=> "uploads/938kjsdf932.mp4"
 uploaded_file.metadata #=> {...}
 uploaded_file.download #=> #<Tempfile:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20151004-74201-1t2jacf.mp4>
 uploaded_file.exists?  #=> true
-uploaded_file.open { |io| ... }
+uploaded_file.open { |io| io.read }
 uploaded_file.delete
 # ...
 ```
@@ -294,8 +309,8 @@ class ImageUploader < Shrine
 end
 ```
 
-Since here `io` is a cached `Shrine::UploadedFile`, we need to download it to
-a `File`, which is what image_processing recognizes.
+Here the `io` is a cached `Shrine::UploadedFile`, so we need to download it to
+a `File`, since this is what image_processing gem recognizes.
 
 ### Versions
 
@@ -325,11 +340,11 @@ class ImageUploader < Shrine
 end
 ```
 
-Being able to define processing on instance-level like this provides a lot of
-flexibility. For example, you can choose to process files in a certain order
-for maximum performance, and you can also add parallelization. It is
-recommended to load the `delete_raw` plugin for automatically deleting processed
-files after uploading.
+By defining processing on instance-level Shrine gives you a lot of flexibility.
+You could choose the processing order which yields the best performance, even
+add parallelization, and when processing logic gets complex you could extract
+everything into a PORO class. It is recommended to load the `delete_raw` plugin
+so that processed files are automatically deleted after uploading.
 
 Each version will be saved to the attachment column, and the attachment getter
 will simply return a Hash of `Shrine::UploadedFile` objects:
@@ -376,6 +391,41 @@ class VideoUploader < Shrine
 end
 ```
 
+### Triggering processing
+
+Whenever a file is uploaded by the attacher, an additional `:action` parameter
+is added to the context, which holds a symbol name describing what the file was
+uploaded for. For example, for caching files `action: :cache` will be sent, for
+promoting `action: :store`, while for backing up attacher sends `action:
+:backup`.
+
+The argument to the `process` declaration is the name of that action. When
+uploading via the uploader, you can add `:action` option with the value of the
+processing block you want performed before uploading.
+
+```rb
+uploader = ImageUploader.new(:store)
+uploader.upload(file, action: :store) # performs processing defined under ":store"
+```
+
+You can also define and call processing for a custom action:
+
+```rb
+class ImageUploader < Shrine
+  process(:my_action) { |io, context| special_processing(io) }
+end
+```
+```rb
+uploader.upload(file, action: :my_action)
+```
+
+Finally, you can also call defined processing directly, without uploading the
+results, using `Shrine#process`.
+
+```rb
+uploader.process(file, action: :my_action) # returns processed files without uploading
+```
+
 ## Context
 
 You may have noticed the `context` variable floating around as the second
@@ -390,6 +440,21 @@ to uploaded file, and can contain useful information depending on the situation:
 
 The `context` is useful for doing conditional processing, validation,
 generating location etc, and it is also used by some plugins internally.
+
+```rb
+class VideoUploader < Shrine
+  process(:store) do |io, context|
+    trim_video(io, 300) if context[:record].guest?
+  end
+end
+```
+
+The context is just a hash that is passed to the uploader methods. If you're
+using the uploader directly, you can pass the context directly:
+
+```rb
+uploader.upload(file, {foo: "bar"}) # passing context hash directly
+```
 
 ## Metadata
 

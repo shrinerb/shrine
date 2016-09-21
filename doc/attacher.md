@@ -130,8 +130,12 @@ attachment, unless a new file was attached in the meanwhile.
 
 ```rb
 # uploads cached file to permanent storage and replaces the current one
-attacher.promote(cached_file)
+attacher.promote(cached_file, action: :custom_name)
 ```
+
+The `:action` parameter is optional; it can be used for triggering a certain
+processing block, and it is also automatically printed by the `logging` plugin
+to aid in debugging.
 
 Internally this calls `#swap`, which will update the record with any uploaded
 file, but will reload the record to check if the current attachment hasn't
