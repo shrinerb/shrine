@@ -97,6 +97,8 @@ class Shrine
       # and allowed. Afterwards it proceeds with the file download using
       # streaming.
       class App < Roda
+        plugin :streaming
+
         route do |r|
           r.on ":storage" do |storage_key|
             @storage = get_storage(storage_key)
@@ -111,20 +113,18 @@ class Shrine
               io = get_stream_io(id)
               response["Content-Length"] = io.size.to_s if io.size
 
-              body = Enumerator.new do |y|
-                if io.respond_to?(:each_chunk)
-                  io.each_chunk { |chunk| y.yield(chunk) }
-                else
-                  y.yield io.read(16*1024, buffer ||= "") until io.eof?
-                end
-              end
-
-              proxy = Rack::BodyProxy.new(body) do
+              close_file = proc do
                 io.close
                 io.delete if io.class.name == "Tempfile"
               end
 
-              r.halt response.finish_with_body(proxy)
+              stream(callback: close_file) do |out|
+                if io.respond_to?(:each_chunk) # Down::ChunkedIO
+                  io.each_chunk { |chunk| out << chunk }
+                else
+                  out << io.read(16*1024, buffer ||= "") until io.eof?
+                end
+              end
             end
           end
         end
