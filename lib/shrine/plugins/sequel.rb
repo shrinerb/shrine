@@ -90,14 +90,14 @@ class Shrine
               #{@name}_attacher.save if #{@name}_attacher.attached?
             end
 
-            def after_commit
+            def after_save
               super
-              #{@name}_attacher.finalize if #{@name}_attacher.attached?
+              db.after_commit{#{@name}_attacher.finalize} if #{@name}_attacher.attached?
             end
 
-            def after_destroy_commit
+            def after_destroy
               super
-              #{@name}_attacher.destroy
+              db.after_commit{#{@name}_attacher.destroy} if #{@name}_attacher.read
             end
           RUBY
         end
