@@ -1,5 +1,7 @@
 ## HEAD
 
+* In `UploadedFile#open` handle the case when `Storage#open` raises an error (janko-m)
+
 * Make the `sequel` plugin use less memory during transactions (janko-m)
 
 * Use Roda's streaming plugin in `download_endpoint` for better EventMachine integration (janko-m)

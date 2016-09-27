@@ -267,6 +267,28 @@ describe Shrine::UploadedFile do
       uploaded_file.close
       uploaded_file.open { |io| assert_equal "file", io.read }
     end
+
+    it "closes the file even if error has occured" do
+      uploaded_file = @uploader.upload(fakeio)
+      assert_raises(RuntimeError, "error occured") do
+        uploaded_file.open do |io|
+          @io = io
+          fail "error ocurred"
+        end
+      end
+      assert @io.closed?
+    end
+
+    it "propagates any error raised in Storage#open" do
+      @uploader.storage.instance_eval do
+        def open(id)
+          raise "open error"
+        end
+      end
+      assert_raises(RuntimeError, "open error") do
+        uploaded_file.open {}
+      end
+    end
   end
 
   describe "#download" do

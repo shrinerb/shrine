@@ -718,7 +718,7 @@ class Shrine
           @io = storage.open(id)
           yield @io
         ensure
-          @io.close
+          @io.close if @io
           @io = nil
         end
 
