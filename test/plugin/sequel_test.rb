@@ -113,6 +113,11 @@ describe Shrine::Plugins::Sequel do
       refute @user.avatar.exists?
     end
 
+    it "doesn't raise errors if no file is attached" do
+      @user.save
+      @user.destroy
+    end
+
     it "works with backgrounding" do
       @uploader.class.plugin :backgrounding
       @attacher.class.delete { |data| self.class.delete(data) }
