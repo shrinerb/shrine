@@ -1,5 +1,9 @@
 ## HEAD
 
+* Make the `sequel` plugin use less memory during transactions (janko-m)
+
+* Use Roda's streaming plugin in `download_endpoint` for better EventMachine integration (janko-m)
+
 * Deprecate accepting a JSON string in `Shrine.uploaded_file` (janko-m)
 
 * In S3 storage automatically write original filename to `Content-Disposition` header (janko-m)
