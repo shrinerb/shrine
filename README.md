@@ -830,4 +830,4 @@ The gem is available as open source under the terms of the [MIT License].
 [shrine-url]: https://github.com/janko-m/shrine-url
 [s3 lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [Dragonfly]: http://markevans.github.io/dragonfly/
-[Using Attacher]: http://shrinerb.com/rdoc/files/doc/attacher_md.html
+[Using Attacher]: https://github.com/janko-m/shrine/blob/master/doc/attacher.md
