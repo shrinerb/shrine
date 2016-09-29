@@ -49,8 +49,8 @@ class Shrine
   end
 
   # Core class which handles attaching files on records.  The instance methods
-  # for this class are added by Shrine::Plugins::Base::AttachmentMethods, the
-  # class methods are added by Shrine::Plugins::Base::AttachmentClassMethods.
+  # for this class are added by Shrine::Plugins::Base::AttacherMethods, the
+  # class methods are added by Shrine::Plugins::Base::AttacherClassMethods.
   class Attacher
     @shrine_class = ::Shrine
   end
