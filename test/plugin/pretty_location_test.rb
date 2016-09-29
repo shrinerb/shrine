@@ -31,4 +31,16 @@ describe Shrine::Plugins::PrettyLocation do
     uploaded_file = @uploader.upload(fakeio, record: NameSpaced::OpenStruct.new(id: 123), name: :avatar)
     assert_match %r{^namespaced_openstruct/123/avatar/[\w-]+$}, uploaded_file.id
   end
+
+  it "returns the partitioned id of the attachment when the id is an integer" do
+    @uploader.class.plugin :pretty_location, id_partition: true
+    uploaded_file = @uploader.upload(fakeio, record: OpenStruct.new(id: 123), name: :avatar)
+    assert_match %r{^openstruct/000/000/123/avatar/[\w-]+$}, uploaded_file.id
+  end
+
+  it "returns the partitioned id of the attachment when the id is a string" do
+    @uploader.class.plugin :pretty_location, id_partition: true
+    uploaded_file = @uploader.upload(fakeio, record: OpenStruct.new(id: '32fnj23oio2f'), name: :avatar)
+    assert_match %r{^openstruct/32f/nj2/3oi/avatar/[\w-]+$}, uploaded_file.id
+  end
 end

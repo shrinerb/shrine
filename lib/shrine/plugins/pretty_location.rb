@@ -22,16 +22,26 @@ class Shrine
     #
     #     plugin :pretty_location, namespace: "/"
     #     # "blog/user/.../493g82jf23.jpg"
+    #
+    # To spread files across multiple subfolders based on id partitioning pass
+    # :id_partition option:
+    #
+    #     Shrine.plugin :pretty_location, id_partition: true
+    #     # "user/000/000/564/avatar/thumb-493g82jf23.jpg"
     module PrettyLocation
       def self.configure(uploader, opts = {})
         uploader.opts[:pretty_location_namespace] = opts.fetch(:namespace, uploader.opts[:pretty_location_namespace])
+        uploader.opts[:pretty_location_id_partition] = opts.fetch(:id_partition, uploader.opts[:pretty_location_id_partition])
       end
 
       module InstanceMethods
         def generate_location(io, context)
           if context[:record]
             type = class_location(context[:record].class) if context[:record].class.name
-            id   = context[:record].id if context[:record].respond_to?(:id)
+            if context[:record].respond_to?(:id)
+              id = context[:record].id
+              id = id_partition(id) if opts[:pretty_location_id_partition]
+            end
           end
           name = context[:name]
 
@@ -50,6 +60,17 @@ class Shrine
             parts.join(separator)
           else
             parts.last
+          end
+        end
+
+        def id_partition(id)
+          case id
+          when Integer
+            ("%09d".freeze % id).scan(/\d{3}/).join("/".freeze)
+          when String
+            id.scan(/.{3}/).first(3).join("/".freeze)
+          else
+            nil
           end
         end
       end
