@@ -9,22 +9,18 @@ html {
 
 body {
   padding-bottom: 1em;
-  background: #FCEDD8;
-  font-family: 'open sans', $helvetica;
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 1.5;
-  color: rgba(#80623E, 0.75);
-
-  @include mq(sm) {
-    padding-bottom: 2em;
-  }
+  background: #F8DCCE;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #463C3B;
 }
 
 section {
   margin-bottom: 1em;
 
-  @include mq(sm) {
+  @media (min-width: 768px) {
     margin-bottom: 2em;
   }
 }
@@ -48,41 +44,35 @@ hr {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'arbutus slab', georgia, serif;
-  font-weight: normal;
-  color: #80623E;
-}
-
-h1 {
-  font-weight: 400;
+  font-weight: 700;
 }
 
 h2 {
-  font-size: 1.15em;
-  margin-bottom: 0.5em;
-  border-bottom: 1px solid #98CABF;
+  font-size: 1.35em;
+  margin-bottom: 0.25em;
 
-  @include mq(sm) {
-    font-size: 1.5em;
+  @media (min-width: 768px) {
+    font-size: 1.75em;
   }
 }
 
 h3 {
-  margin-bottom: 0.5em;
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
   font-size: 1em;
 
-  @include mq(sm) {
-    font-size: 1.17em;
+  @media (min-width: 768px) {
+    font-size: 1.25em;
   }
 }
 
 a {
-  color: shade(#98CABF, 20%);
+  color: #DD2F16;
   text-decoration: none;
 
   &:hover,
   &:focus {
-    color: shade(#98CABF, 50%);
+    color: #463C3B;
     text-decoration: underline;
   }
 }
@@ -91,11 +81,14 @@ ol, ul {
   list-style: none;
 }
 
+dl {
+  margin-left: 0;
+}
+
 dt {
   @extend .cf;
   float: left;
   margin-right: 0.25em;
-  // width: 240px;
 }
 
 img, svg, iframe {
@@ -104,14 +97,4 @@ img, svg, iframe {
 
 label {
   cursor: pointer;
-}
-
-.plugins {
-  dl { margin-left: 0.75em; }
-  li { margin-bottom: 0.25em; }
-  .category { font-weight: bold; }
-}
-
-.row:first-child .col:last-child ul {
-  @include columns(10em 2);
 }

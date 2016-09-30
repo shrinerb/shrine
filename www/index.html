@@ -5,68 +5,72 @@
   <div class="container">
     <div>
       <h1>{{ site.title }} (v{{ site.data.versions[0][0].name }})</h1>
-      <p>{{ site.description }}</p>
+      <p>
+        <span class="text">{{ site.description }}</span>
+        <svg class="icon" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
+          <title>attachment</title>
+          <path d="M13 4h-9c-2.209 0-4 1.791-4 4s1.791 4 4 4h9v-1h-9c-1.657 0-3-1.343-3-3s1.343-3 3-3h9c1.105 0 2 0.895 2 2s-0.895 2-2 2h-7c-0.552 0-1-0.448-1-1s0.448-1 1-1h7v-1h-7c-1.105 0-2 0.895-2 2s0.895 2 2 2h7c1.657 0 3-1.343 3-3s-1.343-3-3-3z"></path>
+        </svg>
+      </p>
     </div>
-    <a class="btn" href="http://{{ site.url }}/rdoc/files/README_md.html">README</a>
+    <a class="btn" href="http://{{ site.url }}/rdoc/files/README_md.html">
+      <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path d="M917.806 229.076c-22.212-30.292-53.174-65.7-87.178-99.704s-69.412-64.964-99.704-87.178c-51.574-37.82-76.592-42.194-90.924-42.194h-496c-44.112 0-80 35.888-80 80v864c0 44.112 35.888 80 80 80h736c44.112 0 80-35.888 80-80v-624c0-14.332-4.372-39.35-42.194-90.924zM785.374 174.626c30.7 30.7 54.8 58.398 72.58 81.374h-153.954v-153.946c22.984 17.78 50.678 41.878 81.374 72.572zM896 944c0 8.672-7.328 16-16 16h-736c-8.672 0-16-7.328-16-16v-864c0-8.672 7.328-16 16-16 0 0 495.956-0.002 496 0v224c0 17.672 14.326 32 32 32h224v624z"></path><path d="M736 832h-448c-17.672 0-32-14.326-32-32s14.328-32 32-32h448c17.674 0 32 14.326 32 32s-14.326 32-32 32z"></path><path d="M736 704h-448c-17.672 0-32-14.326-32-32s14.328-32 32-32h448c17.674 0 32 14.326 32 32s-14.326 32-32 32z"></path><path d="M736 576h-448c-17.672 0-32-14.326-32-32s14.328-32 32-32h448c17.674 0 32 14.326 32 32s-14.326 32-32 32z"></path></svg>
+      README
+    </a>
   </div>
 </header>
 
 <main class="main">
   <div class="container">
-    <section class="row">
-      <div class="col">
-        <h2>Core (RDoc)</h2>
+    <section class="core-guides">
+      <div class="row">
+        <div class="col">
+          <h2>Core (RDoc)</h2>
+          <ul>
+            {% for item in site.data.core %}
+            <li>
+              <a href="http://{{ site.url }}/rdoc/classes/Shrine/{{ item.path }}">
+                {{ item.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
 
-        <ul>
-          {% for item in site.data.core %}
-          <li>
-            <a href="http://{{ site.url }}/rdoc/classes/Shrine/{{ item.path }}">
-              {{ item.name }}
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-
-      <div class="col">
-        <h2>Guides</h2>
-
-        <ul>
-          {% for item in site.data.guides %}
-          <li>
-            <a href="http://{{ site.url }}/rdoc/files/doc/{{ item.path }}">
-              {{ item.name }}
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
+        <div class="col">
+          <h2>Guides</h2>
+          <ul>
+            {% for item in site.data.guides %}
+            <li>
+              <a href="http://{{ site.url }}/rdoc/files/doc/{{ item.path }}">
+                {{ item.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
     </section>
 
     <section class="plugins">
       <h2 id="plugins">Plugins</h2>
-
-      <ul>
-        {% for item in site.data.plugins %}
-        <li>
-          <span class="category">{{ item[0] }}</span>
-          {% for plugin in item[1] %}
-            <dl>
-              <dt>
-                <a href="http://{{ site.url }}/rdoc/classes/Shrine/Plugins/{{ plugin.path }}">{{ plugin.name }}</a>:
-              </dt>
-              <dd>
-                <div>{{ plugin.description }}</div>
-              </dd>
-            </dl>
-          {% endfor %}
-        </li>
+      {% for item in site.data.plugins %}
+      <h3>{{ item[0] }}</h3>
+      <dl>
+        {% for plugin in item[1] %}
+        <dt>
+          <a href="http://{{ site.url }}/rdoc/classes/Shrine/Plugins/{{ plugin.path }}">{{ plugin.name }}</a>:
+        </dt>
+        <dd>
+          <div>{{ plugin.description }}</div>
+        </dd>
         {% endfor %}
+      </dl>
+      {% endfor %}
     </section>
 
     <section>
       <h2>Release notes</h2>
-
       <ul>
         {% for major in site.data.versions %}
         <li>
@@ -79,9 +83,8 @@
       </ul>
     </section>
 
-    <section>
+    <section class="external">
       <h2 id="external">External</h2>
-
       <div class="row">
         {% for sections in site.data.external %}
         <div class="col">

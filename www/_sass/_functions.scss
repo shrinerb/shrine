@@ -1,7 +1,0 @@
-// https://css-tricks.com/snippets/sass/tint-shade-functions/
-@function tint($color, $amount) {
-  @return scale-color($color, $lightness: $amount);
-}
-@function shade($color, $amount) {
-  @return scale-color($color, $lightness: -$amount);
-}
