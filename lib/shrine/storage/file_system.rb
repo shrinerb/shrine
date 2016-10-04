@@ -25,11 +25,11 @@ class Shrine
     # ## Host
     #
     # It's generally a good idea to serve your files via a CDN, so an
-    # additional `:host` option can be provided:
+    # additional `:host` option can be provided to `#url`:
     #
-    #     storage = Shrine::Storage::FileSystem.new("public",
-    #       prefix: "uploads", host: "http://abc123.cloudfront.net")
-    #     storage.url("image.jpg") #=> "http://abc123.cloudfront.net/uploads/image.jpg"
+    #     storage = Shrine::Storage::FileSystem.new("public", prefix: "uploads")
+    #     storage.url("image.jpg", host: "http://abc123.cloudfront.net")
+    #     #=> "http://abc123.cloudfront.net/uploads/image.jpg"
     #
     # If you're not using a CDN, it's recommended that you still set `:host` to
     # your application's domain (at least in production).
@@ -37,8 +37,9 @@ class Shrine
     # The `:host` option can also be used wihout `:prefix`, and is
     # useful if you for example have files located on another server:
     #
-    #     storage = Shrine::Storage::FileSystem.new("files", host: "http://943.23.43.1")
-    #     storage.url("image.jpg") #=> "http://943.23.43.1/files/image.jpg"
+    #     storage = Shrine::Storage::FileSystem.new("/opt/files")
+    #     storage.url("image.jpg", host: "http://943.23.43.1")
+    #     #=> "http://943.23.43.1/opt/files/image.jpg"
     #
     # ## Clearing cache
     #
@@ -80,10 +81,6 @@ class Shrine
       # :  The directory relative to `directory` to which files will be stored,
       #    and it is included in the URL.
       #
-      # :host
-      # :  URLs will by default be relative if `:prefix` is set, and you
-      #    can use this option to set a CDN host (e.g. `//abc123.cloudfront.net`).
-      #
       # :permissions
       # :  The UNIX permissions applied to created files. Can be set to `nil`,
       #    in which case the default permissions will be applied. Defaults to
@@ -99,6 +96,8 @@ class Shrine
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
       def initialize(directory, prefix: nil, host: nil, clean: true, permissions: 0644, directory_permissions: 0755)
+        warn "The :host option to Shrine::Storage::FileSystem#initialize is deprecated and will be removed in Shrine 3. Pass :host to FileSystem#url instead, you can also use default_url_options plugin." if host
+
         if prefix
           @prefix = Pathname(relative(prefix))
           @directory = Pathname(directory).join(@prefix)
@@ -165,10 +164,12 @@ class Shrine
       rescue Errno::ENOENT
       end
 
-      # If #prefix is present, returns the path relative to #directory,
-      # with an optional #host in front. Otherwise returns the full path to the
-      # file (also with an optional #host).
-      def url(id, **options)
+      # If #prefix is not present, returns a path composed of #directory and
+      # the given `id`. If #prefix is present, it excludes the #directory part
+      # from the returned path (e.g. #directory can be set to "public" folder).
+      # Both cases accept a `:host` value which will be prefixed to the
+      # generated path.
+      def url(id, host: self.host, **options)
         path = (prefix ? relative_path(id) : path(id)).to_s
         host ? host + path : path
       end

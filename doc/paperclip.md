@@ -29,8 +29,9 @@ Shrine.storages[:store] = Shrine::Storage::S3.new(
   bucket:            "my-bucket",
   access_key_id:     "abc",
   secret_access_key: "xyz",
-  host:              "http://abc123.cloudfront.net",
 )
+
+Shrine.plugin :default_url_options, store: {host: "http://abc123.cloudfront.net"}
 ```
 
 Paperclip doesn't have a concept of "temporary" storage, so it cannot retain

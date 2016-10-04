@@ -1,5 +1,7 @@
 ## HEAD
 
+* Move `:host` from first-class storage option to `#url` option on FileSystem and S3 storage (janko-m)
+
 * In `UploadedFile#open` handle the case when `Storage#open` raises an error (janko-m)
 
 * Make the `sequel` plugin use less memory during transactions (janko-m)

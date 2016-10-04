@@ -72,9 +72,11 @@ class Shrine
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
-    # the `:host` option to have all your URLs use the CDN host:
+    # the `:host` option to `#url`:
     #
-    #     Shrine::Storage::S3.new(host: "http://abc123.cloudfront.net", **s3_options)
+    #     s3 = Shrine::Storage::S3.new(**s3_options)
+    #     s3.url("image.jpg", host: "http://abc123.cloudfront.net")
+    #     #=> "http://abc123.cloudfront.net/image.jpg"
     #
     # ## Accelerate endpoint
     #
@@ -132,10 +134,6 @@ class Shrine
       # :prefix
       # :   "Folder" name inside the bucket to store files into.
       #
-      # :host
-      # :   This option is used for setting CDNs, e.g. it can be set to
-      #      `//abc123.cloudfront.net`.
-      #
       # :upload_options
       # :   Additional options that will be used for uploading files, they will
       #     be passed to [`Aws::S3::Object#put`], [`Aws::S3::Object#copy_from`]
@@ -152,6 +150,8 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: 15*1024*1024, **s3_options)
+        warn "The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin." if host
+
         @prefix = prefix
         @s3 = Aws::S3::Resource.new(**s3_options)
         @bucket = @s3.bucket(bucket)
@@ -222,6 +222,11 @@ class Shrine
       # :  Creates an unsigned version of the URL (the permissions on the S3
       #    bucket need to be modified to allow public URLs).
       #
+      # :host
+      # :  This option replaces the host part of the returned URL, and is
+      #    typically useful for setting CDN hosts (e.g.
+      #    `http://abc123.cloudfront.net`)
+      #
       # :download
       # :  If set to `true`, creates a "forced download" link, which means that
       #    the browser will never display the file and always ask the user to
@@ -232,7 +237,7 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#public_url-instance_method
-      def url(id, download: nil, public: nil, **options)
+      def url(id, download: nil, public: nil, host: self.host, **options)
         options[:response_content_disposition] = "attachment" if download
 
         if public

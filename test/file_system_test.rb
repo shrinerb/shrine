@@ -189,9 +189,9 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "applies a host without :prefix" do
-      @storage = file_system(root, host: "http://124.83.12.24")
+      @storage = file_system(root)
       @storage.upload(fakeio, "foo.jpg")
-      assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg")
+      assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg", host: "http://124.83.12.24")
     end
 
     it "returns the path relative to the :prefix" do
@@ -201,9 +201,9 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "accepts a host with :prefix" do
-      @storage = file_system(root, prefix: "uploads", host: "http://abc123.cloudfront.net")
+      @storage = file_system(root, prefix: "uploads")
       @storage.upload(fakeio, "foo.jpg")
-      assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg")
+      assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg", host: "http://abc123.cloudfront.net")
     end
   end
 

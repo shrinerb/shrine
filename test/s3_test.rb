@@ -102,17 +102,20 @@ describe Shrine::Storage::S3 do
     end
 
     it "can provide a CDN url" do
-      @s3 = s3(host: "http://123.cloudfront.net")
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", @s3.url("foo/bar quux", public: true)
+      url = s3.url("foo/bar quux", host: "http://123.cloudfront.net")
+      assert_match "http://123.cloudfront.net/foo/bar%20quux", url
 
-      @s3 = s3(host: "http://123.cloudfront.net", force_path_style: true)
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", @s3.url("foo/bar quux", public: true)
+      url = s3.url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/foo/bar%20quux", url
 
-      @s3 = s3(host: "http://123.cloudfront.net")
-      assert_equal "http://123.cloudfront.net/#{@s3.bucket.name}", @s3.url("#{@s3.bucket.name}", public: true)
+      url = s3(force_path_style: true).url("foo/bar quux", host: "http://123.cloudfront.net")
+      assert_match "http://123.cloudfront.net/foo/bar%20quux", url
 
-      @s3 = s3(host: "http://123.cloudfront.net")
-      assert_match %r{http://123.cloudfront.net/foo/bar%20quux\?\S+}, @s3.url("foo/bar quux")
+      url = s3(force_path_style: true).url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/foo/bar%20quux", url
+
+      url = s3.url(@s3.bucket.name, host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/#{@s3.bucket.name}", url
     end
 
     it "can provide a public url" do
