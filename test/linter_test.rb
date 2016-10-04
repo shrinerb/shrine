@@ -76,6 +76,11 @@ describe Shrine::Storage::Linter do
       @storage.instance_eval { def delete(id); end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
+
+    it "tests that deleting nonexisting file shouldn't fail" do
+      @storage.instance_eval { def delete(id); raise unless store.key?(id); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
   end
 
   describe "move" do
