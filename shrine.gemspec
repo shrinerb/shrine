@@ -35,7 +35,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "webmock"
   gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "dotenv"
-  gem.add_development_dependency "shrine-memory", ">= 0.2.1"
+  gem.add_development_dependency "shrine-memory", ">= 0.2.2"
 
   gem.add_development_dependency "roda"
   gem.add_development_dependency "rack", "~> 1.6.4"
