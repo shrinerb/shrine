@@ -580,6 +580,14 @@ photo = Photo.create(image: File.open("nature.jpg"))
 photo.image.id #=> "photo/34/image/34krtreds2df.jpg"
 ```
 
+```rb
+Shrine.plugin :pretty_location, id_partition: true
+```
+```rb
+photo = Photo.create(image: File.open("nature.jpg"))
+photo.image.id #=> "photo/000/000/034/image/34krtreds2df.jpg"
+```
+
 If you want to generate locations on your own, you can override
 `Shrine#generate_location`:
 
