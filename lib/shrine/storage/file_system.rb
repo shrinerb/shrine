@@ -162,6 +162,7 @@ class Shrine
       def delete(id)
         path(id).delete
         clean(id) if clean?
+      rescue Errno::ENOENT
       end
 
       # If #prefix is present, returns the path relative to #directory,

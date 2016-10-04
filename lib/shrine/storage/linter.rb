@@ -3,6 +3,7 @@ require "shrine"
 require "forwardable"
 require "stringio"
 require "tempfile"
+require "securerandom"
 
 class Shrine
   # Error which is thrown when Storage::Linter fails.
@@ -83,6 +84,11 @@ class Shrine
       def lint_delete(id)
         storage.delete(id)
         error :delete, "file still #exists? after deleting" if storage.exists?(id)
+        begin
+          storage.delete(SecureRandom.hex)
+        rescue => exception
+          error :delete, "shouldn't fail if the file doesn't exist, but raised #{exception.class}"
+        end
       end
 
       def lint_move(uploaded_file, id)
