@@ -81,6 +81,12 @@ describe Shrine::Plugins::DownloadEndpoint do
       assert_equal "application/octet-stream", response.headers["Content-Type"]
     end
 
+    it "closes the downloaded file" do
+      StringIO.any_instance.expects(:close)
+      response = app.get "/store/#{@id}"
+      response.body_binary # for body to be read
+    end
+
     it "refuses storages which are not allowed" do
       response = app.get "/cache/#{@id}"
       assert_http_error 403, response
