@@ -26,6 +26,9 @@
       -
         name: "Better File Uploads with Shrine: Uploader"
         url: https://twin.github.io/better-file-uploads-with-shrine-uploader/
+      -
+        name: "Better File Uploads with Shrine: Attachment"
+        url: https://twin.github.io/better-file-uploads-with-shrine-attachment/
 -
   -
     title: Storages
