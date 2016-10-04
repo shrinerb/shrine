@@ -175,6 +175,9 @@ models, you can use `Shrine::Attacher` directly:
 ```rb
 attacher = ImageUploader::Attacher.new(photo, :image) # equivalent to `photo.image_attacher`
 
+attacher.cache #=> #<ImageUploader @storage_key=:cache>
+attacher.store #=> #<ImageUploader @storage_key=:store>
+
 attacher.assign(file) # equivalent to `photo.image = file`
 attacher.get          # equivalent to `photo.image`
 attacher.url          # equivalent to `photo.image_url`

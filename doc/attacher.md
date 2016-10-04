@@ -33,6 +33,13 @@ attacher.cache  #=> #<ImageUploader @storage_key=:cache>
 attacher.store  #=> #<ImageUploader @storage_key=:store>
 ```
 
+The attacher will automatically use `:cache` and `:store` storages, but you can
+also tell it to use different temporary and permanent storage:
+
+```rb
+ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
+```
+
 ## Assignment
 
 The `#assign` method accepts either an IO object to be cached, or an already
