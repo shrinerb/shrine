@@ -48,6 +48,14 @@ describe Shrine::Plugins::Activerecord do
       assert_equal "file2", @user.avatar.read
     end
 
+    it "is triggered after transaction commits" do
+      @user.class.transaction do
+        @user.update(avatar: fakeio("file2")) # update
+        assert_equal "cache", @user.avatar.storage_key
+      end
+      assert_equal "store", @user.avatar.storage_key
+    end
+
     it "triggers callbacks" do
       @user.class.before_save do
         @promote_callback = true if avatar.storage_key == "store"

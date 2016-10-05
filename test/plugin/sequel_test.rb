@@ -48,6 +48,14 @@ describe Shrine::Plugins::Sequel do
       assert_equal "file2", @user.avatar.read
     end
 
+    it "is triggered after transaction commits" do
+      @user.class.db.transaction do
+        @user.update(avatar: fakeio("file2")) # update
+        assert_equal "cache", @user.avatar.storage_key
+      end
+      assert_equal "store", @user.avatar.storage_key
+    end
+
     it "triggers callbacks" do
       @user.instance_eval do
         def before_save
