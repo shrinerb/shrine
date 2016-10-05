@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't use `Storage#stream` in download_endpoint plugin anymore, rely on `Storage#open` (janko-m)
+
 * Remove explicitly unlinking Tempfiles returned by `Storage#open` (janko-m)
 
 * Move `:host` from first-class storage option to `#url` option on FileSystem and S3 storage (janko-m)

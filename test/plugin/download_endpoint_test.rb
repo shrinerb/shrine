@@ -35,26 +35,6 @@ describe Shrine::Plugins::DownloadEndpoint do
       assert_equal "5", response.headers["Content-Length"]
     end
 
-    it "returns file contents with using #stream" do
-      @uploader.storage.instance_eval do
-        def stream(id)
-          yield read(id), read(id).length
-        end
-      end
-      response = app.get "/store/#{@id}"
-      assert_equal "image", response.body_binary
-      assert_equal "5", response.headers["Content-Length"]
-
-      @uploader.storage.instance_eval do
-        def stream(id)
-          yield read(id)
-        end
-      end
-      response = app.get "/store/#{@id}"
-      assert_equal "image", response.body_binary
-      assert_equal nil, response.headers["Content-Length"]
-    end
-
     it "returns the inline content disposition by default" do
       response = app.get "/store/#{@id}"
       assert_match /inline; filename="\w+\.jpg"/, response.headers["Content-Disposition"]

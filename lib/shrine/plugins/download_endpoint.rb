@@ -110,7 +110,7 @@ class Shrine
               response["Content-Disposition"] = "#{disposition}; filename=#{filename.inspect}"
               response["Content-Type"] = Rack::Mime.mime_type(extname)
 
-              io = get_stream_io(id)
+              io = storage.open(id)
               response["Content-Length"] = io.size.to_s if io.size
 
               stream(callback: ->{io.close}) do |out|
@@ -131,17 +131,6 @@ class Shrine
         def get_storage(storage_key)
           allow_storage!(storage_key)
           shrine_class.find_storage(storage_key)
-        end
-
-        def get_stream_io(id)
-          if storage.respond_to?(:stream)
-            warn "Storage#stream is deprecated, in Shrine 3 the download_endpoint plugin will use only Storage#open. You should update your storage library."
-            stream = storage.enum_for(:stream, id)
-            chunks = Enumerator.new { |y| y << Array(stream.next)[0] }
-            Down::ChunkedIO.new(size: Array(stream.peek)[1], chunks: chunks)
-          else
-            storage.open(id)
-          end
         end
 
         # Halts the request if storage is not allowed.
