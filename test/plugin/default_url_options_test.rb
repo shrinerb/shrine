@@ -9,7 +9,14 @@ describe Shrine::Plugins::DefaultUrlOptions do
   it "adds default options statically" do
     @uploader.class.plugin :default_url_options, store: {foo: "foo"}
     uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo"})
+    uploaded_file.storage.expects(:url).with(uploaded_file.id, {
+      foo: "foo",
+      shrine_metadata: {
+        'filename' => nil,
+        'size' => 4,
+        'mime_type' => nil
+      }
+    })
     uploaded_file.url
   end
 
@@ -27,14 +34,29 @@ describe Shrine::Plugins::DefaultUrlOptions do
   it "merges default options with custom options" do
     @uploader.class.plugin :default_url_options, store: {foo: "foo"}
     uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo", bar: "bar"})
+    uploaded_file.storage.expects(:url).with(uploaded_file.id, {
+      foo: "foo",
+      bar: "bar",
+      shrine_metadata: {
+        'filename' => nil,
+        'size' => 4,
+        'mime_type' => nil
+      }
+    })
     uploaded_file.url(bar: "bar")
   end
 
   it "allows direct options to override default options" do
     @uploader.class.plugin :default_url_options, store: {foo: "foo"}
     uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "overriden"})
+    uploaded_file.storage.expects(:url).with(uploaded_file.id, {
+      foo: "overriden",
+      shrine_metadata: {
+        'filename' => nil,
+        'size' => 4,
+        'mime_type' => nil
+      }
+    })
     uploaded_file.url(foo: "overriden")
   end
 

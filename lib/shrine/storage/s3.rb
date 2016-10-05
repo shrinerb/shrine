@@ -237,8 +237,20 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#public_url-instance_method
-      def url(id, download: nil, public: nil, host: self.host, **options)
-        options[:response_content_disposition] = "attachment" if download
+      def url(id,
+              download: nil,
+              public: nil,
+              host: self.host,
+              shrine_metadata: nil,
+              **options)
+        options[:response_content_disposition] = if download
+          if shrine_metadata &&
+              filename = shrine_metadata['filename']
+            "attachment; filename=#{filename}"
+          else
+            "attachment"
+          end
+        end
 
         if public
           url = object(id).public_url(**options)

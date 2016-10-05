@@ -34,7 +34,7 @@ describe Shrine::Attachment do
     end
 
     it "forwards options to the attacher" do
-      @user.avatar_attacher.cache.storage.instance_eval { def url(id, **o); o.to_json; end }
+      @user.avatar_attacher.cache.storage.instance_eval { def url(id, shrine_metadata:, **o); o.to_json; end }
       @user.avatar = fakeio
       assert_equal '{"foo":"bar"}', @user.avatar_url(foo: "bar")
     end
