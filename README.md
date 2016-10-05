@@ -14,7 +14,8 @@ If you're not sure why you should care, you're encouraged to read the
 
 ## Quick start
 
-Add Shrine to the Gemfile and write an initializer:
+Add Shrine to the Gemfile and write an initializer which sets up the storage and
+loads the ORM plugin:
 
 ```rb
 gem "shrine"
@@ -33,8 +34,9 @@ Shrine.plugin :sequel # :activerecord
 Shrine.plugin :cached_attachment_data # for forms
 ```
 
-Next write a migration to add a column which will hold attachment data, and run
-it:
+Next decide how you will name the attachment attribute on your model, and run a
+migration that adds an `<attachment>_data` text column, which Shrine will use
+to store all information about the attachment:
 
 ```rb
 Sequel.migration do                           # class AddImageDataToPhotos < ActiveRecord::Migration
@@ -45,7 +47,7 @@ end                                           # end
 ```
 
 Now you can create an uploader class for the type of files you want to upload,
-and make your model handle attachments:
+and add the attachment attribute to your model which will accept files:
 
 ```rb
 class ImageUploader < Shrine
@@ -59,8 +61,11 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-This creates an `image` attachment attribute which accepts files. Let's now
-add the form fields needed for attaching files:
+Let's now add the form fields needed for attaching files. We need a file
+field for choosing files, and a hidden field for retaining the uploaded file
+in case of validation errors and [direct uploads]. Note that the file field
+needs to go *after* the hidden field, so that attaching a new file can always
+override whatever is in the hidden field.
 
 ```erb
 <form action="/photos" method="post" enctype="multipart/form-data">
@@ -75,17 +80,22 @@ add the form fields needed for attaching files:
 <% end %>
 ```
 
-Now assigning the request parameters in your router/controller will
-automatically handle the image attachment:
+Note the `enctype="multipart/form-data"` HTML attribute, which is required for
+submitting files through the form. The Rails form builder will automatically
+generate it for you when you add a file field.
+
+Now in your router/controller the attachment request parameter can be assigned
+to the model like any other attribute. Note that for non-Rails apps you will
+need to load the `rack_file` plugin which handles Rack's uploaded file hash.
 
 ```rb
 post "/photos" do
   Photo.create(params[:photo])
+  # ...
 end
 ```
 
-When a Photo is created with the image attached, you can display the image via
-its URL:
+Finally, you can use the URL of the attached file to display it:
 
 ```erb
 <img src="<%= @photo.image_url %>">
