@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't run file validations when duplicating the record in `copy` plugin (janko-m)
+
 * Don't use `Storage#stream` in download_endpoint plugin anymore, rely on `Storage#open` (janko-m)
 
 * Remove explicitly unlinking Tempfiles returned by `Storage#open` (janko-m)

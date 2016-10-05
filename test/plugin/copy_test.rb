@@ -59,6 +59,19 @@ describe Shrine::Plugins::Copy do
       assert_equal nil, @duplicated_attacher.get
     end
 
+    it "makes the attacher dirty" do
+      @attacher.set(@attacher.cache!(fakeio))
+      @duplicated_attacher.copy(@attacher)
+      assert @duplicated_attacher.attached?
+    end
+
+    it "doesn't run validations" do
+      @attacher.set(@attacher.cache!(fakeio))
+      @duplicated_attacher.class.validate { errors << "error" }
+      @duplicated_attacher.copy(@attacher)
+      assert_empty @duplicated_attacher.errors
+    end
+
     it "deletes the current attachment" do
       @duplicated_attacher.set(original_attachment = @duplicated_attacher.store!(fakeio))
       @attacher.set(@attacher.store!(fakeio))

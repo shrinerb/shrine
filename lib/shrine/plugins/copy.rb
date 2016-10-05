@@ -42,7 +42,8 @@ class Shrine
                                 nil
                               end
 
-          set(copied_attachment)
+          @old = get
+          _set(copied_attachment)
         end
       end
     end
