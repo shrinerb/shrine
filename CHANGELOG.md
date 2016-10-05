@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow dynamically generating URL options in `default_url_options` plugin (janko-m)
+
 * Don't run file validations when duplicating the record in `copy` plugin (janko-m)
 
 * Don't use `Storage#stream` in download_endpoint plugin anymore, rely on `Storage#open` (janko-m)
