@@ -772,10 +772,7 @@ class Shrine
         # Part of complying to the IO interface. It delegates to the internally
         # opened IO object.
         def close
-          if @io
-            io.close
-            io.delete if io.class.name == "Tempfile"
-          end
+          io.close if @io
         end
 
         # Part of complying to the IO interface. It delegates to the internally

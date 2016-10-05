@@ -113,12 +113,7 @@ class Shrine
               io = get_stream_io(id)
               response["Content-Length"] = io.size.to_s if io.size
 
-              close_file = proc do
-                io.close
-                io.delete if io.class.name == "Tempfile"
-              end
-
-              stream(callback: close_file) do |out|
+              stream(callback: ->{io.close}) do |out|
                 if io.respond_to?(:each_chunk) # Down::ChunkedIO
                   io.each_chunk { |chunk| out << chunk }
                 else

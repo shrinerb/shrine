@@ -178,13 +178,6 @@ describe Shrine::UploadedFile do
       assert_raises(IOError) { uploaded_file.read }
     end
 
-    it "deletes the underlying tempfile" do
-      uploaded_file = @uploader.upload(fakeio)
-      uploaded_file.instance_variable_set("@io", tempfile = Tempfile.new(""))
-      uploaded_file.close
-      refute tempfile.path
-    end
-
     # Sometimes an uploaded file will be copied over instead of reuploaded (S3),
     # in which case it's not downloaded, so we don't want that closing actually
     # downloads the file.
