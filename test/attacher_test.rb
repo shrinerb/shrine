@@ -246,7 +246,7 @@ describe Shrine::Attacher do
     end
 
     it "forwards options to uploaded file's #url" do
-      @attacher.cache.storage.instance_eval { def url(id, **opts); opts.to_json; end }
+      @attacher.cache.storage.instance_eval { def url(id, shrine_metadata:, **opts); opts.to_json; end }
       @attacher.assign(fakeio)
       assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
     end
@@ -254,6 +254,12 @@ describe Shrine::Attacher do
     it "calls #default_url when attachment is missing" do
       @attacher.shrine_class.plugin(:default_url) { |c| c[:foo] }
       assert_equal "bar", @attacher.url(foo: "bar")
+    end
+
+    it "adds the metadata to the method call" do
+      @attacher.cache.storage.instance_eval { def url(id, shrine_metadata:, **opts); shrine_metadata.to_json; end }
+      @attacher.assign(fakeio)
+      assert_equal '{"filename":null,"size":4,"mime_type":null}', @attacher.url
     end
   end
 

@@ -763,6 +763,7 @@ class Shrine
 
         # Calls `#url` on the storage, forwarding any options.
         def url(**options)
+          options.merge!(shrine_metadata: metadata)
           storage.url(id, **options)
         end
 

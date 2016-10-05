@@ -212,7 +212,10 @@ describe Shrine::UploadedFile do
 
     it "forwards given options to storage" do
       uploaded_file = uploaded_file("id" => "foo")
-      uploaded_file.storage.expects(:url).with("foo", {foo: "foo"})
+      uploaded_file.storage.expects(:url).with("foo", {
+        foo: "foo",
+        shrine_metadata: {}
+      })
       uploaded_file.url(foo: "foo")
     end
   end

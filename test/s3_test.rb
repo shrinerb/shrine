@@ -101,6 +101,13 @@ describe Shrine::Storage::S3 do
       assert_match "response-content-disposition=attachment", url
     end
 
+    it "preserves the filename on a force download URL" do
+      @s3.upload(fakeio("image"), "foo")
+      url = @s3.url("foo", shrine_metadata: {'filename' => 'foo'}, download: true)
+      puts url
+      assert_match "response-content-disposition=attachment%3B%20filename%3Dfoo", url
+    end
+
     it "can provide a CDN url" do
       url = s3.url("foo/bar quux", host: "http://123.cloudfront.net")
       assert_match "http://123.cloudfront.net/foo/bar%20quux", url
