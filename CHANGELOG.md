@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix S3 storage not handling filenames with double quotes in Content-Disposition header (janko-m)
+
 * Work around aws-sdk failing with non-ASCII characters in Content-Disposition header (janko-m)
 
 * Allow dynamically generating URL options in `default_url_options` plugin (janko-m)

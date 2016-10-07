@@ -10,7 +10,7 @@ class Shrine
     # that were passed to `UploadedFile#url`.
     #
     #     plugin :default_url_options, store: ->(io, **options) do
-    #       {response_content_disposition: "attachment; filename=#{io.original_filename.inspect}"}
+    #       {response_content_disposition: "attachment; filename=\"#{io.original_filename}\""}
     #     end
     #
     # In both cases the default options are merged with options passed to

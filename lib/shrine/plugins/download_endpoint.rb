@@ -107,7 +107,7 @@ class Shrine
               filename = request.path.split("/").last
               extname = File.extname(filename)
 
-              response["Content-Disposition"] = "#{disposition}; filename=#{filename.inspect}"
+              response["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
               response["Content-Type"] = Rack::Mime.mime_type(extname)
 
               io = storage.open(id)

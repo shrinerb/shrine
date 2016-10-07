@@ -171,7 +171,7 @@ class Shrine
 
         options = {}
         options[:content_type] = content_type if content_type
-        options[:content_disposition] = "inline; filename=#{filename.inspect}" if filename
+        options[:content_disposition] = "inline; filename=\"#{filename}\"" if filename
 
         options.update(@upload_options)
         options.update(upload_options)
