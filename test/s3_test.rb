@@ -69,10 +69,10 @@ describe Shrine::Storage::S3 do
       assert_equal "file.txt", tempfile.original_filename
     end
 
-    it "handles non-ASCII characters and quotes in Content-Disposition" do
-      @s3.upload(fakeio, "foo", content_disposition: 'inline; filename=""été.pdf""')
+    it "handles non-ASCII characters, quotes and spaces in Content-Disposition" do
+      @s3.upload(fakeio, "foo", content_disposition: 'inline; filename=""été bar.pdf""')
       tempfile = Down.download(@s3.url("foo"))
-      assert_equal '"été.pdf"', CGI.unescape(tempfile.original_filename)
+      assert_equal '"été bar.pdf"', CGI.unescape(tempfile.original_filename)
     end
 
     it "applies upload options" do
@@ -106,13 +106,6 @@ describe Shrine::Storage::S3 do
     it "can provide a force download URL" do
       url = @s3.url("foo", download: true)
       assert_match "response-content-disposition=attachment", url
-    end
-
-    it "handles non-ASCII characters and quotes in Content-Disposition" do
-      @s3.upload(fakeio, "foo")
-      url = @s3.url("foo", response_content_disposition: 'inline; filename=""été.pdf""')
-      tempfile = Down.download(url)
-      assert_equal '"été.pdf"', CGI.unescape(tempfile.original_filename)
     end
 
     it "can provide a CDN url" do
@@ -166,10 +159,6 @@ describe Shrine::Storage::S3 do
       s3 = s3(endpoint: "http://foo.com")
       presign = s3.presign("foo")
       assert_equal "http://#{s3.bucket.name}.foo.com", presign.url
-    end
-
-    it "handles non-ASCII characters and quotes in Content-Disposition" do
-      @s3.presign("foo", content_disposition: 'inline; filename=""été.pdf""')
     end
   end
 end

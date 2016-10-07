@@ -333,7 +333,7 @@ class Shrine
 
       def encode_content_disposition(content_disposition)
         content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
-          CGI.escape(filename)
+          CGI.escape(filename).sub("+", " ")
         end
       end
     end
