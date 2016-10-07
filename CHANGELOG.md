@@ -1,5 +1,7 @@
 ## HEAD
 
+* Work around aws-sdk failing with non-ASCII characters in Content-Disposition header (janko-m)
+
 * Allow dynamically generating URL options in `default_url_options` plugin (janko-m)
 
 * Don't run file validations when duplicating the record in `copy` plugin (janko-m)

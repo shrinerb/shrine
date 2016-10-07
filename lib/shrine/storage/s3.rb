@@ -1,6 +1,7 @@
 require "aws-sdk"
 require "down"
 require "uri"
+require "cgi"
 
 class Shrine
   module Storage
@@ -175,6 +176,8 @@ class Shrine
         options.update(@upload_options)
         options.update(upload_options)
 
+        options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
+
         if copyable?(io)
           copy(io, id, **options)
         else
@@ -239,6 +242,7 @@ class Shrine
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#public_url-instance_method
       def url(id, download: nil, public: nil, host: self.host, **options)
         options[:response_content_disposition] ||= "attachment" if download
+        options[:response_content_disposition] = encode_content_disposition(options[:response_content_disposition]) if options[:response_content_disposition]
 
         if public
           url = object(id).public_url(**options)
@@ -268,6 +272,8 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
       def presign(id, **options)
         options = upload_options.merge(options)
+        options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
+
         object(id).presigned_post(options)
       end
 
@@ -323,6 +329,12 @@ class Shrine
       # `:multipart_threshold`.
       def multipart?(io)
         io.size && io.size >= @multipart_threshold
+      end
+
+      def encode_content_disposition(content_disposition)
+        content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
+          CGI.escape(filename)
+        end
       end
     end
   end
