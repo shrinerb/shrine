@@ -1,7 +1,7 @@
 require "aws-sdk"
 require "down"
 require "uri"
-require "cgi"
+require "cgi/util"
 
 class Shrine
   module Storage
