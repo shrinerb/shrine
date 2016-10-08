@@ -40,6 +40,13 @@ also tell it to use different temporary and permanent storage:
 ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
 ```
 
+The attacher will use the `<attachment>_data` attribute for storing information
+about the attachment.
+
+```rb
+attacher.data_attribute #=> :image_data
+```
+
 ## Assignment
 
 The `#assign` method accepts either an IO object to be cached, or an already

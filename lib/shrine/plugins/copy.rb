@@ -23,7 +23,7 @@ class Shrine
             def initialize_copy(record)
               super
               @#{@name}_attacher = nil # reload the attacher
-              self.#{@name}_data = nil # remove original attachment
+              #{@name}_attacher.send(:write, nil) # remove original attachment
               #{@name}_attacher.copy(record.#{@name}_attacher)
             end
           RUBY

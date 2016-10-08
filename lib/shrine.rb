@@ -595,7 +595,7 @@ class Shrine
         # Reads from the `<attachment>_data` attribute on the model instance.
         # It returns nil if the value is blank.
         def read
-          value = record.send(:"#{name}_data")
+          value = record.send(data_attribute)
           value unless value.nil? || value.empty?
         end
 
@@ -625,6 +625,12 @@ class Shrine
           else
             shrine_class.uploaded_file(object, &block)
           end
+        end
+
+        # The name of the attribute on the model instance that is used to store
+        # the attachment data. Defaults to `<attachment>_data`.
+        def data_attribute
+          :"#{name}_data"
         end
 
         # Returns the Shrine class that this attacher's class is namespaced
@@ -659,7 +665,7 @@ class Shrine
 
         # Writes to the `<attachment>_data` attribute on the model instance.
         def write(value)
-          record.send(:"#{name}_data=", value)
+          record.send(:"#{data_attribute}=", value)
         end
 
         # Temporary method used for transitioning from :phase to :action.

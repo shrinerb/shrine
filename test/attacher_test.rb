@@ -356,6 +356,12 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#data_attribute" do
+    it "returns the :<attachment>_data" do
+      assert_equal :avatar_data, @attacher.data_attribute
+    end
+  end
+
   it "allows modifying context" do
     @attacher.context[:record] = :record
     assert_equal :record, @attacher.context[:record]

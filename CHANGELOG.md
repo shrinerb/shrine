@@ -1,5 +1,7 @@
 ## HEAD
 
+* Extract the `<attachment>_data` attribute name into `Attacher#data_attribute` (janko-m)
+
 * Support JSON and JSONB PostgreSQL columns with ActiveRecord (janko-m)
 
 * Fix S3 storage not handling filenames with double quotes in Content-Disposition header (janko-m)
