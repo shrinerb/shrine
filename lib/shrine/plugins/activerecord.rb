@@ -120,13 +120,12 @@ class Shrine
           record.save(validate: false)
         end
 
-        # Support for Postgres JSON and JSONB columns.
-        def write(value)
-          if activerecord_json_column?
-            value = JSON.parse(value) if value
-          end
+        def convert_data_write(value)
+          activerecord_json_column? ? value.as_json : value.to_json
+        end
 
-          super(value)
+        def convert_data_read(value)
+          activerecord_json_column? ? value.as_json : JSON.parse(value)
         end
 
         def activerecord_json_column?

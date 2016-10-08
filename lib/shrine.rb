@@ -596,7 +596,7 @@ class Shrine
         # It returns nil if the value is blank.
         def read
           value = record.send(data_attribute)
-          value unless value.nil? || value.empty?
+          (value.nil? || value.empty?) ? nil : convert_data_read(value)
         end
 
         # Uploads the file using the #cache uploader, passing the #context.
@@ -657,15 +657,28 @@ class Shrine
           shrine_class.opts[:validate]
         end
 
-        # Dumps the UploadedFile to JSON format and writes the result to the
-        # attachment attribute.
-        def _set(uploaded_file)
-          write(uploaded_file ? uploaded_file.to_json : nil)
+        # Converts the UploadedFile with method `convert_data_write`
+        # and writes the result to the attachment attribute.
+        def _set(value)
+          write(value ? convert_data_write(value) : nil)
         end
 
         # Writes to the `<attachment>_data` attribute on the model instance.
         def write(value)
           record.send(:"#{data_attribute}=", value)
+        end
+
+        # Converts value from data attribute to accepted format
+        # for method `uploaded_file`
+        def convert_data_read(value)
+          value
+        end
+
+        # Converts hash representation of UploadedFile or UploadedFile
+        # for writing to data attribute
+        # `value` is a Hash or UploadedFile
+        def convert_data_write(value)
+          value.to_json
         end
 
         # Temporary method used for transitioning from :phase to :action.
