@@ -175,6 +175,12 @@ describe Shrine::Plugins::Activerecord do
     @user.avatar = nil
   end
 
+  it "raises an appropriate exception when column is missing" do
+    @user.class.include @uploader.class[:missing]
+    error = assert_raises(NoMethodError) { @user.missing = fakeio }
+    assert_match "undefined method `missing_data'", error.message
+  end
+
   it "allows including attachment model to non-ActiveRecord objects" do
     uploader = @uploader
     Struct.new(:avatar_data) { include uploader.class[:avatar] }

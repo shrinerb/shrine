@@ -186,6 +186,12 @@ describe Shrine::Plugins::Sequel do
     @user.update(avatar: fakeio)
   end
 
+  it "raises an appropriate exception when column is missing" do
+    @user.class.include @uploader.class[:missing]
+    error = assert_raises(NoMethodError) { @user.missing = fakeio }
+    assert_match "undefined method `missing_data'", error.message
+  end
+
   it "allows including attachment model to non-Sequel objects" do
     uploader = @uploader
     object = Struct.new(:avatar_data) { include uploader.class[:avatar] }
