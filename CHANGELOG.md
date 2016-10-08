@@ -1,5 +1,7 @@
 ## HEAD
 
+* Support JSON and JSONB PostgreSQL columns with ActiveRecord (janko-m)
+
 * Fix S3 storage not handling filenames with double quotes in Content-Disposition header (janko-m)
 
 * Work around aws-sdk failing with non-ASCII characters in Content-Disposition header (janko-m)

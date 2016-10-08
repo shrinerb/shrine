@@ -119,6 +119,22 @@ class Shrine
           super
           record.save(validate: false)
         end
+
+        # Support for Postgres JSON and JSONB columns.
+        def write(value)
+          if activerecord_json_column?
+            value = JSON.parse(value) if value
+          end
+
+          super(value)
+        end
+
+        def activerecord_json_column?
+          return false unless record.is_a?(ActiveRecord::Base)
+          return false unless column = record.class.columns_hash["#{name}_data"]
+
+          [:json, :jsonb].include?(column.type)
+        end
       end
     end
 

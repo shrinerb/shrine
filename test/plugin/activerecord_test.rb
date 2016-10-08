@@ -164,6 +164,17 @@ describe Shrine::Plugins::Activerecord do
     end
   end
 
+  it "supports Postgres JSON and JSONB columns" do
+    @user.avatar_attacher.stubs(:activerecord_json_column?).returns(true)
+
+    data = {"id" => "foo", "storage" => "cache", "metadata" => {}}
+    @user.expects(:avatar_data=).with(data)
+    @user.avatar = data.to_json
+
+    @user.expects(:avatar_data=).with(nil)
+    @user.avatar = nil
+  end
+
   it "allows including attachment model to non-ActiveRecord objects" do
     uploader = @uploader
     Struct.new(:avatar_data) { include uploader.class[:avatar] }

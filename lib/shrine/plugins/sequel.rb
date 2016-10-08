@@ -111,7 +111,7 @@ class Shrine
       end
 
       module AttacherMethods
-        # Support for Postgres JSON columns.
+        # Support for Postgres JSON and JSONB columns.
         def read
           value = super
           value = value.to_hash if value.respond_to?(:to_hash)
