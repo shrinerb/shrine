@@ -11,9 +11,9 @@ class Shrine
     #
     # Now the attachment module will add additional callbacks to the model:
     #
-    # * `before_save` -- Used by the recache plugin.
-    # * `after_commit on: [:create, :update]` -- Promotes the attachment, deletes replaced ones.
-    # * `after_commit on: [:destroy]` -- Deletes the attachment.
+    # * "before save" -- Used by the `recache` plugin.
+    # * "after commit" (save) -- Promotes the attachment, deletes replaced ones.
+    # * "after commit" (destroy) -- Deletes the attachment.
     #
     # Note that ActiveRecord versions 3.x and 4.x have errors automatically
     # silenced in hooks, which can make debugging more difficult, so it's
@@ -23,7 +23,7 @@ class Shrine
     #     ActiveRecord::Base.raise_in_transactional_callbacks = true
     #
     # Also note that if your tests are wrapped in transactions, the
-    # `after_commit` callbacks won't get called, so in order to test uploading
+    # "after commit" callbacks won't get called, so in order to test uploading
     # you should first disable transactions for those tests.
     #
     # If you want to put promoting/deleting into a background job, see the
@@ -38,16 +38,15 @@ class Shrine
     #       before_save do
     #         if avatar_data_changed? && avatar_attacher.cached?
     #           # cached
-    #         end
-    #
-    #         if avatar_data_changed? && avatar_attacher.stored?
+    #         elsif avatar_data_changed? && avatar_attacher.stored?
     #           # promoted
     #         end
     #       end
     #     end
     #
-    # If you don't want callbacks (e.g. you want to use the attacher object
-    # directly), you can turn them off:
+    # If you don't want the attachment module to add any callbacks to the
+    # model, and would instead prefer to call these actions manually, you can
+    # disable callbacks:
     #
     #     plugin :activerecord, callbacks: false
     #
@@ -62,8 +61,8 @@ class Shrine
     #       validates_presence_of :avatar
     #     end
     #
-    # If you're doing validation separately from your models, you can turn off
-    # validations for your models:
+    # If don't want the attachment module to merge file validations errors into
+    # model errors, you can disable it:
     #
     #     plugin :activerecord, validations: false
     module Activerecord

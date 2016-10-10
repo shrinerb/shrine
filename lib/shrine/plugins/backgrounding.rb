@@ -1,8 +1,8 @@
 class Shrine
   module Plugins
-    # The `backgrounding` plugin enables you to remove processing/storing/deleting
-    # of files from record's lifecycle, and put them into background jobs.
-    # This is generally useful if you're doing processing and/or your store is
+    # The `backgrounding` plugin enables you to move processing, storing and
+    # deleting of files from record's lifecycle into background jobs. This is
+    # generally useful if you're doing processing and/or your store is
     # something other than Storage::FileSystem.
     #
     #     Shrine.plugin :backgrounding

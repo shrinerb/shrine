@@ -11,12 +11,12 @@ class Shrine
     #
     # Now the attachment module will add additional callbacks to the model:
     #
-    # * `before_save` -- Used by the recached plugin.
-    # * `after_commit` -- Promotes the attachment, deletes replaced ones.
-    # * `after_destroy_commit` -- Deletes the attachment.
+    # * "before save" -- Used by the `recache` plugin.
+    # * "after commit" (save) -- Promotes the attachment, deletes replaced ones.
+    # * "after commit" (destroy) -- Deletes the attachment.
     #
     # Also note that if your tests are wrapped in transactions, the
-    # `after_commit` callbacks won't get called, so in order to test uploading
+    # "after commit" callbacks won't get called, so in order to test uploading
     # you should first disable transactions for those tests.
     #
     # If you want to put promoting/deleting into a background job, see the
@@ -33,16 +33,15 @@ class Shrine
     #
     #         if changed_columns.include?(:avatar) && avatar_attacher.cached?
     #           # cached
-    #         end
-    #
-    #         if changed_columns.include?(:avatar) && avatar_attacher.stored?
+    #         elsif changed_columns.include?(:avatar) && avatar_attacher.stored?
     #           # promoted
     #         end
     #       end
     #     end
     #
-    # If you don't want callbacks (e.g. you want to use the attacher object
-    # directly), you can turn them off:
+    # If you don't want the attachment module to add any callbacks to the
+    # model, and would instead prefer to call these actions manually, you can
+    # disable callbacks:
     #
     #     plugin :sequel, callbacks: false
     #
@@ -57,8 +56,8 @@ class Shrine
     #       validates_presence_of :avatar
     #     end
     #
-    # If you're doing validation separately from your models, you can turn off
-    # validations for your models:
+    # If don't want the attachment module to merge file validations errors into
+    # model errors, you can disable it:
     #
     #     plugin :sequel, validations: false
     module Sequel

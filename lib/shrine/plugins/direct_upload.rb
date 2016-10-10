@@ -60,7 +60,9 @@ class Shrine
     #     plugin :direct_upload, max_size: 5*1024*1024 # 5 MB
     #
     # Note that this option doesn't affect presigned uploads, there you can
-    # apply filesize limit when generating a presign.
+    # apply filesize limit when generating a presign. The filesize constraint
+    # here is for security purposes, you should still perform file validations
+    # on attaching.
     #
     # ## Presigns
     #

@@ -14,14 +14,19 @@ class Shrine
     # block should be an IO-like object, which will continue being uploaded
     # instead of the original.
     #
-    # Processing registered under a specific action will only be called if the
-    # `:action` parameter with that value is included.
-    #
     # The declarations are additive and inherited, so for the same action you
     # can declare multiple blocks, and they will be performed in the same order,
     # where output from previous will be input to next. You can return `nil`
     # in any block to signal that no processing was performed and that the
     # original file should be used.
+    #
+    # The `.process` call is just a shorthand for
+    #
+    #     def process(io, context)
+    #       if context[:action] == :store
+    #         # ...
+    #       end
+    #     end
     #
     # If you want the result of processing to be multiple files, use the
     # `versions` plugin.

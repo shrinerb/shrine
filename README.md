@@ -679,9 +679,9 @@ file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 
 
 ## Direct uploads
 
-Shrine comes with a `direct_upload` plugin for asynchronous uploads to your
-app or an external service. It provides a [Roda] endpoint which you can mount
-in your app:
+Shrine comes with a `direct_upload` plugin for asynchronous uploads to your app
+or an external service like Amazon S3. It provides a [Roda] endpoint which you
+can mount in your app:
 
 ```rb
 gem "roda"
@@ -698,7 +698,7 @@ end
 This endpoint provides the following routes:
 
 * `POST /images/cache/upload` - for direct uploads to your app
-* `GET /images/cache/presign` - for direct uploads to external service
+* `GET /images/cache/presign` - for direct uploads to external service (e.g. Amazon S3)
 
 These routes can be used to asynchronously start caching the file the moment
 the user selects it, using JavaScript file upload libraries like

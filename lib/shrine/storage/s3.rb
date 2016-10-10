@@ -33,10 +33,7 @@ class Shrine
     # Sometimes you'll want to add additional upload options to all S3 uploads.
     # You can do that by passing the `:upload` option:
     #
-    #     Shrine::Storage::S3.new(
-    #       upload_options: {acl: "public-read", cache_control: "public, max-age=3600"},
-    #       **s3_options
-    #     )
+    #     Shrine::Storage::S3.new(upload_options: {acl: "public-read"}, **s3_options)
     #
     # These options will be passed to aws-sdk's methods for [uploading],
     # [copying] and [presigning].
@@ -54,21 +51,22 @@ class Shrine
     #       end
     #     end
     #
-    # Note that these aren't applied to presigns, since presigns are generated
-    # using the storage directly.
+    # Note that, unlike the `:upload_options` storage option, the
+    # `upload_options` plugin won't forward the given options for generating
+    # presigns, since presigns are generated using the storage directly.
     #
     # ## URL options
     #
     # This storage supports various URL options that will be forwarded from
     # uploaded file.
     #
-    #     uploaded_file.url(public: true)   # public URL without signed parameters
-    #     uploaded_file.url(download: true) # forced download URL
+    #     s3.url(public: true)   # public URL without signed parameters
+    #     s3.url(download: true) # forced download URL
     #
     # All other options are forwarded to the [aws-sdk] gem:
     #
-    #     uploaded_file.url(expires_in: 15)
-    #     uploaded_file.urL(virtual_host: true)
+    #     s3.url(expires_in: 15)
+    #     s3.url(virtual_host: true)
     #
     # ## CDN
     #
@@ -86,7 +84,7 @@ class Shrine
     # will be applied both to regular and presigned uploads, as well as
     # download URLs.
     #
-    #     Shrine::Stroage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com")
+    #     Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com")
     #
     # ## Presigns
     #
@@ -194,7 +192,7 @@ class Shrine
         tempfile.tap(&:open)
       end
 
-      # Alias for #download.
+      # Returns a `Down::ChunkedIO` object representing the S3 object.
       def open(id)
         Down.open(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
       end

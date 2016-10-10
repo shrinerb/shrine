@@ -1,4 +1,4 @@
-ORMs:
+ORM:
   -
     name: activerecord
     path: Activerecord.html

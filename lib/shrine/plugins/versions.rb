@@ -211,7 +211,7 @@ class Shrine
 
         def assign_cached(value)
           cached_file = uploaded_file(value)
-          warn "Generating versions in the :cache action is deprecated and will be forbidden in Shrine 3." if cached_file.is_a?(Hash)
+          warn "Assigning cached hash of files is deprecated for security reasons and will be removed in Shrine 3." if cached_file.is_a?(Hash)
           super(cached_file)
         end
 
