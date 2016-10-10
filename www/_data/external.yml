@@ -12,7 +12,7 @@
         name: Asynchronous File Uploads
         url: http://twin.github.io/file-uploads-asynchronous-world
       -
-        name: Rails File Uploading...with Shrine
+        name: Rails File Uploading You Can Believe in...
         url: http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/
       -
         name: Shrine 2.0 Released
@@ -29,6 +29,21 @@
       -
         name: "Better File Uploads with Shrine: Attachment"
         url: https://twin.github.io/better-file-uploads-with-shrine-attachment/
+  -
+    title: Screencasts
+    items:
+      -
+        name: "File Uploads in Rails with Shrine (GoRails)"
+        url: https://gorails.com/episodes/file-uploading-with-shrine?autoplay=1
+      -
+        name: "Direct File Uploads to S3: Part 1 (GoRails)"
+        url: https://gorails.com/episodes/direct-file-uploads-to-s3-part-1?autoplay=1
+      -
+        name: "Direct File Uploads to S3: Part 2 (GoRails)"
+        url: https://gorails.com/episodes/direct-file-uploads-to-s3-part-2?autoplay=1
+      -
+        name: "Direct File Uploads to S3: Part 3 (GoRails)"
+        url: https://gorails.com/episodes/direct-file-uploads-to-s3-part-3?autoplay=1
 -
   -
     title: Storages
@@ -95,11 +110,11 @@
         name: Hanami example app
         url: https://github.com/katafrakt/hanami-shrine-example
       -
-        name: rails_admin_shrine
-        url: https://github.com/iquest/rails_admin_shrine
-      -
-        name: Shrine Tus Demo
+        name: Resumable uploads demo app
         url: https://github.com/janko-m/shrine-tus-demo
       -
-        name: ROM/dry-rb example app
+        name: ROM & dry-rb example app
         url: https://github.com/janko-m/shrine-rom-example
+      -
+        name: RailsAdminShrine
+        url: https://github.com/iquest/rails_admin_shrine
