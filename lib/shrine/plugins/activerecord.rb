@@ -120,14 +120,13 @@ class Shrine
           record.save(validate: false)
         end
 
-        def convert_data_write(value)
-          activerecord_json_column? ? value.as_json : value.to_json
+        # If the data attribute represents a JSON column, it needs to receive a
+        # Hash.
+        def convert_before_write(value)
+          activerecord_json_column? ? value : super
         end
 
-        def convert_data_read(value)
-          activerecord_json_column? ? value.as_json : JSON.parse(value)
-        end
-
+        # Returns true if the data attribute represents a JSON or JSONB column.
         def activerecord_json_column?
           return false unless record.is_a?(ActiveRecord::Base)
           return false unless column = record.class.columns_hash[data_attribute.to_s]

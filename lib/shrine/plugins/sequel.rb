@@ -111,20 +111,27 @@ class Shrine
       end
 
       module AttacherMethods
-        def convert_data_write(value)
-          value.to_json
-        end
-
-        def convert_data_read(value)
-          value.respond_to?(:to_hash) ? value.to_hash : JSON.parse(value)
-        end
-
         private
 
         # Saves the record after assignment, skipping validations.
         def update(uploaded_file)
           super
           record.save_changes(validate: false)
+        end
+
+        # If the data represents a JSON column with `pg_json` Sequel extension
+        # loaded, a `Sequel::Postgres::JSONHashBase` object will be returned,
+        # which we convert into a Hash.
+        def convert_after_read(value)
+          sequel_json_column? ? value.to_hash : super
+        end
+
+        # Returns true if the data attribute represents a JSON or JSONB column.
+        def sequel_json_column?
+          return false unless record.is_a?(::Sequel::Model)
+          return false unless column = record.class.db_schema[data_attribute]
+
+          [:json, :jsonb].include?(column[:type])
         end
       end
     end

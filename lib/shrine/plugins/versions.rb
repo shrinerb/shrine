@@ -214,6 +214,17 @@ class Shrine
           warn "Generating versions in the :cache action is deprecated and will be forbidden in Shrine 3." if cached_file.is_a?(Hash)
           super(cached_file)
         end
+
+        # Converts the Hash of UploadedFile objects into a Hash of data.
+        def convert_to_data(value)
+          if value.is_a?(Hash)
+            value.inject({}) do |hash, (name, uploaded_file)|
+              hash.merge!(name => super(uploaded_file))
+            end
+          else
+            super
+          end
+        end
       end
     end
 
