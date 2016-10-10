@@ -5,21 +5,19 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
-      //<![CDATA[
-        function popupCode(url) {
-          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-        }
-        
-        function toggleCode(id) {
-          var code = document.getElementById(id)
-        
-          code.style.display = code.style.display != 'block' ? 'block' : 'none'
-          return true
-        }
-        
-        // Make codeblocks hidden by default
-        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-      //]]>
+      function popupCode(url) {
+        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+      }
+      
+      function toggleCode(id) {
+        var code = document.getElementById(id)
+      
+        code.style.display = code.style.display != 'block' ? 'block' : 'none'
+        return true
+      }
+      
+      // Make codeblocks hidden by default
+      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
     </script>
   </head>
   <body class='page'>
@@ -48,12 +46,11 @@
             
             <p>Now the attachment module will add additional callbacks to the model:</p>
             <ul><li>
-            <p><code>before_save</code> – Used by the recache plugin.</p>
+            <p>“before save” – Used by the <code>recache</code> plugin.</p>
             </li><li>
-            <p><code>after_commit on: [:create, :update]</code> – Promotes the attachment,
-            deletes replaced ones.</p>
+            <p>“after commit” (save) – Promotes the attachment, deletes replaced ones.</p>
             </li><li>
-            <p><code>after_commit on: [:destroy]</code> – Deletes the attachment.</p>
+            <p>“after commit” (destroy) – Deletes the attachment.</p>
             </li></ul>
             
             <p>Note that ActiveRecord versions 3.x and 4.x have errors automatically
@@ -62,20 +59,17 @@
             
             <pre class="ruby"><span class="ruby-comment"># This is the default in ActiveRecord 5</span>&#x000A;<span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">raise_in_transactional_callbacks</span> = <span class="ruby-keyword">true</span></pre>
             
-            <p>Also note that if your tests are wrapped in transactions, the
-            <code>after_commit</code> callbacks won&#39;t get called, so in order to
-            test uploading you should first disable transactions for those tests.</p>
-            
             <p>If you want to put promoting/deleting into a background job, see the
             <code>backgrounding</code> plugin.</p>
             
             <p>Since attaching first saves the record with a cached attachment, then saves
             again with a stored attachment, you can detect this in callbacks:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;&#x000A;  <span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">avatar_data_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;      <span class="ruby-comment"># cached</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">avatar_data_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;      <span class="ruby-comment"># promoted</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;&#x000A;  <span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">avatar_data_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;      <span class="ruby-comment"># cached</span>&#x000A;    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">avatar_data_changed?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;      <span class="ruby-comment"># promoted</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>If you don&#39;t want callbacks (e.g. you want to use the attacher object
-            directly), you can turn them off:</p>
+            <p>If you don&#39;t want the attachment module to add any callbacks to the
+            model, and would instead prefer to call these actions manually, you can
+            disable callbacks:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span>, <span class="ruby-identifier">callbacks</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
             
@@ -87,8 +81,8 @@
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;  <span class="ruby-identifier">validates_presence_of</span> :<span class="ruby-identifier">avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>If you&#39;re doing validation separately from your models, you can turn
-            off validations for your models:</p>
+            <p>If don&#39;t want the attachment module to merge file validations errors
+            into model errors, you can disable it:</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">activerecord</span>, <span class="ruby-identifier">validations</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
           </div>
@@ -125,7 +119,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/activerecord.rb, line 70</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:activerecord_callbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:callbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:activerecord_callbacks</span>, <span class="ruby-keyword">true</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:activerecord_validations</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:validations</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:activerecord_validations</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/activerecord.rb, line 65</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:activerecord_callbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:callbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:activerecord_callbacks</span>, <span class="ruby-keyword">true</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:activerecord_validations</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:validations</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:activerecord_validations</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
@@ -135,7 +129,7 @@
       <div id='footer-push'></div>
     </div>
     <div id='footer'>
-      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+      <a target="docwin" href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
     </div>
   </body>
 </html>

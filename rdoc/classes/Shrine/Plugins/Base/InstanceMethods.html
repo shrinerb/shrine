@@ -5,21 +5,19 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
-      //<![CDATA[
-        function popupCode(url) {
-          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-        }
-        
-        function toggleCode(id) {
-          var code = document.getElementById(id)
-        
-          code.style.display = code.style.display != 'block' ? 'block' : 'none'
-          return true
-        }
-        
-        // Make codeblocks hidden by default
-        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-      //]]>
+      function popupCode(url) {
+        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+      }
+      
+      function toggleCode(id) {
+        var code = document.getElementById(id)
+      
+        code.style.display = code.style.display != 'block' ? 'block' : 'none'
+        return true
+      }
+      
+      // Make codeblocks hidden by default
+      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
     </script>
   </head>
   <body class='page'>
@@ -72,8 +70,7 @@
                     <td class='context-item-value'>[R]</td>
                     <td class='context-item-desc'>
                       
-                      <p>The storage object identified by <a
-                      href="InstanceMethods.html#attribute-i-storage_key">storage_key</a>.</p>
+                      <p>The storage object used by the uploader.</p>
                     </td>
                   </tr>
                   <tr class='top-aligned-row context-row'>
@@ -83,7 +80,7 @@
                     <td class='context-item-value'>[R]</td>
                     <td class='context-item-desc'>
                       
-                      <p>The symbol that identifies the storage.</p>
+                      <p>The symbol identifier for the storage used by the uploader.</p>
                     </td>
                   </tr>
                 </table>
@@ -105,7 +102,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 190</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">storage_key</span>)&#x000A;  <span class="ruby-ivar">@storage</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">find_storage</span>(<span class="ruby-identifier">storage_key</span>)&#x000A;  <span class="ruby-ivar">@storage_key</span> = <span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 189</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">storage_key</span>)&#x000A;  <span class="ruby-ivar">@storage</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">find_storage</span>(<span class="ruby-identifier">storage_key</span>)&#x000A;  <span class="ruby-ivar">@storage_key</span> = <span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <h2>Public Instance methods</h2>
@@ -117,13 +114,13 @@
                 </div>
                 <div class='description'>
                   
-                  <p>Deletes the given uploaded file.</p>
+                  <p>Deletes the given uploaded file and returns it.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine.rb, line 244</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine.rb, line 238</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-extract_metadata'>
@@ -135,14 +132,13 @@
                 <div class='description'>
                   
                   <p>Extracts filename, size and MIME type from the file, which is later
-                  accessible through <code>UploadedFile#metadata</code>. When the uploaded
-                  file is later promoted, this metadata is simply copied over.</p>
+                  accessible through <code>UploadedFile#metadata</code>.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-extract_metadata-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-extract_metadata-source'><span class="ruby-comment"># File lib/shrine.rb, line 262</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  {&#x000A;    <span class="ruby-string">&quot;filename&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">extract_filename</span>(<span class="ruby-identifier">io</span>),&#x000A;    <span class="ruby-string">&quot;size&quot;</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">extract_size</span>(<span class="ruby-identifier">io</span>),&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">extract_mime_type</span>(<span class="ruby-identifier">io</span>),&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-extract_metadata-source'><span class="ruby-comment"># File lib/shrine.rb, line 256</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  {&#x000A;    <span class="ruby-string">&quot;filename&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">extract_filename</span>(<span class="ruby-identifier">io</span>),&#x000A;    <span class="ruby-string">&quot;size&quot;</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">extract_size</span>(<span class="ruby-identifier">io</span>),&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">extract_mime_type</span>(<span class="ruby-identifier">io</span>),&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-generate_location'>
@@ -153,14 +149,14 @@
                 </div>
                 <div class='description'>
                   
-                  <p>Generates a unique location for the uploaded file, and preserves an
-                  optional extension.</p>
+                  <p>Generates a unique location for the uploaded file, preserving the file
+                  extension. Can be overriden in uploaders for generating custom location.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-generate_location-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-generate_location-source'><span class="ruby-comment"># File lib/shrine.rb, line 251</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">extension</span>   = <span class="ruby-node">&quot;.#{io.extension}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">extension</span>&#x000A;  <span class="ruby-identifier">extension</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">extract_filename</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">to_s</span>)&#x000A;  <span class="ruby-identifier">basename</span>  = <span class="ruby-identifier">generate_uid</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;  <span class="ruby-identifier">basename</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-generate_location-source'><span class="ruby-comment"># File lib/shrine.rb, line 246</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">extension</span>   = <span class="ruby-node">&quot;.#{io.extension}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">extension</span>&#x000A;  <span class="ruby-identifier">extension</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">extract_filename</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">to_s</span>)&#x000A;  <span class="ruby-identifier">basename</span>  = <span class="ruby-identifier">generate_uid</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;  <span class="ruby-identifier">basename</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-opts'>
@@ -178,7 +174,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-opts-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-opts-source'><span class="ruby-comment"># File lib/shrine.rb, line 197</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">opts</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">opts</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-opts-source'><span class="ruby-comment"># File lib/shrine.rb, line 196</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">opts</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">opts</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-process'>
@@ -189,17 +185,17 @@
                 </div>
                 <div class='description'>
                   
-                  <p>User is expected to perform processing inside of this method, and return
-                  the processed files. Returning nil signals that no proccessing has been
-                  done and that the original file should be used.</p>
+                  <p>User is expected to perform processing inside this method, and return the
+                  processed files. Returning nil signals that no proccessing has been done
+                  and that the original file should be used.</p>
                   
-                  <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">case</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>]&#x000A;    <span class="ruby-keyword">when</span> :<span class="ruby-identifier">cache</span>&#x000A;      <span class="ruby-comment"># do processing</span>&#x000A;    <span class="ruby-keyword">when</span> :<span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-comment"># do processing</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># do processing and return processed files</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-process-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-process-source'><span class="ruby-comment"># File lib/shrine.rb, line 224</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-process-source'><span class="ruby-comment"># File lib/shrine.rb, line 218</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-store'>
@@ -217,13 +213,13 @@
                   but you can pass in <code>:location</code> to upload to a specific
                   location.</p>
                   
-                  <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">location</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;custom/location.jpg&quot;</span>)</pre>
+                  <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>)</pre>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine.rb, line 233</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine.rb, line 227</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-upload'>
@@ -234,8 +230,8 @@
                 </div>
                 <div class='description'>
                   
-                  <p>The main method for uploading files. Takes in an IO object and an optional
-                  context (used internally by <a
+                  <p>The main method for uploading files. Takes an IO-like object and an
+                  optional context hash (used internally by <a
                   href="../../Attacher.html">Shrine::Attacher</a>). It calls user-defined <a
                   href="InstanceMethods.html#method-i-process">process</a>, and aferwards it
                   calls <a href="InstanceMethods.html#method-i-store">store</a>. The
@@ -245,7 +241,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-upload-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine.rb, line 205</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">io</span> = <span class="ruby-identifier">processed</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">io</span>&#x000A;  <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine.rb, line 204</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">io</span> = <span class="ruby-identifier">processed</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">io</span>&#x000A;  <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-uploaded-3F'>
@@ -256,14 +252,14 @@
                 </div>
                 <div class='description'>
                   
-                  <p>Checks if the storage identified with this instance uploaded the given
-                  file.</p>
+                  <p>Returns true if the storage of the given uploaded file matches the storage
+                  of this uploader.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-uploaded-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-uploaded-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 239</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-uploaded-3F-source'><span class="ruby-comment"># File lib/shrine.rb, line 233</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
@@ -273,7 +269,7 @@
       <div id='footer-push'></div>
     </div>
     <div id='footer'>
-      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+      <a target="docwin" href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
     </div>
   </body>
 </html>

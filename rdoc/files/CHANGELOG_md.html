@@ -5,21 +5,19 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
-      //<![CDATA[
-        function popupCode(url) {
-          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-        }
-        
-        function toggleCode(id) {
-          var code = document.getElementById(id)
-        
-          code.style.display = code.style.display != 'block' ? 'block' : 'none'
-          return true
-        }
-        
-        // Make codeblocks hidden by default
-        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-      //]]>
+      function popupCode(url) {
+        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+      }
+      
+      function toggleCode(id) {
+        var code = document.getElementById(id)
+      
+        code.style.display = code.style.display != 'block' ? 'block' : 'none'
+        return true
+      }
+      
+      // Make codeblocks hidden by default
+      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
     </script>
   </head>
   <body class='page'>
@@ -31,12 +29,65 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-09-01 12:31:37 +0800</span>
+          <span class='datetime'>2016-10-11 02:06:28 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-2.4.0+-282016-10-11-29">2.4.0 (2016-10-11)<span><a href="#label-2.4.0+-282016-10-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Add <code>#convert_before_write</code> and <code>#convert_after_read</code>
+            on the Attacher for data attribute conversion (janko-m)</p>
+            </li><li>
+            <p>Extract the <code>&lt;attachment&gt;_data</code> attribute name into
+            <code>Attacher#data_attribute</code> (janko-m)</p>
+            </li><li>
+            <p>Support JSON and JSONB PostgreSQL columns with ActiveRecord (janko-m)</p>
+            </li><li>
+            <p>Fix S3 storage not handling filenames with double quotes in
+            Content-Disposition header (janko-m)</p>
+            </li><li>
+            <p>Work around aws-sdk failing with non-ASCII characters in
+            Content-Disposition header (janko-m)</p>
+            </li><li>
+            <p>Allow dynamically generating URL options in
+            <code>default_url_options</code> plugin (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t run file validations when duplicating the record in
+            <code>copy</code> plugin (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t use <code>Storage#stream</code> in download_endpoint plugin
+            anymore, rely on <code>Storage#open</code> (janko-m)</p>
+            </li><li>
+            <p>Remove explicitly unlinking Tempfiles returned by <code>Storage#open</code>
+            (janko-m)</p>
+            </li><li>
+            <p>Move <code>:host</code> from first-class storage option to
+            <code>#url</code> option on FileSystem and S3 storage (janko-m)</p>
+            </li><li>
+            <p>Don&#39;t fail in FileSystem storage when attempting to delete a file that
+            doesn&#39;t exist (janko-m)</p>
+            </li><li>
+            <p>In <code>UploadedFile#open</code> handle the case when
+            <code>Storage#open</code> raises an error (janko-m)</p>
+            </li><li>
+            <p>Make the <code>sequel</code> plugin use less memory during transactions
+            (janko-m)</p>
+            </li><li>
+            <p>Use Roda&#39;s streaming plugin in <code>download_endpoint</code> for
+            better EventMachine integration (janko-m)</p>
+            </li><li>
+            <p>Deprecate accepting a JSON string in <code>Shrine.uploaded_file</code>
+            (janko-m)</p>
+            </li><li>
+            <p>In S3 storage automatically write original filename to
+            <code>Content-Disposition</code> header (janko-m)</p>
+            </li><li>
+            <p>Override <code>#to_s</code> in <code>Shrine::Attachment</code> for better
+            introspection with <code>puts</code> (janko-m)</p>
+            </li></ul>
             
             <h2 id="label-2.3.1+-282016-09-01-29">2.3.1 (2016-09-01)<span><a href="#label-2.3.1+-282016-09-01-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>
@@ -425,7 +476,7 @@
             <p>Close the <code>UploadedFile</code> on upload only if it was previously
             opened, which doesn&#39;t happen on S3 COPY (reidab)</p>
             </li><li>
-            <p>Fix <code>NameError</code> when silencing “missing record” errors in
+            <p>Fix <code>NameError</code> when silencing "missing record" errors in
             backgrounding (janko-m)</p>
             </li></ul>
             
@@ -615,7 +666,7 @@
       <div id='footer-push'></div>
     </div>
     <div id='footer'>
-      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+      <a target="docwin" href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
     </div>
   </body>
 </html>

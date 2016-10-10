@@ -5,21 +5,19 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
-      //<![CDATA[
-        function popupCode(url) {
-          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-        }
-        
-        function toggleCode(id) {
-          var code = document.getElementById(id)
-        
-          code.style.display = code.style.display != 'block' ? 'block' : 'none'
-          return true
-        }
-        
-        // Make codeblocks hidden by default
-        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-      //]]>
+      function popupCode(url) {
+        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+      }
+      
+      function toggleCode(id) {
+        var code = document.getElementById(id)
+      
+        code.style.display = code.style.display != 'block' ? 'block' : 'none'
+        return true
+      }
+      
+      // Make codeblocks hidden by default
+      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
     </script>
   </head>
   <body class='page'>
@@ -46,13 +44,9 @@
             
             <p>If for example your attachment is called “avatar”, this plugin will add
             <code>#remove_avatar</code> and <code>#remove_avatar=</code> methods to
-            your model. This allows you to easily delete attached files through the
-            form:</p>
+            your model. This allows you to add a form field for removing attachments:</p>
             
-            <pre>&lt;%= form_for @user do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :avatar, value: @user.avatar_data %&gt;&#x000A;  &lt;%= f.file_field :avatar %&gt;&#x000A;  Remove attachment: &lt;%= f.check_box :remove_avatar %&gt;&#x000A;&lt;% end %&gt;</pre>
-            
-            <p>Now when the checkbox is ticked and the form is submitted, the attached
-            file will be removed.</p>
+            <pre class="ruby"><span class="ruby-identifier">form</span>.<span class="ruby-identifier">check_box</span> :<span class="ruby-identifier">remove_avatar</span></pre>
           </div>
           <div id='context'>
           </div>
@@ -70,7 +64,7 @@
       <div id='footer-push'></div>
     </div>
     <div id='footer'>
-      <a target="docwin" href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+      <a target="docwin" href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
     </div>
   </body>
 </html>
