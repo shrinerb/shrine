@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `#convert_before_write` and `#convert_after_read` on the Attacher for data attribute conversion (janko-m)
+
 * Extract the `<attachment>_data` attribute name into `Attacher#data_attribute` (janko-m)
 
 * Support JSON and JSONB PostgreSQL columns with ActiveRecord (janko-m)
@@ -17,6 +19,8 @@
 * Remove explicitly unlinking Tempfiles returned by `Storage#open` (janko-m)
 
 * Move `:host` from first-class storage option to `#url` option on FileSystem and S3 storage (janko-m)
+
+* Don't fail in FileSystem storage when attempting to delete a file that doesn't exist (janko-m)
 
 * In `UploadedFile#open` handle the case when `Storage#open` raises an error (janko-m)
 
