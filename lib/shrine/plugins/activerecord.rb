@@ -22,10 +22,6 @@ class Shrine
     #     # This is the default in ActiveRecord 5
     #     ActiveRecord::Base.raise_in_transactional_callbacks = true
     #
-    # Also note that if your tests are wrapped in transactions, the
-    # "after commit" callbacks won't get called, so in order to test uploading
-    # you should first disable transactions for those tests.
-    #
     # If you want to put promoting/deleting into a background job, see the
     # `backgrounding` plugin.
     #

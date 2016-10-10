@@ -34,3 +34,6 @@
 -
   name: Shrine for Refile Users
   path: refile_md.html
+-
+  name: Testing with Shrine
+  path: testing_md.html

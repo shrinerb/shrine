@@ -113,13 +113,6 @@ class Shrine
     # See the [Direct Uploads to S3] guide for further instructions on how to
     # hook the presigned uploads to a form.
     #
-    # ### Testing presigns
-    #
-    # If you want to test presigned uploads, but don't want to use Amazon S3 in
-    # tests for performance reasons, you can simply swap out S3 with a storage
-    # like FileSystem. The presigns will still get generated, but will simply
-    # point to this endpoint's upload route instead.
-    #
     # ## Allowed storages
     #
     # By default only uploads to `:cache` are allowed, to prevent the
