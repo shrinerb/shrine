@@ -36,7 +36,7 @@ describe Shrine::Plugins::Activerecord do
   end
 
   describe "promoting" do
-    it "is triggered on save" do
+    it "is triggered when attachment changes" do
       @user.update(avatar: fakeio("file1")) # insert
       refute @user.changed?
       assert_equal "store", @user.avatar.storage_key
@@ -48,9 +48,16 @@ describe Shrine::Plugins::Activerecord do
       assert_equal "file2", @user.avatar.read
     end
 
+    it "isn't triggered when attachment didn't change" do
+      @user.update(avatar: fakeio("file"))
+      attachment = @user.avatar
+      @user.update(name: "Name")
+      assert_equal attachment, @user.avatar
+    end
+
     it "is triggered after transaction commits" do
       @user.class.transaction do
-        @user.update(avatar: fakeio("file2")) # update
+        @user.update(avatar: fakeio("file2"))
         assert_equal "cache", @user.avatar.storage_key
       end
       assert_equal "store", @user.avatar.storage_key
@@ -64,19 +71,21 @@ describe Shrine::Plugins::Activerecord do
       assert @user.instance_variable_get("@promote_callback")
     end
 
+    it "updates only the attachment column" do
+      @user.update(avatar_data: @attacher.cache!(fakeio).to_json)
+      @user.class.update_all(name: "Name")
+      @attacher.promote
+      @user.reload
+      assert_equal "store", @user.avatar.storage_key
+      assert_equal "Name",  @user.name
+    end
+
     it "bypasses validations" do
       @user.class.validate { errors.add(:base, "Invalid") }
       @user.avatar = fakeio
       @user.save(validate: false)
       refute @user.changed?
       assert_equal "store", @user.avatar.storage_key
-    end
-
-    it "works with backgrounding" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| self.class.promote(data) }
-      @user.update(avatar: fakeio)
-      assert_equal "store", @user.reload.avatar.storage_key
     end
   end
 
@@ -122,46 +131,22 @@ describe Shrine::Plugins::Activerecord do
       @user.save
       @user.destroy
     end
-
-    it "works with backgrounding" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.delete { |data| self.class.delete(data) }
-      @user.update(avatar: fakeio)
-      @user.destroy
-      refute @user.avatar.exists?
-    end
   end
 
-  describe "backgrounding" do
-    it "doesn't raise errors when record wasn't found" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| record.delete; self.class.promote(data) }
-      @attacher.class.delete { |data| record.delete; self.class.delete(data) }
-      @user.update(avatar: fakeio)
-      @user.destroy
-    end
+  it "works with backgrounding" do
+    @uploader.class.plugin :backgrounding
+    @attacher.class.promote { |data| self.class.promote(data) }
+    @attacher.class.delete { |data| self.class.delete(data) }
 
-    it "is triggered only when attachment has changed" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.update(avatar: fakeio)
-      fiber = @user.avatar_attacher.instance_variable_get("@f")
-      @user.save
-      assert_equal fiber, @user.avatar_attacher.instance_variable_get("@f")
-    end
+    @user.update(avatar: fakeio) # create
+    assert_equal "store", @user.reload.avatar.storage_key
 
-    it "doesn't overwrite column updates during background job" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| self.class.promote(data) }
-      @attacher.class.class_eval do
-        def swap(*)
-          record.class.update_all(name: "Name")
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      assert_equal "Name", @user.reload.name
-    end
+    @user.destroy
+    refute @user.avatar.exists?
+  end
+
+  it "returns nil when record is not found" do
+    assert_equal nil, @attacher.class.find_record(@user.class, "foo")
   end
 
   it "raises an appropriate exception when column is missing" do
@@ -170,8 +155,8 @@ describe Shrine::Plugins::Activerecord do
     assert_match "undefined method `missing_data'", error.message
   end
 
-  it "allows including attachment model to non-ActiveRecord objects" do
-    uploader = @uploader
-    Struct.new(:avatar_data) { include uploader.class[:avatar] }
+  it "allows including attachment module to non-ActiveRecord models" do
+    klass = Struct.new(:avatar_data)
+    klass.include @uploader.class[:avatar]
   end
 end

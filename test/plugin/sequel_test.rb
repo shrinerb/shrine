@@ -36,7 +36,7 @@ describe Shrine::Plugins::Sequel do
   end
 
   describe "promoting" do
-    it "is triggered on save" do
+    it "is triggered on when attachment changes" do
       @user.update(avatar: fakeio("file1")) # insert
       refute @user.modified?
       assert_equal "store", @user.avatar.storage_key
@@ -48,9 +48,16 @@ describe Shrine::Plugins::Sequel do
       assert_equal "file2", @user.avatar.read
     end
 
+    it "isn't triggered when attachment didn't change" do
+      @user.update(avatar: fakeio("file"))
+      attachment = @user.avatar
+      @user.update(name: "Name")
+      assert_equal attachment, @user.avatar
+    end
+
     it "is triggered after transaction commits" do
       @user.class.db.transaction do
-        @user.update(avatar: fakeio("file2")) # update
+        @user.update(avatar: fakeio("file2"))
         assert_equal "cache", @user.avatar.storage_key
       end
       assert_equal "store", @user.avatar.storage_key
@@ -67,19 +74,21 @@ describe Shrine::Plugins::Sequel do
       assert @user.instance_variable_get("@promote_callback")
     end
 
+    it "updates only the attachment column" do
+      @user.update(avatar_data: @attacher.cache!(fakeio).to_json)
+      @user.class.dataset.update(name: "Name")
+      @attacher.promote
+      @user.reload
+      assert_equal "store", @user.avatar.storage_key
+      assert_equal "Name",  @user.name
+    end
+
     it "bypasses validations" do
       @user.instance_eval { def validate; errors.add(:base, "Invalid"); end }
       @user.avatar = fakeio
       @user.save(validate: false)
       assert_empty @user.changed_columns
       assert_equal "store", @user.avatar.storage_key
-    end
-
-    it "works with backgrounding" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| self.class.promote(data) }
-      @user.update(avatar: fakeio)
-      assert_equal "store", @user.reload.avatar.storage_key
     end
   end
 
@@ -125,54 +134,22 @@ describe Shrine::Plugins::Sequel do
       @user.save
       @user.destroy
     end
-
-    it "works with backgrounding" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.delete { |data| self.class.delete(data) }
-      @user.update(avatar: fakeio)
-      @user.destroy
-      refute @user.avatar.exists?
-    end
   end
 
-  describe "backgrounding" do
-    it "doesn't raise errors when record wasn't found" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
+  it "works with backgrounding" do
+    @uploader.class.plugin :backgrounding
+    @attacher.class.promote { |data| self.class.promote(data) }
+    @attacher.class.delete { |data| self.class.delete(data) }
 
-      @user.update(avatar: fakeio)
-      @user.delete
-      @user.avatar_attacher.instance_variable_get("@f").resume
-      @user = @user.class.new
+    @user.update(avatar: fakeio) # create
+    assert_equal "store", @user.reload.avatar.storage_key
 
-      @user.update(avatar_data: @user.avatar_attacher.store!(fakeio).to_json)
-      @user.destroy
-      @user.avatar_attacher.instance_variable_get("@f").resume
-    end
+    @user.destroy
+    refute @user.avatar.exists?
+  end
 
-    it "is triggered only when attachment has changed" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.update(avatar: fakeio)
-      fiber = @user.avatar_attacher.instance_variable_get("@f")
-      @user.update(name: "Name")
-      assert_equal fiber, @user.avatar_attacher.instance_variable_get("@f")
-    end
-
-    it "doesn't overwrite column updates during background job" do
-      @uploader.class.plugin :backgrounding
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @attacher.class.class_eval do
-        def swap(*)
-          record.this.update(name: "Name")
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      @user.avatar_attacher.instance_variable_get("@f").resume
-      assert_equal "Name", @user.reload.name
-    end
+  it "returns nil when record is not found" do
+    assert_equal nil, @attacher.class.find_record(@user.class, "foo")
   end
 
   it "raises an appropriate exception when column is missing" do
@@ -182,8 +159,8 @@ describe Shrine::Plugins::Sequel do
   end
 
   it "allows including attachment model to non-Sequel objects" do
-    uploader = @uploader
-    object = Struct.new(:avatar_data) { include uploader.class[:avatar] }
-    refute_respond_to object, :validate
+    klass = Struct.new(:avatar_data)
+    klass.include @uploader.class[:avatar]
+    refute_respond_to klass.new, :validate
   end
 end
