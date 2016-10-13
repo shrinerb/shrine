@@ -175,17 +175,6 @@ describe Shrine::Plugins::Sequel do
     end
   end
 
-  it "adds support for Postgres JSON columns" do
-    Sequel.extension :pg_json
-
-    @user.class.plugin :serialization, [
-      ->(value) { value },
-      ->(value) { Sequel::Postgres::JSONBHash.new(JSON.parse(value)) }
-    ], :avatar_data
-
-    @user.update(avatar: fakeio)
-  end
-
   it "raises an appropriate exception when column is missing" do
     @user.class.include @uploader.class[:missing]
     error = assert_raises(NoMethodError) { @user.missing = fakeio }
