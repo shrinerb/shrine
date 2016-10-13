@@ -80,7 +80,7 @@ Shrine.plugin :data_uri
 ```yml
 # test/fixtures/photos.yml
 photo:
-  image_data_uri: "data:image/png,<%= File.read("test/files/image.png") %>"
+  image_data_uri: "data:image/png;base64,<%= Base64.encode64(File.binread("test/files/image.png")) %>"
 ```
 
 ## Background jobs
