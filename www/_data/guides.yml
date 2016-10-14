@@ -1,7 +1,4 @@
 -
-  name: Using Attacher
-  path: attacher_md.html
--
   name: Creating a New Plugin
   path: creating_plugins_md.html
 -
@@ -37,3 +34,6 @@
 -
   name: Testing with Shrine
   path: testing_md.html
+-
+  name: Using Attacher
+  path: attacher_md.html
