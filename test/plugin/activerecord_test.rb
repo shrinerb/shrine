@@ -138,7 +138,7 @@ describe Shrine::Plugins::Activerecord do
     @attacher.class.promote { |data| self.class.promote(data) }
     @attacher.class.delete { |data| self.class.delete(data) }
 
-    @user.update(avatar: fakeio) # create
+    @user.update(avatar: fakeio)
     assert_equal "store", @user.reload.avatar.storage_key
 
     @user.destroy

@@ -36,7 +36,7 @@ describe Shrine::Plugins::Sequel do
   end
 
   describe "promoting" do
-    it "is triggered on when attachment changes" do
+    it "is triggered when attachment changes" do
       @user.update(avatar: fakeio("file1")) # insert
       refute @user.modified?
       assert_equal "store", @user.avatar.storage_key
@@ -141,7 +141,7 @@ describe Shrine::Plugins::Sequel do
     @attacher.class.promote { |data| self.class.promote(data) }
     @attacher.class.delete { |data| self.class.delete(data) }
 
-    @user.update(avatar: fakeio) # create
+    @user.update(avatar: fakeio)
     assert_equal "store", @user.reload.avatar.storage_key
 
     @user.destroy
