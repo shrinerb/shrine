@@ -3,7 +3,6 @@ require "test_helper"
 require "shrine/storage/file_system"
 require "shrine/storage/linter"
 
-require "down"
 require "fileutils"
 require "tmpdir"
 
@@ -101,7 +100,7 @@ describe Shrine::Storage::FileSystem do
 
   describe "#movable?" do
     it "returns true for files and UploadedFiles from FileSystem" do
-      file                      = Down.copy_to_tempfile("", image)
+      file                      = Tempfile.new("")
       file_system_uploaded_file = @shrine.new(:file_system).upload(fakeio)
       memory_uploaded_file      = @shrine.new(:memory).upload(fakeio)
       assert @storage.movable?(file, nil)
@@ -112,7 +111,7 @@ describe Shrine::Storage::FileSystem do
 
   describe "#move" do
     it "moves files and UploadedFiles" do
-      file          = Down.copy_to_tempfile("", image)
+      file          = Tempfile.new("")
       uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
       @storage.move(file, "foo")
@@ -125,7 +124,7 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "creates subdirectories" do
-      file          = Down.copy_to_tempfile("", image)
+      file          = Tempfile.new("")
       uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
       @storage.move(file, "a/a/a.jpg")
