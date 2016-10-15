@@ -773,7 +773,7 @@ class Shrine
           if storage.respond_to?(:download)
             storage.download(id)
           else
-            tempfile = Tempfile.new(["shrine", File.extname(id)], binmode: true)
+            tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
             open { |io| IO.copy_stream(io, tempfile.path) }
             tempfile.tap(&:open)
           end

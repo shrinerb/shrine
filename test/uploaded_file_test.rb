@@ -285,9 +285,30 @@ describe Shrine::UploadedFile do
   end
 
   describe "#download" do
-    it "delegates to underlying storage" do
+    it "delegates to the storage when it defines downloading" do
+      @uploader.storage.instance_eval { def download(id); Tempfile.new("foo"); end }
       uploaded_file = @uploader.upload(fakeio)
       assert_instance_of Tempfile, uploaded_file.download
+      assert_match "foo", uploaded_file.download.path
+    end
+
+    it "downloads the file to a Tempfile" do
+      @uploader.storage.instance_eval { undef download }
+      uploaded_file = @uploader.upload(fakeio("file"))
+      assert_instance_of Tempfile, uploaded_file.download
+      assert_match "file", uploaded_file.download.read
+    end
+
+    it "uses extension from #id" do
+      @uploader.storage.instance_eval { undef download }
+      uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
+      assert_match /\.jpg$/, uploaded_file.download.path
+    end
+
+    it "uses extension from #original_filename" do
+      @uploader.storage.instance_eval { undef download }
+      uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
+      assert_match /\.jpg$/, uploaded_file.download.path
     end
   end
 

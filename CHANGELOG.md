@@ -1,3 +1,7 @@
+## HEAD
+
+* In `UploadedFile#download` use extension from `#original_filename` if `#id` doesn't have it (janko-m)
+
 ## 2.4.0 (2016-10-11)
 
 * Add `#convert_before_write` and `#convert_after_read` on the Attacher for data attribute conversion (janko-m)
