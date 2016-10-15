@@ -32,13 +32,11 @@ RDoc::Task.new do |t|
   ]
 end
 
+task :rdoc => "website:rdoc_github_links"
+
 namespace :website do
   task :build do
     sh "cd www; bundle exec jekyll build; cd .."
     sh "rake rdoc"
-  end
-
-  task :publish => :build do
-    sh "git subtree push --prefix www/build origin gh-pages"
   end
 end
