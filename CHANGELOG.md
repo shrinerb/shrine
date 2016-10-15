@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate `Storage::FileSystem#download` (janko-m)
+
 * In `UploadedFile#download` use extension from `#original_filename` if `#id` doesn't have it (janko-m)
 
 ## 2.4.0 (2016-10-11)

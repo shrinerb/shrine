@@ -1,5 +1,3 @@
-require "down"
-
 require "fileutils"
 require "pathname"
 
@@ -122,11 +120,6 @@ class Shrine
         path(id).chmod(permissions) if permissions
       end
 
-      # Downloads the file from the given location, and returns a `Tempfile`.
-      def download(id)
-        open(id) { |file| Down.copy_to_tempfile(id, file) }
-      end
-
       # Moves the file to the given location. This gets called by the `moving`
       # plugin.
       def move(io, id, shrine_metadata: {}, **upload_options)
@@ -186,6 +179,17 @@ class Shrine
           directory.rmtree
           directory.mkpath
           directory.chmod(directory_permissions) if directory_permissions
+        end
+      end
+
+      # Catches the deprecated `#download` method.
+      def method_missing(name, *args)
+        if name == :download
+          warn "Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3."
+          require "down"
+          open(id) { |file| Down.copy_to_tempfile(id, file) }
+        else
+          super
         end
       end
 
