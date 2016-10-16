@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-10-11 01:14:48 +0800</span>
+          <span class='datetime'>2016-10-14 00:28:16 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -101,7 +101,7 @@
             
             <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span></pre>
             
-            <pre># test/fixtures/photos.yml&#x000A;photo:&#x000A;  image_data_uri: &quot;data:image/png,&lt;%= File.read(&quot;test/files/image.png&quot;) %&gt;&quot;</pre>
+            <pre># test/fixtures/photos.yml&#x000A;photo:&#x000A;  image_data_uri: &quot;data:image/png;base64,&lt;%= Base64.encode64(File.binread(&quot;test/files/image.png&quot;)) %&gt;&quot;</pre>
             
             <h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -226,7 +226,7 @@
       <div id='footer-push'></div>
     </div>
     <div id='footer'>
-      <a target="docwin" href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
     </div>
   </body>
 </html>
