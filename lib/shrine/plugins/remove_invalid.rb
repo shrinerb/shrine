@@ -10,7 +10,7 @@ class Shrine
         def validate
           super
         ensure
-          if errors.any? && cache.uploaded?(get)
+          if errors.any? && cached?
             _delete(get, action: :validate)
             _set(@old)
           end
