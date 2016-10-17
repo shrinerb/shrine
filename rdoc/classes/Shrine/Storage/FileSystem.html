@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/8a361a7c2e5d3edcc591a3b5e1bf75a2558fd94f/lib/shrine/storage/file_system.rb">lib/shrine/storage/file_system.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/storage/file_system.rb">lib/shrine/storage/file_system.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
         <div class='parent'>
@@ -80,7 +80,7 @@
             will probably want to periodically delete old files which aren&#39;t used
             anymore. You can put the following in a periodic Rake task:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-value">1</span>.<span class="ruby-identifier">week</span>.<span class="ruby-identifier">ago</span>) <span class="ruby-comment"># adjust the time</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span>) <span class="ruby-comment"># delete files older than 1 week</span></pre>
             
             <h2 id="class-Shrine::Storage::FileSystem-label-Permissions">Permissions<span><a href="#class-Shrine::Storage::FileSystem-label-Permissions">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

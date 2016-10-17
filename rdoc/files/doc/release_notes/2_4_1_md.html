@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>2.4.1.md</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      function popupCode(url) {
+        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+      }
+      
+      function toggleCode(id) {
+        var code = document.getElementById(id)
+      
+        code.style.display = code.style.display != 'block' ? 'block' : 'none'
+        return true
+      }
+      
+      // Make codeblocks hidden by default
+      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>2.4.1.md</h1>
+        <div class='paths'>
+          doc/release_notes/2.4.1.md
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>2016-10-17 18:50:55 +0800</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            
+            <h2 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Prior to version 2.4.0, the conversion of uploaded file data to JSON was 
+            happening in <code>Attacher#_set</code>, and <code>Attacher#write</code>
+            simply assigned the value  that it received to the data attribute of the
+            model instance. During  refactoring for 2.4.0, the JSON conversion was
+            accidentally moved to  <code>Attacher#write</code>, which affects anyone
+            who was using <code>Attacher#write</code>  directly and passing it a JSON
+            string, by resulting in a double-encoded  string being assigned to the data
+            attribute. This has now been reverted.</p>
+            </li></ul>
+            
+            <h2 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>The <code>remove_invalid</code> plugin will now assign back a previous
+            attachment if it  was there, in case the assigned cached file was invalid.
+            Before <code>nil</code> was  always assigned. This enables you to display
+            the previous attachment to the  user in case of file validation errors.</p>
+            </li><li>
+            <p><code>UploadedFile#download</code> will now create the Tempfile using 
+            <code>UploadedFile#extension</code>, which handles the case when
+            <code>#id</code> doesn&#39;t have  extension, but
+            <code>#original_filename</code> has (which could be the behaviour of  some
+            custom storages)</p>
+            </li></ul>
+            
+            <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>The <code>FileSystem#download</code> method has been deprecated, and will
+            be removed in  <a href="../../../classes/Shrine.html">Shrine</a> 3. The
+            replacement is to simply use <code>UploadedFile#download</code>, which will
+            use <code>FileSystem#open</code> to create a Tempfile in the same way 
+            <code>FileSystem#download</code> did previously. This shouldn&#39;t affect
+            you unless you  were using <code>FileSystem#download</code> directly.</p>
+            </li></ul>
+          </div>
+          <div id='context'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+    </div>
+  </body>
+</html>

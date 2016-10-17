@@ -29,15 +29,21 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-10-15 19:32:10 +0800</span>
+          <span class='datetime'>2016-10-17 18:35:56 +0800</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
             
-            <h2 id="label-HEAD">HEAD<span><a href="#label-HEAD">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <h2 id="label-2.4.1+-282016-10-17-29">2.4.1 (2016-10-17)<span><a href="#label-2.4.1+-282016-10-17-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>
+            <p>Move back JSON serialization from <code>Attacher#write</code> to
+            <code>Attacher#_set</code> (janko-m)</p>
+            </li><li>
+            <p>Make <code>remove_invalid</code> plugin assign back a previous attachment
+            if was there (janko-m)</p>
+            </li><li>
             <p>Deprecate <code>Storage::FileSystem#download</code> (janko-m)</p>
             </li><li>
             <p>In <code>UploadedFile#download</code> use extension from
