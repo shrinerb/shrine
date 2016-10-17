@@ -110,7 +110,7 @@ Deleting:
   -
     name: remove_invalid
     path: RemoveInvalid.html
-    description: Automatically deletes and deassigns cached files if they're invalid.
+    description: Automatically deletes and deassigns the assigned cached file if it's invalid.
 
 Storage:
   -
