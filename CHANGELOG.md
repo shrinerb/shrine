@@ -1,4 +1,4 @@
-## HEAD
+## 2.4.1 (2016-10-17)
 
 * Move back JSON serialization from `Attacher#write` to `Attacher#_set` (janko-m)
 
