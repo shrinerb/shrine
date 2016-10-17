@@ -46,7 +46,7 @@ class Shrine
     # the following in a periodic Rake task:
     #
     #     file_system = Shrine.storages[:cache]
-    #     file_system.clear!(older_than: 1.week.ago) # adjust the time
+    #     file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
     #
     # ## Permissions
     #
