@@ -10,7 +10,15 @@ describe Shrine::Plugins::RemoveInvalid do
     @attacher.class.validate { errors << :foo }
     @attacher.set(cached_file = @attacher.cache!(fakeio))
     refute cached_file.exists?
-    refute @attacher.get
+    assert_equal nil, @attacher.get
+  end
+
+  it "assigns the previous attached file" do
+    @attacher.set(previous_attachment = @attacher.store!(fakeio))
+    @attacher.class.validate { errors << :foo }
+    @attacher.set(cached_file = @attacher.cache!(fakeio))
+    refute cached_file.exists?
+    assert_equal previous_attachment, @attacher.get
   end
 
   it "doesn't remove stored files" do

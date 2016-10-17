@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `remove_invalid` plugin assign back a previous attachment if was there (janko-m)
+
 * Deprecate `Storage::FileSystem#download` (janko-m)
 
 * In `UploadedFile#download` use extension from `#original_filename` if `#id` doesn't have it (janko-m)

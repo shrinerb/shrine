@@ -1,7 +1,8 @@
 class Shrine
   module Plugins
     # The `remove_invalid` plugin automatically deletes a cached file if it was
-    # invalid and deassigns it from the record.
+    # invalid and deassigns it from the record. If there was a previous file
+    # attached, it will be assigned back, otherwise `nil` will be assigned.
     #
     #     plugin :remove_invalid
     module RemoveInvalid
@@ -11,7 +12,7 @@ class Shrine
         ensure
           if errors.any? && cache.uploaded?(get)
             _delete(get, action: :validate)
-            _set(nil)
+            _set(@old)
           end
         end
       end
