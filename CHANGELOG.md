@@ -1,5 +1,7 @@
 ## HEAD
 
+* Move back JSON serialization from `Attacher#write` to `Attacher#_set` (janko-m)
+
 * Make `remove_invalid` plugin assign back a previous attachment if was there (janko-m)
 
 * Deprecate `Storage::FileSystem#download` (janko-m)

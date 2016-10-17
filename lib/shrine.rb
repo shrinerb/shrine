@@ -660,12 +660,12 @@ class Shrine
         # Converts the UploadedFile to a data hash and writes it to the
         # attribute.
         def _set(uploaded_file)
-          write(uploaded_file ? convert_to_data(uploaded_file) : nil)
+          data = convert_to_data(uploaded_file) if uploaded_file
+          write(data ? convert_before_write(data) : nil)
         end
 
         # Writes to the `<attachment>_data` attribute on the model instance.
         def write(value)
-          value = convert_before_write(value) unless value.nil?
           record.send(:"#{data_attribute}=", value)
         end
 
