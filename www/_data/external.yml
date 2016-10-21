@@ -98,23 +98,36 @@
         url: https://github.com/janko-m/shrine-reform
 -
   -
-    title: Projects & Libraries
+    title: Applications
     items:
       -
-        name: Roda example app (official)
+        name: Roda demo (official)
         url: https://github.com/janko-m/shrine/tree/master/demo
       -
-        name: Rails example app
+        name: Rails demo
         url: https://github.com/erikdahlstrand/shrine-rails-example
       -
-        name: Hanami example app
+        name: Hanami demo
         url: https://github.com/katafrakt/hanami-shrine-example
       -
-        name: Resumable uploads demo app
+        name: ROM & dry-rb demo
+        url: https://github.com/janko-m/shrine-rom-example
+      -
+        name: Resumable uploads demo
         url: https://github.com/janko-m/shrine-tus-demo
       -
-        name: ROM & dry-rb example app
-        url: https://github.com/janko-m/shrine-rom-example
+        name: Cloudinary demo
+        url: https://github.com/janko-m/shrine-cloudinary/tree/master/demo
+      -
+        name: Transloadit demo
+        url: https://github.com/janko-m/shrine-transloadit/tree/master/demo
+      -
+        name: Uploadcare demo
+        url: https://github.com/janko-m/shrine-uploadcare/tree/master/demo
+
+  -
+    title: Libraries
+    items:
       -
         name: RailsAdminShrine
         url: https://github.com/iquest/rails_admin_shrine
