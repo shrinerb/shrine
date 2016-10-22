@@ -12,22 +12,24 @@ class Shrine
     #     plugin :processing
     #
     #     process(:store) do |io, context|
-    #       size_700 = resize_to_limit(io.download, 700, 700)
-    #       size_500 = resize_to_limit(size_700,    500, 500)
-    #       size_300 = resize_to_limit(size_500,    300, 300)
+    #       original = io.download
     #
-    #       {large: size_700, medium: size_500, small: size_300}
+    #       size_800 = resize_to_limit!(original, 800, 800)
+    #       size_500 = resize_to_limit(size_800,  500, 500)
+    #       size_300 = resize_to_limit(size_500,  300, 300)
+    #
+    #       {large: size_800, medium: size_500, small: size_300}
     #     end
     #
     # Now when you access the stored attachment through the model, a hash of
     # uploaded files will be returned:
     #
-    #     JSON.parse(user.avatar_data) #=>
-    #     # {
-    #     #   "large"  => {"id" => "lg043.jpg", "storage" => "store", "metadata" => {...}},
-    #     #   "medium" => {"id" => "kd9fk.jpg", "storage" => "store", "metadata" => {...}},
-    #     #   "small"  => {"id" => "932fl.jpg", "storage" => "store", "metadata" => {...}},
-    #     # }
+    #     user.avatar_data #=>
+    #     # '{
+    #     #   "large": {"id":"lg043.jpg", "storage":"store", "metadata":{...}},
+    #     #   "medium": {"id":"kd9fk.jpg", "storage":"store", "metadata":{...}},
+    #     #   "small": {"id":"932fl.jpg", "storage":"store", "metadata":{...}}
+    #     # }'
     #
     #     user.avatar #=>
     #     # {
@@ -36,10 +38,12 @@ class Shrine
     #     #   :small =>  #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
     #     # }
     #
-    #     # With the store_dimensions plugin
-    #     user.avatar[:large].width  #=> 700
-    #     user.avatar[:medium].width #=> 500
-    #     user.avatar[:small].width  #=> 300
+    #     user.avatar[:medium]     #=> #<Shrine::UploadedFile>
+    #     user.avatar[:medium].url #=> "/uploads/store/lg043.jpg"
+    #
+    #     # With the `store_dimensions` plugin loaded
+    #     user.avatar[:large].width #=> 800
+    #     user.avatar[:small].width #=> 300
     #
     # You probably want to load the `delete_raw` plugin to automatically
     # delete processed files after they have been uploaded.

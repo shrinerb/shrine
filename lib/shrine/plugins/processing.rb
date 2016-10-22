@@ -1,7 +1,25 @@
 class Shrine
   module Plugins
-    # The `processing` plugin allows you to declaratively define file processing
-    # for specified actions.
+    # Shrine uploaders can define the `#process` method, which will get called
+    # whenever a file is uploaded. It is given the original file, and is
+    # expected to return the processed files.
+    #
+    #     def process(io, context)
+    #       # you can process the original file `io` and return processed file(s)
+    #     end
+    #
+    # However, when handling files as attachments, the same file is uploaded
+    # to temporary and permanent storage. Since we only want to apply the same
+    # processing once, we need to branch based on the context.
+    #
+    #     def process(io, context)
+    #       if context[:action] == :store # promote phase
+    #         # ...
+    #       end
+    #     end
+    #
+    # The `processing` plugin simplifies this by allowing us to declaratively
+    # define file processing for specified actions.
     #
     #     plugin :processing
     #
@@ -9,27 +27,28 @@ class Shrine
     #       # ...
     #     end
     #
-    # The `io` is the original file, while the `context` contains some
-    # additional information about the upload. The result of the processing
-    # block should be an IO-like object, which will continue being uploaded
-    # instead of the original.
+    # An example of resizing an image using the [image_processing] library:
     #
-    # The declarations are additive and inherited, so for the same action you
-    # can declare multiple blocks, and they will be performed in the same order,
-    # where output from previous will be input to next. You can return `nil`
-    # in any block to signal that no processing was performed and that the
-    # original file should be used.
+    #     include ImageProcessing::MiniMagick
     #
-    # The `.process` call is just a shorthand for
-    #
-    #     def process(io, context)
-    #       if context[:action] == :store
-    #         # ...
-    #       end
+    #     process(:store) do |io, context|
+    #       resize_to_limit!(io.download, 800, 800)
     #     end
+    #
+    # The declarations are additive and inheritable, so for the same action you
+    # can declare multiple blocks, and they will be performed in the same order,
+    # with output from previous block being the input to next.
+    #
+    # You can manually trigger the defined processing via the uploader, you
+    # just need to specify `:action` to the name of your processing block:
+    #
+    #     uploader.upload(file, action: :store)  # process and upload
+    #     uploader.process(file, action: :store) # only process
     #
     # If you want the result of processing to be multiple files, use the
     # `versions` plugin.
+    #
+    # [image_processing]: https://github.com/janko-m/image_processing
     module Processing
       def self.configure(uploader)
         uploader.opts[:processing] = {}

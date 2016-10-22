@@ -15,6 +15,11 @@ class Shrine
     #         {acl: "private"}
     #       end
     #     end
+    #
+    # If you're uploading the file directly, you can also pass `:upload_options`
+    # to the uploader.
+    #
+    #     uploader.upload(file, upload_options: {acl: "public-read"})
     module UploadOptions
       def self.configure(uploader, options = {})
         uploader.opts[:upload_options] = (uploader.opts[:upload_options] || {}).merge(options)

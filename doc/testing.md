@@ -219,7 +219,7 @@ end
 However, it's even better to design your processing code in such a way that
 it's easier to swap out in tests. In your *application* code you could extract
 processing into a single `#call`-able object, and register it inside uploader
-generic `#opts` hash.
+generic `opts` hash.
 
 ```rb
 class ImageUploader < Shrine

@@ -42,8 +42,8 @@ class Shrine
     # ## Clearing cache
     #
     # If you're using FileSystem as cache, you will probably want to
-    # periodically delete old files which aren't used anymore. You can put
-    # the following in a periodic Rake task:
+    # periodically delete old files which aren't used anymore. You can run
+    # something like this periodically:
     #
     #     file_system = Shrine.storages[:cache]
     #     file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
