@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `#dimensions` method to `UploadedFile` when loading `store_dimensions` plugin (janko-m)
+
 * Make it possible to extract multiple metadata values at once with the `add_metadata` plugin (janko-m)
 
 ## 2.4.1 (2016-10-17)

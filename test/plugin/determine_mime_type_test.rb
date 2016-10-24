@@ -3,7 +3,7 @@ require "shrine/plugins/determine_mime_type"
 require "stringio"
 
 describe Shrine::Plugins::DetermineMimeType do
-  describe ":file" do
+  describe ":file analyzer" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :file }
     end
@@ -41,7 +41,7 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
-  describe ":filemagic" do
+  describe ":filemagic analyzer" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :filemagic }
     end
@@ -52,7 +52,7 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end unless RUBY_ENGINE == "jruby" || ENV["CI"]
 
-  describe ":mimemagic" do
+  describe ":mimemagic analyzer" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :mimemagic }
     end
@@ -68,7 +68,7 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
-  describe ":mime_types" do
+  describe ":mime_types analyzer" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :mime_types }
     end
@@ -92,7 +92,7 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
-  describe ":default" do
+  describe ":default analyzer" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :default }
     end

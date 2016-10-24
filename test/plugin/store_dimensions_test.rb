@@ -6,7 +6,7 @@ describe Shrine::Plugins::StoreDimensions do
     @uploader = uploader { plugin :store_dimensions, analyzer: :fastimage }
   end
 
-  describe ":fastimage" do
+  describe ":fastimage analyzer" do
     it "extracts dimensions from files" do
       dimensions = @uploader.send(:extract_dimensions, image)
       assert_equal [100, 67], dimensions
@@ -34,25 +34,30 @@ describe Shrine::Plugins::StoreDimensions do
     assert_equal 0, file.pos
   end
 
-  it "gives UploadedFile `width` and `height` methods" do
-    uploaded_file = @uploader.upload(image)
-    assert_equal uploaded_file.metadata["width"], uploaded_file.width
-    assert_equal uploaded_file.metadata["height"], uploaded_file.height
-  end
+  describe "dimension methods" do
+    it "adds `#width`, `#height` and `#dimensions` to UploadedFile" do
+      uploaded_file = @uploader.upload(image)
+      assert_equal uploaded_file.metadata["width"],                     uploaded_file.width
+      assert_equal uploaded_file.metadata["height"],                    uploaded_file.height
+      assert_equal uploaded_file.metadata.values_at("width", "height"), uploaded_file.dimensions
+    end
 
-  it "coerces the dimensions to integer" do
-    uploaded_file = @uploader.upload(image)
-    uploaded_file.metadata["width"] = "48"
-    uploaded_file.metadata["height"] = "52"
-    assert_equal 48, uploaded_file.width
-    assert_equal 52, uploaded_file.height
-  end
+    it "coerces values to Integer" do
+      uploaded_file = @uploader.upload(image)
+      uploaded_file.metadata["width"] = "48"
+      uploaded_file.metadata["height"] = "52"
+      assert_equal 48,       uploaded_file.width
+      assert_equal 52,       uploaded_file.height
+      assert_equal [48, 52], uploaded_file.dimensions
+    end
 
-  it "allows dimensions to be missing or nil" do
-    uploaded_file = @uploader.upload(image)
-    uploaded_file.metadata["width"] = nil
-    uploaded_file.metadata.delete("height")
-    assert_equal nil, uploaded_file.width
-    assert_equal nil, uploaded_file.height
+    it "allows metadata values to be missing or nil" do
+      uploaded_file = @uploader.upload(image)
+      uploaded_file.metadata["width"] = nil
+      uploaded_file.metadata.delete("height")
+      assert_equal nil, uploaded_file.width
+      assert_equal nil, uploaded_file.height
+      assert_equal nil, uploaded_file.dimensions
+    end
   end
 end

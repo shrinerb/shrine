@@ -5,13 +5,18 @@ class Shrine
     #
     #     plugin :store_dimensions
     #
-    # You can access the dimensions through `#width` and `#height` methods:
+    # It adds "width" and "height" metadata values to Shrine::UploadedFile,
+    # and creates `#width`, `#height` and `#dimensions` reader methods.
     #
-    #     uploader = Shrine.new(:store)
-    #     uploaded_file = uploader.upload(File.open("image.jpg"))
+    #     image = uploader.upload(file)
     #
-    #     uploaded_file.width  #=> 300
-    #     uploaded_file.height #=> 500
+    #     image.metadata["width"]  #=> 300
+    #     image.metadata["height"] #=> 500
+    #     # or
+    #     image.width  #=> 300
+    #     image.height #=> 500
+    #     # or
+    #     image.dimensions #=> [300, 500]
     #
     # The fastimage gem has built-in protection against [image bombs]. However,
     # if for some reason it doesn't suit your needs, you can provide a custom
@@ -76,6 +81,10 @@ class Shrine
 
         def height
           Integer(metadata["height"]) if metadata["height"]
+        end
+
+        def dimensions
+          [width, height] if width || height
         end
       end
     end
