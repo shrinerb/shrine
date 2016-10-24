@@ -424,7 +424,7 @@ different analyzer, see plugin's documentation for more details.
 
 In addition to the built-in metadata, you can also extract and store completely
 custom metadata with the `add_metadata` plugin. For example, if we're uploading
-videos, we could store their duration:
+videos, we could store additional video-specific metadata:
 
 ```rb
 require "streamio-ffmpeg"
@@ -432,15 +432,21 @@ require "streamio-ffmpeg"
 class VideoUploader < Shrine
   plugin :add_metadata
 
-  add_metadata :duration do |io, context|
-    FFMPEG::Movie.new(io.path).duration
+  add_metadata do |io, context|
+    movie = FFMPEG::Movie.new(io.path)
+
+    { "duration"   => movie.duration,
+      "bitrate"    => movie.bitrate,
+      "resolution" => movie.resolution,
+      "frame_rate" => movie.frame_rate }
   end
 end
 ```
 ```rb
-video.metadata["duration"]
-# or
-video.duration
+video.metadata["duration"]   #=> 7.5
+video.metadata["bitrate"]    #=> 481
+video.metadata["resolution"] #=> "640x480"
+video.metadata["frame_rate"] #=> 16.72
 ```
 
 ## Processing
