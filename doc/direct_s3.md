@@ -23,6 +23,7 @@ You can start by setting both temporary and permanent storage to S3 with
 different prefixes (or even buckets):
 
 ```rb
+# Gemfile
 gem "aws-sdk", "~> 2.1"
 ```
 ```rb
@@ -86,6 +87,7 @@ server, and use this information to start uploading the file to S3. The
 in our application:
 
 ```rb
+# Gemfile
 gem "roda"
 ```
 ```rb
@@ -185,8 +187,10 @@ With direct uploads any metadata has to be extracted on the client, since
 caching the file doesn't touch your application. When the cached file is stored,
 Shrine's default behaviour is to simply copy over cached file's metadata.
 
-If you want to extract metadata on the server before storing, you can just
-load the `restore_cached_data` plugin.
+If you want to extract metadata on the server before storing, you can load the
+`restore_cached_data` plugin. That will make Shrine open the S3 file for
+reading, give it for metadata extraction, and then override the received
+metadata with the ones extracted by Shrine.
 
 ```rb
 plugin :restore_cached_data
