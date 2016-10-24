@@ -187,7 +187,7 @@ class Shrine
         if name == :download
           warn "Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3."
           require "down"
-          open(id) { |file| Down.copy_to_tempfile(id, file) }
+          open(*args) { |file| Down.copy_to_tempfile(*args, file) }
         else
           super
         end
