@@ -171,14 +171,13 @@ uploaded_file = uploader.upload(file)
 uploaded_file #=> #<Shrine::UploadedFile>
 ```
 
-Several tasks are performed as part of uploading:
+Some of the tasks performed by `#upload` include:
 
 * file processing (if defined)
 * extracting metadata
 * generating location
 * uploading (this is where the storage is called)
 * closing the file
-* constructing `Shrine::UploadedFile`
 
 ### IO abstraction
 
