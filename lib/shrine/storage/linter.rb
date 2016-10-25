@@ -85,7 +85,7 @@ class Shrine
         storage.delete(id)
         error :delete, "file still #exists? after deleting" if storage.exists?(id)
         begin
-          storage.delete(SecureRandom.hex)
+          storage.delete(id)
         rescue => exception
           error :delete, "shouldn't fail if the file doesn't exist, but raised #{exception.class}"
         end
