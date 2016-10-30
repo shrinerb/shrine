@@ -36,7 +36,7 @@ describe Shrine::Plugins::Versions do
     assert_equal "thumb", versions.fetch(:thumb).id
   end
 
-  it "overrides #uploaded?" do
+  it "extends Shrine#uploaded?" do
     versions = @uploader.upload(thumb: fakeio)
     assert @uploader.uploaded?(versions)
   end
@@ -109,6 +109,17 @@ describe Shrine::Plugins::Versions do
       @attacher.set(thumb: @attacher.store!(fakeio))
       assert_equal @attacher.url(:thumb), @attacher.url(:medium)
       assert_equal @attacher.url(:thumb), @attacher.url(:large)
+    end
+
+    it "supports :fallback_to_original" do
+      @attacher.shrine_class.plugin :versions, fallback_to_original: false
+
+      @attacher.expects(:default_url).with(version: :thumbnail, foo: "foo")
+      @attacher.url(:thumbnail, foo: "foo")
+
+      @attacher.assign(fakeio)
+      @attacher.expects(:default_url).with(version: :thumbnail, foo: "foo")
+      @attacher.url(:thumbnail, foo: "foo")
     end
   end
 

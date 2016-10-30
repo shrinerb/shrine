@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:fallback_to_original` option to `versions` plugin for disabling fallback to original file (janko-m)
+
 * Add `#dimensions` method to `UploadedFile` when loading `store_dimensions` plugin (janko-m)
 
 * Make it possible to extract multiple metadata values at once with the `add_metadata` plugin (janko-m)

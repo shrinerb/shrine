@@ -21,6 +21,9 @@ class Shrine
     #       {large: size_800, medium: size_500, small: size_300}
     #     end
     #
+    # You probably want to load the `delete_raw` plugin to automatically
+    # delete processed files after they have been uploaded.
+    #
     # Now when you access the stored attachment through the model, a hash of
     # uploaded files will be returned:
     #
@@ -41,12 +44,10 @@ class Shrine
     #     user.avatar[:medium]     #=> #<Shrine::UploadedFile>
     #     user.avatar[:medium].url #=> "/uploads/store/lg043.jpg"
     #
-    #     # With the `store_dimensions` plugin loaded
-    #     user.avatar[:large].width #=> 800
-    #     user.avatar[:small].width #=> 300
+    # The plugin also extends the `Attacher#url` to accept versions:
     #
-    # You probably want to load the `delete_raw` plugin to automatically
-    # delete processed files after they have been uploaded.
+    #     user.avatar_url(:large)
+    #     user.avatar_url(:small, download: true) # with URL options
     #
     # ## Original file
     #
@@ -61,22 +62,25 @@ class Shrine
     #
     # ## Fallbacks
     #
-    # The plugin also extends the `<attachmen>_url` method to accept versions,
-    # and adds automatic fallbacks:
+    # If versions are processed in a background job, there will be a period
+    # where the user will browse the site before versions have finished
+    # processing. In this period `Attacher#url` will by default fall back to
+    # the original file.
     #
-    #     user.avatar_url(:medium)
+    #     user.avatar #=> #<Shrine::UploadedFile>
+    #     user.avatar_url(:large) # falls back to `user.avatar_url`
     #
-    #     # returns URL of that version if versions have been created,
-    #     # otherwise returns original URL if attachment exists,
-    #     # otherwise returns nil
+    # This behaviour is convenient if you want to gracefully degrade to the
+    # cached file until the background job has finished processing. However, if
+    # you would rather provide your own default URLs for versions, you can
+    # disable this fallback:
     #
-    # This behaviour is convenient when using background jobs, as it allows you
-    # to gracefully degrade before the background job finishes.
+    #     plugin :versions, fallback_to_original: false
     #
-    # If you already have some versions processed in the foreground when a
-    # background job is kicked off (with the `recache` plugin), the
-    # `<attachment>_url` method won't know which version to use as a fallback.
-    # In that case you can specify `:fallbacks` when loading the plugin:
+    # If you already have some versions processed in the foreground after a
+    # background job is kicked off (with the `recache` plugin), you can have
+    # URLs for versions that are yet to be processed fall back to existing
+    # versions:
     #
     #     plugin :versions, fallbacks: {
     #       :thumb_2x => :thumb,
@@ -87,11 +91,6 @@ class Shrine
     #
     #     user.avatar_url(:thumb_2x) # returns :thumb URL until :thumb_2x becomes available
     #     user.avatar_url(:large_2x) # returns :large URL until :large_2x becomes available
-    #
-    # Any additional options will be properly forwarded to the underlying
-    # storage:
-    #
-    #     user.avatar_url(:medium, download: true)
     #
     # ## Context
     #
@@ -118,6 +117,7 @@ class Shrine
 
         uploader.opts[:version_names] = opts.fetch(:names, uploader.opts[:version_names])
         uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
+        uploader.opts[:versions_fallback_to_original] = opts.fetch(:fallback_to_original, uploader.opts.fetch(:versions_fallback_to_original, true))
       end
 
       module ClassMethods
@@ -190,28 +190,38 @@ class Shrine
         # Smart versioned URLs, which include the version name in the default
         # URL, and properly forwards any options to the underlying storage.
         def url(version = nil, **options)
-          if get.is_a?(Hash)
+          attachment = get
+
+          if attachment.is_a?(Hash)
             if version
-              if file = get[version]
-                file.url(**options)
+              if attachment.key?(version)
+                attachment[version].url(**options)
               elsif fallback = shrine_class.version_fallbacks[version]
                 url(fallback, **options)
               else
                 default_url(**options, version: version)
               end
             else
-              raise Error, "must call #{name}_url with the name of the version"
+              raise Error, "must call Shrine::Attacher#url with the name of the version"
             end
           else
-            if get || version.nil?
-              super(**options)
+            if version
+              if attachment && fallback_to_original?
+                attachment.url(**options)
+              else
+                default_url(**options, version: version)
+              end
             else
-              default_url(**options, version: version)
+              super(**options)
             end
           end
         end
 
         private
+
+        def fallback_to_original?
+          shrine_class.opts[:versions_fallback_to_original]
+        end
 
         def assign_cached(value)
           cached_file = uploaded_file(value)
