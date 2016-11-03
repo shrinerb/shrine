@@ -51,14 +51,18 @@ class Shrine
     #
     # ## Original file
     #
-    # If you want to keep the original file, you can forward it as is without
-    # explicitly downloading it (since `Shrine::UploadedFile` itself is an
-    # IO-like object), which might avoid downloading depending on the storage:
+    # If you want to keep the original file, you can include the original
+    # `Shrine::UploadedFile` object as one of the versions:
     #
     #     process(:store) do |io, context|
     #       # processing thumbnail
     #       {original: io, thumbnail: thumbnail}
     #     end
+    #
+    # If both temporary and permanent storage are Amazon S3, the cached original
+    # will simply be copied over to permanent storage (without any downloading
+    # and reuploading), so in these cases the performance impact of storing the
+    # original file in addition to processed versions is neglibible.
     #
     # ## Fallbacks
     #

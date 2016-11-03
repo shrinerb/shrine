@@ -38,11 +38,12 @@ end
 
 If you're using an external storage in development, it is common in tests to
 switch to a filesystem storage. However, that means that you'll also have to
-clean up the test directory between tests, and writing to filesystem a lot can
-affect the performance of your tests.
+clean up the test directory between tests, and writing to filesystem can affect
+the performance of your tests.
 
-Instead of filesystem you can use [memory storage][shrine-memory], which is
-both faster and doesn't require you to clean up anything between tests.
+If your tests are run in a single process, instead of filesystem you can use
+[memory storage][shrine-memory], which is both faster and doesn't require you
+to clean up anything between tests.
 
 ```rb
 gem "shrine-memory"
@@ -56,6 +57,17 @@ Shrine.storages = {
   store: Shrine::Storage::Memory.new,
 }
 ```
+
+Alternatively, if you're using Amazon S3 storage, in tests (and development)
+you can swap it out for [FakeS3]. You just need tell aws-sdk that instead of
+`s3.amazonaws.com` it should use the host of your FakeS3 server when generating
+URLs.
+
+```rb
+Shrine::Storage::S3.new(endpoint: "http://localhost:10000")
+```
+
+Note that for using FakeS3 you need aws-sdk version 2.2.25 or higher.
 
 ## Test data
 
@@ -264,3 +276,4 @@ provided by the `direct_upload` app mounted in your routes.
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
 [Rack::Test]: https://github.com/brynary/rack-test
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
+[FakeS3]: https://github.com/jubos/fake-s3

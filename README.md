@@ -476,6 +476,7 @@ images, I created the [image_processing] gem which you can use with Shrine:
 ```rb
 # Gemfile
 gem "image_processing"
+gem "mini_magick", ">= 4.3.5"
 ```
 ```rb
 require "image_processing/mini_magick"
@@ -527,7 +528,7 @@ class ImageUploader < Shrine
     size_500 = resize_to_limit(size_800,  500, 500)
     size_300 = resize_to_limit(size_500,  300, 300)
 
-    {large: size_800, medium: size_500, small: size_300}
+    {original: io, large: size_800, medium: size_500, small: size_300}
   end
 end
 ```
@@ -539,6 +540,7 @@ of `Shrine::UploadedFile` objects.
 ```rb
 photo.image_data #=>
 # '{
+#   "original": {"id":"9sd84.jpg", "storage":"store", "metadata":{...}},
 #   "large": {"id":"lg043.jpg", "storage":"store", "metadata":{...}},
 #   "medium": {"id":"kd9fk.jpg", "storage":"store", "metadata":{...}},
 #   "small": {"id":"932fl.jpg", "storage":"store", "metadata":{...}}
@@ -546,17 +548,16 @@ photo.image_data #=>
 
 photo.image #=>
 # {
-#   :large =>  #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
-#   :medium => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
-#   :small =>  #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
+#   :original => #<Shrine::UploadedFile @data={"id"=>"9sd84.jpg", ...}>,
+#   :large    => #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
+#   :medium   => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
+#   :small    => #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
 # }
 
-photo.image[:medium]     #=> #<Shrine::UploadedFile>
-photo.image[:medium].url #=> "/uploads/store/lg043.jpg"
-
-# With the `store_dimensions` plugin loaded
-photo.image[:large].width #=> 800
-photo.image[:small].width #=> 300
+photo.image[:medium]           #=> #<Shrine::UploadedFile>
+photo.image[:medium].url       #=> "/uploads/store/lg043.jpg"
+photo.image[:medium].size      #=> 5825949
+photo.image[:medium].mime_type #=> "image/jpeg"
 ```
 
 The `versions` plugin also expands `#<attachment>_url` to accept version names:
@@ -787,17 +788,17 @@ Sidekiq you can use [any other backgrounding library][backgrounding libraries].
 The main advantages of Shrine's backgrounding support over other file attachment
 libraries are:
 
-* **User experience** – After starting the background job, Shrine will save the
+* **User experience** – Before starting the background job, Shrine will save the
   record with the cached attachment so that it can be immediately shown to the
   user. With other file upload libraries users cannot see the file until the
   background job has finished.
 * **Simplicity** – Instead of shipping with workers for you, Shrine allows you
-  to write your own workers and plug them in very easily. Also, no extra
+  to write your own workers and plug them in very easily. And no extra
   columns are required.
-* **Generality** – The above solution will automatically work for all uploaders,
+* **Generality** – This setup will automatically be used for all uploaders,
   types of files and models.
-* **Safety** – All of Shrine's code has been designed to take delayed storing
-  into account, and concurrent requests are handled as well.
+* **Safety** – All of Shrine's features have been designed to take delayed
+  storing into account, and concurrent requests are handled as well.
 
 ## Clearing cache
 
