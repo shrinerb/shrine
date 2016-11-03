@@ -100,6 +100,9 @@ describe Shrine::Plugins::DirectUpload do
     it "accepts an extension" do
       response = app.get "/cache/presign?extension=.jpg"
       assert_match /\.jpg$/, response.body_json["fields"].fetch("key")
+
+      response = app.get "/cache/presign?extension=jpg"
+      assert_match /\.jpg$/, response.body_json["fields"].fetch("key")
     end
 
     it "accepts :presign_location" do
