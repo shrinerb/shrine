@@ -251,7 +251,10 @@ class Shrine
           if presign_location
             presign_location.call(request)
           else
-            uploader.send(:generate_uid, nil) + request.params["extension"].to_s
+            extension = request.params["extension"].to_s
+            extension = ".#{extension}" \
+              if extension.present? && !extension.starts_with?('.')
+            uploader.send(:generate_uid, nil) + extension
           end
         end
 
