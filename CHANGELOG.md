@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `remove_invalid` plugin remove dirty state on attacher after removing invalid file (janko-m)
+
 * Raise error if `Shrine::UploadedFile` isn't initialized with valid data (janko-m)
 
 * Accept `extension` parameter without the dot in presign endpoint of `direct_upload` plugin (jonasheinrich)

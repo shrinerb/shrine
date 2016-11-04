@@ -13,6 +13,7 @@ class Shrine
           if errors.any? && cached?
             _delete(get, action: :validate)
             _set(@old)
+            remove_instance_variable(:@old)
           end
         end
       end
