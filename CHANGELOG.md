@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make extension matching case insensitive in `validation_helpers` plugin (@jonasheinrich)
+
 * Make `remove_invalid` plugin remove dirty state on attacher after removing invalid file (@janko-m)
 
 * Raise error if `Shrine::UploadedFile` isn't initialized with valid data (@janko-m)

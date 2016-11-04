@@ -179,6 +179,12 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_empty @attacher.errors
     end
 
+    it "matches extension insensitive to case" do
+      @attacher.assign(fakeio(filename: "image.JPG"))
+      @attacher.validate_extension_inclusion ["jpg"]
+      assert_empty @attacher.errors
+    end
+
     it "accepts regexes" do
       @attacher.assign(fakeio(filename: "video.mp4"))
       @attacher.validate_extension_inclusion [/jpe?g/]
@@ -205,6 +211,12 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio(filename: "image.jpg"))
       @attacher.validate_extension_exclusion ["mp4", "mp3"]
       assert_empty @attacher.errors
+    end
+
+    it "matches extension insensitive to case" do
+      @attacher.assign(fakeio(filename: "image.JPG"))
+      @attacher.validate_extension_exclusion ["jpg"]
+      refute_empty @attacher.errors
     end
 
     it "accepts regexes" do
