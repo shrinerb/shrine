@@ -1,5 +1,7 @@
 ## HEAD
 
+* Raise error if `Shrine::UploadedFile` isn't initialized with valid data (janko-m)
+
 * Accept `extension` parameter without the dot in presign endpoint of `direct_upload` plugin (jonasheinrich)
 
 * Add `:fallback_to_original` option to `versions` plugin for disabling fallback to original file (janko-m)

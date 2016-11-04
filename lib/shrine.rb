@@ -710,9 +710,11 @@ class Shrine
 
         # Initializes the uploaded file with the given data hash.
         def initialize(data)
+          raise Error, "#{data.inspect} isn't valid uploaded file data" unless data["id"] && data["storage"]
+
           @data = data
           @data["metadata"] ||= {}
-          storage # ensure storage exists
+          storage # ensure storage is registered
         end
 
         # The location where the file was uploaded to the storage.

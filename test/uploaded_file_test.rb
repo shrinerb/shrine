@@ -38,6 +38,12 @@ describe Shrine::UploadedFile do
       assert_raises(Shrine::Error) { uploaded_file(data) }
       refute_includes Symbol.all_symbols.map(&:to_s), "nosymbol"
     end
+
+    it "raises an error on invalid data" do
+      assert_raises(Shrine::Error) { uploaded_file({"id" => nil, "storage" => nil}) }
+      assert_raises(Shrine::Error) { uploaded_file({"id" => nil}) }
+      assert_raises(Shrine::Error) { uploaded_file({"storage" => nil}) }
+    end
   end
 
   describe "#id" do
