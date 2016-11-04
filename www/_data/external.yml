@@ -44,6 +44,9 @@
       -
         name: "Direct File Uploads to S3: Part 3 (GoRails)"
         url: https://gorails.com/episodes/direct-file-uploads-to-s3-part-3?autoplay=1
+      -
+        name: "Shrine Backgrounding and Video Transcoding (GoRails)"
+        url: https://gorails.com/episodes/shrine-background-and-video-transcoding?autoplay=1
 -
   -
     title: Storages
