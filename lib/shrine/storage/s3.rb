@@ -302,6 +302,13 @@ class Shrine
 
       # Copies an existing S3 object to a new location.
       def copy(io, id, **options)
+        options[:metadata_directive] = 'REPLACE'
+        existing_metadata = object(io.id).metadata
+        options[:metadata] ||= {}
+        options[:metadata].merge!(existing_metadata) { |_, new_value, _|
+          new_value
+        }
+
         options = {multipart_copy: true, content_length: io.size}.update(options) if multipart?(io)
         object(id).copy_from(io.storage.object(io.id), **options)
       end
