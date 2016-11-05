@@ -29,6 +29,12 @@
       -
         name: "Better File Uploads with Shrine: Attachment"
         url: https://twin.github.io/better-file-uploads-with-shrine-attachment/
+      -
+        name: "Better File Uploads with Shrine: Processing"
+        url: https://twin.github.io/better-file-uploads-with-shrine-processing/
+      -
+        name: "Better File Uploads with Shrine: Metadata"
+        url: https://twin.github.io/better-file-uploads-with-shrine-metadata/
   -
     title: Screencasts
     items:
@@ -45,7 +51,7 @@
         name: "Direct File Uploads to S3: Part 3 (GoRails)"
         url: https://gorails.com/episodes/direct-file-uploads-to-s3-part-3?autoplay=1
       -
-        name: "Shrine Backgrounding and Video Transcoding (GoRails)"
+        name: "Backgrounding and Video Transcoding (GoRails)"
         url: https://gorails.com/episodes/shrine-background-and-video-transcoding?autoplay=1
 -
   -
