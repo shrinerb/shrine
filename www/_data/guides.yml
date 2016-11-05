@@ -17,6 +17,9 @@
   name: Migrating to Different Storage
   path: migrating_storage_md.html
 -
+  name: Multiple Files
+  path: multiple_files_md.html
+-
   name: Reprocessing Versions
   path: regenerating_versions_md.html
 -
