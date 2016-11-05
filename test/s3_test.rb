@@ -49,13 +49,13 @@ describe Shrine::Storage::S3 do
       assert @s3.exists?("bar")
     end
 
-    it "preserves the MIME type" do
+    it "preserves the content type" do
       uploaded_file = @uploader.upload(fakeio(content_type: "foo/bar"), location: "foo")
-      tempfile = @s3.download("foo")
+      tempfile = Down.download(@s3.url("foo"))
       assert_equal "foo/bar", tempfile.content_type
 
       @uploader.upload(uploaded_file, location: "bar")
-      tempfile = @s3.download("bar")
+      tempfile = Down.download(@s3.url("bar"))
       assert_equal "foo/bar", tempfile.content_type
     end
 
@@ -78,13 +78,13 @@ describe Shrine::Storage::S3 do
     it "applies upload options" do
       @s3 = s3(upload_options: {content_type: "foo/bar"})
       @s3.upload(fakeio, "foo")
-      tempfile = @s3.download("foo")
+      tempfile = Down.download(@s3.url("foo"))
       assert_equal "foo/bar", tempfile.content_type
     end
 
     it "accepts additional upload options via metadata" do
       @s3.upload(fakeio, "foo", content_type: "foo/bar")
-      tempfile = @s3.download("foo")
+      tempfile = Down.download(@s3.url("foo"))
       assert_equal "foo/bar", tempfile.content_type
     end
 
