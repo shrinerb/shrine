@@ -216,9 +216,9 @@ describe Shrine::Storage::FileSystem do
     it "is able to delete old files" do
       @storage = file_system(root)
       @storage.upload(fakeio, "foo")
-      @storage.clear!(older_than: Time.now - 1)
+      @storage.clear!(older_than: Time.now - 10)
       assert @storage.exists?("foo")
-      @storage.clear!(older_than: Time.now + 1)
+      @storage.clear!(older_than: Time.now + 10)
       refute @storage.exists?("foo")
     end
 
