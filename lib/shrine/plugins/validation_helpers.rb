@@ -64,40 +64,40 @@ class Shrine
       module AttacherMethods
         # Validates that the file is not larger than `max`.
         def validate_max_size(max, message: nil)
-          get.size <= max or errors << error_message(:max_size, message, max) && false
+          get.size <= max or add_error(:max_size, message, max) && false
         end
 
         # Validates that the file is not smaller than `min`.
         def validate_min_size(min, message: nil)
-          get.size >= min or errors << error_message(:min_size, message, min) && false
+          get.size >= min or add_error(:min_size, message, min) && false
         end
 
         # Validates that the file is not wider than `max`. Requires the
         # `store_dimensions` plugin.
         def validate_max_width(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          get.width <= max or errors << error_message(:max_width, message, max) && false if get.width
+          get.width <= max or add_error(:max_width, message, max) && false if get.width
         end
 
         # Validates that the file is not narrower than `min`. Requires the
         # `store_dimensions` plugin.
         def validate_min_width(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          get.width >= min or errors << error_message(:min_width, message, min) && false if get.width
+          get.width >= min or add_error(:min_width, message, min) && false if get.width
         end
 
         # Validates that the file is not taller than `max`. Requires the
         # `store_dimensions` plugin.
         def validate_max_height(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          get.height <= max or errors << error_message(:max_height, message, max) && false if get.height
+          get.height <= max or add_error(:max_height, message, max) && false if get.height
         end
 
         # Validates that the file is not shorter than `min`. Requires the
         # `store_dimensions` plugin.
         def validate_min_height(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          get.height >= min or errors << error_message(:min_height, message, min) && false if get.height
+          get.height >= min or add_error(:min_height, message, min) && false if get.height
         end
 
         # Validates that the MIME type is in the `whitelist`. The whitelist is
@@ -106,7 +106,7 @@ class Shrine
         #     validate_mime_type_inclusion ["audio/mp3", /\Avideo/]
         def validate_mime_type_inclusion(whitelist, message: nil)
           whitelist.any? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
-            or errors << error_message(:mime_type_inclusion, message, whitelist) && false
+            or add_error(:mime_type_inclusion, message, whitelist) && false
         end
 
         # Validates that the MIME type is not in the `blacklist`. The blacklist
@@ -115,7 +115,7 @@ class Shrine
         #     validate_mime_type_exclusion ["image/gif", /\Aaudio/]
         def validate_mime_type_exclusion(blacklist, message: nil)
           blacklist.none? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
-            or errors << error_message(:mime_type_exclusion, message, blacklist) && false
+            or add_error(:mime_type_exclusion, message, blacklist) && false
         end
 
         # Validates that the extension is in the `whitelist`. The whitelist
@@ -124,7 +124,7 @@ class Shrine
         #     validate_extension_inclusion [/\Ajpe?g\z/i]
         def validate_extension_inclusion(whitelist, message: nil)
           whitelist.any? { |extension| regex(extension) =~ get.extension.to_s } \
-            or errors << error_message(:extension_inclusion, message, whitelist) && false
+            or add_error(:extension_inclusion, message, whitelist) && false
         end
 
         # Validates that the extension is not in the `blacklist`. The blacklist
@@ -133,7 +133,7 @@ class Shrine
         #     validate_extension_exclusion ["mov", /\Amp/i]
         def validate_extension_exclusion(blacklist, message: nil)
           blacklist.none? { |extension| regex(extension) =~ get.extension.to_s } \
-            or errors << error_message(:extension_exclusion, message, blacklist) && false
+            or add_error(:extension_exclusion, message, blacklist) && false
         end
 
         private
@@ -141,6 +141,11 @@ class Shrine
         # Converts a string to a regex.
         def regex(value)
           value.is_a?(Regexp) ? value : /\A#{Regexp.escape(value)}\z/i
+        end
+
+        # Generates an error message and appends it to errors array.
+        def add_error(*args)
+          errors << error_message(*args)
         end
 
         # Returns the direct message if given, otherwise uses the default error
