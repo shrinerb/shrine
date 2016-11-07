@@ -3,18 +3,24 @@ class Shrine
     # The `validation_helpers` plugin provides helper methods for validating
     # attached files.
     #
-    #     class ImageUploader < Shrine
-    #       plugin :validation_helpers
+    #     plugin :validation_helpers
     #
-    #       Attacher.validate do
-    #         validat_mime_type_inclusion %w[image/jpeg image/png image/gif]
-    #         validate_max_size 5*1024*1024 if record.guest?
-    #       end
+    #     Attacher.validate do
+    #       validat_mime_type_inclusion %w[image/jpeg image/png image/gif]
+    #       validate_max_size 5*1024*1024 if record.guest?
     #     end
     #
     # The validation methods are instance-level, the `Attacher.validate` block
     # is evaluated in context of an instance of `Shrine::Attacher`, so you can
     # easily do conditional validation.
+    #
+    # The validation methods return whether the validation succeeded, allowing
+    # you to do conditional validation.
+    #
+    #     if validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
+    #       validate_max_width 2000
+    #       validate_max_height 2000
+    #     end
     #
     # If you would like to change default validation error messages, you can
     # pass in the `:default_messages` option to the plugin:
@@ -58,52 +64,40 @@ class Shrine
       module AttacherMethods
         # Validates that the file is not larger than `max`.
         def validate_max_size(max, message: nil)
-          if get.size > max
-            errors << error_message(:max_size, message, max)
-          end
+          get.size <= max or errors << error_message(:max_size, message, max) && false
         end
 
         # Validates that the file is not smaller than `min`.
         def validate_min_size(min, message: nil)
-          if get.size < min
-            errors << error_message(:min_size, message, min)
-          end
+          get.size >= min or errors << error_message(:min_size, message, min) && false
         end
 
         # Validates that the file is not wider than `max`. Requires the
         # `store_dimensions` plugin.
         def validate_max_width(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          if get.width && get.width > max
-            errors << error_message(:max_width, message, max)
-          end
+          get.width <= max or errors << error_message(:max_width, message, max) && false if get.width
         end
 
         # Validates that the file is not narrower than `min`. Requires the
         # `store_dimensions` plugin.
         def validate_min_width(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          if get.width && get.width < min
-            errors << error_message(:min_width, message, min)
-          end
+          get.width >= min or errors << error_message(:min_width, message, min) && false if get.width
         end
 
         # Validates that the file is not taller than `max`. Requires the
         # `store_dimensions` plugin.
         def validate_max_height(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          if get.height && get.height > max
-            errors << error_message(:max_height, message, max)
-          end
+          get.height <= max or errors << error_message(:max_height, message, max) && false if get.height
         end
 
         # Validates that the file is not shorter than `min`. Requires the
         # `store_dimensions` plugin.
         def validate_min_height(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          if get.height && get.height < min
-            errors << error_message(:min_height, message, min)
-          end
+          get.height >= min or errors << error_message(:min_height, message, min) && false if get.height
         end
 
         # Validates that the MIME type is in the `whitelist`. The whitelist is
@@ -111,9 +105,8 @@ class Shrine
         #
         #     validate_mime_type_inclusion ["audio/mp3", /\Avideo/]
         def validate_mime_type_inclusion(whitelist, message: nil)
-          if whitelist.none? { |mime_type| regex(mime_type) =~ get.mime_type.to_s }
-            errors << error_message(:mime_type_inclusion, message, whitelist)
-          end
+          whitelist.any? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
+            or errors << error_message(:mime_type_inclusion, message, whitelist) && false
         end
 
         # Validates that the MIME type is not in the `blacklist`. The blacklist
@@ -121,9 +114,8 @@ class Shrine
         #
         #     validate_mime_type_exclusion ["image/gif", /\Aaudio/]
         def validate_mime_type_exclusion(blacklist, message: nil)
-          if blacklist.any? { |mime_type| regex(mime_type) =~ get.mime_type.to_s }
-            errors << error_message(:mime_type_exclusion, message, blacklist)
-          end
+          blacklist.none? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
+            or errors << error_message(:mime_type_exclusion, message, blacklist) && false
         end
 
         # Validates that the extension is in the `whitelist`. The whitelist
@@ -131,9 +123,8 @@ class Shrine
         #
         #     validate_extension_inclusion [/\Ajpe?g\z/i]
         def validate_extension_inclusion(whitelist, message: nil)
-          if whitelist.none? { |extension| regex(extension) =~ get.extension.to_s }
-            errors << error_message(:extension_inclusion, message, whitelist)
-          end
+          whitelist.any? { |extension| regex(extension) =~ get.extension.to_s } \
+            or errors << error_message(:extension_inclusion, message, whitelist) && false
         end
 
         # Validates that the extension is not in the `blacklist`. The blacklist
@@ -141,9 +132,8 @@ class Shrine
         #
         #     validate_extension_exclusion ["mov", /\Amp/i]
         def validate_extension_exclusion(blacklist, message: nil)
-          if blacklist.any? { |extension| regex(extension) =~ get.extension.to_s }
-            errors << error_message(:extension_exclusion, message, blacklist)
-          end
+          blacklist.none? { |extension| regex(extension) =~ get.extension.to_s } \
+            or errors << error_message(:extension_exclusion, message, blacklist) && false
         end
 
         private
