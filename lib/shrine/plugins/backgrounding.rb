@@ -1,18 +1,25 @@
 class Shrine
   module Plugins
-    # The `backgrounding` plugin enables you to move processing, storing and
-    # deleting of files from record's lifecycle into background jobs. This is
-    # generally useful if you're doing processing and/or your store is
-    # something other than Storage::FileSystem.
+    # The `backgrounding` plugin enables you to move promoting and deleting of
+    # files from record's lifecycle into background jobs. This is especially
+    # useful if you're doing processing and/or you're storing files on an
+    # external storage service.
     #
-    #     Shrine.plugin :backgrounding
+    #     plugin :backgrounding
+    #
+    # ## Usage
+    #
+    # The plugin provides `Attacher.promote` and `Attacher.delete` methods,
+    # which allow you to hook up to promoting and deleting and spawn background
+    # jobs, by passing a block.
+    #
     #     Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
     #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
     #
-    # The `data` variable is a serializable hash containing all context needed
-    # for promotion/deletion. You then just need to declare `PromoteJob` and
-    # `DeleteJob`, and call `Shrine::Attacher.promote`/`Shrine::Attacher.delete`
-    # with the data hash:
+    # The yielded `data` variable is a serializable hash containing all context
+    # needed for promotion/deletion. Now you just need to declare the job
+    # classes, and inside them call `Attacher.promote` or `Attacher.delete`,
+    # this time with the received data.
     #
     #     class PromoteJob
     #       include Sidekiq::Worker
@@ -30,17 +37,47 @@ class Shrine
     #       end
     #     end
     #
-    # Internally these methods will resolve all necessary objects, do the
-    # promotion/deletion, and in case of promotion update the record with the
-    # stored attachment.
+    # This example used Sidekiq, but obviously you could just as well use
+    # any other backgrounding library. This setup will be applied globally for
+    # all uploaders.
     #
-    # The examples above used Sidekiq, but obviously you can just as well use
-    # any other backgrounding library. This setup will work globally for all
-    # uploaders.
+    # If you're generating versions, and you want to process some versions in
+    # the foreground before kicking off a background job, you can use the
+    # `recache` plugin.
     #
-    # The `backgrounding` plugin affects the `Shrine::Attacher` in a way that
-    # `#_promote` and `#_delete` spawn background jobs, while `#promote` and
-    # `#delete!` are always synchronous:
+    # ## `Attacher.promote` and `Attacher.delete`
+    #
+    # Internally `Attacher.promote` and `Attacher.delete` will resolve all
+    # necessary objects and do the promotion/deletion. Deletion will always
+    # perform the same way, while promotion has the following behaviour:
+    #
+    # * retrieves the database record
+    #     * if record is not found, it finishes
+    #     * otherwise if fetched attachment doesn't match received, it finishes
+    # * uploads cached file to permanent storage
+    # * reloads the database record
+    #     * if record is not found, it deletes the uploaded files and finishes
+    #     * otherwise if fetched attachment doesn't match received, it deletes the uploaded files and finishes
+    # * updates the record with permanently stored files
+    #
+    # The methods rely on `find_record` method being defined on the `Attacher`
+    # class, which normally come with the ORM plugins. It is also assumes that
+    # the `#id` attribute of the model instance represents a unique identifier.
+    #
+    # Both methods return a `Shrine::Attacher` instance (if the action hasn't
+    # aborted), so you can use it to perform additional tasks:
+    #
+    #     def perform(data)
+    #       attacher = Shrine::Attacher.promote(data)
+    #       attacher.record.update(published: true) if attacher && attacher.record.is_a?(Post)
+    #     end
+    #
+    # ## `Attacher#_promote` and `Attacher#_delete`
+    #
+    # The plugin modifies `Attacher#_promote` and `Attacher#_delete` to call
+    # the registered blocks with serializable attacher data, and these methods
+    # are internally called by the attacher. `Attacher#promote` and
+    # `Attacher#delete!` remain synchronous.
     #
     #     # asynchronous (spawn background jobs)
     #     attacher._promote
@@ -50,38 +87,23 @@ class Shrine
     #     attacher.promote
     #     attacher.delete!(attachment)
     #
-    # Both methods return the `Shrine::Attacher` instance (if the action didn't
-    # abort), so you can use it to do additional actions:
+    # ## `Attacher.dump` and `Attacher.load`
     #
-    #     def perform(data)
-    #       attacher = Shrine::Attacher.promote(data)
-    #       attacher.record.update(published: true) if attacher && attacher.record.is_a?(Post)
-    #     end
+    # The plugin adds `Attacher.dump` and `Attacher.load` methods for
+    # serializing attacher object and loading it back up. You can use them to
+    # spawn background jobs for custom tasks.
     #
-    # You can also write custom background jobs with `Attacher.dump` and
-    # `Attacher.load`:
+    #     data = Shrine::Attacher.dump(attacher)
+    #     SomethingJob.perform_async(data)
     #
-    #     class User < Sequel::Model
-    #       def after_commit
-    #         super
-    #         if some_condition
-    #           data = Shrine::Attacher.dump(avatar_attacher)
-    #           SomethingJob.perform_async(data)
-    #         end
-    #       end
-    #     end
+    #     # ...
     #
     #     class SomethingJob
-    #       include Sidekiq::Worker
     #       def perform(data)
     #         attacher = Shrine::Attacher.load(data)
     #         # ...
     #       end
     #     end
-    #
-    # If you're generating versions, and you want to process some versions in
-    # the foreground before kicking off a background job, you can use the
-    # `recache` plugin.
     module Backgrounding
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise
