@@ -47,30 +47,43 @@ class Shrine
     #
     # ## `Attacher.promote` and `Attacher.delete`
     #
-    # Internally `Attacher.promote` and `Attacher.delete` will resolve all
-    # necessary objects and do the promotion/deletion. Deletion will always
-    # perform the same way, while promotion has the following behaviour:
+    # In background jobs, `Attacher.promote` and `Attacher.delete` will resolve
+    # all necessary objects, and do the promotion/deletion. If
+    # `Attacher.find_record` is defined (which comes with ORM plugins), model
+    # instances will be treated as database records, with the `#id` attribute
+    # assumed to represent the primary key. Then promotion will have the
+    # following behaviour:
     #
-    # * retrieves the database record
+    # 1. retrieves the database record
     #     * if record is not found, it finishes
-    #     * otherwise if fetched attachment doesn't match received, it finishes
-    # * uploads cached file to permanent storage
-    # * reloads the database record
-    #     * if record is not found, it deletes the uploaded files and finishes
-    #     * otherwise if fetched attachment doesn't match received, it deletes the uploaded files and finishes
-    # * updates the record with permanently stored files
+    #     * if record is found but attachment has changed, it finishes
+    # 2. uploads cached file to permanent storage
+    # 3. reloads the database record
+    #     * if record is not found, it deletes the promoted files and finishes
+    #     * if record is found but attachment has changed, it deletes the promoted files and finishes
+    # 4. updates the record with the promoted files
     #
-    # The methods rely on `find_record` method being defined on the `Attacher`
-    # class, which normally come with the ORM plugins. It is also assumes that
-    # the `#id` attribute of the model instance represents a unique identifier.
-    #
-    # Both methods return a `Shrine::Attacher` instance (if the action hasn't
-    # aborted), so you can use it to perform additional tasks:
+    # Both `Attacher.promote` and `Attacher.delete` return a `Shrine::Attacher`
+    # instance (if the action hasn't aborted), so you can use it to perform
+    # additional tasks:
     #
     #     def perform(data)
     #       attacher = Shrine::Attacher.promote(data)
     #       attacher.record.update(published: true) if attacher && attacher.record.is_a?(Post)
     #     end
+    #
+    # ### Plain models
+    #
+    # You can also do backgrounding with plain models which don't represent
+    # database records; the plugin will use that mode if `Attacher.find_record`
+    # is not defined. In that case promotion will have the following behaviour:
+    #
+    # 1. instantiates the model
+    # 2. uploads cached file to permanent storage
+    # 3. writes promoted files to the model instance
+    #
+    # You can then retrieve the promoted files via the attacher object that
+    # `Attacher.promote` returns, and do any additional tasks if you need to.
     #
     # ## `Attacher#_promote` and `Attacher#_delete`
     #
@@ -147,15 +160,7 @@ class Shrine
         # Loads the data created by #dump, resolving the record and returning
         # the attacher.
         def load(data)
-          record_class, record_id = data["record"]
-          record_class = Object.const_get(record_class)
-
-          record   = find_record(record_class, record_id)
-          record ||= record_class.new.tap do |instance|
-            # so that the id is always included in file deletion logs
-            instance.singleton_class.send(:define_method, :id) { record_id }
-          end
-
+          record = load_record(data)
           name = data["name"].to_sym
 
           if data["shrine_class"]
@@ -167,6 +172,29 @@ class Shrine
           end
 
           attacher
+        end
+
+        # Resolves the record from backgrounding data. If the record was found,
+        # returns it. If the record wasn't found, returns an instance of the
+        # model with ID assigned for logging. If `find_record` isn't defined,
+        # then it is a PORO model and should be instantiated with the cached
+        # attachment.
+        def load_record(data)
+          record_class, record_id = data["record"]
+          record_class = Object.const_get(record_class)
+
+          if respond_to?(:find_record)
+            record   = find_record(record_class, record_id)
+            record ||= record_class.new.tap do |instance|
+              # so that the id is always included in file deletion logs
+              instance.singleton_class.send(:define_method, :id) { record_id }
+            end
+          else
+            record = record_class.new
+            record.send(:"#{data["name"]}_data=", data["attachment"])
+          end
+
+          record
         end
       end
 
@@ -215,8 +243,10 @@ class Shrine
 
         # Updates with the new file only if the attachment hasn't changed.
         def swap(new_file)
-          reloaded = self.class.find_record(record.class, record.id)
-          return if reloaded.nil? || self.class.new(reloaded, name).read != read
+          if self.class.respond_to?(:find_record)
+            reloaded = self.class.find_record(record.class, record.id)
+            return if reloaded.nil? || self.class.new(reloaded, name).read != read
+          end
           super
         end
       end

@@ -25,7 +25,7 @@ describe Shrine::Plugins::Backgrounding do
   end
 
   after do
-    User.dataset.delete
+    User.dataset.delete if User < Sequel::Model
     Object.send(:remove_const, "User")
   end
 
@@ -202,5 +202,28 @@ describe Shrine::Plugins::Backgrounding do
       attacher = @attacher.class.load(data)
       Object.send(:remove_const, :MyUploader)
     end
+  end
+
+  it "works with PORO models" do
+    promote_job = proc do |data|
+      attacher = @attacher.class.promote(data)
+      assert_equal @attacher.record.class, attacher.record.class
+      assert attacher.stored?
+      assert attacher.get.exists?
+    end
+
+    delete_job = proc do |data|
+      attacher = @attacher.class.delete(data)
+      assert_equal @attacher.record.class, attacher.record.class
+      assert_instance_of @attacher.record.class, attacher.record.class
+      refute attacher.get.exists?
+    end
+
+    @attacher = attacher { plugin :backgrounding }
+    @attacher.class.promote { |data| promote_job.call(data) }
+    @attacher.class.delete { |data| delete_job.call(data) }
+
+    @attacher.assign(fakeio)
+    @attacher.finalize
   end
 end
