@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `backgrounding` plugin work with plain model instances (@janko-m)
+
 * Make validation methods in `validation_helpers` plugin return whether validation succeeded (@janko-m)
 
 * Make extension matching case insensitive in `validation_helpers` plugin (@jonasheinrich)
