@@ -149,6 +149,11 @@ describe Shrine::Plugins::Versions do
     end
   end
 
+  it "complains when two versions contain the same IO object" do
+    io = fakeio
+    assert_raises(Shrine::Error) { @uploader.upload(version1: io, version2: io) }
+  end
+
   it "still catches invalid IOs" do
     @uploader.instance_eval { def process(io, context); {thumb: "invalid IO"}; end }
     error = assert_raises(Shrine::InvalidFile) { @uploader.upload(fakeio) }

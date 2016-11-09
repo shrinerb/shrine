@@ -1,5 +1,7 @@
 ## HEAD
 
+* Raise a descriptive error when two versions are pointing to the same IO object (@janko-m)
+
 * Make `backgrounding` plugin work with plain model instances (@janko-m)
 
 * Make validation methods in `validation_helpers` plugin return whether validation succeeded (@janko-m)
