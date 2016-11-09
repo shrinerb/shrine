@@ -39,7 +39,7 @@ class Shrine
     # [copying] and [presigning].
     #
     # You can also generate upload options per upload with the `upload_options`
-    # plugin:
+    # plugin
     #
     #     class MyUploader < Shrine
     #       plugin :upload_options, store: ->(io, context) do
@@ -51,9 +51,13 @@ class Shrine
     #       end
     #     end
     #
-    # Note that, unlike the `:upload_options` storage option, the
-    # `upload_options` plugin won't forward the given options for generating
-    # presigns, since presigns are generated using the storage directly.
+    # or when using the uploader directly
+    #
+    #     uploader.upload(file, upload_options: {acl: "public-read"})
+    #
+    # Note that, unlike the `:upload_options` storage option, upload options
+    # given on the uploader level won't be forwarded for generating presigns,
+    # since presigns are generated using the storage directly.
     #
     # ## URL options
     #
