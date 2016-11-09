@@ -187,13 +187,28 @@ With direct uploads any metadata has to be extracted on the client, since
 caching the file doesn't touch your application. When the cached file is stored,
 Shrine's default behaviour is to simply copy over cached file's metadata.
 
-If you want to extract metadata on the server before storing, you can load the
-`restore_cached_data` plugin. That will make Shrine open the S3 file for
-reading, give it for metadata extraction, and then override the received
-metadata with the ones extracted by Shrine.
+If you want to re-extract metadata on the server before file validation, you
+can load the `restore_cached_data`. That will make Shrine open the S3 file for
+reading, give it for metadata extraction, and then override the metadata
+received from the client with one extracted by Shrine.
 
 ```rb
 plugin :restore_cached_data
+```
+
+Note that if you don't need this metadata before file validation, and you would
+like to have it extracted in a background job, you can do the following trick:
+
+```rb
+class MyUploader < Shrine
+  plugin :processing
+
+  process(:store) do |io, context|
+    real_metadata = io.open { |opened_io| extract_metadata(opened_io, context) }
+    io.metadata.update(real_metadata)
+    io # return the same cached IO
+  end
+end
 ```
 
 ## Clearing cache
