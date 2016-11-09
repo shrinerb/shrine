@@ -430,8 +430,10 @@ For default URLs you can use the `default_url` plugin:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :default_url do |context|
-    "/attachments/#{context[:name]}/default.jpg"
+  plugin :default_url
+
+  Attacher.default_url do |options|
+    "/attachments/#{name}/default.jpg"
   end
 end
 ```

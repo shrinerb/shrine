@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `Attacher.default_url` as the idiomatic way of declaring default URLs (@janko-m)
+
 * Allow uploaders themselves to accept Rack uploaded files when `rack_file` is loaded (@janko-m)
 
 * Raise a descriptive error when two versions are pointing to the same IO object (@janko-m)

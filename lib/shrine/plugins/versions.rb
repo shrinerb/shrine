@@ -98,15 +98,15 @@ class Shrine
     #
     # ## Context
     #
-    # The `context` will now also include the version name, which you can use
-    # when generating a location or a default URL:
+    # The version name will be available via `:version` when generating
+    # location or a default URL.
     #
     #     def generate_location(io, context)
     #       "uploads/#{context[:version]}-#{super}"
     #     end
     #
-    #     plugin :default_url do |context|
-    #       "/images/defaults/#{context[:version]}.jpg"
+    #     Attacher.default_url do |options|
+    #       "/images/defaults/#{options[:version]}.jpg"
     #     end
     #
     # [image_processing]: https://github.com/janko-m/image_processing

@@ -250,11 +250,6 @@ describe Shrine::Attacher do
       @attacher.assign(fakeio)
       assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
     end
-
-    it "calls #default_url when attachment is missing" do
-      @attacher.shrine_class.plugin(:default_url) { |c| c[:foo] }
-      assert_equal "bar", @attacher.url(foo: "bar")
-    end
   end
 
   describe "#cached?" do
