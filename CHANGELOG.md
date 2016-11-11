@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow uploaders themselves to accept Rack uploaded files when `rack_file` is loaded (@janko-m)
+
 * Raise a descriptive error when two versions are pointing to the same IO object (@janko-m)
 
 * Make `backgrounding` plugin work with plain model instances (@janko-m)

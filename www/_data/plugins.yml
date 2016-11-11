@@ -38,10 +38,6 @@ Model:
     path: ParsedJson.html
     description: Allows assigning cached files as hashes/arrays (on top of JSON strings).
   -
-    name: rack_file
-    path: RackFile.html
-    description: Allows your models to accept Rack uploaded file hashes as attachments.
-  -
     name: remote_url
     path: RemoteUrl.html
     description: Allows your models to accept attachments as remote URLs.
@@ -159,6 +155,10 @@ Other:
     name: module_include
     path: ModuleInclude.html
     description: Allows easy extending of core classes for a given uploader.
+  -
+    name: rack_file
+    path: RackFile.html
+    description: Enables uploaders to accept Rack uploaded file hashes for uploading.
   -
     name: upload_options
     path: UploadOptions.html

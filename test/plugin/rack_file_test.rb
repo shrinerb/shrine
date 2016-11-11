@@ -1,19 +1,22 @@
 require "test_helper"
 require "shrine/plugins/rack_file"
+require "down"
 
 describe Shrine::Plugins::RackFile do
   before do
-    @attacher = attacher { plugin :rack_file }
-  end
-
-  it "enables assignment of Rack file hashes" do
-    @attacher.assign({
-      tempfile: fakeio("image"),
+    @uploader = uploader { plugin :rack_file }
+    @rack_file = {
+      name: "file",
+      tempfile: Down.copy_to_tempfile("", fakeio("image")),
       filename: "image.jpg",
       type: "image/jpeg",
       head: "...",
-    })
-    uploaded_file = @attacher.get
+    }
+  end
+
+  it "enables assignment of Rack file hashes" do
+    uploaded_file = @uploader.upload(@rack_file)
+
     assert_equal "image",      uploaded_file.read
     assert_equal 5,            uploaded_file.size
     assert_equal "image.jpg",  uploaded_file.original_filename
@@ -21,16 +24,22 @@ describe Shrine::Plugins::RackFile do
   end
 
   it "adds #path, #to_io and #tempfile methods to IO" do
-    @attacher.cache.instance_eval do
-      def upload(io, context = {})
-        @rack_file = io
-        super
-      end
-    end
-    @attacher.assign({tempfile: tempfile = Tempfile.new("")})
-    rack_file = @attacher.cache.instance_variable_get("@rack_file")
-    refute_empty rack_file.path
-    assert_equal tempfile, rack_file.to_io
-    assert_equal tempfile, rack_file.tempfile
+    @uploader.instance_eval { def process(io, context) @rack_file = io end }
+    uploaded_file = @uploader.upload(@rack_file)
+    rack_file = @uploader.instance_variable_get("@rack_file")
+
+    assert_equal @rack_file[:tempfile].path, rack_file.path
+    assert_equal @rack_file[:tempfile],      rack_file.to_io
+    assert_equal @rack_file[:tempfile],      rack_file.tempfile
+  end
+
+  it "works with attacher" do
+    @attacher = attacher { plugin :rack_file }
+    @attacher.assign(@rack_file)
+
+    assert_equal "image",      @attacher.get.read
+    assert_equal 5,            @attacher.get.size
+    assert_equal "image.jpg",  @attacher.get.original_filename
+    assert_equal "image/jpeg", @attacher.get.mime_type
   end
 end
