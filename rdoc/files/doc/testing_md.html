@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-10-16 10:39:43 +0800</span>
+          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -73,16 +73,26 @@
             <p>If you&#39;re using an external storage in development, it is common in
             tests to switch to a filesystem storage. However, that means that
             you&#39;ll also have to clean up the test directory between tests, and
-            writing to filesystem a lot can affect the performance of your tests.</p>
+            writing to filesystem can affect the performance of your tests.</p>
             
-            <p>Instead of filesystem you can use <a
-            href="https://github.com/janko-m/shrine-memory">memory storage</a>, which
-            is both faster and doesn&#39;t require you to clean up anything between
-            tests.</p>
+            <p>If your tests are run in a single process, instead of filesystem you can
+            use <a href="https://github.com/janko-m/shrine-memory">memory storage</a>,
+            which is both faster and doesn&#39;t require you to clean up anything
+            between tests.</p>
             
             <pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine-memory&quot;</span></pre>
             
             <pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
+            
+            <p>Alternatively, if you&#39;re using Amazon S3 storage, in tests (and
+            development) you can swap it out for <a
+            href="https://github.com/jubos/fake-s3">FakeS3</a>. You just need tell
+            aws-sdk that instead of <code>s3.amazonaws.com</code> it should use the
+            host of your FakeS3 server when generating URLs.</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">endpoint</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://localhost:10000&quot;</span>)</pre>
+            
+            <p>Note that for using FakeS3 you need aws-sdk version 2.2.25 or higher.</p>
             
             <h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -190,7 +200,7 @@
             <p>However, it&#39;s even better to design your processing code in such a way
             that it&#39;s easier to swap out in tests. In your <em>application</em>
             code you could extract processing into a single <code>#call</code>-able
-            object, and register it inside uploader generic <code>#opts</code> hash.</p>
+            object, and register it inside uploader generic <code>opts</code> hash.</p>
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>] = <span class="ruby-constant">ImageThumbnailsGenerator</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             

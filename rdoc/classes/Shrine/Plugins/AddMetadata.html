@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -40,12 +40,25 @@
             <p>The <code>add_metadata</code> plugin provides a convenient method for
             extracting and adding custom metadata values.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">pages</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PDF</span><span class="ruby-operator">::</span><span class="ruby-constant">Reader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">page_count</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>The above will add “exif” to the metadata hash, and also add the
-            <code>#exif</code> method to the <code>UploadedFile</code>:</p>
+            <p>The above will add “pages” to the metadata hash, and also create the
+            <code>#pages</code> reader method on <a
+            href="../UploadedFile.html">Shrine::UploadedFile</a>.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exif</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">document</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;pages&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">pages</span></pre>
+            
+            <p>You can also extract multiple metadata values at once, by using
+            <code>add_metadata</code> without an argument.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+            
+            <p>In this case <a href="../../Shrine.html">Shrine</a> won&#39;t automatically
+            create reader methods for the extracted metadata on <a
+            href="../UploadedFile.html">Shrine::UploadedFile</a>, but you can create
+            them via <code>metadata_method</code>.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">metadata_method</span> :<span class="ruby-identifier">duration</span>, :<span class="ruby-identifier">bitrate</span>, :<span class="ruby-identifier">resolution</span>, :<span class="ruby-identifier">frame_rate</span></pre>
           </div>
           <div id='method-list'>
             <h2>Methods</h2>
@@ -79,7 +92,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 19</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = {}&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = []&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

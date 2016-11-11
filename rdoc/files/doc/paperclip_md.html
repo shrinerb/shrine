@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-10-16 10:39:43 +0800</span>
+          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -266,7 +266,7 @@
             
             <p>For default URLs you can use the <code>default_url</code> plugin:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-node">&quot;/attachments/#{context[:name]}/default.jpg&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-node">&quot;/attachments/#{name}/default.jpg&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h4 id="label-3Apreserve_files"><code>:preserve_files</code><span><a href="#label-3Apreserve_files">&para;</a> <a href="#top">&uarr;</a></span></h4>
             

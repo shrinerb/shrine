@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-10-17 17:08:23 +0800</span>
+          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
         </div>
       </div>
       <div id='content'>
@@ -64,7 +64,7 @@
             <p>You can start by setting both temporary and permanent storage to S3 with
             different prefixes (or even buckets):</p>
             
-            <pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.1&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.1&quot;</span></pre>
             
             <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;abc&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;123&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;my-region&quot;</span>,&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;my-bucket&quot;</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
             
@@ -111,7 +111,7 @@
             <code>direct_upload</code> plugin gives us this presign route, so we just
             need to mount it in our application:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;roda&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;roda&quot;</span></pre>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span></pre>
             
@@ -168,10 +168,20 @@
             is stored, Shrine&#39;s default behaviour is to simply copy over cached
             file&#39;s metadata.</p>
             
-            <p>If you want to extract metadata on the server before storing, you can just
-            load the <code>restore_cached_data</code> plugin.</p>
+            <p>If you want to re-extract metadata on the server before file validation,
+            you can load the <code>restore_cached_data</code>. That will make <a
+            href="../../classes/Shrine.html">Shrine</a> open the S3 file for reading,
+            give it for metadata extraction, and then override the metadata received
+            from the client with one extracted by <a
+            href="../../classes/Shrine.html">Shrine</a>.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">restore_cached_data</span></pre>
+            
+            <p>Note that if you don&#39;t need this metadata before file validation, and
+            you would like to have it extracted in a background job, you can do the
+            following trick:</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">real_metadata</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">opened_io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">opened_io</span>, <span class="ruby-identifier">context</span>) }&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">real_metadata</span>)&#x000A;    <span class="ruby-identifier">io</span> <span class="ruby-comment"># return the same cached IO</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

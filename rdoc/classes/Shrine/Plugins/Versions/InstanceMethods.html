@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/versions.rb">lib/shrine/plugins/versions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/versions.rb">lib/shrine/plugins/versions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -62,7 +62,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-uploaded-3F-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-uploaded-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 149</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">if</span> (<span class="ruby-identifier">hash</span> = <span class="ruby-identifier">uploaded_file</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;    <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">all?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">version</span><span class="ruby-operator">|</span> <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">version</span>) }&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-uploaded-3F-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 157</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">if</span> (<span class="ruby-identifier">hash</span> = <span class="ruby-identifier">uploaded_file</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;    <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">all?</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">version</span><span class="ruby-operator">|</span> <span class="ruby-identifier">uploaded?</span>(<span class="ruby-identifier">version</span>) }&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

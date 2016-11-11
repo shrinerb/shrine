@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -40,6 +40,7 @@
             <h2>Methods</h2>
             <h3>Public Instance</h3>
             <ol>
+              <li><a href="#method-i-dimensions">dimensions</a></li>
               <li><a href="#method-i-height">height</a></li>
               <li><a href="#method-i-width">width</a></li>
             </ol>
@@ -49,6 +50,22 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-dimensions'>
+                <a name='method-i-dimensions'></a>
+                <div class='synopsis'>
+                  <span class='name'>dimensions</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-dimensions-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-dimensions-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 86</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">dimensions</span>&#x000A;  [<span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">width</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">height</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
               <div class='method public-instance' id='method-method-i-height'>
                 <a name='method-i-height'></a>
                 <div class='synopsis'>
@@ -62,7 +79,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-height-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-height-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 77</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">height</span>&#x000A;  <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-height-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 82</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">height</span>&#x000A;  <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-width'>
@@ -78,7 +95,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-width-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-width-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 73</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">width</span>&#x000A;  <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-width-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 78</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">width</span>&#x000A;  <span class="ruby-constant">Integer</span>(<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]) <span class="ruby-keyword">if</span> <span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

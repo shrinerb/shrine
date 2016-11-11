@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::RackFile::AttacherMethods</title>
+    <title>Shrine::Plugins::DefaultUrl::AttacherClassMethods</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -25,11 +25,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::RackFile::AttacherMethods
+          Shrine::Plugins::DefaultUrl::AttacherClassMethods
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/default_url.rb">lib/shrine/plugins/default_url.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -40,7 +40,7 @@
             <h2>Methods</h2>
             <h3>Public Instance</h3>
             <ol>
-              <li><a href="#method-i-assign">assign</a></li>
+              <li><a href="#method-i-default_url">default_url</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -48,22 +48,20 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-assign'>
-                <a name='method-i-assign'></a>
+              <div class='method public-instance' id='method-method-i-default_url'>
+                <a name='method-i-default_url'></a>
                 <div class='synopsis'>
-                  <span class='name'>assign</span>
-                  <span class='arguments'>(value)</span>
+                  <span class='name'>default_url</span>
+                  <span class='arguments'>(&block)</span>
                 </div>
                 <div class='description'>
                   
-                  <p>Checks whether a file is a Rack file hash, and in that case wraps the hash
-                  in an IO-like object.</p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-assign-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-default_url-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-assign-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 30</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">rack_file?</span>(<span class="ruby-identifier">value</span>)&#x000A;    <span class="ruby-identifier">assign</span>(<span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">value</span>))&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-default_url-source'><span class="ruby-comment"># File lib/shrine/plugins/default_url.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">default_url</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url_block</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

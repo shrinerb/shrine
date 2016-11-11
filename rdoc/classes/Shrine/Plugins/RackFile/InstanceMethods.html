@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>Shrine::Plugins::Logging::InstanceMethods</title>
+    <title>Shrine::Plugins::RackFile::InstanceMethods</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -25,11 +25,11 @@
       <div class='header'>
         <h1 class='name'>
           <span class='type'>module</span>
-          Shrine::Plugins::Logging::InstanceMethods
+          Shrine::Plugins::RackFile::InstanceMethods
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/logging.rb">lib/shrine/plugins/logging.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -40,8 +40,8 @@
             <h2>Methods</h2>
             <h3>Public Instance</h3>
             <ol>
-              <li><a href="#method-i-delete">delete</a></li>
               <li><a href="#method-i-store">store</a></li>
+              <li><a href="#method-i-upload">upload</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -49,22 +49,6 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-delete'>
-                <a name='method-i-delete'></a>
-                <div class='synopsis'>
-                  <span class='name'>delete</span>
-                  <span class='arguments'>(io, context = {})</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-delete-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-delete-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 89</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">delete</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">log</span>(<span class="ruby-string">&quot;delete&quot;</span>, <span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-keyword">super</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
               <div class='method public-instance' id='method-method-i-store'>
                 <a name='method-i-store'></a>
                 <div class='synopsis'>
@@ -73,12 +57,32 @@
                 </div>
                 <div class='description'>
                   
+                  <p>If <code>io</code> is a Rack uploaded file hash, converts it to an IO-like
+                  object and calls <code>super</code>.</p>
                 </div>
                 <div class='source'>
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-store-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 85</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">log</span>(<span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) { <span class="ruby-keyword">super</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 54</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">convert_rack_file</span>(<span class="ruby-identifier">io</span>), <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-upload'>
+                <a name='method-i-upload'></a>
+                <div class='synopsis'>
+                  <span class='name'>upload</span>
+                  <span class='arguments'>(io, context = {})</span>
+                </div>
+                <div class='description'>
+                  
+                  <p>If <code>io</code> is a Rack uploaded file hash, converts it to an IO-like
+                  object and calls <code>super</code>.</p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-upload-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 48</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">convert_rack_file</span>(<span class="ruby-identifier">io</span>), <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

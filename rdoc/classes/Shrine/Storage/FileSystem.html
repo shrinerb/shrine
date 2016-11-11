@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/storage/file_system.rb">lib/shrine/storage/file_system.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/storage/file_system.rb">lib/shrine/storage/file_system.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
         <div class='parent'>
@@ -78,7 +78,7 @@
             
             <p>If you&#39;re using <a href="FileSystem.html">FileSystem</a> as cache, you
             will probably want to periodically delete old files which aren&#39;t used
-            anymore. You can put the following in a periodic Rake task:</p>
+            anymore. You can run something like this periodically:</p>
             
             <pre class="ruby"><span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span>) <span class="ruby-comment"># delete files older than 1 week</span></pre>
             
@@ -278,7 +278,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-method_missing-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-method_missing-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 186</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value">:download</span>&#x000A;    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.&quot;</span>&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down&quot;</span>&#x000A;    <span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">copy_to_tempfile</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">file</span>) }&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-method_missing-source'><span class="ruby-comment"># File lib/shrine/storage/file_system.rb, line 186</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span> <span class="ruby-operator">==</span> <span class="ruby-value">:download</span>&#x000A;    <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.&quot;</span>&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down&quot;</span>&#x000A;    <span class="ruby-identifier">open</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">copy_to_tempfile</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-identifier">file</span>) }&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-movable-3F'>

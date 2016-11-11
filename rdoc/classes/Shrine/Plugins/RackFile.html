@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -37,18 +37,33 @@
         <div id='text'>
           <div id='description'>
             
-            <p>The <code>rack_file</code> plugin enables models to accept Rack file hashes
-            as attachments.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">rack_file</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   filename: &quot;cats.png&quot;,</span>&#x000A;<span class="ruby-comment">#   type: &quot;image/png&quot;,</span>&#x000A;<span class="ruby-comment">#   tempfile: #&lt;Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   head: &quot;Content-Disposition: form-data; ...&quot;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">rack_file</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cats.png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span></pre>
-            
-            <p>Internally the plugin wraps the Rack file hash into an IO-like object, and
-            this is what is passed to <code>Shrine#upload</code>.</p>
+            <p>The <code>rack_file</code> plugin enables uploaders to accept Rack uploaded
+            file hashes for uploading.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">rack_file</span></pre>
             
-            <p>Note that this plugin is not needed in Rails applications, because Rails
-            already wraps Rack uploaded files in
+            <p>When a file is uploaded to your Rack application using the
+            <code>multipart/form-data</code> parameter encoding, Rack converts the
+            uploaded file to a hash.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">params</span>[:<span class="ruby-identifier">file</span>] <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   name: &quot;file&quot;</span>&#x000A;<span class="ruby-comment">#   filename: &quot;cats.png&quot;,</span>&#x000A;<span class="ruby-comment">#   type: &quot;image/png&quot;,</span>&#x000A;<span class="ruby-comment">#   tempfile: #&lt;Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   head: &quot;Content-Disposition: form-data; ...&quot;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
+            
+            <p>Since <a href="../../Shrine.html">Shrine</a> only accepts IO objects, you
+            would normally need to fetch the <code>:tempfile</code> object and pass it
+            directly. This plugin enables the uploader and attacher to accept the Rack
+            uploaded file hash as a whole, which is then internally converted into an
+            IO object.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">params</span>[:<span class="ruby-identifier">file</span>])&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">params</span>[:<span class="ruby-identifier">file</span>])&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">params</span>[:<span class="ruby-identifier">file</span>]</pre>
+            
+            <p>This especially convenient when doing mass attribute assignment with
+            request parameters. It will also copy the received file information into
+            metadata.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">params</span>[:<span class="ruby-identifier">file</span>])&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cats.png&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span></pre>
+            
+            <p>Note that this plugin is not needed in Rails applications, as Rails already
+            wraps Rack uploaded files in
             <code>ActionDispatch::Http::UploadedFile</code>.</p>
           </div>
           <div id='context'>
@@ -56,7 +71,7 @@
           <div id='class-list'>
             <h2>Classes and Modules</h2>
             <ol>
-              <li><a href="RackFile/AttacherMethods.html">Shrine::Plugins::RackFile::AttacherMethods</a></li>
+              <li><a href="RackFile/InstanceMethods.html">Shrine::Plugins::RackFile::InstanceMethods</a></li>
               <li><a href="RackFile/UploadedFile.html">Shrine::Plugins::RackFile::UploadedFile</a></li>
             </ol>
           </div>

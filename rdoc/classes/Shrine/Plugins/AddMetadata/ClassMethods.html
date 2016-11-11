@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -41,6 +41,7 @@
             <h3>Public Instance</h3>
             <ol>
               <li><a href="#method-i-add_metadata">add_metadata</a></li>
+              <li><a href="#method-i-metadata_method">metadata_method</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -52,7 +53,7 @@
                 <a name='method-i-add_metadata'></a>
                 <div class='synopsis'>
                   <span class='name'>add_metadata</span>
-                  <span class='arguments'>(name, &block)</span>
+                  <span class='arguments'>(name = nil, &block)</span>
                 </div>
                 <div class='description'>
                   
@@ -61,7 +62,23 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-add_metadata-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-add_metadata-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">add_metadata</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>][<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">block</span>&#x000A;&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:define_method</span>, <span class="ruby-identifier">name</span>) <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">metadata</span>[<span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-add_metadata-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 42</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">add_metadata</span>(<span class="ruby-identifier">name</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>&#x000A;    <span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">_metadata_proc</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;    <span class="ruby-identifier">metadata_method</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">block</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-metadata_method'>
+                <a name='method-i-metadata_method'></a>
+                <div class='synopsis'>
+                  <span class='name'>metadata_method</span>
+                  <span class='arguments'>(*names)</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-metadata_method-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-metadata_method-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 51</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">metadata_method</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">names</span>)&#x000A;  <span class="ruby-identifier">names</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span> <span class="ruby-identifier">_metadata_method</span>(<span class="ruby-identifier">name</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

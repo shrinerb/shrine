@@ -14,7 +14,7 @@
     <header class="header">
   <div class="container">
     <div>
-      <h1>Shrine (v2.4.1)</h1>
+      <h1>Shrine (v2.5.0)</h1>
       <p>
         <span class="text">File Attachment toolkit for Ruby applications</span>
         <svg class="icon" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
@@ -120,6 +120,12 @@
             <li>
               <a href="http://shrinerb.com/rdoc/files/doc/migrating_storage_md.html">
                 Migrating to Different Storage
+              </a>
+            </li>
+            
+            <li>
+              <a href="http://shrinerb.com/rdoc/files/doc/multiple_files_md.html">
+                Multiple Files
               </a>
             </li>
             
@@ -242,13 +248,6 @@
         </dt>
         <dd>
           <div>Allows assigning cached files as hashes/arrays (on top of JSON strings).</div>
-        </dd>
-        
-        <dt>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html">rack_file</a>:
-        </dt>
-        <dd>
-          <div>Allows your models to accept Rack uploaded file hashes as attachments.</div>
         </dd>
         
         <dt>
@@ -375,7 +374,7 @@
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoveInvalid.html">remove_invalid</a>:
         </dt>
         <dd>
-          <div>Automatically deletes and deassigns cached files if they're invalid.</div>
+          <div>Automatically deletes and deassigns the assigned cached file if it's invalid.</div>
         </dd>
         
       </dl>
@@ -466,6 +465,13 @@
         </dd>
         
         <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html">rack_file</a>:
+        </dt>
+        <dd>
+          <div>Enables uploaders to accept Rack uploaded file hashes for uploading.</div>
+        </dd>
+        
+        <dt>
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadOptions.html">upload_options</a>:
         </dt>
         <dd>
@@ -481,6 +487,9 @@
       <ul>
         
         <li>
+          
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_5_0_md.html">2.5.0</a>
+          |
           
           <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_4_1_md.html">2.4.1</a>
           |
@@ -602,6 +611,18 @@
               </a>
             </li>
             
+            <li>
+              <a href="https://twin.github.io/better-file-uploads-with-shrine-processing/">
+                Better File Uploads with Shrine: Processing
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://twin.github.io/better-file-uploads-with-shrine-metadata/">
+                Better File Uploads with Shrine: Metadata
+              </a>
+            </li>
+            
           </ul>
           
           <h3>Screencasts</h3>
@@ -628,6 +649,12 @@
             <li>
               <a href="https://gorails.com/episodes/direct-file-uploads-to-s3-part-3?autoplay=1">
                 Direct File Uploads to S3: Part 3 (GoRails)
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://gorails.com/episodes/shrine-background-and-video-transcoding?autoplay=1">
+                Backgrounding and Video Transcoding (GoRails)
               </a>
             </li>
             
@@ -741,38 +768,61 @@
         
         <div class="col">
           
-          <h3>Projects & Libraries</h3>
+          <h3>Applications</h3>
           <ul>
             
             <li>
               <a href="https://github.com/janko-m/shrine/tree/master/demo">
-                Roda example app (official)
+                Roda demo (official)
               </a>
             </li>
             
             <li>
               <a href="https://github.com/erikdahlstrand/shrine-rails-example">
-                Rails example app
+                Rails demo
               </a>
             </li>
             
             <li>
               <a href="https://github.com/katafrakt/hanami-shrine-example">
-                Hanami example app
-              </a>
-            </li>
-            
-            <li>
-              <a href="https://github.com/janko-m/shrine-tus-demo">
-                Resumable uploads demo app
+                Hanami demo
               </a>
             </li>
             
             <li>
               <a href="https://github.com/janko-m/shrine-rom-example">
-                ROM & dry-rb example app
+                ROM & dry-rb demo
               </a>
             </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-tus-demo">
+                Resumable uploads demo
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-cloudinary/tree/master/demo">
+                Cloudinary demo
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-transloadit/tree/master/demo">
+                Transloadit demo
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-uploadcare/tree/master/demo">
+                Uploadcare demo
+              </a>
+            </li>
+            
+          </ul>
+          
+          <h3>Libraries</h3>
+          <ul>
             
             <li>
               <a href="https://github.com/iquest/rails_admin_shrine">

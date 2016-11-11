@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/fea4b245f66208b1256274cbd2c4db10a96cf996/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -43,10 +43,12 @@
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span></pre>
             
-            <p>You can access the dimensions through <code>#width</code> and
-            <code>#height</code> methods:</p>
+            <p>It adds “width” and “height” metadata values to <a
+            href="../UploadedFile.html">Shrine::UploadedFile</a>, and creates
+            <code>#width</code>, <code>#height</code> and <code>#dimensions</code>
+            reader methods.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image.jpg&quot;</span>))&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 300</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">height</span> <span class="ruby-comment">#=&gt; 500</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">image</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]  <span class="ruby-comment">#=&gt; 300</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 300</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">height</span> <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [300, 500]</span></pre>
             
             <p>The fastimage gem has built-in protection against <a
             href="https://www.bamsoftware.com/hacks/deflate.html">image bombs</a>.
@@ -87,7 +89,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 28</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:dimensions_analyzer</span>, <span class="ruby-value">:fastimage</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 33</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:dimensions_analyzer</span>, <span class="ruby-value">:fastimage</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>
