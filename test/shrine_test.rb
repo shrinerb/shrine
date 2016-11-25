@@ -185,6 +185,11 @@ describe Shrine do
       assert_equal "foo", uploaded_file.id
     end
 
+    it "raises Shrine::Error when generated location was nil" do
+      @uploader.instance_eval { def generate_location(io, context); nil; end }
+      assert_raises(Shrine::Error) { @uploader.store(fakeio) }
+    end
+
     it "extracts and assigns metadata" do
       photo = fakeio("photo", filename: "nature.jpg", content_type: "image/jpeg")
       uploaded_file = @uploader.store(photo)

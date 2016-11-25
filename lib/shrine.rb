@@ -340,7 +340,8 @@ class Shrine
         # Retrieves the location for the given IO and context. First it looks
         # for the `:location` option, otherwise it calls #generate_location.
         def get_location(io, context)
-          context[:location] || generate_location(io, context)
+          location = context[:location] || generate_location(io, context)
+          location or raise Error, "location generated for #{io.inspect} was nil (context = #{context})"
         end
 
         # If the IO object is a Shrine::UploadedFile, it simply copies over its

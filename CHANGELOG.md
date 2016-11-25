@@ -1,3 +1,7 @@
+## HEAD
+
+* Raise `Shrine::Error` when `Shrine#generate_location` returns nil (@janko-m)
+
 ## 2.5.0 (2016-11-11)
 
 * Add `Attacher.default_url` as the idiomatic way of declaring default URLs (@janko-m)
