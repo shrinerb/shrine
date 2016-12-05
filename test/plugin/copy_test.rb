@@ -56,7 +56,7 @@ describe Shrine::Plugins::Copy do
     it "copies blank file" do
       @duplicated_attacher.set(@duplicated_attacher.store!(fakeio))
       @duplicated_attacher.copy(@attacher)
-      assert_equal nil, @duplicated_attacher.get
+      assert_nil @duplicated_attacher.get
     end
 
     it "makes the attacher dirty" do
@@ -82,7 +82,7 @@ describe Shrine::Plugins::Copy do
 
     it "doesn't do anything when no attachment is assigned" do
       duplicated_attacher = @user.dup.avatar_attacher
-      assert_equal nil, duplicated_attacher.get
+      assert_nil duplicated_attacher.get
     end
 
     it "works correctly with moving plugin" do

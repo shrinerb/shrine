@@ -12,7 +12,7 @@ describe Shrine::Plugins::DefaultUrl do
   end
 
   it "returns nil when no block is given and attachment is missing" do
-    assert_equal nil, @attacher.url
+    assert_nil @attacher.url
   end
 
   it "returns attachment URL if attachment is present" do

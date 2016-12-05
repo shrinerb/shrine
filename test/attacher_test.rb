@@ -38,13 +38,13 @@ describe Shrine::Attacher do
     it "rejects stored files for security reasons" do
       stored_file = @attacher.store!(fakeio)
       @attacher.assign(stored_file.to_json)
-      assert_equal nil, @attacher.get
+      assert_nil nil, @attacher.get
     end
 
     it "accepts nils" do
       @attacher.assign(fakeio)
       @attacher.assign(nil)
-      assert_equal nil, @attacher.get
+      assert_nil @attacher.get
     end
 
     it "ignores empty strings" do
@@ -74,8 +74,8 @@ describe Shrine::Attacher do
     it "nullifies the attachment if nil is passed in" do
       @attacher.assign(fakeio)
       @attacher.set(nil)
-      assert_equal nil, @attacher.get
-      assert_equal nil, @attacher.record.avatar_data
+      assert_nil @attacher.get
+      assert_nil @attacher.record.avatar_data
     end
 
     it "allows setting stored files" do
@@ -104,10 +104,10 @@ describe Shrine::Attacher do
 
     it "returns nil when column is blank" do
       @attacher.record.avatar_data = nil
-      assert_equal nil, @attacher.get
+      assert_nil @attacher.get
 
       @attacher.record.avatar_data = ""
-      assert_equal nil, @attacher.get
+      assert_nil @attacher.get
     end
   end
 
@@ -240,7 +240,7 @@ describe Shrine::Attacher do
 
   describe "#url" do
     it "calls storage's #url" do
-      assert_equal nil, @attacher.url
+      assert_nil @attacher.url
       @attacher.assign(fakeio)
       assert_equal "memory://#{@attacher.get.id}", @attacher.url
     end

@@ -10,7 +10,7 @@ describe Shrine::Plugins::RemoveAttachment do
   it "nullifies files" do
     @user.avatar = fakeio
     @user.remove_avatar = true
-    assert_equal nil, @user.avatar
+    assert_nil @user.avatar
   end
 
   it "doesn't nullify files if set to false" do

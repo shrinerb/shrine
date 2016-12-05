@@ -64,7 +64,7 @@ describe Shrine::Plugins::DetermineMimeType do
 
     it "returns nil for unidentified MIME types" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(""))
-      assert_equal nil, mime_type
+      assert_nil mime_type
     end
   end
 
@@ -83,12 +83,12 @@ describe Shrine::Plugins::DetermineMimeType do
 
     it "returns nil on unkown extension" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(filename: "file.foo"))
-      assert_equal nil, mime_type
+      assert_nil mime_type
     end
 
     it "returns nil when input is not a file" do
       mime_type = @uploader.send(:extract_mime_type, fakeio)
-      assert_equal nil, mime_type
+      assert_nil mime_type
     end
   end
 

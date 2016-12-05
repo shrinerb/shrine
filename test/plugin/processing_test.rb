@@ -43,6 +43,6 @@ describe Shrine::Plugins::Processing do
   end
 
   it "has #process return nil when there are no blocks defined" do
-    assert_equal nil, @uploader.process(fakeio)
+    assert_nil @uploader.process(fakeio)
   end
 end
