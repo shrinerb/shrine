@@ -159,7 +159,7 @@ describe Shrine::Plugins::Backgrounding do
 
     it "handles the case when attachment is nil" do
       data = @attacher.class.dump(@attacher)
-      assert_equal nil, data["attachment"]
+      assert_nil data["attachment"]
     end
 
     it "includes the shrine_class" do
@@ -171,7 +171,7 @@ describe Shrine::Plugins::Backgrounding do
 
     it "sets shrine_class to nil for anonymous classes" do
       data = @attacher.class.dump(@attacher)
-      assert_equal nil, data["shrine_class"]
+      assert_nil data["shrine_class"]
     end
   end
 

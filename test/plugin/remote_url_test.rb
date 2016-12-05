@@ -22,7 +22,7 @@ describe Shrine::Plugins::RemoteUrl do
 
   it "keeps the remote url value if downloading doesn't succeed" do
     @user.avatar_remote_url = good_url
-    assert_equal nil, @user.avatar_remote_url
+    assert_nil @user.avatar_remote_url
     @user.avatar_remote_url = bad_url
     assert_equal bad_url, @user.avatar_remote_url
   end
@@ -36,7 +36,7 @@ describe Shrine::Plugins::RemoteUrl do
   it "ignores empty urls" do
     @user.avatar_remote_url = ""
     refute @user.avatar
-    assert_equal nil, @user.avatar_remote_url
+    assert_nil @user.avatar_remote_url
   end
 
   it "accepts :max_size" do

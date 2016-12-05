@@ -55,7 +55,7 @@ describe Shrine::Plugins::Versions do
     end
 
     it "returns nil when a attachment doesn't exist" do
-      assert_equal nil, @attacher.url(:thumb)
+      assert_nil @attacher.url(:thumb)
     end
 
     it "doesn't fail if version is registered but missing" do

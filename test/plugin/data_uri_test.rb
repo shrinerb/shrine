@@ -18,7 +18,7 @@ describe Shrine::Plugins::DataUri do
 
   it "keeps the data uri value if uploading doesn't succeed" do
     @user.avatar_data_uri = data_uri
-    assert_equal nil, @user.avatar_data_uri
+    assert_nil @user.avatar_data_uri
     @user.avatar_data_uri = "foo"
     assert_equal "foo", @user.avatar_data_uri
   end

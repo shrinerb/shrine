@@ -81,10 +81,10 @@ describe Shrine::UploadedFile do
       assert_equal "foo.jpg", uploaded_file.original_filename
 
       uploaded_file = uploaded_file("metadata" => {"filename" => nil})
-      assert_equal nil, uploaded_file.original_filename
+      assert_nil uploaded_file.original_filename
 
       uploaded_file = uploaded_file("metadata" => {})
-      assert_equal nil, uploaded_file.original_filename
+      assert_nil uploaded_file.original_filename
     end
   end
 
@@ -94,7 +94,7 @@ describe Shrine::UploadedFile do
       assert_equal "jpg", uploaded_file.extension
 
       uploaded_file = uploaded_file("id" => "foo")
-      assert_equal nil, uploaded_file.extension
+      assert_nil uploaded_file.extension
     end
 
     it "extracts file extension from filename" do
@@ -102,10 +102,10 @@ describe Shrine::UploadedFile do
       assert_equal "jpg", uploaded_file.extension
 
       uploaded_file = uploaded_file("metadata" => {"filename" => "foo"})
-      assert_equal nil, uploaded_file.extension
+      assert_nil uploaded_file.extension
 
       uploaded_file = uploaded_file("metadata" => {})
-      assert_equal nil, uploaded_file.extension
+      assert_nil uploaded_file.extension
     end
 
     # Some storages may reformat the file on upload, changing its extension,
@@ -123,10 +123,10 @@ describe Shrine::UploadedFile do
       assert_equal 50, uploaded_file.size
 
       uploaded_file = uploaded_file("metadata" => {"size" => nil})
-      assert_equal nil, uploaded_file.size
+      assert_nil uploaded_file.size
 
       uploaded_file = uploaded_file("metadata" => {})
-      assert_equal nil, uploaded_file.size
+      assert_nil uploaded_file.size
     end
 
     it "converts the value to integer" do
@@ -144,10 +144,10 @@ describe Shrine::UploadedFile do
       assert_equal "image/jpeg", uploaded_file.mime_type
 
       uploaded_file = uploaded_file("metadata" => {"mime_type" => nil})
-      assert_equal nil, uploaded_file.mime_type
+      assert_nil uploaded_file.mime_type
 
       uploaded_file = uploaded_file("metadata" => {})
-      assert_equal nil, uploaded_file.mime_type
+      assert_nil uploaded_file.mime_type
     end
 
     it "has #content_type alias" do
@@ -163,7 +163,7 @@ describe Shrine::UploadedFile do
       uploaded_file.rewind
       assert_equal "fi", uploaded_file.read(2)
       assert_equal "le", uploaded_file.read(2)
-      assert_equal nil,  uploaded_file.read(2)
+      assert_nil  uploaded_file.read(2)
     end
   end
 

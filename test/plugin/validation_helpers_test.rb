@@ -52,7 +52,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "doesn't add an error if width is nil" do
       @attacher.shrine_class.plugin :store_dimensions
       @attacher.assign(fakeio("not an image"))
-      assert_equal nil, @attacher.validate_max_width(10)
+      assert_nil @attacher.validate_max_width(10)
       assert_empty @attacher.errors
     end
 
@@ -80,7 +80,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "doesn't add an error if width is nil" do
       @attacher.shrine_class.plugin :store_dimensions
       @attacher.assign(fakeio("not an image"))
-      assert_equal nil, @attacher.validate_min_width(10)
+      assert_nil @attacher.validate_min_width(10)
       assert_empty @attacher.errors
     end
 
@@ -108,7 +108,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "doesn't add an error if height is missing" do
       @attacher.shrine_class.plugin :store_dimensions
       @attacher.assign(fakeio("not an image"))
-      assert_equal nil, @attacher.validate_max_height(10)
+      assert_nil @attacher.validate_max_height(10)
       assert_empty @attacher.errors
     end
 
@@ -136,7 +136,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "doesn't add an error if height is nil" do
       @attacher.shrine_class.plugin :store_dimensions
       @attacher.assign(fakeio("not an image"))
-      assert_equal nil, @attacher.validate_min_height(10)
+      assert_nil @attacher.validate_min_height(10)
       assert_empty @attacher.errors
     end
 

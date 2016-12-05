@@ -55,9 +55,9 @@ describe Shrine::Plugins::StoreDimensions do
       uploaded_file = @uploader.upload(image)
       uploaded_file.metadata["width"] = nil
       uploaded_file.metadata.delete("height")
-      assert_equal nil, uploaded_file.width
-      assert_equal nil, uploaded_file.height
-      assert_equal nil, uploaded_file.dimensions
+      assert_nil uploaded_file.width
+      assert_nil uploaded_file.height
+      assert_nil uploaded_file.dimensions
     end
   end
 end

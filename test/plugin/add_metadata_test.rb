@@ -82,7 +82,7 @@ describe Shrine::Plugins::AddMetadata do
     it "returns nil if metadata is missing" do
       @uploader.class.metadata_method :custom
       uploaded_file = @uploader.upload(fakeio)
-      assert_equal nil, uploaded_file.custom
+      assert_nil uploaded_file.custom
     end
   end
 end
