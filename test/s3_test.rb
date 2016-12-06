@@ -33,6 +33,9 @@ describe Shrine::Storage::S3 do
 
   it "passes the linter" do
     Shrine::Storage::Linter.new(s3).call
+  end
+
+  it "passes the linter with prefix" do
     Shrine::Storage::Linter.new(s3(prefix: "foo")).call
   end
 
