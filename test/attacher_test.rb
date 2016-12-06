@@ -38,7 +38,7 @@ describe Shrine::Attacher do
     it "rejects stored files for security reasons" do
       stored_file = @attacher.store!(fakeio)
       @attacher.assign(stored_file.to_json)
-      assert_nil nil, @attacher.get
+      assert_nil @attacher.get
     end
 
     it "accepts nils" do
