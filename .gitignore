@@ -4,3 +4,5 @@ pkg/
 .sass-cache
 www/build
 coverage/
+.rvmrc
+.idea

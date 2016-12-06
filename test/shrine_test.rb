@@ -295,6 +295,15 @@ describe Shrine do
       uploaded_file = @uploader.upload(fakeio)
       assert_equal uploaded_file.metadata, @uploader.instance_variable_get("@metadata")
     end
+
+    it "raises if the generated location was nil" do
+      @uploader.instance_eval do
+        def generate_location(_io, _context)
+          nil
+        end
+      end
+      assert_raises(Shrine::Error) { @uploader.upload(fakeio) }
+    end
   end
 
   describe "#extract_metadata" do
