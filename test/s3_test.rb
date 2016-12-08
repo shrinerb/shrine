@@ -164,4 +164,17 @@ describe Shrine::Storage::S3 do
       assert_equal "http://#{s3.bucket.name}.foo.com", presign.url
     end
   end
+
+  describe "#object" do
+    it "returns an Aws::S3::Object" do
+      object = @s3.object("foo")
+      assert_equal "foo", object.key
+      assert_equal @s3.bucket.name, object.bucket.name
+    end
+
+    it "applies the :prefix" do
+      object = s3(prefix: "foo").object("bar")
+      assert_equal "foo/bar", object.key
+    end
+  end
 end

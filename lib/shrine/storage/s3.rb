@@ -281,6 +281,11 @@ class Shrine
         object(id).presigned_post(options)
       end
 
+      # Returns an `Aws::S3::Object` for the given id.
+      def object(id)
+        bucket.object([*prefix, id].join("/"))
+      end
+
       # Catches the deprecated `#stream` method.
       def method_missing(name, *args)
         if name == :stream
@@ -293,11 +298,6 @@ class Shrine
       end
 
       protected
-
-      # Returns the S3 object.
-      def object(id)
-        bucket.object([*prefix, id].join("/"))
-      end
 
       # This is used to check whether an S3 file is copyable.
       def access_key_id

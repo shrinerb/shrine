@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `Shrine::Storage::S3#object` method public (@janko-m)
+
 * Raise `Shrine::Error` when `Shrine#generate_location` returns nil (@janko-m)
 
 ## 2.5.0 (2016-11-11)
