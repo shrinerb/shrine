@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't require the `benchmark` standard library in `logging` plugin (@janko-m)
+
 * Don't dirty the attacher in `Attacher#set` when attachment hasn't changed (@janko-m)
 
 * Rename `Attacher#attached?` to a more accurate `Attacher#changed?` (@janko-m)

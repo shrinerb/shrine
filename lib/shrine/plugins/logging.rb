@@ -1,5 +1,4 @@
 require "logger"
-require "benchmark"
 require "json"
 
 class Shrine
@@ -157,9 +156,10 @@ class Shrine
         end
 
         def benchmark
-          result = nil
-          duration = Benchmark.realtime { result = yield }
-          [result, duration]
+          start = Time.now
+          result = yield
+          finish = Time.now
+          [result, finish - start]
         end
       end
     end
