@@ -42,16 +42,16 @@ class Shrine
       end
 
       DEFAULT_MESSAGES = {
-        max_size: ->(max) { "is larger than #{max.to_f/1024/1024} MB" },
-        min_size: ->(min) { "is smaller than #{min.to_f/1024/1024} MB" },
-        max_width: ->(max) { "is wider than #{max} px" },
-        min_width: ->(min) { "is narrower than #{min} px" },
-        max_height: ->(max) { "is taller than #{max} px" },
-        min_height: ->(min) { "is shorter than #{min} px" },
-        mime_type_inclusion: ->(list) { "isn't of allowed type: #{list.inspect}" },
-        mime_type_exclusion: ->(list) { "is of forbidden type: #{list.inspect}" },
-        extension_inclusion: ->(list) { "isn't in allowed format: #{list.inspect}" },
-        extension_exclusion: ->(list) { "is in forbidden format: #{list.inspect}" },
+        max_size: ->(max) { "is too large (max is #{max.to_f/1024/1024} MB)" },
+        min_size: ->(min) { "is too small (min is #{min.to_f/1024/1024} MB)" },
+        max_width: ->(max) { "is too wide (max is #{max} px)" },
+        min_width: ->(min) { "is too narrow (min is #{min} px)" },
+        max_height: ->(max) { "is too tall (max is #{max} px)" },
+        min_height: ->(min) { "is too short (min is #{min} px)" },
+        mime_type_inclusion: ->(list) { "isn't of allowed type (allowed types: #{list.join(", ")})" },
+        mime_type_exclusion: ->(list) { "is of forbidden type (forbidden types: #{list.join(", ")})" },
+        extension_inclusion: ->(list) { "isn't of allowed format (allowed formats: #{list.join(", ")})" },
+        extension_exclusion: ->(list) { "is of forbidden format (forbidden formats: #{list.join(", ")})" },
       }
 
       module AttacherClassMethods

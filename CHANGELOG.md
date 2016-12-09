@@ -1,5 +1,7 @@
 ## HEAD
 
+* Improve default error messages in `validation_helpers` plugin (@janko-m)
+
 * Don't require the `benchmark` standard library in `logging` plugin (@janko-m)
 
 * Don't dirty the attacher in `Attacher#set` when attachment hasn't changed (@janko-m)

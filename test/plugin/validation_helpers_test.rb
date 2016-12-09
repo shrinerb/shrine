@@ -285,7 +285,7 @@ describe Shrine::Plugins::ValidationHelpers do
   it "uses the default error messages" do
     @attacher.assign(fakeio)
     @attacher.validate_min_size 2*1024*1024
-    assert_equal ["is smaller than 2.0 MB"], @attacher.errors
+    assert_equal ["is too small (min is 2.0 MB)"], @attacher.errors
   end
 
   it "accepts custom error messages" do
