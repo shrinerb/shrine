@@ -6,10 +6,17 @@ describe Shrine::Plugins::RemoveInvalid do
     @attacher = attacher { plugin :remove_invalid }
   end
 
-  it "deletes and removes invalid files" do
+  it "deletes and removes invalid cached files" do
     @attacher.class.validate { errors << :foo }
     @attacher.set(cached_file = @attacher.cache!(fakeio))
     refute cached_file.exists?
+    assert_nil @attacher.get
+  end
+
+  it "deletes and removes invalid stored files" do
+    @attacher.class.validate { errors << :foo }
+    @attacher.set(stored_file = @attacher.store!(fakeio))
+    refute stored_file.exists?
     assert_nil @attacher.get
   end
 
@@ -27,10 +34,10 @@ describe Shrine::Plugins::RemoveInvalid do
     refute @attacher.changed?
   end
 
-  it "doesn't remove stored files" do
+  it "doesn't remove the attachment if it isn't new" do
+    @attacher.record.avatar_data = @attacher.store!(fakeio).to_json
     @attacher.class.validate { errors << :foo }
-    @attacher.set(stored_file = @attacher.store!(fakeio))
-    assert stored_file.exists?
+    @attacher.validate
     assert @attacher.get
   end
 end
