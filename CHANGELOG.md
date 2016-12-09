@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate passing regexes to type/extension whitelists/blacklists in `validation_helpers` (@janko-m)
+
 * Don't include list of blacklisted types and extensions in default `validation_helpers` messages (@janko-m)
 
 * Improve default error messages in `validation_helpers` plugin (@janko-m)

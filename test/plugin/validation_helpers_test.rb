@@ -148,7 +148,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_mime_type_inclusion" do
     it "adds an error when mime_type is not in the whitelist" do
-      @attacher.assign(fakeio(content_type: "video/mpeg4"))
+      @attacher.assign(fakeio(content_type: "video/mpeg"))
       assert_equal false, @attacher.validate_mime_type_inclusion(["image/jpeg", "image/png"])
       refute_empty @attacher.errors
 
@@ -158,52 +158,32 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "scans multiline strings" do
-      @attacher.assign(fakeio(content_type: "video/mpeg4\nfoo"))
-      @attacher.validate_mime_type_inclusion ["video/mpeg4"]
+      @attacher.assign(fakeio(content_type: "video/mpeg\nfoo"))
+      @attacher.validate_mime_type_inclusion ["video/mpeg"]
       refute_empty @attacher.errors
-    end
-
-    it "accepts regexes" do
-      @attacher.assign(fakeio(content_type: "video/mpeg4"))
-      @attacher.validate_mime_type_inclusion [/image/]
-      refute_empty @attacher.errors
-
-      @attacher.assign(fakeio(content_type: "video/mpeg4"))
-      @attacher.validate_mime_type_inclusion [/image/, /video/]
-      assert_empty @attacher.errors
     end
 
     it "adds an error if mime_type is missing" do
       @attacher.assign(fakeio)
-      assert_equal false, @attacher.validate_mime_type_inclusion([/image/])
+      assert_equal false, @attacher.validate_mime_type_inclusion(["image/jpeg"])
       refute_empty @attacher.errors
     end
   end
 
   describe "#validate_mime_type_exclusion" do
     it "adds an error when mime_type is in the blacklist" do
-      @attacher.assign(fakeio(content_type: "video/mpeg4"))
-      assert_equal false, @attacher.validate_mime_type_exclusion(["video/mpeg4", "audio/mp3"])
+      @attacher.assign(fakeio(content_type: "video/mpeg"))
+      assert_equal false, @attacher.validate_mime_type_exclusion(["video/mpeg", "audio/mp3"])
       refute_empty @attacher.errors
 
       @attacher.assign(fakeio(content_type: "image/jpeg"))
-      assert_equal true, @attacher.validate_mime_type_exclusion(["video/mpeg4", "audio/mp3"])
-      assert_empty @attacher.errors
-    end
-
-    it "accepts regexes" do
-      @attacher.assign(fakeio(content_type: "video/mpeg4"))
-      @attacher.validate_mime_type_exclusion [/video/]
-      refute_empty @attacher.errors
-
-      @attacher.assign(fakeio(content_type: "video/mpeg4"))
-      @attacher.validate_mime_type_exclusion [/audio/]
+      assert_equal true, @attacher.validate_mime_type_exclusion(["video/mpeg", "audio/mp3"])
       assert_empty @attacher.errors
     end
 
     it "doesn't add an error if mime_type is missing" do
       @attacher.assign(fakeio)
-      assert_equal true, @attacher.validate_mime_type_exclusion([/video/])
+      assert_equal true, @attacher.validate_mime_type_exclusion(["video/mpeg"])
       assert_empty @attacher.errors
     end
   end
@@ -225,19 +205,9 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_empty @attacher.errors
     end
 
-    it "accepts regexes" do
-      @attacher.assign(fakeio(filename: "video.mp4"))
-      @attacher.validate_extension_inclusion [/jpe?g/]
-      refute_empty @attacher.errors
-
-      @attacher.assign(fakeio(filename: "image.jpeg"))
-      @attacher.validate_extension_inclusion [/jpe?g/]
-      assert_empty @attacher.errors
-    end
-
     it "adds an error if extension is missing" do
       @attacher.assign(fakeio)
-      assert_equal false, @attacher.validate_extension_inclusion([/jpg/])
+      assert_equal false, @attacher.validate_extension_inclusion(["jpg"])
       refute_empty @attacher.errors
     end
   end
@@ -259,19 +229,9 @@ describe Shrine::Plugins::ValidationHelpers do
       refute_empty @attacher.errors
     end
 
-    it "accepts regexes" do
-      @attacher.assign(fakeio(filename: "video.mp4"))
-      @attacher.validate_extension_exclusion [/mp4/]
-      refute_empty @attacher.errors
-
-      @attacher.assign(fakeio(filename: "video.mp4"))
-      @attacher.validate_extension_exclusion [/mp3/]
-      assert_empty @attacher.errors
-    end
-
     it "doesn't add an error if extension is missing" do
       @attacher.assign(fakeio)
-      assert_equal true, @attacher.validate_extension_exclusion([/mp4/])
+      assert_equal true, @attacher.validate_extension_exclusion(["mp4"])
       assert_empty @attacher.errors
     end
   end

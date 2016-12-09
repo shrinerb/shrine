@@ -33,7 +33,7 @@ class Shrine
     # If you would like to change the error message inline, you can pass the
     # `:message` option to any validation method:
     #
-    #     validate_mime_type_inclusion [/\Aimage/], message: "is not an image"
+    #     validate_mime_type_inclusion %w[image/jpeg image/png image/gif], message: "must be JPEG, PNG or GIF"
     #
     # For a complete list of all validation helpers, see AttacherMethods.
     module ValidationHelpers
@@ -100,37 +100,35 @@ class Shrine
           get.height >= min or add_error(:min_height, message, min) && false if get.height
         end
 
-        # Validates that the MIME type is in the `whitelist`. The whitelist is
-        # an array of strings or regexes.
+        # Validates that the MIME type is in the given collection.
         #
-        #     validate_mime_type_inclusion ["audio/mp3", /\Avideo/]
+        #     validate_mime_type_inclusion %w[audio/mp3 audio/flac]
         def validate_mime_type_inclusion(whitelist, message: nil)
           whitelist.any? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
             or add_error(:mime_type_inclusion, message, whitelist) && false
         end
 
-        # Validates that the MIME type is not in the `blacklist`. The blacklist
-        # is an array of strings or regexes.
+        # Validates that the MIME type is not in the given collection.
         #
-        #     validate_mime_type_exclusion ["image/gif", /\Aaudio/]
+        #     validate_mime_type_exclusion %w[text/x-php]
         def validate_mime_type_exclusion(blacklist, message: nil)
           blacklist.none? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
             or add_error(:mime_type_exclusion, message, blacklist) && false
         end
 
-        # Validates that the extension is in the `whitelist`. The whitelist
-        # is an array of strings or regexes.
+        # Validates that the extension is in the given collection. Comparison
+        # is case insensitive.
         #
-        #     validate_extension_inclusion [/\Ajpe?g\z/i]
+        #     validate_extension_inclusion %w[jpg jpeg png gif]
         def validate_extension_inclusion(whitelist, message: nil)
           whitelist.any? { |extension| regex(extension) =~ get.extension.to_s } \
             or add_error(:extension_inclusion, message, whitelist) && false
         end
 
-        # Validates that the extension is not in the `blacklist`. The blacklist
-        # is an array of strings or regexes.
+        # Validates that the extension is not in the given collection.
+        # Comparison is case insensitive.
         #
-        #     validate_extension_exclusion ["mov", /\Amp/i]
+        #     validate_extension_exclusion %[php jar]
         def validate_extension_exclusion(blacklist, message: nil)
           blacklist.none? { |extension| regex(extension) =~ get.extension.to_s } \
             or add_error(:extension_exclusion, message, blacklist) && false
@@ -140,7 +138,12 @@ class Shrine
 
         # Converts a string to a regex.
         def regex(value)
-          value.is_a?(Regexp) ? value : /\A#{Regexp.escape(value)}\z/i
+          if value.is_a?(Regexp)
+            warn "Passing regexes to type/extension whitelists/blacklists in validation_helpers Shrine plugin is deprecated and will be removed in Shrine 3. Use strings instead."
+            value
+          else
+            /\A#{Regexp.escape(value)}\z/i
+          end
         end
 
         # Generates an error message and appends it to errors array.
