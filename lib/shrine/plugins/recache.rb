@@ -20,7 +20,7 @@ class Shrine
     # Recaching will be automatically triggered in a "before save" callback,
     # but if you're using the attacher directly, you can call it manually:
     #
-    #     attacher.recache if attacher.attached?
+    #     attacher.recache if attacher.changed?
     module Recache
       module AttacherMethods
         def save

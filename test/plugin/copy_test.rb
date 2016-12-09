@@ -62,7 +62,7 @@ describe Shrine::Plugins::Copy do
     it "makes the attacher dirty" do
       @attacher.set(@attacher.cache!(fakeio))
       @duplicated_attacher.copy(@attacher)
-      assert @duplicated_attacher.attached?
+      assert @duplicated_attacher.changed?
     end
 
     it "doesn't run validations" do

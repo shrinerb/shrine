@@ -82,12 +82,12 @@ class Shrine
           module_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:sequel_callbacks]
             def before_save
               super
-              #{@name}_attacher.save if #{@name}_attacher.attached?
+              #{@name}_attacher.save if #{@name}_attacher.changed?
             end
 
             def after_save
               super
-              db.after_commit{#{@name}_attacher.finalize} if #{@name}_attacher.attached?
+              db.after_commit{#{@name}_attacher.finalize} if #{@name}_attacher.changed?
             end
 
             def after_destroy

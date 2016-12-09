@@ -133,8 +133,8 @@ to permanent storage after the record is saved. You can use `#finalize` for
 that, since that will also automatically delete any previously attached files.
 
 ```rb
-# We run the finalization only if a new file was attached
-attacher.finalize if attacher.attached?
+# Replaces previous attachment and replaces new
+attacher.finalize
 ```
 
 This is normally automatically added to a callback by the ORM plugin when going

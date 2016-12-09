@@ -1,5 +1,7 @@
 ## HEAD
 
+* Rename `Attacher#attached?` to a more accurate `Attacher#changed?` (@janko-m)
+
 * Allow calling `Attacher#finalize` if attachment hasn't changed, instead of raising an error (@janko-m)
 
 * Make `Shrine::Storage::S3#object` method public (@janko-m)

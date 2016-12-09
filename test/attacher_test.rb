@@ -56,7 +56,7 @@ describe Shrine::Attacher do
     it "doesn't dirty if attachment didn't change" do
       @attacher.record.avatar_data = @attacher.cache!(fakeio).to_json
       @attacher.assign(@attacher.get.to_json)
-      refute @attacher.attached?
+      refute @attacher.changed?
     end
   end
 
@@ -68,7 +68,7 @@ describe Shrine::Attacher do
 
     it "puts attacher into attached state" do
       @attacher.assign(fakeio)
-      assert @attacher.attached?
+      assert @attacher.changed?
     end
 
     it "nullifies the attachment if nil is passed in" do
@@ -115,7 +115,7 @@ describe Shrine::Attacher do
     it "it removes the attached state" do
       @attacher.assign(fakeio)
       @attacher.finalize
-      refute @attacher.attached?
+      refute @attacher.changed?
     end
 
     it "doesn't call #_promote if assigned file is not cached" do

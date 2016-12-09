@@ -85,11 +85,11 @@ class Shrine
 
           model.class_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:activerecord_callbacks]
             before_save do
-              #{@name}_attacher.save if #{@name}_attacher.attached?
+              #{@name}_attacher.save if #{@name}_attacher.changed?
             end
 
             after_commit on: [:create, :update] do
-              #{@name}_attacher.finalize if #{@name}_attacher.attached?
+              #{@name}_attacher.finalize if #{@name}_attacher.changed?
             end
 
             after_commit on: [:destroy] do

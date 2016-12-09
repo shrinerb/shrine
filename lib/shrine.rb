@@ -517,9 +517,10 @@ class Shrine
         end
 
         # Returns true if a new file has been attached.
-        def attached?
+        def changed?
           instance_variable_defined?(:@old)
         end
+        alias attached? changed?
 
         # Plugins can override this if they want something to be done before
         # save.

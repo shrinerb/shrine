@@ -24,7 +24,7 @@ describe Shrine::Plugins::RemoveInvalid do
   it "removes the dirty state from the attacher" do
     @attacher.class.validate { errors << :foo }
     @attacher.set(cached_file = @attacher.cache!(fakeio))
-    refute @attacher.attached?
+    refute @attacher.changed?
   end
 
   it "doesn't remove stored files" do
