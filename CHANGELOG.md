@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't include list of blacklisted types and extensions in default `validation_helpers` messages (@janko-m)
+
 * Improve default error messages in `validation_helpers` plugin (@janko-m)
 
 * Don't require the `benchmark` standard library in `logging` plugin (@janko-m)

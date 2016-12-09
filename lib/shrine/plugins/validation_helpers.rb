@@ -49,9 +49,9 @@ class Shrine
         max_height: ->(max) { "is too tall (max is #{max} px)" },
         min_height: ->(min) { "is too short (min is #{min} px)" },
         mime_type_inclusion: ->(list) { "isn't of allowed type (allowed types: #{list.join(", ")})" },
-        mime_type_exclusion: ->(list) { "is of forbidden type (forbidden types: #{list.join(", ")})" },
+        mime_type_exclusion: ->(list) { "is of forbidden type" },
         extension_inclusion: ->(list) { "isn't of allowed format (allowed formats: #{list.join(", ")})" },
-        extension_exclusion: ->(list) { "is of forbidden format (forbidden formats: #{list.join(", ")})" },
+        extension_exclusion: ->(list) { "is of forbidden format" },
       }
 
       module AttacherClassMethods
