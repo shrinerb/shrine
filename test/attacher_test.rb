@@ -52,12 +52,6 @@ describe Shrine::Attacher do
       @attacher.assign("")
       assert @attacher.get
     end
-
-    it "doesn't dirty if attachment didn't change" do
-      @attacher.record.avatar_data = @attacher.cache!(fakeio).to_json
-      @attacher.assign(@attacher.get.to_json)
-      refute @attacher.changed?
-    end
   end
 
   describe "#set" do
@@ -88,6 +82,12 @@ describe Shrine::Attacher do
       @attacher.class.validate { errors << :foo }
       @attacher.assign(fakeio)
       refute_empty @attacher.errors
+    end
+
+    it "doesn't dirty if attachment didn't change" do
+      @attacher.record.avatar_data = @attacher.store!(fakeio).to_json
+      @attacher.set(@attacher.get)
+      refute @attacher.changed?
     end
   end
 

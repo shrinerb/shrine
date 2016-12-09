@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't dirty the attacher in `Attacher#set` when attachment hasn't changed (@janko-m)
+
 * Rename `Attacher#attached?` to a more accurate `Attacher#changed?` (@janko-m)
 
 * Allow calling `Attacher#finalize` if attachment hasn't changed, instead of raising an error (@janko-m)

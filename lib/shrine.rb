@@ -493,7 +493,7 @@ class Shrine
         # is then written to the attachment attribute in the JSON format.
         def assign(value)
           if value.is_a?(String)
-            return if value == "" || value == read || !cache.uploaded?(uploaded_file(value))
+            return if value == "" || !cache.uploaded?(uploaded_file(value))
             assign_cached(uploaded_file(value))
           else
             uploaded_file = cache!(value, action: :cache) if value
@@ -505,7 +505,7 @@ class Shrine
         # attribute. It then runs file validations, and records that the
         # attachment has changed.
         def set(uploaded_file)
-          @old = get
+          @old = get unless uploaded_file == get
           _set(uploaded_file)
           validate
         end
