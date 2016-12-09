@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow calling `Attacher#finalize` if attachment hasn't changed, instead of raising an error (@janko-m)
+
 * Make `Shrine::Storage::S3#object` method public (@janko-m)
 
 * Raise `Shrine::Error` when `Shrine#generate_location` returns nil (@janko-m)

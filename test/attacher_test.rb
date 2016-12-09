@@ -131,6 +131,12 @@ describe Shrine::Attacher do
       @attacher.expects(:promote).never
       @attacher.finalize
     end
+
+    it "is a no-op when attachment hasn't changed" do
+      @attacher.record.avatar_data = @attacher.cache!(fakeio).to_json
+      @attacher.finalize
+      assert @attacher.cached?
+    end
   end
 
   describe "#_promote" do

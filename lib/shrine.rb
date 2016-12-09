@@ -529,6 +529,7 @@ class Shrine
         # Deletes the old file and promotes the new one. Typically this should
         # be called after saving the model instance.
         def finalize
+          return if !instance_variable_defined?(:@old)
           replace
           remove_instance_variable(:@old)
           _promote(action: :store) if cached?
