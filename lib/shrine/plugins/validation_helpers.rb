@@ -76,28 +76,44 @@ class Shrine
         # `store_dimensions` plugin.
         def validate_max_width(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          get.width <= max or add_error(:max_width, message, max) && false if get.width
+          if get.width
+            get.width <= max or add_error(:max_width, message, max) && false
+          else
+            warn "Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil."
+          end
         end
 
         # Validates that the file is not narrower than `min`. Requires the
         # `store_dimensions` plugin.
         def validate_min_width(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
-          get.width >= min or add_error(:min_width, message, min) && false if get.width
+          if get.width
+            get.width >= min or add_error(:min_width, message, min) && false
+          else
+            warn "Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil."
+          end
         end
 
         # Validates that the file is not taller than `max`. Requires the
         # `store_dimensions` plugin.
         def validate_max_height(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          get.height <= max or add_error(:max_height, message, max) && false if get.height
+          if get.height
+            get.height <= max or add_error(:max_height, message, max) && false
+          else
+            warn "Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil."
+          end
         end
 
         # Validates that the file is not shorter than `min`. Requires the
         # `store_dimensions` plugin.
         def validate_min_height(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
-          get.height >= min or add_error(:min_height, message, min) && false if get.height
+          if get.height
+            get.height >= min or add_error(:min_height, message, min) && false
+          else
+            warn "Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil."
+          end
         end
 
         # Validates that the MIME type is in the given collection.
