@@ -80,20 +80,11 @@ factory :photo do
 end
 ```
 
-On the other hand, if you're setting up test data using YAML fixtures, you
-aren't that flexible, because you can only use primitive data types that are
-part of the YAML language. In that case you can load the `data_uri` Shrine
-plugin, and assign files in form of data URI strings through the
-`<attachment>_data_uri` accessor provided by the plugin.
-
-```rb
-Shrine.plugin :data_uri
-```
-```yml
-# test/fixtures/photos.yml
-photo:
-  image_data_uri: "data:image/png;base64,<%= Base64.encode64(File.binread("test/files/image.png")) %>"
-```
+On the other hand, if you're setting up test data using Rails' YAML fixtures,
+you unfortunately won't be able to use them for assigning files. This is
+because Rails fixtures only allow assigning primitive data types, and don't
+allow you to specify Shrine attributes, you can only assign to columns
+directly.
 
 ## Background jobs
 
