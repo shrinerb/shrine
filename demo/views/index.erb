@@ -52,13 +52,13 @@
           }
         }
 
-        var data = {
+        var params = {
           photo: {image: JSON.stringify(image)},
           _csrf: $("input[name=_csrf]").val(),
         }
 
-        $.ajax("/album/photos", {method: 'POST', data: data})
-          .done(function(data) { $("ul").append(data) })
+        $.ajax("/album/photos", {method: 'POST', data: params})
+          .done(function(result) { $("ul").append(result) })
       }
     });
   });
