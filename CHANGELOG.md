@@ -1,5 +1,7 @@
 ## HEAD
 
+* Require the Tempfile standard library in lib/shrine.rb (@janko-m)
+
 * Deprecate dimensions validations passing when a dimension is nil (@janko-m)
 
 * Deprecate passing regexes to type/extension whitelists/blacklists in `validation_helpers` (@janko-m)

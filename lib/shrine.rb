@@ -2,6 +2,7 @@ require "shrine/version"
 
 require "securerandom"
 require "json"
+require "tempfile"
 
 class Shrine
   # A generic exception used by Shrine.
