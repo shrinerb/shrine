@@ -32,6 +32,22 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal true, @attacher.validate_min_size(1)
       assert_empty @attacher.errors
     end
+
+    it "uses the default error messages" do
+      @attacher.assign(fakeio)
+      @attacher.validate_min_size 2*1024*1024
+      assert_equal ["is too small (min is 2.0 MB)"], @attacher.errors
+    end
+
+    it "accepts custom error messages" do
+      @attacher.assign(fakeio)
+      @attacher.validate_min_size 2*1024*1024, message: ->(min) { "< #{min/1024/1024}" }
+      assert_equal ["< 2"], @attacher.errors
+
+      @attacher.assign(fakeio)
+      @attacher.validate_min_size 2*1024*1024, message: "is too small"
+      assert_equal ["is too small"], @attacher.errors
+    end
   end
 
   describe "#validate_max_width" do
@@ -182,6 +198,12 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal false, @attacher.validate_extension_inclusion(["jpg"])
       refute_empty @attacher.errors
     end
+
+    it "anchors the regexes of the converted strings" do
+      @attacher.assign(fakeio(filename: "video.mp4foobar"))
+      @attacher.validate_extension_inclusion ["mp4"]
+      refute_empty @attacher.errors
+    end
   end
 
   describe "#validate_extension_exclusion" do
@@ -208,25 +230,31 @@ describe Shrine::Plugins::ValidationHelpers do
     end
   end
 
-  it "anchors the regexes of the converted strings" do
-    @attacher.assign(fakeio(filename: "video.mp4foobar"))
-    @attacher.validate_extension_inclusion ["mp4"]
-    refute_empty @attacher.errors
-  end
+  describe "#validate_filename_max_length" do
+    it "adds an error when filename length is too long" do
+      @attacher.assign(fakeio(filename: "invalid.jpg"))
+      assert_equal false, @attacher.validate_filename_max_length(10)
+      refute_empty @attacher.errors
 
-  it "uses the default error messages" do
-    @attacher.assign(fakeio)
-    @attacher.validate_min_size 2*1024*1024
-    assert_equal ["is too small (min is 2.0 MB)"], @attacher.errors
-  end
+      @attacher.assign(fakeio(filename: "valid.jpg"))
+      assert_equal true, @attacher.validate_filename_max_length(10)
+      assert_empty @attacher.errors
+    end
 
-  it "accepts custom error messages" do
-    @attacher.assign(fakeio)
-    @attacher.validate_min_size 2*1024*1024, message: ->(min) { "< #{min/1024/1024}" }
-    assert_equal ["< 2"], @attacher.errors
+    it "uses the default error messages" do
+      @attacher.assign(fakeio(filename: "invalid.jpg"))
+      @attacher.validate_filename_max_length(10)
+      assert_equal ["is too long (max is 10 characters)"], @attacher.errors
+    end
 
-    @attacher.assign(fakeio)
-    @attacher.validate_min_size 2*1024*1024, message: "is too small"
-    assert_equal ["is too small"], @attacher.errors
+    it "accepts custom error messages" do
+      @attacher.assign(fakeio(filename: "invalid.jpg"))
+      @attacher.validate_filename_max_length 10, message: ->(max) { "is longer than the #{max} characters permitted" }
+      assert_equal ["is longer than the 10 characters permitted"], @attacher.errors
+
+      @attacher.assign(fakeio(filename: "invalid.jpg"))
+      @attacher.validate_filename_max_length 10, message: "is too long"
+      assert_equal ["is too long"], @attacher.errors
+    end
   end
 end

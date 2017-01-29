@@ -52,6 +52,7 @@ class Shrine
         mime_type_exclusion: ->(list) { "is of forbidden type" },
         extension_inclusion: ->(list) { "isn't of allowed format (allowed formats: #{list.join(", ")})" },
         extension_exclusion: ->(list) { "is of forbidden format" },
+        filename_max_length: ->(max)  { "is too long (max is #{max} characters)" }
       }
 
       module AttacherClassMethods
@@ -62,6 +63,11 @@ class Shrine
       end
 
       module AttacherMethods
+        # Validates that the filename is not longer than `max`.
+        def validate_filename_max_length(max, message: nil)
+          get.original_filename.to_s.length <= max or add_error(:filename_max_length, message, max) && false
+        end
+
         # Validates that the file is not larger than `max`.
         def validate_max_size(max, message: nil)
           get.size <= max or add_error(:max_size, message, max) && false
