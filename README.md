@@ -781,6 +781,20 @@ class DeleteJob
 end
 ```
 
+If the plugin is configured in specific uploader class, exact attacher class should be used:
+```rb
+  def perform(data)
+    shrine_class = Object.const_get(data['shrine_class'])
+    shrine_class::Attacher.promote(data)
+  end
+```
+```rb
+  def perform(data)
+    shrine_class = Object.const_get(data['shrine_class'])
+    shrine_class::Attacher.delete(data)
+  end
+```
+
 The above puts all promoting (uploading cached file to permanent storage) and
 deleting of files into background jobs using Sidekiq. Obviously instead of
 Sidekiq you can use [any other backgrounding library][backgrounding libraries].
