@@ -3,13 +3,13 @@ language: ruby
 sudo: false
 
 rvm:
-  - "2.1.8"
-  - "2.2.4"
-  - "2.3.3"
-  - "2.4.0"
-  - "ruby-head"
-  - "jruby-9.1.7.0"
-  - "jruby-head"
+  - 2.1.8
+  - 2.2.4
+  - 2.3.3
+  - 2.4.0
+  - ruby-head
+  - jruby-9.1.7.0
+  - jruby-head
 
 before_install:
   - gem install bundler
@@ -24,4 +24,4 @@ script: bundle exec rake test
 cache: bundler
 
 env:
-  - "RACK_ENV=development"
+  - RACK_ENV=development
