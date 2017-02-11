@@ -11,6 +11,9 @@ rvm:
   - "jruby-9.1.7.0"
   - "jruby-head"
 
+before_install:
+  - gem install bundler
+
 matrix:
   allow_failures:
     - rvm: ruby-head
