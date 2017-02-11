@@ -5,14 +5,13 @@ class Shrine
     # useful if you're doing processing and/or you're storing files on an
     # external storage service.
     #
-    #     plugin :backgrounding
-    #
-    # ## Usage
+    # ## Global usage
     #
     # The plugin provides `Attacher.promote` and `Attacher.delete` methods,
     # which allow you to hook up to promoting and deleting and spawn background
     # jobs, by passing a block.
     #
+    #     Shrine.plugin :backgrounding
     #     Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
     #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
     #
@@ -23,7 +22,6 @@ class Shrine
     #
     #     class PromoteJob
     #       include Sidekiq::Worker
-    #
     #       def perform(data)
     #         Shrine::Attacher.promote(data)
     #       end
@@ -31,7 +29,6 @@ class Shrine
     #
     #     class DeleteJob
     #       include Sidekiq::Worker
-    #
     #       def perform(data)
     #         Shrine::Attacher.delete(data)
     #       end
@@ -44,6 +41,39 @@ class Shrine
     # If you're generating versions, and you want to process some versions in
     # the foreground before kicking off a background job, you can use the
     # `recache` plugin.
+    #
+    # ## Per uploader usage
+    #
+    # If you don't want to apply backgrounding for all uploaders, you can
+    # declare it only for specific uploaders.
+    #
+    #     class MyUploader < Shrine
+    #       plugin :backgrounding
+    #       Attacher.promote { |data| PromoteJob.perform_async(data) }
+    #       Attacher.delete { |data| DeleteJob.perform_async(data) }
+    #     end
+    #
+    # The only gotcha is that in your job classes you will now have to call
+    # `Attacher.promote` and `Attacher.delete` on the attacher class for that
+    # specific uploader. You can use `shrine_class` from the data hash sent in
+    # the job's arguments, which holds the class name of the uploader that
+    # created the job.
+    #
+    #     class PromoteJob
+    #       include Sidekiq::Worker
+    #       def perform(data)
+    #         shrine_class = Object.const_get(data.fetch("shrine_class"))
+    #         shrine_class::Attacher.promote(data)
+    #       end
+    #     end
+    #
+    #     class DeleteJob
+    #       include Sidekiq::Worker
+    #       def perform(data)
+    #         shrine_class = Object.const_get(data.fetch("shrine_class"))
+    #         shrine_class::Attacher.delete(data)
+    #       end
+    #     end
     #
     # ## `Attacher.promote` and `Attacher.delete`
     #
