@@ -167,7 +167,7 @@ class Shrine
         def uploaded_file(object, &block)
           case object
           when String
-            warn "Giving a string to Shrine.uploaded_file is deprecated and won't be possible in Shrine 3. Use Attacher#uploaded_file instead."
+            deprecation("Giving a string to Shrine.uploaded_file is deprecated and won't be possible in Shrine 3. Use Attacher#uploaded_file instead.")
             uploaded_file(JSON.parse(object), &block)
           when Hash
             uploaded_file(self::UploadedFile.new(object), &block)
@@ -176,6 +176,11 @@ class Shrine
           else
             raise Error, "cannot convert #{object.inspect} to a #{self}::UploadedFile"
           end
+        end
+
+        # Prints a deprecation warning to standard error.
+        def deprecation(message)
+          warn "SHRINE DEPRECATION WARNING: #{message}"
         end
       end
 
@@ -605,19 +610,19 @@ class Shrine
 
         # Uploads the file using the #cache uploader, passing the #context.
         def cache!(io, **options)
-          warn "Sending :phase to Shrine::Attacher#cache! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
+          Shrine.deprecation("Sending :phase to Attacher#cache! is deprecated and will not be supported in Shrine 3. Use :action instead.") if options[:phase]
           cache.upload(io, context.merge(_equalize_phase_and_action(options)))
         end
 
         # Uploads the file using the #store uploader, passing the #context.
         def store!(io, **options)
-          warn "Sending :phase to Shrine::Attacher#store! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
+          Shrine.deprecation("Sending :phase to Attacher#store! is deprecated and will not be supported in Shrine 3. Use :action instead.") if options[:phase]
           store.upload(io, context.merge(_equalize_phase_and_action(options)))
         end
 
         # Deletes the file using the uploader, passing the #context.
         def delete!(uploaded_file, **options)
-          warn "Sending :phase to Shrine::Attacher#delete! is deprecated and will not be supported in Shrine 3. Use :action instead." if options[:phase]
+          Shrine.deprecation("Sending :phase to Attacher#delete! is deprecated and will not be supported in Shrine 3. Use :action instead.") if options[:phase]
           store.delete(uploaded_file, context.merge(_equalize_phase_and_action(options)))
         end
 

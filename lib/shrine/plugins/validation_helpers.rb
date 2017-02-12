@@ -79,7 +79,7 @@ class Shrine
           if get.width
             get.width <= max or add_error(:max_width, message, max) && false
           else
-            warn "Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil."
+            Shrine.deprecation("Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil.")
           end
         end
 
@@ -90,7 +90,7 @@ class Shrine
           if get.width
             get.width >= min or add_error(:min_width, message, min) && false
           else
-            warn "Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil."
+            Shrine.deprecation("Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil.")
           end
         end
 
@@ -101,7 +101,7 @@ class Shrine
           if get.height
             get.height <= max or add_error(:max_height, message, max) && false
           else
-            warn "Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil."
+            Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
           end
         end
 
@@ -112,7 +112,7 @@ class Shrine
           if get.height
             get.height >= min or add_error(:min_height, message, min) && false
           else
-            warn "Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil."
+            Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
           end
         end
 
@@ -155,7 +155,7 @@ class Shrine
         # Converts a string to a regex.
         def regex(value)
           if value.is_a?(Regexp)
-            warn "Passing regexes to type/extension whitelists/blacklists in validation_helpers Shrine plugin is deprecated and will be removed in Shrine 3. Use strings instead."
+            Shrine.deprecation("Passing regexes to type/extension whitelists/blacklists in validation_helpers plugin is deprecated and will be removed in Shrine 3. Use strings instead.")
             value
           else
             /\A#{Regexp.escape(value)}\z/i

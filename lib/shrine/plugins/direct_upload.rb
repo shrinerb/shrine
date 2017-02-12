@@ -230,7 +230,7 @@ class Shrine
           context = {action: :cache, phase: :cache}
 
           if name != "upload"
-            warn "The \"POST /:storage/:name\" route of the direct_upload Shrine plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead."
+            Shrine.deprecation("The \"POST /:storage/:name\" route of the direct_upload plugin is deprecated, and it will be removed in Shrine 3. Use \"POST /:storage/upload\" instead.")
             context[:name] = name
           end
 

@@ -26,7 +26,7 @@ class Shrine
             end
 
             def cached_#{@name}_data=(value)
-              warn "Calling #cached_#{@name}_data= is deprecated and will be removed in Shrine 3. You should use the original field name: `f.hidden_field :#{@name}, value: record.cached_#{@name}_data`."
+              Shrine.deprecation("Calling #cached_#{@name}_data= is deprecated and will be removed in Shrine 3. You should use the original field name: `f.hidden_field :#{@name}, value: record.cached_#{@name}_data`.")
               #{@name}_attacher.assign(value)
             end
           RUBY

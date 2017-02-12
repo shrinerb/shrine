@@ -19,6 +19,7 @@ require "shrine"
 
 class Shrine
   def warn(*); end # disable mime_type warnings
+  #def self.deprecation(*); end
 end
 
 require "./test/support/helpers"

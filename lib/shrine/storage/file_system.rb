@@ -94,7 +94,7 @@ class Shrine
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
       def initialize(directory, prefix: nil, host: nil, clean: true, permissions: 0644, directory_permissions: 0755)
-        warn "The :host option to Shrine::Storage::FileSystem#initialize is deprecated and will be removed in Shrine 3. Pass :host to FileSystem#url instead, you can also use default_url_options plugin." if host
+        Shrine.deprecation("The :host option to Shrine::Storage::FileSystem#initialize is deprecated and will be removed in Shrine 3. Pass :host to FileSystem#url instead, you can also use default_url_options plugin.") if host
 
         if prefix
           @prefix = Pathname(relative(prefix))
@@ -185,7 +185,7 @@ class Shrine
       # Catches the deprecated `#download` method.
       def method_missing(name, *args)
         if name == :download
-          warn "Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3."
+          Shrine.deprecation("Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.")
           require "down"
           open(*args) { |file| Down.copy_to_tempfile(*args, file) }
         else

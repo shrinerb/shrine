@@ -29,7 +29,7 @@ class Shrine
       def self.configure(uploader, &block)
         if block
           uploader.opts[:default_url] = block
-          warn "Passing a block to default_url Shrine plugin is deprecated and will probably be removed in future versions of Shrine. Use `Attacher.default_url { ... }` instead."
+          Shrine.deprecation("Passing a block to default_url plugin is deprecated and will probably be removed in future versions of Shrine. Use `Attacher.default_url { ... }` instead.")
         end
       end
 

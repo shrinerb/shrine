@@ -117,7 +117,7 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        warn "The versions Shrine plugin doesn't need the :names option anymore, you can safely remove it." if opts.key?(:names)
+        Shrine.deprecation("The versions Shrine plugin doesn't need the :names option anymore, you can safely remove it.") if opts.key?(:names)
 
         uploader.opts[:version_names] = opts.fetch(:names, uploader.opts[:version_names])
         uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
@@ -126,7 +126,7 @@ class Shrine
 
       module ClassMethods
         def version_names
-          warn "Shrine.version_names is deprecated and will be removed in Shrine 3."
+          Shrine.deprecation("Shrine.version_names is deprecated and will be removed in Shrine 3.")
           opts[:version_names]
         end
 
@@ -136,7 +136,7 @@ class Shrine
 
         # Checks that the identifier is a registered version.
         def version?(name)
-          warn "Shrine.version? is deprecated and will be removed in Shrine 3."
+          Shrine.deprecation("Shrine.version? is deprecated and will be removed in Shrine 3.")
           version_names.nil? || version_names.map(&:to_s).include?(name.to_s)
         end
 
@@ -233,7 +233,7 @@ class Shrine
 
         def assign_cached(value)
           cached_file = uploaded_file(value)
-          warn "Assigning cached hash of files is deprecated for security reasons and will be removed in Shrine 3." if cached_file.is_a?(Hash)
+          Shrine.deprecation("Assigning cached hash of files is deprecated for security reasons and will be removed in Shrine 3.") if cached_file.is_a?(Hash)
           super(cached_file)
         end
 

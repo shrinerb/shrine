@@ -155,7 +155,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: 15*1024*1024, **s3_options)
-        warn "The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin." if host
+        Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
 
         @prefix = prefix
         @s3 = Aws::S3::Resource.new(**s3_options)
@@ -289,7 +289,7 @@ class Shrine
       # Catches the deprecated `#stream` method.
       def method_missing(name, *args)
         if name == :stream
-          warn "Shrine::Storage::S3#stream is deprecated over calling #each_chunk on S3#open."
+          Shrine.deprecation("Shrine::Storage::S3#stream is deprecated over calling #each_chunk on S3#open.")
           object = object(*args)
           object.get { |chunk| yield chunk, object.content_length }
         else
