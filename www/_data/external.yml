@@ -70,6 +70,9 @@
         name: shrine-fog
         url: https://github.com/janko-m/shrine-fog
       -
+        name: shrine-google_cloud_storage
+        url: https://github.com/renchap/shrine-google_cloud_storage
+      -
         name: shrine-gridfs
         url: https://github.com/janko-m/shrine-gridfs
       -
