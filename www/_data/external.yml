@@ -35,6 +35,9 @@
       -
         name: "Better File Uploads with Shrine: Metadata"
         url: https://twin.github.io/better-file-uploads-with-shrine-metadata/
+      -
+        name: Uploading Files With Rails and Shrine
+        url: https://code.tutsplus.com/tutorials/uploading-files-with-rails-and-shrine--cms-27596
   -
     title: Screencasts
     items:
