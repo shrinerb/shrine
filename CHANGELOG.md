@@ -1,5 +1,7 @@
 ## HEAD
 
+* Modify `delete_raw` plugin to delete any IOs that respond to `#path` (@janko-m)
+
 * Require the Tempfile standard library in lib/shrine.rb (@janko-m)
 
 * Deprecate dimensions validations passing when a dimension is nil (@janko-m)
