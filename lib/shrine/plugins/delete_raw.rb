@@ -21,12 +21,16 @@ class Shrine
         # Deletes the file that was uploaded, unless it's an UploadedFile.
         def copy(io, context)
           super
-          if io.respond_to?(:delete) && !io.is_a?(UploadedFile)
-            io.delete rescue nil if delete_uploaded?(io)
+          if io.respond_to?(:path) && io.path && delete_raw?
+            begin
+              File.delete(io.path)
+            rescue Errno::ENOENT
+              # file might already be deleted by the moving plugin
+            end
           end
         end
 
-        def delete_uploaded?(io)
+        def delete_raw?
           opts[:delete_raw_storages].nil? ||
           opts[:delete_raw_storages].include?(storage_key)
         end

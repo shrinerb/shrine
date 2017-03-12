@@ -6,9 +6,27 @@ describe Shrine::Plugins::DeleteRaw do
     @uploader = uploader { plugin :delete_raw }
   end
 
-  it "deletes the file after it was uploaded" do
+  it "deletes files after upload" do
     @uploader.upload(tempfile = Tempfile.new(""))
-    refute tempfile.path
+    refute File.exist?(tempfile.path)
+  end
+
+  it "deletes tempfiles after upload" do
+    @uploader.upload(file = File.open(Tempfile.new("").path))
+    refute File.exist?(file.path)
+  end
+
+  it "deletes IOs that respond to #path after upload" do
+    io = FakeIO.new("file")
+    def io.path; (@tempfile ||= Tempfile.new("")).path; end
+    @uploader.upload(io)
+    refute File.exist?(io.path)
+  end
+
+  it "doesn't raise an error if file is already deleted" do
+    tempfile = Tempfile.new("")
+    File.delete(tempfile.path)
+    @uploader.upload(tempfile)
   end
 
   it "doesn't attempt to delete non-files" do
@@ -24,8 +42,8 @@ describe Shrine::Plugins::DeleteRaw do
   it "accepts specifying storages" do
     @uploader.class.plugin :delete_raw, storages: [:store]
     @uploader.class.new(:cache).upload(tempfile = Tempfile.new(""))
-    assert tempfile.path
+    assert File.exist?(tempfile.path)
     @uploader.class.new(:store).upload(tempfile = Tempfile.new(""))
-    refute tempfile.path
+    refute File.exist?(tempfile.path)
   end
 end
