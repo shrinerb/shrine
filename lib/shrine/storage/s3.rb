@@ -317,13 +317,6 @@ class Shrine
         end
       end
 
-      protected
-
-      # This is used to check whether an S3 file is copyable.
-      def access_key_id
-        s3.client.config.credentials.credentials.access_key_id
-      end
-
       private
 
       # Copies an existing S3 object to a new location.
@@ -346,7 +339,7 @@ class Shrine
       def copyable?(io)
         io.is_a?(UploadedFile) &&
         io.storage.is_a?(Storage::S3) &&
-        io.storage.access_key_id == access_key_id
+        io.storage.client.config.access_key_id == client.config.access_key_id
       end
 
       # Determines whether multipart upload/copy should be used from
