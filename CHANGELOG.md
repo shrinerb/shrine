@@ -1,5 +1,7 @@
 ## HEAD
 
+* Expose `Aws::S3::Client` via `Shrine::Storage::S3#client`, and deprecate `Shrine::Strorage::S3#s3` (@janko-m)
+
 * Modify `delete_raw` plugin to delete any IOs that respond to `#path` (@janko-m)
 
 * Require the Tempfile standard library in lib/shrine.rb (@janko-m)

@@ -177,4 +177,33 @@ describe Shrine::Storage::S3 do
       assert_equal "foo/bar", object.key
     end
   end
+
+  describe "#client" do
+    it "returns an Aws::S3::Client with credentials" do
+      assert_instance_of Aws::S3::Client, @s3.client
+      assert_equal ENV.fetch("S3_ACCESS_KEY_ID"),     @s3.client.config.access_key_id
+      assert_equal ENV.fetch("S3_SECRET_ACCESS_KEY"), @s3.client.config.secret_access_key
+      assert_equal ENV.fetch("S3_REGION"),            @s3.client.config.region
+    end
+  end
+
+  describe "#bucket" do
+    it "returns an Aws::S3::Bucket" do
+      assert_instance_of Aws::S3::Bucket, @s3.bucket
+      assert_equal ENV.fetch("S3_BUCKET"), @s3.bucket.name
+    end
+  end
+
+  describe "#prefix" do
+    it "returns the given :prefix" do
+      assert_equal "foo", s3(prefix: "foo").prefix
+    end
+  end
+
+  describe "#s3" do
+    it "returns the deprecated Aws::S3::Resource object" do
+      assert_instance_of Aws::S3::Resource, @s3.s3
+      assert_equal @s3.s3.client, @s3.client
+    end
+  end
 end

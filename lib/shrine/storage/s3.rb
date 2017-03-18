@@ -14,12 +14,24 @@ class Shrine
     #
     # It is initialized with the following 4 required options:
     #
-    #     Shrine::Storage::S3.new(
-    #       access_key_id: "xyz",
-    #       secret_access_key: "abc",
+    #     storage = Shrine::Storage::S3.new(
+    #       access_key_id: "abc",
+    #       secret_access_key: "xyz",
     #       region: "eu-west-1",
     #       bucket: "my-app",
     #     )
+    #
+    # The storage exposes the underlying Aws objects:
+    #
+    #     storage.client #=> #<Aws::S3::Client>
+    #     storage.client.access_key_id #=> "abc"
+    #     storage.client.secret_access_key #=> "xyz"
+    #     storage.client.region #=> "eu-west-1"
+    #
+    #     storage.bucket #=> #<Aws::S3::Bucket>
+    #     storage.bucket.name #=> "my-app"
+    #
+    #     storage.object("key") #=> #<Aws::S3::Object>
     #
     # ## Prefix
     #
@@ -35,7 +47,7 @@ class Shrine
     # Sometimes you'll want to add additional upload options to all S3 uploads.
     # You can do that by passing the `:upload` option:
     #
-    #     Shrine::Storage::S3.new(upload_options: {acl: "public-read"}, **s3_options)
+    #     Shrine::Storage::S3.new(upload_options: {acl: "private"}, **s3_options)
     #
     # These options will be passed to aws-sdk's methods for [uploading],
     # [copying] and [presigning].
@@ -126,7 +138,7 @@ class Shrine
     # [aws-sdk]: https://github.com/aws/aws-sdk-ruby
     # [Transfer Acceleration]: http://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
     class S3
-      attr_reader :s3, :bucket, :prefix, :host, :upload_options
+      attr_reader :client, :bucket, :prefix, :host, :upload_options
 
       # Initializes a storage for uploading to S3.
       #
@@ -156,13 +168,20 @@ class Shrine
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: 15*1024*1024, **s3_options)
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
+        resource = Aws::S3::Resource.new(**s3_options)
 
+        @bucket = resource.bucket(bucket)
+        @client = resource.client
         @prefix = prefix
-        @s3 = Aws::S3::Resource.new(**s3_options)
-        @bucket = @s3.bucket(bucket)
         @host = host
         @upload_options = upload_options
         @multipart_threshold = multipart_threshold
+      end
+
+      # Returns an `Aws::S3::Resource` object.
+      def s3
+        Shrine.deprecation("Shrine::Storage::S3#s3 that returns an Aws::S3::Resource is deprecated, use Shrine::Storage::S3#client which returns an Aws::S3::Client object.")
+        Aws::S3::Resource.new(client: @client)
       end
 
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
@@ -226,8 +245,9 @@ class Shrine
       # Returns the presigned URL to the file.
       #
       # :public
-      # :  Creates an unsigned version of the URL (the permissions on the S3
-      #    bucket need to be modified to allow public URLs).
+      # :  Controls whether the URL is signed (`false`) or unsigned (`true`).
+      #    Note that for unsigned URLs the S3 bucket need to be modified to allow
+      #    public URLs. Defaults to `false`.
       #
       # :host
       # :  This option replaces the host part of the returned URL, and is
