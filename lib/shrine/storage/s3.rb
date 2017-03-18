@@ -210,7 +210,7 @@ class Shrine
 
       # Downloads the file from S3, and returns a `Tempfile`.
       def download(id)
-        tempfile = Tempfile.new(["s3", File.extname(id)], binmode: true)
+        tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
         (object = object(id)).get(response_target: tempfile.path)
         tempfile.singleton_class.instance_eval { attr_accessor :content_type }
         tempfile.content_type = object.content_type
