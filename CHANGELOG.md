@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `rack_file` plugin work with HashWithIndifferentAccess-like objects such as Hashie::Mash (@janko-m)
+
 * Expose `Aws::S3::Client` via `Shrine::Storage::S3#client`, and deprecate `Shrine::Strorage::S3#s3` (@janko-m)
 
 * Modify `delete_raw` plugin to delete any IOs that respond to `#path` (@janko-m)

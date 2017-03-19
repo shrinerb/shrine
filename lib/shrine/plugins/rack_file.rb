@@ -81,10 +81,10 @@ class Shrine
         attr_reader :original_filename, :content_type
         attr_accessor :tempfile
 
-        def initialize(tempfile:, filename: nil, type: nil, **)
-          @tempfile          = tempfile
-          @original_filename = filename
-          @content_type      = type
+        def initialize(hash)
+          @tempfile          = hash[:tempfile]
+          @original_filename = hash[:filename]
+          @content_type      = hash[:type]
         end
 
         def path
