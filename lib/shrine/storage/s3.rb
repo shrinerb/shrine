@@ -235,11 +235,10 @@ class Shrine
       # This is called when multiple files are being deleted at once. Issues a
       # single MULTI DELETE command for each 1000 objects (S3 delete limit).
       def multi_delete(ids)
-        objects = ids.take(1000).map { |id| {key: object(id).key} }
-        bucket.delete_objects(delete: {objects: objects})
-
-        rest = Array(ids[1000..-1])
-        multi_delete(rest) unless rest.empty?
+        ids.each_slice(1000) do |ids_batch|
+          delete_params = {objects: ids_batch.map { |id| {key: object(id).key} }}
+          bucket.delete_objects(delete: delete_params)
+        end
       end
 
       # Returns the presigned URL to the file.
