@@ -78,8 +78,8 @@ class Shrine
       # This is used to wrap the Rack hash into an IO-like object which Shrine
       # can upload.
       class UploadedFile
-        attr_reader :original_filename, :content_type
-        attr_accessor :tempfile
+        attr_reader :tempfile, :original_filename, :content_type
+        alias :to_io :tempfile
 
         def initialize(hash)
           @tempfile          = hash[:tempfile]
@@ -89,10 +89,6 @@ class Shrine
 
         def path
           @tempfile.path
-        end
-
-        def to_io
-          @tempfile
         end
 
         extend Forwardable
