@@ -1,5 +1,15 @@
 ## HEAD
 
+* Allow media type in the data URI to have additional parameters (@janko-m)
+
+* URI-decode non-base64 data URIs, as such data URIs are URI-encoded according to the specification (@janko-m)
+
+* Improve performance of parsing data URIs by 10x switching from a regex to StringScanner (@janko-m)
+
+* Reduce memory usage of `Shrine.data_uri` and `UploadedFile#base64` by at least 2x (@janko-m)
+
+* Add `Shrine.data_uri` to `data_uri` plugin which parses and converts the given data URI to an IO object (@janko-m)
+
 * Make `rack_file` plugin work with HashWithIndifferentAccess-like objects such as Hashie::Mash (@janko-m)
 
 * Expose `Aws::S3::Client` via `Shrine::Storage::S3#client`, and deprecate `Shrine::Strorage::S3#s3` (@janko-m)
