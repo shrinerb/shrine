@@ -47,7 +47,11 @@ describe Shrine::Plugins::DataUri do
     assert_equal true, io.eof?
     io.rewind
     assert_equal false, io.eof?
+
+    path = io.path
+    assert File.exist?(path)
     io.close
+    refute File.exist?(path)
   end
 
   it "extracts valid content type" do
