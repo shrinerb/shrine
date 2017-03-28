@@ -65,7 +65,7 @@ class Shrine
       class ParseError < Error; end
 
       DATA_REGEXP          = /data:/
-      CONTENT_TYPE_REGEXP  = /([-\w.+]+\/[-\w.+]+)/
+      MEDIA_TYPE_REGEXP    = /[-\w.+]+\/[-\w.+]+(;[-\w.+]+=[^;,]+)*/
       BASE64_REGEXP        = /;base64/
       CONTENT_SEPARATOR    = /,/
       DEFAULT_CONTENT_TYPE = "text/plain"
@@ -99,9 +99,11 @@ class Shrine
         def parse_data_uri(uri)
           scanner = StringScanner.new(uri)
           scanner.scan(DATA_REGEXP) or raise ParseError, "data URI has invalid format"
-          content_type = scanner.scan(CONTENT_TYPE_REGEXP)
-          base64       = scanner.scan(BASE64_REGEXP)
+          media_type = scanner.scan(MEDIA_TYPE_REGEXP)
+          base64 = scanner.scan(BASE64_REGEXP)
           scanner.scan(CONTENT_SEPARATOR) or raise ParseError, "data URI has invalid format"
+
+          content_type = media_type[/^[^;]+/] if media_type
 
           {
             content_type: content_type,
