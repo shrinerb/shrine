@@ -69,6 +69,14 @@ describe Shrine::Plugins::DataUri do
     end
   end
 
+  it "URI-decodes raw content" do
+    io = @attacher.shrine_class.data_uri("data:,raw%20content")
+    assert_equal "raw content", io.read
+
+    io = @attacher.shrine_class.data_uri("data:,raw content")
+    assert_equal "raw content", io.read
+  end
+
   it "handles base64 data URIs" do
     io = @attacher.shrine_class.data_uri("data:image/png;base64,#{Base64.encode64("content")}")
     assert_equal "image/png", io.content_type
@@ -81,6 +89,12 @@ describe Shrine::Plugins::DataUri do
     assert_raises(Shrine::Plugins::DataUri::ParseError) do
       @attacher.shrine_class.data_uri("data:base64,#{Base64.encode64("content")}")
     end
+  end
+
+  it "accepts data URIs with blank content" do
+    io = @attacher.shrine_class.data_uri("data:,")
+    assert_equal "", io.read
+    assert_equal 0,  io.size
   end
 
   it "can generate filenames" do

@@ -1,6 +1,7 @@
 require "base64"
 require "stringio"
 require "strscan"
+require "cgi/util"
 
 class Shrine
   module Plugins
@@ -40,7 +41,7 @@ class Shrine
     # When the content type is ommited, `text/plain` is assumed. The parser
     # also supports raw data URIs which aren't base64-encoded.
     #
-    #     Shrine.data_uri("data:text/plain,raw content")
+    #     Shrine.data_uri("data:text/plain,raw%20content")
     #
     # The created IO object won't convey any file extension (because it doesn't
     # have a filename), but you can generate a filename based on the content
@@ -82,7 +83,7 @@ class Shrine
           info = parse_data_uri(uri)
 
           content_type = info[:content_type] || DEFAULT_CONTENT_TYPE
-          content      = info[:base64] ? Base64.decode64(info[:data]) : info[:data]
+          content      = info[:base64] ? Base64.decode64(info[:data]) : CGI.unescape(info[:data])
           filename     = opts[:data_uri_filename]
           filename     = filename.call(content_type) if filename
 
