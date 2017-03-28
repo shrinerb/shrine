@@ -108,8 +108,10 @@ class Shrine
 
         # Returns contents of the file base64-encoded.
         def base64
-          content = open { |io| io.read }
-          Base64.encode64(content).chomp
+          binary = open { |io| io.read }
+          result = Base64.encode64(binary).chomp
+          binary.clear # deallocate string
+          result
         end
       end
 
