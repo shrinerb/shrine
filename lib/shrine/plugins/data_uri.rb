@@ -19,17 +19,9 @@ class Shrine
     #     user.avatar.size              #=> 43423
     #
     # You can also use `#data_uri=` and `#data_uri` methods directly on the
-    # `Shrine::Attacher`:
+    # `Shrine::Attacher` (which the model methods just delegate to):
     #
     #     attacher.data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
-    #
-    # If you want the uploaded file to have an extension, you can generate a
-    # filename based on the content type of the data URI:
-    #
-    #     plugin :data_uri, filename: ->(content_type) do
-    #       extension = MIME::Types[content_type].first.preferred_extension
-    #       "data_uri.#{extension}"
-    #     end
     #
     # If the data URI wasn't correctly parsed, an error message will be added to
     # the attachment column. You can change the default error message:
@@ -37,22 +29,62 @@ class Shrine
     #     plugin :data_uri, error_message: "data URI was invalid"
     #     plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
     #
+    # If you just want to parse the data URI and create an IO object from it,
+    # you can do that with `Shrine.data_uri`. If the data URI cannot be parsed,
+    # a `Shrine::Plugins::DataUri::ParseError` will be raised.
+    #
+    #     Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
+    #     #=> #<Shrine::Plugins::DataUri::DataFile>
+    #
+    # When the content type is ommited, `text/plain` is assumed. The parser
+    # also supports raw data URIs which aren't base64-encoded.
+    #
+    #     Shrine.data_uri("data:text/plain,raw content")
+    #
+    # The created IO object won't convey any file extension (because it doesn't
+    # have a filename), but you can generate a filename based on the content
+    # type of the data URI:
+    #
+    #     plugin :data_uri, filename: ->(content_type) do
+    #       extension = MIME::Types[content_type].first.preferred_extension
+    #       "data_uri.#{extension}"
+    #     end
+    #
     # This plugin also adds a `UploadedFile#data_uri` method (and `#base64`),
     # which returns a base64-encoded data URI of any UploadedFile:
     #
-    #     user.avatar.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
-    #     user.avatar.base64   #=> "iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    #     uploaded_file.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+    #     uploaded_file.base64   #=> "iVBORw0KGgoAAAANSUhEUgAAAAUA"
     #
     # [data URIs]: https://tools.ietf.org/html/rfc2397
     # [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
     module DataUri
-      DEFAULT_ERROR_MESSAGE = "data URI was invalid"
+      class ParseError < Error; end
+
       DEFAULT_CONTENT_TYPE = "text/plain"
       DATA_URI_REGEXP = /\Adata:([-\w.+]+\/[-\w.+]+)?(;base64)?,(.*)\z/m
 
       def self.configure(uploader, opts = {})
         uploader.opts[:data_uri_filename] = opts.fetch(:filename, uploader.opts[:data_uri_filename])
         uploader.opts[:data_uri_error_message] = opts.fetch(:error_message, uploader.opts[:data_uri_error_message])
+      end
+
+      module ClassMethods
+        # Parses the given data URI and creates an IO object from it.
+        #
+        #     Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
+        #     #=> #<Shrine::Plugins::DataUri::DataFile>
+        def data_uri(uri)
+          match = uri.match(DATA_URI_REGEXP)
+          raise ParseError, "invalid data URI" if match.nil?
+
+          content_type = match[1] || DEFAULT_CONTENT_TYPE
+          content      = match[2] ? Base64.decode64(match[3]) : match[3]
+          filename     = opts[:data_uri_filename]
+          filename     = filename.call(content_type) if filename
+
+          DataFile.new(content, content_type: content_type, filename: filename)
+        end
       end
 
       module AttachmentMethods
@@ -79,19 +111,13 @@ class Shrine
         def data_uri=(uri)
           return if uri == ""
 
-          if match = uri.match(DATA_URI_REGEXP)
-            content_type = match[1] || DEFAULT_CONTENT_TYPE
-            content      = match[2] ? Base64.decode64(match[3]) : match[3]
-            filename     = shrine_class.opts[:data_uri_filename]
-            filename     = filename.call(content_type) if filename
-
-            assign DataFile.new(content, content_type: content_type, filename: filename)
-          else
-            message = shrine_class.opts[:data_uri_error_message] || DEFAULT_ERROR_MESSAGE
-            message = message.call(uri) if message.respond_to?(:call)
-            errors.replace [message]
-            @data_uri = uri
-          end
+          data_file = shrine_class.data_uri(uri)
+          assign(data_file)
+        rescue ParseError => error
+          message = shrine_class.opts[:data_uri_error_message] || error.message
+          message = message.call(uri) if message.respond_to?(:call)
+          errors.replace [message]
+          @data_uri = uri
         end
 
         # Form builders require the reader as well.
