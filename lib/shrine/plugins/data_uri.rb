@@ -1,7 +1,7 @@
 require "base64"
 require "strscan"
 require "cgi/util"
-require "tempfile"
+require "stringio"
 require "forwardable"
 
 class Shrine
@@ -89,7 +89,7 @@ class Shrine
           filename     = filename.call(content_type) if filename
 
           data_file = DataFile.new(content, content_type: content_type, filename: filename)
-          [info[:data], content].each(&:clear) # deallocate strings
+          info[:data].clear
 
           data_file
         end
@@ -168,26 +168,20 @@ class Shrine
       end
 
       class DataFile
-        attr_reader :tempfile, :content_type, :original_filename
+        attr_reader :content_type, :original_filename
 
         def initialize(content, content_type: nil, filename: nil)
-          @content_type = content_type
+          @content_type      = content_type
           @original_filename = filename
-
-          @tempfile = Tempfile.new("shrine-data_uri", binmode: true)
-          @tempfile.write(content)
-          @tempfile.open
-        end
-
-        def path
-          @tempfile.path
+          @io                = StringIO.new(content)
         end
 
         extend Forwardable
-        delegate Shrine::IO_METHODS.keys => :tempfile
+        delegate Shrine::IO_METHODS.keys => :@io
 
         def close
-          @tempfile.close! # delete the tempfile
+          @io.close
+          @io.string.clear # deallocate string
         end
       end
     end
