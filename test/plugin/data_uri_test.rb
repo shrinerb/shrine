@@ -30,13 +30,13 @@ describe Shrine::Plugins::DataUri do
 
   it "adds a validation error if data_uri wasn't properly matched" do
     @user.avatar_data_uri = "bla"
-    assert_equal ["invalid data URI"], @user.avatar_attacher.errors
+    assert_equal ["data URI has invalid format"], @user.avatar_attacher.errors
   end
 
   it "clears any existing errors" do
     @user.avatar_attacher.errors << "foo"
     @user.avatar_data_uri = "bla"
-    assert_equal ["invalid data URI"], @user.avatar_attacher.errors
+    assert_equal ["data URI has invalid format"], @user.avatar_attacher.errors
   end
 
   it "can create an IO object from the data URI" do

@@ -1,5 +1,6 @@
 require "base64"
 require "stringio"
+require "strscan"
 
 class Shrine
   module Plugins
@@ -61,8 +62,11 @@ class Shrine
     module DataUri
       class ParseError < Error; end
 
+      DATA_REGEXP          = /data:/
+      CONTENT_TYPE_REGEXP  = /([-\w.+]+\/[-\w.+]+)/
+      BASE64_REGEXP        = /;base64/
+      CONTENT_SEPARATOR    = /,/
       DEFAULT_CONTENT_TYPE = "text/plain"
-      DATA_URI_REGEXP = /\Adata:([-\w.+]+\/[-\w.+]+)?(;base64)?,(.*)\z/m
 
       def self.configure(uploader, opts = {})
         uploader.opts[:data_uri_filename] = opts.fetch(:filename, uploader.opts[:data_uri_filename])
@@ -75,15 +79,30 @@ class Shrine
         #     Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
         #     #=> #<Shrine::Plugins::DataUri::DataFile>
         def data_uri(uri)
-          match = uri.match(DATA_URI_REGEXP)
-          raise ParseError, "invalid data URI" if match.nil?
+          info = parse_data_uri(uri)
 
-          content_type = match[1] || DEFAULT_CONTENT_TYPE
-          content      = match[2] ? Base64.decode64(match[3]) : match[3]
+          content_type = info[:content_type] || DEFAULT_CONTENT_TYPE
+          content      = info[:base64] ? Base64.decode64(info[:data]) : info[:data]
           filename     = opts[:data_uri_filename]
           filename     = filename.call(content_type) if filename
 
           DataFile.new(content, content_type: content_type, filename: filename)
+        end
+
+        private
+
+        def parse_data_uri(uri)
+          scanner = StringScanner.new(uri)
+          scanner.scan(DATA_REGEXP) or raise ParseError, "data URI has invalid format"
+          content_type = scanner.scan(CONTENT_TYPE_REGEXP)
+          base64       = scanner.scan(BASE64_REGEXP)
+          scanner.scan(CONTENT_SEPARATOR) or raise ParseError, "data URI has invalid format"
+
+          {
+            content_type: content_type,
+            base64:       !!base64,
+            data:         scanner.post_match,
+          }
         end
       end
 
