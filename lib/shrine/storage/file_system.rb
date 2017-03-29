@@ -127,7 +127,7 @@ class Shrine
           FileUtils.mv io.path, path!(id)
         else
           FileUtils.mv io.storage.path(io.id), path!(id)
-          io.storage.clean(io.id) if io.storage.clean?
+          io.storage.clean(io.storage.path(io.id)) if io.storage.clean?
         end
         path(id).chmod(permissions) if permissions
       end
@@ -153,7 +153,7 @@ class Shrine
       # it's empty.
       def delete(id)
         path(id).delete
-        clean(id) if clean?
+        clean(path(id)) if clean?
       rescue Errno::ENOENT
       end
 
@@ -173,7 +173,10 @@ class Shrine
       def clear!(older_than: nil)
         if older_than
           directory.find do |path|
-            path.mtime < older_than ? path.rmtree : Find.prune
+            if path.file? && path.mtime < older_than
+              path.delete
+              clean(path) if clean?
+            end
           end
         else
           directory.rmtree
@@ -201,8 +204,8 @@ class Shrine
       end
 
       # Cleans all empty subdirectories up the hierarchy.
-      def clean(id)
-        path(id).dirname.ascend do |pathname|
+      def clean(path)
+        path.dirname.ascend do |pathname|
           if pathname.children.empty? && pathname != directory
             pathname.rmdir
           else

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix `Storage::FileSystem#clear!` not deleting old files if there are newer files in the same directory (@janko-m)
+
 * Allow media type in the data URI to have additional parameters (@janko-m)
 
 * URI-decode non-base64 data URIs, as such data URIs are URI-encoded according to the specification (@janko-m)

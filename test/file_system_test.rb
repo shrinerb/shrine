@@ -207,25 +207,37 @@ describe Shrine::Storage::FileSystem do
   end
 
   describe "#clear!" do
-    it "creates the directory after deleting it" do
+    it "can purge the whole directory" do
       @storage = file_system(root)
       @storage.clear!
       assert File.directory?(root)
-    end
-
-    it "is able to delete old files" do
-      @storage = file_system(root)
-      @storage.upload(fakeio, "foo")
-      @storage.clear!(older_than: Time.now - 10)
-      assert @storage.exists?("foo")
-      @storage.clear!(older_than: Time.now + 10)
-      refute @storage.exists?("foo")
     end
 
     it "reestablishes directory permissions" do
       @storage = file_system(root, directory_permissions: 0777)
       @storage.clear!
       assert_permissions 0777, root
+    end
+
+    it "can delete files and directories older than some date" do
+      time = Time.utc(2017, 3, 29)
+
+      @storage.upload(fakeio, "foo")
+      @storage.upload(fakeio, "dir/bar")
+      @storage.upload(fakeio, "dir/baz")
+      @storage.upload(fakeio, "dir/dir/quux")
+
+      File.utime(time,     time,     @storage.directory.join("dir/bar"))
+      File.utime(time - 1, time - 1, @storage.directory.join("foo"))
+      File.utime(time - 1, time - 1, @storage.directory.join("dir/baz"))
+      File.utime(time - 2, time - 2, @storage.directory.join("dir/dir/quux"))
+
+      @storage.clear!(older_than: time)
+
+      refute File.exist?(@storage.directory.join("foo"))
+      assert File.exist?(@storage.directory.join("dir/bar"))
+      refute File.exist?(@storage.directory.join("dir/baz"))
+      refute File.exist?(@storage.directory.join("dir/dir"))
     end
   end
 
