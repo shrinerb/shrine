@@ -368,7 +368,7 @@ end
 
 After you deploy this code, the `image_data` column should now be successfully
 synchronized with new attachments.  Next step is to run a script which writes
-all existing CarrierWave attachments to `image_data`:
+all existing Paperclip attachments to `image_data`:
 
 ```rb
 Photo.find_each do |photo|
