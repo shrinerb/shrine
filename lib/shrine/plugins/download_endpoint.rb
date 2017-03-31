@@ -41,13 +41,22 @@ class Shrine
     #    prompted to download the file when visiting the download URL.
     #    The default is "inline".
     #
-    # This plugin is also suitable on Heroku when using FileSystem storage for
-    # cache. On Heroku files cannot be stored to the "public" folder but rather
-    # to the "tmp" folder, which means that by default it's not possible to
-    # show the URL to the cached file. The download endpoint generates the URL
-    # to any file, regardless of its location.
+    # Note that streaming the file through your app might impact the request
+    # throughput of your app, because on most popular web servers (Puma,
+    # Unicorn, Passenger) workers handling this endpoint will not be able to
+    # serve new requests until the client has fully downloaded the response
+    # body.
+    #
+    # To prevent download endpoint from impacting your request throughput, use
+    # a web server that handles streaming responses and slow clients well, like
+    # [Thin], [Rainbows] or any other [EventMachine]-based web server that
+    # implements `async.callback`.
     #
     # [Roda]: https://github.com/jeremyevans/roda
+    # [Thin]: https://github.com/macournoyer/thin
+    # [Rainbows]: https://rubygems.org/gems/rainbows
+    # [Reel]: https://github.com/celluloid/reel
+    # [EventMachine]: https://github.com/eventmachine
     module DownloadEndpoint
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
