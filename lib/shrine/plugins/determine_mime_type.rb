@@ -37,11 +37,19 @@ class Shrine
     #   "Content-Type" request header, which might not hold the actual MIME type
     #   of the file.
     #
-    # Not all analyzers can recognize all types of files. For those cases you
-    # can build your own analyzer, where you can reuse built-in analyzers:
+    # A single analyzer is not going to properly recognize all types of files,
+    # so you can build your own custom analyzer for your requirements, where
+    # you can combine the built-in analyzers.
+    #
+    # For example, if you want to accept .css, .js, .json, .csv, .xml, or
+    # similar text-based files, the `file` analyzer will detect all of these
+    # files as `text/plain`. So in that case you can additionally call the
+    # `mime_types` analyzer to determine the MIME type from file extension.
     #
     #     plugin :determine_mime_type, analyzer: ->(io, analyzers) do
-    #       analyzers[:mimemagic].call(io) || analyzers[:file].call(io)
+    #       mime_type = analyzers[:file].call(io)
+    #       mime_type = analyzers[:mime_types].call(io) if mime_type == "text/plain"
+    #       mime_type
     #     end
     #
     # [file]: http://linux.die.net/man/1/file
