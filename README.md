@@ -292,13 +292,13 @@ photo.image #=> nil
 photo.image = File.open("waterfall.jpg")
 photo.image      #=> #<Shrine::UploadedFile @data={...}>
 photo.image_url  #=> "/uploads/cache/0sdfllasfi842.jpg"
-photo.image_data #=> '{"storage":"cache","id":"0sdfllasfi842.jpg","metadata":{...}}'
+photo.image_data #=> '{"id":"0sdfllasfi842.jpg","storage":"cache","metadata":{...}}'
 
 # the cached file is promoted to permanent storage and saved to `image_data` column
 photo.save
 photo.image      #=> #<Shrine::UploadedFile @data={...}>
 photo.image_url  #=> "/uploads/store/l02kladf8jlda.jpg"
-photo.image_data #=> '{"storage":"store","id":"l02kladf8jlda.jpg","metadata":{...}}'
+photo.image_data #=> '{"id":"l02kladf8jlda.jpg","storage":"store","metadata":{...}}'
 
 # the attached file is deleted with the record
 photo.destroy
@@ -322,8 +322,8 @@ uploads], via the hidden form field.
 
 ```rb
 photo.image = '{
-  "storage": "cache",
   "id": "9260ea09d8effd.jpg",
+  "storage": "cache",
   "metadata": { ... }
 }'
 ```
@@ -744,9 +744,10 @@ The above setup will provide the following endpoints:
 * `GET /images/cache/presign` - for direct uploads to external service (e.g. Amazon S3)
 
 Now when the user selects a file, the client can immediately start uploading
-the file asynchronously using one of these endpoints. For JavaScript you can
-use generic file upload libraries like [jQuery-File-Upload], [Dropzone] or
-[FineUploader].
+the file asynchronously using one of these endpoints. The JSON data of the
+uploaded file can then be written to the hidden attachment field, and submitted
+instead of the file. For JavaScript you can use generic file upload libraries
+like [jQuery-File-Upload], [Dropzone] or [FineUploader].
 
 See the [direct_upload] plugin documentation and [Direct Uploads to S3][direct uploads]
 guide for more details, as well as the [Roda][roda_demo] and

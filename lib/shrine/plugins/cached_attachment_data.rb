@@ -10,11 +10,11 @@ class Shrine
     # the cached file as JSON, and should be used to set the value of the
     # hidden form field.
     #
-    #     @user.cached_avatar_data #=> '{"storage":"cache","id":"...","metadata":{...}}'
+    #     @user.cached_avatar_data #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
     #
     # This method delegates to `Attacher#read_cached`:
     #
-    #     attacher.read_cached #=> '{"storage":"cache","id":"...","metadata":{...}}'
+    #     attacher.read_cached #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
     module CachedAttachmentData
       module AttachmentMethods
         def initialize(*)

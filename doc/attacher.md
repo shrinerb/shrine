@@ -59,8 +59,8 @@ attacher.assign(io)
 
 # writes the given cached file to the data column
 attacher.assign '{
-  "storage": "cache",
   "id": "9260ea09d8effd.jpg",
+  "storage": "cache",
   "metadata": { ... }
 }'
 ```
@@ -87,14 +87,15 @@ The `#read` method will just return the value of the underlying
 `<attachment>_data` attribute.
 
 ```rb
-attacher.read #=> '{"storage":"cache","id":"dsg024lfs.jpg",...}'
+attacher.read #=> '{"id":"dsg024lfs.jpg","storage":"cache","metadata":{...}}'
 ```
 
 In general you can use `#uploaded_file` to contruct a `Shrine::UploadedFile`
 from a JSON string.
 
 ```rb
-attacher.uploaded_file('{"storage":"cache","id":"dsg024lfs.jpg",...}') #=> #<Shrine::UploadedFile>
+cached_file_json = '{"id":"dsg024lfs.jpg","storage":"cache","metadata":{...}}'
+attacher.uploaded_file(cached_file_json) #=> #<Shrine::UploadedFile>
 ```
 
 ## URL

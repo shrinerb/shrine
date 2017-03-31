@@ -96,9 +96,9 @@ After each upload finishes, you can generate a nested hash for the new
 associated record, and write the uploaded file JSON to the attachment field:
 
 ```rb
-album[photos_attributes][0][image] = '{"storage":"cache","id":"38k25.jpg","metadata":{...}}'
-album[photos_attributes][1][image] = '{"storage":"cache","id":"sg0fg.jpg","metadata":{...}}'
-album[photos_attributes][2][image] = '{"storage":"cache","id":"041jd.jpg","metadata":{...}}'
+album[photos_attributes][0][image] = '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
+album[photos_attributes][1][image] = '{"id":"sg0fg.jpg","storage":"cache","metadata":{...}}'
+album[photos_attributes][2][image] = '{"id":"041jd.jpg","storage":"cache","metadata":{...}}'
 ```
 
 Once you submit this to the app, the ORM's nested attributes behaviour will

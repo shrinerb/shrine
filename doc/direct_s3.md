@@ -108,7 +108,7 @@ necessary request parameters:
 {
   "url" => "https://my-bucket.s3-eu-west-1.amazonaws.com",
   "fields" => {
-    "key" => "b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
+    "key" => "cache/b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
     "policy" => "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19",
     "x-amz-credential" => "AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request",
     "x-amz-algorithm" => "AWS4-HMAC-SHA256",
