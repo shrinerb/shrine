@@ -38,7 +38,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "shrine-memory", ">= 0.2.2"
 
   gem.add_development_dependency "roda"
-  gem.add_development_dependency "rack", "~> 1.6.4"
+  gem.add_development_dependency "rack"
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "fastimage"
