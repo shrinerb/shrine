@@ -181,9 +181,7 @@ class Shrine
         def _store(io, context)
           if (hash = io).is_a?(Hash)
             raise Error, ":location is not applicable to versions" if context.key?(:location)
-            if duplicates = hash.keys.group_by{|k| hash[k]}.values.reject(&:one?).first
-              raise Error, "The following version keys point to the same IO object: #{duplicates.inspect}. Shrine cannot upload the same IO object multiple times."
-            end
+            raise Error, "detected multiple versions that point to the same IO object: given versions: #{hash.keys}, unique versions: #{hash.invert.invert.keys}" if hash.invert.invert != hash
 
             hash.inject({}) do |result, (name, version)|
               result.update(name => _store(version, version: name, **context))

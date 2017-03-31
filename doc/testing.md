@@ -213,7 +213,7 @@ return a hash of unprocessed original files:
 class ImageUploader
   def process(io, context)
     if context[:action] == :store
-      {small: io, medium: io, large: io}
+      {small: io.download, medium: io.download, large: io.download}
     end
   end
 end
