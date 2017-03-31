@@ -117,7 +117,7 @@ class Shrine
     # ## Large files
     #
     # The [aws-sdk] gem has the ability to automatically use multipart
-    # upload/copy for larger files, where the file is split into multiple chunks
+    # upload/copy for larger files, splitting the file into multiple chunks
     # which are uploaded/copied in parallel.
     #
     # By default any files that are larger than 15MB will use this multipart
@@ -185,7 +185,9 @@ class Shrine
       end
 
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
-      # uploads the file.
+      # uploads the file. For files larger than `:multipart_threshold` a
+      # multipart upload/copy will be used for better performance and more
+      # resilient uploads.
       #
       # It assigns the correct "Content-Type" taken from the MIME type, because
       # by default S3 sets everything to "application/octet-stream".
@@ -318,15 +320,18 @@ class Shrine
 
       private
 
-      # Copies an existing S3 object to a new location.
+      # Copies an existing S3 object to a new location. Uses multipart copy for
+      # large files.
       def copy(io, id, **options)
+        # pass :content_length on multipart copy to avoid an additional HEAD request
         options = {multipart_copy: true, content_length: io.size}.update(options) if multipart?(io)
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
-      # Uploads the file to S3.
+      # Uploads the file to S3. Uses multipart upload for large files.
       def put(io, id, **options)
         if io.respond_to?(:path)
+          # use `upload_file` for files because it can do multipart upload
           options = {multipart_threshold: @multipart_threshold}.update(options)
           object(id).upload_file(io.path, **options)
         else
@@ -347,6 +352,9 @@ class Shrine
         io.size && io.size >= @multipart_threshold
       end
 
+      # Upload requests will fail if filename has non-ASCII characters, because
+      # of how S3 generates signatures, so we URI-encode them. Most browsers
+      # should automatically URI-decode filenames when downloading.
       def encode_content_disposition(content_disposition)
         content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
           CGI.escape(filename).sub("+", " ")
