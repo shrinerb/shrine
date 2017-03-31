@@ -67,7 +67,7 @@ class Shrine
     #
     # or when using the uploader directly
     #
-    #     uploader.upload(file, upload_options: {acl: "public-read"})
+    #     uploader.upload(file, upload_options: {acl: "private"})
     #
     # Note that, unlike the `:upload_options` storage option, upload options
     # given on the uploader level won't be forwarded for generating presigns,
@@ -78,21 +78,20 @@ class Shrine
     # This storage supports various URL options that will be forwarded from
     # uploaded file.
     #
-    #     s3.url(public: true)   # public URL without signed parameters
-    #     s3.url(download: true) # forced download URL
+    #     uploaded_file.url(public: true)   # public URL without signed parameters
+    #     uploaded_file.url(download: true) # forced download URL
     #
     # All other options are forwarded to the [aws-sdk] gem:
     #
-    #     s3.url(expires_in: 15)
-    #     s3.url(virtual_host: true)
+    #     uploaded_file.url(expires_in: 15)
+    #     uploaded_file.url(virtual_host: true)
     #
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
     # the `:host` option to `#url`:
     #
-    #     s3 = Shrine::Storage::S3.new(**s3_options)
-    #     s3.url("image.jpg", host: "http://abc123.cloudfront.net")
+    #     uploaded_file.url("image.jpg", host: "http://abc123.cloudfront.net")
     #     #=> "http://abc123.cloudfront.net/image.jpg"
     #
     # ## Accelerate endpoint
