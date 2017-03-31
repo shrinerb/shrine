@@ -286,6 +286,7 @@ attachments:
 
 ```rb
 require "fastimage"
+require "mime/types"
 
 module PaperclipShrineSynchronization
   def self.included(model)

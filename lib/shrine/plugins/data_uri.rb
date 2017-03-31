@@ -48,6 +48,8 @@ class Shrine
     # have a filename), but you can generate a filename based on the content
     # type of the data URI:
     #
+    #     require "mime/types"
+    #
     #     plugin :data_uri, filename: ->(content_type) do
     #       extension = MIME::Types[content_type].first.preferred_extension
     #       "data_uri.#{extension}"

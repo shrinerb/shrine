@@ -248,6 +248,7 @@ attachments:
 
 ```rb
 require "fastimage"
+require "mime/types"
 
 module CarrierwaveShrineSynchronization
   def self.included(model)
