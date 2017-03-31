@@ -99,10 +99,12 @@ class Shrine
     #
     #     plugin :direct_upload, presign_options: ->(request) do
     #       filename = request.params["filename"]
+    #       content_type = Rack::Mime.mime_type(File.extname(filename))
     #
     #       {
     #         content_length_range: 0..(10*1024*1024),                     # limit filesize to 10MB
     #         content_disposition: "attachment; filename=\"#{filename}\"", # download with original filename
+    #         content_type:        content_type,                           # set correct content type
     #       }
     #     end
     #
