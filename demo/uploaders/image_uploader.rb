@@ -15,7 +15,7 @@ class ImageUploader < Shrine
   end
 
   process(:store) do |io, context|
-    small = resize_to_limit!(io.download, 300, 300)
+    small = resize_to_limit!(io.download, 300, 300) { |cmd| cmd.auto_orient }
 
     {original: io, small: small}
   end

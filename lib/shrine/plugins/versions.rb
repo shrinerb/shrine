@@ -14,7 +14,7 @@ class Shrine
     #     process(:store) do |io, context|
     #       original = io.download
     #
-    #       size_800 = resize_to_limit!(original, 800, 800)
+    #       size_800 = resize_to_limit!(original, 800, 800) { |cmd| cmd.auto_orient }
     #       size_500 = resize_to_limit(size_800,  500, 500)
     #       size_300 = resize_to_limit(size_500,  300, 300)
     #

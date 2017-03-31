@@ -486,7 +486,7 @@ class ImageUploader < Shrine
   plugin :processing
 
   process(:store) do |io, context|
-    resize_to_limit!(io.download, 800, 800)
+    resize_to_limit!(io.download, 800, 800) { |cmd| cmd.auto_orient } # orient rotated images
   end
 end
 ```
@@ -524,7 +524,7 @@ class ImageUploader < Shrine
   process(:store) do |io, context|
     original = io.download
 
-    size_800 = resize_to_limit!(original, 800, 800)
+    size_800 = resize_to_limit!(original, 800, 800) { |cmd| cmd.auto_orient } # orient rotated images
     size_500 = resize_to_limit(size_800,  500, 500)
     size_300 = resize_to_limit(size_500,  300, 300)
 
