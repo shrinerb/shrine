@@ -61,8 +61,15 @@ class Shrine
     #     plugin :remote_url, error_message: "download failed"
     #     plugin :remote_url, error_message: ->(url, error) { I18n.t("errors.download_failed") }
     #
+    # ## Background
+    #
+    # If you want the file to be downloaded from the URL in the background, you
+    # can use the [shrine-url] storage which allows you to assign a custom URL
+    # as cached file ID, and pair that with the `backrounding` plugin.
+    #
     # [Down]: https://github.com/janko-m/down
     # [Addressable]: https://github.com/sporkmonger/addressable
+    # [shrine-url]: https://github.com/janko-m/shrine-url
     module RemoteUrl
       def self.configure(uploader, opts = {})
         raise Error, "The :max_size option is required for remote_url plugin" if !opts.key?(:max_size) && !uploader.opts.key?(:remote_url_max_size)
