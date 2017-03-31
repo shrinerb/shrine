@@ -94,8 +94,8 @@ In general you can use `#uploaded_file` to contruct a `Shrine::UploadedFile`
 from a JSON string.
 
 ```rb
-cached_file_json = '{"id":"dsg024lfs.jpg","storage":"cache","metadata":{...}}'
-attacher.uploaded_file(cached_file_json) #=> #<Shrine::UploadedFile>
+attachment_data = '{"id":"dsg024lfs.jpg","storage":"cache","metadata":{...}}'
+attacher.uploaded_file(attachment_data) #=> #<Shrine::UploadedFile>
 ```
 
 ## URL

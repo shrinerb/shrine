@@ -49,6 +49,16 @@ class Shrine
     #     user.avatar_url(:large)
     #     user.avatar_url(:small, download: true) # with URL options
     #
+    # `Shrine.uploaded_file` will also instantiate a hash of
+    # `Shrine::UploadedFile` objects if given data with versions. If you want
+    # to apply a change to all files in an attachment, regardless of whether
+    # it consists of a single file or a hash of versions, you can pass a block
+    # to `Shrine.uploaded_file` and it will yield each file:
+    #
+    #     Shrine.uploaded_file(attachment_data) do |uploaded_file|
+    #       # ...
+    #     end
+    #
     # ## Original file
     #
     # If you want to keep the original file, you can include the original
