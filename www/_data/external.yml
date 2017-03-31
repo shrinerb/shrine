@@ -39,8 +39,11 @@
         name: Uploading Files With Rails and Shrine
         url: https://code.tutsplus.com/tutorials/uploading-files-with-rails-and-shrine--cms-27596
   -
-    title: Screencasts
+    title: Videos
     items:
+      -
+        name: "Shrine: un toolkit para gestionar uploads en Ruby (Madrid.rb)"
+        url: https://player.vimeo.com/video/161742211
       -
         name: "File Uploads in Rails with Shrine (GoRails)"
         url: https://gorails.com/episodes/file-uploading-with-shrine?autoplay=1
