@@ -13,11 +13,14 @@ beneficial for several use cases:
 * With multiple servers it's generally not possible to cache files to the disk,
   unless you're using a distibuted filesystem that's shared between servers.
 
-* Heroku restricts file uploads to disk, allowing you to save files only in
-  the temporary folder, which gets wiped out between deploys.
+* On Heroku any uploaded files that aren't part of version control don't persist,
+  they get removed each time you do a new deploy or when the dyno automatically
+  changes the location.
 
-* Heroku has a 30-second request limit, so if the client has a slow connection
-  and/or your files are larger, uploads to your app can easily hit that limit.
+* If your request workers have a timeout configured or you're using Heroku,
+  uploading a large files to S3 or any external service inside the
+  request-response lifecycle might not be able to finish before the request
+  times out.
 
 You can start by setting both temporary and permanent storage to S3 with
 different prefixes (or even buckets):
