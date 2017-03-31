@@ -286,8 +286,8 @@ module CarrierwaveShrineSynchronization
     path = uploader.store_path(read_attribute(uploader.mounted_as))
 
     size   = uploader.file.size if changes.key?(uploader.mounted_as)
-    size ||= FastImage.new(uploader.url).content_length
-    size ||= File.size(File.join(uploader.root, path))
+    size ||= FastImage.new(uploader.url).content_length # OPTIONAL (makes an HTTP request)
+    size ||= File.size(File.join(uploader.root, path)) if File.exist?(path)
     filename = File.basename(path)
     mime_type = MIME::Types.type_for(path).first.to_s.presence
 

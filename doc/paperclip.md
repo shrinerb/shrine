@@ -343,8 +343,8 @@ module PaperclipShrineSynchronization
     file = attachment.instance_variable_get("@queued_for_write")[style.name]
 
     size   = file.size if file
-    size ||= FastImage.new(url).content_length
-    size ||= File.size(path)
+    size ||= FastImage.new(url).content_length # OPTIONAL (makes an HTTP request)
+    size ||= File.size(path) if File.exist?(path)
     filename = File.basename(path)
     mime_type = MIME::Types.type_for(path).first.to_s.presence
 
