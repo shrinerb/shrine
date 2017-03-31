@@ -99,6 +99,9 @@
       -
         name: shrine-url
         url: https://github.com/janko-m/shrine-url
+      -
+        name: shrine-storage-you_tube
+        url: https://github.com/thedyrt/shrine-storage-you_tube
   -
     title: Plugins
     items:
