@@ -21,8 +21,12 @@ class Shrine
     #     attacher.remote_url = "http://example.com/cool-image.png"
     #
     # The file will by default be downloaded using [Down], which is a wrapper
-    # around the open-uri standard library. It's a good practice to limit the
-    # maximum filesize of the remote file:
+    # around the `open-uri` standard library. Note that Down expects the given
+    # URL to be URI-encoded.
+    #
+    # ## Maximum size
+    #
+    # It's a good practice to limit the maximum filesize of the remote file:
     #
     #     plugin :remote_url, max_size: 20*1024*1024 # 20 MB
     #
@@ -34,12 +38,22 @@ class Shrine
     #
     #     plugin :remote_url, max_size: nil
     #
-    # If you need to additionally customize how the file is downloaded, you can
-    # override the `:downloader`:
+    # ## Custom downloader
+    #
+    # If you want to customize how the file is downloaded, you can override the
+    # `:downloader` parameter and provide your own implementation. For example,
+    # you can ensure the URL is URI-encoded (using the [Addressable] gem) before
+    # passing it to Down:
+    #
+    #     require "down"
+    #     require "addressable/uri"
     #
     #     plugin :remote_url, max_size: 20*1024*1024, downloader: ->(url, max_size:) do
+    #       url = Addressable::URI.encode(Addressable::URI.decode(url))
     #       Down.download(url, max_size: max_size, max_redirects: 4, read_timeout: 3)
     #     end
+    #
+    # ## Errors
     #
     # If download errors, the error is rescued and a validation error is added
     # equal to the error message. You can change the default error message:
@@ -48,6 +62,7 @@ class Shrine
     #     plugin :remote_url, error_message: ->(url, error) { I18n.t("errors.download_failed") }
     #
     # [Down]: https://github.com/janko-m/down
+    # [Addressable]: https://github.com/sporkmonger/addressable
     module RemoteUrl
       def self.configure(uploader, opts = {})
         raise Error, "The :max_size option is required for remote_url plugin" if !opts.key?(:max_size) && !uploader.opts.key?(:remote_url_max_size)
