@@ -410,6 +410,68 @@ end
 
 No equivalent currently exists in Shrine.
 
+### `accepts_attachments_for`
+
+No equivalent in Shrine, but take a look at the "[Multiple Files]" guide.
+
+### Form helpers
+
+#### `attachment_field`
+
+The following Refile code
+
+```erb
+<%= form_for @user do |form| %>
+  <%= form.attachment_field :profile_image %>
+<% end %>
+```
+
+is equivalent to the following Shrine code
+
+```rb
+Shrine.plugin :cached_attachment_data
+```
+```erb
+<%= form_for @user do |form| %>
+  <%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %>
+  <%= form.file_field :profile_image %>
+<% end %>
+```
+
+### Model methods
+
+#### `remove_<attachment>`
+
+Shrine comes with a `remove_attachment` plugin which adds the same
+`#remove_<attachment>` method to the model.
+
+```rb
+Shrine.plugin :remove_attachment
+```
+```erb
+<%= form_for @user do |form| %>
+  <%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %>
+  <%= form.file_field :profile_image %>
+  <%= form.check_box :remove_profile_image %>
+<% end %>
+```
+
+#### `remote_<attachment>_url`
+
+Shrine comes with a `remote_url` plugin which adds the same
+`#<attachment>_remote_url` method to the model.
+
+```rb
+Shrine.plugin :remote_url
+```
+```erb
+<%= form_for @user do |form| %>
+  <%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %>
+  <%= form.file_field :profile_image %>
+  <%= form.text_field :profile_image_remote_url %>
+<% end %>
+```
+
 [shrine-cloudinary]: https://github.com/janko-m/shrine-cloudinary
 [shrine-imgix]: https://github.com/janko-m/shrine-imgix
 [shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
@@ -418,3 +480,4 @@ No equivalent currently exists in Shrine.
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
+[Multiple Files]: http://shrinerb.com/rdoc/files/doc/multiple_files_md.html

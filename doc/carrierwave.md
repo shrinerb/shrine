@@ -555,17 +555,18 @@ argument (`user.avatar_url(:thumb)`).
 
 #### `#<attachment>_cache`
 
-Shrine doesn't provide this method, instead it expects to recieve the
-attachment through the accessor, you can assign it `<attachment>_data`:
+Shrine has the `cached_attachment_data` plugin, which gives model a reader method
+that you can use for retaining the cached file:
 
+```rb
+Shrine.plugin :cached_attachment_data
+```
 ```erb
 <%= form_for @user do |f| %>
-  <%= f.hidden_field :avatar, value: @user.avatar_data %>
+  <%= f.hidden_field :avatar, value: @user.cached_avatar_data %>
   <%= f.file_field :avatar %>
 <% end %>
 ```
-
-You might also want to look at the `cached_attachment_data` plugin.
 
 #### `#remote_<attachment>_url`
 
