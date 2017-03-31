@@ -48,6 +48,16 @@ class Shrine
     # the foreground before kicking off a background job, you can use the
     # `recache` plugin.
     #
+    # In your application you can use `Attacher#cached?` and `Attacher#stored?`
+    # to differentiate between your background job being in progress and
+    # having completed.
+    #
+    #     if user.avatar_attacher.cached? # background job is still in progress
+    #       # ...
+    #     elsif user.avatar_attacher.stored? # background job has finished
+    #       # ...
+    #     end
+    #
     # ## `Attacher.promote` and `Attacher.delete`
     #
     # In background jobs, `Attacher.promote` and `Attacher.delete` will resolve
