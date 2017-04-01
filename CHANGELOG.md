@@ -1,5 +1,9 @@
 ## HEAD
 
+* Improve default multipart copy threshold for S3 storage (@janko-m)
+
+* Allow specifying multipart upload and copy thresholds separately in `Shrine::Storage::S3` (@janko-m)
+
 * Fix `Storage::FileSystem#clear!` not deleting old files if there are newer files in the same directory (@janko-m)
 
 * Allow media type in the data URI to have additional parameters (@janko-m)

@@ -117,12 +117,23 @@ class Shrine
     #
     # The [aws-sdk] gem has the ability to automatically use multipart
     # upload/copy for larger files, splitting the file into multiple chunks
-    # which are uploaded/copied in parallel.
+    # and uploading/copying them in parallel.
     #
-    # By default any files that are larger than 15MB will use this multipart
-    # upload/copy, but you change this threshold:
+    # By default any files that are uploaded will use the multipart upload
+    # if they're larger than 15MB, and any files that are copied will use the
+    # multipart copy if they're larger than 150MB, but you can change the
+    # thresholds via `:multipart_threshold`.
     #
-    #     Shrine::Storage::S3.new(multipart_threshold: 30*1024*1024) # 30MB
+    #     thresholds = {upload: 30*1024*1024, copy: 200*1024*1024}
+    #     Shrine::Storage::S3.new(multipart_threshold: thresholds, **s3_options)
+    #
+    # If you want to change how many threads [aws-sdk] will use for multipart
+    # upload/copy, you can use the `upload_options` plugin to specify
+    # `:thread_count`.
+    #
+    #     plugin :upload_options, store: ->(io, context) do
+    #       {thread_count: 5}
+    #     end
     #
     # ## Clearing cache
     #
@@ -156,8 +167,10 @@ class Shrine
       #     and [`Aws::S3::Bucket#presigned_post`].
       #
       # :multipart_threshold
-      # :   The file size over which the storage will use parallelized
-      #     multipart copy/upload. Default is `15*1024*1024` (15MB).
+      # :   If the input file is larger than the specified size, a parallelized
+      #     multipart will be used for the upload/copy. Defaults to
+      #     `{upload: 15*1024*1024, copy: 100*1024*1024}` (15MB for upload
+      #     requests, 100MB for copy requests).
       #
       # All other options are forwarded to [`Aws::S3::Client#initialize`].
       #
@@ -165,9 +178,16 @@ class Shrine
       # [`Aws::S3::Object#copy_from`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
-      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: 15*1024*1024, **s3_options)
+      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, **s3_options)
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
         resource = Aws::S3::Resource.new(**s3_options)
+
+        if multipart_threshold.is_a?(Integer)
+          Shrine.deprecation("Accepting the :multipart_threshold S3 option as an integer is deprecated, use a hash with :upload and :copy keys instead, e.g. {upload: 15*1024*1024, copy: 150*1024*1024}")
+          multipart_threshold = {upload: multipart_threshold}
+        end
+        multipart_threshold[:upload] ||= 15*1024*1024
+        multipart_threshold[:copy]   ||= 100*1024*1024
 
         @bucket = resource.bucket(bucket)
         @client = resource.client
@@ -323,7 +343,7 @@ class Shrine
       # large files.
       def copy(io, id, **options)
         # pass :content_length on multipart copy to avoid an additional HEAD request
-        options = {multipart_copy: true, content_length: io.size}.update(options) if multipart?(io)
+        options = {multipart_copy: true, content_length: io.size}.update(options) if io.size && io.size >= @multipart_threshold[:copy]
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
@@ -331,7 +351,7 @@ class Shrine
       def put(io, id, **options)
         if io.respond_to?(:path)
           # use `upload_file` for files because it can do multipart upload
-          options = {multipart_threshold: @multipart_threshold}.update(options)
+          options = {multipart_threshold: @multipart_threshold[:upload]}.update(options)
           object(id).upload_file(io.path, **options)
         else
           object(id).put(body: io, **options)
@@ -343,12 +363,6 @@ class Shrine
         io.is_a?(UploadedFile) &&
         io.storage.is_a?(Storage::S3) &&
         io.storage.client.config.access_key_id == client.config.access_key_id
-      end
-
-      # Determines whether multipart upload/copy should be used from
-      # `:multipart_threshold`.
-      def multipart?(io)
-        io.size && io.size >= @multipart_threshold
       end
 
       # Upload requests will fail if filename has non-ASCII characters, because
