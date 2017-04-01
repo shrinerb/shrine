@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow S3 storage to use parallelized multipart upload for files from FileSystem storage as well (@janko-m)
+
 * Improve default multipart copy threshold for S3 storage (@janko-m)
 
 * Allow specifying multipart upload and copy thresholds separately in `Shrine::Storage::S3` (@janko-m)

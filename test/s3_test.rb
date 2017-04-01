@@ -1,6 +1,7 @@
 require "test_helper"
 
 require "shrine/storage/s3"
+require "shrine/storage/file_system"
 require "shrine/storage/linter"
 
 require "down"
@@ -18,6 +19,10 @@ describe Shrine::Storage::S3 do
     options[:secret_access_key] ||= ENV.fetch("S3_SECRET_ACCESS_KEY")
 
     Shrine::Storage::S3.new(**options)
+  end
+
+  def filesystem
+    Shrine::Storage::FileSystem.new(Dir.tmpdir)
   end
 
   before do
@@ -42,7 +47,22 @@ describe Shrine::Storage::S3 do
   describe "#upload" do
     it "uploads files" do
       @s3.upload(image, "foo")
-      assert @s3.exists?("foo")
+      assert image.read, @s3.download("foo").read
+    end
+
+    it "uploads filesystem uploaded files" do
+      shrine = Class.new(Shrine)
+      shrine.storages = {filesystem: filesystem}
+      uploader = shrine.new(:filesystem)
+
+      uploaded_file = uploader.upload(fakeio("file"))
+      @s3.upload(uploaded_file, "foo")
+      assert "file", @s3.download("foo").read
+    end
+
+    it "uploads IO objects" do
+      @s3.upload(fakeio("file"), "foo")
+      assert "file", @s3.download("foo").read
     end
 
     it "copies the file if it's from also S3" do

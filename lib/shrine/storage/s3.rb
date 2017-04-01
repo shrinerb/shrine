@@ -350,9 +350,15 @@ class Shrine
       # Uploads the file to S3. Uses multipart upload for large files.
       def put(io, id, **options)
         if io.respond_to?(:path)
+          path = io.path
+        elsif io.is_a?(UploadedFile) && defined?(Storage::FileSystem) && io.storage.is_a?(Storage::FileSystem)
+          path = io.storage.directory.join(io.id).to_s
+        end
+
+        if path
           # use `upload_file` for files because it can do multipart upload
           options = {multipart_threshold: @multipart_threshold[:upload]}.update(options)
-          object(id).upload_file(io.path, **options)
+          object(id).upload_file(path, **options)
         else
           object(id).put(body: io, **options)
         end
