@@ -137,6 +137,25 @@ end
 If you're doing processing on caching, you can use the fastimage gem directly
 in a conditional.
 
+## Prevent metadata tampering
+
+When cached file is retained on validation errors or it was direct uploaded,
+the uploaded file representation is assigned to the attacher. This also
+includes any file metadata. By default Shrine won't attempt to re-extract
+metadata, because for remote storages that requires an additional HTTP request,
+which might not be feasible depending on the application requirements.
+
+However, this means that the attacker can directly upload a malicious file
+(because direct uploads aren't validated), and then modify the metadata hash so
+that it passes Shrine validations, before submitting the cached file to your
+app. To guard yourself from such attacks, you can load the
+`restore_cached_data` plugin, which will automatically re-extract metadata from
+cached files on assignment and override the received metadata.
+
+```rb
+plugin :restore_cached_data
+```
+
 ## Limit number of files
 
 When doing direct uploads, it's a good idea to apply some kind of throttling to
