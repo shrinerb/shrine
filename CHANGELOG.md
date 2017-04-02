@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `refresh_metadata` plugin for re-extracting metadata from an uploaded file (@janko-m)
+
 * Allow S3 storage to use parallelized multipart upload for files from FileSystem storage as well (@janko-m)
 
 * Improve default multipart copy threshold for S3 storage (@janko-m)

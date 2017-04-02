@@ -13,16 +13,17 @@ describe Shrine::Plugins::RestoreCachedData do
     assert_equal 1024, @attacher.get.metadata["size"]
   end
 
-  it "keeps any custom metadata" do
-    cached_file = @attacher.cache!(fakeio("image"))
-    cached_file.metadata["custom"] = "custom"
-    @attacher.assign(cached_file.to_json)
-    assert_equal "custom", @attacher.get.metadata["custom"]
-  end
-
   it "skips extracting if the file is not cached" do
-    stored_file = @attacher.store!(fakeio("image"))
+    stored_file = @attacher.store!(fakeio)
     @attacher.cache.expects(:extract_metadata).never
     @attacher.assign(stored_file.to_json)
+  end
+
+  it "forwards the context" do
+    cached_file = @attacher.cache!(fakeio)
+    @attacher.shrine_class.plugin :add_metadata
+    @attacher.shrine_class.add_metadata(:context) { |io, context| context.keys.to_s }
+    @attacher.assign(cached_file.to_json)
+    assert_equal "[:record, :name]", @attacher.get.metadata["context"]
   end
 end
