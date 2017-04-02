@@ -65,7 +65,7 @@ class Shrine
     #
     # If you want the file to be downloaded from the URL in the background, you
     # can use the [shrine-url] storage which allows you to assign a custom URL
-    # as cached file ID, and pair that with the `backrounding` plugin.
+    # as cached file ID, and pair that with the `backgrounding` plugin.
     #
     # [Down]: https://github.com/janko-m/down
     # [Addressable]: https://github.com/sporkmonger/addressable
