@@ -48,7 +48,7 @@ end
 In the following sections we talk about various strategies to prevent files from
 being uploaded to cache and the temporary directory.
 
-### Direct uploads
+### Limiting filesize in direct uploads
 
 If you're doing direct uploads with the `direct_upload` plugin, you can pass
 in the `:max_size` option, which will refuse too large files and automatically
@@ -67,34 +67,32 @@ plugin :direct_upload, presign: ->(request) do
 end
 ```
 
-### Regular uploads
+### Limiting filesize at application level
 
-If you're simply accepting uploads synchronously in the form, you can prevent
-large files from getting into cache by loading the `remove_invalid` plugin:
+If your application is accepting file uploads, it's good practice to limit the
+maximum allowed `Content-Length` before calling `params` for the first time,
+to avoid Rack parsing the multipart request parameters and creating a Tempfile
+for uploads that are obviously attempts of attacks.
+
+```rb
+if request.content_length >= 100*1024*1024 # 100MB
+  response.status = 413 # Request Entity Too Large
+  response.body = "The uploaded file was too large (maximum is 100MB)"
+  request.halt
+end
+
+request.params # Rack parses the multipart request params
+```
+
+Alternatively you can allow uploads of any size to temporary Shrine storage,
+but tell Shrine to immediately delete the file if it failed validations by
+loading the `remove_invalid` plugin.
 
 ```rb
 plugin :remove_invalid
 ```
 
-### Limiting at application level
-
-If your application is accepting file uploads directly (either through direct
-uploads or regular ones), you can limit the maximum request body size in your
-application server (nginx or apache):
-
-```sh
-# nginx.conf
-
-http {
-  # ...
-  server {
-    # ...
-    client_max_body_size 20M;
-  }
-}
-```
-
-### Paranoid limiting
+### Paranoid filesize limiting
 
 If you want to make sure that no large files ever get to your storages, and
 you don't really care about the error message, you can use the `hooks` plugin
