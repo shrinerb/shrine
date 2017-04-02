@@ -1,5 +1,7 @@
 ## HEAD
 
+* Accept hash of metadata with symbol keys as well in `add_metadata` block (@janko-m)
+
 * Add `refresh_metadata` plugin for re-extracting metadata from an uploaded file (@janko-m)
 
 * Allow S3 storage to use parallelized multipart upload for files from FileSystem storage as well (@janko-m)

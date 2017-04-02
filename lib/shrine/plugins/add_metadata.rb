@@ -17,7 +17,7 @@ class Shrine
     #     document.pages
     #
     # You can also extract multiple metadata values at once, by using
-    # `add_metadata` without an argument.
+    # `add_metadata` without an argument, and returning a hash of metadata.
     #
     #     add_metadata do |io, context|
     #       movie = FFMPEG::Movie.new(io.path)
@@ -73,9 +73,13 @@ class Shrine
           metadata = super
 
           opts[:metadata].each do |metadata_block|
-            custom_metadata = instance_exec(io, context, &metadata_block)
+            custom_metadata = instance_exec(io, context, &metadata_block) || {}
             io.rewind
-            metadata.merge!(custom_metadata) unless custom_metadata.nil?
+            # convert symbol keys to strings
+            custom_metadata.keys.each do |key|
+              custom_metadata[key.to_s] = custom_metadata.delete(key) if key.is_a?(Symbol)
+            end
+            metadata.merge!(custom_metadata)
           end
 
           metadata

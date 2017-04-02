@@ -49,6 +49,12 @@ describe Shrine::Plugins::AddMetadata do
         assert_equal "value", uploaded_file.metadata.fetch("custom")
       end
 
+      it "accepts symbol keys" do
+        @uploader.class.add_metadata { Hash[custom: "value"] }
+        uploaded_file = @uploader.upload(fakeio)
+        assert_equal "value", uploaded_file.metadata.fetch("custom")
+      end
+
       it "executes inside uploader and forwards correct arguments" do
         @uploader.class.add_metadata do |io, context|
           raise unless self.is_a?(Shrine)
