@@ -86,6 +86,10 @@ Metadata:
     path: RestoreCachedData.html
     description: Re-extracts cached file's metadata on model assignment.
   -
+    name: signature
+    path: Signature.html
+    description: Allows you to calculate a SHA{1,256,384,512}/MD5/CRC32 hash of a file.
+  -
     name: store_dimensions
     path: StoreDimensions.html
     description: Allows you to store image dimensions as additional metadata.

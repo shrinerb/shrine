@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `signature` plugin for calculating a SHA{1,256,384,512}/MD5/CRC32 hash of a file (@janko-m)
+
 * Return the resolved plugin module when calling `Shrine.plugin` (@janko-m)
 
 * Accept hash of metadata with symbol keys as well in `add_metadata` block (@janko-m)
