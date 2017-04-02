@@ -146,7 +146,7 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension_inclusion [/jpe?g/, "gif", "png"]
+    validate_extension_inclusion %w[jpg jpeg gif png]
     validate_mime_type_inclusion %w[image/jpeg image/gif image/png]
     validate_max_size 10*1024*1024 unless record.admin?
   end
@@ -452,24 +452,24 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension_inclusion [/jpe?g/, 'png'] # whitelist
-    validate_extension_exclusion ['php']          # blacklist
+    validate_extension_inclusion %w[jpg jpeg png] # whitelist
+    validate_extension_exclusion %w[php]          # blacklist
   end
 end
 ```
 
-#### `#blacklist_mime_type_pattern`, `#whitelist_mime_type_pattern`
+#### `#blacklist_mime_type_pattern`, `#whitelist_mime_type_pattern`, `#content_type_whitelist`, `#content_type_blacklist`
 
 In Shrine MIME type whitelisting/blacklisting is part of validations, and is
-provided by the `validation_helpers` plugin:
+provided by the `validation_helpers` plugin, though it doesn't support regexes:
 
 ```rb
 class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_mime_type_inclusion [/image/] # whitelist
-    validate_mime_type_exclusion [/video/] # blacklist
+    validate_mime_type_inclusion %w[image/jpeg image/png] # whitelist
+    validate_mime_type_exclusion %w[text/x-php]           # blacklist
   end
 end
 ```
@@ -625,7 +625,7 @@ class ImageUploader < Shrine
     # Evaluated inside an instance of Shrine::Attacher.
     if record.guest?
       validate_max_size 2*1024*1024, message: "is too large (max is 2 MB)"
-      validate_mime_type_inclusion ["image/jpg", "image/png", "image/gif"]
+      validate_mime_type_inclusion %w[image/jpg image/png image/gif]
     end
   end
 end

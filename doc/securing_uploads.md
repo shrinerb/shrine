@@ -8,8 +8,7 @@ the obvious ones to not-so-obvious ones, and try to provide solutions.
 ## Validate file type
 
 Almost always you will be accepting certain types of files, and it's a good
-idea to create a whitelist (or blaclist) of supported extensions and MIME
-types.
+idea to create a whitelist (or a blacklist) of extensions and MIME types.
 
 By default Shrine stores the MIME type derived from the extension, which means
 it's not guaranteed to hold the actual MIME type of the the file. However, you
@@ -22,8 +21,8 @@ class MyUploader < Shrine
   plugin :determine_mime_type
 
   Attacher.validate do
-    validate_extension_inclusion [/jpe?g/, "png", "gif"]
-    validate_mime_type_inclusion ["image/jpeg", "image/png", "image/gif"]
+    validate_extension_inclusion %w[jpg jpeg png gif]
+    validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
   end
 end
 ```

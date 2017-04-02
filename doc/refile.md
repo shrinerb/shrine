@@ -385,8 +385,8 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension_inclusion [/jpe?g/, "png"]
-    validate_mime_type_inclusion ["image/jpeg", "image/png"]
+    validate_extension_inclusion %w[jpg jpeg png]
+    validate_mime_type_inclusion %w[image/jpeg image/png]
   end
 end
 ```
