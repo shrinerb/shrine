@@ -138,7 +138,7 @@ class Shrine
           self::Attacher.include(plugin::AttacherMethods) if defined?(plugin::AttacherMethods)
           self::Attacher.extend(plugin::AttacherClassMethods) if defined?(plugin::AttacherClassMethods)
           plugin.configure(self, *args, &block) if plugin.respond_to?(:configure)
-          nil
+          plugin
         end
 
         # Retrieves the storage under the given identifier (can be a Symbol or

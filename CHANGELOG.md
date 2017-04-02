@@ -1,5 +1,7 @@
 ## HEAD
 
+* Return the resolved plugin module when calling `Shrine.plugin` (@janko-m)
+
 * Accept hash of metadata with symbol keys as well in `add_metadata` block (@janko-m)
 
 * Add `refresh_metadata` plugin for re-extracting metadata from an uploaded file (@janko-m)
