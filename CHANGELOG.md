@@ -1,5 +1,9 @@
 ## HEAD
 
+* Remove the undocumented `:magic_header` option from `determine_mime_type` plugin (@janko-m)
+
+* Expose `Shrine.determine_mime_type` and `Shrine.mime_type_analyzers` in `determine_mime_type` plugin (@janko-m)
+
 * Add `signature` plugin for calculating a SHA{1,256,384,512}/MD5/CRC32 hash of a file (@janko-m)
 
 * Return the resolved plugin module when calling `Shrine.plugin` (@janko-m)

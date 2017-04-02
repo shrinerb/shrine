@@ -1,6 +1,7 @@
 require "test_helper"
 require "shrine/plugins/determine_mime_type"
 require "stringio"
+require "open3"
 
 describe Shrine::Plugins::DetermineMimeType do
   describe ":file analyzer" do
@@ -19,13 +20,11 @@ describe Shrine::Plugins::DetermineMimeType do
     end
 
     it "raises error if file command is not found" do
-      require "open3"
       Open3.stubs(:capture3).raises(Errno::ENOENT)
       assert_raises(Shrine::Error) { @uploader.send(:extract_mime_type, image) }
     end
 
     it "raises error if file command failed" do
-      require "open3"
       failed_result = Open3.capture3("file", "--foo")
       Open3.stubs(:capture3).returns(failed_result)
       assert_raises(Shrine::Error) { @uploader.send(:extract_mime_type, image) }
@@ -34,7 +33,6 @@ describe Shrine::Plugins::DetermineMimeType do
     it "fowards any warnings to stderr" do
       assert_output(nil, "") { @uploader.send(:extract_mime_type, image) }
 
-      require "open3"
       stderr_result = Open3.capture3("echo stderr 1>&2")
       Open3.stubs(:capture3).returns(stderr_result)
       assert_output(nil, "stderr\n") { @uploader.send(:extract_mime_type, image) }
@@ -117,5 +115,17 @@ describe Shrine::Plugins::DetermineMimeType do
     @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io) { io.read } }
     @uploader.send(:extract_mime_type, file = image)
     assert_equal 0, file.pos
+  end
+
+  it "provides class-level methods for extracting metadata" do
+    @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" } }
+    mime_type = @uploader.class.determine_mime_type(fakeio)
+    assert_equal "foo/bar", mime_type
+
+    analyzers = @uploader.class.mime_type_analyzers
+    mime_type = analyzers[:file].call(fakeio(filename: "file.json"))
+    assert_equal "text/plain", mime_type
+    mime_type = analyzers[:mime_types].call(fakeio(filename: "file.json"))
+    assert_equal "application/json", mime_type
   end
 end
