@@ -37,6 +37,13 @@ class Shrine
     #   "Content-Type" request header, which might not hold the actual MIME type
     #   of the file.
     #
+    # The `:mimemagic` analyzer can work on the IO object directly, so it will
+    # read however many bytes it needs, but to `:file` and `:filemagic`
+    # analyzers a fixed number of bytes is given (256KB by default), which can
+    # be changed with the `:magic_header` option.
+    #
+    #     plugin :determine_mime_type, magic_header: 500*1024 # 500KB
+    #
     # A single analyzer is not going to properly recognize all types of files,
     # so you can build your own custom analyzer for your requirements, where
     # you can combine the built-in analyzers.
