@@ -36,6 +36,7 @@ class Shrine
     # you can do that with `Shrine.data_uri`. If the data URI cannot be parsed,
     # a `Shrine::Plugins::DataUri::ParseError` will be raised.
     #
+    #     # or YourUploader.data_uri("...")
     #     io = Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
     #     io.content_type #=> "image/png"
     #     io.size         #=> 21
@@ -43,6 +44,7 @@ class Shrine
     # When the content type is ommited, `text/plain` is assumed. The parser
     # also supports raw data URIs which aren't base64-encoded.
     #
+    #     # or YourUploader.data_uri("...")
     #     io = Shrine.data_uri("data:,raw%20content")
     #     io.content_type #=> "text/plain"
     #     io.size         #=> 11

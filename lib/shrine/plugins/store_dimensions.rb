@@ -32,9 +32,11 @@ class Shrine
     #
     # You can also use methods for extracting the dimensions directly:
     #
+    #     # or YourUploader.extract_dimensions(io)
     #     Shrine.extract_dimensions(io) # calls the defined analyzer
     #     #=> [300, 400]
     #
+    #     # or YourUploader.dimensions_analyzers
     #     Shrine.dimensions_analyzers[:fastimage].call(io) # calls a built-in analyzer
     #     #=> [300, 400]
     #

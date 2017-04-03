@@ -52,9 +52,11 @@ class Shrine
     #
     # You can also use methods for determining the MIME type directly:
     #
+    #     # or YourUploader.determine_mime_type(io)
     #     Shrine.determine_mime_type(io) # calls the defined analyzer
     #     #=> "image/jpeg"
     #
+    #     # or YourUploader.mime_type_analyzers
     #     Shrine.mime_type_analyzers[:file].call(io) # calls a built-in analyzer
     #     #=> "image/jpeg"
     #

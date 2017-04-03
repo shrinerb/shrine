@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `Shrine.rack_file` to `rack_file` plugin for converting Rack uploaded file hash into an IO (@janko-m)
+
 * Deprecate passing a Rack file hash to `Shrine#upload` (@janko-m)
 
 * Expose `Shrine.extract_dimensions` and `Shrine.dimensions_analyzers` in `store_dimensions` plugin (@janko-m)
