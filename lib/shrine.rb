@@ -152,7 +152,7 @@ class Shrine
         # model class. Example:
         #
         #     class Photo
-        #       include Shrine[:image] # creates a Shrine::Attachment object
+        #       include Shrine.attachment(:image) # creates a Shrine::Attachment object
         #     end
         def attachment(name)
           self::Attachment.new(name)

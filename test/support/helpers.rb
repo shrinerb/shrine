@@ -16,7 +16,7 @@ module TestHelpers
       uploader = uploader(*args, &block)
       Object.send(:remove_const, "User") if defined?(User) # for warnings
       user_class = Object.const_set("User", Struct.new(:avatar_data, :id))
-      user_class.include uploader.class[:avatar]
+      user_class.include uploader.class::Attachment.new(:avatar)
       user_class.new.avatar_attacher
     end
 

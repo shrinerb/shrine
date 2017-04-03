@@ -15,7 +15,7 @@ describe Shrine::Plugins::Activerecord do
 
     user_class = Object.const_set("User", Class.new(ActiveRecord::Base))
     user_class.table_name = :users
-    user_class.include @uploader.class[:avatar]
+    user_class.include @uploader.class::Attachment.new(:avatar)
 
     @user = user_class.new
     @attacher = @user.avatar_attacher
@@ -150,13 +150,13 @@ describe Shrine::Plugins::Activerecord do
   end
 
   it "raises an appropriate exception when column is missing" do
-    @user.class.include @uploader.class[:missing]
+    @user.class.include @uploader.class::Attachment.new(:missing)
     error = assert_raises(NoMethodError) { @user.missing = fakeio }
     assert_match "undefined method `missing_data'", error.message
   end
 
   it "allows including attachment module to non-ActiveRecord models" do
     klass = Struct.new(:avatar_data)
-    klass.include @uploader.class[:avatar]
+    klass.include @uploader.class::Attachment.new(:avatar)
   end
 end

@@ -18,7 +18,7 @@ describe Shrine::Plugins::Backgrounding do
     end
 
     user_class = Object.const_set("User", Sequel::Model(:users))
-    user_class.include @uploader.class[:avatar]
+    user_class.include @uploader.class::Attachment.new(:avatar)
 
     @user = user_class.new
     @attacher = @user.avatar_attacher

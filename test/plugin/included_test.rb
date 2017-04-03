@@ -10,7 +10,7 @@ describe Shrine::Plugins::Included do
     end
 
     model = Class.new
-    model.include @uploader.class[:avatar]
+    model.include @uploader.class::Attachment.new(:avatar)
     assert_respond_to model.new, :avatar_foo
   end
 end

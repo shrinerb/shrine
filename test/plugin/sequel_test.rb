@@ -16,7 +16,7 @@ describe Shrine::Plugins::Sequel do
     end
 
     User = Sequel::Model(db[:users])
-    User.include @uploader.class[:avatar]
+    User.include @uploader.class::Attachment.new(:avatar)
 
     @user = User.new
     @attacher = @user.avatar_attacher
@@ -153,14 +153,14 @@ describe Shrine::Plugins::Sequel do
   end
 
   it "raises an appropriate exception when column is missing" do
-    @user.class.include @uploader.class[:missing]
+    @user.class.include @uploader.class::Attachment.new(:missing)
     error = assert_raises(NoMethodError) { @user.missing = fakeio }
     assert_match "undefined method `missing_data'", error.message
   end
 
   it "allows including attachment model to non-Sequel objects" do
     klass = Struct.new(:avatar_data)
-    klass.include @uploader.class[:avatar]
+    klass.include @uploader.class::Attachment.new(:avatar)
     refute_respond_to klass.new, :validate
   end
 end
