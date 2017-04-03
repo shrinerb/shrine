@@ -41,6 +41,7 @@ describe Shrine::Plugins::DataUri do
 
   it "can create an IO object from the data URI" do
     io = @attacher.shrine_class.data_uri("data:image/png,content")
+    assert_instance_of StringIO, io.to_io
     assert_equal "image/png", io.content_type
     assert_equal "content", io.read
     assert_equal 7, io.size

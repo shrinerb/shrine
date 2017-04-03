@@ -178,6 +178,10 @@ class Shrine
           @io                = StringIO.new(content)
         end
 
+        def to_io
+          @io
+        end
+
         extend Forwardable
         delegate Shrine::IO_METHODS.keys => :@io
 
