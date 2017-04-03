@@ -150,7 +150,7 @@ describe Shrine::Storage::S3 do
 
     it "can provide a public url" do
       url = @s3.url("foo", public: true)
-      assert_equal "https://#{@s3.bucket.name}.s3-eu-west-1.amazonaws.com/foo", url
+      assert_match %r{https://#{@s3.bucket.name}\.s3.*\.amazonaws\.com/foo}, url
     end
   end
 
@@ -222,8 +222,9 @@ describe Shrine::Storage::S3 do
 
   describe "#s3" do
     it "returns the deprecated Aws::S3::Resource object" do
-      assert_instance_of Aws::S3::Resource, @s3.s3
-      assert_equal @s3.s3.client, @s3.client
+      resource = @s3.s3
+      assert_instance_of Aws::S3::Resource, resource
+      assert_equal resource.client, @s3.client
     end
   end
 end
