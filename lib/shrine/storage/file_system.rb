@@ -9,10 +9,14 @@ class Shrine
     #     storage = Shrine::Storage::FileSystem.new("public", prefix: "uploads")
     #     storage.url("image.jpg") #=> "/uploads/image.jpg"
     #
-    # This storage will upload all files to "public/uploads", and the URLs
-    # of the uploaded files will start with "/uploads/*". This way you can
-    # use FileSystem for both cache and store, one having the prefix
-    # "uploads/cache" and other "uploads/store".
+    # This storage will upload all files to "public/uploads", and the URLs of
+    # the uploaded files will start with "/uploads/*". This way you can use
+    # FileSystem for both cache and store, one having the prefix
+    # "uploads/cache" and other "uploads/store". If you're uploading files
+    # to the `public` directory itself, you need to set `:prefix` to `"/"`:
+    #
+    #     storage = Shrine::Storage::FileSystem.new("public", prefix: "/") # no prefix
+    #     storage.url("image.jpg") #=> "/image.jpg"
     #
     # You can also initialize the storage just with the "base" directory, and
     # then the FileSystem storage will generate absolute URLs to files:
