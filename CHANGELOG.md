@@ -1,5 +1,7 @@
 ## HEAD
 
+* Expose `Shrine.extract_dimensions` and `Shrine.dimensions_analyzers` in `store_dimensions` plugin (@janko-m)
+
 * Add `metadata_attributes` plugin for syncing attachment metadata with additional record attributes (@janko-m)
 
 * Remove the undocumented `:magic_header` option from `determine_mime_type` plugin (@janko-m)

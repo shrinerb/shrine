@@ -110,8 +110,6 @@ class Shrine
         SUPPORTED_TOOLS = [:file, :filemagic, :mimemagic, :mime_types]
         MAGIC_NUMBER    = 256 * 1024
 
-        attr_reader :tool
-
         def initialize(tool)
           raise ArgumentError, "unsupported mime type analyzer tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
 
@@ -119,7 +117,7 @@ class Shrine
         end
 
         def call(io)
-          mime_type = send(:"extract_with_#{tool}", io)
+          mime_type = send(:"extract_with_#{@tool}", io)
           io.rewind
           mime_type
         end

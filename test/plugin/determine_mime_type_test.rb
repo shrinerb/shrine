@@ -117,15 +117,18 @@ describe Shrine::Plugins::DetermineMimeType do
     assert_equal 0, file.pos
   end
 
-  it "provides class-level methods for extracting metadata" do
-    @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" } }
-    mime_type = @uploader.class.determine_mime_type(fakeio)
+  it "provides class-level methods for extracting MIME type" do
+    @uploader = uploader { plugin :determine_mime_type, analyzer: ->(io) { io.read; "foo/bar" } }
+    mime_type = @uploader.class.determine_mime_type(io = fakeio("content"))
     assert_equal "foo/bar", mime_type
+    assert_equal "content", io.read
 
     analyzers = @uploader.class.mime_type_analyzers
-    mime_type = analyzers[:file].call(fakeio(filename: "file.json"))
+    mime_type = analyzers[:file].call(io = fakeio("content", filename: "file.json"))
     assert_equal "text/plain", mime_type
-    mime_type = analyzers[:mime_types].call(fakeio(filename: "file.json"))
+    assert_equal "content", io.read
+    mime_type = analyzers[:mime_types].call(io = fakeio("content", filename: "file.json"))
     assert_equal "application/json", mime_type
+    assert_equal "content", io.read
   end
 end

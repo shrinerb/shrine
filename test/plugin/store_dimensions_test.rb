@@ -26,6 +26,10 @@ describe Shrine::Plugins::StoreDimensions do
     @uploader = uploader { plugin :store_dimensions, analyzer: ->(io, analyzers){analyzers[:fastimage].call(io)} }
     dimensions = @uploader.send(:extract_dimensions, image)
     assert_equal [100, 67], dimensions
+
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){nil} }
+    dimensions = @uploader.send(:extract_dimensions, image)
+    assert_nil dimensions
   end
 
   it "always rewinds the IO" do
@@ -59,5 +63,17 @@ describe Shrine::Plugins::StoreDimensions do
       assert_nil uploaded_file.height
       assert_nil uploaded_file.dimensions
     end
+  end
+
+  it "provides class-level methods for extracting dimensinos" do
+    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io) { io.read; [10, 20] } }
+    dimensions = @uploader.class.extract_dimensions(io = fakeio("content"))
+    assert_equal [10, 20], dimensions
+    assert_equal "content", io.read
+
+    analyzers = @uploader.class.dimensions_analyzers
+    dimensions = analyzers[:fastimage].call(io = image)
+    assert_equal [100, 67], dimensions
+    assert_equal 0, io.pos
   end
 end

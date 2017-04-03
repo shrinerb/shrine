@@ -1,7 +1,8 @@
 class Shrine
   module Plugins
     # The `store_dimensions` plugin extracts and stores dimensions of the
-    # uploaded image using the [fastimage] gem.
+    # uploaded image using the [fastimage] gem, which has built-in protection
+    # agains [image bombs].
     #
     #     plugin :store_dimensions
     #
@@ -18,20 +19,49 @@ class Shrine
     #     # or
     #     image.dimensions #=> [300, 500]
     #
-    # The fastimage gem has built-in protection against [image bombs]. However,
-    # if for some reason it doesn't suit your needs, you can provide a custom
-    # `:analyzer`:
+    # You can provide your own custom dimensions analyzer, and reuse any of the
+    # built-in analyzers; you just need to return a two-element array of width
+    # and height, or nil to signal that dimensions weren't extracted.
+    #
+    #     require "mini_magick"
     #
     #     plugin :store_dimensions, analyzer: ->(io, analyzers) do
     #       dimensions = analyzers[:fastimage].call(io)
     #       dimensions || MiniMagick::Image.new(io).dimensions
     #     end
     #
+    # You can also use methods for extracting the dimensions directly:
+    #
+    #     Shrine.extract_dimensions(io) # calls the defined analyzer
+    #     #=> [300, 400]
+    #
+    #     Shrine.dimensions_analyzers[:fastimage].call(io) # calls a built-in analyzer
+    #     #=> [300, 400]
+    #
     # [fastimage]: https://github.com/sdsykes/fastimage
     # [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
     module StoreDimensions
       def self.configure(uploader, opts = {})
         uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))
+      end
+
+      module ClassMethods
+        def extract_dimensions(io)
+          analyzer = opts[:dimensions_analyzer]
+          analyzer = dimensions_analyzers[analyzer] if analyzer.is_a?(Symbol)
+          args = [io, dimensions_analyzers].take(analyzer.arity.abs)
+
+          dimensions = analyzer.call(*args)
+          io.rewind
+
+          dimensions
+        end
+
+        def dimensions_analyzers
+          @dimensions_analyzers ||= DimensionsAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
+            hash.merge!(tool => DimensionsAnalyzer.new(tool).method(:call))
+          end
+        end
       end
 
       module InstanceMethods
@@ -50,27 +80,11 @@ class Shrine
         # If the `io` is an uploaded file, copies its dimensions, otherwise
         # calls the predefined or custom analyzer.
         def extract_dimensions(io)
-          analyzer = opts[:dimensions_analyzer]
-          analyzer = dimensions_analyzers[analyzer] if analyzer.is_a?(Symbol)
-          args = [io, dimensions_analyzers].take(analyzer.arity.abs)
-
-          dimensions = analyzer.call(*args)
-          io.rewind
-
-          dimensions
+          self.class.extract_dimensions(io)
         end
 
         def dimensions_analyzers
-          Hash.new { |hash, key| method(:"_extract_dimensions_with_#{key}") }
-        end
-
-        def _extract_dimensions_with_fastimage(io)
-          require "fastimage"
-
-          dimensions = FastImage.size(io)
-          io.rewind
-
-          dimensions
+          self.class.dimensions_analyzers
         end
       end
 
@@ -85,6 +99,29 @@ class Shrine
 
         def dimensions
           [width, height] if width || height
+        end
+      end
+
+      class DimensionsAnalyzer
+        SUPPORTED_TOOLS = [:fastimage]
+
+        def initialize(tool)
+          raise ArgumentError, "unsupported mime type analyzer tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
+
+          @tool = tool
+        end
+
+        def call(io)
+          dimensions = send(:"extract_with_#{@tool}", io)
+          io.rewind
+          dimensions
+        end
+
+        private
+
+        def extract_with_fastimage(io)
+          require "fastimage"
+          FastImage.size(io)
         end
       end
     end
