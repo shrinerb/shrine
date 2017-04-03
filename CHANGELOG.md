@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `metadata_attributes` plugin for syncing attachment metadata with additional record attributes (@janko-m)
+
 * Remove the undocumented `:magic_header` option from `determine_mime_type` plugin (@janko-m)
 
 * Expose `Shrine.determine_mime_type` and `Shrine.mime_type_analyzers` in `determine_mime_type` plugin (@janko-m)

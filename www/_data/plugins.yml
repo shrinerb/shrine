@@ -78,6 +78,10 @@ Metadata:
     path: DetermineMimeType.html
     description: Allows you to determine the actual MIME type from file contents.
   -
+    name: metadata_attributes
+    path: MetadataAttributes.html
+    description: Allows you to sync attachment metadata to additional record attributes.
+  -
     name: refresh_metadata
     path: RefreshMetadata.html
     description: Allows re-extracting metadata of an uploaded file.
