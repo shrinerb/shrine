@@ -111,7 +111,7 @@ class Shrine
 
         def calculate_crc32(io)
           require "zlib"
-          crc = nil
+          crc = 0
           crc = Zlib.crc32(io.read(16*1024, buffer ||= "").to_s, crc) until io.eof?
           crc.to_s
         end

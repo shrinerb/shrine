@@ -20,6 +20,16 @@ describe Shrine::Plugins::Signature do
         refute io.eof?
       end
     end
+
+    it "can generate a #{algorithm.to_s.upcase} hash from an empty file" do
+      io = fakeio("")
+
+      supported_formats.each do |format|
+        hash = @uploader.calculate_signature(io, algorithm, format: format)
+        assert_instance_of String, hash
+        refute hash.empty?
+      end
+    end
   end
 
   it "can calculate hash both from instance and class level" do
