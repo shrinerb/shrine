@@ -46,6 +46,8 @@ class Shrine
       end
 
       module ClassMethods
+        # Determines the dimensions of the IO object by calling the specified
+        # analyzer.
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
           analyzer = dimensions_analyzers[analyzer] if analyzer.is_a?(Symbol)
@@ -57,6 +59,9 @@ class Shrine
           dimensions
         end
 
+        # Returns a hash of built-in dimensions analyzers, where keys are
+        # analyzer names and values are `#call`-able objects which accepts the
+        # IO object.
         def dimensions_analyzers
           @dimensions_analyzers ||= DimensionsAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
             hash.merge!(tool => DimensionsAnalyzer.new(tool).method(:call))
@@ -77,12 +82,12 @@ class Shrine
 
         private
 
-        # If the `io` is an uploaded file, copies its dimensions, otherwise
-        # calls the predefined or custom analyzer.
+        # Extracts dimensions using the specified analyzer.
         def extract_dimensions(io)
           self.class.extract_dimensions(io)
         end
 
+        # Returns a hash of built-in dimensions analyzers.
         def dimensions_analyzers
           self.class.dimensions_analyzers
         end

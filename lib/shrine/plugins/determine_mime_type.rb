@@ -69,6 +69,8 @@ class Shrine
       end
 
       module ClassMethods
+        # Determines the MIME type of the IO object by calling the specified
+        # analyzer.
         def determine_mime_type(io)
           analyzer = opts[:mime_type_analyzer]
           analyzer = mime_type_analyzers[analyzer] if analyzer.is_a?(Symbol)
@@ -80,6 +82,9 @@ class Shrine
           mime_type
         end
 
+        # Returns a hash of built-in MIME type analyzers, where keys are
+        # analyzer names and values are `#call`-able objects which accepts the
+        # IO object.
         def mime_type_analyzers
           @mime_type_analyzers ||= MimeTypeAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
             hash.merge!(tool => MimeTypeAnalyzer.new(tool).method(:call))
@@ -90,9 +95,9 @@ class Shrine
       module InstanceMethods
         private
 
-        # If a Shrine::UploadedFile was given, it returns its MIME type, since
-        # that value was already determined by this analyzer. Otherwise it calls
-        # a built-in analyzer or a custom one.
+        # Calls default behaviour when :default analyzer was specified, which
+        # just reads the `#content_type` attribute, otherwise uses the specified
+        # MIME type analyzer.
         def extract_mime_type(io)
           if opts[:mime_type_analyzer] == :default
             super
@@ -101,6 +106,7 @@ class Shrine
           end
         end
 
+        # Returns a hash of built-in MIME type analyzers.
         def mime_type_analyzers
           self.class.mime_type_analyzers
         end
