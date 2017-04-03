@@ -36,13 +36,17 @@ class Shrine
     # you can do that with `Shrine.data_uri`. If the data URI cannot be parsed,
     # a `Shrine::Plugins::DataUri::ParseError` will be raised.
     #
-    #     Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
-    #     #=> #<Shrine::Plugins::DataUri::DataFile>
+    #     io = Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
+    #     io.content_type #=> "image/png"
+    #     io.size         #=> 21
     #
     # When the content type is ommited, `text/plain` is assumed. The parser
     # also supports raw data URIs which aren't base64-encoded.
     #
-    #     Shrine.data_uri("data:text/plain,raw%20content")
+    #     io = Shrine.data_uri("data:,raw%20content")
+    #     io.content_type #=> "text/plain"
+    #     io.size         #=> 11
+    #     io.read         #=> "raw content"
     #
     # The created IO object won't convey any file extension (because it doesn't
     # have a filename), but you can generate a filename based on the content
