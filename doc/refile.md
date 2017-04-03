@@ -118,7 +118,7 @@ class ImageUploader < Shrine
 end
 
 class Photo < Sequel::Model
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 
@@ -371,7 +371,7 @@ of an uploader:
 
 ```rb
 class User
-  include ImageUploader[:avatar]
+  include ImageUploader::Attachment.new(:avatar)
 end
 ```
 

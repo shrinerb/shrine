@@ -60,7 +60,7 @@ end
 
 ```rb
 class Photo < Sequel::Model # ActiveRecord::Base
-  include ImageUploader[:image] # adds an `image` virtual attribute
+  include ImageUploader::Attachment.new(:image) # adds an `image` virtual attribute
 end
 ```
 
@@ -265,9 +265,9 @@ Shrine.plugin :sequel # :activerecord
 
 ```rb
 class Photo < Sequel::Model # ActiveRecord::Base
-  include ImageUploader[:image]                 #
-  include ImageUploader.attachment(:image)      # these are all equivalent
   include ImageUploader::Attachment.new(:image) #
+  include ImageUploader.attachment(:image)      # these are all equivalent
+  include ImageUploader[:image]                 #
 end
 ```
 

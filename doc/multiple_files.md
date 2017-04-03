@@ -60,7 +60,7 @@ In our new model we can create a Shrine attachment attribute:
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 

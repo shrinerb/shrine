@@ -86,7 +86,7 @@ DB.create_table :posts do
 end
 
 class Post < Sequel::Model
-  include MyUploader[:image]
+  include MyUploader::Attachment.new(:image)
 end
 
 post = Post.create(image: open("https://example.com/image-from-internet.jpg"))
@@ -120,7 +120,7 @@ ActiveRecord::Base.connection.create_table(:posts) { |t| t.text :image_data }
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 class Post < ActiveRecord::Base
-  include MyUploader[:image]
+  include MyUploader::Attachment.new(:image)
 end
 
 post = Post.create(image: open("https://example.com/image-from-internet.jpg"))

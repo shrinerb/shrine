@@ -64,7 +64,7 @@ class ImageUploader < Shrine
 end
 
 class Photo < ActiveRecord::Base
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 
@@ -204,7 +204,7 @@ gives your models similar set of methods that Paperclip gives:
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 
@@ -394,7 +394,7 @@ an attachment module:
 
 ```rb
 class User < Sequel::Model
-  include ImageUploader[:avatar] # adds `avatar`, `avatar=` and `avatar_url` methods
+  include ImageUploader::Attachment.new(:avatar) # adds `avatar`, `avatar=` and `avatar_url` methods
 end
 ```
 

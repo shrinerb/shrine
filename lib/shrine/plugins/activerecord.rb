@@ -29,7 +29,7 @@ class Shrine
     # saves again with a stored attachment, you can detect this in callbacks:
     #
     #     class User < ActiveRecord::Base
-    #       include ImageUploader[:avatar]
+    #       include ImageUploader::Attachment.new(:avatar)
     #
     #       before_save do
     #         if avatar_data_changed? && avatar_attacher.cached?
@@ -53,7 +53,7 @@ class Shrine
     # of the attachment, you can do it directly on the model.
     #
     #     class User < ActiveRecord::Base
-    #       include ImageUploader[:avatar]
+    #       include ImageUploader::Attachment.new(:avatar)
     #       validates_presence_of :avatar
     #     end
     #

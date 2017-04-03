@@ -7,7 +7,7 @@ fields to the form just works.
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader[:image]
+  include ImageUploader::Attachment.new(:image)
 end
 ```
 

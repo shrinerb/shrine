@@ -22,7 +22,7 @@ class Shrine
     # saves again with a stored attachment, you can detect this in callbacks:
     #
     #     class User < Sequel::Model
-    #       include ImageUploader[:avatar]
+    #       include ImageUploader::Attachment.new(:avatar)
     #
     #       def before_save
     #         super
@@ -48,7 +48,7 @@ class Shrine
     # attachment, you can do it directly on the model.
     #
     #     class User < Sequel::Model
-    #       include ImageUploader[:avatar]
+    #       include ImageUploader::Attachment.new(:avatar)
     #       validates_presence_of :avatar
     #     end
     #

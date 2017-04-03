@@ -176,7 +176,7 @@ end
 ```
 ```rb
 class Photo < ActiveRecord::Base
-  include ImageUploader[:avatar]
+  include ImageUploader::Attachment.new(:avatar)
 end
 ```
 
@@ -512,7 +512,7 @@ Shrine.plugin :sequel
 ```
 ```rb
 class User < Sequel::Model
-  include ImageUploader[:avatar]
+  include ImageUploader::Attachment.new(:avatar)
 end
 ```
 
