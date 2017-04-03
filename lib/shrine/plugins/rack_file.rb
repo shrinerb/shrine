@@ -22,14 +22,12 @@ class Shrine
     #
     # Since Shrine only accepts IO objects, you would normally need to fetch
     # the `:tempfile` object and pass it directly. This plugin enables the
-    # uploader and attacher to accept the Rack uploaded file hash as a whole,
-    # which is then internally converted into an IO object.
+    # attacher to accept the Rack uploaded file hash directly, which is then
+    # internally converted into an IO object.
     #
-    #     uploader.upload(params[:file])
+    #     user.avatar = params[:file]
     #     # or
     #     attacher.assign(params[:file])
-    #     # or
-    #     user.avatar = params[:file]
     #
     # This especially convenient when doing mass attribute assignment with
     # request parameters. It will also copy the received file information into
@@ -40,7 +38,8 @@ class Shrine
     #     uploaded_file.mime_type         #=> "image/png"
     #
     # Note that this plugin is not needed in Rails applications, as Rails
-    # already wraps Rack uploaded files in `ActionDispatch::Http::UploadedFile`.
+    # already wraps the Rack uploaded file hash in an
+    # `ActionDispatch::Http::UploadedFile` object.
     module RackFile
       module InstanceMethods
         # If `io` is a Rack uploaded file hash, converts it to an IO-like
@@ -62,11 +61,32 @@ class Shrine
         # hash, otherwise returns the value unchanged.
         def convert_rack_file(value)
           if rack_file?(value)
+            Shrine.deprecation("Passing a Rack uploaded file hash to Shrine#upload is deprecated, use Shrine.rack_file to convert the Rack file hash into an IO object.")
             UploadedFile.new(value)
           else
             value
           end
         end
+
+        # Returns whether a given value is a Rack uploaded file hash, by
+        # checking whether it's a hash with `:tempfile` and `:name` keys.
+        def rack_file?(value)
+          value.is_a?(Hash) && value.key?(:tempfile) && value.key?(:name)
+        end
+      end
+
+      module AttacherMethods
+        # Checks whether a file is a Rack file hash, and in that case wraps the
+        # hash in an IO-like object.
+        def assign(value)
+          if rack_file?(value)
+            assign(UploadedFile.new(value))
+          else
+            super
+          end
+        end
+
+        private
 
         # Returns whether a given value is a Rack uploaded file hash, by
         # checking whether it's a hash with `:tempfile` and `:name` keys.

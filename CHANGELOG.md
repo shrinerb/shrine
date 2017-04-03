@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate passing a Rack file hash to `Shrine#upload` (@janko-m)
+
 * Expose `Shrine.extract_dimensions` and `Shrine.dimensions_analyzers` in `store_dimensions` plugin (@janko-m)
 
 * Add `metadata_attributes` plugin for syncing attachment metadata with additional record attributes (@janko-m)
