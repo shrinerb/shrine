@@ -352,7 +352,7 @@ class Shrine
         if io.respond_to?(:path)
           path = io.path
         elsif io.is_a?(UploadedFile) && defined?(Storage::FileSystem) && io.storage.is_a?(Storage::FileSystem)
-          path = io.storage.directory.join(io.id).to_s
+          path = io.storage.path(io.id).to_s
         end
 
         if path

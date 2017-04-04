@@ -24,6 +24,10 @@ class Shrine
     #     storage = Shrine::Storage::FileSystem.new(Dir.tmpdir)
     #     storage.url("image.jpg") #=> "/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/image.jpg"
     #
+    # In general you can always retrieve path to the file using `#path`:
+    #
+    #     storage.path("image.jpg") #=> #<Pathname:public/image.jpg>
+    #
     # ## Host
     #
     # It's generally a good idea to serve your files via a CDN, so an
@@ -189,6 +193,11 @@ class Shrine
         end
       end
 
+      # Returns the full path to the file.
+      def path(id)
+        directory.join(id.gsub("/", File::SEPARATOR))
+      end
+
       # Catches the deprecated `#download` method.
       def method_missing(name, *args)
         if name == :download
@@ -201,11 +210,6 @@ class Shrine
       end
 
       protected
-
-      # Returns the full path to the file.
-      def path(id)
-        directory.join(id.gsub("/", File::SEPARATOR))
-      end
 
       # Cleans all empty subdirectories up the hierarchy.
       def clean(path)

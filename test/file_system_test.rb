@@ -241,6 +241,12 @@ describe Shrine::Storage::FileSystem do
     end
   end
 
+  describe "#path" do
+    it "returns path to the file" do
+      assert_equal "#{root}/foo/bar/baz", @storage.path("foo/bar/baz").to_s
+    end
+  end
+
   describe "#clean" do
     it "deletes empty directories up the hierarchy" do
       @storage.upload(fakeio, "a/a/a/a.jpg")

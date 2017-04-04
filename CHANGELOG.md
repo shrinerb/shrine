@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `Shrine::Storage::FileSystem#path` public which returns path to the file as a `Pathname` object (@janko-m)
+
 * Add `Shrine.rack_file` to `rack_file` plugin for converting Rack uploaded file hash into an IO (@janko-m)
 
 * Deprecate passing a Rack file hash to `Shrine#upload` (@janko-m)
