@@ -13,11 +13,11 @@ class Shrine
     #
     #     file_hash #=>
     #     # {
-    #     #   name: "file"
-    #     #   filename: "cats.png",
-    #     #   type: "image/png",
-    #     #   tempfile: #<Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0>,
-    #     #   head: "Content-Disposition: form-data; ...",
+    #     #   :name => "file",
+    #     #   :filename => "cats.png",
+    #     #   :type => "image/png",
+    #     #   :tempfile => #<Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0>,
+    #     #   :head => "Content-Disposition: form-data; ...",
     #     # }
     #
     # Since Shrine only accepts IO objects, you would normally need to fetch
