@@ -1,4 +1,4 @@
-## HEAD
+## 2.6.0 (2017-04-04)
 
 * Make `Shrine::Storage::FileSystem#path` public which returns path to the file as a `Pathname` object (@janko-m)
 
