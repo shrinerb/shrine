@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/validation_helpers.rb">lib/shrine/plugins/validation_helpers.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/validation_helpers.rb">lib/shrine/plugins/validation_helpers.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -40,7 +40,7 @@
             <p>The <code>validation_helpers</code> plugin provides helper methods for
             validating attached files.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">validat_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">guest?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">guest?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>The validation methods are instance-level, the
             <code>Attacher.validate</code> block is evaluated in context of an instance
@@ -60,7 +60,7 @@
             <p>If you would like to change the error message inline, you can pass the
             <code>:message</code> option to any validation method:</p>
             
-            <pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-regexp">/\Aimage/</span>], <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;is not an image&quot;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>, <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;must be JPEG, PNG or GIF&quot;</span></pre>
             
             <p>For a complete list of all validation helpers, see <a
             href="ValidationHelpers/AttacherMethods.html">AttacherMethods</a>.</p>
@@ -91,16 +91,16 @@
                     <td>=</td>
                     <td class='context-item-value'>
                       {
-                      max_size: ->(max) { "is larger than #{max.to_f/1024/1024} MB" },
-                      min_size: ->(min) { "is smaller than #{min.to_f/1024/1024} MB" },
-                      max_width: ->(max) { "is wider than #{max} px" },
-                      min_width: ->(min) { "is narrower than #{min} px" },
-                      max_height: ->(max) { "is taller than #{max} px" },
-                      min_height: ->(min) { "is shorter than #{min} px" },
-                      mime_type_inclusion: ->(list) { "isn't of allowed type: #{list.inspect}" },
-                      mime_type_exclusion: ->(list) { "is of forbidden type: #{list.inspect}" },
-                      extension_inclusion: ->(list) { "isn't in allowed format: #{list.inspect}" },
-                      extension_exclusion: ->(list) { "is in forbidden format: #{list.inspect}" },
+                      max_size: ->(max) { "is too large (max is #{max.to_f/1024/1024} MB)" },
+                      min_size: ->(min) { "is too small (min is #{min.to_f/1024/1024} MB)" },
+                      max_width: ->(max) { "is too wide (max is #{max} px)" },
+                      min_width: ->(min) { "is too narrow (min is #{min} px)" },
+                      max_height: ->(max) { "is too tall (max is #{max} px)" },
+                      min_height: ->(min) { "is too short (min is #{min} px)" },
+                      mime_type_inclusion: ->(list) { "isn't of allowed type (allowed types: #{list.join(", ")})" },
+                      mime_type_exclusion: ->(list) { "is of forbidden type" },
+                      extension_inclusion: ->(list) { "isn't of allowed format (allowed formats: #{list.join(", ")})" },
+                      extension_exclusion: ->(list) { "is of forbidden format" },
                       }
                     </td>
                     <td>&nbsp;</td>

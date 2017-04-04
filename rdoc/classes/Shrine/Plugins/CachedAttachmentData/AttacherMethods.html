@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/cached_attachment_data.rb">lib/shrine/plugins/cached_attachment_data.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/cached_attachment_data.rb">lib/shrine/plugins/cached_attachment_data.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -61,7 +61,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-read_cached-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-read_cached-source'><span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read_cached</span>&#x000A;  <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">attached?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-read_cached-source'><span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">read_cached</span>&#x000A;  <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">changed?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
         <div class='parent'>
@@ -56,7 +56,6 @@
               <li><a href="#attribute-i-original_filename">original_filename</a></li>
               <li><a href="#method-i-path">path</a></li>
               <li><a href="#attribute-i-tempfile">tempfile</a></li>
-              <li><a href="#method-i-to_io">to_io</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -84,7 +83,14 @@
                     <td class='context-item-name'>
                       <a name='attribute-i-tempfile'>tempfile</a>
                     </td>
-                    <td class='context-item-value'>[RW]</td>
+                    <td class='context-item-value'>[R]</td>
+                    <td class='context-item-desc'></td>
+                  </tr>
+                  <tr class='top-aligned-row context-row'>
+                    <td class='context-item-name'>
+                      <a name='attribute-i-to_io'>to_io</a>
+                    </td>
+                    <td class='context-item-value'>[R]</td>
                     <td class='context-item-desc'></td>
                   </tr>
                 </table>
@@ -96,7 +102,7 @@
                 <a name='method-c-new'></a>
                 <div class='synopsis'>
                   <span class='name'>new</span>
-                  <span class='arguments'>(tempfile:, filename: nil, type: nil, **)</span>
+                  <span class='arguments'>(hash)</span>
                 </div>
                 <div class='description'>
                   
@@ -105,7 +111,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 84</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">tempfile</span>,, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)&#x000A;  <span class="ruby-ivar">@tempfile</span>          = <span class="ruby-identifier">tempfile</span>&#x000A;  <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">filename</span>&#x000A;  <span class="ruby-ivar">@content_type</span>      = <span class="ruby-identifier">type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 112</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">hash</span>)&#x000A;  <span class="ruby-ivar">@tempfile</span>          = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:tempfile</span>]&#x000A;  <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>]&#x000A;  <span class="ruby-ivar">@content_type</span>      = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:type</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <h2>Public Instance methods</h2>
@@ -122,23 +128,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-path-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-path-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 90</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">path</span>&#x000A;  <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">path</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-to_io'>
-                <a name='method-i-to_io'></a>
-                <div class='synopsis'>
-                  <span class='name'>to_io</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-to_io-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-to_io-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 94</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_io</span>&#x000A;  <span class="ruby-ivar">@tempfile</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-path-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 118</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">path</span>&#x000A;  <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">path</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

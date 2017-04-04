@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
@@ -122,7 +122,7 @@
             
             <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">extend</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>&#x000A;  <span class="ruby-identifier">attachment</span> :<span class="ruby-identifier">image</span>, <span class="ruby-identifier">destroy</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_files</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">image</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_files</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>This way we can encapsulate all attachment logic inside a class and share
             it between different models.</p>
@@ -292,7 +292,7 @@
             <p>Shrine&#39;s equivalent to calling the attachment is including an
             attachment module of an uploader:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">avatar</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">avatar</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h4 id="label-3Aextension-2C+-3Acontent_type-2C+-3Atype"><code>:extension</code>, <code>:content_type</code>, <code>:type</code><span><a href="#label-3Aextension-2C+-3Acontent_type-2C+-3Atype">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
@@ -300,7 +300,7 @@
             instance-level inside the uploader, most commonly with the
             <code>validation_helpers</code> plugin:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>, <span class="ruby-string">&quot;png&quot;</span>]&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;image/jpeg&quot;</span>, <span class="ruby-string">&quot;image/png&quot;</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png]</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h4 id="label-3Acache-2C+-3Astore"><code>:cache</code>, <code>:store</code><span><a href="#label-3Acache-2C+-3Astore">&para;</a> <a href="#top">&uarr;</a></span></h4>
             
@@ -316,6 +316,50 @@
             
             <p>No equivalent currently exists in <a
             href="../../classes/Shrine.html">Shrine</a>.</p>
+            
+            <h3 id="label-accepts_attachments_for"><code>accepts_attachments_for</code><span><a href="#label-accepts_attachments_for">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <p>No equivalent in <a href="../../classes/Shrine.html">Shrine</a>, but take a
+            look at the “<a
+            href="http://shrinerb.com/rdoc/files/doc/multiple_files_md.html">Multiple
+            Files</a>” guide.</p>
+            
+            <h3 id="label-Form+helpers">Form helpers<span><a href="#label-Form+helpers">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <h4 id="label-attachment_field"><code>attachment_field</code><span><a href="#label-attachment_field">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p>The following Refile code</p>
+            
+            <pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.attachment_field :profile_image %&gt;&#x000A;&lt;% end %&gt;</pre>
+            
+            <p>is equivalent to the following <a
+            href="../../classes/Shrine.html">Shrine</a> code</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">cached_attachment_data</span></pre>
+            
+            <pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %&gt;&#x000A;  &lt;%= form.file_field :profile_image %&gt;&#x000A;&lt;% end %&gt;</pre>
+            
+            <h3 id="label-Model+methods">Model methods<span><a href="#label-Model+methods">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            
+            <h4 id="label-remove_-3Cattachment-3E"><code>remove_&lt;attachment&gt;</code><span><a href="#label-remove_-3Cattachment-3E">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> comes with a
+            <code>remove_attachment</code> plugin which adds the same
+            <code>#remove_&lt;attachment&gt;</code> method to the model.</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remove_attachment</span></pre>
+            
+            <pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %&gt;&#x000A;  &lt;%= form.file_field :profile_image %&gt;&#x000A;  &lt;%= form.check_box :remove_profile_image %&gt;&#x000A;&lt;% end %&gt;</pre>
+            
+            <h4 id="label-remote_-3Cattachment-3E_url"><code>remote_&lt;attachment&gt;_url</code><span><a href="#label-remote_-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
+            
+            <p><a href="../../classes/Shrine.html">Shrine</a> comes with a
+            <code>remote_url</code> plugin which adds the same
+            <code>#&lt;attachment&gt;_remote_url</code> method to the model.</p>
+            
+            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span></pre>
+            
+            <pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %&gt;&#x000A;  &lt;%= form.file_field :profile_image %&gt;&#x000A;  &lt;%= form.text_field :profile_image_remote_url %&gt;&#x000A;&lt;% end %&gt;</pre>
           </div>
           <div id='context'>
           </div>

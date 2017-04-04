@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
@@ -160,7 +160,7 @@
             
             <p>We can include this module to a model:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Shrine</span>[:<span class="ruby-identifier">image</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span> <span class="ruby-comment"># shorthand for `photo.image_attacher.assign(file)`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>        <span class="ruby-comment"># shorthand for `photo.image_attacher.get`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>    <span class="ruby-comment"># shorthand for `photo.image_attacher.url`</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span></pre>
             

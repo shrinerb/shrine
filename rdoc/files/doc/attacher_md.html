@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
@@ -44,7 +44,7 @@
             interact with the attachment just like with any other column attribute, and
             adding attachment fields to the form just works.</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span>[:<span class="ruby-identifier">image</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>However, you don&#39;t want to add additional methods on the model and
             prefer explicitness, or you need more control, you can achieve the same
@@ -76,7 +76,7 @@
             or an already cached file in form of a JSON string, and assigns the cached
             result to record&#39;s <code>&lt;attachment&gt;_data</code> attribute.</p>
             
-            <pre class="ruby"><span class="ruby-comment"># uploads the `io` object to temporary storage, and writes to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;<span class="ruby-comment"># writes the given cached file to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span> <span class="ruby-string">&#39;{&#x000A;  &quot;storage&quot;: &quot;cache&quot;,&#x000A;  &quot;id&quot;: &quot;9260ea09d8effd.jpg&quot;,&#x000A;  &quot;metadata&quot;: { ... }&#x000A;}&#39;</span></pre>
+            <pre class="ruby"><span class="ruby-comment"># uploads the `io` object to temporary storage, and writes to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;<span class="ruby-comment"># writes the given cached file to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span> <span class="ruby-string">&#39;{&#x000A;  &quot;id&quot;: &quot;9260ea09d8effd.jpg&quot;,&#x000A;  &quot;storage&quot;: &quot;cache&quot;,&#x000A;  &quot;metadata&quot;: { ... }&#x000A;}&#39;</span></pre>
             
             <p>For security reasons <code>#assign</code> doesn&#39;t accept files uploaded
             to permanent storage, but you can also use <code>#set</code> to attach any
@@ -95,12 +95,12 @@
             <p>The <code>#read</code> method will just return the value of the underlying
             <code>&lt;attachment&gt;_data</code> attribute.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">read</span> <span class="ruby-comment">#=&gt; &#39;{&quot;storage&quot;:&quot;cache&quot;,&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,...}&#39;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">read</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span></pre>
             
             <p>In general you can use <code>#uploaded_file</code> to contruct a
             <code>Shrine::UploadedFile</code> from a JSON string.</p>
             
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-string">&#39;{&quot;storage&quot;:&quot;cache&quot;,&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,...}&#39;</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">attachment_data</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">attachment_data</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
             
             <h2 id="label-URL">URL<span><a href="#label-URL">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -131,7 +131,7 @@
             <code>#finalize</code> for that, since that will also automatically delete
             any previously attached files.</p>
             
-            <pre class="ruby"><span class="ruby-comment"># We run the finalization only if a new file was attached</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attached?</span></pre>
+            <pre class="ruby"><span class="ruby-comment"># Replaces previous attachment and replaces new</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span></pre>
             
             <p>This is normally automatically added to a callback by the ORM plugin when
             going through the model. Internally this calls <code>#promote</code>, which

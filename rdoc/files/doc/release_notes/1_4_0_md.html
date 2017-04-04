@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
@@ -69,7 +69,7 @@
             automatically used  in uploaded file&#39;s location.</p>
             </li></ul>
             
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">content_type</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-constant">MIME</span><span class="ruby-operator">::</span><span class="ruby-constant">Types</span>[<span class="ruby-identifier">content_type</span>].<span class="ruby-identifier">first</span>.<span class="ruby-identifier">preferred_extension</span>&#x000A;  <span class="ruby-node">&quot;data_uri.#{extension}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mime/types&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">content_type</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-constant">MIME</span><span class="ruby-operator">::</span><span class="ruby-constant">Types</span>[<span class="ruby-identifier">content_type</span>].<span class="ruby-identifier">first</span>.<span class="ruby-identifier">preferred_extension</span>&#x000A;  <span class="ruby-node">&quot;data_uri.#{extension}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
             <ul><li>

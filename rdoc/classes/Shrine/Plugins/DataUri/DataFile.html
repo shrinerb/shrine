@@ -29,12 +29,12 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/data_uri.rb">lib/shrine/plugins/data_uri.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/data_uri.rb">lib/shrine/plugins/data_uri.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
         <div class='parent'>
           Superclass:
-          <strong>StringIO</strong>
+          <strong>Object</strong>
         </div>
       </div>
       <div id='content'>
@@ -48,8 +48,10 @@
             </ol>
             <h3>Public Instance</h3>
             <ol>
+              <li><a href="#method-i-close">close</a></li>
               <li><a href="#attribute-i-content_type">content_type</a></li>
               <li><a href="#attribute-i-original_filename">original_filename</a></li>
+              <li><a href="#method-i-to_io">to_io</a></li>
             </ol>
           </div>
           <div id='context'>
@@ -91,7 +93,40 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 119</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-ivar">@content_type</span> = <span class="ruby-identifier">content_type</span>&#x000A;  <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">filename</span>&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">content</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 181</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;  <span class="ruby-ivar">@content_type</span>      = <span class="ruby-identifier">content_type</span>&#x000A;  <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">filename</span>&#x000A;  <span class="ruby-ivar">@io</span>                = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">content</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <h2>Public Instance methods</h2>
+              <div class='method public-instance' id='method-method-i-close'>
+                <a name='method-i-close'></a>
+                <div class='synopsis'>
+                  <span class='name'>close</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-close-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-close-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 194</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">close</span>&#x000A;  <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">close</span>&#x000A;  <span class="ruby-ivar">@io</span>.<span class="ruby-identifier">string</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                </div>
+              </div>
+              <div class='method public-instance' id='method-method-i-to_io'>
+                <a name='method-i-to_io'></a>
+                <div class='synopsis'>
+                  <span class='name'>to_io</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-to_io-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='method-i-to_io-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 187</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_io</span>&#x000A;  <span class="ruby-ivar">@io</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/download_endpoint.rb">lib/shrine/plugins/download_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/download_endpoint.rb">lib/shrine/plugins/download_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -64,7 +64,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-assign_download_endpoint-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-assign_download_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-assign_download_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 80</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-instance' id='method-method-i-inherited'>
@@ -81,7 +81,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-i-inherited-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 65</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">DownloadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">DownloadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
@@ -47,8 +47,8 @@
             <h2 id="label-Validate+file+type">Validate file type<span><a href="#label-Validate+file+type">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
             <p>Almost always you will be accepting certain types of files, and it&#39;s a
-            good idea to create a whitelist (or blaclist) of supported extensions and
-            MIME types.</p>
+            good idea to create a whitelist (or a blacklist) of extensions and MIME
+            types.</p>
             
             <p>By default <a href="../../classes/Shrine.html">Shrine</a> stores the MIME
             type derived from the extension, which means it&#39;s not guaranteed to
@@ -57,7 +57,7 @@
             href="http://linux.die.net/man/1/file">file</a> utility to determine the
             MIME type from magic file headers.</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> [<span class="ruby-regexp">/jpe?g/</span>, <span class="ruby-string">&quot;png&quot;</span>, <span class="ruby-string">&quot;gif&quot;</span>]&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> [<span class="ruby-string">&quot;image/jpeg&quot;</span>, <span class="ruby-string">&quot;image/png&quot;</span>, <span class="ruby-string">&quot;image/gif&quot;</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <h2 id="label-Limit+filesize">Limit filesize<span><a href="#label-Limit+filesize">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -72,7 +72,7 @@
             <p>In the following sections we talk about various strategies to prevent files
             from being uploaded to cache and the temporary directory.</p>
             
-            <h3 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            <h3 id="label-Limiting+filesize+in+direct+uploads">Limiting filesize in direct uploads<span><a href="#label-Limiting+filesize+in+direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
             <p>If you&#39;re doing direct uploads with the <code>direct_upload</code>
             plugin, you can pass in the <code>:max_size</code> option, which will
@@ -85,23 +85,24 @@
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">direct_upload</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <h3 id="label-Regular+uploads">Regular uploads<span><a href="#label-Regular+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            <h3 id="label-Limiting+filesize+at+application+level">Limiting filesize at application level<span><a href="#label-Limiting+filesize+at+application+level">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
-            <p>If you&#39;re simply accepting uploads synchronously in the form, you can
-            prevent large files from getting into cache by loading the
-            <code>remove_invalid</code> plugin:</p>
+            <p>If your application is accepting file uploads, it&#39;s good practice to
+            limit the maximum allowed <code>Content-Length</code> before calling
+            <code>params</code> for the first time, to avoid Rack parsing the multipart
+            request parameters and creating a Tempfile for uploads that are obviously
+            attempts of attacks.</p>
+            
+            <pre class="ruby"><span class="ruby-keyword">if</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">content_length</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">100</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 100MB</span>&#x000A;  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-value">413</span> <span class="ruby-comment"># Request Entity Too Large</span>&#x000A;  <span class="ruby-identifier">response</span>.<span class="ruby-identifier">body</span> = <span class="ruby-string">&quot;The uploaded file was too large (maximum is 100MB)&quot;</span>&#x000A;  <span class="ruby-identifier">request</span>.<span class="ruby-identifier">halt</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span> <span class="ruby-comment"># Rack parses the multipart request params</span></pre>
+            
+            <p>Alternatively you can allow uploads of any size to temporary <a
+            href="../../classes/Shrine.html">Shrine</a> storage, but tell <a
+            href="../../classes/Shrine.html">Shrine</a> to immediately delete the file
+            if it failed validations by loading the <code>remove_invalid</code> plugin.</p>
             
             <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remove_invalid</span></pre>
             
-            <h3 id="label-Limiting+at+application+level">Limiting at application level<span><a href="#label-Limiting+at+application+level">&para;</a> <a href="#top">&uarr;</a></span></h3>
-            
-            <p>If your application is accepting file uploads directly (either through
-            direct uploads or regular ones), you can limit the maximum request body
-            size in your application server (nginx or apache):</p>
-            
-            <pre># nginx.conf&#x000A;http {&#x000A;  # ...&#x000A;  server {&#x000A;    # ...&#x000A;    client_max_body_size 20M;&#x000A;  }&#x000A;}</pre>
-            
-            <h3 id="label-Paranoid+limiting">Paranoid limiting<span><a href="#label-Paranoid+limiting">&para;</a> <a href="#top">&uarr;</a></span></h3>
+            <h3 id="label-Paranoid+filesize+limiting">Paranoid filesize limiting<span><a href="#label-Paranoid+filesize+limiting">&para;</a> <a href="#top">&uarr;</a></span></h3>
             
             <p>If you want to make sure that no large files ever get to your storages, and
             you don&#39;t really care about the error message, you can use the
@@ -128,6 +129,27 @@
             
             <p>If you&#39;re doing processing on caching, you can use the fastimage gem
             directly in a conditional.</p>
+            
+            <h2 id="label-Prevent+metadata+tampering">Prevent metadata tampering<span><a href="#label-Prevent+metadata+tampering">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            
+            <p>When cached file is retained on validation errors or it was direct
+            uploaded, the uploaded file representation is assigned to the attacher.
+            This also includes any file metadata. By default <a
+            href="../../classes/Shrine.html">Shrine</a> won&#39;t attempt to re-extract
+            metadata, because for remote storages that requires an additional HTTP
+            request, which might not be feasible depending on the application
+            requirements.</p>
+            
+            <p>However, this means that the attacker can directly upload a malicious file
+            (because direct uploads aren&#39;t validated), and then modify the metadata
+            hash so that it passes <a href="../../classes/Shrine.html">Shrine</a>
+            validations, before submitting the cached file to your app. To guard
+            yourself from such attacks, you can load the
+            <code>restore_cached_data</code> plugin, which will automatically
+            re-extract metadata from cached files on assignment and override the
+            received metadata.</p>
+            
+            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">restore_cached_data</span></pre>
             
             <h2 id="label-Limit+number+of+files">Limit number of files<span><a href="#label-Limit+number+of+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
             

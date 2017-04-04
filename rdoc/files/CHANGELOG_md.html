@@ -29,12 +29,117 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
         <div id='text'>
           <div id='description'>
+            
+            <h2 id="label-2.6.0+-282017-04-04-29">2.6.0 (2017-04-04)<span><a href="#label-2.6.0+-282017-04-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+            <ul><li>
+            <p>Make <code>Shrine::Storage::FileSystem#path</code> public which returns
+            path to the file as a <code>Pathname</code> object (@janko-m)</p>
+            </li><li>
+            <p>Add <code>Shrine.rack_file</code> to <code>rack_file</code> plugin for
+            converting Rack uploaded file hash into an IO (@janko-m)</p>
+            </li><li>
+            <p>Deprecate passing a Rack file hash to <code>Shrine#upload</code> (@janko-m)</p>
+            </li><li>
+            <p>Expose <code>Shrine.extract_dimensions</code> and
+            <code>Shrine.dimensions_analyzers</code> in <code>store_dimensions</code>
+            plugin (@janko-m)</p>
+            </li><li>
+            <p>Add <code>metadata_attributes</code> plugin for syncing attachment metadata
+            with additional record attributes (@janko-m)</p>
+            </li><li>
+            <p>Remove the undocumented <code>:magic_header</code> option from
+            <code>determine_mime_type</code> plugin (@janko-m)</p>
+            </li><li>
+            <p>Expose <code>Shrine.determine_mime_type</code> and
+            <code>Shrine.mime_type_analyzers</code> in <code>determine_mime_type</code>
+            plugin (@janko-m)</p>
+            </li><li>
+            <p>Add <code>signature</code> plugin for calculating a
+            SHA{1,256,384,512}/MD5/CRC32 hash of a file (@janko-m)</p>
+            </li><li>
+            <p>Return the resolved plugin module when calling <code>Shrine.plugin</code>
+            (@janko-m)</p>
+            </li><li>
+            <p>Accept hash of metadata with symbol keys as well in
+            <code>add_metadata</code> block (@janko-m)</p>
+            </li><li>
+            <p>Add <code>refresh_metadata</code> plugin for re-extracting metadata from an
+            uploaded file (@janko-m)</p>
+            </li><li>
+            <p>Allow S3 storage to use parallelized multipart upload for files from
+            FileSystem storage as well (@janko-m)</p>
+            </li><li>
+            <p>Improve default multipart copy threshold for S3 storage (@janko-m)</p>
+            </li><li>
+            <p>Allow specifying multipart upload and copy thresholds separately in
+            <code>Shrine::Storage::S3</code> (@janko-m)</p>
+            </li><li>
+            <p>Fix <code>Storage::FileSystem#clear!</code> not deleting old files if there
+            are newer files in the same directory (@janko-m)</p>
+            </li><li>
+            <p>Allow media type in the data URI to have additional parameters (@janko-m)</p>
+            </li><li>
+            <p>URI-decode non-base64 data URIs, as such data URIs are URI-encoded
+            according to the specification (@janko-m)</p>
+            </li><li>
+            <p>Improve performance of parsing data URIs by 10x switching from a regex to
+            StringScanner (@janko-m)</p>
+            </li><li>
+            <p>Reduce memory usage of <code>Shrine.data_uri</code> and
+            <code>UploadedFile#base64</code> by at least 2x (@janko-m)</p>
+            </li><li>
+            <p>Add <code>Shrine.data_uri</code> to <code>data_uri</code> plugin which
+            parses and converts the given data URI to an IO object (@janko-m)</p>
+            </li><li>
+            <p>Make <code>rack_file</code> plugin work with HashWithIndifferentAccess-like
+            objects such as Hashie::Mash (@janko-m)</p>
+            </li><li>
+            <p>Expose <code>Aws::S3::Client</code> via
+            <code>Shrine::Storage::S3#client</code>, and deprecate
+            <code>Shrine::Strorage::S3#s3</code> (@janko-m)</p>
+            </li><li>
+            <p>Modify <code>delete_raw</code> plugin to delete any IOs that respond to
+            <code>#path</code> (@janko-m)</p>
+            </li><li>
+            <p>Require the Tempfile standard library in lib/shrine.rb (@janko-m)</p>
+            </li><li>
+            <p>Deprecate dimensions validations passing when a dimension is nil (@janko-m)</p>
+            </li><li>
+            <p>Deprecate passing regexes to type/extension whitelists/blacklists in
+            <code>validation_helpers</code> (@janko-m)</p>
+            </li><li>
+            <p>Don&#39;t include list of blacklisted types and extensions in default
+            <code>validation_helpers</code> messages (@janko-m)</p>
+            </li><li>
+            <p>Improve default error messages in <code>validation_helpers</code> plugin
+            (@janko-m)</p>
+            </li><li>
+            <p>Don&#39;t require the <code>benchmark</code> standard library in
+            <code>logging</code> plugin (@janko-m)</p>
+            </li><li>
+            <p>Don&#39;t dirty the attacher in <code>Attacher#set</code> when attachment
+            hasn&#39;t changed (@janko-m)</p>
+            </li><li>
+            <p>Rename <code>Attacher#attached?</code> to a more accurate
+            <code>Attacher#changed?</code> (@janko-m)</p>
+            </li><li>
+            <p>Allow calling <code>Attacher#finalize</code> if attachment hasn&#39;t
+            changed, instead of raising an error (@janko-m)</p>
+            </li><li>
+            <p>Make <code>Shrine::Storage::S3#object</code> method public (@janko-m)</p>
+            </li><li>
+            <p>Prevent autoloading race conditions in aws-sdk gem by eager loading the S3
+            service (@janko-m)</p>
+            </li><li>
+            <p>Raise <code>Shrine::Error</code> when <code>Shrine#generate_location</code>
+            returns nil (@janko-m)</p>
+            </li></ul>
             
             <h2 id="label-2.5.0+-282016-11-11-29">2.5.0 (2016-11-11)<span><a href="#label-2.5.0+-282016-11-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
             <ul><li>

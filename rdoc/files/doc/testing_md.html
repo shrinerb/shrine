@@ -29,7 +29,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>2016-11-11 17:30:45 +0800</span>
+          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
         </div>
       </div>
       <div id='content'>
@@ -102,16 +102,12 @@
             
             <pre class="ruby"><span class="ruby-identifier">factory</span> :<span class="ruby-identifier">photo</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">image</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
             
-            <p>On the other hand, if you&#39;re setting up test data using YAML fixtures,
-            you aren&#39;t that flexible, because you can only use primitive data types
-            that are part of the YAML language. In that case you can load the
-            <code>data_uri</code> <a href="../../classes/Shrine.html">Shrine</a>
-            plugin, and assign files in form of data URI strings through the
-            <code>&lt;attachment&gt;_data_uri</code> accessor provided by the plugin.</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span></pre>
-            
-            <pre># test/fixtures/photos.yml&#x000A;photo:&#x000A;  image_data_uri: &quot;data:image/png;base64,&lt;%= Base64.encode64(File.binread(&quot;test/files/image.png&quot;)) %&gt;&quot;</pre>
+            <p>On the other hand, if you&#39;re setting up test data using Rails&#39; YAML
+            fixtures, you unfortunately won&#39;t be able to use them for assigning
+            files. This is because Rails fixtures only allow assigning primitive data
+            types, and don&#39;t allow you to specify <a
+            href="../../classes/Shrine.html">Shrine</a> attributes, you can only assign
+            to columns directly.</p>
             
             <h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
             
@@ -195,7 +191,7 @@
             <code>Shrine#process</code> to simply return a hash of unprocessed original
             files:</p>
             
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      {<span class="ruby-identifier">small</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">medium</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">large</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      {<span class="ruby-identifier">small</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-identifier">medium</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-identifier">large</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
             
             <p>However, it&#39;s even better to design your processing code in such a way
             that it&#39;s easier to swap out in tests. In your <em>application</em>

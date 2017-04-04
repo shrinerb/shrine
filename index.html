@@ -14,7 +14,7 @@
     <header class="header">
   <div class="container">
     <div>
-      <h1>Shrine (v2.5.0)</h1>
+      <h1>Shrine (v2.6.0)</h1>
       <p>
         <span class="text">File Attachment toolkit for Ruby applications</span>
         <svg class="icon" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
@@ -324,10 +324,31 @@
         </dd>
         
         <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MetadataAttributes.html">metadata_attributes</a>:
+        </dt>
+        <dd>
+          <div>Allows you to sync attachment metadata to additional record attributes.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RefreshMetadata.html">refresh_metadata</a>:
+        </dt>
+        <dd>
+          <div>Allows re-extracting metadata of an uploaded file.</div>
+        </dd>
+        
+        <dt>
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RestoreCachedData.html">restore_cached_data</a>:
         </dt>
         <dd>
           <div>Re-extracts cached file's metadata on model assignment.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Signature.html">signature</a>:
+        </dt>
+        <dd>
+          <div>Allows you to calculate a SHA{1,256,384,512}/MD5/CRC32 hash of a file.</div>
         </dd>
         
         <dt>
@@ -374,7 +395,7 @@
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RemoveInvalid.html">remove_invalid</a>:
         </dt>
         <dd>
-          <div>Automatically deletes and deassigns the assigned cached file if it's invalid.</div>
+          <div>Automatically deletes and deassigns a new assigned file if it's invalid.</div>
         </dd>
         
       </dl>
@@ -487,6 +508,9 @@
       <ul>
         
         <li>
+          
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_6_0_md.html">2.6.0</a>
+          |
           
           <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_5_0_md.html">2.5.0</a>
           |
@@ -623,10 +647,22 @@
               </a>
             </li>
             
+            <li>
+              <a href="https://code.tutsplus.com/tutorials/uploading-files-with-rails-and-shrine--cms-27596">
+                Uploading Files With Rails and Shrine
+              </a>
+            </li>
+            
           </ul>
           
-          <h3>Screencasts</h3>
+          <h3>Videos</h3>
           <ul>
+            
+            <li>
+              <a href="https://player.vimeo.com/video/161742211">
+                Shrine: un toolkit para gestionar uploads en Ruby (Madrid.rb)
+              </a>
+            </li>
             
             <li>
               <a href="https://gorails.com/episodes/file-uploading-with-shrine?autoplay=1">
@@ -686,6 +722,12 @@
             </li>
             
             <li>
+              <a href="https://github.com/renchap/shrine-google_cloud_storage">
+                shrine-google_cloud_storage
+              </a>
+            </li>
+            
+            <li>
               <a href="https://github.com/janko-m/shrine-gridfs">
                 shrine-gridfs
               </a>
@@ -730,6 +772,12 @@
             <li>
               <a href="https://github.com/janko-m/shrine-url">
                 shrine-url
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/thedyrt/shrine-storage-you_tube">
+                shrine-storage-you_tube
               </a>
             </li>
             

@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
           <li class='other'>
             <a href="../../files/lib/shrine/plugins/activerecord_rb.html">lib/shrine/plugins/activerecord.rb</a>
@@ -95,6 +95,9 @@
             <a href="../../files/lib/shrine/plugins/logging_rb.html">lib/shrine/plugins/logging.rb</a>
           </li>
           <li class='other'>
+            <a href="../../files/lib/shrine/plugins/metadata_attributes_rb.html">lib/shrine/plugins/metadata_attributes.rb</a>
+          </li>
+          <li class='other'>
             <a href="../../files/lib/shrine/plugins/migration_helpers_rb.html">lib/shrine/plugins/migration_helpers.rb</a>
           </li>
           <li class='other'>
@@ -125,6 +128,9 @@
             <a href="../../files/lib/shrine/plugins/recache_rb.html">lib/shrine/plugins/recache.rb</a>
           </li>
           <li class='other'>
+            <a href="../../files/lib/shrine/plugins/refresh_metadata_rb.html">lib/shrine/plugins/refresh_metadata.rb</a>
+          </li>
+          <li class='other'>
             <a href="../../files/lib/shrine/plugins/remote_url_rb.html">lib/shrine/plugins/remote_url.rb</a>
           </li>
           <li class='other'>
@@ -138,6 +144,9 @@
           </li>
           <li class='other'>
             <a href="../../files/lib/shrine/plugins/sequel_rb.html">lib/shrine/plugins/sequel.rb</a>
+          </li>
+          <li class='other'>
+            <a href="../../files/lib/shrine/plugins/signature_rb.html">lib/shrine/plugins/signature.rb</a>
           </li>
           <li class='other'>
             <a href="../../files/lib/shrine/plugins/store_dimensions_rb.html">lib/shrine/plugins/store_dimensions.rb</a>
@@ -197,6 +206,7 @@
               <li><a href="Plugins/Included.html">Shrine::Plugins::Included</a></li>
               <li><a href="Plugins/KeepFiles.html">Shrine::Plugins::KeepFiles</a></li>
               <li><a href="Plugins/Logging.html">Shrine::Plugins::Logging</a></li>
+              <li><a href="Plugins/MetadataAttributes.html">Shrine::Plugins::MetadataAttributes</a></li>
               <li><a href="Plugins/MigrationHelpers.html">Shrine::Plugins::MigrationHelpers</a></li>
               <li><a href="Plugins/ModuleInclude.html">Shrine::Plugins::ModuleInclude</a></li>
               <li><a href="Plugins/Moving.html">Shrine::Plugins::Moving</a></li>
@@ -207,11 +217,13 @@
               <li><a href="Plugins/Processing.html">Shrine::Plugins::Processing</a></li>
               <li><a href="Plugins/RackFile.html">Shrine::Plugins::RackFile</a></li>
               <li><a href="Plugins/Recache.html">Shrine::Plugins::Recache</a></li>
+              <li><a href="Plugins/RefreshMetadata.html">Shrine::Plugins::RefreshMetadata</a></li>
               <li><a href="Plugins/RemoteUrl.html">Shrine::Plugins::RemoteUrl</a></li>
               <li><a href="Plugins/RemoveAttachment.html">Shrine::Plugins::RemoveAttachment</a></li>
               <li><a href="Plugins/RemoveInvalid.html">Shrine::Plugins::RemoveInvalid</a></li>
               <li><a href="Plugins/RestoreCachedData.html">Shrine::Plugins::RestoreCachedData</a></li>
               <li><a href="Plugins/Sequel.html">Shrine::Plugins::Sequel</a></li>
+              <li><a href="Plugins/Signature.html">Shrine::Plugins::Signature</a></li>
               <li><a href="Plugins/StoreDimensions.html">Shrine::Plugins::StoreDimensions</a></li>
               <li><a href="Plugins/UploadOptions.html">Shrine::Plugins::UploadOptions</a></li>
               <li><a href="Plugins/ValidationHelpers.html">Shrine::Plugins::ValidationHelpers</a></li>
@@ -238,7 +250,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_plugin-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 72</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
               <div class='method public-class' id='method-method-c-register_plugin'>
@@ -259,7 +271,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('method-c-register_plugin-source'); return false">
                     [show source]
                   </a>
-                  <pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 83</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+                  <pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 84</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
                 </div>
               </div>
             </div>

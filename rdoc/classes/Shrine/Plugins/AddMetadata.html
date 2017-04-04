@@ -29,7 +29,7 @@
         </h1>
         <ol class='paths'>
           <li>
-            <a href="https://github.com/janko-m/shrine/blob/90b9a4ed301ff778a6b65b51766ff058fca915c9/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
           </li>
         </ol>
       </div>
@@ -49,7 +49,8 @@
             <pre class="ruby"><span class="ruby-identifier">document</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;pages&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">pages</span></pre>
             
             <p>You can also extract multiple metadata values at once, by using
-            <code>add_metadata</code> without an argument.</p>
+            <code>add_metadata</code> without an argument, and returning a hash of
+            metadata.</p>
             
             <pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
             
