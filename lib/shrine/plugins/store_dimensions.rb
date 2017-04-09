@@ -113,7 +113,7 @@ class Shrine
         SUPPORTED_TOOLS = [:fastimage]
 
         def initialize(tool)
-          raise ArgumentError, "unsupported mime type analyzer tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
+          raise ArgumentError, "unsupported dimensions analysis tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end
