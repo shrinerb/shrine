@@ -117,6 +117,9 @@
       -
         name: shrine-reform
         url: https://github.com/janko-m/shrine-reform
+      -
+        name: shrine-tus
+        url: https://github.com/janko-m/shrine-tus
 -
   -
     title: Applications
