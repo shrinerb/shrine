@@ -126,7 +126,7 @@ class Shrine
                 if io.respond_to?(:each_chunk) # Down::ChunkedIO
                   io.each_chunk { |chunk| out << chunk }
                 else
-                  out << io.read(16*1024, buffer ||= "") until io.eof?
+                  out << io.read(16*1024) until io.eof?
                 end
               end
             end

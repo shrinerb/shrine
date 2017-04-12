@@ -17,9 +17,11 @@ describe Shrine::Plugins::DownloadEndpoint do
 
   describe "app" do
     it "returns file contents in the response" do
+      @uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+      @id = @uploaded_file.id
       response = app.get "/store/#{@id}"
-      assert_equal "image", response.body_binary
-      assert_equal "5", response.headers["Content-Length"]
+      assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
+      assert_equal @uploaded_file.read, response.body_binary
     end
 
     it "returns file contents when opened IO responds to #each_chunk" do
