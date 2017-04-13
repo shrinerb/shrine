@@ -3,7 +3,7 @@ class Shrine
     # The `metadata_attributes` plugin allows you to sync attachment metadata
     # to additional record attributes.
     #
-    #     plugin :metadata_values
+    #     plugin :metadata_attributes
     #
     # It provides `Attacher.metadata_attributes` method which allows you to
     # specify mappings between metadata fields on the attachment and attribute
