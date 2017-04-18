@@ -1,4 +1,4 @@
-## 2.6.1 (2016-04-12)
+## 2.6.1 (2017-04-12)
 
 * Fix `download_endpoint` returning incorrect reponse body in some cases (@janko-m)
 
