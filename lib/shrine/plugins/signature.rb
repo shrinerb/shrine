@@ -133,7 +133,7 @@ class Shrine
 
         def encode_base64(hash)
           require "base64"
-          Base64.encode64(hash).delete("\n")
+          Base64.strict_encode64(hash)
         end
       end
 
