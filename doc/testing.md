@@ -76,7 +76,7 @@ you can have the test file assigned dynamically when the record is created:
 
 ```rb
 factory :photo do
-  image File.open("test/files/image.jpg")
+  image { File.open("test/files/image.jpg") }
 end
 ```
 
