@@ -1,238 +1,240 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>testing.md</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='file' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>testing.md</h1>
-        <div class='paths'>
-          doc/testing.md
-        </div>
-        <div class='last-update'>
-          Last Update:
-          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
-        </div>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <h1 id="label-Testing+with+Shrine">Testing with <a href="../../classes/Shrine.html">Shrine</a><span><a href="#label-Testing+with+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
-            
-            <p>The goal of this guide is to provide some useful tips for testing file
-            attachments implemented with <a href="../../classes/Shrine.html">Shrine</a>
-            in your application.</p>
-            
-            <h2 id="label-Callbacks">Callbacks<span><a href="#label-Callbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>When you first try to test file attachments, you might experience that
-            files are simply not being promoted (uploaded from temporary to permanent
-            storage). This is because your tests are likely setup to be wrapped inside
-            database transactions, and that doesn&#39;t work with <a
-            href="../../classes/Shrine.html">Shrine</a> callbacks.</p>
-            
-            <p>Specifically, <a href="../../classes/Shrine.html">Shrine</a> uses “after
-            commit” callbacks for promoting and deleting attached files. This means
-            that if your tests are wrapped inside transactions, those <a
-            href="../../classes/Shrine.html">Shrine</a> actions will happen only after
-            those transactions commit, which happens only after the test has already
-            finished.</p>
-            
-            <pre class="ruby"><span class="ruby-comment"># Promoting will happen only after the test transaction commits</span>&#x000A;<span class="ruby-identifier">it</span> <span class="ruby-string">&quot;can attach images&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-identifier">image_file</span>)&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache (we expected it to be promoted to permanent storage)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>For file attachments to properly work, you&#39;ll need to disable
-            transactions for those tests. For Rails apps you can tell Rails not to use
-            transactions, and instead use libraries like <a
-            href="https://github.com/DatabaseCleaner/database_cleaner">DatabaseCleaner</a>
-            which allow you to use table truncation or deletion strategies instead of
-            transactions.</p>
-            
-            <pre class="ruby"><span class="ruby-constant">RSpec</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">use_transactional_fixtures</span> = <span class="ruby-keyword">false</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If you&#39;re using an external storage in development, it is common in
-            tests to switch to a filesystem storage. However, that means that
-            you&#39;ll also have to clean up the test directory between tests, and
-            writing to filesystem can affect the performance of your tests.</p>
-            
-            <p>If your tests are run in a single process, instead of filesystem you can
-            use <a href="https://github.com/janko-m/shrine-memory">memory storage</a>,
-            which is both faster and doesn&#39;t require you to clean up anything
-            between tests.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine-memory&quot;</span></pre>
-            
-            <pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
-            
-            <p>Alternatively, if you&#39;re using Amazon S3 storage, in tests (and
-            development) you can swap it out for <a
-            href="https://github.com/jubos/fake-s3">FakeS3</a>. You just need tell
-            aws-sdk that instead of <code>s3.amazonaws.com</code> it should use the
-            host of your FakeS3 server when generating URLs.</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">endpoint</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://localhost:10000&quot;</span>)</pre>
-            
-            <p>Note that for using FakeS3 you need aws-sdk version 2.2.25 or higher.</p>
-            
-            <h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If you&#39;re creating test data dynamically using libraries like <a
-            href="https://github.com/thoughtbot/factory_girl">factory_girl</a>, you can
-            have the test file assigned dynamically when the record is created:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">factory</span> :<span class="ruby-identifier">photo</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">image</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>On the other hand, if you&#39;re setting up test data using Rails&#39; YAML
-            fixtures, you unfortunately won&#39;t be able to use them for assigning
-            files. This is because Rails fixtures only allow assigning primitive data
-            types, and don&#39;t allow you to specify <a
-            href="../../classes/Shrine.html">Shrine</a> attributes, you can only assign
-            to columns directly.</p>
-            
-            <h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If you&#39;re using background jobs with <a
-            href="../../classes/Shrine.html">Shrine</a>, you probably want to make them
-            synchronous in tests. Your favourite backgrounding library should already
-            support this, examples:</p>
-            
-            <pre class="ruby"><span class="ruby-comment"># Sidekiq</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sidekiq/testing&quot;</span>&#x000A;<span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Testing</span>.<span class="ruby-identifier">inline!</span></pre>
-            
-            <pre class="ruby"><span class="ruby-comment"># SuckerPunch</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sucker_punch/testing/inline&quot;</span></pre>
-            
-            <pre class="ruby"><span class="ruby-comment"># ActiveJob</span>&#x000A;<span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">queue_adapter</span> = :<span class="ruby-identifier">inline</span></pre>
-            
-            <h2 id="label-Acceptance+tests">Acceptance tests<span><a href="#label-Acceptance+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>In acceptance tests you&#39;re testing your app end-to-end, and you likely
-            want to also test file attachments here. There are a variety of libraries
-            that you might be using for your acceptance tests.</p>
-            
-            <h3 id="label-Capybara">Capybara<span><a href="#label-Capybara">&para;</a> <a href="#top">&uarr;</a></span></h3>
-            
-            <p>If you&#39;re testing with the <a
-            href="https://github.com/jnicklas/capybara">Capybara</a> acceptance test
-            framework, you can use <a
-            href="http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method">#attach_file</a>
-            to select a file from your filesystem in the form:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attach_file</span>(<span class="ruby-node">&quot;#image-field&quot;</span>, <span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)</pre>
-            
-            <h3 id="label-Rack-3A-3ATest">Rack::Test<span><a href="#label-Rack-3A-3ATest">&para;</a> <a href="#top">&uarr;</a></span></h3>
-            
-            <p>Regular routing tests in Rails use <a
-            href="https://github.com/brynary/rack-test">Rack::Test</a>, in which case
-            you can create <code>Rack::Test::UploadedFile</code> objects and pass them
-            as form parameters:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-identifier">photo</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-string">&quot;image/jpeg&quot;</span>)}</pre>
-            
-            <h3 id="label-Rack-3A-3ATestApp">Rack::TestApp<span><a href="#label-Rack-3A-3ATestApp">&para;</a> <a href="#top">&uarr;</a></span></h3>
-            
-            <p>With <a href="https://github.com/kwatch/rack-test_app">Rack::TestApp</a>
-            you can create multipart file upload requests by using the
-            <code>:multipart</code> option and passing a <code>File</code> object:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">http</span>.<span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-identifier">multipart</span><span class="ruby-operator">:</span> {<span class="ruby-string">&quot;photo[image]&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)}</pre>
-            
-            <h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>Even though all the file attachment logic is usually encapsulated in your
-            uploader classes, in general it&#39;s still best to test this logic through
-            models.</p>
-            
-            <p>In your controller the attachment attribute using the uploaded file from
-            the controller, in Rails case it&#39;s an
-            <code>ActionDispatch::Http::UploadedFile</code>. However, you can also
-            assign plain <code>File</code> objects, or any other kind of IO-like
-            objects.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">describe</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;generates image thumbnails&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>))&#x000A;    <span class="ruby-identifier">assert_equal</span> [:<span class="ruby-identifier">small</span>, :<span class="ruby-identifier">medium</span>, :<span class="ruby-identifier">large</span>], <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">keys</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>If you want test with an IO object that closely resembles the kind of IO
-            that is assigned by your web framework, you can use this:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;forwardable&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;stringio&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">FakeIO</span>&#x000A;  <span class="ruby-identifier">attr_reader</span> :<span class="ruby-identifier">original_filename</span>, :<span class="ruby-identifier">content_type</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;    <span class="ruby-ivar">@io</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">content</span>)&#x000A;    <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">filename</span>&#x000A;    <span class="ruby-ivar">@content_type</span> = <span class="ruby-identifier">content_type</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">extend</span> <span class="ruby-constant">Forwardable</span>&#x000A;  <span class="ruby-identifier">delegate</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">IO_METHODS</span>.<span class="ruby-identifier">keys</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-ivar">@io</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <pre class="ruby"><span class="ruby-identifier">describe</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;generates image thumbnails&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-constant">FakeIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>)))&#x000A;    <span class="ruby-identifier">assert_equal</span> [:<span class="ruby-identifier">small</span>, :<span class="ruby-identifier">medium</span>, :<span class="ruby-identifier">large</span>], <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">keys</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>In tests you usually don&#39;t want to perform processing, or at least
-            don&#39;t want it to be performed by default (only when you&#39;re actually
-            testing it).</p>
-            
-            <p>If you&#39;re processing only single files, you can override the
-            <code>Shrine#process</code> method in tests to return nil:</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># don&#39;t do any processing</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>If you&#39;re processing versions, you can override
-            <code>Shrine#process</code> to simply return a hash of unprocessed original
-            files:</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      {<span class="ruby-identifier">small</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-identifier">medium</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-identifier">large</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>However, it&#39;s even better to design your processing code in such a way
-            that it&#39;s easier to swap out in tests. In your <em>application</em>
-            code you could extract processing into a single <code>#call</code>-able
-            object, and register it inside uploader generic <code>opts</code> hash.</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>] = <span class="ruby-constant">ImageThumbnailsGenerator</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>Now in your tests you can easily swap out
-            <code>ImageThumbnailsGenerator</code> with “fake” processing, which just
-            returns the result in correct format (single file or hash of versions).
-            Since the only requirement of the processor is that it responds to
-            <code>#call</code>, we can just swap it out for a proc or a lambda:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>] = <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># return unprocessed file(s)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>This also has the benefit of allowing you to test
-            <code>ImageThumbnailsGenerator</code> in isolation.</p>
-            
-            <h2 id="label-Direct+upload">Direct upload<span><a href="#label-Direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>In case you&#39;re doing direct uploads to S3 on production and staging
-            environments, in development and test you might want to just store files on
-            the filesystem for speed.</p>
-            
-            <p>In that case you can swap out S3 for FileSystem, and the
-            <code>direct_upload</code> app should still continue to work without any
-            changes. This is because <a href="../../classes/Shrine.html">Shrine</a>
-            detects that you&#39;re using a storage which isn&#39;t an external
-            service, and in that case the presign endpoint returns an URL to the upload
-            route that&#39;s also provided by the <code>direct_upload</code> app
-            mounted in your routes.</p>
-          </div>
-          <div id='context'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>testing.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>testing.md
+</h1>
+<div class='paths'>
+doc/testing.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2017-04-30 23:29:23 +1000</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-Testing+with+Shrine">Testing with <a href="../../classes/Shrine.html">Shrine</a><span><a href="#label-Testing+with+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>The goal of this guide is to provide some useful tips for testing file
+attachments implemented with <a href="../../classes/Shrine.html">Shrine</a>
+in your application.</p>
+
+<h2 id="label-Callbacks">Callbacks<span><a href="#label-Callbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>When you first try to test file attachments, you might experience that
+files are simply not being promoted (uploaded from temporary to permanent
+storage). This is because your tests are likely setup to be wrapped inside
+database transactions, and that doesn&#39;t work with <a
+href="../../classes/Shrine.html">Shrine</a> callbacks.</p>
+
+<p>Specifically, <a href="../../classes/Shrine.html">Shrine</a> uses “after
+commit” callbacks for promoting and deleting attached files. This means
+that if your tests are wrapped inside transactions, those <a
+href="../../classes/Shrine.html">Shrine</a> actions will happen only after
+those transactions commit, which happens only after the test has already
+finished.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Promoting will happen only after the test transaction commits</span>&#x000A;<span class="ruby-identifier">it</span> <span class="ruby-string">&quot;can attach images&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-identifier">image_file</span>)&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; :cache (we expected it to be promoted to permanent storage)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>For file attachments to properly work, you&#39;ll need to disable
+transactions for those tests. For Rails apps you can tell Rails not to use
+transactions, and instead use libraries like <a
+href="https://github.com/DatabaseCleaner/database_cleaner">DatabaseCleaner</a>
+which allow you to use table truncation or deletion strategies instead of
+transactions.</p>
+
+<pre class="ruby"><span class="ruby-constant">RSpec</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">config</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">config</span>.<span class="ruby-identifier">use_transactional_fixtures</span> = <span class="ruby-keyword">false</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you&#39;re using an external storage in development, it is common in
+tests to switch to a filesystem storage. However, that means that
+you&#39;ll also have to clean up the test directory between tests, and
+writing to filesystem can affect the performance of your tests.</p>
+
+<p>If your tests are run in a single process, instead of filesystem you can
+use <a href="https://github.com/janko-m/shrine-memory">memory storage</a>,
+which is both faster and doesn&#39;t require you to clean up anything
+between tests.</p>
+
+<pre class="ruby"><span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine-memory&quot;</span></pre>
+
+<pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
+
+<p>Alternatively, if you&#39;re using Amazon S3 storage, in tests (and
+development) you can swap it out for <a
+href="https://github.com/jubos/fake-s3">FakeS3</a>. You just need tell
+aws-sdk that instead of <code>s3.amazonaws.com</code> it should use the
+host of your FakeS3 server when generating URLs.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">endpoint</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://localhost:10000&quot;</span>)</pre>
+
+<p>Note that for using FakeS3 you need aws-sdk version 2.2.25 or higher.</p>
+
+<h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you&#39;re creating test data dynamically using libraries like <a
+href="https://github.com/thoughtbot/factory_girl">factory_girl</a>, you can
+have the test file assigned dynamically when the record is created:</p>
+
+<pre class="ruby"><span class="ruby-identifier">factory</span> :<span class="ruby-identifier">photo</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">image</span> { <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>On the other hand, if you&#39;re setting up test data using Rails&#39; YAML
+fixtures, you unfortunately won&#39;t be able to use them for assigning
+files. This is because Rails fixtures only allow assigning primitive data
+types, and don&#39;t allow you to specify <a
+href="../../classes/Shrine.html">Shrine</a> attributes, you can only assign
+to columns directly.</p>
+
+<h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you&#39;re using background jobs with <a
+href="../../classes/Shrine.html">Shrine</a>, you probably want to make them
+synchronous in tests. Your favourite backgrounding library should already
+support this, examples:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Sidekiq</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sidekiq/testing&quot;</span>&#x000A;<span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Testing</span>.<span class="ruby-identifier">inline!</span></pre>
+
+<pre class="ruby"><span class="ruby-comment"># SuckerPunch</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sucker_punch/testing/inline&quot;</span></pre>
+
+<pre class="ruby"><span class="ruby-comment"># ActiveJob</span>&#x000A;<span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">queue_adapter</span> = :<span class="ruby-identifier">inline</span></pre>
+
+<h2 id="label-Acceptance+tests">Acceptance tests<span><a href="#label-Acceptance+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>In acceptance tests you&#39;re testing your app end-to-end, and you likely
+want to also test file attachments here. There are a variety of libraries
+that you might be using for your acceptance tests.</p>
+
+<h3 id="label-Capybara">Capybara<span><a href="#label-Capybara">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>If you&#39;re testing with the <a
+href="https://github.com/jnicklas/capybara">Capybara</a> acceptance test
+framework, you can use <a
+href="http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method">#attach_file</a>
+to select a file from your filesystem in the form:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attach_file</span>(<span class="ruby-node">&quot;#image-field&quot;</span>, <span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)</pre>
+
+<h3 id="label-Rack-3A-3ATest">Rack::Test<span><a href="#label-Rack-3A-3ATest">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Regular routing tests in Rails use <a
+href="https://github.com/brynary/rack-test">Rack::Test</a>, in which case
+you can create <code>Rack::Test::UploadedFile</code> objects and pass them
+as form parameters:</p>
+
+<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-identifier">photo</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-string">&quot;image/jpeg&quot;</span>)}</pre>
+
+<h3 id="label-Rack-3A-3ATestApp">Rack::TestApp<span><a href="#label-Rack-3A-3ATestApp">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>With <a href="https://github.com/kwatch/rack-test_app">Rack::TestApp</a>
+you can create multipart file upload requests by using the
+<code>:multipart</code> option and passing a <code>File</code> object:</p>
+
+<pre class="ruby"><span class="ruby-identifier">http</span>.<span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-identifier">multipart</span><span class="ruby-operator">:</span> {<span class="ruby-string">&quot;photo[image]&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)}</pre>
+
+<h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Even though all the file attachment logic is usually encapsulated in your
+uploader classes, in general it&#39;s still best to test this logic through
+models.</p>
+
+<p>In your controller the attachment attribute using the uploaded file from
+the controller, in Rails case it&#39;s an
+<code>ActionDispatch::Http::UploadedFile</code>. However, you can also
+assign plain <code>File</code> objects, or any other kind of IO-like
+objects.</p>
+
+<pre class="ruby"><span class="ruby-identifier">describe</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;generates image thumbnails&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>))&#x000A;    <span class="ruby-identifier">assert_equal</span> [:<span class="ruby-identifier">small</span>, :<span class="ruby-identifier">medium</span>, :<span class="ruby-identifier">large</span>], <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">keys</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>If you want test with an IO object that closely resembles the kind of IO
+that is assigned by your web framework, you can use this:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;forwardable&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;stringio&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">FakeIO</span>&#x000A;  <span class="ruby-identifier">attr_reader</span> :<span class="ruby-identifier">original_filename</span>, :<span class="ruby-identifier">content_type</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">content</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">content_type</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>)&#x000A;    <span class="ruby-ivar">@io</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">content</span>)&#x000A;    <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">filename</span>&#x000A;    <span class="ruby-ivar">@content_type</span> = <span class="ruby-identifier">content_type</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">extend</span> <span class="ruby-constant">Forwardable</span>&#x000A;  <span class="ruby-identifier">delegate</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">IO_METHODS</span>.<span class="ruby-identifier">keys</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-ivar">@io</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">describe</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">it</span> <span class="ruby-string">&quot;generates image thumbnails&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-constant">FakeIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-string">&quot;test/files/image.png&quot;</span>)))&#x000A;    <span class="ruby-identifier">assert_equal</span> [:<span class="ruby-identifier">small</span>, :<span class="ruby-identifier">medium</span>, :<span class="ruby-identifier">large</span>], <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">keys</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>In tests you usually don&#39;t want to perform processing, or at least
+don&#39;t want it to be performed by default (only when you&#39;re actually
+testing it).</p>
+
+<p>If you&#39;re processing only single files, you can override the
+<code>Shrine#process</code> method in tests to return nil:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># don&#39;t do any processing</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>If you&#39;re processing versions, you can override
+<code>Shrine#process</code> to simply return a hash of unprocessed original
+files:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      {<span class="ruby-identifier">small</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-identifier">medium</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-identifier">large</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>}&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>However, it&#39;s even better to design your processing code in such a way
+that it&#39;s easier to swap out in tests. In your <em>application</em>
+code you could extract processing into a single <code>#call</code>-able
+object, and register it inside uploader generic <code>opts</code> hash.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>] = <span class="ruby-constant">ImageThumbnailsGenerator</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>Now in your tests you can easily swap out
+<code>ImageThumbnailsGenerator</code> with “fake” processing, which just
+returns the result in correct format (single file or hash of versions).
+Since the only requirement of the processor is that it responds to
+<code>#call</code>, we can just swap it out for a proc or a lambda:</p>
+
+<pre class="ruby"><span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">processor</span>] = <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># return unprocessed file(s)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>This also has the benefit of allowing you to test
+<code>ImageThumbnailsGenerator</code> in isolation.</p>
+
+<h2 id="label-Direct+upload">Direct upload<span><a href="#label-Direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>In case you&#39;re doing direct uploads to S3 on production and staging
+environments, in development and test you might want to just store files on
+the filesystem for speed.</p>
+
+<p>In that case you can swap out S3 for FileSystem, and the
+<code>direct_upload</code> app should still continue to work without any
+changes. This is because <a href="../../classes/Shrine.html">Shrine</a>
+detects that you&#39;re using a storage which isn&#39;t an external
+service, and in that case the presign endpoint returns an URL to the upload
+route that&#39;s also provided by the <code>direct_upload</code> app
+mounted in your routes.</p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>
