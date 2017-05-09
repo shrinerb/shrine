@@ -16,7 +16,7 @@ class Shrine
     #
     # For example, the following will keep destroyed and replaced files:
     #
-    #     plugin :keep_files, destroyed: true, :replaced: true
+    #     plugin :keep_files, destroyed: true, replaced: true
     #
     # [event store]: http://docs.geteventstore.com/introduction/event-sourcing-basics/
     module KeepFiles
