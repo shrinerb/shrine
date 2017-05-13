@@ -2,7 +2,7 @@ require "test_helper"
 require "shrine/plugins/sequel"
 require "sequel"
 
-Sequel.cache_anonymous_models = false
+Sequel::Model.cache_anonymous_models = false
 
 describe Shrine::Plugins::Sequel do
   before do

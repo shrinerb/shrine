@@ -8,7 +8,7 @@ db.create_table :users do
   column :avatar_data, :text
 end
 
-Sequel.cache_anonymous_models = false
+Sequel::Model.cache_anonymous_models = false
 
 describe Shrine::Plugins::Backgrounding do
   before do
