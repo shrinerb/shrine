@@ -1,7 +1,6 @@
 require "test_helper"
 require "shrine/plugins/remote_url"
-require "webmock/minitest"
-WebMock.allow_net_connect!
+require "mocha/mini_test"
 
 describe Shrine::Plugins::RemoteUrl do
   before do
@@ -10,8 +9,8 @@ describe Shrine::Plugins::RemoteUrl do
     end
     @user = @attacher.record
 
-    stub_request(:get, good_url).to_return(status: 200, body: "file")
-    stub_request(:get, bad_url).to_return(status: 404)
+    Down.stubs(:download).with(good_url, max_size: nil).returns(StringIO.new("file"))
+    Down.stubs(:download).with(bad_url, max_size: nil).raises(Down::Error.new("file not found"))
   end
 
   it "enables attaching a file via a remote url" do
@@ -41,6 +40,7 @@ describe Shrine::Plugins::RemoteUrl do
 
   it "accepts :max_size" do
     @attacher.shrine_class.opts[:remote_url_max_size] = 1
+    Down.stubs(:download).with(good_url, max_size: 1).raises(Down::TooLarge.new("file is too large"))
     @user.avatar_remote_url = good_url
     refute @user.avatar
   end
@@ -63,8 +63,9 @@ describe Shrine::Plugins::RemoteUrl do
     assert_equal ["download failed: file not found"], @user.avatar_attacher.errors
 
     @attacher.shrine_class.opts[:remote_url_max_size] = 1
+    Down.stubs(:download).with(good_url, max_size: 1).raises(Down::TooLarge.new("file is too large"))
     @user.avatar_remote_url = good_url
-    assert_equal ["download failed: file is too large (max is 0MB)"], @user.avatar_attacher.errors
+    assert_equal ["download failed: file is too large"], @user.avatar_attacher.errors
   end
 
   it "accepts custom error message" do

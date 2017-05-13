@@ -32,7 +32,6 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "minitest-hooks", "~> 1.3.0"
   gem.add_development_dependency "mocha"
-  gem.add_development_dependency "webmock"
   gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "dotenv"
   gem.add_development_dependency "shrine-memory", ">= 0.2.2"
