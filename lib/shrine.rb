@@ -167,7 +167,6 @@ class Shrine
         def uploaded_file(object, &block)
           case object
           when String
-            deprecation("Giving a string to Shrine.uploaded_file is deprecated and won't be possible in Shrine 3. Use Attacher#uploaded_file instead.")
             uploaded_file(JSON.parse(object), &block)
           when Hash
             uploaded_file(self::UploadedFile.new(object), &block)
@@ -629,11 +628,7 @@ class Shrine
         # Enhances `Shrine.uploaded_file` with the ability to recognize uploaded
         # files as JSON strings.
         def uploaded_file(object, &block)
-          if object.is_a?(String)
-            uploaded_file(JSON.parse(object), &block)
-          else
-            shrine_class.uploaded_file(object, &block)
-          end
+          shrine_class.uploaded_file(object, &block)
         end
 
         # The name of the attribute on the model instance that is used to store

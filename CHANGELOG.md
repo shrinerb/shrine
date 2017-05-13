@@ -1,5 +1,7 @@
 ## HEAD
 
+* Un-deprecate `Shrine.uploaded_file` accepting file data as JSON string (@janko-m)
+
 * Don't wrap base64-formatted signatures to 60 columns (@janko-m)
 
 * Don't add a newline at the end of the base64-formatted signature (@janko-m)
