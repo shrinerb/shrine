@@ -1,5 +1,7 @@
 ## HEAD
 
+* Implement `Shrine::Storage::S3#open` using the aws-sdk gem instead of `Down.open` (@janko-m)
+
 * Un-deprecate `Shrine.uploaded_file` accepting file data as JSON string (@janko-m)
 
 * Don't wrap base64-formatted signatures to 60 columns (@janko-m)

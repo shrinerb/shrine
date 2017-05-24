@@ -1,5 +1,5 @@
 require "aws-sdk"
-require "down"
+require "down/chunked_io"
 require "uri"
 require "cgi/util"
 
@@ -240,7 +240,10 @@ class Shrine
 
       # Returns a `Down::ChunkedIO` object representing the S3 object.
       def open(id)
-        Down.open(url(id), ssl_ca_cert: Aws.config[:ssl_ca_bundle])
+        object = object(id)
+        io = Down::ChunkedIO.new(chunks: object.enum_for(:get), data: {object: object})
+        io.size = object.content_length
+        io
       end
 
       # Returns true file exists on S3.
