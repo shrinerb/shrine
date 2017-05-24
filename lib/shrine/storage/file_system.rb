@@ -202,8 +202,9 @@ class Shrine
       def method_missing(name, *args)
         if name == :download
           Shrine.deprecation("Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.")
-          require "down"
-          open(*args) { |file| Down.copy_to_tempfile(*args, file) }
+          tempfile = Tempfile.new(["shrine-filesystem", File.extname(args[0])], binmode: true)
+          open(*args) { |file| IO.copy_stream(file, tempfile) }
+          tempfile.tap(&:open)
         else
           super
         end
