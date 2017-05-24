@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix `data_uri` plugin raising an exception on Ruby 2.4.1 when using raw data URIs (@janko-m)
+
 * Implement `Shrine::Storage::S3#open` using the aws-sdk gem instead of `Down.open` (@janko-m)
 
 * Un-deprecate `Shrine.uploaded_file` accepting file data as JSON string (@janko-m)

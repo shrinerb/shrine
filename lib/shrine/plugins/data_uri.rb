@@ -1,6 +1,6 @@
 require "base64"
 require "strscan"
-require "cgi/util"
+require "cgi"
 require "stringio"
 require "forwardable"
 

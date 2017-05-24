@@ -1,7 +1,7 @@
 require "aws-sdk"
 require "down/chunked_io"
 require "uri"
-require "cgi/util"
+require "cgi"
 
 Aws.eager_autoload!(services: ["S3"])
 

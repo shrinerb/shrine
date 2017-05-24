@@ -6,7 +6,7 @@ require "shrine/storage/linter"
 
 require "down"
 require "securerandom"
-require "cgi/util"
+require "cgi"
 
 require "dotenv"
 Dotenv.load!
