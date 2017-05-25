@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:mini_mime` option to `determine_mime_type` plugin for using the [mini_mime](https://github.com/discourse/mini_mime) gem (@janko-m)
+
 * Fix `data_uri` plugin raising an exception on Ruby 2.4.1 when using raw data URIs (@janko-m)
 
 * Implement `Shrine::Storage::S3#open` using the aws-sdk gem instead of `Down.open` (@janko-m)

@@ -90,6 +90,30 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
+  describe ":mini_mime analyzer" do
+    before do
+      @uploader = uploader { plugin :determine_mime_type, analyzer: :mini_mime }
+    end
+
+    it "extract MIME type from the file extension" do
+      mime_type = @uploader.send(:extract_mime_type, fakeio(filename: "image.png"))
+      assert_equal "image/png", mime_type
+
+      mime_type = @uploader.send(:extract_mime_type, image)
+      assert_equal "image/jpeg", mime_type
+    end
+
+    it "returns nil on unkown extension" do
+      mime_type = @uploader.send(:extract_mime_type, fakeio(filename: "file.foo"))
+      assert_nil mime_type
+    end
+
+    it "returns nil when input is not a file" do
+      mime_type = @uploader.send(:extract_mime_type, fakeio)
+      assert_nil mime_type
+    end
+  end
+
   describe ":default analyzer" do
     before do
       @uploader = uploader { plugin :determine_mime_type, analyzer: :default }

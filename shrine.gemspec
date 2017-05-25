@@ -40,6 +40,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "rack"
   gem.add_development_dependency "mimemagic"
   gem.add_development_dependency "mime-types"
+  gem.add_development_dependency "mini_mime"
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "aws-sdk", "~> 2.1"
 

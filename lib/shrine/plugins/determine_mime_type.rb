@@ -30,7 +30,12 @@ class Shrine
     #
     # :mime_types
     # : Uses the [mime-types] gem to determine the MIME type from the file
-    #   *extension*. Note that unlike other solutions, this analyzer is not
+    #   extension. Note that unlike other solutions, this analyzer is not
+    #   guaranteed to return the actual MIME type of the file.
+    #
+    # :mini_mime
+    # : Uses the [mini_mime] gem to determine the MIME type from the file
+    #   extension. Note that unlike other solutions, this analyzer is not
     #   guaranteed to return the actual MIME type of the file.
     #
     # :default
@@ -65,6 +70,7 @@ class Shrine
     # [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic
     # [mimemagic]: https://github.com/minad/mimemagic
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
+    # [mini_mime]: https://github.com/discourse/mini_mime
     module DetermineMimeType
       def self.configure(uploader, opts = {})
         uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:mime_type_analyzer, :file))
@@ -115,7 +121,7 @@ class Shrine
       end
 
       class MimeTypeAnalyzer
-        SUPPORTED_TOOLS = [:file, :filemagic, :mimemagic, :mime_types]
+        SUPPORTED_TOOLS = [:file, :filemagic, :mimemagic, :mime_types, :mini_mime]
         MAGIC_NUMBER    = 256 * 1024
 
         def initialize(tool)
@@ -176,7 +182,16 @@ class Shrine
 
           if filename = extract_filename(io)
             mime_type = MIME::Types.of(filename).first
-            mime_type.to_s if mime_type
+            mime_type.content_type if mime_type
+          end
+        end
+
+        def extract_with_mini_mime(io)
+          require "mini_mime"
+
+          if filename = extract_filename(io)
+            info = MiniMime.lookup_by_filename(filename)
+            info.content_type if info
           end
         end
 
