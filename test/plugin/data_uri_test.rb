@@ -113,8 +113,8 @@ describe Shrine::Plugins::DataUri do
   end
 
   it "adds #data_uri and #base64 methods to UploadedFile" do
-    @user.avatar = fakeio(Base64.decode64("somefile"))
-    assert_equal "data:text/plain;base64,somefile", @user.avatar.data_uri
-    assert_equal "somefile", @user.avatar.base64
+    @user.avatar = fakeio(Base64.decode64("a" * 120))
+    assert_equal "data:text/plain;base64,#{"a" * 120}", @user.avatar.data_uri
+    assert_equal "a" * 120, @user.avatar.base64
   end
 end

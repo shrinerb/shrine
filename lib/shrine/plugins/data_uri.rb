@@ -169,7 +169,7 @@ class Shrine
         # Returns contents of the file base64-encoded.
         def base64
           binary = open { |io| io.read }
-          result = Base64.encode64(binary).chomp
+          result = Base64.strict_encode64(binary)
           binary.clear # deallocate string
           result
         end

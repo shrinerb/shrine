@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't wrap base64-encoded content into 60 columns in `UploadedFile#base64` and `#data_uri` (@janko-m)
+
 * Add `:mini_mime` option to `determine_mime_type` plugin for using the [mini_mime](https://github.com/discourse/mini_mime) gem (@janko-m)
 
 * Fix `data_uri` plugin raising an exception on Ruby 2.4.1 when using raw data URIs (@janko-m)
