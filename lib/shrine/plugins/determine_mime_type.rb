@@ -174,11 +174,7 @@ class Shrine
         end
 
         def extract_with_mime_types(io)
-          begin
-            require "mime/types/columnar"
-          rescue LoadError
-            require "mime/types"
-          end
+          require "mime/types"
 
           if filename = extract_filename(io)
             mime_type = MIME::Types.of(filename).first
