@@ -153,5 +153,8 @@
     title: Libraries
     items:
       -
-        name: RailsAdminShrine
+        name: rails_admin_shrine
         url: https://github.com/iquest/rails_admin_shrine
+      -
+        name: administrate-field-shrine
+        url: https://github.com/catsky/administrate-field-shrine
