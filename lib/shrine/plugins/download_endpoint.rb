@@ -1,5 +1,4 @@
 require "roda"
-require "down"
 
 class Shrine
   module Plugins
