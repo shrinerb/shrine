@@ -102,6 +102,9 @@
       -
         name: shrine-storage-you_tube
         url: https://github.com/thedyrt/shrine-storage-you_tube
+      -
+        name: shrine-webdav
+        url: https://github.com/funbox/shrine-webdav
   -
     title: Plugins
     items:
