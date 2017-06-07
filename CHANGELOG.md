@@ -14,6 +14,8 @@
 
 * Don't add a newline at the end of the base64-formatted signature (@janko-m)
 
+* Accept `Attacher.new` options like `store:` and `cache:` via `Attachment.new` (@ypresto)
+
 ## 2.6.1 (2017-04-12)
 
 * Fix `download_endpoint` returning incorrect reponse body in some cases (@janko-m)

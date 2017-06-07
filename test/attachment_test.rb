@@ -59,4 +59,10 @@ describe Shrine::Attachment do
       assert_match "Attachment(avatar)", @user.class.ancestors[1].inspect
     end
   end
+
+  it "passes options to attacher" do
+    user = attacher(attachment_options: { store: :cache, cache: :store }).record
+    assert_equal :cache, user.avatar_attacher.store.storage_key
+    assert_equal :store, user.avatar_attacher.cache.storage_key
+  end
 end

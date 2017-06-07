@@ -12,11 +12,11 @@ module TestHelpers
       uploader_class.new(storage_key)
     end
 
-    def attacher(*args, &block)
+    def attacher(*args, attachment_options: nil, &block)
       uploader = uploader(*args, &block)
       Object.send(:remove_const, "User") if defined?(User) # for warnings
       user_class = Object.const_set("User", Struct.new(:avatar_data, :id))
-      user_class.include uploader.class::Attachment.new(:avatar)
+      user_class.include uploader.class::Attachment.new(:avatar, attachment_options)
       user_class.new.avatar_attacher
     end
 

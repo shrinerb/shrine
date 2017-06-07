@@ -40,6 +40,14 @@ also tell it to use different temporary and permanent storage:
 ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
 ```
 
+Note that you can pass `Attacher.new` options via `Attachment.new` too:
+
+```rb
+class Photo < Sequel::Model
+  include ImageUploader::Attachment.new(:image, cache: :other_cache, store: :other_store)
+end
+```
+
 The attacher will use the `<attachment>_data` attribute for storing information
 about the attachment.
 

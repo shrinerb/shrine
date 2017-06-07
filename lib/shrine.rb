@@ -154,8 +154,8 @@ class Shrine
         #     class Photo
         #       include Shrine.attachment(:image) # creates a Shrine::Attachment object
         #     end
-        def attachment(name)
-          self::Attachment.new(name)
+        def attachment(name, options = nil)
+          self::Attachment.new(name, options)
         end
         alias [] attachment
 
@@ -389,17 +389,19 @@ class Shrine
 
       module AttachmentMethods
         # Instantiates an attachment module for a given attribute name, which
-        # can then be included to a model class.
-        def initialize(name)
+        # can then be included to a model class. Second argument will be passed
+        # to an attacher module.
+        def initialize(name, options = nil)
           @name = name
 
           # We store the attacher class so that the model can instantiate the
           # correct attacher instance.
           class_variable_set(:"@@#{name}_attacher_class", shrine_class::Attacher)
+          class_variable_set(:"@@#{name}_attacher_options", options || {})
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}_attacher
-              @#{name}_attacher ||= @@#{name}_attacher_class.new(self, :#{name})
+              @#{name}_attacher ||= @@#{name}_attacher_class.new(self, :#{name}, **@@#{name}_attacher_options)
             end
 
             def #{name}=(value)
