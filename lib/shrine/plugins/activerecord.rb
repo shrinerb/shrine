@@ -107,6 +107,17 @@ class Shrine
       end
 
       module AttacherMethods
+        # Support for Postgres JSON columns.
+        def _set(uploaded_file)
+          data = case record.class.columns_hash["#{name}_data"].type
+                 when :json, :jsonb
+                   uploaded_file
+                 else
+                   uploaded_file.to_json
+                 end
+          write(data ? data : nil)
+        end
+
         private
 
         # Saves the record after assignment, skipping validations.
