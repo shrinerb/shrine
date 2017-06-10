@@ -1,5 +1,7 @@
 ## HEAD
 
+* Raise `ArgumentError` when `:bucket` option is nil in `Shrine::Storage::S3#initialize` (@janko-m)
+
 * Don't wrap base64-encoded content into 60 columns in `UploadedFile#base64` and `#data_uri` (@janko-m)
 
 * Add `:mini_mime` option to `determine_mime_type` plugin for using the [mini_mime](https://github.com/discourse/mini_mime) gem (@janko-m)

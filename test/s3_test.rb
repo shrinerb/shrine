@@ -34,6 +34,48 @@ describe Shrine::Storage::S3 do
     FileUtils.rm_rf("#{Dir.tmpdir}/shrine")
   end
 
+  describe "#initialize" do
+    it "raises an error when :bucket is nil" do
+      assert_raises(ArgumentError) { s3(bucket: nil) }
+    end
+  end
+
+  describe "#client" do
+    it "returns an Aws::S3::Client with credentials" do
+      @s3 = s3(
+        access_key_id:     "abc",
+        secret_access_key: "xyz",
+        region:            "eu-west-1",
+      )
+      assert_instance_of Aws::S3::Client, @s3.client
+      assert_equal "abc",       @s3.client.config.access_key_id
+      assert_equal "xyz",       @s3.client.config.secret_access_key
+      assert_equal "eu-west-1", @s3.client.config.region
+    end
+  end
+
+  describe "#bucket" do
+    it "returns an Aws::S3::Bucket" do
+      @s3 = s3(bucket: "my-bucket")
+      assert_instance_of Aws::S3::Bucket, @s3.bucket
+      assert_equal "my-bucket", @s3.bucket.name
+    end
+  end
+
+  describe "#prefix" do
+    it "returns the given :prefix" do
+      assert_equal "foo", s3(prefix: "foo").prefix
+    end
+  end
+
+  describe "#s3" do
+    it "returns the deprecated Aws::S3::Resource object" do
+      resource = @s3.s3
+      assert_instance_of Aws::S3::Resource, resource
+      assert_equal resource.client, @s3.client
+    end
+  end
+
   describe "#upload" do
     it "uploads IOs in a single request" do
       @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
@@ -329,42 +371,6 @@ describe Shrine::Storage::S3 do
     it "applies the :prefix" do
       object = s3(prefix: "foo").object("bar")
       assert_equal "foo/bar", object.key
-    end
-  end
-
-  describe "#client" do
-    it "returns an Aws::S3::Client with credentials" do
-      @s3 = s3(
-        access_key_id:     "abc",
-        secret_access_key: "xyz",
-        region:            "eu-west-1",
-      )
-      assert_instance_of Aws::S3::Client, @s3.client
-      assert_equal "abc",       @s3.client.config.access_key_id
-      assert_equal "xyz",       @s3.client.config.secret_access_key
-      assert_equal "eu-west-1", @s3.client.config.region
-    end
-  end
-
-  describe "#bucket" do
-    it "returns an Aws::S3::Bucket" do
-      @s3 = s3(bucket: "my-bucket")
-      assert_instance_of Aws::S3::Bucket, @s3.bucket
-      assert_equal "my-bucket", @s3.bucket.name
-    end
-  end
-
-  describe "#prefix" do
-    it "returns the given :prefix" do
-      assert_equal "foo", s3(prefix: "foo").prefix
-    end
-  end
-
-  describe "#s3" do
-    it "returns the deprecated Aws::S3::Resource object" do
-      resource = @s3.s3
-      assert_instance_of Aws::S3::Resource, resource
-      assert_equal resource.client, @s3.client
     end
   end
 end

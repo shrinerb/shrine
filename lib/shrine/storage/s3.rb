@@ -188,7 +188,7 @@ class Shrine
         end
         multipart_threshold = { upload: 15*1024*1024, copy: 100*1024*1024 }.merge(multipart_threshold)
 
-        @bucket = resource.bucket(bucket)
+        @bucket = resource.bucket(bucket) or fail(ArgumentError, "the :bucket option was nil")
         @client = resource.client
         @prefix = prefix
         @host = host
