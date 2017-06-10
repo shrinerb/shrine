@@ -97,7 +97,7 @@ describe Shrine::Storage::S3 do
 
         @s3.client.stub_responses(:head_object)
       })
-      tempfile = Tempfile.new
+      tempfile = Tempfile.new("")
       File.write(tempfile.path, "content")
       @s3.upload(tempfile, "foo")
       assert @s3.exists?("foo")
@@ -109,7 +109,7 @@ describe Shrine::Storage::S3 do
       @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
         @s3.client.stub_responses(:head_object)
       })
-      tempfile = Tempfile.new
+      tempfile = Tempfile.new("")
       File.write(tempfile.path, "a" * 5*1024*1024)
       @s3.upload(tempfile, "foo")
       assert @s3.exists?("foo")
