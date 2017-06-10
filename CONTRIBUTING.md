@@ -38,15 +38,6 @@ best run using Rake:
 $ rake test
 ```
 
-If you're running S3 tests, you need to set your AWS credentials in `.env`:
-
-```sh
-S3_BUCKET="..."
-S3_REGION="..."
-S3_ACCESS_KEY_ID="..."
-S3_SECRET_ACCESS_KEY="..."
-```
-
 You can also automatically run tests accross Ruby versions:
 
 ```sh

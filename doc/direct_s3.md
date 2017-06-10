@@ -67,9 +67,9 @@ representation of an uploaded file:
   "id": "349234854924394", # requied
   "storage": "cache", # required
   "metadata": {
-    "size": 45461, # optional
+    "size": 45461, # optional, but recommended
     "filename": "foo.jpg", # optional
-    "mime_type": "image/jpeg", # optional
+    "mime_type": "image/jpeg" # optional
   }
 }
 ```

@@ -184,10 +184,9 @@ class Shrine
 
         if multipart_threshold.is_a?(Integer)
           Shrine.deprecation("Accepting the :multipart_threshold S3 option as an integer is deprecated, use a hash with :upload and :copy keys instead, e.g. {upload: 15*1024*1024, copy: 150*1024*1024}")
-          multipart_threshold = {upload: multipart_threshold}
+          multipart_threshold = { upload: multipart_threshold }
         end
-        multipart_threshold[:upload] ||= 15*1024*1024
-        multipart_threshold[:copy]   ||= 100*1024*1024
+        multipart_threshold = { upload: 15*1024*1024, copy: 100*1024*1024 }.merge(multipart_threshold)
 
         @bucket = resource.bucket(bucket)
         @client = resource.client
@@ -251,20 +250,6 @@ class Shrine
         object(id).exists?
       end
 
-      # Deletes the file from S3.
-      def delete(id)
-        object(id).delete
-      end
-
-      # This is called when multiple files are being deleted at once. Issues a
-      # single MULTI DELETE command for each 1000 objects (S3 delete limit).
-      def multi_delete(ids)
-        ids.each_slice(1000) do |ids_batch|
-          delete_params = {objects: ids_batch.map { |id| {key: object(id).key} }}
-          bucket.delete_objects(delete: delete_params)
-        end
-      end
-
       # Returns the presigned URL to the file.
       #
       # :public
@@ -306,22 +291,36 @@ class Shrine
         url
       end
 
-      # Deletes all files from the storage.
-      def clear!
-        objects = bucket.object_versions(prefix: prefix)
-        objects.respond_to?(:batch_delete!) ? objects.batch_delete! : objects.delete
-      end
-
       # Returns a signature for direct uploads. Internally it calls
       # [`Aws::S3::Bucket#presigned_post`], and forwards any additional options
       # to it.
       #
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
       def presign(id, **options)
-        options = upload_options.merge(options)
+        options = @upload_options.merge(options)
         options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
 
         object(id).presigned_post(options)
+      end
+
+      # Deletes the file from S3.
+      def delete(id)
+        object(id).delete
+      end
+
+      # This is called when multiple files are being deleted at once. Issues a
+      # single MULTI DELETE command for each 1000 objects (S3 delete limit).
+      def multi_delete(ids)
+        ids.each_slice(1000) do |ids_batch|
+          delete_params = {objects: ids_batch.map { |id| {key: object(id).key} }}
+          bucket.delete_objects(delete: delete_params)
+        end
+      end
+
+      # Deletes all files from the storage.
+      def clear!
+        objects = bucket.object_versions(prefix: prefix)
+        objects.respond_to?(:batch_delete!) ? objects.batch_delete! : objects.delete
       end
 
       # Returns an `Aws::S3::Object` for the given id.
