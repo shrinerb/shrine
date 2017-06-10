@@ -33,6 +33,52 @@ describe Shrine::Plugins::Activerecord do
       refute @user.valid?
       assert_equal Hash[avatar: ["error"]], @user.errors.to_hash
     end
+
+    it "allows errors to be symbols" do
+      I18n.backend.store_translations I18n.locale, {
+        activerecord: {
+          errors: {
+            models: {
+              user: {
+                attributes: {
+                  avatar: {
+                    error: "translated error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      @user.avatar_attacher.class.validate { errors << :error }
+      @user.avatar = fakeio
+      refute @user.valid?
+      assert_equal Hash[avatar: ["translated error"]], @user.errors.to_hash
+    end
+
+    it "allows errors to be symbols and parameters" do
+      I18n.backend.store_translations I18n.locale, {
+        activerecord: {
+          errors: {
+            models: {
+              user: {
+                attributes: {
+                  avatar: {
+                    error: "translated error: %{param}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      @user.avatar_attacher.class.validate { errors << [:error, param: "some param"] }
+      @user.avatar = fakeio
+      refute @user.valid?
+      assert_equal Hash[avatar: ["translated error: some param"]], @user.errors.to_hash
+    end
   end
 
   describe "promoting" do

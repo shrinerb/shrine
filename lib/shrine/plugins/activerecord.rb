@@ -49,8 +49,21 @@ class Shrine
     # ## Validations
     #
     # Additionally, any Shrine validation errors will be added to
-    # ActiveRecord's errors upon validation. If you want to validate presence
-    # of the attachment, you can do it directly on the model.
+    # ActiveRecord's errors upon validation. Note that Shrine validation
+    # messages don't have to be strings, they can also be symbols or symbols
+    # and options, which allows them to be internationalized together with
+    # other ActiveRecord validation messages.
+    #
+    # class MyUploader < Shrine
+    #   plugin :validation_helpers
+    #
+    #   Attacher.validate do
+    #     validate_max_size 256 * 1024**2, message: ->(max) { [:max_size, max: max] }
+    #   end
+    # end
+    #
+    # If you want to validate presence of the attachment, you can do it
+    # directly on the model.
     #
     #     class User < ActiveRecord::Base
     #       include ImageUploader::Attachment.new(:avatar)
@@ -78,7 +91,7 @@ class Shrine
           model.class_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:activerecord_validations]
             validate do
               #{@name}_attacher.errors.each do |message|
-                errors.add(:#{@name}, message)
+                errors.add(:#{@name}, *message)
               end
             end
           RUBY

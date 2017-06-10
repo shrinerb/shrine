@@ -74,7 +74,7 @@ class Shrine
             def validate
               super
               #{@name}_attacher.errors.each do |message|
-                errors.add(:#{@name}, message)
+                errors.add(:#{@name}, *message)
               end
             end
           RUBY

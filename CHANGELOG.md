@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow validation error messages to be an array of arguments for ActiveRecord (@janko-m)
+
 * Allow model subclasses to override the attachment with a different uploader (@janko-m)
 
 * Accept `Attacher.new` options like `store:` and `cache:` via `Attachment.new` (@ypresto)
