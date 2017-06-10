@@ -282,7 +282,7 @@ describe Shrine::Storage::S3 do
 
     it "encodes non-ASCII characters, quotes, and spaces in :content_disposition" do
       url = @s3.url("foo", response_content_disposition: 'inline; filename=""été bar.pdf""')
-      assert_includes CGI.unescape(CGI.unescape(URI(url).query)), "inline; filename=\"\"été bar.pdf\"\""
+      assert_includes CGI.unescape(CGI.unescape(URI(url).query.force_encoding("UTF-8"))), "inline; filename=\"\"été bar.pdf\"\""
     end
   end
 
