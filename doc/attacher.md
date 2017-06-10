@@ -40,7 +40,7 @@ also tell it to use different temporary and permanent storage:
 ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
 ```
 
-Note that you can pass `Attacher.new` options via `Attachment.new` too:
+Note that you can pass the `:cache` and `:store` options via `Attachment.new` too:
 
 ```rb
 class Photo < Sequel::Model

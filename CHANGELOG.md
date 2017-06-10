@@ -1,5 +1,9 @@
 ## HEAD
 
+* Allow model subclasses to override the attachment with a different uploader (@janko-m)
+
+* Accept `Attacher.new` options like `store:` and `cache:` via `Attachment.new` (@ypresto)
+
 * Raise `ArgumentError` when `:bucket` option is nil in `Shrine::Storage::S3#initialize` (@janko-m)
 
 * Don't wrap base64-encoded content into 60 columns in `UploadedFile#base64` and `#data_uri` (@janko-m)
@@ -15,8 +19,6 @@
 * Don't wrap base64-formatted signatures to 60 columns (@janko-m)
 
 * Don't add a newline at the end of the base64-formatted signature (@janko-m)
-
-* Accept `Attacher.new` options like `store:` and `cache:` via `Attachment.new` (@ypresto)
 
 ## 2.6.1 (2017-04-12)
 
