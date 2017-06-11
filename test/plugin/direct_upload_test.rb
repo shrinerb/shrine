@@ -79,6 +79,12 @@ describe Shrine::Plugins::DirectUpload do
       @uploader.class.class_eval { def process(io, context); raise; end }
       assert_raises(RuntimeError) { app.post "/cache/upload", multipart: {file: image} }
     end
+
+    deprecated "allows name in the path" do
+      @uploader.class.class_eval { def extract_metadata(io, context); {"name" => context[:name]}; end }
+      response = app.post "/cache/avatar", multipart: {file: image}
+      assert_equal "avatar", response.body_json["metadata"]["name"]
+    end
   end
 
   describe "GET /:storage/presign" do

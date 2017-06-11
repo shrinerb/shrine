@@ -143,6 +143,14 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
+
+    deprecated "doesn't add an error message when width is nil" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { @validation_passed = validate_max_width(200) }
+      @attacher.validate
+      assert_empty @attacher.errors
+      assert_nil @validation_passed
+    end
   end
 
   describe "#validate_min_width" do
@@ -189,6 +197,14 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_min_width(200) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    deprecated "doesn't add an error message when width is nil" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { @validation_passed = validate_min_width(200) }
+      @attacher.validate
+      assert_empty @attacher.errors
+      assert_nil @validation_passed
     end
   end
 
@@ -237,6 +253,14 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
+
+    deprecated "doesn't add an error message when height is nil" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { @validation_passed = validate_max_height(200) }
+      @attacher.validate
+      assert_empty @attacher.errors
+      assert_nil @validation_passed
+    end
   end
 
   describe "#validate_min_height" do
@@ -283,6 +307,14 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_min_height(200) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    deprecated "doesn't add an error message when height is nil" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { @validation_passed = validate_min_height(200) }
+      @attacher.validate
+      assert_empty @attacher.errors
+      assert_nil @validation_passed
     end
   end
 
@@ -344,6 +376,16 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
+
+    deprecated "accepts regexes" do
+      @attacher.class.validate { validate_mime_type_inclusion([/image/]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_mime_type_inclusion([/video/]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
   end
 
   describe "#validate_mime_type_exclusion" do
@@ -403,6 +445,16 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_mime_type_exclusion(["video/mpeg"]) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    deprecated "accepts regexes" do
+      @attacher.class.validate { validate_mime_type_exclusion([/image/]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_mime_type_exclusion([/video/]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
     end
   end
 
@@ -464,11 +516,21 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
+
+    deprecated "accepts regexes" do
+      @attacher.class.validate { validate_extension_inclusion([/jpe?g/]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_extension_inclusion([/mp4/]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
   end
 
   describe "#validate_extension_exclusion" do
     before do
-      @attacher.assign(fakeio(filename: "image.mp4"))
+      @attacher.assign(fakeio(filename: "video.mp4"))
     end
 
     it "adds an error when extension is not in the whitelist" do
@@ -523,6 +585,16 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_extension_exclusion(["mp4"]) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    deprecated "accepts regexes" do
+      @attacher.class.validate { validate_extension_exclusion([/jpe?g/]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_extension_exclusion([/mp4/]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
     end
   end
 end

@@ -22,6 +22,5 @@ class Shrine
   #def self.deprecation(*); end
 end
 
-require "./test/support/helpers"
-
-Minitest::Spec.include TestHelpers::Generic
+require "./test/support/generic_helper"
+require "./test/support/deprecated_helper"

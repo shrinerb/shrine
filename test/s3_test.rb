@@ -38,6 +38,11 @@ describe Shrine::Storage::S3 do
     it "raises an error when :bucket is nil" do
       assert_raises(ArgumentError) { s3(bucket: nil) }
     end
+
+    deprecated "accepts :multipart_threshold as an Integer" do
+      @s3 = s3(multipart_threshold: 5*1024*1024)
+      assert_equal 5*1024*1024, @s3.instance_variable_get(:@multipart_threshold).fetch(:upload)
+    end
   end
 
   describe "#client" do
@@ -69,7 +74,7 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#s3" do
-    it "returns the deprecated Aws::S3::Resource object" do
+    deprecated "returns the deprecated Aws::S3::Resource object" do
       resource = @s3.s3
       assert_instance_of Aws::S3::Resource, resource
       assert_equal resource.client, @s3.client
@@ -371,6 +376,18 @@ describe Shrine::Storage::S3 do
     it "applies the :prefix" do
       object = s3(prefix: "foo").object("bar")
       assert_equal "foo/bar", object.key
+    end
+  end
+
+  describe "#method_missing" do
+    deprecated "implements #stream" do
+      @s3.client.stub_responses(:head_object, content_length: 7)
+      @s3.client.stub_responses(:get_object, body: "content")
+      assert_equal [["content", 7]], @s3.enum_for(:stream, "foo").to_a
+    end
+
+    it "calls super for other methods" do
+      assert_raises(NoMethodError) { @s3.foo }
     end
   end
 end

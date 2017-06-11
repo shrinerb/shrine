@@ -269,6 +269,20 @@ describe Shrine::Storage::FileSystem do
     assert_equal "#{root}/uploads/foo.jpg", @storage.open("foo.jpg").path
   end
 
+  describe "#method_missing" do
+    deprecated "implements #download" do
+      @storage.upload(fakeio("content"), "foo.jpg")
+      tempfile = @storage.download("foo.jpg")
+      assert_instance_of Tempfile, tempfile
+      assert_equal ".jpg", File.extname(tempfile.path)
+      assert_equal "content", tempfile.read
+    end
+
+    it "calls super for other methods" do
+      assert_raises(NoMethodError) { @storage.foo }
+    end
+  end
+
   def assert_permissions(expected, path)
     assert_equal expected, File.lstat(path).mode & 0777
   end

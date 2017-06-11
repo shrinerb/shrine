@@ -65,7 +65,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
   end
 
-  it "provides class-level methods for extracting dimensinos" do
+  it "provides class-level methods for extracting dimensions" do
     @uploader = uploader { plugin :store_dimensions, analyzer: ->(io) { io.read; [10, 20] } }
     dimensions = @uploader.class.extract_dimensions(io = fakeio("content"))
     assert_equal [10, 20], dimensions

@@ -31,7 +31,7 @@ describe Shrine::Plugins::DefaultUrl do
     assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
   end
 
-  it "accepts a block when loading the plugin" do
+  deprecated "accepts a block when loading the plugin" do
     @attacher.shrine_class.plugin(:default_url) { "default_url" }
     assert_equal "default_url", @attacher.url
   end

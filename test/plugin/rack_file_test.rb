@@ -59,7 +59,7 @@ describe Shrine::Plugins::RackFile do
     assert_equal @rack_file[:tempfile],      rack_file.tempfile
   end
 
-  it "works with uploader" do
+  deprecated "works with uploader" do
     uploaded_file = @attacher.store.upload(@rack_file)
 
     assert_equal "image",      uploaded_file.read
