@@ -473,7 +473,8 @@ class Shrine
         #       end
         #     end
         def validate(&block)
-          shrine_class.opts[:validate] = block
+          define_method(:validate_block, &block)
+          private :validate_block
         end
       end
 
@@ -533,7 +534,7 @@ class Shrine
         # Runs the validations defined by `Attacher.validate`.
         def validate
           errors.clear
-          instance_exec(&validate_block) if validate_block && get
+          validate_block if get
         end
 
         # Returns true if a new file has been attached.
@@ -671,9 +672,9 @@ class Shrine
           _set(uploaded_file)
         end
 
-        # The validation block registered with `Attacher.validate`.
+        # Performs validation actually.
+        # This method is redefined with `Attacher.validate`.
         def validate_block
-          shrine_class.opts[:validate]
         end
 
         # Converts the UploadedFile to a data hash and writes it to the

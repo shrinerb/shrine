@@ -680,6 +680,22 @@ class DocumentUploader < Shrine
 end
 ```
 
+Validations are inherited from superclasses, but you need to call them manually
+when defining more validations:
+
+```ruby
+class ApplicationUploader < Shrine
+  Attacher.validate { validate_max_size 5.megabytes }
+end
+
+class ImageUploader < ApplicationUploader
+  Attacher.validate do
+    super() # empty braces are required
+    validate_mime_type_inclusion %w[image/jpeg image/jpg image/png]
+  end
+end
+```
+
 ## Location
 
 Before Shrine uploads a file, it generates a random location for it. By default
