@@ -3,8 +3,8 @@ require "./test/support/fakeio"
 require "shrine/storage/memory"
 
 class Minitest::HooksSpec
-  def uploader(storage_key = :store, superclass: Shrine, &block)
-    uploader_class = Class.new(superclass)
+  def uploader(storage_key = :store, &block)
+    uploader_class = Class.new(Shrine)
     uploader_class.storages[:cache] = Shrine::Storage::Memory.new
     uploader_class.storages[:store] = Shrine::Storage::Memory.new
     uploader_class.class_eval(&block) if block

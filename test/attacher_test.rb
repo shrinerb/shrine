@@ -294,38 +294,21 @@ describe Shrine::Attacher do
     end
 
     it "clears existing errors" do
-      @attacher.errors << [:foo]
+      @attacher.errors << :foo
       @attacher.validate
       assert_empty @attacher.errors
     end
 
-    describe 'with inherited validations' do
-      let(:super_uploader) do
-        uploader do
-          self::Attacher.validate { errors << :from_super }
-        end
+    it "can call validations from the superclass" do
+      @attacher.class.validate { errors << :from_superclass }
+      attacher = Class.new(@attacher.shrine_class)::Attacher.new(Struct.new(:avatar_data).new, :avatar)
+      attacher.assign(fakeio)
+      attacher.class.validate do
+        super()
+        errors << :foo
       end
-      let(:attacher_instance) { attacher({superclass: super_uploader.class}, {}) }
-      before { attacher_instance.assign(fakeio("image")) }
-
-      it 'runs them' do
-        assert_equal [:from_super], attacher_instance.errors
-      end
-
-      describe 'and custom one' do
-        let(:attacher_instance) do
-          attacher({superclass: super_uploader.class}, {}) do
-            self::Attacher.validate do
-              super()
-              errors << :custom
-            end
-          end
-        end
-
-        it 'runs both' do
-          assert_equal [:from_super, :custom], attacher_instance.errors
-        end
-      end
+      attacher.validate
+      assert_equal [:from_superclass, :foo], attacher.errors
     end
   end
 

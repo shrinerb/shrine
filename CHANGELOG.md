@@ -1,6 +1,6 @@
 ## HEAD
 
-* Validations inheritance (@printercu)
+* Allow validations defined on a superclass to be reused in a subclass (@printercu)
 
 * Allow validation error messages to be an array of arguments for ActiveRecord (@janko-m)
 
