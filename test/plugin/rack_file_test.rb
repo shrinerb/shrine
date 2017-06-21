@@ -7,7 +7,7 @@ describe Shrine::Plugins::RackFile do
     @attacher = attacher { plugin :rack_file }
     @rack_file = {
       name: "file",
-      tempfile: Tempfile.new,
+      tempfile: Tempfile.new(""),
       filename: "image.jpg",
       type: "image/jpeg",
       head: "...",
