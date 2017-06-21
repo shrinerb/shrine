@@ -1,5 +1,7 @@
 ## HEAD
 
+* Require `time` library in `logging` plugin to fix `undefined method #iso8601 for Time` (@janko-m)
+
 * Allow validations defined on a superclass to be reused in a subclass (@printercu)
 
 * Allow validation error messages to be an array of arguments for ActiveRecord (@janko-m)

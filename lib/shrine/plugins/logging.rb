@@ -1,5 +1,6 @@
 require "logger"
 require "json"
+require "time"
 
 class Shrine
   module Plugins
