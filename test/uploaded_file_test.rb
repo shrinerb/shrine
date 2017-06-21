@@ -347,7 +347,7 @@ describe Shrine::UploadedFile do
 
   it "exposes #storage and #uploader" do
     uploaded_file = uploaded_file({})
-    assert_instance_of Shrine::Storage::Memory, uploaded_file.storage
+    assert_instance_of Shrine::Storage::Test, uploaded_file.storage
     assert_instance_of uploaded_file.shrine_class, uploaded_file.uploader
   end
 

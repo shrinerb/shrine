@@ -23,7 +23,6 @@ describe Shrine::Plugins::Parallelize do
   end
 
   it "successfully deletes" do
-    @uploader.storage.instance_eval { undef multi_delete }
     versions = @uploader.upload(
       large:  fakeio("large"),
       medium: fakeio("medium"),
@@ -39,6 +38,15 @@ describe Shrine::Plugins::Parallelize do
     @uploader = uploader do
       plugin :parallelize
       plugin :moving
+    end
+    @uploader.storage.instance_eval do
+      def move(io, id, **options)
+        store[id] = io.storage.delete(io.id)
+      end
+
+      def movable?(io, id)
+        io.is_a?(Shrine::UploadedFile) && io.storage.is_a?(Shrine::Storage::Memory)
+      end
     end
 
     memory_file = @uploader.upload(fakeio)
