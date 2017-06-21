@@ -16,6 +16,6 @@ describe Shrine::Plugins::DynamicStorage do
   end
 
   it "delegates to default behaviour when storage wasn't found" do
-    assert_instance_of Shrine::Storage::Memory, @uploader.class.new(:store).storage
+    assert_instance_of Shrine::Storage::Test, @uploader.class.new(:store).storage
   end
 end
