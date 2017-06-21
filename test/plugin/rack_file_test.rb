@@ -1,13 +1,13 @@
 require "test_helper"
 require "shrine/plugins/rack_file"
-require "down"
+require "tempfile"
 
 describe Shrine::Plugins::RackFile do
   before do
     @attacher = attacher { plugin :rack_file }
     @rack_file = {
       name: "file",
-      tempfile: Down.copy_to_tempfile("", fakeio("image")),
+      tempfile: Tempfile.new,
       filename: "image.jpg",
       type: "image/jpeg",
       head: "...",
@@ -18,8 +18,8 @@ describe Shrine::Plugins::RackFile do
     @attacher.assign(@rack_file)
     cached_file = @attacher.get
 
-    assert_equal "image",      cached_file.read
-    assert_equal 5,            cached_file.size
+    assert_equal "",           cached_file.read
+    assert_equal 0,            cached_file.size
     assert_equal "image.jpg",  cached_file.original_filename
     assert_equal "image/jpeg", cached_file.mime_type
   end
@@ -43,8 +43,8 @@ describe Shrine::Plugins::RackFile do
     @attacher.assign(hash_like_object)
     cached_file = @attacher.get
 
-    assert_equal "image",      cached_file.read
-    assert_equal 5,            cached_file.size
+    assert_equal "",           cached_file.read
+    assert_equal 0,            cached_file.size
     assert_equal "image.jpg",  cached_file.original_filename
     assert_equal "image/jpeg", cached_file.mime_type
   end
@@ -62,8 +62,8 @@ describe Shrine::Plugins::RackFile do
   deprecated "works with uploader" do
     uploaded_file = @attacher.store.upload(@rack_file)
 
-    assert_equal "image",      uploaded_file.read
-    assert_equal 5,            uploaded_file.size
+    assert_equal "",           uploaded_file.read
+    assert_equal 0,            uploaded_file.size
     assert_equal "image.jpg",  uploaded_file.original_filename
     assert_equal "image/jpeg", uploaded_file.mime_type
   end
