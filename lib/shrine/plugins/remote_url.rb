@@ -1,3 +1,5 @@
+require "down"
+
 class Shrine
   module Plugins
     # The `remote_url` plugin allows you to attach files from a remote location.
@@ -42,15 +44,12 @@ class Shrine
     #
     # If you want to customize how the file is downloaded, you can override the
     # `:downloader` parameter and provide your own implementation. For example,
-    # you can ensure the URL is URI-encoded (using the [Addressable] gem) before
-    # passing it to Down:
+    # you can use the HTTP.rb Down backend for downloading:
     #
-    #     require "down"
-    #     require "addressable/uri"
+    #     require "down/http"
     #
     #     plugin :remote_url, max_size: 20*1024*1024, downloader: ->(url, max_size:) do
-    #       url = Addressable::URI.encode(Addressable::URI.decode(url))
-    #       Down.download(url, max_size: max_size, max_redirects: 4, read_timeout: 3)
+    #       Down::Http.download(url, max_size: max_size, follow: { max_hops: 4 }, timeout: { read: 3 })
     #     end
     #
     # ## Errors
@@ -138,7 +137,6 @@ class Shrine
         # We silence any download errors, because for the user's point of view
         # the download simply failed.
         def download_with_open_uri(url, max_size:)
-          require "down"
           Down.download(url, max_size: max_size)
         end
 
