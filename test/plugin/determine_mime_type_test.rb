@@ -14,6 +14,11 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", mime_type
     end
 
+    it "returns 'empty' for empty file" do
+      mime_type = @uploader.send(:extract_mime_type, empty_file)
+      assert_equal "empty", mime_type
+    end
+
     it "is able to determine MIME type for non-files" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
       assert_equal "image/jpeg", mime_type
@@ -48,6 +53,11 @@ describe Shrine::Plugins::DetermineMimeType do
       mime_type = @uploader.send(:extract_mime_type, image)
       assert_equal "image/jpeg", mime_type
     end
+
+    it "returns 'x-empty' for empty file" do
+      mime_type = @uploader.send(:extract_mime_type, empty_file)
+      assert_equal "application/x-empty", mime_type
+    end
   end unless RUBY_ENGINE == "jruby" || ENV["CI"]
 
   describe ":mimemagic analyzer" do
@@ -58,6 +68,11 @@ describe Shrine::Plugins::DetermineMimeType do
     it "extracts MIME type of any IO" do
       mime_type = @uploader.send(:extract_mime_type, image)
       assert_equal "image/jpeg", mime_type
+    end
+
+    it "returns nil for empty file" do
+      mime_type = @uploader.send(:extract_mime_type, empty_file)
+      assert_nil mime_type
     end
 
     it "returns nil for unidentified MIME types" do

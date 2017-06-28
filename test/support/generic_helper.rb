@@ -32,6 +32,10 @@ class Minitest::HooksSpec
     File.open("test/fixtures/image.jpg")
   end
 
+  def empty_file
+    File.open("test/fixtures/empty")
+  end
+
   def io?(object)
     missing_methods = Shrine::IO_METHODS.reject do |m, a|
       object.respond_to?(m) && [a.count, -1].include?(object.method(m).arity)

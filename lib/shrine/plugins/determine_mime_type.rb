@@ -142,7 +142,12 @@ class Shrine
           require "open3"
 
           cmd = ["file", "--mime-type", "--brief", "-"]
-          options = {stdin_data: io.read(MAGIC_NUMBER), binmode: true}
+          buffer = io.read(MAGIC_NUMBER)
+          # Emulate behavior of file command:
+          # $ file test/fixtures/empty
+          # test/fixtures/empty: empty
+          return "empty" if buffer.nil?
+          options = {stdin_data: buffer, binmode: true}
 
           begin
             stdout, stderr, status = Open3.capture3(*cmd, options)
@@ -160,7 +165,7 @@ class Shrine
           require "filemagic"
 
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER))
+          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER) || '')
           filemagic.close
 
           mime_type
