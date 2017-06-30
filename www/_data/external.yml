@@ -76,6 +76,9 @@
         name: shrine-google_cloud_storage
         url: https://github.com/renchap/shrine-google_cloud_storage
       -
+        name: shrine-google_drive_storage
+        url: https://github.com/verynear/shrine-google_drive_storage
+      -
         name: shrine-gridfs
         url: https://github.com/janko-m/shrine-gridfs
       -
