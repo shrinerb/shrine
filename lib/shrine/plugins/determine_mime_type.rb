@@ -131,8 +131,11 @@ class Shrine
         end
 
         def call(io)
+          return nil if io.eof? # empty file doesn't have a MIME type
+
           mime_type = send(:"extract_with_#{@tool}", io)
           io.rewind
+
           mime_type
         end
 
@@ -141,13 +144,8 @@ class Shrine
         def extract_with_file(io)
           require "open3"
 
-          cmd = ["file", "--mime-type", "--brief", "-"]
-          buffer = io.read(MAGIC_NUMBER)
-          # Emulate behavior of file command:
-          # $ file test/fixtures/empty
-          # test/fixtures/empty: empty
-          return "empty" if buffer.nil?
-          options = {stdin_data: buffer, binmode: true}
+          cmd     = %W[file --mime-type --brief -]
+          options = { stdin_data: io.read(MAGIC_NUMBER), binmode: true }
 
           begin
             stdout, stderr, status = Open3.capture3(*cmd, options)
@@ -165,7 +163,7 @@ class Shrine
           require "filemagic"
 
           filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER) || '')
+          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER))
           filemagic.close
 
           mime_type

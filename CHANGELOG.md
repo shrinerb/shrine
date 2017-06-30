@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't raise error in `file` and `filemagic` MIME type analyzer on empty IO (@ypresto)
+
 * Require `down` in `remote_url` plugin even when a custom downloader is given (@janko-m)
 
 * Require `time` library in `logging` plugin to fix `undefined method #iso8601 for Time` (@janko-m)
