@@ -94,6 +94,9 @@
         name: shrine-sql
         url: https://github.com/janko-m/shrine-sql
       -
+        name: shrine-thumbor
+        url: https://github.com/havran/shrine-thumbor
+      -
         name: shrine-transloadit
         url: https://github.com/janko-m/shrine-transloadit
       -
