@@ -40,6 +40,10 @@ class Shrine
     #       end
     #     end
     #
+    # Note that ActiveRecord currently has a [bug with transaction callbacks],
+    # so if you have any "after commit" callbacks, make sure to include Shrine's
+    # attachment module *after* they have all been defined.
+    #
     # If you don't want the attachment module to add any callbacks to the
     # model, and would instead prefer to call these actions manually, you can
     # disable callbacks:
@@ -74,6 +78,8 @@ class Shrine
     # model errors, you can disable it:
     #
     #     plugin :activerecord, validations: false
+    #
+    # [bug with transaction callbacks]: https://github.com/rails/rails/issues/14493
     module Activerecord
       def self.configure(uploader, opts = {})
         uploader.opts[:activerecord_callbacks] = opts.fetch(:callbacks, uploader.opts.fetch(:activerecord_callbacks, true))
