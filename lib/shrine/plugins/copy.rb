@@ -19,7 +19,7 @@ class Shrine
         def initialize(*)
           super
 
-          module_eval <<-RUBY
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def initialize_copy(record)
               super
               @#{@name}_attacher = nil # reload the attacher
