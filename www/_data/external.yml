@@ -88,6 +88,9 @@
         name: shrine-memory
         url: https://github.com/janko-m/shrine-memory
       -
+        name: shrine-redis
+        url: https://github.com/dbongo/shrine-redis
+      -
         name: shrine-scp
         url: https://github.com/jordanandree/shrine-scp
       -
