@@ -405,7 +405,7 @@ by default Shrine's "mime_type" is **not guaranteed** to hold the actual MIME
 type of the file.
 
 However, if you load the `determine_mime_type` plugin, that will make Shrine
-always extract the MIME type from **file content** .
+always extract the MIME type from **file content**.
 
 ```rb
 Shrine.plugin :determine_mime_type
