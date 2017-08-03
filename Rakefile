@@ -8,7 +8,7 @@ Rake::TestTask.new do |t|
   t.warning = false
 end
 
-task :default => :test
+task default: :test
 
 RDoc::Task.new do |t|
   t.rdoc_dir = "www/build/rdoc"
@@ -29,7 +29,7 @@ RDoc::Task.new do |t|
   ]
 end
 
-task :rdoc => "website:rdoc_github_links"
+task rdoc: "website:rdoc_github_links"
 
 namespace :website do
   task :build do

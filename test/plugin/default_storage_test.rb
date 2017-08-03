@@ -8,7 +8,7 @@ describe Shrine::Plugins::DefaultStorage do
   end
 
   it "allows setting the cache as a block" do
-    @attacher = attacher { plugin :default_storage, cache: ->(record,name){:store} }
+    @attacher = attacher { plugin :default_storage, cache: ->(record, name){:store} }
     assert_equal :store, @attacher.cache.storage_key
   end
 
@@ -18,7 +18,7 @@ describe Shrine::Plugins::DefaultStorage do
   end
 
   it "allows setting the store as a block" do
-    @attacher = attacher { plugin :default_storage, store: ->(record,name){:cache} }
+    @attacher = attacher { plugin :default_storage, store: ->(record, name){:cache} }
     assert_equal :cache, @attacher.store.storage_key
   end
 end

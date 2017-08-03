@@ -32,10 +32,10 @@ describe Shrine::Plugins::DirectUpload do
 
     it "assigns metadata" do
       response = app.post "/cache/upload", multipart: {file: image}
-      metadata = response.body_json.fetch('metadata')
-      assert_equal 'image.jpg', metadata['filename']
-      assert_equal 'image/jpeg', metadata['mime_type']
-      assert_kind_of Integer, metadata['size']
+      metadata = response.body_json.fetch("metadata")
+      assert_equal "image.jpg", metadata["filename"]
+      assert_equal "image/jpeg", metadata["mime_type"]
+      assert_kind_of Integer, metadata["size"]
     end
 
     it "serializes uploaded hashes and arrays as well" do
@@ -43,7 +43,7 @@ describe Shrine::Plugins::DirectUpload do
 
       @uploader.class.class_eval { define_method(:upload) { |*| Hash[thumb: uploaded_file] } }
       response = app.post "/cache/upload", multipart: {file: image}
-      refute_empty response.body_json.fetch('thumb')
+      refute_empty response.body_json.fetch("thumb")
 
       @uploader.class.class_eval { define_method(:upload) { |*| Array[uploaded_file] } }
       response = app.post "/cache/upload", multipart: {file: image}

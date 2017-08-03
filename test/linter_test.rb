@@ -173,7 +173,7 @@ describe Shrine::Storage::Linter do
   end
 
   it "doesn't pass any file extensions" do
-    @storage.instance_eval { def upload(io, id, *); raise if id.include?('.'); super; end }
+    @storage.instance_eval { def upload(io, id, *); raise if id.include?("."); super; end }
     @linter.call
   end
 end
