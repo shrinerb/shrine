@@ -50,7 +50,7 @@ class Shrine
           if default_url_block
             instance_exec(options, &default_url_block)
           elsif shrine_class.opts[:default_url]
-            shrine_class.opts[:default_url].call(context.merge(options){|k,old,new|old})
+            shrine_class.opts[:default_url].call(context.merge(options){|k, old, new| old})
           end
         end
 

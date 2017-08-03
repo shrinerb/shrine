@@ -76,7 +76,7 @@ describe Shrine::Storage::FileSystem do
     it "copies full file content" do
       @storage.upload(input = fakeio("A" * 20_000), "foo.jpg")
       assert_equal 20_000, @storage.open("foo.jpg").size
-   end
+    end
 
     it "sets file permissions" do
       @storage = file_system(root, permissions: 0600)
@@ -121,7 +121,7 @@ describe Shrine::Storage::FileSystem do
 
       @storage.move(file, "foo")
       assert @storage.exists?("foo")
-      refute File.exists?(file.path)
+      refute File.exist?(file.path)
 
       @storage.move(uploaded_file, "bar")
       assert @storage.exists?("bar")

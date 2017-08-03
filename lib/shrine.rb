@@ -28,11 +28,11 @@ class Shrine
   # Methods which an object has to respond to in order to be considered
   # an IO object, along with their arguments.
   IO_METHODS = {
-    :read   => [:length, :outbuf],
-    :eof?   => [],
-    :rewind => [],
-    :size   => [],
-    :close  => [],
+    read:   [:length, :outbuf],
+    eof?:   [],
+    rewind: [],
+    size:   [],
+    close:  [],
   }
 
   # Core class that represents a file uploaded to a storage. The instance
