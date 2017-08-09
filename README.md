@@ -74,10 +74,16 @@ uploaded file in case of validation errors and [direct uploads].
   <input name="photo[image]" type="file">
 </form>
 
-<!-- Rails: -->
+<!-- ActionView::Helpers::FormHelper -->
 <%= form_for @photo do |f| %>
   <%= f.hidden_field :image, value: @photo.cached_image_data %>
   <%= f.file_field :image %>
+<% end %>
+
+<!-- SimpleForm -->
+<%= simple_form_for @photo do |f| %>
+  <%= f.input :image, as: :hidden, input_html: {value: @photo.cached_image_data} %>
+  <%= f.input :image, as: :file %>
 <% end %>
 ```
 
