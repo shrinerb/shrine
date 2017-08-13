@@ -44,13 +44,9 @@ class Shrine
     #    The default is "inline".
     #
     # Note that streaming the file through your app might impact the request
-    # throughput of your app, because on most popular web servers (Puma,
-    # Unicorn, Passenger) workers handling this endpoint will not be able to
-    # serve new requests until the client has fully downloaded the response
-    # body.
-    #
-    # To prevent download endpoint from impacting your request throughput, use
-    # a web server that handles streaming responses and slow clients well.
+    # throughput of your app, depending on which web server is used. In any
+    # case, it's recommended to use some kind of cache in front of the web
+    # server.
     #
     # [Roda]: https://github.com/jeremyevans/roda
     module DownloadEndpoint
