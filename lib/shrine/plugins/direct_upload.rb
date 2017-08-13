@@ -283,7 +283,7 @@ class Shrine
 
         # Generates a presign that points to the direct upload endpoint.
         def generate_fake_presign(location, options)
-          url = request.url.sub(/presign$/, "upload")
+          url = request.url.sub(/presign[^\/]*$/, "upload")
           {url: url, fields: {key: location}}
         end
 

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix deprecation warning when generating fake presign with query parameters (@janko-m)
+
 * Don't raise error in `file` and `filemagic` MIME type analyzer on empty IO (@ypresto)
 
 * Require `down` in `remote_url` plugin even when a custom downloader is given (@janko-m)

@@ -138,7 +138,7 @@ describe Shrine::Plugins::DirectUpload do
   end
 
   it "supports fake presigns" do
-    response = app.get "/cache/presign"
+    response = app.get "/cache/presign?extension=.jpg"
     assert_equal "http://localhost/cache/upload", response.body_json["url"]
     refute_empty (location = response.body_json["fields"]["key"])
     response = app.post "/cache/upload", multipart: {file: image}, query: {key: location}
