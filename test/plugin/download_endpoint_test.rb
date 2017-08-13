@@ -82,6 +82,15 @@ describe Shrine::Plugins::DownloadEndpoint do
     response.body_binary # for body to be read
   end
 
+  it "returns 404 for nonexisting file" do
+    uploaded_file = @uploader.upload(fakeio)
+    uploaded_file.data["id"] = "nonexistent"
+    response = app.get(uploaded_file.url)
+    assert_equal 404, response.status
+    assert_equal "File Not Found", response.body_binary
+    assert_equal "text/plain", response.content_type
+  end
+
   it "returns 404 for nonexisting storage" do
     uploaded_file = @uploader.upload(fakeio)
     @uploader.class.storages.delete(uploaded_file.storage_key.to_sym)

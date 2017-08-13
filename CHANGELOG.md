@@ -1,5 +1,7 @@
 ## HEAD
 
+* Return `404 Not Found` when uploaded file doesn't exist in `download_endpoint` (@janko-m)
+
 * Utilize uploaded file metadata when generating response in `download_endpoint` (@janko-m)
 
 * Fix deprecation warning when generating fake presign with query parameters (@janko-m)

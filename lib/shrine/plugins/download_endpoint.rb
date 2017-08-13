@@ -167,7 +167,9 @@ class Shrine
 
         # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.
         def get_uploaded_file(data)
-          shrine_class.uploaded_file(data)
+          uploaded_file = shrine_class.uploaded_file(data)
+          not_found! unless uploaded_file.exists?
+          uploaded_file
         rescue Shrine::Error
           not_found!
         end
