@@ -1,5 +1,8 @@
 require "roda"
 
+require "base64"
+require "json"
+
 class Shrine
   module Plugins
     # The `download_endpoint` plugin provides a Rack endpoint for downloading
@@ -21,7 +24,7 @@ class Shrine
     # to the endpoint for specified storages, so it's not needed to change the
     # code:
     #
-    #     user.avatar.url #=> "/attachments/store/sdg0lsf8.jpg"
+    #     user.avatar.url #=> "/attachments/eyJpZCI6ImFkdzlyeTM5ODJpandoYWla"
     #
     # :storages
     # :  An array of storage keys which the download endpoint should be applied
@@ -51,6 +54,8 @@ class Shrine
     #
     # [Roda]: https://github.com/jeremyevans/roda
     module DownloadEndpoint
+      class InvalidSignature < Error; end
+
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
         uploader.opts[:download_endpoint_prefix] = opts.fetch(:prefix, uploader.opts[:download_endpoint_prefix])
@@ -75,6 +80,10 @@ class Shrine
           endpoint_class.opts[:shrine_class] = self
           const_set(:DownloadEndpoint, endpoint_class)
         end
+
+        def download_endpoint_serializer
+          @download_endpoint_serializer ||= Serializer.new
+        end
       end
 
       module FileMethods
@@ -83,15 +92,36 @@ class Shrine
         # of storages it just returns their original URL.
         def url(**options)
           if shrine_class.opts[:download_endpoint_storages].include?(storage_key.to_sym)
-            [
-              shrine_class.opts[:download_endpoint_host],
-              *shrine_class.opts[:download_endpoint_prefix],
-              storage_key,
-              id,
-            ].join("/")
+            download_url
           else
             super
           end
+        end
+
+        private
+
+        def download_url
+          [download_host, *download_prefix, download_identifier].join("/")
+        end
+
+        # Generates URL-safe identifier from data, filtering only a subset of
+        # metadata that the endpoint needs to prevent the URL from being too
+        # long.
+        def download_identifier
+          semantical_metadata = metadata.select { |name, _| %w[filename size mime_type].include?(name) }
+          download_serializer.dump(data.merge("metadata" => semantical_metadata))
+        end
+
+        def download_serializer
+          shrine_class.download_endpoint_serializer
+        end
+
+        def download_host
+          shrine_class.opts[:download_endpoint_host]
+        end
+
+        def download_prefix
+          shrine_class.opts[:download_endpoint_prefix]
         end
       end
 
@@ -102,64 +132,104 @@ class Shrine
         plugin :streaming
 
         route do |r|
-          r.on ":storage" do |storage_key|
-            @storage = get_storage(storage_key)
-
+          # handle legacy ":storage/:id" URLs
+          r.on storage_names do |storage_name|
             r.get /(.*)/ do |id|
-              filename = request.path.split("/").last
-              extname = File.extname(filename)
-
-              response["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
-              response["Content-Type"] = Rack::Mime.mime_type(extname)
-
-              io = storage.open(id)
-              response["Content-Length"] = io.size.to_s if io.size
-
-              stream(callback: ->{io.close}) do |out|
-                if io.respond_to?(:each_chunk) # Down::ChunkedIO
-                  io.each_chunk { |chunk| out << chunk }
-                else
-                  out << io.read(16*1024) until io.eof?
-                end
-              end
+              data = { "id" => id, "storage" => storage_name, "metadata" => {} }
+              stream_file(data)
             end
+          end
+
+          r.get /(.*)/ do |identifier|
+            data = serializer.load(identifier)
+            stream_file(data)
           end
         end
 
         private
 
-        attr_reader :storage
+        def stream_file(data)
+          uploaded_file = get_uploaded_file(data)
+          io            = uploaded_file.to_io
 
-        def get_storage(storage_key)
-          allow_storage!(storage_key)
-          shrine_class.find_storage(storage_key)
+          length   = uploaded_file.size
+          type     = uploaded_file.mime_type || Rack::Mime.mime_type(".#{uploaded_file.extension}")
+          filename = uploaded_file.original_filename || uploaded_file.id.split("/").last
+
+          response["Content-Length"]      = length.to_s if length
+          response["Content-Type"]        = type
+          response["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
+
+          stream(callback: ->{io.close}) do |out|
+            if io.respond_to?(:each_chunk) # Down::ChunkedIO
+              io.each_chunk { |chunk| out << chunk }
+            else
+              out << io.read(16*1024) until io.eof?
+            end
+          end
         end
 
-        # Halts the request if storage is not allowed.
-        def allow_storage!(storage_key)
-          if !allowed_storages.map(&:to_s).include?(storage_key)
-            error! 403, "Storage #{storage_key.inspect} is not allowed."
-          end
+        # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.
+        def get_uploaded_file(data)
+          shrine_class.uploaded_file(data)
+        rescue Shrine::Error
+          not_found!
+        end
+
+        def not_found!
+          error!(404, "File Not Found")
         end
 
         # Halts the request with the error message.
         def error!(status, message)
           response.status = status
-          response["Content-Type"] = "application/json"
-          response.write({error: message}.to_json)
+          response["Content-Type"] = "text/plain"
+          response.write(message)
           request.halt
+        end
+
+        def storage_names
+          shrine_class.storages.keys.map(&:to_s)
+        end
+
+        def serializer
+          shrine_class.download_endpoint_serializer
         end
 
         def disposition
           shrine_class.opts[:download_endpoint_disposition]
         end
 
-        def allowed_storages
-          shrine_class.opts[:download_endpoint_storages]
-        end
-
         def shrine_class
           opts[:shrine_class]
+        end
+      end
+
+      class Serializer
+        def dump(data)
+          base64_encode(json_encode(data))
+        end
+
+        def load(data)
+          json_decode(base64_decode(data))
+        end
+
+        private
+
+        def json_encode(data)
+          JSON.generate(data)
+        end
+
+        def base64_encode(data)
+          Base64.urlsafe_encode64(data)
+        end
+
+        def base64_decode(data)
+          Base64.urlsafe_decode64(data)
+        end
+
+        def json_decode(data)
+          JSON.parse(data)
         end
       end
     end

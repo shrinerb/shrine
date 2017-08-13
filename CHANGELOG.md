@@ -1,5 +1,7 @@
 ## HEAD
 
+* Utilize uploaded file metadata when generating response in `download_endpoint` (@janko-m)
+
 * Fix deprecation warning when generating fake presign with query parameters (@janko-m)
 
 * Don't raise error in `file` and `filemagic` MIME type analyzer on empty IO (@ypresto)
