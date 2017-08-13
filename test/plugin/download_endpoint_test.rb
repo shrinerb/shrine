@@ -75,6 +75,12 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal "attachment; filename=\"#{uploaded_file.id}\"", response.headers["Content-Disposition"]
   end
 
+  it "returns Cache-Control" do
+    uploaded_file = @uploader.upload(fakeio)
+    response = app.get(uploaded_file.url)
+    assert_equal "max-age=31536000", response.headers["Cache-Control"]
+  end
+
   it "closes the downloaded file" do
     uploaded_file = @uploader.upload(fakeio)
     StringIO.any_instance.expects(:close)

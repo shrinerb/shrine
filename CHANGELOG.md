@@ -1,5 +1,7 @@
 ## HEAD
 
+* Return `Cache-Control` header in `download_endpoint` to permanently cache responses (@janko-m)
+
 * Return `404 Not Found` when uploaded file doesn't exist in `download_endpoint` (@janko-m)
 
 * Utilize uploaded file metadata when generating response in `download_endpoint` (@janko-m)

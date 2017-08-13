@@ -156,6 +156,8 @@ class Shrine
           response["Content-Type"]        = type
           response["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
 
+          response["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
+
           stream(callback: ->{io.close}) do |out|
             if io.respond_to?(:each_chunk) # Down::ChunkedIO
               io.each_chunk { |chunk| out << chunk }
