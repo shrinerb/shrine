@@ -125,8 +125,6 @@ class Shrine
       # and allowed. Afterwards it proceeds with the file download using
       # streaming.
       class App < Roda
-        plugin :streaming
-
         route do |r|
           # handle legacy ":storage/:id" URLs
           r.on storage_names do |storage_name|
@@ -158,13 +156,17 @@ class Shrine
 
           response["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
 
-          stream(callback: ->{io.close}) do |out|
+          chunks = Enumerator.new do |yielder|
             if io.respond_to?(:each_chunk) # Down::ChunkedIO
-              io.each_chunk { |chunk| out << chunk }
+              io.each_chunk { |chunk| yielder << chunk }
             else
-              out << io.read(16*1024) until io.eof?
+              yielder << io.read(16*1024) until io.eof?
             end
           end
+
+          body = Rack::BodyProxy.new(chunks) { io.close }
+
+          request.halt response.finish_with_body(body)
         end
 
         # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.
