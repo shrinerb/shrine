@@ -47,15 +47,9 @@ class Shrine
     # body.
     #
     # To prevent download endpoint from impacting your request throughput, use
-    # a web server that handles streaming responses and slow clients well, like
-    # [Thin], [Rainbows] or any other [EventMachine]-based web server that
-    # implements `async.callback`.
+    # a web server that handles streaming responses and slow clients well.
     #
     # [Roda]: https://github.com/jeremyevans/roda
-    # [Thin]: https://github.com/macournoyer/thin
-    # [Rainbows]: https://rubygems.org/gems/rainbows
-    # [Reel]: https://github.com/celluloid/reel
-    # [EventMachine]: https://github.com/eventmachine
     module DownloadEndpoint
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
