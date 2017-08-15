@@ -12,7 +12,8 @@ class Shrine
     #
     #     plugin :download_endpoint, storages: [:store], prefix: "attachments"
     #
-    # After loading the plugin the endpoint can be mounted:
+    # After loading the plugin the endpoint should be mounted on the specified
+    # prefix:
     #
     #     Rails.appliations.routes.draw do
     #       mount Shrine::DownloadEndpoint => "/attachments"
@@ -21,14 +22,13 @@ class Shrine
     # Now all stored files can be downloaded through the endpoint, and the
     # endpoint will efficiently stream the file from the storage when the
     # storage supports it. `UploadedFile#url` will automatically return the URL
-    # to the endpoint for specified storages, so it's not needed to change the
-    # code:
+    # to the endpoint for files uploaded to specified storages:
     #
     #     user.avatar.url #=> "/attachments/eyJpZCI6ImFkdzlyeTM5ODJpandoYWla"
     #
     # :storages
-    # :  An array of storage keys which the download endpoint should be applied
-    #    on.
+    # :  An array of storage keys for which `UploadedFile#url` should generate
+    #    download endpoint URLs.
     #
     # :prefix
     # :  The location where the download endpoint was mounted. If it was
@@ -48,9 +48,17 @@ class Shrine
     # case, it's recommended to use some kind of cache in front of the web
     # server.
     #
+    # If you want to authenticate the downloads, it's recommended you use the
+    # `rack_response` plugin directly. It allows you to return file responses
+    # from inside your router/controller.
+    #
     # [Roda]: https://github.com/jeremyevans/roda
     module DownloadEndpoint
       class InvalidSignature < Error; end
+
+      def self.load_dependencies(uploader, opts = {})
+        uploader.plugin :rack_response
+      end
 
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
@@ -144,29 +152,11 @@ class Shrine
 
         def stream_file(data)
           uploaded_file = get_uploaded_file(data)
-          io            = uploaded_file.to_io
 
-          length   = uploaded_file.size
-          type     = uploaded_file.mime_type || Rack::Mime.mime_type(".#{uploaded_file.extension}")
-          filename = uploaded_file.original_filename || uploaded_file.id.split("/").last
+          status, headers, body = uploaded_file.to_rack_response(disposition: disposition)
+          headers["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
 
-          response["Content-Length"]      = length.to_s if length
-          response["Content-Type"]        = type
-          response["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
-
-          response["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
-
-          chunks = Enumerator.new do |yielder|
-            if io.respond_to?(:each_chunk) # Down::ChunkedIO
-              io.each_chunk { |chunk| yielder << chunk }
-            else
-              yielder << io.read(16*1024) until io.eof?
-            end
-          end
-
-          body = Rack::BodyProxy.new(chunks) { io.close }
-
-          request.halt response.finish_with_body(body)
+          request.halt [status, headers, body]
         end
 
         # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.

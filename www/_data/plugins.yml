@@ -172,6 +172,10 @@ Other:
     path: RackFile.html
     description: Enables uploaders to accept Rack uploaded file hashes for uploading.
   -
+    name: rack_response
+    path: RackResponse.html
+    description: Allows converting an uploaded file object into a Rack response.
+  -
     name: upload_options
     path: UploadOptions.html
     description: Allows dynamically creating and forwarding storage-specific upload options.

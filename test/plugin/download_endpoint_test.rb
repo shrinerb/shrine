@@ -9,66 +9,22 @@ describe Shrine::Plugins::DownloadEndpoint do
 
   before do
     @uploader = uploader do
-      plugin :download_endpoint, storages: [:cache, :store], prefix: nil
+      plugin :download_endpoint, storages: [:cache, :store]
     end
   end
 
-  it "returns file contents in the response" do
-    uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+  it "returns a file response" do
+    io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
+    uploaded_file = @uploader.upload(io)
     response = app.get(uploaded_file.url)
+    assert_equal 200, response.status
     assert_equal uploaded_file.read, response.body_binary
+    assert_equal uploaded_file.size.to_s, response.headers["Content-Length"]
+    assert_equal uploaded_file.mime_type, response.headers["Content-Type"]
+    assert_equal "inline; filename=\"#{uploaded_file.original_filename}\"", response.headers["Content-Disposition"]
   end
 
-  it "returns file contents when opened IO responds to #each_chunk" do
-    uploaded_file = @uploader.upload(fakeio("content"))
-    uploaded_file.storage.instance_eval do
-      def open(*)
-        io = super
-        io.instance_eval { def each_chunk; yield read; end }
-        io
-      end
-    end
-    response = app.get(uploaded_file.url)
-    assert_equal "content", response.body_binary
-  end
-
-  it "returns Content-Length with filesize" do
-    uploaded_file = @uploader.upload(fakeio("content"))
-    response = app.get(uploaded_file.url)
-    assert_equal "7", response.headers["Content-Length"]
-
-    uploaded_file.metadata.delete("size")
-    response = app.get(uploaded_file.url)
-    assert_equal "7", response.headers["Content-Length"]
-  end
-
-  it "returns Content-Type with MIME type" do
-    uploaded_file = @uploader.upload(fakeio(content_type: "text/plain"))
-    response = app.get(uploaded_file.url)
-    assert_equal "text/plain", response.headers["Content-Type"]
-
-    uploaded_file = @uploader.upload(fakeio(filename: "plain.txt"))
-    response = app.get(uploaded_file.url)
-    assert_equal "text/plain", response.headers["Content-Type"]
-
-    uploaded_file = @uploader.upload(fakeio)
-    response = app.get(uploaded_file.url)
-    assert_equal "application/octet-stream", response.headers["Content-Type"]
-
-    uploaded_file = @uploader.upload(fakeio(filename: "foo.foo"))
-    response = app.get(uploaded_file.url)
-    assert_equal "application/octet-stream", response.headers["Content-Type"]
-  end
-
-  it "returns Content-Disposition with filename" do
-    uploaded_file = @uploader.upload(fakeio(filename: "plain.txt"))
-    response = app.get(uploaded_file.url)
-    assert_equal "inline; filename=\"plain.txt\"", response.headers["Content-Disposition"]
-
-    uploaded_file = @uploader.upload(fakeio)
-    response = app.get(uploaded_file.url)
-    assert_equal "inline; filename=\"#{uploaded_file.id}\"", response.headers["Content-Disposition"]
-
+  it "applies :disposition to response" do
     @uploader.class.plugin :download_endpoint, disposition: "attachment"
     uploaded_file = @uploader.upload(fakeio)
     response = app.get(uploaded_file.url)
@@ -79,13 +35,6 @@ describe Shrine::Plugins::DownloadEndpoint do
     uploaded_file = @uploader.upload(fakeio)
     response = app.get(uploaded_file.url)
     assert_equal "max-age=31536000", response.headers["Cache-Control"]
-  end
-
-  it "closes the downloaded file" do
-    uploaded_file = @uploader.upload(fakeio)
-    StringIO.any_instance.expects(:close)
-    response = app.get(uploaded_file.url)
-    response.body_binary # for body to be read
   end
 
   it "returns 404 for nonexisting file" do
