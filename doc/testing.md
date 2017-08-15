@@ -58,8 +58,8 @@ Shrine.storages = {
 }
 ```
 
-Alternatively, if you're using Amazon S3 storage, in tests (and development)
-you can swap it out for [FakeS3]. You just need tell aws-sdk that instead of
+Alternatively, if you're using Amazon S3 storage, in tests you can use
+[aws-sdk-ruby stubs]. You just need tell aws-sdk that instead of
 `s3.amazonaws.com` it should use the host of your FakeS3 server when generating
 URLs.
 
@@ -267,4 +267,4 @@ provided by the `direct_upload` app mounted in your routes.
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
 [Rack::Test]: https://github.com/brynary/rack-test
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
-[FakeS3]: https://github.com/jubos/fake-s3
+[aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdkforruby/api/Aws/ClientStubs.html
