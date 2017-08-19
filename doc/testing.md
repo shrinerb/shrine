@@ -59,15 +59,7 @@ Shrine.storages = {
 ```
 
 Alternatively, if you're using Amazon S3 storage, in tests you can use
-[aws-sdk-ruby stubs]. You just need tell aws-sdk that instead of
-`s3.amazonaws.com` it should use the host of your FakeS3 server when generating
-URLs.
-
-```rb
-Shrine::Storage::S3.new(endpoint: "http://localhost:10000")
-```
-
-Note that for using FakeS3 you need aws-sdk version 2.2.25 or higher.
+[aws-sdk-ruby stubs].
 
 ## Test data
 
