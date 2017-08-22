@@ -49,7 +49,7 @@ class Shrine
     # server.
     #
     # If you want to authenticate the downloads, it's recommended you use the
-    # `rack_response` plugin directly. It allows you to return file responses
+    # `rack_response` plugin directly. With it you can return file responses
     # from inside your router/controller.
     #
     # [Roda]: https://github.com/jeremyevans/roda
