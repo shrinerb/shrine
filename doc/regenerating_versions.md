@@ -2,7 +2,7 @@
 
 While your app is serving uploads in production, you may realize that you want
 to change how your attachment's versions are generated. This means that, in
-addition to changing you processing code, you also need to reprocess the
+addition to changing your processing code, you also need to reprocess the
 existing attachments. This guide is aimed to help doing this migration with
 zero downtime and no unused files left in the main storage.
 
