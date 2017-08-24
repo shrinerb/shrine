@@ -38,6 +38,9 @@
       -
         name: Uploading Files With Rails and Shrine
         url: https://code.tutsplus.com/tutorials/uploading-files-with-rails-and-shrine--cms-27596
+      -
+        name: Upload images using Shrine.rb and Dropzone.js
+        url: https://codyeatworld.com/2017/04/18/rails-uploading-images-confidently-with-shrine-rb/
   -
     title: Videos
     items:
@@ -137,23 +140,26 @@
     title: Applications
     items:
       -
-        name: Roda demo (official)
-        url: https://github.com/janko-m/shrine/tree/master/demo
+        name: Cloudinary demo
+        url: https://github.com/janko-m/shrine-cloudinary/tree/master/demo
       -
-        name: Rails demo
-        url: https://github.com/erikdahlstrand/shrine-rails-example
+        name: Dropzone demo
+        url: https://github.com/codyeatworld/example-shrine-dropzone
       -
         name: Hanami demo
         url: https://github.com/katafrakt/hanami-shrine-example
       -
-        name: ROM & dry-rb demo
-        url: https://github.com/janko-m/shrine-rom-example
+        name: Rails demo
+        url: https://github.com/erikdahlstrand/shrine-rails-example
       -
         name: Resumable uploads demo
         url: https://github.com/janko-m/shrine-tus-demo
       -
-        name: Cloudinary demo
-        url: https://github.com/janko-m/shrine-cloudinary/tree/master/demo
+        name: Roda demo (official)
+        url: https://github.com/janko-m/shrine/tree/master/demo
+      -
+        name: ROM & dry-rb demo
+        url: https://github.com/janko-m/shrine-rom-example
       -
         name: Transloadit demo
         url: https://github.com/janko-m/shrine-transloadit/tree/master/demo
