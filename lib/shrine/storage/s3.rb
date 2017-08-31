@@ -1,4 +1,4 @@
-require "aws-sdk"
+require "aws-sdk-s3"
 require "down/chunked_io"
 require "uri"
 require "cgi"
@@ -10,7 +10,7 @@ class Shrine
     # The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk]
     # gem:
     #
-    #     gem "aws-sdk", "~> 2.1"
+    #     gem "aws-sdk-s3", "~> 1"
     #
     # It is initialized with the following 4 required options:
     #
@@ -156,7 +156,7 @@ class Shrine
       # :secret_access_key
       # :region
       # :bucket
-      # :   Credentials required by the `aws-sdk` gem.
+      # :   Credentials required by the `aws-sdk-s3` gem.
       #
       # :prefix
       # :   "Folder" name inside the bucket to store files into.

@@ -41,7 +41,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "mini_mime"
   gem.add_development_dependency "fastimage"
-  gem.add_development_dependency "aws-sdk", "~> 2.1"
+  gem.add_development_dependency "aws-sdk-s3", "~> 1"
 
   unless RUBY_ENGINE == "jruby" || ENV["CI"]
     gem.add_development_dependency "ruby-filemagic", "~> 0.7"

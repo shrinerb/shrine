@@ -119,7 +119,7 @@ interface. Storages are configured directly and registered under a name in
 
 ```rb
 # Gemfile
-gem "aws-sdk", "~> 2.1" # for Amazon S3 storage
+gem "aws-sdk-s3", "~> 1" # for Amazon S3 storage
 ```
 ```rb
 require "shrine/storage/s3"

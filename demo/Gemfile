@@ -11,7 +11,7 @@ gem "sqlite3"
 
 # Attachments
 gem "shrine", path: ".."
-gem "aws-sdk", "~> 2.1"
+gem "aws-sdk-s3", "~> 1"
 gem "dotenv"
 
 # Processing

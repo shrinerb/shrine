@@ -27,7 +27,7 @@ different prefixes (or even buckets):
 
 ```rb
 # Gemfile
-gem "aws-sdk", "~> 2.1"
+gem "aws-sdk-s3", "~> 1"
 ```
 ```rb
 require "shrine/storage/s3"
