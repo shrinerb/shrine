@@ -3,8 +3,6 @@ require "down/chunked_io"
 require "uri"
 require "cgi"
 
-Aws.eager_autoload!(services: ["S3"])
-
 class Shrine
   module Storage
     # The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk]
