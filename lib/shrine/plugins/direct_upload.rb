@@ -3,6 +3,9 @@ require "json"
 
 class Shrine
   module Plugins
+    # *[OBSOLETE] This plugin is obsolete, you should use `upload_endpoint` or
+    # `presign_endpoint` plugins instead.*
+    #
     # The `direct_upload` plugin provides a Rack endpoint which can be used for
     # uploading individual files asynchronously. It requires the [Roda] gem.
     #

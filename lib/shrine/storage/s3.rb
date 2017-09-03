@@ -116,7 +116,7 @@ class Shrine
     # three places in which you can specify presign options:
     #
     # * in `:upload_options` option on this storage
-    # * in `direct_upload` plugin through `:presign_options`
+    # * in `presign_endpoint` plugin through `:presign_options`
     # * in `Storage::S3#presign` by forwarding options
     #
     # ## Large files

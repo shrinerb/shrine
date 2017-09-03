@@ -50,20 +50,20 @@ being uploaded to cache and the temporary directory.
 
 ### Limiting filesize in direct uploads
 
-If you're doing direct uploads with the `direct_upload` plugin, you can pass
-in the `:max_size` option, which will refuse too large files and automatically
-delete it from temporary storage.
+If you're doing direct uploads with the `upload_endpoint` plugin, you can pass
+in the `:max_size` option to reject files that are larger than the specified
+limit:
 
 ```rb
-plugin :direct_upload, max_size: 20*1024*1024 # 20 MB
+plugin :upload_endpoint, max_size: 20*1024*1024 # 20 MB
 ```
 
-This option doesn't apply to presigned uploads, if you're using S3 you can
-limit the filesize on presigning:
+If you're doing direct uploads to Amazon S3 using the `presign_endpoint`
+plugin, you can pass in the `:content_length_range` presign option:
 
 ```rb
-plugin :direct_upload, presign: ->(request) do
-  {content_length_range: 0..20*1024*1024}
+plugin :presign_endpoint, presign_options: -> (request) do
+  { content_length_range: 0..20*1024*1024 }
 end
 ```
 

@@ -743,37 +743,50 @@ uploader.upload(file, location: "some/specific/location.mp4")
 
 ## Direct uploads
 
-Shrine comes with a `direct_upload` plugin that can be used for client-side
-asynchronous uploads to your app or an external service like Amazon S3. It
-provides a [Roda] app which you can mount in your app:
+While having files uploaded on form submit is simplest to implement, it doesn't
+provide the best user experience, because the user doesn't know how long they
+need to wait for the file to get uploaded.
+
+To improve the user experience, the application can actually start uploading
+the file **asynchronously** already when it has been selected, and provide a
+progress bar. This way the user can estimate when the upload is going to
+finish, and they can continue filling in other fields in the form while the
+file is being uploaded.
+
+Shrine comes with the `upload_endpoint` plugin, which provides a Rack endpoint
+that accepts file uploads and forwards them to specified storage. We want to
+set it up to upload to *temporary* storage, because we're replacing the caching
+step in the default synchronous workflow.
 
 ```rb
-# Gemfile
-gem "roda"
-```
-```rb
-Shrine.plugin :direct_upload
+Shrine.plugin :upload_endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader::UploadEndpoint => "/images"
+  mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
 end
 ```
 
-The above setup will provide the following endpoints:
+The above created a `POST /images/upload` endpoint. You can now use a
+client-side file upload library like [FineUploader], [Dropzone] or
+[jQuery-File-Upload] to upload files asynchronously to the `/images/upload`
+endpoint the moment they are selected. Once the file has been uploaded, the
+endpoint will return JSON data of the uploaded file, which the client can then
+write to a hidden attachment field, to be submitted instead of the raw file.
 
-* `POST /images/cache/upload` - for direct uploads to your app
-* `GET /images/cache/presign` - for direct uploads to external service (e.g. Amazon S3)
+Many popular storage services can accept file uploads directly from the client
+([Amazon S3], [Google Cloud Storage], [Microsoft Azure Storage] etc), which
+means you can avoid uploading files through your app. If you're using one of
+these storage services, you can use the `presign_endpoint` plugin to generate
+URL, fields, and headers that can be used to upload files directly to the
+storage service. The only difference from the `upload_endpoint` workflow is
+that the client has the extra step of fetching the request information before
+uploading the file.
 
-Now when the user selects a file, the client can immediately start uploading
-the file asynchronously using one of these endpoints. The JSON data of the
-uploaded file can then be written to the hidden attachment field, and submitted
-instead of the file. For JavaScript you can use generic file upload libraries
-like [jQuery-File-Upload], [Dropzone] or [FineUploader].
-
-See the [direct_upload] plugin documentation and [Direct Uploads to S3][direct uploads]
-guide for more details, as well as the [Roda][roda_demo] and
-[Rails][rails_demo] demo apps which implement multiple uploads directly to S3.
+See the [upload_endpoint] and [presign_endpoint] plugin documentations and
+[Direct Uploads to S3][direct uploads] guide for more details, as well as the
+[Roda][roda_demo] and [Rails][rails_demo] demo apps which implement multiple
+uploads directly to S3.
 
 ## Backgrounding
 
@@ -939,10 +952,14 @@ The gem is available as open source under the terms of the [MIT License].
 [Context]: https://github.com/janko-m/shrine#context
 [image_processing]: https://github.com/janko-m/image_processing
 [ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-[Dropzone]: https://github.com/enyo/dropzone
 [FineUploader]: https://github.com/FineUploader/fine-uploader
-[direct_upload]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html
+[Dropzone]: https://github.com/enyo/dropzone
+[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+[Amazon S3]: https://aws.amazon.com/s3/
+[Google Cloud Storage]: https://cloud.google.com/storage/
+[Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/
+[upload_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
+[presign_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
 [Cloudinary]: https://github.com/janko-m/shrine-cloudinary
 [Imgix]: https://github.com/janko-m/shrine-imgix
 [Uploadcare]: https://github.com/janko-m/shrine-uploadcare

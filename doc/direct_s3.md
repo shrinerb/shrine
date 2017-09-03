@@ -1,7 +1,8 @@
 # Direct Uploads to S3
 
-Shrine gives you the ability to upload files directly to Amazon S3, which is
-beneficial for several use cases:
+Shrine gives you the ability to upload files directly to Amazon S3 (or any
+other storage service that accepts direct uploads). Uploading directly to a
+storage service is beneficial for several reasons:
 
 * Accepting uploads is resource-intensive for the server, and delegating it to
   an external service makes scaling easier.
@@ -18,7 +19,7 @@ beneficial for several use cases:
   changes the location.
 
 * If your request workers have a timeout configured or you're using Heroku,
-  uploading a large files to S3 or any external service inside the
+  uploading large files to S3 or any external service inside the
   request-response lifecycle might not be able to finish before the request
   times out.
 
@@ -54,12 +55,12 @@ documentation on how to write a CORS file.
 
 http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 
-Note that it may take some time for the CORS settings to be applied, due to
-DNS propagation.
+Note that due to DNS propagation it may take some time for update of the CORS
+settings to be applied.
 
 ## File hash
 
-After direct S3 uploads we'll need to manually construct Shrine's
+After direct S3 uploads we'll need to manually construct Shrine's JSON
 representation of an uploaded file:
 
 ```rb
@@ -84,47 +85,50 @@ representation of an uploaded file:
 * Single or multiple file uploads
 * Some JavaScript needed
 
-When the user selects the file, we dynamically fetch the presign from the
-server, and use this information to start uploading the file to S3. The
-`direct_upload` plugin gives us this presign route, so we just need to mount it
-in our application:
+When the user selects a file in the form, on the client-side we asynchronously
+fetch the presign information from the server, and use this information to
+upload the file to S3. The `presign_endpoint` plugin gives us this presign
+route, so we just need to mount it in our application:
 
 ```rb
-# Gemfile
-gem "roda"
-```
-```rb
-plugin :direct_upload
+Shrine.plugin :presign_endpoint
 ```
 ```rb
 Rails.application.routes.draw do
-  mount ImageUploader::UploadEndpoint => "/images"
+  mount Shrine.presign_endpoint(:cache) => "/presign"
 end
 ```
 
-This gives your application a `GET /images/cache/presign` route, which
-returns the S3 URL which the file should be uploaded to, along with the
-necessary request parameters:
+The above will create a `GET /presign` route, which returns the S3 URL which
+the file should be uploaded to, along with the required POST parameters and
+request headers.
 
 ```rb
-# GET /images/cache/presign
+# GET /presign
 {
-  "url" => "https://my-bucket.s3-eu-west-1.amazonaws.com",
-  "fields" => {
-    "key" => "cache/b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
-    "policy" => "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19",
-    "x-amz-credential" => "AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request",
-    "x-amz-algorithm" => "AWS4-HMAC-SHA256",
-    "x-amz-date" => "20151024T001129Z",
-    "x-amz-signature" => "c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4"
-  }
+  "url": "https://my-bucket.s3-eu-west-1.amazonaws.com",
+  "fields": {
+    "key": "cache/b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
+    "policy": "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19",
+    "x-amz-credential": "AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request",
+    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+    "x-amz-date": "20151024T001129Z",
+    "x-amz-signature": "c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4"
+  },
+  "headers": {}
 }
 ```
 
-For uploading to S3 you'll probably want to use a JavaScript file upload
-library like [jQuery-File-Upload], [Dropzone] or [FineUploader]. After the
-upload you should create a JSON representation of the uploaded file, which you
-can write to the hidden attachment field:
+You can now use a client-side file upload library like [FineUploader],
+[Dropzone] or [jQuery-File-Upload] to upload selected files directly to S3.
+When the user selects a file, the client can make a request to the presign
+endpoint, and use the returned request information to upload the selected file
+directly to S3.
+
+Once the file has been uploaded, you can generate a JSON representation of the
+uploaded file on the client-side, and write it to the hidden attachment field.
+The `id` field needs to be equal to the `key` presign field minus the storage
+`:prefix`.
 
 ```html
 <input type='hidden' name='photo[image]' value='{
@@ -138,8 +142,9 @@ can write to the hidden attachment field:
 }'>
 ```
 
-See the [demo app] for an example JavaScript implementation of multiple direct
-S3 uploads.
+This JSON string will now be submitted and assigned to the attachment attribute
+instead of the raw file. See the [demo app] for an example JavaScript
+implementation of multiple direct S3 uploads.
 
 ## Strategy B (static)
 
@@ -147,14 +152,17 @@ S3 uploads.
 * Only for single uploads
 * No JavaScript needed
 
-An alternative to the previous strategy is generating a file upload form
-immediately when the page is rendered, and then file upload can be either
-asynchronous, or synchronous with redirection. For generating the form we can
-use `Shrine::Storage::S3#presign`, which returns a [`Aws::S3::PresignedPost`]
-object, which has `#url` and `#fields` methods:
+An alternative to the previous strategy is to generate an S3 upload form on
+page render. The user can then select a file and submit it directly to S3. For
+generating the form we can use `Shrine::Storage::S3#presign`, which returns a
+[`Aws::S3::PresignedPost`] object with `#url` and `#fields` attributes:
 
 ```erb
-<% presign = Shrine.storages[:cache].presign(SecureRandom.hex, success_action_redirect: new_album_url) %>
+<%
+  presign = Shrine.storages[:cache].presign SecureRandom.hex,
+    success_action_redirect: new_album_url,
+    allow_any: ['utf8', 'authenticity_token']
+%>
 
 <form action="<%= presign.url %>" method="post" enctype="multipart/form-data">
   <input type="file" name="file">
@@ -165,9 +173,13 @@ object, which has `#url` and `#fields` methods:
 </form>
 ```
 
-If you're doing synchronous upload with redirection, the redirect URL will
-include the object key in the query parameters, which you can use to generate
-Shrine's uploaded file representation:
+Note the additional `success_action_redirect` option which tells S3 where to
+redirect to after the file has been uploaded. We also tell S3 to exclude the
+`utf8` and `authenticity_token` fields that the Rails form builder generates.
+
+Let's assume we specified the redirect URL to be a page which renders the form
+for a new record. S3 will include some information about the upload in form of
+GET parameters in the URL, out of which we only need the `key` parameter:
 
 ```erb
 <%
@@ -186,21 +198,24 @@ Shrine's uploaded file representation:
 
 ## Metadata
 
-With direct uploads any metadata has to be extracted on the client, since
-caching the file doesn't touch your application. When the cached file is stored,
-Shrine's default behaviour is to simply copy over cached file's metadata.
+With direct uploads any metadata has to be extracted on the client-side, since
+the file upload doesn't touch the application, so the Shrine uploader doesn't
+get a chance to extract the metadata. When directly uploaded file is promoted
+to permanent storage, Shrine's default behaviour is to just copy the received
+metadata.
 
 If you want to re-extract metadata on the server before file validation, you
 can load the `restore_cached_data`. That will make Shrine open the S3 file for
-reading, give it for metadata extraction, and then override the metadata
-received from the client with one extracted by Shrine.
+reading, pass it for metadata extraction, and then override the metadata
+received from the client with the extracted ones.
 
 ```rb
 plugin :restore_cached_data
 ```
 
 Note that if you don't need this metadata before file validation, and you would
-like to have it extracted in a background job, you can do the following trick:
+like to have it extracted in a background job, you can do that with the
+following trick:
 
 ```rb
 class MyUploader < Shrine

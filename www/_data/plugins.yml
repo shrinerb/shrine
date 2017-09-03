@@ -50,6 +50,32 @@ Model:
     path: ValidationHelpers.html
     description: Gives you convenient methods for validating file's metadata.
 
+Rack:
+  -
+    name: direct_upload
+    path: DirectUpload.html
+    description: [OBSOLETE] Use upload_endpoint and presign_endpoint plugins instead.
+  -
+    name: download_endpoint
+    path: DownloadEndpoint.html
+    description: Provides a Rack application through which uploaded files can be downloaded.
+  -
+    name: presign_endpoint
+    path: PresignEndpoint.html
+    description: Provides a Rack application that generates signatures for direct uploads to specified storage.
+  -
+    name: rack_file
+    path: RackFile.html
+    description: Adds the ability to transform a Rack uploaded file hash into an IO-like object.
+  -
+    name: rack_response
+    path: RackResponse.html
+    description: Adds the ability to convert a Shrine::UploadedFile object into a Rack response.
+  -
+    name: upload_endpoint
+    path: UploadEndpoint.html
+    description: Provides a Rack application that forwards file uploads to specified storage.
+
 Processing:
   -
     name: parallelize
@@ -148,14 +174,6 @@ Other:
     path: DefaultUrlOptions.html
     description: Allows you to specify default URL options for uploaded files.
   -
-    name: direct_upload
-    path: DirectUpload.html
-    description: Provides a Rack endpoint convenient for direct AJAX uploads.
-  -
-    name: download_endpoint
-    path: DownloadEndpoint.html
-    description: Generates URLs to uploaded files which normally may not be accessible over URL.
-  -
     name: hooks
     path: Hooks.html
     description: Allows you to specify actions that occur before/around/after process/store/delete.
@@ -167,14 +185,6 @@ Other:
     name: module_include
     path: ModuleInclude.html
     description: Allows easy extending of core classes for a given uploader.
-  -
-    name: rack_file
-    path: RackFile.html
-    description: Enables uploaders to accept Rack uploaded file hashes for uploading.
-  -
-    name: rack_response
-    path: RackResponse.html
-    description: Allows converting an uploaded file object into a Rack response.
   -
     name: upload_options
     path: UploadOptions.html

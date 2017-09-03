@@ -89,8 +89,9 @@ to add the `multiple` attribute to the file field.
 
 You can then use a generic JavaScript file upload library like
 [jQuery-File-Upload], [Dropzone] or [FineUploader] to asynchronously upload
-each the selected files to your app or an external service. See the
-`direct_upload` plugin, and [Direct Uploads to S3] guide for more details.
+each of the selected files to your app or to an external service. See the
+`upload_endpoint` and `presign_endpoint` plugins, and [Direct Uploads to S3]
+guide for more details.
 
 After each upload finishes, you can generate a nested hash for the new
 associated record, and write the uploaded file JSON to the attachment field:

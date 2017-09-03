@@ -1,5 +1,31 @@
 ## HEAD
 
+* Allow an additional `#headers` attribute on presigns and return it in `presign_endpoint` (@janko-m)
+
+* Allow overriding `upload_endpoint` and `presign_endpoint` options per-endpoint (@janko-m)
+
+* Add `:presign` and `:rack_response` options to `presign_endpoint` (@janko-m)
+
+* Add `:upload`, `:upload_context` and `:rack_response` options to `upload_endpoint` (@janko-m)
+
+* Modify `upload_endpoint` and `presign_endpoint` to return `text/plain` error responses (@janko-m)
+
+* Add `:request` upload context parameter in `upload_endpoint` (@janko-m)
+
+* Change `:action` upload context parameter to `:upload` in `upload_endpoint` (@janko-m)
+
+* Return `405 Method Not Allowed` on invalid HTTP verb in `upload_endpoint` and `presign_endpoint` (@janko-m)
+
+* The `presign_endpoint` now expects POST requests instead of GET (@janko-m)
+
+* Modify `upload_endpoint` and `presign_endpoint` to handle requests on the root URL (@janko-m)
+
+* Allow creating Rack apps dynamically in `upload_endpoint` and `presign_endpoint` (@janko-m)
+
+* Remove Roda dependency from `upload_endpoint` and `presign_endpoint` plugins (@janko-m)
+
+* Split `direct_upload` plugin into `upload_endpoint` and `presign_endpoint` plugins (@janko-m)
+
 * Support the new `aws-sdk-s3` gem in `Shrine::Storage::S3` (@lizdeika)
 
 * Return `Cache-Control` header in `download_endpoint` to permanently cache responses (@janko-m)

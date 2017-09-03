@@ -82,6 +82,8 @@ class Shrine
         def assign_download_endpoint(klass)
           endpoint_class = Class.new(klass)
           endpoint_class.opts[:shrine_class] = self
+          endpoint_class.opts[:disposition]  = opts[:download_endpoint_disposition]
+
           const_set(:DownloadEndpoint, endpoint_class)
         end
 
@@ -189,7 +191,7 @@ class Shrine
         end
 
         def disposition
-          shrine_class.opts[:download_endpoint_disposition]
+          opts[:disposition]
         end
 
         def shrine_class

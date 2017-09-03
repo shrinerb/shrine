@@ -87,11 +87,12 @@ end
 
 If the storage service supports direct uploads, and requires fetching
 additional information from the server, you can implement a `#presign` method,
-which will be used by the `direct_upload` plugin. The method should return an
+which will be used by the `presign_endpoint` plugin. The method should return an
 object which responds to
 
 * `#url` – returns the URL to which the file should be uploaded to
-* `#fields` – returns a hash of request parameters for the upload
+* `#fields` – returns a `Hash` of request parameters that should be used for the upload
+* `#headers` – returns a `Hash` of request headers that should be used for the upload (optional)
 
 ```rb
 class Shrine

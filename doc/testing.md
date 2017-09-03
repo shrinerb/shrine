@@ -75,7 +75,7 @@ end
 On the other hand, if you're setting up test data using Rails' YAML fixtures,
 you unfortunately won't be able to use them for assigning files. This is
 because Rails fixtures only allow assigning primitive data types, and don't
-allow you to specify Shrine attributes, you can only assign to columns
+allow you to specify Shrine attributes - you can only assign to columns
 directly.
 
 ## Background jobs
@@ -242,15 +242,27 @@ isolation.
 
 ## Direct upload
 
-In case you're doing direct uploads to S3 on production and staging
-environments, in development and test you might want to just store files on
-the filesystem for speed.
+If you've set up direct uploads to Amazon S3 (using the `presign_endpoint`
+plugin), in tests you'll probably want to just use filesystem or memory storage
+to avoid network requests.
 
-In that case you can swap out S3 for FileSystem, and the `direct_upload` app
-should still continue to work without any changes. This is because Shrine
-detects that you're using a storage which isn't an external service, and in
-that case the presign endpoint returns an URL to the upload route that's also
-provided by the `direct_upload` app mounted in your routes.
+The easiest way to do that is to add an `upload_endpoint`, modify it so that it
+behaves like S3, and change `presign_endpoint` response to point to the upload
+endpoint. Here is how one could modify the test helper in a Rails application:
+
+```rb
+# test/test_helper.rb
+
+# create and mount a fake S3 upload endpoint
+Shrine.plugin :upload_endpoint
+fake_s3 = Shrine.upload_endpoint(:cache, upload_context: -> (r) { {location: r.params["key"]} })
+Rails.application.routes.prepend { mount fake_s3 => "/s3" }
+
+# override presigns to return URLs to the fake S3 upload endpoint
+Shrine.plugin :presign_endpoint, presign: -> (id, options, request) do
+  Struct.new(:url, :fields).new("#{request.base_url}/s3", { "key" => id })
+end
+```
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
 [shrine-memory]: https://github.com/janko-m/shrine-memory

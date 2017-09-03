@@ -8,9 +8,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   before do
-    @uploader = uploader do
-      plugin :download_endpoint, storages: [:cache, :store]
-    end
+    @uploader = uploader { plugin :download_endpoint, storages: [:cache, :store] }
   end
 
   it "returns a file response" do
@@ -25,7 +23,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "applies :disposition to response" do
-    @uploader.class.plugin :download_endpoint, disposition: "attachment"
+    @uploader = uploader { plugin :download_endpoint, storages: [:cache, :store], disposition: "attachment" }
     uploaded_file = @uploader.upload(fakeio)
     response = app.get(uploaded_file.url)
     assert_equal "attachment; filename=\"#{uploaded_file.id}\"", response.headers["Content-Disposition"]

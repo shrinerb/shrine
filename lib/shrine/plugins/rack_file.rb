@@ -120,7 +120,7 @@ class Shrine
         end
 
         extend Forwardable
-        delegate Shrine::IO_METHODS.keys => :@tempfile
+        delegate [:read, :size, :rewind, :eof?, :close] => :@tempfile
       end
     end
 

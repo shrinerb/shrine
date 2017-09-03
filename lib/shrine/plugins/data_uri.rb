@@ -189,7 +189,7 @@ class Shrine
         end
 
         extend Forwardable
-        delegate Shrine::IO_METHODS.keys => :@io
+        delegate [:read, :size, :rewind, :eof?] => :@io
 
         def close
           @io.close

@@ -193,20 +193,22 @@ multiple uploads directly to S3.
 
 ## Direct uploads
 
-Shrine borrows Refile's idea of direct uploads, and ships with a
-direct_upload plugin which provides an endpoint for uploading files and
-generating presigns.
+Shrine borrows Refile's idea of direct uploads, and ships with
+`upload_endpoint` and `presign_endpoint` plugins which provide endpoints for
+uploading files and generating presigns.
 
 ```rb
-Shrine.plugin :direct_upload
-# POST /:storage/upload
-# GET /:storage/presign
+Shrine.plugin :upload_endpoint
+Shrine.upload_endpoint(:cache) # Rack app that uploads files to specified storage
+
+Shrine.plugin :upload_endpoint
+Shrine.presign_endpoint(:cache) # Rack app that generates presigns for specified storage
 ```
 
 Unlike Refile, Shrine doesn't ship with complete JavaScript which you can just
 include to make it work. Instead, you're expected to use one of the excellent
-JavaScript libraries for generic file uploads like [jQuery-File-Upload]. See
-also the [Direct Uploads to S3] guide.
+JavaScript libraries for generic file uploads like [FineUploader], [Dropzone]
+or [jQuery-File-Upload]. See also the [Direct Uploads to S3] guide.
 
 ## Migrating from Refile
 
@@ -287,22 +289,21 @@ Shrine.storages = {
 
 #### `.app`, `.mount_point`, `.automount`
 
-The `direct_upload` plugin provides a subset of Refile's app's functionality,
-and you have to mount it in your framework's router:
+The `upload_endpoint` and `presign_endpoint` plugins provide methods for
+generating Rack apps, but you need to mount them explicitly:
 
 ```rb
 # config/routes.rb
 Rails.application.routes.draw do
-  # adds `POST /attachments/images/:storage/:name`
-  mount ImageUploader::UploadEndpoint => "/attachments/images"
+  # adds `POST /images/upload` endpoint
+  mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
 end
 ```
 
 #### `.allow_uploads_to`
 
-```rb
-Shrine.plugin :direct_upload, storages: [:cache]
-```
+The `Shrine.upload_endpoint` and `Shrine.presign_endpoint` require you to
+specify the storage that will be used.
 
 #### `.logger`
 
@@ -477,6 +478,8 @@ Shrine.plugin :remote_url
 [shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
 [Attache]: https://github.com/choonkeat/attache
 [image_processing]: https://github.com/janko-m/image_processing
+[FineUploader]: https://github.com/FineUploader/fine-uploader
+[Dropzone]: https://github.com/enyo/dropzone
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
