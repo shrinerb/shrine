@@ -1,4 +1,9 @@
-require "aws-sdk-s3"
+begin
+  require "aws-sdk-s3"
+rescue LoadError
+  require "aws-sdk"
+  Aws.eager_autoload!(services: ["S3"])
+end
 require "down/chunked_io"
 require "uri"
 require "cgi"
