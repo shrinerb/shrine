@@ -1,6 +1,6 @@
 ## HEAD
 
-* Support the new `aws-sdk-s3` gem in `Shrine::Storage::S3` (@janko-m)
+* Support the new `aws-sdk-s3` gem in `Shrine::Storage::S3` (@lizdeika)
 
 * Return `Cache-Control` header in `download_endpoint` to permanently cache responses (@janko-m)
 
