@@ -13,8 +13,8 @@ require "cgi"
 
 class Shrine
   module Storage
-    # The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk]
-    # gem:
+    # The S3 storage handles uploads to Amazon S3 service, using the
+    # [aws-sdk-s3] gem:
     #
     #     gem "aws-sdk-s3", "~> 1.2"
     #
@@ -55,7 +55,7 @@ class Shrine
     #
     #     Shrine::Storage::S3.new(upload_options: {acl: "private"}, **s3_options)
     #
-    # These options will be passed to aws-sdk's methods for [uploading],
+    # These options will be passed to aws-sdk-s3's methods for [uploading],
     # [copying] and [presigning].
     #
     # You can also generate upload options per upload with the `upload_options`
@@ -87,7 +87,7 @@ class Shrine
     #     uploaded_file.url(public: true)   # public URL without signed parameters
     #     uploaded_file.url(download: true) # forced download URL
     #
-    # All other options are forwarded to the [aws-sdk] gem:
+    # All other options are forwarded to the aws-sdk-s3 gem:
     #
     #     uploaded_file.url(expires_in: 15)
     #     uploaded_file.url(virtual_host: true)
@@ -112,7 +112,7 @@ class Shrine
     # ## Presigns
     #
     # This storage can generate presigns for direct uploads to Amazon S3, and
-    # it accepts additional options which are passed to [aws-sdk]. There are
+    # it accepts additional options which are passed to aws-sdk-s3. There are
     # three places in which you can specify presign options:
     #
     # * in `:upload_options` option on this storage
@@ -121,7 +121,7 @@ class Shrine
     #
     # ## Large files
     #
-    # The [aws-sdk] gem has the ability to automatically use multipart
+    # The aws-sdk-s3 gem has the ability to automatically use multipart
     # upload/copy for larger files, splitting the file into multiple chunks
     # and uploading/copying them in parallel.
     #
@@ -133,7 +133,7 @@ class Shrine
     #     thresholds = {upload: 30*1024*1024, copy: 200*1024*1024}
     #     Shrine::Storage::S3.new(multipart_threshold: thresholds, **s3_options)
     #
-    # If you want to change how many threads [aws-sdk] will use for multipart
+    # If you want to change how many threads aws-sdk-s3 will use for multipart
     # upload/copy, you can use the `upload_options` plugin to specify
     # `:thread_count`.
     #
@@ -145,14 +145,14 @@ class Shrine
     #
     # If you're using S3 as a cache, you will probably want to periodically
     # delete old files which aren't used anymore. S3 has a built-in way to do
-    # this, read [this article](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
-    # for instructions.
+    # this, read [this article][object lifecycle] for instructions.
     #
-    # [uploading]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
-    # [copying]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
-    # [presigning]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
-    # [aws-sdk]: https://github.com/aws/aws-sdk-ruby
+    # [uploading]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
+    # [copying]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
+    # [presigning]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
+    # [aws-sdk-s3]: https://github.com/aws/aws-sdk-ruby/tree/master/gems/aws-sdk-s3
     # [Transfer Acceleration]: http://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
+    # [object lifecycle]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     class S3
       attr_reader :client, :bucket, :prefix, :host, :upload_options
 
@@ -180,10 +180,10 @@ class Shrine
       #
       # All other options are forwarded to [`Aws::S3::Client#initialize`].
       #
-      # [`Aws::S3::Object#put`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#put-instance_method
-      # [`Aws::S3::Object#copy_from`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#copy_from-instance_method
-      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_post-instance_method
-      # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Client.html#initialize-instance_method
+      # [`Aws::S3::Object#put`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
+      # [`Aws::S3::Object#copy_from`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
+      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
+      # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, **s3_options)
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
         resource = Aws::S3::Resource.new(**s3_options)
@@ -276,8 +276,8 @@ class Shrine
       # All other options are forwarded to [`Aws::S3::Object#presigned_url`] or
       # [`Aws::S3::Object#public_url`].
       #
-      # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#presigned_url-instance_method
-      # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Object.html#public_url-instance_method
+      # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
+      # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
       def url(id, download: nil, public: nil, host: self.host, **options)
         options[:response_content_disposition] ||= "attachment" if download
         options[:response_content_disposition] = encode_content_disposition(options[:response_content_disposition]) if options[:response_content_disposition]
@@ -301,7 +301,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`], and forwards any additional options
       # to it.
       #
-      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
+      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
       def presign(id, **options)
         options = @upload_options.merge(options)
         options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]

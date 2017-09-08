@@ -218,8 +218,7 @@ end
 
 Since directly uploaded files will stay in your temporary storage, you will
 want to periodically delete the old ones that were already promoted. Luckily,
-Amazon provides [a built-in solution](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)
-for that.
+Amazon provides [a built-in solution][object lifecycle] for that.
 
 ## Eventual consistency
 
@@ -250,9 +249,10 @@ Shrine::Attacher.promote do |data|
 end
 ```
 
-[`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdkforruby/api/Aws/S3/Bucket.html#presigned_post-instance_method
+[`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Dropzone]: https://github.com/enyo/dropzone
 [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
 [FineUploader]: https://github.com/FineUploader/fine-uploader
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
+[object lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html

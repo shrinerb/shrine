@@ -267,4 +267,4 @@ provided by the `direct_upload` app mounted in your routes.
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
 [Rack::Test]: https://github.com/brynary/rack-test
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
-[aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdkforruby/api/Aws/ClientStubs.html
+[aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
