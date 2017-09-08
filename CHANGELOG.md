@@ -1,5 +1,7 @@
 ## HEAD
 
+* Support the new `aws-sdk-s3` gem in `Shrine::Storage::S3` (@janko-m)
+
 * Return `Cache-Control` header in `download_endpoint` to permanently cache responses (@janko-m)
 
 * Return `404 Not Found` when uploaded file doesn't exist in `download_endpoint` (@janko-m)
