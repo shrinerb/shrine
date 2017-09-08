@@ -222,15 +222,19 @@ describe Shrine::Storage::S3 do
 
   describe "#open" do
     it "returns a Down::ChunkedIO which downloads the object" do
+      @s3.client.stub_responses(:head_object, { content_length: 7 })
       @s3.client.stub_responses(:get_object, body: "content")
       io = @s3.open("foo")
       assert_instance_of Down::ChunkedIO, io
       assert_equal "content", io.read
+      assert_equal 7, io.size
     end
 
     it "adds the S3 object to data" do
+      @s3.client.stub_responses(:head_object, { content_type: "text/plain" })
       io = @s3.open("foo")
       assert_instance_of Aws::S3::Object, io.data[:object]
+      assert_equal      "text/plain",     io.data[:object].content_type
     end
   end
 

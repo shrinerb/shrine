@@ -1,5 +1,8 @@
 begin
   require "aws-sdk-s3"
+  if Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.2.0")
+    raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
+  end
 rescue LoadError
   require "aws-sdk"
   Aws.eager_autoload!(services: ["S3"])
@@ -13,7 +16,7 @@ class Shrine
     # The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk]
     # gem:
     #
-    #     gem "aws-sdk-s3", "~> 1"
+    #     gem "aws-sdk-s3", "~> 1.2"
     #
     # It is initialized with the following 4 required options:
     #
