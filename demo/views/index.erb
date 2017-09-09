@@ -6,15 +6,15 @@
 </div>
 
 <form action="/album" method="post">
-  <input type="hidden" name="_method" value="put">
+  <input type="hidden" name="_method" value="PUT">
   <%= csrf_tag %>
 
   <ul class="list-unstyled">
     <% @album.photos.each_with_index do |photo, idx| %>
-      <%= partial("photo", locals: {photo: photo, idx: idx}) %>
+      <%= partial("photo", locals: { photo: photo, idx: idx }) %>
     <% end %>
-
   </ul>
+
   <input type="submit" value="Save" class="btn btn-primary">
 </form>
 
@@ -23,11 +23,8 @@
     $('[type=file]').fileupload({
       add: function(e, data) {
         data.progressBar = $('<div class="progress" style="width: 300px"><div class="progress-bar"></div></div>').insertAfter(".form-group");
-        var options = {
-          extension: data.files[0].name.match(/(\.\w+)?$/)[0], // set extension
-          _: Date.now(),                                       // prevent caching
-        }
-        $.getJSON('/images/cache/presign', options, function(result) {
+        var options = { filename: data.files[0].name.match(/[^\/\\]+$/)[0] };
+        $.getJSON('/presign', options, function(result) {
           data.formData = result['fields'];
           data.url = result['url'];
           data.paramName = 'file';
@@ -36,14 +33,14 @@
       },
       progress: function(e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
-        var percentage = progress.toString() + '%'
+        var percentage = progress.toString() + '%';
         data.progressBar.find(".progress-bar").css("width", percentage).html(percentage);
       },
       done: function(e, data) {
         data.progressBar.remove();
 
         var image = {
-          id: data.formData.key.match(/cache\/(.+)/)[1], // we have to remove the prefix part
+          id: data.formData.key.match(/^cache\/(.+)/)[1], // we have to remove the prefix part
           storage: 'cache',
           metadata: {
             size:      data.files[0].size,
@@ -58,7 +55,7 @@
         }
 
         $.ajax("/album/photos", {method: 'POST', data: params})
-          .done(function(result) { $("ul").append(result) })
+          .done(function(result) { $("ul").append(result) });
       }
     });
   });

@@ -255,12 +255,14 @@ endpoint. Here is how one could modify the test helper in a Rails application:
 
 # create and mount a fake S3 upload endpoint
 Shrine.plugin :upload_endpoint
-fake_s3 = Shrine.upload_endpoint(:cache, upload_context: -> (r) { {location: r.params["key"]} })
+fake_s3 = Shrine.upload_endpoint(:cache, upload_context: -> (request) {
+  { location: request.params["key"].match(/^cache\//).post_match }
+})
 Rails.application.routes.prepend { mount fake_s3 => "/s3" }
 
 # override presigns to return URLs to the fake S3 upload endpoint
 Shrine.plugin :presign_endpoint, presign: -> (id, options, request) do
-  Struct.new(:url, :fields).new("#{request.base_url}/s3", { "key" => id })
+  Struct.new(:url, :fields).new("#{request.base_url}/s3", { "key" => "cache/#{id}" })
 end
 ```
 

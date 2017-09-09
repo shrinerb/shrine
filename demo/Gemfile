@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 # Web framework
+gem "puma"
 gem "roda", "~> 2.15"
 gem "tilt"
 gem "rack_csrf"

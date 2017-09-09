@@ -4,7 +4,10 @@ require "tilt/erb"
 require "./models/album"
 require "./models/photo"
 
+require "./config/shrine"
+
 class ShrineDemo < Roda
+  plugin :environments
   plugin :public
 
   plugin :render
@@ -18,11 +21,16 @@ class ShrineDemo < Roda
 
   plugin :indifferent_params
 
-  route do |r|
-    r.public # route static assets
+  configure :development, :test do
+    require "./middleware/fake_s3"
+    use FakeS3
+  end
 
-    r.on "images" do
-      r.run ImageUploader::UploadEndpoint
+  route do |r|
+    r.public # serve static assets
+
+    r.is "presign" do
+      r.run Shrine.presign_endpoint(:cache)
     end
 
     @album = Album.first || Album.create(name: "My Album")
@@ -38,7 +46,7 @@ class ShrineDemo < Roda
 
     r.post "album/photos" do
       photo = @album.add_photo(params[:photo])
-      partial("photo", locals: {photo: photo, idx: @album.photos.count})
+      partial("photo", locals: { photo: photo, idx: @album.photos.count })
     end
   end
 end
