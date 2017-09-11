@@ -18,8 +18,6 @@
 
 * Return `405 Method Not Allowed` on invalid HTTP verb in `upload_endpoint` and `presign_endpoint` (@janko-m)
 
-* The `presign_endpoint` now expects POST requests instead of GET (@janko-m)
-
 * Modify `upload_endpoint` and `presign_endpoint` to handle requests on the root URL (@janko-m)
 
 * Allow creating Rack apps dynamically in `upload_endpoint` and `presign_endpoint` (@janko-m)
