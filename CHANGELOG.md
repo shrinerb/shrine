@@ -1,4 +1,4 @@
-## HEAD
+## 2.7.0 (2017-09-11)
 
 * Deprecate the `Shrine::DownloadEndpoint` constant over `Shrine.download_endpoint` (@janko-m)
 
