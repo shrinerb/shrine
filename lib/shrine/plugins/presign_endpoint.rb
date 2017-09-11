@@ -127,15 +127,14 @@ class Shrine
         # Additional options can be given to override the options given on
         # plugin initialization.
         def presign_endpoint(storage_key, **options)
-          App.new(
+          App.new({
             shrine_class:     self,
             storage_key:      storage_key,
             presign_location: opts[:presign_endpoint_presign_location],
             presign_options:  opts[:presign_endpoint_presign_options],
             presign:          opts[:presign_endpoint_presign],
             rack_response:    opts[:presign_endpoint_rack_response],
-            **options
-          )
+          }.merge(options))
         end
       end
 

@@ -122,15 +122,14 @@ class Shrine
         # Additional options can be given to override the options given on
         # plugin initialization.
         def upload_endpoint(storage_key, **options)
-          App.new(
+          App.new({
             shrine_class:   self,
             storage_key:    storage_key,
             max_size:       opts[:upload_endpoint_max_size],
             upload_context: opts[:upload_endpoint_upload_context],
             upload:         opts[:upload_endpoint_upload],
             rack_response:  opts[:upload_endpoint_rack_response],
-            **options
-          )
+          }.merge(options))
         end
       end
 
