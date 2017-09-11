@@ -41,6 +41,12 @@
       -
         name: Upload images using Shrine.rb and Dropzone.js
         url: https://codyeatworld.com/2017/04/18/rails-uploading-images-confidently-with-shrine-rb/
+      -
+        name: Background file uploads to S3 using Shrine
+        url: http://elixirator.com/blog/2017/background-file-uploads-to-s3-using-shrine.html
+      -
+        name: Asynchronous Chat With Rails and ActionCable
+        url: https://scotch.io/tutorials/asynchronous-chat-with-rails-and-actioncable
   -
     title: Videos
     items:
