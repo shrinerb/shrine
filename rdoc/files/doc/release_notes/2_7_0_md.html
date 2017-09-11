@@ -30,7 +30,7 @@ doc/release_notes/2.7.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+<span class='datetime'>2017-09-11 13:03:29 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -41,7 +41,8 @@ Last Update:
 <p>The <code>direct_upload</code> plugin has been split into
 <code>upload_endpoint</code> and  <code>presign_endpoint</code> plugins.
 These plugins provide respective endpoints that  accept requests to the
-root URL, allowing users to fully choose the URL.</p>
+root URL, allowing users to fully choose the URL. They  also drop the Roda
+dependency.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>&#x000A;&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
