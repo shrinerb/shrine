@@ -54,8 +54,6 @@ class Shrine
     #
     # [Roda]: https://github.com/jeremyevans/roda
     module DownloadEndpoint
-      class InvalidSignature < Error; end
-
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response
       end
