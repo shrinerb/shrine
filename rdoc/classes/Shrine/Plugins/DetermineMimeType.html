@@ -1,141 +1,147 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::DetermineMimeType</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::DetermineMimeType
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/determine_mime_type.rb">lib/shrine/plugins/determine_mime_type.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>determine_mime_type</code> plugin allows you to determine and
-            store the actual MIME type of the file analyzed from file content.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span></pre>
-            
-            <p>By default the UNIX <a target="_top" href="http://linux.die.net/man/1/file">file</a>
-            utility is used to determine the MIME type, and the result is automatically
-            written to the <code>mime_type</code> metadata field. You can choose a
-            different built-in MIME type analyzer:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">filemagic</span></pre>
-            
-            <p>The following analyzers are accepted:</p>
-            <table class="rdoc-list note-list"><tbody><tr><td class='label'>:file</td><td>
-            <p>(Default). Uses the <a target="_top" href="http://linux.die.net/man/1/file">file</a>
-            utility to determine the MIME type from file  contents. It is installed by
-            default on most operating systems, but the  <a
-            href="http://gnuwin32.sourceforge.net/packages/file.htm">Windows
-            equivalent</a> needs to be installed separately.</p>
-            </td></tr><tr><td class='label'>:filemagic</td><td>
-            <p>Uses the <a
-            href="https://github.com/blackwinter/ruby-filemagic">ruby-filemagic</a> gem
-            to determine the MIME type from file  contents, using a similar MIME
-            database as the <code>file</code> utility. Unlike  the <code>file</code>
-            utility, ruby-filemagic works on Windows without any setup.</p>
-            </td></tr><tr><td class='label'>:mimemagic</td><td>
-            <p>Uses the <a href="https://github.com/minad/mimemagic">mimemagic</a> gem to
-            determine the MIME type from file contents.  Unlike ruby-filemagic,
-            mimemagic is a pure-ruby solution, so it will  work across all Ruby
-            implementations.</p>
-            </td></tr><tr><td class='label'>:mime_types</td><td>
-            <p>Uses the <a
-            href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem to
-            determine the MIME type from the file  <em>extension</em>. Note that unlike
-            other solutions, this analyzer is not  guaranteed to return the actual MIME
-            type of the file.</p>
-            </td></tr><tr><td class='label'>:default</td><td>
-            <p>Uses the default way of extracting the MIME type, and that is reading  the
-            <code>#content_type</code> attribute of the IO object, which might not hold
-            the actual MIME type of the file.</p>
-            </td></tr></tbody></table>
-            
-            <p>A single analyzer is not going to properly recognize all types of files, so
-            you can build your own custom analyzer for your requirements, where you can
-            combine the built-in analyzers. For example, if you want to correctly
-            determine MIME type of .css, .js, .json, .csv, .xml, or similar text-based
-            files, you can combine <code>file</code> and <code>mime_types</code>
-            analyzers:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">mime_types</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;  <span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>You can also use methods for determining the MIME type directly:</p>
-            
-            <pre class="ruby"><span class="ruby-comment"># or YourUploader.determine_mime_type(io)</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">determine_mime_type</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-comment"># or YourUploader.mime_type_analyzers</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">mime_type_analyzers</span>[:<span class="ruby-identifier">file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
-          </div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Class</h3>
-            <ol>
-              <li><a href="#method-c-configure">configure</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="DetermineMimeType/ClassMethods.html">Shrine::Plugins::DetermineMimeType::ClassMethods</a></li>
-              <li><a href="DetermineMimeType/InstanceMethods.html">Shrine::Plugins::DetermineMimeType::InstanceMethods</a></li>
-              <li><a href="DetermineMimeType/MimeTypeAnalyzer.html">Shrine::Plugins::DetermineMimeType::MimeTypeAnalyzer</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-configure'>
-                <a name='method-c-configure'></a>
-                <div class='synopsis'>
-                  <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, opts = {})</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 69</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:mime_type_analyzer</span>, <span class="ruby-value">:file</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::DetermineMimeType</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::DetermineMimeType
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/determine_mime_type_rb.html">lib/shrine/plugins/determine_mime_type.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>determine_mime_type</code> plugin allows you to determine and
+store the actual MIME type of the file analyzed from file content.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span></pre>
+
+<p>By default the UNIX <a target="_top" href="http://linux.die.net/man/1/file">file</a>
+utility is used to determine the MIME type, and the result is automatically
+written to the <code>mime_type</code> metadata field. You can choose a
+different built-in MIME type analyzer:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">filemagic</span></pre>
+
+<p>The following analyzers are accepted:</p>
+<table class="rdoc-list note-list"><tbody><tr><td class='label'>:file</td><td>
+<p>(Default). Uses the <a target="_top" href="http://linux.die.net/man/1/file">file</a>
+utility to determine the MIME type from file  contents. It is installed by
+default on most operating systems, but the  <a
+href="http://gnuwin32.sourceforge.net/packages/file.htm">Windows
+equivalent</a> needs to be installed separately.</p>
+</td></tr><tr><td class='label'>:filemagic</td><td>
+<p>Uses the <a
+href="https://github.com/blackwinter/ruby-filemagic">ruby-filemagic</a> gem
+to determine the MIME type from file  contents, using a similar MIME
+database as the <code>file</code> utility. Unlike  the <code>file</code>
+utility, ruby-filemagic works on Windows without any setup.</p>
+</td></tr><tr><td class='label'>:mimemagic</td><td>
+<p>Uses the <a href="https://github.com/minad/mimemagic">mimemagic</a> gem to
+determine the MIME type from file contents.  Unlike ruby-filemagic,
+mimemagic is a pure-ruby solution, so it will  work across all Ruby
+implementations.</p>
+</td></tr><tr><td class='label'>:mime_types</td><td>
+<p>Uses the <a
+href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem to
+determine the MIME type from the file  extension. Note that unlike other
+solutions, this analyzer is not  guaranteed to return the actual MIME type
+of the file.</p>
+</td></tr><tr><td class='label'>:mini_mime</td><td>
+<p>Uses the <a href="https://github.com/discourse/mini_mime">mini_mime</a> gem
+to determine the MIME type from the file  extension. Note that unlike other
+solutions, this analyzer is not  guaranteed to return the actual MIME type
+of the file.</p>
+</td></tr><tr><td class='label'>:default</td><td>
+<p>Uses the default way of extracting the MIME type, and that is reading  the
+<code>#content_type</code> attribute of the IO object, which might not hold
+the actual MIME type of the file.</p>
+</td></tr></tbody></table>
+
+<p>A single analyzer is not going to properly recognize all types of files, so
+you can build your own custom analyzer for your requirements, where you can
+combine the built-in analyzers. For example, if you want to correctly
+determine MIME type of .css, .js, .json, .csv, .xml, or similar text-based
+files, you can combine <code>file</code> and <code>mime_types</code>
+analyzers:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">mime_types</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;  <span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>You can also use methods for determining the MIME type directly:</p>
+
+<pre class="ruby"><span class="ruby-comment"># or YourUploader.determine_mime_type(io)</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">determine_mime_type</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-comment"># or YourUploader.mime_type_analyzers</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">mime_type_analyzers</span>[:<span class="ruby-identifier">file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="DetermineMimeType/ClassMethods.html">Shrine::Plugins::DetermineMimeType::ClassMethods</a></li>
+<li><a href="DetermineMimeType/InstanceMethods.html">Shrine::Plugins::DetermineMimeType::InstanceMethods</a></li>
+<li><a href="DetermineMimeType/MimeTypeAnalyzer.html">Shrine::Plugins::DetermineMimeType::MimeTypeAnalyzer</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 75</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:mime_type_analyzer</span>, <span class="ruby-value">:file</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

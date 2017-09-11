@@ -1,94 +1,97 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::Parallelize::InstanceMethods</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::Parallelize::InstanceMethods
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/parallelize.rb">lib/shrine/plugins/parallelize.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'></div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a href="#method-i-around_delete">around_delete</a></li>
-              <li><a href="#method-i-around_store">around_store</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-around_delete'>
-                <a name='method-i-around_delete'></a>
-                <div class='synopsis'>
-                  <span class='name'>around_delete</span>
-                  <span class='arguments'>(uploaded_file, context)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-around_delete-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-around_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>)) }&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-around_store'>
-                <a name='method-i-around_store'></a>
-                <div class='synopsis'>
-                  <span class='name'>around_store</span>
-                  <span class='arguments'>(io, context)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-around_store-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-around_store-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>)) }&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::Parallelize::InstanceMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Parallelize::InstanceMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/parallelize_rb.html">lib/shrine/plugins/parallelize.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-around_delete">around_delete</a></li>
+<li><a href="#method-i-around_store">around_store</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-around_delete'>
+<a name='method-i-around_delete'></a>
+<div class='synopsis'>
+<span class='name'>around_delete</span>
+<span class='arguments'>(uploaded_file, context)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-around_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-around_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>)) }&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-around_store'>
+<a name='method-i-around_store'></a>
+<div class='synopsis'>
+<span class='name'>around_store</span>
+<span class='arguments'>(io, context)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-around_store-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-around_store-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">with_pool</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">pool</span><span class="ruby-operator">|</span> <span class="ruby-keyword">super</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">thread_pool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">pool</span>)) }&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

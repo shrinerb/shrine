@@ -14,7 +14,7 @@
     <header class="header">
   <div class="container">
     <div>
-      <h1>Shrine (v2.6.1)</h1>
+      <h1>Shrine (v2.7.0)</h1>
       <p>
         <span class="text">File Attachment toolkit for Ruby applications</span>
         <svg class="icon" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
@@ -273,6 +273,53 @@
         
       </dl>
       
+      <h3>Rack</h3>
+      <dl>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">direct_upload</a>:
+        </dt>
+        <dd>
+          <div>[OBSOLETE] Use upload_endpoint and presign_endpoint plugins instead.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DownloadEndpoint.html">download_endpoint</a>:
+        </dt>
+        <dd>
+          <div>Provides a Rack application through which uploaded files can be downloaded.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html">presign_endpoint</a>:
+        </dt>
+        <dd>
+          <div>Provides a Rack application that generates signatures for direct uploads to specified storage.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html">rack_file</a>:
+        </dt>
+        <dd>
+          <div>Adds the ability to transform a Rack uploaded file hash into an IO-like object.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackResponse.html">rack_response</a>:
+        </dt>
+        <dd>
+          <div>Adds the ability to convert a Shrine::UploadedFile object into a Rack response.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html">upload_endpoint</a>:
+        </dt>
+        <dd>
+          <div>Provides a Rack application that forwards file uploads to specified storage.</div>
+        </dd>
+        
+      </dl>
+      
       <h3>Processing</h3>
       <dl>
         
@@ -451,20 +498,6 @@
         </dd>
         
         <dt>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DirectUpload.html">direct_upload</a>:
-        </dt>
-        <dd>
-          <div>Provides a Rack endpoint convenient for direct AJAX uploads.</div>
-        </dd>
-        
-        <dt>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DownloadEndpoint.html">download_endpoint</a>:
-        </dt>
-        <dd>
-          <div>Generates URLs to uploaded files which normally may not be accessible over URL.</div>
-        </dd>
-        
-        <dt>
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Hooks.html">hooks</a>:
         </dt>
         <dd>
@@ -486,13 +519,6 @@
         </dd>
         
         <dt>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html">rack_file</a>:
-        </dt>
-        <dd>
-          <div>Enables uploaders to accept Rack uploaded file hashes for uploading.</div>
-        </dd>
-        
-        <dt>
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadOptions.html">upload_options</a>:
         </dt>
         <dd>
@@ -508,6 +534,9 @@
       <ul>
         
         <li>
+          
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_7_0_md.html">2.7.0</a>
+          |
           
           <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_6_1_md.html">2.6.1</a>
           |
@@ -656,6 +685,12 @@
               </a>
             </li>
             
+            <li>
+              <a href="https://codyeatworld.com/2017/04/18/rails-uploading-images-confidently-with-shrine-rb/">
+                Upload images using Shrine.rb and Dropzone.js
+              </a>
+            </li>
+            
           </ul>
           
           <h3>Videos</h3>
@@ -731,6 +766,12 @@
             </li>
             
             <li>
+              <a href="https://github.com/verynear/shrine-google_drive_storage">
+                shrine-google_drive_storage
+              </a>
+            </li>
+            
+            <li>
               <a href="https://github.com/janko-m/shrine-gridfs">
                 shrine-gridfs
               </a>
@@ -749,6 +790,12 @@
             </li>
             
             <li>
+              <a href="https://github.com/dbongo/shrine-redis">
+                shrine-redis
+              </a>
+            </li>
+            
+            <li>
               <a href="https://github.com/jordanandree/shrine-scp">
                 shrine-scp
               </a>
@@ -757,6 +804,12 @@
             <li>
               <a href="https://github.com/janko-m/shrine-sql">
                 shrine-sql
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/havran/shrine-thumbor">
+                shrine-thumbor
               </a>
             </li>
             
@@ -781,6 +834,12 @@
             <li>
               <a href="https://github.com/thedyrt/shrine-storage-you_tube">
                 shrine-storage-you_tube
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/funbox/shrine-webdav">
+                shrine-webdav
               </a>
             </li>
             
@@ -829,14 +888,14 @@
           <ul>
             
             <li>
-              <a href="https://github.com/janko-m/shrine/tree/master/demo">
-                Roda demo (official)
+              <a href="https://github.com/janko-m/shrine-cloudinary/tree/master/demo">
+                Cloudinary demo
               </a>
             </li>
             
             <li>
-              <a href="https://github.com/erikdahlstrand/shrine-rails-example">
-                Rails demo
+              <a href="https://github.com/codyeatworld/example-shrine-dropzone">
+                Dropzone demo
               </a>
             </li>
             
@@ -847,8 +906,8 @@
             </li>
             
             <li>
-              <a href="https://github.com/janko-m/shrine-rom-example">
-                ROM & dry-rb demo
+              <a href="https://github.com/erikdahlstrand/shrine-rails-example">
+                Rails demo
               </a>
             </li>
             
@@ -859,8 +918,14 @@
             </li>
             
             <li>
-              <a href="https://github.com/janko-m/shrine-cloudinary/tree/master/demo">
-                Cloudinary demo
+              <a href="https://github.com/janko-m/shrine/tree/master/demo">
+                Roda demo (official)
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/janko-m/shrine-rom-example">
+                ROM & dry-rb demo
               </a>
             </li>
             
@@ -883,7 +948,13 @@
             
             <li>
               <a href="https://github.com/iquest/rails_admin_shrine">
-                RailsAdminShrine
+                rails_admin_shrine
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/catsky/administrate-field-shrine">
+                administrate-field-shrine
               </a>
             </li>
             

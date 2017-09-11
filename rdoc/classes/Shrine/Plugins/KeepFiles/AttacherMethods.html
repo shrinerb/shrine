@@ -1,94 +1,97 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::KeepFiles::AttacherMethods</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::KeepFiles::AttacherMethods
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/keep_files.rb">lib/shrine/plugins/keep_files.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'></div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a href="#method-i-destroy">destroy</a></li>
-              <li><a href="#method-i-replace">replace</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-destroy'>
-                <a name='method-i-destroy'></a>
-                <div class='synopsis'>
-                  <span class='name'>destroy</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-destroy-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 34</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:destroyed</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-replace'>
-                <a name='method-i-replace'></a>
-                <div class='synopsis'>
-                  <span class='name'>replace</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-replace-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 30</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:replaced</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::KeepFiles::AttacherMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::KeepFiles::AttacherMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/keep_files_rb.html">lib/shrine/plugins/keep_files.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-destroy">destroy</a></li>
+<li><a href="#method-i-replace">replace</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-destroy'>
+<a name='method-i-destroy'></a>
+<div class='synopsis'>
+<span class='name'>destroy</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 34</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">destroy</span>&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:destroyed</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-replace'>
+<a name='method-i-replace'></a>
+<div class='synopsis'>
+<span class='name'>replace</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-replace-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 30</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">replace</span>&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:replaced</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

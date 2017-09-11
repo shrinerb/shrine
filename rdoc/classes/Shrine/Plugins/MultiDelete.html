@@ -1,73 +1,73 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::MultiDelete</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::MultiDelete
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/multi_delete.rb">lib/shrine/plugins/multi_delete.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>multi_delete</code> plugins allows you to leverage your
-            storage&#39;s multi delete capabilities.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">multi_delete</span></pre>
-            
-            <p>This plugin allows you pass an array of files to
-            <code>Shrine#delete</code>.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">delete</span>([<span class="ruby-identifier">file1</span>, <span class="ruby-identifier">file2</span>, <span class="ruby-identifier">file3</span>])</pre>
-            
-            <p>Now if you&#39;re using <a href="../Storage/S3.html">Storage::S3</a>,
-            deleting an array of files will issue a single HTTP request. Some other
-            storages may support multi deletes as well. The <code>versions</code>
-            plugin uses this plugin for deleting multiple versions at once.</p>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="MultiDelete/InstanceMethods.html">Shrine::Plugins::MultiDelete::InstanceMethods</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::MultiDelete</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::MultiDelete
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/multi_delete_rb.html">lib/shrine/plugins/multi_delete.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>multi_delete</code> plugins allows you to leverage your
+storage&#39;s multi delete capabilities.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">multi_delete</span></pre>
+
+<p>This plugin allows you pass an array of files to
+<code>Shrine#delete</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">delete</span>([<span class="ruby-identifier">file1</span>, <span class="ruby-identifier">file2</span>, <span class="ruby-identifier">file3</span>])</pre>
+
+<p>Now if you&#39;re using <a href="../Storage/S3.html">Storage::S3</a>,
+deleting an array of files will issue a single HTTP request. Some other
+storages may support multi deletes as well. The <code>versions</code>
+plugin uses this plugin for deleting multiple versions at once.</p>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="MultiDelete/InstanceMethods.html">Shrine::Plugins::MultiDelete::InstanceMethods</a></li>
+</ol>
+</div>
+<div id='section'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

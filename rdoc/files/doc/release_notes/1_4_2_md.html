@@ -1,72 +1,74 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>1.4.2.md</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='file' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>1.4.2.md</h1>
-        <div class='paths'>
-          doc/release_notes/1.4.2.md
-        </div>
-        <div class='last-update'>
-          Last Update:
-          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
-        </div>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
-            <ul><li>
-            <p>Version 1.4.1 introduced handling optimistic locking in ActiveRecord
-            plugin,  however the implementation wasn&#39;t stable and wouldn&#39;t work
-            correctly in  some cases, so we revert the behaviour as it was in version
-            1.4.0. Developers  can still handle optimistic locking themselves inside
-            background jobs.</p>
-            </li><li>
-            <p>Version 1.4.1 introduced an instance filter of cached attachment in Sequel 
-            plugin, which makes the same record instance unupdateable after promoting, 
-            even when not using backgrounding, so we revert the behaviour as it was in 
-            version 1.4.0. This is only a problem if you&#39;re doing something with
-            the  record instance after updating attachment.</p>
-            </li></ul>
-            
-            <h1 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
-            <ul><li>
-            <p>The Sequel plugin now doesn&#39;t rescue every <code>Sequel::Error</code>
-            on promoting, it  just rescues “Record not found” ones (in Sequel 4.28+
-            this is a  <code>Sequel::NoExistingObject</code>, but prior to that was a
-            generic <code>Sequel::Error</code>).</p>
-            </li></ul>
-          </div>
-          <div id='context'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>1.4.2.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>1.4.2.md
+</h1>
+<div class='paths'>
+doc/release_notes/1.4.2.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<ul><li>
+<p>Version 1.4.1 introduced handling optimistic locking in ActiveRecord
+plugin,  however the implementation wasn&#39;t stable and wouldn&#39;t work
+correctly in  some cases, so we revert the behaviour as it was in version
+1.4.0. Developers  can still handle optimistic locking themselves inside
+background jobs.</p>
+</li><li>
+<p>Version 1.4.1 introduced an instance filter of cached attachment in Sequel 
+plugin, which makes the same record instance unupdateable after promoting, 
+even when not using backgrounding, so we revert the behaviour as it was in 
+version 1.4.0. This is only a problem if you&#39;re doing something with
+the  record instance after updating attachment.</p>
+</li></ul>
+
+<h1 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<ul><li>
+<p>The Sequel plugin now doesn&#39;t rescue every <code>Sequel::Error</code>
+on promoting, it  just rescues “Record not found” ones (in Sequel 4.28+
+this is a  <code>Sequel::NoExistingObject</code>, but prior to that was a
+generic <code>Sequel::Error</code>).</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

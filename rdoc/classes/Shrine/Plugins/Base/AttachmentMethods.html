@@ -1,142 +1,193 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::Base::AttachmentMethods</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::Base::AttachmentMethods
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'></div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Class</h3>
-            <ol>
-              <li><a href="#method-c-new">new</a></li>
-            </ol>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a href="#method-i-inspect">inspect</a></li>
-              <li><a href="#method-i-shrine_class">shrine_class</a></li>
-              <li><a href="#method-i-to_s">to_s</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-new'>
-                <a name='method-c-new'></a>
-                <div class='synopsis'>
-                  <span class='name'>new</span>
-                  <span class='arguments'>(name)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Instantiates an attachment module for a given attribute name, which can
-                  then be included to a model class.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 394</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">name</span>)&#x000A;          <span class="ruby-ivar">@name</span> = <span class="ruby-identifier">name</span>&#x000A;&#x000A;          <span class="ruby-comment"># We store the attacher class so that the model can instantiate the</span>&#x000A;          <span class="ruby-comment"># correct attacher instance.</span>&#x000A;          <span class="ruby-identifier">class_variable_set</span>(<span class="ruby-value">:&quot;@@#{name}_attacher_class&quot;</span>, <span class="ruby-identifier">shrine_class</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>)&#x000A;&#x000A;          <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;            def #{name}_attacher&#x000A;              @#{name}_attacher ||= @@#{name}_attacher_class.new(self, :#{name})&#x000A;            end&#x000A;&#x000A;            def #{name}=(value)&#x000A;              #{name}_attacher.assign(value)&#x000A;            end&#x000A;&#x000A;            def #{name}&#x000A;              #{name}_attacher.get&#x000A;            end&#x000A;&#x000A;            def #{name}_url(*args)&#x000A;              #{name}_attacher.url(*args)&#x000A;            end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-inspect'>
-                <a name='method-i-inspect'></a>
-                <div class='synopsis'>
-                  <span class='name'>inspect</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Includes the attachment name in the output.</p>
-                  
-                  <pre class="ruby"><span class="ruby-constant">Shrine</span>[:<span class="ruby-identifier">image</span>].<span class="ruby-identifier">inspect</span> <span class="ruby-comment">#=&gt; &quot;#&lt;Shrine::Attachment(image)&gt;&quot;</span></pre>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-inspect-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-inspect-source'><span class="ruby-comment"># File lib/shrine.rb, line 430</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>&#x000A;  <span class="ruby-node">&quot;#&lt;#{self.class.inspect}(#{@name})&gt;&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-shrine_class'>
-                <a name='method-i-shrine_class'></a>
-                <div class='synopsis'>
-                  <span class='name'>shrine_class</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Returns the <a href="../../../Shrine.html">Shrine</a> class that this
-                  attachment&#39;s class is namespaced under.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-shrine_class-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine.rb, line 436</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-to_s'>
-                <a name='method-i-to_s'></a>
-                <div class='synopsis'>
-                  <span class='name'>to_s</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Includes the attachment name in the output.</p>
-                  
-                  <pre class="ruby"><span class="ruby-constant">Shrine</span>[:<span class="ruby-identifier">image</span>].<span class="ruby-identifier">to_s</span> <span class="ruby-comment">#=&gt; &quot;#&lt;Shrine::Attachment(image)&gt;&quot;</span></pre>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-to_s-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-to_s-source'><span class="ruby-comment"># File lib/shrine.rb, line 423</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>&#x000A;  <span class="ruby-node">&quot;#&lt;#{self.class.inspect}(#{@name})&gt;&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::Base::AttachmentMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Base::AttachmentMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine_rb.html">lib/shrine.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-attachment_name">attachment_name</a></li>
+<li><a href="#method-i-inspect">inspect</a></li>
+<li><a href="#method-i-options">options</a></li>
+<li><a href="#method-i-shrine_class">shrine_class</a></li>
+<li><a href="#method-i-to_s">to_s</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span>
+<span class='arguments'>(name, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Instantiates an attachment module for a given attribute name, which can
+then be included to a model class. Second argument will be passed to an
+attacher module.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine.rb, line 394</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;          <span class="ruby-ivar">@name</span>    = <span class="ruby-identifier">name</span>&#x000A;          <span class="ruby-ivar">@options</span> = <span class="ruby-identifier">options</span>&#x000A;&#x000A;          <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;            def #{name}_attacher&#x000A;              @#{name}_attacher ||= (&#x000A;                attachments    = self.class.ancestors.grep(Shrine::Attachment)&#x000A;                attachment     = attachments.find { |mod| mod.attachment_name == :#{name} }&#x000A;                attacher_class = attachment.shrine_class::Attacher&#x000A;                options        = attachment.options&#x000A;&#x000A;                attacher_class.new(self, :#{name}, options)&#x000A;              )&#x000A;            end&#x000A;&#x000A;            def #{name}=(value)&#x000A;              #{name}_attacher.assign(value)&#x000A;            end&#x000A;&#x000A;            def #{name}&#x000A;              #{name}_attacher.get&#x000A;            end&#x000A;&#x000A;            def #{name}_url(*args)&#x000A;              #{name}_attacher.url(*args)&#x000A;            end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-attachment_name'>
+<a name='method-i-attachment_name'></a>
+<div class='synopsis'>
+<span class='name'>attachment_name</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns name of the attachment this module provides.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attachment_name-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-attachment_name-source'><span class="ruby-comment"># File lib/shrine.rb, line 425</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">attachment_name</span>&#x000A;  <span class="ruby-ivar">@name</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-inspect'>
+<a name='method-i-inspect'></a>
+<div class='synopsis'>
+<span class='name'>inspect</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns class name with attachment name included.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>[:<span class="ruby-identifier">image</span>].<span class="ruby-identifier">inspect</span> <span class="ruby-comment">#=&gt; &quot;#&lt;Shrine::Attachment(image)&gt;&quot;</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inspect-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-inspect-source'><span class="ruby-comment"># File lib/shrine.rb, line 444</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>&#x000A;  <span class="ruby-node">&quot;#&lt;#{self.class.inspect}(#{attachment_name})&gt;&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-options'>
+<a name='method-i-options'></a>
+<div class='synopsis'>
+<span class='name'>options</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns options that are to be passed to the <a
+href="../../Attacher.html">Attacher</a>.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-options-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-options-source'><span class="ruby-comment"># File lib/shrine.rb, line 430</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">options</span>&#x000A;  <span class="ruby-ivar">@options</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-shrine_class'>
+<a name='method-i-shrine_class'></a>
+<div class='synopsis'>
+<span class='name'>shrine_class</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns the <a href="../../../Shrine.html">Shrine</a> class that this
+attachment&#39;s class is namespaced under.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-shrine_class-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-shrine_class-source'><span class="ruby-comment"># File lib/shrine.rb, line 450</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">shrine_class</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-to_s'>
+<a name='method-i-to_s'></a>
+<div class='synopsis'>
+<span class='name'>to_s</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns class name with attachment name included.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>[:<span class="ruby-identifier">image</span>].<span class="ruby-identifier">to_s</span> <span class="ruby-comment">#=&gt; &quot;#&lt;Shrine::Attachment(image)&gt;&quot;</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-to_s-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-to_s-source'><span class="ruby-comment"># File lib/shrine.rb, line 437</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>&#x000A;  <span class="ruby-node">&quot;#&lt;#{self.class.inspect}(#{attachment_name})&gt;&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

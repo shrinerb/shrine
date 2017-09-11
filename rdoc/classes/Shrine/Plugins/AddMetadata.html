@@ -1,109 +1,110 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::AddMetadata</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::AddMetadata
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>add_metadata</code> plugin provides a convenient method for
-            extracting and adding custom metadata values.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">pages</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PDF</span><span class="ruby-operator">::</span><span class="ruby-constant">Reader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">page_count</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>The above will add “pages” to the metadata hash, and also create the
-            <code>#pages</code> reader method on <a
-            href="../UploadedFile.html">Shrine::UploadedFile</a>.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">document</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;pages&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">pages</span></pre>
-            
-            <p>You can also extract multiple metadata values at once, by using
-            <code>add_metadata</code> without an argument, and returning a hash of
-            metadata.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>In this case <a href="../../Shrine.html">Shrine</a> won&#39;t automatically
-            create reader methods for the extracted metadata on <a
-            href="../UploadedFile.html">Shrine::UploadedFile</a>, but you can create
-            them via <code>metadata_method</code>.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">metadata_method</span> :<span class="ruby-identifier">duration</span>, :<span class="ruby-identifier">bitrate</span>, :<span class="ruby-identifier">resolution</span>, :<span class="ruby-identifier">frame_rate</span></pre>
-          </div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Class</h3>
-            <ol>
-              <li><a href="#method-c-configure">configure</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="AddMetadata/ClassMethods.html">Shrine::Plugins::AddMetadata::ClassMethods</a></li>
-              <li><a href="AddMetadata/InstanceMethods.html">Shrine::Plugins::AddMetadata::InstanceMethods</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-configure'>
-                <a name='method-c-configure'></a>
-                <div class='synopsis'>
-                  <span class='name'>configure</span>
-                  <span class='arguments'>(uploader)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = []&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::AddMetadata</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::AddMetadata
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/add_metadata_rb.html">lib/shrine/plugins/add_metadata.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>add_metadata</code> plugin provides a convenient method for
+extracting and adding custom metadata values.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">pages</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PDF</span><span class="ruby-operator">::</span><span class="ruby-constant">Reader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">page_count</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The above will add “pages” to the metadata hash, and also create the
+<code>#pages</code> reader method on <a
+href="../UploadedFile.html">Shrine::UploadedFile</a>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">document</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;pages&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">pages</span></pre>
+
+<p>You can also extract multiple metadata values at once, by using
+<code>add_metadata</code> without an argument, and returning a hash of
+metadata.</p>
+
+<pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>In this case <a href="../../Shrine.html">Shrine</a> won&#39;t automatically
+create reader methods for the extracted metadata on <a
+href="../UploadedFile.html">Shrine::UploadedFile</a>, but you can create
+them via <code>metadata_method</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">metadata_method</span> :<span class="ruby-identifier">duration</span>, :<span class="ruby-identifier">bitrate</span>, :<span class="ruby-identifier">resolution</span>, :<span class="ruby-identifier">frame_rate</span></pre>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="AddMetadata/ClassMethods.html">Shrine::Plugins::AddMetadata::ClassMethods</a></li>
+<li><a href="AddMetadata/InstanceMethods.html">Shrine::Plugins::AddMetadata::InstanceMethods</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = []&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

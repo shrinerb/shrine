@@ -1,215 +1,222 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>attacher.md</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='file' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>attacher.md</h1>
-        <div class='paths'>
-          doc/attacher.md
-        </div>
-        <div class='last-update'>
-          Last Update:
-          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
-        </div>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <h1 id="label-Using+Attacher">Using Attacher<span><a href="#label-Using+Attacher">&para;</a> <a href="#top">&uarr;</a></span></h1>
-            
-            <p>The most convenient way to use <a
-            href="../../classes/Shrine.html">Shrine</a> is through the model, using the
-            interface provided by Shrine&#39;s attachment module. This way you can
-            interact with the attachment just like with any other column attribute, and
-            adding attachment fields to the form just works.</p>
-            
-            <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>However, you don&#39;t want to add additional methods on the model and
-            prefer explicitness, or you need more control, you can achieve the same
-            behaviour using the <code>Shrine::Attacher</code> object, which is what the
-            attachment interface uses under the hood.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>) <span class="ruby-comment"># equivalent to `photo.image_attacher`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>)                                 <span class="ruby-comment"># equivalent to `photo.image = file`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span>                                          <span class="ruby-comment"># equivalent to `photo.image`</span></pre>
-            
-            <h2 id="label-Attributes">Attributes<span><a href="#label-Attributes">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The attacher object exposes the objects it uses:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span> <span class="ruby-comment">#=&gt; #&lt;Photo&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">name</span>   <span class="ruby-comment">#=&gt; :image</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cache</span>  <span class="ruby-comment">#=&gt; #&lt;ImageUploader @storage_key=:cache&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store</span>  <span class="ruby-comment">#=&gt; #&lt;ImageUploader @storage_key=:store&gt;</span></pre>
-            
-            <p>The attacher will automatically use <code>:cache</code> and
-            <code>:store</code> storages, but you can also tell it to use different
-            temporary and permanent storage:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)</pre>
-            
-            <p>The attacher will use the <code>&lt;attachment&gt;_data</code> attribute
-            for storing information about the attachment.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data_attribute</span> <span class="ruby-comment">#=&gt; :image_data</span></pre>
-            
-            <h2 id="label-Assignment">Assignment<span><a href="#label-Assignment">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The <code>#assign</code> method accepts either an IO object to be cached,
-            or an already cached file in form of a JSON string, and assigns the cached
-            result to record&#39;s <code>&lt;attachment&gt;_data</code> attribute.</p>
-            
-            <pre class="ruby"><span class="ruby-comment"># uploads the `io` object to temporary storage, and writes to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;<span class="ruby-comment"># writes the given cached file to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span> <span class="ruby-string">&#39;{&#x000A;  &quot;id&quot;: &quot;9260ea09d8effd.jpg&quot;,&#x000A;  &quot;storage&quot;: &quot;cache&quot;,&#x000A;  &quot;metadata&quot;: { ... }&#x000A;}&#39;</span></pre>
-            
-            <p>For security reasons <code>#assign</code> doesn&#39;t accept files uploaded
-            to permanent storage, but you can also use <code>#set</code> to attach any
-            <code>Shrine::UploadedFile</code> object.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)</pre>
-            
-            <h2 id="label-Retrieval">Retrieval<span><a href="#label-Retrieval">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The <code>#get</code> method reads record&#39;s
-            <code>&lt;attachment&gt;_data</code> attribute, and constructs a
-            <code>Shrine::UploadedFile</code> object from it.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
-            
-            <p>The <code>#read</code> method will just return the value of the underlying
-            <code>&lt;attachment&gt;_data</code> attribute.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">read</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span></pre>
-            
-            <p>In general you can use <code>#uploaded_file</code> to contruct a
-            <code>Shrine::UploadedFile</code> from a JSON string.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attachment_data</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">attachment_data</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
-            
-            <h2 id="label-URL">URL<span><a href="#label-URL">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The <code>#url</code> method returns the URL to the attached file, and
-            returns <code>nil</code> if no file is attached.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment"># calls `attacher.get.url`</span></pre>
-            
-            <h2 id="label-State">State<span><a href="#label-State">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>You can ask the attacher whether the currently attached file is cached or
-            stored.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span></pre>
-            
-            <h2 id="label-Validations">Validations<span><a href="#label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>Whenever a file is assigned via <code>#assign</code> or <code>#set</code>,
-            the file validations are automatically run, and you can access the
-            validation errors through <code>#errors</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">large_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">errors</span> <span class="ruby-comment">#=&gt; [&quot;is larger than 10 MB&quot;]</span></pre>
-            
-            <h2 id="label-Promoting">Promoting<span><a href="#label-Promoting">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>After the attachment is assigned and you run validations, it should be
-            promoted to permanent storage after the record is saved. You can use
-            <code>#finalize</code> for that, since that will also automatically delete
-            any previously attached files.</p>
-            
-            <pre class="ruby"><span class="ruby-comment"># Replaces previous attachment and replaces new</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span></pre>
-            
-            <p>This is normally automatically added to a callback by the ORM plugin when
-            going through the model. Internally this calls <code>#promote</code>, which
-            uploads a given <code>Shrine::UploadedFile</code> to permanent storage, and
-            swaps it with the current attachment, unless a new file was attached in the
-            meanwhile.</p>
-            
-            <pre class="ruby"><span class="ruby-comment"># uploads cached file to permanent storage and replaces the current one</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">cached_file</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">custom_name</span>)</pre>
-            
-            <p>The <code>:action</code> parameter is optional; it can be used for
-            triggering a certain processing block, and it is also automatically printed
-            by the <code>logging</code> plugin to aid in debugging.</p>
-            
-            <p>Internally this calls <code>#swap</code>, which will update the record with
-            any uploaded file, but will reload the record to check if the current
-            attachment hasn&#39;t changed (if the <code>backgrounding</code> plugin is
-            loaded).</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">uploaded_file</span>)</pre>
-            
-            <p>Both <code>#promote</code> and <code>#swap</code> are useful for <a
-            href="http://shrinerb.com/rdoc/files/doc/migrating_storage_md.html">file
-            migrations</a>.</p>
-            
-            <h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>When the <code>backgrounding</code> plugin is loaded, it allows you to
-            promote and delete files in the background, and the corresponding methods
-            are prefixed with <code>_</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">cached_file</span>)  <span class="ruby-comment"># calls the registered `Attacher.promote` block</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>) <span class="ruby-comment"># calls the registered `Attacher.delete` block</span></pre>
-            
-            <p>These are automatically used when using <a
-            href="../../classes/Shrine.html">Shrine</a> through models.</p>
-            
-            <h2 id="label-Context">Context<span><a href="#label-Context">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The attacher sends <code>#context</code> to each upload/delete call to the
-            uploader. By default it will hold <code>:record</code> and
-            <code>:name</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">context</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   record: #&lt;Photo...&gt;,</span>&#x000A;<span class="ruby-comment">#   name:   :image,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
-            
-            <p>However, you can change/add additional context to be sent when calling the
-            uploaders:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">context</span>[:<span class="ruby-identifier">foo</span>] = <span class="ruby-string">&quot;bar&quot;</span></pre>
-            
-            <p>This is useful for example if you have immutable model instances, and you
-            want to assign a new updated instance. For example both foreground and
-            background <code>#promote</code> requires that the record is persisted (and
-            its <code>#id</code> is present).</p>
-            
-            <h2 id="label-Uploading+and+deleting">Uploading and deleting<span><a href="#label-Uploading+and+deleting">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>Normally you can upload and delete directly by using the uploader.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads the file to `:store` storage</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>)         <span class="ruby-comment"># deletes the file uploaded to `:store`</span></pre>
-            
-            <p>The attacher has methods for “caching”, “storing” and “deleting” files,
-            which delegate to these uploader methods, but also pass in the
-            <code>#context</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">cached_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">image</span>) <span class="ruby-comment"># delegates to `Shrine#upload`</span>&#x000A;<span class="ruby-identifier">stored_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">image</span>) <span class="ruby-comment"># delegates to `Shrine#upload`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">stored_file</span>)        <span class="ruby-comment"># delegates to `Shrine#delete`</span></pre>
-            
-            <p>The <code>#cache!</code> and <code>#store!</code> only upload the file to
-            the storage, they don&#39;t write to record&#39;s data column.</p>
-          </div>
-          <div id='context'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>attacher.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>attacher.md
+</h1>
+<div class='paths'>
+doc/attacher.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-Using+Attacher">Using Attacher<span><a href="#label-Using+Attacher">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>The most convenient way to use <a
+href="../../classes/Shrine.html">Shrine</a> is through the model, using the
+interface provided by Shrine&#39;s attachment module. This way you can
+interact with the attachment just like with any other column attribute, and
+adding attachment fields to the form just works.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>However, you don&#39;t want to add additional methods on the model and
+prefer explicitness, or you need more control, you can achieve the same
+behaviour using the <code>Shrine::Attacher</code> object, which is what the
+attachment interface uses under the hood.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>) <span class="ruby-comment"># equivalent to `photo.image_attacher`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>)                                 <span class="ruby-comment"># equivalent to `photo.image = file`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span>                                          <span class="ruby-comment"># equivalent to `photo.image`</span></pre>
+
+<h2 id="label-Attributes">Attributes<span><a href="#label-Attributes">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The attacher object exposes the objects it uses:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span> <span class="ruby-comment">#=&gt; #&lt;Photo&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">name</span>   <span class="ruby-comment">#=&gt; :image</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cache</span>  <span class="ruby-comment">#=&gt; #&lt;ImageUploader @storage_key=:cache&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store</span>  <span class="ruby-comment">#=&gt; #&lt;ImageUploader @storage_key=:store&gt;</span></pre>
+
+<p>The attacher will automatically use <code>:cache</code> and
+<code>:store</code> storages, but you can also tell it to use different
+temporary and permanent storage:</p>
+
+<pre class="ruby"><span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)</pre>
+
+<p>Note that you can pass the <code>:cache</code> and <code>:store</code>
+options via <code>Attachment.new</code> too:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The attacher will use the <code>&lt;attachment&gt;_data</code> attribute
+for storing information about the attachment.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data_attribute</span> <span class="ruby-comment">#=&gt; :image_data</span></pre>
+
+<h2 id="label-Assignment">Assignment<span><a href="#label-Assignment">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <code>#assign</code> method accepts either an IO object to be cached,
+or an already cached file in form of a JSON string, and assigns the cached
+result to record&#39;s <code>&lt;attachment&gt;_data</code> attribute.</p>
+
+<pre class="ruby"><span class="ruby-comment"># uploads the `io` object to temporary storage, and writes to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;<span class="ruby-comment"># writes the given cached file to the data column</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span> <span class="ruby-string">&#39;{&#x000A;  &quot;id&quot;: &quot;9260ea09d8effd.jpg&quot;,&#x000A;  &quot;storage&quot;: &quot;cache&quot;,&#x000A;  &quot;metadata&quot;: { ... }&#x000A;}&#39;</span></pre>
+
+<p>For security reasons <code>#assign</code> doesn&#39;t accept files uploaded
+to permanent storage, but you can also use <code>#set</code> to attach any
+<code>Shrine::UploadedFile</code> object.</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)</pre>
+
+<h2 id="label-Retrieval">Retrieval<span><a href="#label-Retrieval">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <code>#get</code> method reads record&#39;s
+<code>&lt;attachment&gt;_data</code> attribute, and constructs a
+<code>Shrine::UploadedFile</code> object from it.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+
+<p>The <code>#read</code> method will just return the value of the underlying
+<code>&lt;attachment&gt;_data</code> attribute.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">read</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span></pre>
+
+<p>In general you can use <code>#uploaded_file</code> to contruct a
+<code>Shrine::UploadedFile</code> from a JSON string.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attachment_data</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;dsg024lfs.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">attachment_data</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+
+<h2 id="label-URL">URL<span><a href="#label-URL">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <code>#url</code> method returns the URL to the attached file, and
+returns <code>nil</code> if no file is attached.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment"># calls `attacher.get.url`</span></pre>
+
+<h2 id="label-State">State<span><a href="#label-State">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>You can ask the attacher whether the currently attached file is cached or
+stored.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span></pre>
+
+<h2 id="label-Validations">Validations<span><a href="#label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Whenever a file is assigned via <code>#assign</code> or <code>#set</code>,
+the file validations are automatically run, and you can access the
+validation errors through <code>#errors</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">large_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">errors</span> <span class="ruby-comment">#=&gt; [&quot;is larger than 10 MB&quot;]</span></pre>
+
+<h2 id="label-Promoting">Promoting<span><a href="#label-Promoting">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>After the attachment is assigned and you run validations, it should be
+promoted to permanent storage after the record is saved. You can use
+<code>#finalize</code> for that, since that will also automatically delete
+any previously attached files.</p>
+
+<pre class="ruby"><span class="ruby-comment"># Replaces previous attachment and replaces new</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">finalize</span></pre>
+
+<p>This is normally automatically added to a callback by the ORM plugin when
+going through the model. Internally this calls <code>#promote</code>, which
+uploads a given <code>Shrine::UploadedFile</code> to permanent storage, and
+swaps it with the current attachment, unless a new file was attached in the
+meanwhile.</p>
+
+<pre class="ruby"><span class="ruby-comment"># uploads cached file to permanent storage and replaces the current one</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">cached_file</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">custom_name</span>)</pre>
+
+<p>The <code>:action</code> parameter is optional; it can be used for
+triggering a certain processing block, and it is also automatically printed
+by the <code>logging</code> plugin to aid in debugging.</p>
+
+<p>Internally this calls <code>#swap</code>, which will update the record with
+any uploaded file, but will reload the record to check if the current
+attachment hasn&#39;t changed (if the <code>backgrounding</code> plugin is
+loaded).</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">uploaded_file</span>)</pre>
+
+<p>Both <code>#promote</code> and <code>#swap</code> are useful for <a
+href="http://shrinerb.com/rdoc/files/doc/migrating_storage_md.html">file
+migrations</a>.</p>
+
+<h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>When the <code>backgrounding</code> plugin is loaded, it allows you to
+promote and delete files in the background, and the corresponding methods
+are prefixed with <code>_</code>:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">delete</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span> <span class="ruby-constant">DeleteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-identifier">data</span>) }</pre>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">cached_file</span>)  <span class="ruby-comment"># calls the registered `Attacher.promote` block</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>) <span class="ruby-comment"># calls the registered `Attacher.delete` block</span></pre>
+
+<p>These are automatically used when using <a
+href="../../classes/Shrine.html">Shrine</a> through models.</p>
+
+<h2 id="label-Context">Context<span><a href="#label-Context">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The attacher sends <code>#context</code> to each upload/delete call to the
+uploader. By default it will hold <code>:record</code> and
+<code>:name</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">context</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   record: #&lt;Photo...&gt;,</span>&#x000A;<span class="ruby-comment">#   name:   :image,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
+
+<p>However, you can change/add additional context to be sent when calling the
+uploaders:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">context</span>[:<span class="ruby-identifier">foo</span>] = <span class="ruby-string">&quot;bar&quot;</span></pre>
+
+<p>This is useful for example if you have immutable model instances, and you
+want to assign a new updated instance. For example both foreground and
+background <code>#promote</code> requires that the record is persisted (and
+its <code>#id</code> is present).</p>
+
+<h2 id="label-Uploading+and+deleting">Uploading and deleting<span><a href="#label-Uploading+and+deleting">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Normally you can upload and delete directly by using the uploader.</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads the file to `:store` storage</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">uploaded_file</span>)         <span class="ruby-comment"># deletes the file uploaded to `:store`</span></pre>
+
+<p>The attacher has methods for “caching”, “storing” and “deleting” files,
+which delegate to these uploader methods, but also pass in the
+<code>#context</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">cached_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">image</span>) <span class="ruby-comment"># delegates to `Shrine#upload`</span>&#x000A;<span class="ruby-identifier">stored_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">image</span>) <span class="ruby-comment"># delegates to `Shrine#upload`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">delete!</span>(<span class="ruby-identifier">stored_file</span>)        <span class="ruby-comment"># delegates to `Shrine#delete`</span></pre>
+
+<p>The <code>#cache!</code> and <code>#store!</code> only upload the file to
+the storage, they don&#39;t write to record&#39;s data column.</p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

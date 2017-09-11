@@ -1,74 +1,74 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::ModuleInclude</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::ModuleInclude
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/module_include.rb">lib/shrine/plugins/module_include.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>module_include</code> plugin allows you to extend Shrine&#39;s
-            core classes for the given uploader with modules/methods.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">module_include</span></pre>
-            
-            <p>To add a module to a core class, call the appropriate method:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-constant">CustomAttachmentMethods</span>&#x000A;<span class="ruby-identifier">attacher_module</span> <span class="ruby-constant">CustomAttacherMethods</span>&#x000A;<span class="ruby-identifier">file_module</span> <span class="ruby-constant">CustomFileMethods</span></pre>
-            
-            <p>Alternatively you can pass in a block (which internally creates a module):</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;      def #{@name}_size(version)&#x000A;        if #{@name}.is_a?(Hash)&#x000A;          #{@name}[version].size&#x000A;        else&#x000A;          #{@name}.size if #{@name}&#x000A;        end&#x000A;      end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-identifier">__LINE</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>The above defines an additional <code>#&lt;attachment&gt;_size</code>
-            method on the attachment module, which is what is included in your model.</p>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="ModuleInclude/ClassMethods.html">Shrine::Plugins::ModuleInclude::ClassMethods</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::ModuleInclude</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::ModuleInclude
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/module_include_rb.html">lib/shrine/plugins/module_include.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>module_include</code> plugin allows you to extend Shrine&#39;s
+core classes for the given uploader with modules/methods.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">module_include</span></pre>
+
+<p>To add a module to a core class, call the appropriate method:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-constant">CustomAttachmentMethods</span>&#x000A;<span class="ruby-identifier">attacher_module</span> <span class="ruby-constant">CustomAttacherMethods</span>&#x000A;<span class="ruby-identifier">file_module</span> <span class="ruby-constant">CustomFileMethods</span></pre>
+
+<p>Alternatively you can pass in a block (which internally creates a module):</p>
+
+<pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-identifier">module_eval</span> <span class="ruby-string">&quot;      def #{@name}_size(version)&#x000A;        if #{@name}.is_a?(Hash)&#x000A;          #{@name}[version].size&#x000A;        else&#x000A;          #{@name}.size if #{@name}&#x000A;        end&#x000A;      end&#x000A;&quot;</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-identifier">__LINE</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The above defines an additional <code>#&lt;attachment&gt;_size</code>
+method on the attachment module, which is what is included in your model.</p>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="ModuleInclude/ClassMethods.html">Shrine::Plugins::ModuleInclude::ClassMethods</a></li>
+</ol>
+</div>
+<div id='section'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

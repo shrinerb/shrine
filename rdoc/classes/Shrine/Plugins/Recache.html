@@ -1,71 +1,71 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::Recache</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::Recache
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/recache.rb">lib/shrine/plugins/recache.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>recache</code> plugin allows you to process your attachment after
-            validations succeed, but before the attachment is promoted. This is useful
-            for example when you want to generate some versions upfront (so the user
-            immediately sees them) and other versions you want to generate in the
-            promotion phase in a background job.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">recache</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">recache</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform cheap processing</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform more expensive processing</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>Recaching will be automatically triggered in a “before save” callback, but
-            if you&#39;re using the attacher directly, you can call it manually:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">recache</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span></pre>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="Recache/AttacherMethods.html">Shrine::Plugins::Recache::AttacherMethods</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::Recache</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Recache
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/recache_rb.html">lib/shrine/plugins/recache.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>recache</code> plugin allows you to process your attachment after
+validations succeed, but before the attachment is promoted. This is useful
+for example when you want to generate some versions upfront (so the user
+immediately sees them) and other versions you want to generate in the
+promotion phase in a background job.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">recache</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">recache</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform cheap processing</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform more expensive processing</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>Recaching will be automatically triggered in a “before save” callback, but
+if you&#39;re using the attacher directly, you can call it manually:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">recache</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">changed?</span></pre>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="Recache/AttacherMethods.html">Shrine::Plugins::Recache::AttacherMethods</a></li>
+</ol>
+</div>
+<div id='section'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

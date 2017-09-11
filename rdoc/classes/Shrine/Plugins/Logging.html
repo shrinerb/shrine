@@ -1,136 +1,138 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::Logging</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::Logging
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/logging.rb">lib/shrine/plugins/logging.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>logging</code> plugin logs any storing/processing/deleting that
-            is performed.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span></pre>
-            
-            <p>This plugin is useful when you want to have overview of what exactly is
-            going on, or you simply want to have it logged for future debugging. By
-            default the logging output looks something like this:</p>
-            
-            <pre>2015-10-09T20:06:06.676Z #25602: STORE[cache] ImageUploader[:avatar] User[29543] 1 file (0.1s)&#x000A;2015-10-09T20:06:06.854Z #25602: PROCESS[store]: ImageUploader[:avatar] User[29543] 1-3 files (0.22s)&#x000A;2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)</pre>
-            
-            <p>The plugin accepts the following options:</p>
-            <table class="rdoc-list note-list"><tbody><tr><td class='label'>:format</td><td>
-            <p>This allows you to change the logging output into something that may be 
-            easier to grep. Accepts <code>:human</code> (default), <code>:json</code>
-            and <code>:heroku</code>.</p>
-            </td></tr><tr><td class='label'>:stream</td><td>
-            <p>The default logging stream is <code>$stdout</code>, but you may want to
-            change it,  e.g. if you log into a file. This option is passed directly to 
-            <code>Logger.new</code> (from the “logger” Ruby standard library).</p>
-            </td></tr><tr><td class='label'>:logger</td><td>
-            <p>This allows you to change the logger entirely. This is useful for example 
-            in Rails applications, where you might want to assign this option to 
-            <code>Rails.logger</code>.</p>
-            </td></tr></tbody></table>
-            
-            <p>The default format is probably easiest to read, but may not be easiest to
-            grep. If this is important to you, you can switch to another format:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">json</span>&#x000A;<span class="ruby-comment"># {&quot;action&quot;:&quot;upload&quot;,&quot;phase&quot;:&quot;cache&quot;,&quot;uploader&quot;:&quot;ImageUploader&quot;,&quot;attachment&quot;:&quot;avatar&quot;,...}</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">heroku</span>&#x000A;<span class="ruby-comment"># action=upload phase=cache uploader=ImageUploader attachment=avatar record_class=User ...</span></pre>
-            
-            <p><a href="Logging.html">Logging</a> is by default disabled in tests, but you
-            can enable it by setting <code>Shrine.logger.level = Logger::INFO</code>.</p>
-          </div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Class</h3>
-            <ol>
-              <li><a href="#method-c-configure">configure</a></li>
-              <li><a href="#method-c-load_dependencies">load_dependencies</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="Logging/ClassMethods.html">Shrine::Plugins::Logging::ClassMethods</a></li>
-              <li><a href="Logging/InstanceMethods.html">Shrine::Plugins::Logging::InstanceMethods</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-configure'>
-                <a name='method-c-configure'></a>
-                <div class='synopsis'>
-                  <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, opts = {})</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 50</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_logger</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:logger</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_logger</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_stream</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:stream</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:logging_stream</span>, <span class="ruby-identifier">$stdout</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_format</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:format</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:logging_format</span>, <span class="ruby-value">:human</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-class' id='method-method-c-load_dependencies'>
-                <a name='method-c-load_dependencies'></a>
-                <div class='synopsis'>
-                  <span class='name'>load_dependencies</span>
-                  <span class='arguments'>(uploader, *)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-load_dependencies-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 46</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::Logging</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Logging
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/logging_rb.html">lib/shrine/plugins/logging.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>logging</code> plugin logs any storing/processing/deleting that
+is performed.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span></pre>
+
+<p>This plugin is useful when you want to have overview of what exactly is
+going on, or you simply want to have it logged for future debugging. By
+default the logging output looks something like this:</p>
+
+<pre>2015-10-09T20:06:06.676Z #25602: STORE[cache] ImageUploader[:avatar] User[29543] 1 file (0.1s)&#x000A;2015-10-09T20:06:06.854Z #25602: PROCESS[store]: ImageUploader[:avatar] User[29543] 1-3 files (0.22s)&#x000A;2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)</pre>
+
+<p>The plugin accepts the following options:</p>
+<table class="rdoc-list note-list"><tbody><tr><td class='label'>:format</td><td>
+<p>This allows you to change the logging output into something that may be 
+easier to grep. Accepts <code>:human</code> (default), <code>:json</code>
+and <code>:heroku</code>.</p>
+</td></tr><tr><td class='label'>:stream</td><td>
+<p>The default logging stream is <code>$stdout</code>, but you may want to
+change it,  e.g. if you log into a file. This option is passed directly to 
+<code>Logger.new</code> (from the “logger” Ruby standard library).</p>
+</td></tr><tr><td class='label'>:logger</td><td>
+<p>This allows you to change the logger entirely. This is useful for example 
+in Rails applications, where you might want to assign this option to 
+<code>Rails.logger</code>.</p>
+</td></tr></tbody></table>
+
+<p>The default format is probably easiest to read, but may not be easiest to
+grep. If this is important to you, you can switch to another format:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">json</span>&#x000A;<span class="ruby-comment"># {&quot;action&quot;:&quot;upload&quot;,&quot;phase&quot;:&quot;cache&quot;,&quot;uploader&quot;:&quot;ImageUploader&quot;,&quot;attachment&quot;:&quot;avatar&quot;,...}</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">logging</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">heroku</span>&#x000A;<span class="ruby-comment"># action=upload phase=cache uploader=ImageUploader attachment=avatar record_class=User ...</span></pre>
+
+<p><a href="Logging.html">Logging</a> is by default disabled in tests, but you
+can enable it by setting <code>Shrine.logger.level = Logger::INFO</code>.</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+<li><a href="#method-c-load_dependencies">load_dependencies</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="Logging/ClassMethods.html">Shrine::Plugins::Logging::ClassMethods</a></li>
+<li><a href="Logging/InstanceMethods.html">Shrine::Plugins::Logging::InstanceMethods</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 51</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_logger</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:logger</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_logger</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_stream</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:stream</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:logging_stream</span>, <span class="ruby-identifier">$stdout</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:logging_format</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:format</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:logging_format</span>, <span class="ruby-value">:human</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-load_dependencies'>
+<a name='method-c-load_dependencies'></a>
+<div class='synopsis'>
+<span class='name'>load_dependencies</span>
+<span class='arguments'>(uploader, *)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/logging.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

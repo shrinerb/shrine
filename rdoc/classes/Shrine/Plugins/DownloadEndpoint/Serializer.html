@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::DownloadEndpoint::Serializer</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+Shrine::Plugins::DownloadEndpoint::Serializer
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/download_endpoint_rb.html">lib/shrine/plugins/download_endpoint.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-dump">dump</a></li>
+<li><a href="#method-i-load">load</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-dump'>
+<a name='method-i-dump'></a>
+<div class='synopsis'>
+<span class='name'>dump</span>
+<span class='arguments'>(data)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dump-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-dump-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 209</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">dump</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">base64_encode</span>(<span class="ruby-identifier">json_encode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-load'>
+<a name='method-i-load'></a>
+<div class='synopsis'>
+<span class='name'>load</span>
+<span class='arguments'>(data)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-load-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 213</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">load</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">json_decode</span>(<span class="ruby-identifier">base64_decode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

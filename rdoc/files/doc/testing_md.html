@@ -30,7 +30,7 @@ doc/testing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-04-30 23:29:23 +1000</span>
+<span class='datetime'>2017-09-11 12:36:08 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -84,15 +84,10 @@ between tests.</p>
 
 <pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
 
-<p>Alternatively, if you&#39;re using Amazon S3 storage, in tests (and
-development) you can swap it out for <a
-href="https://github.com/jubos/fake-s3">FakeS3</a>. You just need tell
-aws-sdk that instead of <code>s3.amazonaws.com</code> it should use the
-host of your FakeS3 server when generating URLs.</p>
-
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">endpoint</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://localhost:10000&quot;</span>)</pre>
-
-<p>Note that for using FakeS3 you need aws-sdk version 2.2.25 or higher.</p>
+<p>Alternatively, if you&#39;re using Amazon S3 storage, in tests you can use
+<a
+href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">aws-sdk-ruby
+stubs</a>.</p>
 
 <h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -106,8 +101,8 @@ have the test file assigned dynamically when the record is created:</p>
 fixtures, you unfortunately won&#39;t be able to use them for assigning
 files. This is because Rails fixtures only allow assigning primitive data
 types, and don&#39;t allow you to specify <a
-href="../../classes/Shrine.html">Shrine</a> attributes, you can only assign
-to columns directly.</p>
+href="../../classes/Shrine.html">Shrine</a> attributes - you can only
+assign to columns directly.</p>
 
 <h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -213,17 +208,16 @@ Since the only requirement of the processor is that it responds to
 
 <h2 id="label-Direct+upload">Direct upload<span><a href="#label-Direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>In case you&#39;re doing direct uploads to S3 on production and staging
-environments, in development and test you might want to just store files on
-the filesystem for speed.</p>
+<p>If you&#39;ve set up direct uploads to Amazon S3 (using the
+<code>presign_endpoint</code> plugin), in tests you&#39;ll probably want to
+just use filesystem or memory storage to avoid network requests.</p>
 
-<p>In that case you can swap out S3 for FileSystem, and the
-<code>direct_upload</code> app should still continue to work without any
-changes. This is because <a href="../../classes/Shrine.html">Shrine</a>
-detects that you&#39;re using a storage which isn&#39;t an external
-service, and in that case the presign endpoint returns an URL to the upload
-route that&#39;s also provided by the <code>direct_upload</code> app
-mounted in your routes.</p>
+<p>The easiest way to do that is to add an <code>upload_endpoint</code>,
+modify it so that it behaves like S3, and change
+<code>presign_endpoint</code> response to point to the upload endpoint.
+Here is how one could modify the test helper in a Rails application:</p>
+
+<pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;&#x000A;<span class="ruby-comment"># create and mount a fake S3 upload endpoint</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>&#x000A;<span class="ruby-identifier">fake_s3</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>, <span class="ruby-identifier">upload_context</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">request</span>) {&#x000A;  { <span class="ruby-identifier">location</span><span class="ruby-operator">:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;key&quot;</span>].<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^cache\//</span>).<span class="ruby-identifier">post_match</span> }&#x000A;})&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">prepend</span> { <span class="ruby-identifier">mount</span> <span class="ruby-identifier">fake_s3</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/s3&quot;</span> }&#x000A;&#x000A;<span class="ruby-comment"># override presigns to return URLs to the fake S3 upload endpoint</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">id</span>, <span class="ruby-identifier">options</span>, <span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">Struct</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">url</span>, :<span class="ruby-identifier">fields</span>).<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;#{request.base_url}/s3&quot;</span>, { <span class="ruby-string">&quot;key&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;cache/#{id}&quot;</span> })&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

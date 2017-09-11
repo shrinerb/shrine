@@ -1,97 +1,99 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>migrating_storage.md</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='file' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>migrating_storage.md</h1>
-        <div class='paths'>
-          doc/migrating_storage.md
-        </div>
-        <div class='last-update'>
-          Last Update:
-          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
-        </div>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <h1 id="label-Migrating+to+Different+Storage">Migrating to Different Storage<span><a href="#label-Migrating+to+Different+Storage">&para;</a> <a href="#top">&uarr;</a></span></h1>
-            
-            <p>While your application is live in production and performing uploads, it may
-            happen that you decide you want to change your storage (the
-            <code>:store</code>). <a href="../../classes/Shrine.html">Shrine</a> by
-            design allows you to do that easily, with zero downtime, by deploying the
-            change in 2 phases.</p>
-            
-            <h2 id="label-Phase+1-3A+Changing+the+storage">Phase 1: Changing the storage<span><a href="#label-Phase+1-3A+Changing+the+storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The first stage, add the desired storage to your registry, and make it your
-            current store (let&#39;s say that you&#39;re migrating from FileSystem to
-            S3):</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;  <span class="ruby-identifier">new_store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">new_store</span></pre>
-            
-            <p>This will make already uploaded files stay uploaded on <code>:store</code>,
-            and all new files will be uploaded to <code>:new_store</code>.</p>
-            
-            <h2 id="label-Phase+2-3A+Copying+existing+files">Phase 2: Copying existing files<span><a href="#label-Phase+2-3A+Copying+existing+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>After you&#39;ve deployed the previous change, it&#39;s time to copy all
-            the existing files to the new storage, and update the records. This is how
-            you can do it if you&#39;re using Sequel:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">if</span> (<span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>).<span class="ruby-identifier">stored?</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># Repeat for all other attachments and models</span></pre>
-            
-            <p>Now your uploaded files are successfully copied to the new storage, so you
-            should be able to safely delete the old one.</p>
-            
-            <h2 id="label-Phase+3+and+4-3A+Renaming+new+storage+-28optional-29">Phase 3 and 4: Renaming new storage (optional)<span><a href="#label-Phase+3+and+4-3A+Renaming+new+storage+-28optional-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>The uploads will now be happening on the right storage, but if you would
-            rather rename <code>:new_store</code> back to <code>:store</code>, you can
-            do two more phases. <strong>First</strong> you need to deploy aliasing
-            <code>:new_store</code> to <code>:store</code> (and make the default
-            storage be <code>:store</code> again):</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">new_store</span>] = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">store</span>]</pre>
-            
-            <p><strong>Second</strong>, you should rename the storage names on existing
-            records. With Sequel it would be something like:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;    <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">avatar_data</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_data</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&#39;&quot;new_store&quot;&#39;</span>, <span class="ruby-string">&#39;&quot;store&quot;&#39;</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># Repeat for all other attachments and models</span></pre>
-            
-            <p>Now everything should be in order and you should be able to remove the
-            <code>:new_store</code> alias.</p>
-          </div>
-          <div id='context'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>migrating_storage.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>migrating_storage.md
+</h1>
+<div class='paths'>
+doc/migrating_storage.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-Migrating+to+Different+Storage">Migrating to Different Storage<span><a href="#label-Migrating+to+Different+Storage">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>While your application is live in production and performing uploads, it may
+happen that you decide you want to change your storage (the
+<code>:store</code>). <a href="../../classes/Shrine.html">Shrine</a> by
+design allows you to do that easily, with zero downtime, by deploying the
+change in 2 phases.</p>
+
+<h2 id="label-Phase+1-3A+Changing+the+storage">Phase 1: Changing the storage<span><a href="#label-Phase+1-3A+Changing+the+storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The first stage, add the desired storage to your registry, and make it your
+current store (let&#39;s say that you&#39;re migrating from FileSystem to
+S3):</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;  <span class="ruby-identifier">new_store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">new_store</span></pre>
+
+<p>This will make already uploaded files stay uploaded on <code>:store</code>,
+and all new files will be uploaded to <code>:new_store</code>.</p>
+
+<h2 id="label-Phase+2-3A+Copying+existing+files">Phase 2: Copying existing files<span><a href="#label-Phase+2-3A+Copying+existing+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>After you&#39;ve deployed the previous change, it&#39;s time to copy all
+the existing files to the new storage, and update the records. This is how
+you can do it if you&#39;re using Sequel:</p>
+
+<pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">if</span> (<span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>).<span class="ruby-identifier">stored?</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># Repeat for all other attachments and models</span></pre>
+
+<p>Now your uploaded files are successfully copied to the new storage, so you
+should be able to safely delete the old one.</p>
+
+<h2 id="label-Phase+3+and+4-3A+Renaming+new+storage+-28optional-29">Phase 3 and 4: Renaming new storage (optional)<span><a href="#label-Phase+3+and+4-3A+Renaming+new+storage+-28optional-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The uploads will now be happening on the right storage, but if you would
+rather rename <code>:new_store</code> back to <code>:store</code>, you can
+do two more phases. <strong>First</strong> you need to deploy aliasing
+<code>:new_store</code> to <code>:store</code> (and make the default
+storage be <code>:store</code> again):</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">new_store</span>] = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">store</span>]</pre>
+
+<p><strong>Second</strong>, you should rename the storage names on existing
+records. With Sequel it would be something like:</p>
+
+<pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;    <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">avatar_data</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_data</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&#39;&quot;new_store&quot;&#39;</span>, <span class="ruby-string">&#39;&quot;store&quot;&#39;</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># Repeat for all other attachments and models</span></pre>
+
+<p>Now everything should be in order and you should be able to remove the
+<code>:new_store</code> alias.</p>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

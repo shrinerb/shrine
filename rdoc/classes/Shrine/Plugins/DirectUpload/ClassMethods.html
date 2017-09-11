@@ -1,97 +1,102 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::DirectUpload::ClassMethods</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::DirectUpload::ClassMethods
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/direct_upload.rb">lib/shrine/plugins/direct_upload.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'></div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a href="#method-i-assign_upload_endpoint">assign_upload_endpoint</a></li>
-              <li><a href="#method-i-inherited">inherited</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-assign_upload_endpoint'>
-                <a name='method-i-assign_upload_endpoint'></a>
-                <div class='synopsis'>
-                  <span class='name'>assign_upload_endpoint</span>
-                  <span class='arguments'>(klass)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Assigns the subclassed endpoint as the <code>UploadEndpoint</code>
-                  constant.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-assign_upload_endpoint-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-assign_upload_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 182</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:UploadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-inherited'>
-                <a name='method-i-inherited'></a>
-                <div class='synopsis'>
-                  <span class='name'>inherited</span>
-                  <span class='arguments'>(subclass)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Assigns the subclass a copy of the upload endpoint class.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-inherited-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 176</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::DirectUpload::ClassMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::DirectUpload::ClassMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/direct_upload_rb.html">lib/shrine/plugins/direct_upload.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-assign_upload_endpoint">assign_upload_endpoint</a></li>
+<li><a href="#method-i-inherited">inherited</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-assign_upload_endpoint'>
+<a name='method-i-assign_upload_endpoint'></a>
+<div class='synopsis'>
+<span class='name'>assign_upload_endpoint</span>
+<span class='arguments'>(klass)</span>
+
+</div>
+<div class='description'>
+
+<p>Assigns the subclassed endpoint as the <code>UploadEndpoint</code>
+constant.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_upload_endpoint-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-assign_upload_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 185</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:UploadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-inherited'>
+<a name='method-i-inherited'></a>
+<div class='synopsis'>
+<span class='name'>inherited</span>
+<span class='arguments'>(subclass)</span>
+
+</div>
+<div class='description'>
+
+<p>Assigns the subclass a copy of the upload endpoint class.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inherited-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 179</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

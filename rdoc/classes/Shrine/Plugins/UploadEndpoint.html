@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::UploadEndpoint</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::UploadEndpoint
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/upload_endpoint_rb.html">lib/shrine/plugins/upload_endpoint.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>upload_endpoint</code> plugin provides a Rack endpoint which
+accepts file uploads and forwards them to specified storage. It can be used
+with client-side file upload libraries like <a
+href="https://github.com/FineUploader/fine-uploader">FineUploader</a>, <a
+href="https://github.com/enyo/dropzone">Dropzone</a> or <a
+href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
+for asynchronous uploads.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span></pre>
+
+<p>The plugin adds a <code>Shrine.upload_endpoint</code> method which accepts
+a storage identifier and returns a Rack application that accepts multipart
+POST requests, and uploads received files to the specified storage.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) <span class="ruby-comment"># rack app</span></pre>
+
+<p>Asynchronous upload is typically meant to replace the caching phase in the
+default synchronous workflow, so we want the uploads to go to temporary
+(<code>:cache</code>) storage.</p>
+
+<p>When we want to mount the Rack application to our app, it&#39;s recommended
+to generate endpoints for specific uploaders. This is because different
+uploaders may have different uploading logic, and this also allows
+customizing the upload endpoint per uploader.</p>
+
+<pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The above will create a <code>POST /images/upload</code> endpoint, which
+uploads the file received in the <code>file</code> param using
+<code>ImageUploader</code>, and returns a JSON representation of the
+uploaded file.</p>
+
+<pre class="ruby"><span class="ruby-comment"># POST /images/upload</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;id&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;43kewit94.jpg&quot;</span>,&#x000A;  <span class="ruby-string">&quot;storage&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-string">&quot;metadata&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;size&quot;</span><span class="ruby-operator">:</span> <span class="ruby-value">384393</span>,&#x000A;    <span class="ruby-string">&quot;filename&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-string">&quot;mime_type&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>&#x000A;  }&#x000A;}</pre>
+
+<p>This JSON string can now be assigned to an attachment attribute instead of
+a raw file. In a form it can be written to a hidden attachment field, and
+then it can be assigned as the attachment.</p>
+
+<h2 id="module-Shrine::Plugins::UploadEndpoint-label-Limiting+filesize">Limiting filesize<span><a href="#module-Shrine::Plugins::UploadEndpoint-label-Limiting+filesize">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>It&#39;s good practice to limit the accepted filesize of uploaded files.
+You can do that with the <code>:max_size</code> option:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span></pre>
+
+<p>If the uploaded file is larger than the specified value, a <code>413&#x000A;Payload Too Large</code> response will be returned.</p>
+
+<h2 id="module-Shrine::Plugins::UploadEndpoint-label-Context">Context<span><a href="#module-Shrine::Plugins::UploadEndpoint-label-Context">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The upload context will <em>not</em> contain <code>:record</code> and
+<code>:name</code> values, as the upload happens independently of a
+database record. The endpoint will sent the following upload context:</p>
+<ul><li>
+<p><code>:action</code> - holds the value <code>:upload</code></p>
+</li><li>
+<p><code>:request</code> - holds an instance of <code>Rack::Request</code></p>
+</li></ul>
+
+<p>You can update the upload context via <code>:upload_context</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>, <span class="ruby-identifier">upload_context</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-identifier">location</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;my-location&quot;</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="module-Shrine::Plugins::UploadEndpoint-label-Upload">Upload<span><a href="#module-Shrine::Plugins::UploadEndpoint-label-Upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>You can also customize the upload itself via the <code>:upload</code>
+option:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>, <span class="ruby-identifier">upload</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>, <span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># perform uploading and return the Shrine::UploadedFile</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="module-Shrine::Plugins::UploadEndpoint-label-Response">Response<span><a href="#module-Shrine::Plugins::UploadEndpoint-label-Response">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The response returned by the endpoint can be customized via the
+<code>:rack_response</code> option:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>, <span class="ruby-identifier">rack_response</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">body</span> = { <span class="ruby-identifier">data</span><span class="ruby-operator">:</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">data</span>, <span class="ruby-identifier">url</span><span class="ruby-operator">:</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span> }.<span class="ruby-identifier">to_json</span>&#x000A;  [<span class="ruby-value">201</span>, { <span class="ruby-string">&quot;Content-Type&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;application/json&quot;</span> }, [<span class="ruby-identifier">body</span>]]&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="module-Shrine::Plugins::UploadEndpoint-label-Ad-hoc+options">Ad-hoc options<span><a href="#module-Shrine::Plugins::UploadEndpoint-label-Ad-hoc+options">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>You can override any of the options above when creating the endpoint:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)</pre>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+<li><a href="#method-c-load_dependencies">load_dependencies</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="UploadEndpoint/ClassMethods.html">Shrine::Plugins::UploadEndpoint::ClassMethods</a></li>
+<li><a href="UploadEndpoint/App.html">Shrine::Plugins::UploadEndpoint::App</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb, line 109</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_max_size</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload_context</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload_context</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload_context</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_rack_response</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:rack_response</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_rack_response</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-load_dependencies'>
+<a name='method-c-load_dependencies'></a>
+<div class='synopsis'>
+<span class='name'>load_dependencies</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

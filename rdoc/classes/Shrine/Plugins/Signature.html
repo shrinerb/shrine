@@ -1,131 +1,131 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::Signature</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::Signature
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/signature.rb">lib/shrine/plugins/signature.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>signature</code> plugin provides the ability to calculate a hash
-            from file content. The hash can then be used as a checksum or just as a
-            unique signature of the file.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">signature</span></pre>
-            
-            <p>The plugin adds a <code>calculate_signature</code> instance and class
-            method to <code>Shrine</code>, which accepts the IO object and hashing
-            algorithm and returns the calculated hash.</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;9a0364b9e99bb480dd25e1f0284c8555&quot;</span></pre>
-            
-            <p>You can then use the <code>add_metadata</code> plugin to add a new metadata
-            field with the calculated hash.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>This will generate a hash for each uploaded file, but if you want to
-            generate one only for the original file, you can add a conditional:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">cache</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <p>The following hashing algorithms are supported:</p>
-            <ul><li>
-            <p><code>sha1</code></p>
-            </li><li>
-            <p><code>sha256</code></p>
-            </li><li>
-            <p><code>sha384</code></p>
-            </li><li>
-            <p><code>sha512</code></p>
-            </li><li>
-            <p><code>md5</code></p>
-            </li><li>
-            <p><code>crc32</code></p>
-            </li></ul>
-            
-            <p>You can also choose which format will the calculated hash be encoded in:</p>
-            
-            <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">hex</span>)</pre>
-            
-            <p>The following encoding formats are supported:</p>
-            <ul><li>
-            <p><code>none</code></p>
-            </li><li>
-            <p><code>hex</code> (default)</p>
-            </li><li>
-            <p><code>base64</code></p>
-            </li></ul>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="Signature/ClassMethods.html">Shrine::Plugins::Signature::ClassMethods</a></li>
-              <li><a href="Signature/InstanceMethods.html">Shrine::Plugins::Signature::InstanceMethods</a></li>
-              <li><a href="Signature/SignatureCalculator.html">Shrine::Plugins::Signature::SignatureCalculator</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-            <div id='constants-list'>
-              <h2>Constants</h2>
-              <div class='name-list'>
-                <table summary='Constants'>
-                  <tr class='top-aligned-row context-row'>
-                    <td class='context-item-name'>SUPPORTED_ALGORITHMS</td>
-                    <td>=</td>
-                    <td class='context-item-value'>SignatureCalculator::SUPPORTED_ALGORITHMS</td>
-                    <td>&nbsp;</td>
-                    <td class='context-item-desc'></td>
-                  </tr>
-                  <tr class='top-aligned-row context-row'>
-                    <td class='context-item-name'>SUPPORTED_FORMATS</td>
-                    <td>=</td>
-                    <td class='context-item-value'>SignatureCalculator::SUPPORTED_FORMATS</td>
-                    <td>&nbsp;</td>
-                    <td class='context-item-desc'></td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::Signature</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Signature
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/signature_rb.html">lib/shrine/plugins/signature.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>signature</code> plugin provides the ability to calculate a hash
+from file content. The hash can then be used as a checksum or just as a
+unique signature of the file.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">signature</span></pre>
+
+<p>The plugin adds a <code>calculate_signature</code> instance and class
+method to <code>Shrine</code>, which accepts the IO object and hashing
+algorithm and returns the calculated hash.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;9a0364b9e99bb480dd25e1f0284c8555&quot;</span></pre>
+
+<p>You can then use the <code>add_metadata</code> plugin to add a new metadata
+field with the calculated hash.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>This will generate a hash for each uploaded file, but if you want to
+generate one only for the original file, you can add a conditional:</p>
+
+<pre class="ruby"><span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">cache</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The following hashing algorithms are supported:</p>
+<ul><li>
+<p><code>sha1</code></p>
+</li><li>
+<p><code>sha256</code></p>
+</li><li>
+<p><code>sha384</code></p>
+</li><li>
+<p><code>sha512</code></p>
+</li><li>
+<p><code>md5</code></p>
+</li><li>
+<p><code>crc32</code></p>
+</li></ul>
+
+<p>You can also choose which format will the calculated hash be encoded in:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">hex</span>)</pre>
+
+<p>The following encoding formats are supported:</p>
+<ul><li>
+<p><code>none</code></p>
+</li><li>
+<p><code>hex</code> (default)</p>
+</li><li>
+<p><code>base64</code></p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="Signature/ClassMethods.html">Shrine::Plugins::Signature::ClassMethods</a></li>
+<li><a href="Signature/InstanceMethods.html">Shrine::Plugins::Signature::InstanceMethods</a></li>
+<li><a href="Signature/SignatureCalculator.html">Shrine::Plugins::Signature::SignatureCalculator</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>SUPPORTED_ALGORITHMS</td>
+<td>=</td>
+<td class='context-item-value'>SignatureCalculator::SUPPORTED_ALGORITHMS</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>SUPPORTED_FORMATS</td>
+<td>=</td>
+<td class='context-item-value'>SignatureCalculator::SUPPORTED_FORMATS</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

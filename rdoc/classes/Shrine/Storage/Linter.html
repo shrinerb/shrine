@@ -1,276 +1,287 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Storage::Linter</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>class</span>
-          Shrine::Storage::Linter
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/storage/linter.rb">lib/shrine/storage/linter.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-        <div class='parent'>
-          Superclass:
-          <strong>Object</strong>
-        </div>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>Checks if the storage conforms to Shrine&#39;s specification.</p>
-            
-            <p><a href="Linter.html#method-c-new">::new</a>.call</p>
-            
-            <p>If the check fails, by default it raises a <code>Shrine::LintError</code>,
-            but you can also specify <code>action: :warn</code>:</p>
-            
-            <p><a href="Linter.html#method-c-new">::new</a>(storage, action: :warn).call</p>
-            
-            <p>You can also specify an IO factory which the storage will use:</p>
-            
-            <p><a
-            href="Linter.html#method-c-new">::new</a>.call(-&gt;{File.open(“test/fixtures/image.jpg”)})</p>
-          </div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Class</h3>
-            <ol>
-              <li><a href="#method-c-call">call</a></li>
-              <li><a href="#method-c-new">new</a></li>
-            </ol>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a href="#method-i-call">call</a></li>
-              <li><a href="#method-i-lint_clear">lint_clear</a></li>
-              <li><a href="#method-i-lint_delete">lint_delete</a></li>
-              <li><a href="#method-i-lint_download">lint_download</a></li>
-              <li><a href="#method-i-lint_exists">lint_exists</a></li>
-              <li><a href="#method-i-lint_move">lint_move</a></li>
-              <li><a href="#method-i-lint_multi_delete">lint_multi_delete</a></li>
-              <li><a href="#method-i-lint_open">lint_open</a></li>
-              <li><a href="#method-i-lint_url">lint_url</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="Linter/FakeIO.html">Shrine::Storage::Linter::FakeIO</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-call'>
-                <a name='method-c-call'></a>
-                <div class='synopsis'>
-                  <span class='name'>call</span>
-                  <span class='arguments'>(*args)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-call-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-call-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">call</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>).<span class="ruby-identifier">call</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-class' id='method-method-c-new'>
-                <a name='method-c-new'></a>
-                <div class='synopsis'>
-                  <span class='name'>new</span>
-                  <span class='arguments'>(storage, action: :error)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-new-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">storage</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:error</span>)&#x000A;  <span class="ruby-ivar">@storage</span> = <span class="ruby-identifier">storage</span>&#x000A;  <span class="ruby-ivar">@action</span>  = <span class="ruby-identifier">action</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-call'>
-                <a name='method-i-call'></a>
-                <div class='synopsis'>
-                  <span class='name'>call</span>
-                  <span class='arguments'>(io_factory = default_io_factory)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-call-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 36</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">io_factory</span> = <span class="ruby-identifier">default_io_factory</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">id</span> = <span class="ruby-string">&quot;foo&quot;</span>, {})&#x000A;&#x000A;  <span class="ruby-identifier">lint_download</span>(<span class="ruby-identifier">id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:download</span>)&#x000A;  <span class="ruby-identifier">lint_open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">lint_exists</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">lint_url</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">lint_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:move</span>)&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">location</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;bar&quot;</span>)&#x000A;    <span class="ruby-identifier">lint_move</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-string">&quot;quux&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:multi_delete</span>)&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">id</span> = <span class="ruby-string">&quot;baz&quot;</span>)&#x000A;    <span class="ruby-identifier">lint_multi_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:clear!</span>)&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">id</span> = <span class="ruby-string">&quot;quux&quot;</span>)&#x000A;    <span class="ruby-identifier">lint_clear</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_clear'>
-                <a name='method-i-lint_clear'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_clear</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_clear-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_clear-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 107</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_clear</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">clear!</span>&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:clear!</span>, <span class="ruby-node">&quot;file still #exists? after clearing&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_delete'>
-                <a name='method-i-lint_delete'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_delete</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_delete-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_delete-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 84</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:delete</span>, <span class="ruby-node">&quot;file still #exists? after deleting&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">begin</span>&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">exception</span>&#x000A;    <span class="ruby-identifier">error</span> <span class="ruby-value">:delete</span>, <span class="ruby-node">&quot;shouldn&#39;t fail if the file doesn&#39;t exist, but raised #{exception.class}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_download'>
-                <a name='method-i-lint_download'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_download</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_download-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_download-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">downloaded</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:download</span>, <span class="ruby-string">&quot;doesn&#39;t return a Tempfile&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">downloaded</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Tempfile</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:download</span>, <span class="ruby-string">&quot;returns an empty IO object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">downloaded</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">empty?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_exists'>
-                <a name='method-i-lint_exists'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_exists</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_exists-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_exists-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_exists</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-string">&quot;returns false for a file that was uploaded&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_move'>
-                <a name='method-i-lint_move'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_move</span>
-                  <span class='arguments'>(uploaded_file, id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_move-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_move-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 94</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_move</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">movable?</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">move</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">id</span>, {})&#x000A;    <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-node">&quot;returns false for destination after #move&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-node">&quot;returns true for source after #move&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_multi_delete'>
-                <a name='method-i-lint_multi_delete'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_multi_delete</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_multi_delete-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_multi_delete-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 102</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_multi_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">multi_delete</span>([<span class="ruby-identifier">id</span>])&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-string">&quot;returns true for a file that was multi-deleted&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_open'>
-                <a name='method-i-lint_open'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_open</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_open-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_open-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 67</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">opened</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:open</span>, <span class="ruby-string">&quot;doesn&#39;t return a valid IO object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">io?</span>(<span class="ruby-identifier">opened</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:open</span>, <span class="ruby-string">&quot;returns an empty IO object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">empty?</span>&#x000A;  <span class="ruby-identifier">opened</span>.<span class="ruby-identifier">close</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-lint_url'>
-                <a name='method-i-lint_url'></a>
-                <div class='synopsis'>
-                  <span class='name'>lint_url</span>
-                  <span class='arguments'>(id)</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-lint_url-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-lint_url-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 78</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_url</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-comment"># just assert #url exists, it isn&#39;t required to return anything</span>&#x000A;  <span class="ruby-identifier">url</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:url</span>, <span class="ruby-string">&quot;should return either nil or a string&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">url</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Storage::Linter</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+Shrine::Storage::Linter
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/storage/linter_rb.html">lib/shrine/storage/linter.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Checks if the storage conforms to Shrine&#39;s specification.</p>
+
+<p><a href="Linter.html#method-c-new">::new</a>.call</p>
+
+<p>If the check fails, by default it raises a <code>Shrine::LintError</code>,
+but you can also specify <code>action: :warn</code>:</p>
+
+<p><a href="Linter.html#method-c-new">::new</a>(storage, action: :warn).call</p>
+
+<p>You can also specify an IO factory which the storage will use:</p>
+
+<p><a
+href="Linter.html#method-c-new">::new</a>.call(-&gt;{File.open(“test/fixtures/image.jpg”)})</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-call">call</a></li>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-call">call</a></li>
+<li><a href="#method-i-lint_clear">lint_clear</a></li>
+<li><a href="#method-i-lint_delete">lint_delete</a></li>
+<li><a href="#method-i-lint_download">lint_download</a></li>
+<li><a href="#method-i-lint_exists">lint_exists</a></li>
+<li><a href="#method-i-lint_move">lint_move</a></li>
+<li><a href="#method-i-lint_multi_delete">lint_multi_delete</a></li>
+<li><a href="#method-i-lint_open">lint_open</a></li>
+<li><a href="#method-i-lint_url">lint_url</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="Linter/FakeIO.html">Shrine::Storage::Linter::FakeIO</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-call'>
+<a name='method-c-call'></a>
+<div class='synopsis'>
+<span class='name'>call</span>
+<span class='arguments'>(*args)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-call-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-call-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">call</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>).<span class="ruby-identifier">call</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span>
+<span class='arguments'>(storage, action: :error)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">storage</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:error</span>)&#x000A;  <span class="ruby-ivar">@storage</span> = <span class="ruby-identifier">storage</span>&#x000A;  <span class="ruby-ivar">@action</span>  = <span class="ruby-identifier">action</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-call'>
+<a name='method-i-call'></a>
+<div class='synopsis'>
+<span class='name'>call</span>
+<span class='arguments'>(io_factory = default_io_factory)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 36</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">io_factory</span> = <span class="ruby-identifier">default_io_factory</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">id</span> = <span class="ruby-string">&quot;foo&quot;</span>, {})&#x000A;&#x000A;  <span class="ruby-identifier">lint_download</span>(<span class="ruby-identifier">id</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:download</span>)&#x000A;  <span class="ruby-identifier">lint_open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">lint_exists</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">lint_url</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">lint_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:move</span>)&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">location</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;bar&quot;</span>)&#x000A;    <span class="ruby-identifier">lint_move</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-string">&quot;quux&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:multi_delete</span>)&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">id</span> = <span class="ruby-string">&quot;baz&quot;</span>)&#x000A;    <span class="ruby-identifier">lint_multi_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:clear!</span>)&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io_factory</span>.<span class="ruby-identifier">call</span>, <span class="ruby-identifier">id</span> = <span class="ruby-string">&quot;quux&quot;</span>)&#x000A;    <span class="ruby-identifier">lint_clear</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_clear'>
+<a name='method-i-lint_clear'></a>
+<div class='synopsis'>
+<span class='name'>lint_clear</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_clear-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_clear-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 107</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_clear</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">clear!</span>&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:clear!</span>, <span class="ruby-node">&quot;file still #exists? after clearing&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_delete'>
+<a name='method-i-lint_delete'></a>
+<div class='synopsis'>
+<span class='name'>lint_delete</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_delete-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 84</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:delete</span>, <span class="ruby-node">&quot;file still #exists? after deleting&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">begin</span>&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">rescue</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">exception</span>&#x000A;    <span class="ruby-identifier">error</span> <span class="ruby-value">:delete</span>, <span class="ruby-node">&quot;shouldn&#39;t fail if the file doesn&#39;t exist, but raised #{exception.class}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_download'>
+<a name='method-i-lint_download'></a>
+<div class='synopsis'>
+<span class='name'>lint_download</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_download-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_download-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">downloaded</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:download</span>, <span class="ruby-string">&quot;doesn&#39;t return a Tempfile&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">downloaded</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Tempfile</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:download</span>, <span class="ruby-string">&quot;returns an empty IO object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">downloaded</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">empty?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_exists'>
+<a name='method-i-lint_exists'></a>
+<div class='synopsis'>
+<span class='name'>lint_exists</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_exists-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_exists-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_exists</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-string">&quot;returns false for a file that was uploaded&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_move'>
+<a name='method-i-lint_move'></a>
+<div class='synopsis'>
+<span class='name'>lint_move</span>
+<span class='arguments'>(uploaded_file, id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_move-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_move-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 94</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_move</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">movable?</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">move</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">id</span>, {})&#x000A;    <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-node">&quot;returns false for destination after #move&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-node">&quot;returns true for source after #move&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_multi_delete'>
+<a name='method-i-lint_multi_delete'></a>
+<div class='synopsis'>
+<span class='name'>lint_multi_delete</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_multi_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_multi_delete-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 102</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_multi_delete</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">multi_delete</span>([<span class="ruby-identifier">id</span>])&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:exists?</span>, <span class="ruby-string">&quot;returns true for a file that was multi-deleted&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_open'>
+<a name='method-i-lint_open'></a>
+<div class='synopsis'>
+<span class='name'>lint_open</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_open-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_open-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 67</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">opened</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:open</span>, <span class="ruby-string">&quot;doesn&#39;t return a valid IO object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">io?</span>(<span class="ruby-identifier">opened</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:open</span>, <span class="ruby-string">&quot;returns an empty IO object&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened</span>.<span class="ruby-identifier">read</span>.<span class="ruby-identifier">empty?</span>&#x000A;  <span class="ruby-identifier">opened</span>.<span class="ruby-identifier">close</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-lint_url'>
+<a name='method-i-lint_url'></a>
+<div class='synopsis'>
+<span class='name'>lint_url</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-lint_url-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-lint_url-source'><span class="ruby-comment"># File lib/shrine/storage/linter.rb, line 78</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">lint_url</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-comment"># just assert #url exists, it isn&#39;t required to return anything</span>&#x000A;  <span class="ruby-identifier">url</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">url</span>(<span class="ruby-identifier">id</span>)&#x000A;  <span class="ruby-identifier">error</span> <span class="ruby-value">:url</span>, <span class="ruby-string">&quot;should return either nil or a string&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span>(<span class="ruby-identifier">url</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

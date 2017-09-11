@@ -1,144 +1,143 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::RemoteUrl</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::RemoteUrl
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/remote_url.rb">lib/shrine/plugins/remote_url.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <p>The <code>remote_url</code> plugin allows you to attach files from a remote
-            location.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span></pre>
-            
-            <p>If for example your attachment is called “avatar”, this plugin will add
-            <code>#avatar_remote_url</code> and <code>#avatar_remote_url=</code>
-            methods to your model.</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_remote_url</span> = <span class="ruby-string">&quot;http://example.com/cool-image.png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 43423</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cool-image.png&quot;</span></pre>
-            
-            <p>You can also use <code>#remote_url=</code> and <code>#remote_url</code>
-            methods directly on the <code>Shrine::Attacher</code>:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remote_url</span> = <span class="ruby-string">&quot;http://example.com/cool-image.png&quot;</span></pre>
-            
-            <p>The file will by default be downloaded using <a
-            href="https://github.com/janko-m/down">Down</a>, which is a wrapper around
-            the <code>open-uri</code> standard library. Note that Down expects the
-            given URL to be URI-encoded.</p>
-            
-            <h2 id="module-Shrine::Plugins::RemoteUrl-label-Maximum+size">Maximum size<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Maximum+size">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>It&#39;s a good practice to limit the maximum filesize of the remote file:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span></pre>
-            
-            <p>Now if a file that is bigger than 20MB is assigned, download will be
-            terminated as soon as it gets the “Content-Length” header, or the size of
-            currently downloaded content surpasses the maximum size. However, if for
-            whatever reason you don&#39;t want to limit the maximum file size, you can
-            set <code>:max_size</code> to nil:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span></pre>
-            
-            <h2 id="module-Shrine::Plugins::RemoteUrl-label-Custom+downloader">Custom downloader<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Custom+downloader">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If you want to customize how the file is downloaded, you can override the
-            <code>:downloader</code> parameter and provide your own implementation. For
-            example, you can ensure the URL is URI-encoded (using the <a
-            href="https://github.com/sporkmonger/addressable">Addressable</a> gem)
-            before passing it to Down:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;addressable/uri&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-identifier">downloader</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span>:) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">url</span> = <span class="ruby-constant">Addressable</span><span class="ruby-operator">::</span><span class="ruby-constant">URI</span>.<span class="ruby-identifier">encode</span>(<span class="ruby-constant">Addressable</span><span class="ruby-operator">::</span><span class="ruby-constant">URI</span>.<span class="ruby-identifier">decode</span>(<span class="ruby-identifier">url</span>))&#x000A;  <span class="ruby-constant">Down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-identifier">max_size</span>, <span class="ruby-identifier">max_redirects</span><span class="ruby-operator">:</span> <span class="ruby-value">4</span>, <span class="ruby-identifier">read_timeout</span><span class="ruby-operator">:</span> <span class="ruby-value">3</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-            
-            <h2 id="module-Shrine::Plugins::RemoteUrl-label-Errors">Errors<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Errors">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If download errors, the error is rescued and a validation error is added
-            equal to the error message. You can change the default error message:</p>
-            
-            <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;download failed&quot;</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">error</span>) { <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">t</span>(<span class="ruby-string">&quot;errors.download_failed&quot;</span>) }</pre>
-            
-            <h2 id="module-Shrine::Plugins::RemoteUrl-label-Background">Background<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Background">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            
-            <p>If you want the file to be downloaded from the URL in the background, you
-            can use the <a href="https://github.com/janko-m/shrine-url">shrine-url</a>
-            storage which allows you to assign a custom URL as cached file ID, and pair
-            that with the <code>backgrounding</code> plugin.</p>
-          </div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Class</h3>
-            <ol>
-              <li><a href="#method-c-configure">configure</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='class-list'>
-            <h2>Classes and Modules</h2>
-            <ol>
-              <li><a href="RemoteUrl/AttacherMethods.html">Shrine::Plugins::RemoteUrl::AttacherMethods</a></li>
-              <li><a href="RemoteUrl/AttachmentMethods.html">Shrine::Plugins::RemoteUrl::AttachmentMethods</a></li>
-            </ol>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Class methods</h2>
-              <div class='method public-class' id='method-method-c-configure'>
-                <a name='method-c-configure'></a>
-                <div class='synopsis'>
-                  <span class='name'>configure</span>
-                  <span class='arguments'>(uploader, opts = {})</span>
-                </div>
-                <div class='description'>
-                  
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-c-configure-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :max_size option is required for remote_url plugin&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:max_size</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:remote_url_max_size</span>)&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_downloader</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:downloader</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:remote_url_downloader</span>, <span class="ruby-value">:open_uri</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:error_message</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::RemoteUrl</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::RemoteUrl
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/plugins/remote_url_rb.html">lib/shrine/plugins/remote_url.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>remote_url</code> plugin allows you to attach files from a remote
+location.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span></pre>
+
+<p>If for example your attachment is called “avatar”, this plugin will add
+<code>#avatar_remote_url</code> and <code>#avatar_remote_url=</code>
+methods to your model.</p>
+
+<pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_remote_url</span> = <span class="ruby-string">&quot;http://example.com/cool-image.png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 43423</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cool-image.png&quot;</span></pre>
+
+<p>You can also use <code>#remote_url=</code> and <code>#remote_url</code>
+methods directly on the <code>Shrine::Attacher</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">remote_url</span> = <span class="ruby-string">&quot;http://example.com/cool-image.png&quot;</span></pre>
+
+<p>The file will by default be downloaded using <a
+href="https://github.com/janko-m/down">Down</a>, which is a wrapper around
+the <code>open-uri</code> standard library. Note that Down expects the
+given URL to be URI-encoded.</p>
+
+<h2 id="module-Shrine::Plugins::RemoteUrl-label-Maximum+size">Maximum size<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Maximum+size">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>It&#39;s a good practice to limit the maximum filesize of the remote file:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span></pre>
+
+<p>Now if a file that is bigger than 20MB is assigned, download will be
+terminated as soon as it gets the “Content-Length” header, or the size of
+currently downloaded content surpasses the maximum size. However, if for
+whatever reason you don&#39;t want to limit the maximum file size, you can
+set <code>:max_size</code> to nil:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span></pre>
+
+<h2 id="module-Shrine::Plugins::RemoteUrl-label-Custom+downloader">Custom downloader<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Custom+downloader">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you want to customize how the file is downloaded, you can override the
+<code>:downloader</code> parameter and provide your own implementation. For
+example, you can use the HTTP.rb Down backend for downloading:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down/http&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>, <span class="ruby-identifier">downloader</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span>:) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">Down</span><span class="ruby-operator">::</span><span class="ruby-constant">Http</span>.<span class="ruby-identifier">download</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-identifier">max_size</span>, <span class="ruby-identifier">follow</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">max_hops</span><span class="ruby-operator">:</span> <span class="ruby-value">4</span> }, <span class="ruby-identifier">timeout</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">read</span><span class="ruby-operator">:</span> <span class="ruby-value">3</span> })&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="module-Shrine::Plugins::RemoteUrl-label-Errors">Errors<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Errors">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If download errors, the error is rescued and a validation error is added
+equal to the error message. You can change the default error message:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;download failed&quot;</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remote_url</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">error</span>) { <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">t</span>(<span class="ruby-string">&quot;errors.download_failed&quot;</span>) }</pre>
+
+<h2 id="module-Shrine::Plugins::RemoteUrl-label-Background">Background<span><a href="#module-Shrine::Plugins::RemoteUrl-label-Background">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you want the file to be downloaded from the URL in the background, you
+can use the <a href="https://github.com/janko-m/shrine-url">shrine-url</a>
+storage which allows you to assign a custom URL as cached file ID, and pair
+that with the <code>backgrounding</code> plugin.</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="RemoteUrl/AttacherMethods.html">Shrine::Plugins::RemoteUrl::AttacherMethods</a></li>
+<li><a href="RemoteUrl/AttachmentMethods.html">Shrine::Plugins::RemoteUrl::AttachmentMethods</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb, line 73</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :max_size option is required for remote_url plugin&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:max_size</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:remote_url_max_size</span>)&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_downloader</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:downloader</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:remote_url_downloader</span>, <span class="ruby-value">:open_uri</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_max_size</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:error_message</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url_error_message</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

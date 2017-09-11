@@ -1,133 +1,142 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>Shrine::Plugins::Backgrounding::AttacherMethods</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='class' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>
-          <span class='type'>module</span>
-          Shrine::Plugins::Backgrounding::AttacherMethods
-        </h1>
-        <ol class='paths'>
-          <li>
-            <a href="https://github.com/janko-m/shrine/blob/5da727675ee735bb0b3d2fe80ef1154f51f100b5/lib/shrine/plugins/backgrounding.rb">lib/shrine/plugins/backgrounding.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
-          </li>
-        </ol>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'></div>
-          <div id='method-list'>
-            <h2>Methods</h2>
-            <h3>Public Instance</h3>
-            <ol>
-              <li><a href="#method-i-_delete">_delete</a></li>
-              <li><a href="#method-i-_promote">_promote</a></li>
-              <li><a href="#method-i-dump">dump</a></li>
-              <li><a href="#method-i-swap">swap</a></li>
-            </ol>
-          </div>
-          <div id='context'>
-          </div>
-          <div id='section'>
-            <div id='methods'>
-              <h2>Public Instance methods</h2>
-              <div class='method public-instance' id='method-method-i-_delete'>
-                <a name='method-i-_delete'></a>
-                <div class='synopsis'>
-                  <span class='name'>_delete</span>
-                  <span class='arguments'>(uploaded_file, phase: nil, action: phase)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Calls the deleting block (if registered) with a serializable data hash.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-_delete-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 232</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-identifier">phase</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_delete</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_delete</span>]&#x000A;    <span class="ruby-identifier">data</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">merge</span>(&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;action&quot;</span>     =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>),&#x000A;      <span class="ruby-string">&quot;phase&quot;</span>      =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>), <span class="ruby-comment"># legacy</span>&#x000A;    )&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_delete</span>)&#x000A;    <span class="ruby-identifier">uploaded_file</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-_promote'>
-                <a name='method-i-_promote'></a>
-                <div class='synopsis'>
-                  <span class='name'>_promote</span>
-                  <span class='arguments'>(uploaded_file = get, phase: nil, action: phase)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Calls the promoting block (if registered) with a serializable data hash.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-_promote-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 217</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-identifier">phase</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_promote</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_promote</span>]&#x000A;    <span class="ruby-identifier">data</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">merge</span>(&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;action&quot;</span>     =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>),&#x000A;      <span class="ruby-string">&quot;phase&quot;</span>      =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>), <span class="ruby-comment"># legacy</span>&#x000A;    )&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_promote</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-dump'>
-                <a name='method-i-dump'></a>
-                <div class='synopsis'>
-                  <span class='name'>dump</span>
-                  <span class='arguments'>()</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Dumps all the information about the attacher in a serializable hash
-                  suitable for passing as an argument to background jobs.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-dump-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-dump-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 248</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">dump</span>&#x000A;  {&#x000A;    <span class="ruby-string">&quot;attachment&quot;</span>   =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span>),&#x000A;    <span class="ruby-string">&quot;record&quot;</span>       =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_s</span>],&#x000A;    <span class="ruby-string">&quot;name&quot;</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>,&#x000A;    <span class="ruby-string">&quot;shrine_class&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">name</span>,&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-              <div class='method public-instance' id='method-method-i-swap'>
-                <a name='method-i-swap'></a>
-                <div class='synopsis'>
-                  <span class='name'>swap</span>
-                  <span class='arguments'>(new_file)</span>
-                </div>
-                <div class='description'>
-                  
-                  <p>Updates with the new file only if the attachment hasn&#39;t changed.</p>
-                </div>
-                <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('method-i-swap-source'); return false">
-                    [show source]
-                  </a>
-                  <pre id='method-i-swap-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 258</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">new_file</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:find_record</span>)&#x000A;    <span class="ruby-identifier">reloaded</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">find_record</span>(<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">reloaded</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">reloaded</span>, <span class="ruby-identifier">name</span>).<span class="ruby-identifier">read</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">read</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>Shrine::Plugins::Backgrounding::AttacherMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Backgrounding::AttacherMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/backgrounding_rb.html">lib/shrine/plugins/backgrounding.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-_delete">_delete</a></li>
+<li><a href="#method-i-_promote">_promote</a></li>
+<li><a href="#method-i-dump">dump</a></li>
+<li><a href="#method-i-swap">swap</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-_delete'>
+<a name='method-i-_delete'></a>
+<div class='synopsis'>
+<span class='name'>_delete</span>
+<span class='arguments'>(uploaded_file, phase: nil, action: phase)</span>
+
+</div>
+<div class='description'>
+
+<p>Calls the deleting block (if registered) with a serializable data hash.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-_delete-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 232</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-identifier">phase</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_delete</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_delete</span>]&#x000A;    <span class="ruby-identifier">data</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">merge</span>(&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;action&quot;</span>     =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>),&#x000A;      <span class="ruby-string">&quot;phase&quot;</span>      =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>), <span class="ruby-comment"># legacy</span>&#x000A;    )&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_delete</span>)&#x000A;    <span class="ruby-identifier">uploaded_file</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-_promote'>
+<a name='method-i-_promote'></a>
+<div class='synopsis'>
+<span class='name'>_promote</span>
+<span class='arguments'>(uploaded_file = get, phase: nil, action: phase)</span>
+
+</div>
+<div class='description'>
+
+<p>Calls the promoting block (if registered) with a serializable data hash.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-_promote-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-_promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 217</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">_promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-identifier">phase</span><span class="ruby-operator">:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-identifier">phase</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">background_promote</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backgrounding_promote</span>]&#x000A;    <span class="ruby-identifier">data</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">merge</span>(&#x000A;      <span class="ruby-string">&quot;attachment&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>,&#x000A;      <span class="ruby-string">&quot;action&quot;</span>     =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>),&#x000A;      <span class="ruby-string">&quot;phase&quot;</span>      =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">action</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span>), <span class="ruby-comment"># legacy</span>&#x000A;    )&#x000A;    <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">background_promote</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-dump'>
+<a name='method-i-dump'></a>
+<div class='synopsis'>
+<span class='name'>dump</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Dumps all the information about the attacher in a serializable hash
+suitable for passing as an argument to background jobs.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dump-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-dump-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 248</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">dump</span>&#x000A;  {&#x000A;    <span class="ruby-string">&quot;attachment&quot;</span>   =<span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">get</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span>),&#x000A;    <span class="ruby-string">&quot;record&quot;</span>       =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>.<span class="ruby-identifier">to_s</span>],&#x000A;    <span class="ruby-string">&quot;name&quot;</span>         =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span>,&#x000A;    <span class="ruby-string">&quot;shrine_class&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">name</span>,&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-swap'>
+<a name='method-i-swap'></a>
+<div class='synopsis'>
+<span class='name'>swap</span>
+<span class='arguments'>(new_file)</span>
+
+</div>
+<div class='description'>
+
+<p>Updates with the new file only if the attachment hasn&#39;t changed.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-swap-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-swap-source'><span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb, line 258</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">swap</span>(<span class="ruby-identifier">new_file</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:find_record</span>)&#x000A;    <span class="ruby-identifier">reloaded</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">find_record</span>(<span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">reloaded</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">reloaded</span>, <span class="ruby-identifier">name</span>).<span class="ruby-identifier">read</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">read</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">super</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>

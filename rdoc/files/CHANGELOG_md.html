@@ -1,832 +1,946 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
-  <head>
-    <title>CHANGELOG.md</title>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-    <link href='../css/style.css' media='screen' rel='stylesheet' type='text/css'>
-    <script type='text/javascript'>
-      function popupCode(url) {
-        window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-      }
-      
-      function toggleCode(id) {
-        var code = document.getElementById(id)
-      
-        code.style.display = code.style.display != 'block' ? 'block' : 'none'
-        return true
-      }
-      
-      // Make codeblocks hidden by default
-      document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
-    </script>
-  </head>
-  <body class='page'>
-    <div class='file' id='wrapper'>
-      <div class='header'>
-        <h1 class='name'>CHANGELOG.md</h1>
-        <div class='paths'>
-          CHANGELOG.md
-        </div>
-        <div class='last-update'>
-          Last Update:
-          <span class='datetime'>2017-04-04 15:16:39 +1000</span>
-        </div>
-      </div>
-      <div id='content'>
-        <div id='text'>
-          <div id='description'>
-            
-            <h2 id="label-2.6.0+-282017-04-04-29">2.6.0 (2017-04-04)<span><a href="#label-2.6.0+-282017-04-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Make <code>Shrine::Storage::FileSystem#path</code> public which returns
-            path to the file as a <code>Pathname</code> object (@janko-m)</p>
-            </li><li>
-            <p>Add <code>Shrine.rack_file</code> to <code>rack_file</code> plugin for
-            converting Rack uploaded file hash into an IO (@janko-m)</p>
-            </li><li>
-            <p>Deprecate passing a Rack file hash to <code>Shrine#upload</code> (@janko-m)</p>
-            </li><li>
-            <p>Expose <code>Shrine.extract_dimensions</code> and
-            <code>Shrine.dimensions_analyzers</code> in <code>store_dimensions</code>
-            plugin (@janko-m)</p>
-            </li><li>
-            <p>Add <code>metadata_attributes</code> plugin for syncing attachment metadata
-            with additional record attributes (@janko-m)</p>
-            </li><li>
-            <p>Remove the undocumented <code>:magic_header</code> option from
-            <code>determine_mime_type</code> plugin (@janko-m)</p>
-            </li><li>
-            <p>Expose <code>Shrine.determine_mime_type</code> and
-            <code>Shrine.mime_type_analyzers</code> in <code>determine_mime_type</code>
-            plugin (@janko-m)</p>
-            </li><li>
-            <p>Add <code>signature</code> plugin for calculating a
-            SHA{1,256,384,512}/MD5/CRC32 hash of a file (@janko-m)</p>
-            </li><li>
-            <p>Return the resolved plugin module when calling <code>Shrine.plugin</code>
-            (@janko-m)</p>
-            </li><li>
-            <p>Accept hash of metadata with symbol keys as well in
-            <code>add_metadata</code> block (@janko-m)</p>
-            </li><li>
-            <p>Add <code>refresh_metadata</code> plugin for re-extracting metadata from an
-            uploaded file (@janko-m)</p>
-            </li><li>
-            <p>Allow S3 storage to use parallelized multipart upload for files from
-            FileSystem storage as well (@janko-m)</p>
-            </li><li>
-            <p>Improve default multipart copy threshold for S3 storage (@janko-m)</p>
-            </li><li>
-            <p>Allow specifying multipart upload and copy thresholds separately in
-            <code>Shrine::Storage::S3</code> (@janko-m)</p>
-            </li><li>
-            <p>Fix <code>Storage::FileSystem#clear!</code> not deleting old files if there
-            are newer files in the same directory (@janko-m)</p>
-            </li><li>
-            <p>Allow media type in the data URI to have additional parameters (@janko-m)</p>
-            </li><li>
-            <p>URI-decode non-base64 data URIs, as such data URIs are URI-encoded
-            according to the specification (@janko-m)</p>
-            </li><li>
-            <p>Improve performance of parsing data URIs by 10x switching from a regex to
-            StringScanner (@janko-m)</p>
-            </li><li>
-            <p>Reduce memory usage of <code>Shrine.data_uri</code> and
-            <code>UploadedFile#base64</code> by at least 2x (@janko-m)</p>
-            </li><li>
-            <p>Add <code>Shrine.data_uri</code> to <code>data_uri</code> plugin which
-            parses and converts the given data URI to an IO object (@janko-m)</p>
-            </li><li>
-            <p>Make <code>rack_file</code> plugin work with HashWithIndifferentAccess-like
-            objects such as Hashie::Mash (@janko-m)</p>
-            </li><li>
-            <p>Expose <code>Aws::S3::Client</code> via
-            <code>Shrine::Storage::S3#client</code>, and deprecate
-            <code>Shrine::Strorage::S3#s3</code> (@janko-m)</p>
-            </li><li>
-            <p>Modify <code>delete_raw</code> plugin to delete any IOs that respond to
-            <code>#path</code> (@janko-m)</p>
-            </li><li>
-            <p>Require the Tempfile standard library in lib/shrine.rb (@janko-m)</p>
-            </li><li>
-            <p>Deprecate dimensions validations passing when a dimension is nil (@janko-m)</p>
-            </li><li>
-            <p>Deprecate passing regexes to type/extension whitelists/blacklists in
-            <code>validation_helpers</code> (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t include list of blacklisted types and extensions in default
-            <code>validation_helpers</code> messages (@janko-m)</p>
-            </li><li>
-            <p>Improve default error messages in <code>validation_helpers</code> plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t require the <code>benchmark</code> standard library in
-            <code>logging</code> plugin (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t dirty the attacher in <code>Attacher#set</code> when attachment
-            hasn&#39;t changed (@janko-m)</p>
-            </li><li>
-            <p>Rename <code>Attacher#attached?</code> to a more accurate
-            <code>Attacher#changed?</code> (@janko-m)</p>
-            </li><li>
-            <p>Allow calling <code>Attacher#finalize</code> if attachment hasn&#39;t
-            changed, instead of raising an error (@janko-m)</p>
-            </li><li>
-            <p>Make <code>Shrine::Storage::S3#object</code> method public (@janko-m)</p>
-            </li><li>
-            <p>Prevent autoloading race conditions in aws-sdk gem by eager loading the S3
-            service (@janko-m)</p>
-            </li><li>
-            <p>Raise <code>Shrine::Error</code> when <code>Shrine#generate_location</code>
-            returns nil (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.5.0+-282016-11-11-29">2.5.0 (2016-11-11)<span><a href="#label-2.5.0+-282016-11-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Add <code>Attacher.default_url</code> as the idiomatic way of declaring
-            default URLs (@janko-m)</p>
-            </li><li>
-            <p>Allow uploaders themselves to accept Rack uploaded files when
-            <code>rack_file</code> is loaded (@janko-m)</p>
-            </li><li>
-            <p>Raise a descriptive error when two versions are pointing to the same IO
-            object (@janko-m)</p>
-            </li><li>
-            <p>Make <code>backgrounding</code> plugin work with plain model instances
-            (@janko-m)</p>
-            </li><li>
-            <p>Make validation methods in <code>validation_helpers</code> plugin return
-            whether validation succeeded (@janko-m)</p>
-            </li><li>
-            <p>Make extension matching case insensitive in <code>validation_helpers</code>
-            plugin (@jonasheinrich)</p>
-            </li><li>
-            <p>Make <code>remove_invalid</code> plugin remove dirty state on attacher
-            after removing invalid file (@janko-m)</p>
-            </li><li>
-            <p>Raise error if <code>Shrine::UploadedFile</code> isn&#39;t initialized with
-            valid data (@janko-m)</p>
-            </li><li>
-            <p>Accept <code>extension</code> parameter without the dot in presign endpoint
-            of <code>direct_upload</code> plugin (@jonasheinrich)</p>
-            </li><li>
-            <p>Add <code>:fallback_to_original</code> option to <code>versions</code>
-            plugin for disabling fallback to original file (@janko-m)</p>
-            </li><li>
-            <p>Add <code>#dimensions</code> method to <code>UploadedFile</code> when
-            loading <code>store_dimensions</code> plugin (@janko-m)</p>
-            </li><li>
-            <p>Make it possible to extract multiple metadata values at once with the
-            <code>add_metadata</code> plugin (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.4.1+-282016-10-17-29">2.4.1 (2016-10-17)<span><a href="#label-2.4.1+-282016-10-17-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Move back JSON serialization from <code>Attacher#write</code> to
-            <code>Attacher#_set</code> (@janko-m)</p>
-            </li><li>
-            <p>Make <code>remove_invalid</code> plugin assign back a previous attachment
-            if was there (@janko-m)</p>
-            </li><li>
-            <p>Deprecate <code>Storage::FileSystem#download</code> (@janko-m)</p>
-            </li><li>
-            <p>In <code>UploadedFile#download</code> use extension from
-            <code>#original_filename</code> if <code>#id</code> doesn&#39;t have it
-            (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.4.0+-282016-10-11-29">2.4.0 (2016-10-11)<span><a href="#label-2.4.0+-282016-10-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Add <code>#convert_before_write</code> and <code>#convert_after_read</code>
-            on the Attacher for data attribute conversion (@janko-m)</p>
-            </li><li>
-            <p>Extract the <code>&lt;attachment&gt;_data</code> attribute name into
-            <code>Attacher#data_attribute</code> (@janko-m)</p>
-            </li><li>
-            <p>Support JSON and JSONB PostgreSQL columns with ActiveRecord (@janko-m)</p>
-            </li><li>
-            <p>Fix S3 storage not handling filenames with double quotes in
-            Content-Disposition header (@janko-m)</p>
-            </li><li>
-            <p>Work around aws-sdk failing with non-ASCII characters in
-            Content-Disposition header (@janko-m)</p>
-            </li><li>
-            <p>Allow dynamically generating URL options in
-            <code>default_url_options</code> plugin (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t run file validations when duplicating the record in
-            <code>copy</code> plugin (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t use <code>Storage#stream</code> in download_endpoint plugin
-            anymore, rely on <code>Storage#open</code> (@janko-m)</p>
-            </li><li>
-            <p>Remove explicitly unlinking Tempfiles returned by <code>Storage#open</code>
-            (@janko-m)</p>
-            </li><li>
-            <p>Move <code>:host</code> from first-class storage option to
-            <code>#url</code> option on FileSystem and S3 storage (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t fail in FileSystem storage when attempting to delete a file that
-            doesn&#39;t exist (@janko-m)</p>
-            </li><li>
-            <p>In <code>UploadedFile#open</code> handle the case when
-            <code>Storage#open</code> raises an error (@janko-m)</p>
-            </li><li>
-            <p>Make the <code>sequel</code> plugin use less memory during transactions
-            (@janko-m)</p>
-            </li><li>
-            <p>Use Roda&#39;s streaming plugin in <code>download_endpoint</code> for
-            better EventMachine integration (@janko-m)</p>
-            </li><li>
-            <p>Deprecate accepting a JSON string in <code>Shrine.uploaded_file</code>
-            (@janko-m)</p>
-            </li><li>
-            <p>In S3 storage automatically write original filename to
-            <code>Content-Disposition</code> header (@janko-m)</p>
-            </li><li>
-            <p>Override <code>#to_s</code> in <code>Shrine::Attachment</code> for better
-            introspection with <code>puts</code> (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.3.1+-282016-09-01-29">2.3.1 (2016-09-01)<span><a href="#label-2.3.1+-282016-09-01-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Don&#39;t change permissions of existing directories in FileSystem storage
-            (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.3.0+-282016-08-27-29">2.3.0 (2016-08-27)<span><a href="#label-2.3.0+-282016-08-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Prevent client from caching the presign response in direct_upload plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Make Sequel update only the attachment in background job (@janko-m)</p>
-            </li><li>
-            <p>Add copy plugin for copying files from one record to another (@janko-m)</p>
-            </li><li>
-            <p>Disable moving when uploading stored file to backup storage (@janko-m)</p>
-            </li><li>
-            <p>Make <code>Attacher#recache</code> from the recache plugin public for
-            standalone usage (@janko-m)</p>
-            </li><li>
-            <p>Allow changing <code>Shrine::Attacher#context</code> once the attacher is
-            instantiated (@janko-m)</p>
-            </li><li>
-            <p>Make <code>Attacher#read</code> for reading the attachment column public
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t rely on the <code>#id</code> writer on a model instance in
-            backgrounding plugin (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t make <code>Attacher#swap</code> private in sequel and
-            activerecord plugins (@janko-m)</p>
-            </li><li>
-            <p>Set default UNIX permissions to 0644 for files and 0755 for directories
-            (@janko-m)</p>
-            </li><li>
-            <p>Apply directory permissions to all subfolders inside the main folder
-            (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:directory_permissions</code> to <code>Storage::FileSystem</code>
-            (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.2.0+-282016-07-29-29">2.2.0 (2016-07-29)<span><a href="#label-2.2.0+-282016-07-29-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Soft deprecate <code>:phase</code> over <code>:action</code> in
-            <code>context</code> (@janko-m)</p>
-            </li><li>
-            <p>Add ability to sequel and activerecord plugins to disable callbacks and
-            validations (@janko-m)</p>
-            </li><li>
-            <p>The direct_upload endpoint now always includes both upload and presign
-            routes (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t let the combination for delete_raw and moving plugins trigger any
-            errors (@janko-m)</p>
-            </li><li>
-            <p>Add <code>UploadedFile#open</code> that mimics <code>File.open</code> with
-            a block (@janko-m)</p>
-            </li><li>
-            <p>In the storage linter don&#39;t require <code>#clear!</code> to be
-            implemented (@janko-m)</p>
-            </li><li>
-            <p>In backgrounding plugin don&#39;t require model to have attachment module
-            included (@janko-m)</p>
-            </li><li>
-            <p>Add add_metadata plugin for defining additional metadata values to be
-            extracted (@janko-m)</p>
-            </li><li>
-            <p>In determine_mime_type plugin raise error when file command wasn&#39;t
-            found or errored (@janko-m)</p>
-            </li><li>
-            <p>Add processing plugin for simpler and more declarative definition of
-            processing (@janko-m)</p>
-            </li><li>
-            <p>Storage classes don&#39;t need to implement the <code>#read</code> method
-            anymore (@janko-m)</p>
-            </li><li>
-            <p>Use aws-sdk in <code>S3#download</code>, which will automatically retry
-            failed downloads (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:multipart_threshold</code> for when S3 storage should use
-            parallelized multipart copy/upload (@janko-m)</p>
-            </li><li>
-            <p>Automatically use optimized multipart S3 upload for files larger than 15MB
-            (@janko-m)</p>
-            </li><li>
-            <p>Avoid an additional HEAD request to determine content length in multipart
-            S3 copy (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.1.1+-282016-07-14-29">2.1.1 (2016-07-14)<span><a href="#label-2.1.1+-282016-07-14-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Fix <code>S3#open</code> throwing a NameError if <code>net/http</code>
-            isn&#39;t required (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.1.0+-282016-06-27-29">2.1.0 (2016-06-27)<span><a href="#label-2.1.0+-282016-06-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Remove <code>:names</code> from versions plugin, and deprecate generating
-            versions in :cache phase (@janko-m)</p>
-            </li><li>
-            <p>Pass a <code>Shrine::UploadedFile</code> in restore_cached_data instead of
-            the raw IO (@janko-m)</p>
-            </li><li>
-            <p>Increase magic header length in determine_mime_type and make it
-            configurable (@janko-m)</p>
-            </li><li>
-            <p>Execute <code>file</code> command in determine_mime_type the same way for
-            files as for general IOs (@janko-m)</p>
-            </li><li>
-            <p>Make logging and parallelize plugins work properly when loaded in this
-            order (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t assert arity of IO methods, so that objects like
-            <code>Rack::Test::UploadedFile</code> are allowed (@janko-m)</p>
-            </li><li>
-            <p>Deprecate <code>#cached_&lt;attachment&gt;_data=</code> over using
-            <code>&lt;attachment&gt;</code> for the hidden field (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.0.1+-282016-05-30-29">2.0.1 (2016-05-30)<span><a href="#label-2.0.1+-282016-05-30-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Don&#39;t override previously set default_url in versions plugin (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-2.0.0+-282016-05-19-29">2.0.0 (2016-05-19)<span><a href="#label-2.0.0+-282016-05-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Include query parameters in CDN-ed S3 URLs, making them work for private
-            objects (@janko-m)</p>
-            </li><li>
-            <p>Remove the <code>:include_error</code> option from remote_url plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Make previous plugin options persist when reapplying the plugin (@janko-m)</p>
-            </li><li>
-            <p>Improve how upload options and metadata are passed to storage&#39;s
-            <code>#upload</code> and <code>#move</code> (@janko-m)</p>
-            </li><li>
-            <p>Remove <code>Shrine::Confirm</code> and confirming
-            <code>Storage#clear!</code> in general (@janko-m)</p>
-            </li><li>
-            <p>Allow implementing a custom dimensions analyzer using built-in ones
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t error in determine_mime_type when MimeMagic cannot determine the
-            MIME (@janko-m)</p>
-            </li><li>
-            <p>Allow implementing a custom MIME type analyzer using built-in ones
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t check that the cached file exists in restore_cached_data plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Deprecate migration_helpers plugin and move <code>Attacher#cached?</code>
-            and <code>Attacher#stored?</code> to base (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t trigger restore_cached_data plugin functionality when assigning
-            the same cached attachment (@janko-m)</p>
-            </li><li>
-            <p>Give <code>Attacher#_promote</code> and <code>Attacher#promote</code> the
-            same method signature (@janko-m)</p>
-            </li><li>
-            <p>Add <code>Attacher#_delete</code> which now spawns a background job instead
-            of <code>Attacher#delete!</code> (@janko-m)</p>
-            </li><li>
-            <p>Make <code>Attacher#cache!</code>, <code>Attacher#store!</code>, and
-            <code>Attacher#delete!</code> public (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t cache storages in dynamic_storage plugin (@janko-m)</p>
-            </li><li>
-            <p>Make only one HTTP request in download_endpoint plugin (@janko-m)</p>
-            </li><li>
-            <p>Print secuity warning when not using determine_mime_type plugin (@janko-m)</p>
-            </li><li>
-            <p>Support Mongoid in backgrounding plugin (@janko-m)</p>
-            </li><li>
-            <p>Allow including attachment module to non-<code>Sequel::Model</code> objects
-            in sequel plugin (@janko-m)</p>
-            </li><li>
-            <p>Handle paths that start with "-" in determine_mime_type plugin when
-            <code>:file</code> analyzer is used (@zaeleus)</p>
-            </li><li>
-            <p>Allow including attachment module to non-<code>ActiveRecord::Base</code>
-            objects in activerecord plugin (@janko-m)</p>
-            </li><li>
-            <p>Remove deprecated "restore_cached" alias for restore_cached_data plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Remove deprecated "delete_uploaded" alias for delete_raw plugin (@janko-m)</p>
-            </li><li>
-            <p>Make the default generated unique location shorter (@janko-m)</p>
-            </li><li>
-            <p>Make the <code>:delegate</code> option in migration_helpers default to
-            <code>false</code> (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t require <code>:storages</code> option anymore in moving plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t delete uploaded IO if storage doesn&#39;t support moving in
-            moving plugin (@janko-m)</p>
-            </li><li>
-            <p>Rename delete phases to be shorter and consistent in naming with upload
-            phases (@janko-m)</p>
-            </li><li>
-            <p>Remove deprecated <code>Shrine#default_url</code> (@janko-m)</p>
-            </li><li>
-            <p>Remove deprecated <code>:subdirectory</code> on FileSystem storage
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t return the uploaded file in <code>Attacher#set</code> and
-            <code>Attacher#assign</code> (@janko-m)</p>
-            </li><li>
-            <p>Return the attacher instance in <code>Attacher.promote</code> and
-            <code>Attacher.delete</code> in backgrounding plugin (@janko-m)</p>
-            </li><li>
-            <p>Rename "attachment" to "name", and "uploaded_file" to "attachment" in
-            backgrounding plugin (@janko-m)</p>
-            </li><li>
-            <p>Remove using <code>:presign</code> for presign options instead of
-            <code>:presign_options</code> (@janko-m)</p>
-            </li><li>
-            <p>Remove deprecated <code>Shrine.direct_endpoint</code> from direct_upload
-            plugin (@janko-m)</p>
-            </li><li>
-            <p>Remove deprecated keep_location plugin (@janko-m)</p>
-            </li><li>
-            <p>Make <code>Shrine#extract_dimensions</code> a private method in
-            store_dimensions plugin (@janko-m)</p>
-            </li><li>
-            <p>Keep <code>Shrine#extract_mime_type</code> a private method when loading
-            determine_mime_type plugin (@janko-m)</p>
-            </li><li>
-            <p>Deprecate loading the backgrounding plugin through the old
-            "background_helpers" alias (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-1.4.2+-282016-04-19-29">1.4.2 (2016-04-19)<span><a href="#label-1.4.2+-282016-04-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Removed ActiveRecord&#39;s automatic support for optimistic locking as it
-            wasn&#39;t stable (@janko-m)</p>
-            </li><li>
-            <p>Fixed record&#39;s dataset being modified after promoting preventing
-            further updates with the same instance (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-1.4.1+-282016-04-18-29">1.4.1 (2016-04-18)<span><a href="#label-1.4.1+-282016-04-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Bring back triggering callbacks on promote in ORM plugins, and add support
-            for optimistic locking (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-1.4.0+-282016-04-15-29">1.4.0 (2016-04-15)<span><a href="#label-1.4.0+-282016-04-15-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Return "Content-Length" response header in download_endpoint plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Make determine_mime_type and store_dimensions automatically rewind IO with
-            custom analyzer (@janko-m)</p>
-            </li><li>
-            <p>Make <code>before_*</code> and <code>after_*</code> hooks happen before and
-            after <code>around_*</code> hooks (@janko-m)</p>
-            </li><li>
-            <p>Rename restore_cached plugin to more accurate "restore_cached_data"
-            (@janko-m)</p>
-            </li><li>
-            <p>Prevent errors when attempting to validate dimensions when they are absent
-            (@janko-m)</p>
-            </li><li>
-            <p>Remove "thread" gem dependency in parallelize plugin (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:filename</code> to data_uri plugin for generating filenames
-            based on content type (@janko-m)</p>
-            </li><li>
-            <p>Make user-defined hooks always happen around logging (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:presign_location</code> to direct_upload for generating the key
-            (@janko-m)</p>
-            </li><li>
-            <p>Add separate <code>:presign_options</code> option for receiving presign
-            options in direct_upload plugin (@janko-m)</p>
-            </li><li>
-            <p>Add ability to generate fake presigns for storages which don&#39;t support
-            them for testing (@janko-m)</p>
-            </li><li>
-            <p>Change the <code>/:storage/:name</code> route to
-            <code>/:storage/upload</code> in direct_upload plugin (@janko-m)</p>
-            </li><li>
-            <p>Fix logger not being inherited in the logging plugin (@janko-m)</p>
-            </li><li>
-            <p>Add delete_promoted plugin for deleting promoted files after record has
-            been updated (@janko-m)</p>
-            </li><li>
-            <p>Allow passing phase to <code>Attacher#promote</code> and generalize
-            promoting background job (@janko-m)</p>
-            </li><li>
-            <p>Close the cached file after extracting its metadata in restore_cached
-            plugin (@janko-m)</p>
-            </li><li>
-            <p>Rename delete_uploaded plugin to "delete_raw" to better explain its
-            functionality (@janko-m)</p>
-            </li><li>
-            <p>Pass the SSL CA bundle to open-uri when downloading an S3 file (@janko-m)</p>
-            </li><li>
-            <p>Add <code>Attacher.dump</code> and <code>Attacher.load</code> for writing
-            custom background jobs with custom functionality (@janko-m)</p>
-            </li><li>
-            <p>Fix S3 URL erroring due to not being URL-encoded when <code>:host</code>
-            option is used (@janko-m)</p>
-            </li><li>
-            <p>Remove a tiny possibility of a race condition with backgrounding on
-            subsequent updates (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:delegate</code> option to migration_helpers for opting out of
-            defining methods on the model (@janko-m)</p>
-            </li><li>
-            <p>Make logging plugin log number of both input and output files for
-            processing (@janko-m)</p>
-            </li><li>
-            <p>Make deleting backup work with backgrounding plugin (@janko-m)</p>
-            </li><li>
-            <p>Make storing backup happen <em>after</em> promoting instead of before
-            (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:fallbacks</code> to versions plugin for fallback URLs for
-            versions which haven&#39;t finished processing (@janko-m)</p>
-            </li><li>
-            <p>Fix keep_files not to spawn a background job when file will not be deleted
-            (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-1.3.0+-282016-03-12-29">1.3.0 (2016-03-12)<span><a href="#label-1.3.0+-282016-03-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Add <code>&lt;attachment&gt;_cached?</code> and
-            <code>&lt;attachment&gt;_stored?</code> to migration_helpers plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Fix <code>Attacher#backup_file</code> from backup plugin not to modify the
-            given uploaded file (@janko-m)</p>
-            </li><li>
-            <p>Allow modifying UploadedFile&#39;s data hash after it&#39;s instantiated to
-            change the UploadedFile (@janko-m)</p>
-            </li><li>
-            <p>Deprecate the keep_location plugin (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t mutate context hash inside the uploader (@janko-m)</p>
-            </li><li>
-            <p>Make extracted metadata accessible in <code>#generate_location</code>
-            through <code>:metadata</code> in context hash (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t require the "metadata" key when instantiating a
-            <code>Shrine::UploadedFile</code> (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:include_error</code> option to remote_url for accessing download
-            error in <code>:error_message</code> block (@janko-m)</p>
-            </li><li>
-            <p>Give different error message when file wasn&#39;t found or was too large in
-            remote_url (@janko-m)</p>
-            </li><li>
-            <p>Rewind the IO after extracting MIME type with MimeMagic (@janko-m)</p>
-            </li><li>
-            <p>Rewind the IO after extracting image dimensions even when extraction failed
-            (@kaapa)</p>
-            </li><li>
-            <p>Correctly infer the extension in <code>#generate_location</code> when
-            uploading an <code>UploadedFile</code> (@janko-m)</p>
-            </li><li>
-            <p>Fix ability for errors to accumulate in data_uri and remote_url plugins
-            when assigning mutliples to same record instance (@janko-m)</p>
-            </li><li>
-            <p>Bump Down dependency to 2.0.0 in order to fix downloading URLs with "[]"
-            characters (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:namespace</code> option to pretty_location for including class
-            namespace in location (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t include the namespace of the class in the location with the
-            pretty_location plugin (@janko-m)</p>
-            </li><li>
-            <p>Remove aws-sdk deprecation warning when storage isn&#39;t instantiated with
-            credentials (@reidab)</p>
-            </li><li>
-            <p>Don&#39;t make uploaded file&#39;s metadata methods error when the
-            corresponding key-value pair is missing (@janko-m)</p>
-            </li><li>
-            <p>Close the <code>UploadedFile</code> on upload only if it was previously
-            opened, which doesn&#39;t happen on S3 COPY (@reidab)</p>
-            </li><li>
-            <p>Fix <code>NameError</code> when silencing "missing record" errors in
-            backgrounding (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-1.2.0+-282016-01-26-29">1.2.0 (2016-01-26)<span><a href="#label-1.2.0+-282016-01-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Make <code>Shrine::Attacher.promote</code> and
-            <code>Shrine::Attacher.delete</code> return the record in backgrounding
-            plugin (@janko-m)</p>
-            </li><li>
-            <p>Close the IO on upload even if the upload errors (@janko-m)</p>
-            </li><li>
-            <p>Use a transaction when checking if attachment has changed after storing
-            during promotion (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t attempt to start promoting in background if attachment has
-            already changed (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t error in backgrounding when record is missing (@janko-m)</p>
-            </li><li>
-            <p>Prevent multiline content type spoof attempts in validation_helpers (@xzo)</p>
-            </li><li>
-            <p>Make custom metadata inherited from uploaded files and make
-            <code>#extract_metadata</code> called only on caching (@janko-m)</p>
-            </li></ul>
-            
-            <h2 id="label-1.1.0+-282015-12-26-29">1.1.0 (2015-12-26)<span><a href="#label-1.1.0+-282015-12-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Rename the "background_helpers" plugin to "backgrounding" (@janko-m)</p>
-            </li><li>
-            <p>Rename the <code>:subdirectory</code> option to <code>:prefix</code> on
-            FileSystem storage (@janko-m)</p>
-            </li><li>
-            <p>Add download_endpoint plugin for downloading files uploaded to database
-            storages and for securing downloads (@janko-m)</p>
-            </li><li>
-            <p>Make <code>around_*</code> hooks return the result of the corresponding
-            action (@janko-m)</p>
-            </li><li>
-            <p>Make the direct upload endpoint customizable, inheritable and inspectable
-            (@janko-m)</p>
-            </li><li>
-            <p>Add upload_options plugin for dynamically generating storage-specific
-            upload options (@janko-m)</p>
-            </li><li>
-            <p>Allow the context hash to be modified (@janko-m)</p>
-            </li><li>
-            <p>Fix extension not being returned for storages which remove it from ID
-            (Flickr, SQL, GridFS) (@janko-m)</p>
-            </li><li>
-            <p>Delete underlying Tempfiles when closing an <code>UploadedFile</code>
-            (@janko-m)</p>
-            </li><li>
-            <p>Fix background_helpers plugin not working with ActiveJob (@janko-m)</p>
-            </li><li>
-            <p>Add <code>UploadedFile#base64</code> to the data_uri plugin (@janko-m)</p>
-            </li><li>
-            <p>Optimize <code>UploadedData#data_uri</code> to not download the file and
-            instantiate file contents string only once (@janko-m)</p>
-            </li><li>
-            <p>Allow adding S3 upload options dynamically per upload (@janko-m)</p>
-            </li><li>
-            <p>Add delete_uploaded plugin for automatically deleting files after
-            they&#39;re uploaded (@janko-m)</p>
-            </li><li>
-            <p>Close an open file descriptor left after downloading a FileSystem file
-            (@janko-m)</p>
-            </li><li>
-            <p>Make <code>FileSystem#url</code> Windows compatible (@janko-m)</p>
-            </li><li>
-            <p>Add <code>UploadedFile#content_type</code> alias to <code>#mime_type</code>
-            for better integration with upload libraries (@janko-m)</p>
-            </li><li>
-            <p>Add a <code>UploadedFile#data_uri</code> method to the data_uri plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Allow the data_uri plugin to accept "+" symbols in MIME type names
-            (@janko-m)</p>
-            </li><li>
-            <p>Make the data_uri plugin accept data URIs which aren&#39;t base64 encoded
-            (@janko-m)</p>
-            </li><li>
-            <p>Close all IOs after uploading them (@janko-m)</p>
-            </li><li>
-            <p>Allow passing a custom IO object to the Linter (@janko-m)</p>
-            </li><li>
-            <p>Add remove_invalid plugin for automatically deleting and deassigning
-            invalid cached files (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:max_size</code> option to the direct_upload plugin (@janko-m)</p>
-            </li><li>
-            <p>Move <code>Shrine#default_url</code> to default_url plugin (@janko-m)</p>
-            </li><li>
-            <p>Enable <code>S3#multi_delete</code> to delete more than 1000 objects by
-            batching deletes (@janko-m)</p>
-            </li><li>
-            <p>Add the keep_location plugin for easier debugging or backups (@janko-m)</p>
-            </li><li>
-            <p>Add the backup plugin for backing up stored files (@janko-m)</p>
-            </li><li>
-            <p>Storages don&#39;t need to rewind the files after upload anymore (@janko-m)</p>
-            </li><li>
-            <p>Make S3 presigns work when the <code>:endpoint</code> option is given
-            (@NetsoftHoldings)</p>
-            </li><li>
-            <p>Fix parallelize plugin to always work with the moving plugin (@janko-m)</p>
-            </li><li>
-            <p>Fix S3 storage to handle copying files that are larger than 5GB (@janko-m)</p>
-            </li><li>
-            <p>Add <code>:upload_options</code> to S3 storage for applying additional
-            options on upload (@janko-m)</p>
-            </li><li>
-            <p>Reduce length of URLs generated with pretty_location plugin (@gshaw)</p>
-            </li></ul>
-            
-            <h2 id="label-1.0.0+-282015-11-27-29">1.0.0 (2015-11-27)<span><a href="#label-1.0.0+-282015-11-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-            <ul><li>
-            <p>Improve Windows compatibility in the FileSystem storage (@janko-m)</p>
-            </li><li>
-            <p>Remove the ability for FileSystem storage to accept IDs starting with a
-            slash (@janko-m)</p>
-            </li><li>
-            <p>Fix keep_files plugin requiring context for deleting files (@janko-m)</p>
-            </li><li>
-            <p>Extract assigning cached files by parsed JSON into a parsed_json plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Add <code>(before|around|after)_upload</code> to the hooks plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Fix <code>S3#multi_delete</code> and <code>S3#clear!</code> not using the
-            prefix (@janko-m)</p>
-            </li><li>
-            <p>Add ability to pass presign options to storages in the direct_upload plugin
-            (@janko-m)</p>
-            </li><li>
-            <p>Remove <code>Shrine.io!</code> because it was actually meant to be only for
-            internal use (@janko-m)</p>
-            </li><li>
-            <p>Remove <code>Shrine.delete</code> because of redundancy (@janko-m)</p>
-            </li><li>
-            <p>Add default_url_options plugin for specifiying default URL options for
-            uploaded files (@janko-m)</p>
-            </li><li>
-            <p>Add module_include plugin for easily extending core classes for given
-            uploader (@janko-m)</p>
-            </li><li>
-            <p>Add support for Sequel&#39;s Postgres JSON column support (@janko-m)</p>
-            </li><li>
-            <p>Fix migration_helpers plugin not detecting when column changed (@janko-m)</p>
-            </li><li>
-            <p>Add the <code>:public</code> option to S3 storage for retrieving public
-            URLs which aren&#39;t signed (@janko-m)</p>
-            </li><li>
-            <p>Remove the delete_invalid plugin, as it could cause lame errors (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t delete cached files anymore, as it can cause errors with
-            backgrounding (@janko-m)</p>
-            </li><li>
-            <p>Add a <code>:host</code> option to the S3 storage for specifying CDNs
-            (@janko-m)</p>
-            </li><li>
-            <p>Don&#39;t allow same attachment to be promoted multiple times with
-            backgrounding (@janko-m)</p>
-            </li><li>
-            <p>Fix recache plugin causing an infinite loop (@janko-m)</p>
-            </li><li>
-            <p>Fix an encoding error in determine_mime_type when using <code>:file</code>
-            with non-files (@janko-m)</p>
-            </li><li>
-            <p>Make <code>UploadedFile</code> actually delete itself only once (@janko-m)</p>
-            </li><li>
-            <p>Make <code>UploadedFile#inspect</code> cleaner by showing only the data
-            hash (@janko-m)</p>
-            </li><li>
-            <p>Make determine_mime_type able to accept non-files when using :file
-            (@janko-m)</p>
-            </li><li>
-            <p>Make logging plugin accept PORO instance which don&#39;t have an id
-            (@janko-m)</p>
-            </li><li>
-            <p>Add rack_file plugin for attaching Rack file hashes to models (@janko-m)</p>
-            </li></ul>
-          </div>
-          <div id='context'>
-          </div>
-        </div>
-      </div>
-      <div id='footer-push'></div>
-    </div>
-    <div id='footer'>
-      <a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
-    </div>
-  </body>
+<head>
+<title>CHANGELOG.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>CHANGELOG.md
+</h1>
+<div class='paths'>
+CHANGELOG.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h2 id="label-2.7.0+-282017-09-11-29">2.7.0 (2017-09-11)<span><a href="#label-2.7.0+-282017-09-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Deprecate the <code>Shrine::DownloadEndpoint</code> constant over
+<code>Shrine.download_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Allow an additional <code>#headers</code> attribute on presigns and return
+it in <code>presign_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Allow overriding <code>upload_endpoint</code> and
+<code>presign_endpoint</code> options per-endpoint (@janko-m)</p>
+</li><li>
+<p>Add <code>:presign</code> and <code>:rack_response</code> options to
+<code>presign_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Add <code>:upload</code>, <code>:upload_context</code> and
+<code>:rack_response</code> options to <code>upload_endpoint</code>
+(@janko-m)</p>
+</li><li>
+<p>Modify <code>upload_endpoint</code> and <code>presign_endpoint</code> to
+return <code>text/plain</code> error responses (@janko-m)</p>
+</li><li>
+<p>Add <code>:request</code> upload context parameter in
+<code>upload_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Change <code>:action</code> upload context parameter to
+<code>:upload</code> in <code>upload_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Return <code>405 Method Not Allowed</code> on invalid HTTP verb in
+<code>upload_endpoint</code> and <code>presign_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>The <code>presign_endpoint</code> now expects POST requests instead of GET
+(@janko-m)</p>
+</li><li>
+<p>Modify <code>upload_endpoint</code> and <code>presign_endpoint</code> to
+handle requests on the root URL (@janko-m)</p>
+</li><li>
+<p>Allow creating Rack apps dynamically in <code>upload_endpoint</code> and
+<code>presign_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Remove Roda dependency from <code>upload_endpoint</code> and
+<code>presign_endpoint</code> plugins (@janko-m)</p>
+</li><li>
+<p>Split <code>direct_upload</code> plugin into <code>upload_endpoint</code>
+and <code>presign_endpoint</code> plugins (@janko-m)</p>
+</li><li>
+<p>Support the new <code>aws-sdk-s3</code> gem in
+<code>Shrine::Storage::S3</code> (@lizdeika)</p>
+</li><li>
+<p>Return <code>Cache-Control</code> header in <code>download_endpoint</code>
+to permanently cache responses (@janko-m)</p>
+</li><li>
+<p>Return <code>404 Not Found</code> when uploaded file doesn&#39;t exist in
+<code>download_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Utilize uploaded file metadata when generating response in
+<code>download_endpoint</code> (@janko-m)</p>
+</li><li>
+<p>Fix deprecation warning when generating fake presign with query parameters
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t raise error in <code>file</code> and <code>filemagic</code> MIME
+type analyzer on empty IO (@ypresto)</p>
+</li><li>
+<p>Require <code>down</code> in <code>remote_url</code> plugin even when a
+custom downloader is given (@janko-m)</p>
+</li><li>
+<p>Require <code>time</code> library in <code>logging</code> plugin to fix
+<code>undefined method #iso8601 for Time</code> (@janko-m)</p>
+</li><li>
+<p>Allow validations defined on a superclass to be reused in a subclass
+(@printercu)</p>
+</li><li>
+<p>Allow validation error messages to be an array of arguments for
+ActiveRecord (@janko-m)</p>
+</li><li>
+<p>Allow model subclasses to override the attachment with a different uploader
+(@janko-m)</p>
+</li><li>
+<p>Accept <code>Attacher.new</code> options like <code>store:</code> and
+<code>cache:</code> via <code>Attachment.new</code> (@ypresto)</p>
+</li><li>
+<p>Raise <code>ArgumentError</code> when <code>:bucket</code> option is nil in
+<code>Shrine::Storage::S3#initialize</code> (@janko-m)</p>
+</li><li>
+<p>Don&#39;t wrap base64-encoded content into 60 columns in
+<code>UploadedFile#base64</code> and <code>#data_uri</code> (@janko-m)</p>
+</li><li>
+<p>Add <code>:mini_mime</code> option to <code>determine_mime_type</code>
+plugin for using the <a
+href="https://github.com/discourse/mini_mime">mini_mime</a> gem (@janko-m)</p>
+</li><li>
+<p>Fix <code>data_uri</code> plugin raising an exception on Ruby 2.4.1 when
+using raw data URIs (@janko-m)</p>
+</li><li>
+<p>Implement <code>Shrine::Storage::S3#open</code> using the aws-sdk gem
+instead of <code>Down.open</code> (@janko-m)</p>
+</li><li>
+<p>Un-deprecate <code>Shrine.uploaded_file</code> accepting file data as JSON
+string (@janko-m)</p>
+</li><li>
+<p>Don&#39;t wrap base64-formatted signatures to 60 columns (@janko-m)</p>
+</li><li>
+<p>Don&#39;t add a newline at the end of the base64-formatted signature
+(@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.6.1+-282017-04-12-29">2.6.1 (2017-04-12)<span><a href="#label-2.6.1+-282017-04-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Fix <code>download_endpoint</code> returning incorrect reponse body in some
+cases (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.6.0+-282017-04-04-29">2.6.0 (2017-04-04)<span><a href="#label-2.6.0+-282017-04-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Make <code>Shrine::Storage::FileSystem#path</code> public which returns
+path to the file as a <code>Pathname</code> object (@janko-m)</p>
+</li><li>
+<p>Add <code>Shrine.rack_file</code> to <code>rack_file</code> plugin for
+converting Rack uploaded file hash into an IO (@janko-m)</p>
+</li><li>
+<p>Deprecate passing a Rack file hash to <code>Shrine#upload</code> (@janko-m)</p>
+</li><li>
+<p>Expose <code>Shrine.extract_dimensions</code> and
+<code>Shrine.dimensions_analyzers</code> in <code>store_dimensions</code>
+plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>metadata_attributes</code> plugin for syncing attachment metadata
+with additional record attributes (@janko-m)</p>
+</li><li>
+<p>Remove the undocumented <code>:magic_header</code> option from
+<code>determine_mime_type</code> plugin (@janko-m)</p>
+</li><li>
+<p>Expose <code>Shrine.determine_mime_type</code> and
+<code>Shrine.mime_type_analyzers</code> in <code>determine_mime_type</code>
+plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>signature</code> plugin for calculating a
+SHA{1,256,384,512}/MD5/CRC32 hash of a file (@janko-m)</p>
+</li><li>
+<p>Return the resolved plugin module when calling <code>Shrine.plugin</code>
+(@janko-m)</p>
+</li><li>
+<p>Accept hash of metadata with symbol keys as well in
+<code>add_metadata</code> block (@janko-m)</p>
+</li><li>
+<p>Add <code>refresh_metadata</code> plugin for re-extracting metadata from an
+uploaded file (@janko-m)</p>
+</li><li>
+<p>Allow S3 storage to use parallelized multipart upload for files from
+FileSystem storage as well (@janko-m)</p>
+</li><li>
+<p>Improve default multipart copy threshold for S3 storage (@janko-m)</p>
+</li><li>
+<p>Allow specifying multipart upload and copy thresholds separately in
+<code>Shrine::Storage::S3</code> (@janko-m)</p>
+</li><li>
+<p>Fix <code>Storage::FileSystem#clear!</code> not deleting old files if there
+are newer files in the same directory (@janko-m)</p>
+</li><li>
+<p>Allow media type in the data URI to have additional parameters (@janko-m)</p>
+</li><li>
+<p>URI-decode non-base64 data URIs, as such data URIs are URI-encoded
+according to the specification (@janko-m)</p>
+</li><li>
+<p>Improve performance of parsing data URIs by 10x switching from a regex to
+StringScanner (@janko-m)</p>
+</li><li>
+<p>Reduce memory usage of <code>Shrine.data_uri</code> and
+<code>UploadedFile#base64</code> by at least 2x (@janko-m)</p>
+</li><li>
+<p>Add <code>Shrine.data_uri</code> to <code>data_uri</code> plugin which
+parses and converts the given data URI to an IO object (@janko-m)</p>
+</li><li>
+<p>Make <code>rack_file</code> plugin work with HashWithIndifferentAccess-like
+objects such as Hashie::Mash (@janko-m)</p>
+</li><li>
+<p>Expose <code>Aws::S3::Client</code> via
+<code>Shrine::Storage::S3#client</code>, and deprecate
+<code>Shrine::Strorage::S3#s3</code> (@janko-m)</p>
+</li><li>
+<p>Modify <code>delete_raw</code> plugin to delete any IOs that respond to
+<code>#path</code> (@janko-m)</p>
+</li><li>
+<p>Require the Tempfile standard library in lib/shrine.rb (@janko-m)</p>
+</li><li>
+<p>Deprecate dimensions validations passing when a dimension is nil (@janko-m)</p>
+</li><li>
+<p>Deprecate passing regexes to type/extension whitelists/blacklists in
+<code>validation_helpers</code> (@janko-m)</p>
+</li><li>
+<p>Don&#39;t include list of blacklisted types and extensions in default
+<code>validation_helpers</code> messages (@janko-m)</p>
+</li><li>
+<p>Improve default error messages in <code>validation_helpers</code> plugin
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t require the <code>benchmark</code> standard library in
+<code>logging</code> plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t dirty the attacher in <code>Attacher#set</code> when attachment
+hasn&#39;t changed (@janko-m)</p>
+</li><li>
+<p>Rename <code>Attacher#attached?</code> to a more accurate
+<code>Attacher#changed?</code> (@janko-m)</p>
+</li><li>
+<p>Allow calling <code>Attacher#finalize</code> if attachment hasn&#39;t
+changed, instead of raising an error (@janko-m)</p>
+</li><li>
+<p>Make <code>Shrine::Storage::S3#object</code> method public (@janko-m)</p>
+</li><li>
+<p>Prevent autoloading race conditions in aws-sdk gem by eager loading the S3
+service (@janko-m)</p>
+</li><li>
+<p>Raise <code>Shrine::Error</code> when <code>Shrine#generate_location</code>
+returns nil (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.5.0+-282016-11-11-29">2.5.0 (2016-11-11)<span><a href="#label-2.5.0+-282016-11-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Add <code>Attacher.default_url</code> as the idiomatic way of declaring
+default URLs (@janko-m)</p>
+</li><li>
+<p>Allow uploaders themselves to accept Rack uploaded files when
+<code>rack_file</code> is loaded (@janko-m)</p>
+</li><li>
+<p>Raise a descriptive error when two versions are pointing to the same IO
+object (@janko-m)</p>
+</li><li>
+<p>Make <code>backgrounding</code> plugin work with plain model instances
+(@janko-m)</p>
+</li><li>
+<p>Make validation methods in <code>validation_helpers</code> plugin return
+whether validation succeeded (@janko-m)</p>
+</li><li>
+<p>Make extension matching case insensitive in <code>validation_helpers</code>
+plugin (@jonasheinrich)</p>
+</li><li>
+<p>Make <code>remove_invalid</code> plugin remove dirty state on attacher
+after removing invalid file (@janko-m)</p>
+</li><li>
+<p>Raise error if <code>Shrine::UploadedFile</code> isn&#39;t initialized with
+valid data (@janko-m)</p>
+</li><li>
+<p>Accept <code>extension</code> parameter without the dot in presign endpoint
+of <code>direct_upload</code> plugin (@jonasheinrich)</p>
+</li><li>
+<p>Add <code>:fallback_to_original</code> option to <code>versions</code>
+plugin for disabling fallback to original file (@janko-m)</p>
+</li><li>
+<p>Add <code>#dimensions</code> method to <code>UploadedFile</code> when
+loading <code>store_dimensions</code> plugin (@janko-m)</p>
+</li><li>
+<p>Make it possible to extract multiple metadata values at once with the
+<code>add_metadata</code> plugin (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.4.1+-282016-10-17-29">2.4.1 (2016-10-17)<span><a href="#label-2.4.1+-282016-10-17-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Move back JSON serialization from <code>Attacher#write</code> to
+<code>Attacher#_set</code> (@janko-m)</p>
+</li><li>
+<p>Make <code>remove_invalid</code> plugin assign back a previous attachment
+if was there (@janko-m)</p>
+</li><li>
+<p>Deprecate <code>Storage::FileSystem#download</code> (@janko-m)</p>
+</li><li>
+<p>In <code>UploadedFile#download</code> use extension from
+<code>#original_filename</code> if <code>#id</code> doesn&#39;t have it
+(@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.4.0+-282016-10-11-29">2.4.0 (2016-10-11)<span><a href="#label-2.4.0+-282016-10-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Add <code>#convert_before_write</code> and <code>#convert_after_read</code>
+on the Attacher for data attribute conversion (@janko-m)</p>
+</li><li>
+<p>Extract the <code>&lt;attachment&gt;_data</code> attribute name into
+<code>Attacher#data_attribute</code> (@janko-m)</p>
+</li><li>
+<p>Support JSON and JSONB PostgreSQL columns with ActiveRecord (@janko-m)</p>
+</li><li>
+<p>Fix S3 storage not handling filenames with double quotes in
+Content-Disposition header (@janko-m)</p>
+</li><li>
+<p>Work around aws-sdk failing with non-ASCII characters in
+Content-Disposition header (@janko-m)</p>
+</li><li>
+<p>Allow dynamically generating URL options in
+<code>default_url_options</code> plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t run file validations when duplicating the record in
+<code>copy</code> plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t use <code>Storage#stream</code> in download_endpoint plugin
+anymore, rely on <code>Storage#open</code> (@janko-m)</p>
+</li><li>
+<p>Remove explicitly unlinking Tempfiles returned by <code>Storage#open</code>
+(@janko-m)</p>
+</li><li>
+<p>Move <code>:host</code> from first-class storage option to
+<code>#url</code> option on FileSystem and S3 storage (@janko-m)</p>
+</li><li>
+<p>Don&#39;t fail in FileSystem storage when attempting to delete a file that
+doesn&#39;t exist (@janko-m)</p>
+</li><li>
+<p>In <code>UploadedFile#open</code> handle the case when
+<code>Storage#open</code> raises an error (@janko-m)</p>
+</li><li>
+<p>Make the <code>sequel</code> plugin use less memory during transactions
+(@janko-m)</p>
+</li><li>
+<p>Use Roda&#39;s streaming plugin in <code>download_endpoint</code> for
+better EventMachine integration (@janko-m)</p>
+</li><li>
+<p>Deprecate accepting a JSON string in <code>Shrine.uploaded_file</code>
+(@janko-m)</p>
+</li><li>
+<p>In S3 storage automatically write original filename to
+<code>Content-Disposition</code> header (@janko-m)</p>
+</li><li>
+<p>Override <code>#to_s</code> in <code>Shrine::Attachment</code> for better
+introspection with <code>puts</code> (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.3.1+-282016-09-01-29">2.3.1 (2016-09-01)<span><a href="#label-2.3.1+-282016-09-01-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Don&#39;t change permissions of existing directories in FileSystem storage
+(@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.3.0+-282016-08-27-29">2.3.0 (2016-08-27)<span><a href="#label-2.3.0+-282016-08-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Prevent client from caching the presign response in direct_upload plugin
+(@janko-m)</p>
+</li><li>
+<p>Make Sequel update only the attachment in background job (@janko-m)</p>
+</li><li>
+<p>Add copy plugin for copying files from one record to another (@janko-m)</p>
+</li><li>
+<p>Disable moving when uploading stored file to backup storage (@janko-m)</p>
+</li><li>
+<p>Make <code>Attacher#recache</code> from the recache plugin public for
+standalone usage (@janko-m)</p>
+</li><li>
+<p>Allow changing <code>Shrine::Attacher#context</code> once the attacher is
+instantiated (@janko-m)</p>
+</li><li>
+<p>Make <code>Attacher#read</code> for reading the attachment column public
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t rely on the <code>#id</code> writer on a model instance in
+backgrounding plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t make <code>Attacher#swap</code> private in sequel and
+activerecord plugins (@janko-m)</p>
+</li><li>
+<p>Set default UNIX permissions to 0644 for files and 0755 for directories
+(@janko-m)</p>
+</li><li>
+<p>Apply directory permissions to all subfolders inside the main folder
+(@janko-m)</p>
+</li><li>
+<p>Add <code>:directory_permissions</code> to <code>Storage::FileSystem</code>
+(@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.2.0+-282016-07-29-29">2.2.0 (2016-07-29)<span><a href="#label-2.2.0+-282016-07-29-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Soft deprecate <code>:phase</code> over <code>:action</code> in
+<code>context</code> (@janko-m)</p>
+</li><li>
+<p>Add ability to sequel and activerecord plugins to disable callbacks and
+validations (@janko-m)</p>
+</li><li>
+<p>The direct_upload endpoint now always includes both upload and presign
+routes (@janko-m)</p>
+</li><li>
+<p>Don&#39;t let the combination for delete_raw and moving plugins trigger any
+errors (@janko-m)</p>
+</li><li>
+<p>Add <code>UploadedFile#open</code> that mimics <code>File.open</code> with
+a block (@janko-m)</p>
+</li><li>
+<p>In the storage linter don&#39;t require <code>#clear!</code> to be
+implemented (@janko-m)</p>
+</li><li>
+<p>In backgrounding plugin don&#39;t require model to have attachment module
+included (@janko-m)</p>
+</li><li>
+<p>Add add_metadata plugin for defining additional metadata values to be
+extracted (@janko-m)</p>
+</li><li>
+<p>In determine_mime_type plugin raise error when file command wasn&#39;t
+found or errored (@janko-m)</p>
+</li><li>
+<p>Add processing plugin for simpler and more declarative definition of
+processing (@janko-m)</p>
+</li><li>
+<p>Storage classes don&#39;t need to implement the <code>#read</code> method
+anymore (@janko-m)</p>
+</li><li>
+<p>Use aws-sdk in <code>S3#download</code>, which will automatically retry
+failed downloads (@janko-m)</p>
+</li><li>
+<p>Add <code>:multipart_threshold</code> for when S3 storage should use
+parallelized multipart copy/upload (@janko-m)</p>
+</li><li>
+<p>Automatically use optimized multipart S3 upload for files larger than 15MB
+(@janko-m)</p>
+</li><li>
+<p>Avoid an additional HEAD request to determine content length in multipart
+S3 copy (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.1.1+-282016-07-14-29">2.1.1 (2016-07-14)<span><a href="#label-2.1.1+-282016-07-14-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Fix <code>S3#open</code> throwing a NameError if <code>net/http</code>
+isn&#39;t required (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.1.0+-282016-06-27-29">2.1.0 (2016-06-27)<span><a href="#label-2.1.0+-282016-06-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Remove <code>:names</code> from versions plugin, and deprecate generating
+versions in :cache phase (@janko-m)</p>
+</li><li>
+<p>Pass a <code>Shrine::UploadedFile</code> in restore_cached_data instead of
+the raw IO (@janko-m)</p>
+</li><li>
+<p>Increase magic header length in determine_mime_type and make it
+configurable (@janko-m)</p>
+</li><li>
+<p>Execute <code>file</code> command in determine_mime_type the same way for
+files as for general IOs (@janko-m)</p>
+</li><li>
+<p>Make logging and parallelize plugins work properly when loaded in this
+order (@janko-m)</p>
+</li><li>
+<p>Don&#39;t assert arity of IO methods, so that objects like
+<code>Rack::Test::UploadedFile</code> are allowed (@janko-m)</p>
+</li><li>
+<p>Deprecate <code>#cached_&lt;attachment&gt;_data=</code> over using
+<code>&lt;attachment&gt;</code> for the hidden field (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.0.1+-282016-05-30-29">2.0.1 (2016-05-30)<span><a href="#label-2.0.1+-282016-05-30-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Don&#39;t override previously set default_url in versions plugin (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-2.0.0+-282016-05-19-29">2.0.0 (2016-05-19)<span><a href="#label-2.0.0+-282016-05-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Include query parameters in CDN-ed S3 URLs, making them work for private
+objects (@janko-m)</p>
+</li><li>
+<p>Remove the <code>:include_error</code> option from remote_url plugin
+(@janko-m)</p>
+</li><li>
+<p>Make previous plugin options persist when reapplying the plugin (@janko-m)</p>
+</li><li>
+<p>Improve how upload options and metadata are passed to storage&#39;s
+<code>#upload</code> and <code>#move</code> (@janko-m)</p>
+</li><li>
+<p>Remove <code>Shrine::Confirm</code> and confirming
+<code>Storage#clear!</code> in general (@janko-m)</p>
+</li><li>
+<p>Allow implementing a custom dimensions analyzer using built-in ones
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t error in determine_mime_type when MimeMagic cannot determine the
+MIME (@janko-m)</p>
+</li><li>
+<p>Allow implementing a custom MIME type analyzer using built-in ones
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t check that the cached file exists in restore_cached_data plugin
+(@janko-m)</p>
+</li><li>
+<p>Deprecate migration_helpers plugin and move <code>Attacher#cached?</code>
+and <code>Attacher#stored?</code> to base (@janko-m)</p>
+</li><li>
+<p>Don&#39;t trigger restore_cached_data plugin functionality when assigning
+the same cached attachment (@janko-m)</p>
+</li><li>
+<p>Give <code>Attacher#_promote</code> and <code>Attacher#promote</code> the
+same method signature (@janko-m)</p>
+</li><li>
+<p>Add <code>Attacher#_delete</code> which now spawns a background job instead
+of <code>Attacher#delete!</code> (@janko-m)</p>
+</li><li>
+<p>Make <code>Attacher#cache!</code>, <code>Attacher#store!</code>, and
+<code>Attacher#delete!</code> public (@janko-m)</p>
+</li><li>
+<p>Don&#39;t cache storages in dynamic_storage plugin (@janko-m)</p>
+</li><li>
+<p>Make only one HTTP request in download_endpoint plugin (@janko-m)</p>
+</li><li>
+<p>Print secuity warning when not using determine_mime_type plugin (@janko-m)</p>
+</li><li>
+<p>Support Mongoid in backgrounding plugin (@janko-m)</p>
+</li><li>
+<p>Allow including attachment module to non-<code>Sequel::Model</code> objects
+in sequel plugin (@janko-m)</p>
+</li><li>
+<p>Handle paths that start with "-" in determine_mime_type plugin when
+<code>:file</code> analyzer is used (@zaeleus)</p>
+</li><li>
+<p>Allow including attachment module to non-<code>ActiveRecord::Base</code>
+objects in activerecord plugin (@janko-m)</p>
+</li><li>
+<p>Remove deprecated "restore_cached" alias for restore_cached_data plugin
+(@janko-m)</p>
+</li><li>
+<p>Remove deprecated "delete_uploaded" alias for delete_raw plugin (@janko-m)</p>
+</li><li>
+<p>Make the default generated unique location shorter (@janko-m)</p>
+</li><li>
+<p>Make the <code>:delegate</code> option in migration_helpers default to
+<code>false</code> (@janko-m)</p>
+</li><li>
+<p>Don&#39;t require <code>:storages</code> option anymore in moving plugin
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t delete uploaded IO if storage doesn&#39;t support moving in
+moving plugin (@janko-m)</p>
+</li><li>
+<p>Rename delete phases to be shorter and consistent in naming with upload
+phases (@janko-m)</p>
+</li><li>
+<p>Remove deprecated <code>Shrine#default_url</code> (@janko-m)</p>
+</li><li>
+<p>Remove deprecated <code>:subdirectory</code> on FileSystem storage
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t return the uploaded file in <code>Attacher#set</code> and
+<code>Attacher#assign</code> (@janko-m)</p>
+</li><li>
+<p>Return the attacher instance in <code>Attacher.promote</code> and
+<code>Attacher.delete</code> in backgrounding plugin (@janko-m)</p>
+</li><li>
+<p>Rename "attachment" to "name", and "uploaded_file" to "attachment" in
+backgrounding plugin (@janko-m)</p>
+</li><li>
+<p>Remove using <code>:presign</code> for presign options instead of
+<code>:presign_options</code> (@janko-m)</p>
+</li><li>
+<p>Remove deprecated <code>Shrine.direct_endpoint</code> from direct_upload
+plugin (@janko-m)</p>
+</li><li>
+<p>Remove deprecated keep_location plugin (@janko-m)</p>
+</li><li>
+<p>Make <code>Shrine#extract_dimensions</code> a private method in
+store_dimensions plugin (@janko-m)</p>
+</li><li>
+<p>Keep <code>Shrine#extract_mime_type</code> a private method when loading
+determine_mime_type plugin (@janko-m)</p>
+</li><li>
+<p>Deprecate loading the backgrounding plugin through the old
+"background_helpers" alias (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-1.4.2+-282016-04-19-29">1.4.2 (2016-04-19)<span><a href="#label-1.4.2+-282016-04-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Removed ActiveRecord&#39;s automatic support for optimistic locking as it
+wasn&#39;t stable (@janko-m)</p>
+</li><li>
+<p>Fixed record&#39;s dataset being modified after promoting preventing
+further updates with the same instance (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-1.4.1+-282016-04-18-29">1.4.1 (2016-04-18)<span><a href="#label-1.4.1+-282016-04-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Bring back triggering callbacks on promote in ORM plugins, and add support
+for optimistic locking (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-1.4.0+-282016-04-15-29">1.4.0 (2016-04-15)<span><a href="#label-1.4.0+-282016-04-15-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Return "Content-Length" response header in download_endpoint plugin
+(@janko-m)</p>
+</li><li>
+<p>Make determine_mime_type and store_dimensions automatically rewind IO with
+custom analyzer (@janko-m)</p>
+</li><li>
+<p>Make <code>before_*</code> and <code>after_*</code> hooks happen before and
+after <code>around_*</code> hooks (@janko-m)</p>
+</li><li>
+<p>Rename restore_cached plugin to more accurate "restore_cached_data"
+(@janko-m)</p>
+</li><li>
+<p>Prevent errors when attempting to validate dimensions when they are absent
+(@janko-m)</p>
+</li><li>
+<p>Remove "thread" gem dependency in parallelize plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>:filename</code> to data_uri plugin for generating filenames
+based on content type (@janko-m)</p>
+</li><li>
+<p>Make user-defined hooks always happen around logging (@janko-m)</p>
+</li><li>
+<p>Add <code>:presign_location</code> to direct_upload for generating the key
+(@janko-m)</p>
+</li><li>
+<p>Add separate <code>:presign_options</code> option for receiving presign
+options in direct_upload plugin (@janko-m)</p>
+</li><li>
+<p>Add ability to generate fake presigns for storages which don&#39;t support
+them for testing (@janko-m)</p>
+</li><li>
+<p>Change the <code>/:storage/:name</code> route to
+<code>/:storage/upload</code> in direct_upload plugin (@janko-m)</p>
+</li><li>
+<p>Fix logger not being inherited in the logging plugin (@janko-m)</p>
+</li><li>
+<p>Add delete_promoted plugin for deleting promoted files after record has
+been updated (@janko-m)</p>
+</li><li>
+<p>Allow passing phase to <code>Attacher#promote</code> and generalize
+promoting background job (@janko-m)</p>
+</li><li>
+<p>Close the cached file after extracting its metadata in restore_cached
+plugin (@janko-m)</p>
+</li><li>
+<p>Rename delete_uploaded plugin to "delete_raw" to better explain its
+functionality (@janko-m)</p>
+</li><li>
+<p>Pass the SSL CA bundle to open-uri when downloading an S3 file (@janko-m)</p>
+</li><li>
+<p>Add <code>Attacher.dump</code> and <code>Attacher.load</code> for writing
+custom background jobs with custom functionality (@janko-m)</p>
+</li><li>
+<p>Fix S3 URL erroring due to not being URL-encoded when <code>:host</code>
+option is used (@janko-m)</p>
+</li><li>
+<p>Remove a tiny possibility of a race condition with backgrounding on
+subsequent updates (@janko-m)</p>
+</li><li>
+<p>Add <code>:delegate</code> option to migration_helpers for opting out of
+defining methods on the model (@janko-m)</p>
+</li><li>
+<p>Make logging plugin log number of both input and output files for
+processing (@janko-m)</p>
+</li><li>
+<p>Make deleting backup work with backgrounding plugin (@janko-m)</p>
+</li><li>
+<p>Make storing backup happen <em>after</em> promoting instead of before
+(@janko-m)</p>
+</li><li>
+<p>Add <code>:fallbacks</code> to versions plugin for fallback URLs for
+versions which haven&#39;t finished processing (@janko-m)</p>
+</li><li>
+<p>Fix keep_files not to spawn a background job when file will not be deleted
+(@janko-m)</p>
+</li></ul>
+
+<h2 id="label-1.3.0+-282016-03-12-29">1.3.0 (2016-03-12)<span><a href="#label-1.3.0+-282016-03-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Add <code>&lt;attachment&gt;_cached?</code> and
+<code>&lt;attachment&gt;_stored?</code> to migration_helpers plugin
+(@janko-m)</p>
+</li><li>
+<p>Fix <code>Attacher#backup_file</code> from backup plugin not to modify the
+given uploaded file (@janko-m)</p>
+</li><li>
+<p>Allow modifying UploadedFile&#39;s data hash after it&#39;s instantiated to
+change the UploadedFile (@janko-m)</p>
+</li><li>
+<p>Deprecate the keep_location plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t mutate context hash inside the uploader (@janko-m)</p>
+</li><li>
+<p>Make extracted metadata accessible in <code>#generate_location</code>
+through <code>:metadata</code> in context hash (@janko-m)</p>
+</li><li>
+<p>Don&#39;t require the "metadata" key when instantiating a
+<code>Shrine::UploadedFile</code> (@janko-m)</p>
+</li><li>
+<p>Add <code>:include_error</code> option to remote_url for accessing download
+error in <code>:error_message</code> block (@janko-m)</p>
+</li><li>
+<p>Give different error message when file wasn&#39;t found or was too large in
+remote_url (@janko-m)</p>
+</li><li>
+<p>Rewind the IO after extracting MIME type with MimeMagic (@janko-m)</p>
+</li><li>
+<p>Rewind the IO after extracting image dimensions even when extraction failed
+(@kaapa)</p>
+</li><li>
+<p>Correctly infer the extension in <code>#generate_location</code> when
+uploading an <code>UploadedFile</code> (@janko-m)</p>
+</li><li>
+<p>Fix ability for errors to accumulate in data_uri and remote_url plugins
+when assigning mutliples to same record instance (@janko-m)</p>
+</li><li>
+<p>Bump Down dependency to 2.0.0 in order to fix downloading URLs with "[]"
+characters (@janko-m)</p>
+</li><li>
+<p>Add <code>:namespace</code> option to pretty_location for including class
+namespace in location (@janko-m)</p>
+</li><li>
+<p>Don&#39;t include the namespace of the class in the location with the
+pretty_location plugin (@janko-m)</p>
+</li><li>
+<p>Remove aws-sdk deprecation warning when storage isn&#39;t instantiated with
+credentials (@reidab)</p>
+</li><li>
+<p>Don&#39;t make uploaded file&#39;s metadata methods error when the
+corresponding key-value pair is missing (@janko-m)</p>
+</li><li>
+<p>Close the <code>UploadedFile</code> on upload only if it was previously
+opened, which doesn&#39;t happen on S3 COPY (@reidab)</p>
+</li><li>
+<p>Fix <code>NameError</code> when silencing "missing record" errors in
+backgrounding (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-1.2.0+-282016-01-26-29">1.2.0 (2016-01-26)<span><a href="#label-1.2.0+-282016-01-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Make <code>Shrine::Attacher.promote</code> and
+<code>Shrine::Attacher.delete</code> return the record in backgrounding
+plugin (@janko-m)</p>
+</li><li>
+<p>Close the IO on upload even if the upload errors (@janko-m)</p>
+</li><li>
+<p>Use a transaction when checking if attachment has changed after storing
+during promotion (@janko-m)</p>
+</li><li>
+<p>Don&#39;t attempt to start promoting in background if attachment has
+already changed (@janko-m)</p>
+</li><li>
+<p>Don&#39;t error in backgrounding when record is missing (@janko-m)</p>
+</li><li>
+<p>Prevent multiline content type spoof attempts in validation_helpers (@xzo)</p>
+</li><li>
+<p>Make custom metadata inherited from uploaded files and make
+<code>#extract_metadata</code> called only on caching (@janko-m)</p>
+</li></ul>
+
+<h2 id="label-1.1.0+-282015-12-26-29">1.1.0 (2015-12-26)<span><a href="#label-1.1.0+-282015-12-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Rename the "background_helpers" plugin to "backgrounding" (@janko-m)</p>
+</li><li>
+<p>Rename the <code>:subdirectory</code> option to <code>:prefix</code> on
+FileSystem storage (@janko-m)</p>
+</li><li>
+<p>Add download_endpoint plugin for downloading files uploaded to database
+storages and for securing downloads (@janko-m)</p>
+</li><li>
+<p>Make <code>around_*</code> hooks return the result of the corresponding
+action (@janko-m)</p>
+</li><li>
+<p>Make the direct upload endpoint customizable, inheritable and inspectable
+(@janko-m)</p>
+</li><li>
+<p>Add upload_options plugin for dynamically generating storage-specific
+upload options (@janko-m)</p>
+</li><li>
+<p>Allow the context hash to be modified (@janko-m)</p>
+</li><li>
+<p>Fix extension not being returned for storages which remove it from ID
+(Flickr, SQL, GridFS) (@janko-m)</p>
+</li><li>
+<p>Delete underlying Tempfiles when closing an <code>UploadedFile</code>
+(@janko-m)</p>
+</li><li>
+<p>Fix background_helpers plugin not working with ActiveJob (@janko-m)</p>
+</li><li>
+<p>Add <code>UploadedFile#base64</code> to the data_uri plugin (@janko-m)</p>
+</li><li>
+<p>Optimize <code>UploadedData#data_uri</code> to not download the file and
+instantiate file contents string only once (@janko-m)</p>
+</li><li>
+<p>Allow adding S3 upload options dynamically per upload (@janko-m)</p>
+</li><li>
+<p>Add delete_uploaded plugin for automatically deleting files after
+they&#39;re uploaded (@janko-m)</p>
+</li><li>
+<p>Close an open file descriptor left after downloading a FileSystem file
+(@janko-m)</p>
+</li><li>
+<p>Make <code>FileSystem#url</code> Windows compatible (@janko-m)</p>
+</li><li>
+<p>Add <code>UploadedFile#content_type</code> alias to <code>#mime_type</code>
+for better integration with upload libraries (@janko-m)</p>
+</li><li>
+<p>Add a <code>UploadedFile#data_uri</code> method to the data_uri plugin
+(@janko-m)</p>
+</li><li>
+<p>Allow the data_uri plugin to accept "+" symbols in MIME type names
+(@janko-m)</p>
+</li><li>
+<p>Make the data_uri plugin accept data URIs which aren&#39;t base64 encoded
+(@janko-m)</p>
+</li><li>
+<p>Close all IOs after uploading them (@janko-m)</p>
+</li><li>
+<p>Allow passing a custom IO object to the Linter (@janko-m)</p>
+</li><li>
+<p>Add remove_invalid plugin for automatically deleting and deassigning
+invalid cached files (@janko-m)</p>
+</li><li>
+<p>Add <code>:max_size</code> option to the direct_upload plugin (@janko-m)</p>
+</li><li>
+<p>Move <code>Shrine#default_url</code> to default_url plugin (@janko-m)</p>
+</li><li>
+<p>Enable <code>S3#multi_delete</code> to delete more than 1000 objects by
+batching deletes (@janko-m)</p>
+</li><li>
+<p>Add the keep_location plugin for easier debugging or backups (@janko-m)</p>
+</li><li>
+<p>Add the backup plugin for backing up stored files (@janko-m)</p>
+</li><li>
+<p>Storages don&#39;t need to rewind the files after upload anymore (@janko-m)</p>
+</li><li>
+<p>Make S3 presigns work when the <code>:endpoint</code> option is given
+(@NetsoftHoldings)</p>
+</li><li>
+<p>Fix parallelize plugin to always work with the moving plugin (@janko-m)</p>
+</li><li>
+<p>Fix S3 storage to handle copying files that are larger than 5GB (@janko-m)</p>
+</li><li>
+<p>Add <code>:upload_options</code> to S3 storage for applying additional
+options on upload (@janko-m)</p>
+</li><li>
+<p>Reduce length of URLs generated with pretty_location plugin (@gshaw)</p>
+</li></ul>
+
+<h2 id="label-1.0.0+-282015-11-27-29">1.0.0 (2015-11-27)<span><a href="#label-1.0.0+-282015-11-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Improve Windows compatibility in the FileSystem storage (@janko-m)</p>
+</li><li>
+<p>Remove the ability for FileSystem storage to accept IDs starting with a
+slash (@janko-m)</p>
+</li><li>
+<p>Fix keep_files plugin requiring context for deleting files (@janko-m)</p>
+</li><li>
+<p>Extract assigning cached files by parsed JSON into a parsed_json plugin
+(@janko-m)</p>
+</li><li>
+<p>Add <code>(before|around|after)_upload</code> to the hooks plugin
+(@janko-m)</p>
+</li><li>
+<p>Fix <code>S3#multi_delete</code> and <code>S3#clear!</code> not using the
+prefix (@janko-m)</p>
+</li><li>
+<p>Add ability to pass presign options to storages in the direct_upload plugin
+(@janko-m)</p>
+</li><li>
+<p>Remove <code>Shrine.io!</code> because it was actually meant to be only for
+internal use (@janko-m)</p>
+</li><li>
+<p>Remove <code>Shrine.delete</code> because of redundancy (@janko-m)</p>
+</li><li>
+<p>Add default_url_options plugin for specifiying default URL options for
+uploaded files (@janko-m)</p>
+</li><li>
+<p>Add module_include plugin for easily extending core classes for given
+uploader (@janko-m)</p>
+</li><li>
+<p>Add support for Sequel&#39;s Postgres JSON column support (@janko-m)</p>
+</li><li>
+<p>Fix migration_helpers plugin not detecting when column changed (@janko-m)</p>
+</li><li>
+<p>Add the <code>:public</code> option to S3 storage for retrieving public
+URLs which aren&#39;t signed (@janko-m)</p>
+</li><li>
+<p>Remove the delete_invalid plugin, as it could cause lame errors (@janko-m)</p>
+</li><li>
+<p>Don&#39;t delete cached files anymore, as it can cause errors with
+backgrounding (@janko-m)</p>
+</li><li>
+<p>Add a <code>:host</code> option to the S3 storage for specifying CDNs
+(@janko-m)</p>
+</li><li>
+<p>Don&#39;t allow same attachment to be promoted multiple times with
+backgrounding (@janko-m)</p>
+</li><li>
+<p>Fix recache plugin causing an infinite loop (@janko-m)</p>
+</li><li>
+<p>Fix an encoding error in determine_mime_type when using <code>:file</code>
+with non-files (@janko-m)</p>
+</li><li>
+<p>Make <code>UploadedFile</code> actually delete itself only once (@janko-m)</p>
+</li><li>
+<p>Make <code>UploadedFile#inspect</code> cleaner by showing only the data
+hash (@janko-m)</p>
+</li><li>
+<p>Make determine_mime_type able to accept non-files when using :file
+(@janko-m)</p>
+</li><li>
+<p>Make logging plugin accept PORO instance which don&#39;t have an id
+(@janko-m)</p>
+</li><li>
+<p>Add rack_file plugin for attaching Rack file hashes to models (@janko-m)</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
 </html>
