@@ -16,7 +16,7 @@ class Shrine
     # prefix:
     #
     #     Rails.appliations.routes.draw do
-    #       mount Shrine::DownloadEndpoint => "/attachments"
+    #       mount Shrine.download_endpoint => "/attachments"
     #     end
     #
     # Now all stored files can be downloaded through the endpoint, and the
@@ -73,7 +73,12 @@ class Shrine
         # Assigns the subclass a copy of the download endpoint class.
         def inherited(subclass)
           super
-          subclass.assign_download_endpoint(self::DownloadEndpoint)
+          subclass.assign_download_endpoint(@download_endpoint)
+        end
+
+        # Returns the Rack application that retrieves requested files.
+        def download_endpoint
+          @download_endpoint
         end
 
         # Assigns the subclassed endpoint as the `DownloadEndpoint` constant.
@@ -82,7 +87,10 @@ class Shrine
           endpoint_class.opts[:shrine_class] = self
           endpoint_class.opts[:disposition]  = opts[:download_endpoint_disposition]
 
+          @download_endpoint = endpoint_class
+
           const_set(:DownloadEndpoint, endpoint_class)
+          deprecate_constant(:DownloadEndpoint) if RUBY_VERSION > "2.3"
         end
 
         def download_endpoint_serializer

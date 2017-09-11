@@ -4,7 +4,7 @@ require "rack/test_app"
 
 describe Shrine::Plugins::DownloadEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(@uploader.class::DownloadEndpoint))
+    Rack::TestApp.wrap(Rack::Lint.new(@uploader.class.download_endpoint))
   end
 
   before do
@@ -84,8 +84,12 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "makes the endpoint inheritable" do
-    endpoint1 = Class.new(@uploader.class)::DownloadEndpoint
-    endpoint2 = Class.new(@uploader.class)::DownloadEndpoint
+    endpoint1 = Class.new(@uploader.class).download_endpoint
+    endpoint2 = Class.new(@uploader.class).download_endpoint
     refute_equal endpoint1, endpoint2
+  end
+
+  deprecated "adds DownloadEndpoint constant" do
+    assert_equal @uploader.class.download_endpoint, @uploader.class::DownloadEndpoint
   end
 end

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate the `Shrine::DownloadEndpoint` constant over `Shrine.download_endpoint` (@janko-m)
+
 * Allow an additional `#headers` attribute on presigns and return it in `presign_endpoint` (@janko-m)
 
 * Allow overriding `upload_endpoint` and `presign_endpoint` options per-endpoint (@janko-m)
