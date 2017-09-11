@@ -54,7 +54,7 @@ Rack:
   -
     name: direct_upload
     path: DirectUpload.html
-    description: [OBSOLETE] Use upload_endpoint and presign_endpoint plugins instead.
+    description: "[OBSOLETE] Use upload_endpoint and presign_endpoint plugins instead."
   -
     name: download_endpoint
     path: DownloadEndpoint.html
