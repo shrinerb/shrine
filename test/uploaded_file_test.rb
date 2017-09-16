@@ -288,6 +288,12 @@ describe Shrine::UploadedFile do
         uploaded_file.open {}
       end
     end
+
+    it "forwards any options to Storage#open" do
+      uploaded_file = @uploader.upload(fakeio)
+      @uploader.storage.expects(:open).with(uploaded_file.id, foo: "bar")
+      uploaded_file.open(foo: "bar") {}
+    end
   end
 
   describe "#download" do
@@ -315,6 +321,19 @@ describe Shrine::UploadedFile do
       @uploader.storage.instance_eval { undef download }
       uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
       assert_match /\.jpg$/, uploaded_file.download.path
+    end
+
+    it "forwards any options to Storage#download" do
+      uploaded_file = @uploader.upload(fakeio)
+      @uploader.storage.expects(:download).with(uploaded_file.id, foo: "bar")
+      uploaded_file.download(foo: "bar")
+    end
+
+    it "forwards any options to Storage#open" do
+      uploaded_file = @uploader.upload(fakeio)
+      @uploader.storage.instance_eval { undef download }
+      uploaded_file.expects(:open).with(foo: "bar")
+      uploaded_file.download(foo: "bar")
     end
   end
 

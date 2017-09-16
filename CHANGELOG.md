@@ -1,5 +1,7 @@
 ## HEAD
 
+* Forward any options given to `UploadedFile#open` or `UploadedFile#download` to the storage (@janko-m)
+
 * Update `direct_upload` plugin to support Roda 3 (@janko-m)
 
 ## 2.7.0 (2017-09-11)

@@ -781,8 +781,8 @@ class Shrine
         #     uploaded_file.open do |io|
         #       puts io.read # prints the content of the file
         #     end
-        def open
-          @io = storage.open(id)
+        def open(*args)
+          @io = storage.open(id, *args)
           yield @io
         ensure
           @io.close if @io
@@ -791,12 +791,12 @@ class Shrine
 
         # Calls `#download` on the storage if the storage implements it,
         # otherwise uses #open to stream the underlying IO to a Tempfile.
-        def download
+        def download(*args)
           if storage.respond_to?(:download)
-            storage.download(id)
+            storage.download(id, *args)
           else
             tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-            open { |io| IO.copy_stream(io, tempfile.path) }
+            open(*args) { |io| IO.copy_stream(io, tempfile.path) }
             tempfile.tap(&:open)
           end
         end
