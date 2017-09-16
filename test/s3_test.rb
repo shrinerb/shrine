@@ -218,6 +218,14 @@ describe Shrine::Storage::S3 do
       tempfile = @s3.download("foo")
       assert tempfile.binmode?
     end
+
+    it "accepts additional options" do
+      @s3.client.stub_responses(:get_object, -> (context) {
+        { body: context.params[:range] }
+      })
+      io = @s3.download("foo", range: "bytes=0-100")
+      assert_equal "bytes=0-100", io.read
+    end
   end
 
   describe "#open" do
@@ -235,6 +243,14 @@ describe Shrine::Storage::S3 do
       io = @s3.open("foo")
       assert_instance_of Aws::S3::Object, io.data[:object]
       assert_equal      "text/plain",     io.data[:object].content_type
+    end
+
+    it "accepts additional options" do
+      @s3.client.stub_responses(:get_object, -> (context) {
+        { body: context.params[:range] }
+      })
+      io = @s3.open("foo", range: "bytes=0-100")
+      assert_equal "bytes=0-100", io.read
     end
   end
 

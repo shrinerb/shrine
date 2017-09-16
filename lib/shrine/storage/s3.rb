@@ -239,19 +239,26 @@ class Shrine
         end
       end
 
-      # Downloads the file from S3, and returns a `Tempfile`.
-      def download(id)
+      # Downloads the file from S3, and returns a `Tempfile`. And additional
+      # options are forwarded to [`Aws::S3::Object#get`].
+      #
+      # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
+      def download(id, **options)
         tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
-        (object = object(id)).get(response_target: tempfile)
+        (object = object(id)).get(response_target: tempfile, **options)
         tempfile.singleton_class.instance_eval { attr_accessor :content_type }
         tempfile.content_type = object.content_type
         tempfile.tap(&:open)
       end
 
-      # Returns a `Down::ChunkedIO` object representing the S3 object.
-      def open(id)
+      # Returns a `Down::ChunkedIO` object representing the S3 object. Any
+      # additional options are forwarded to [`Aws::S3::Object#get`].
+      #
+      # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
+      def open(id, **options)
         object = object(id)
-        io = Down::ChunkedIO.new(chunks: object.enum_for(:get), data: {object: object})
+        chunks = object.enum_for(:get, **options)
+        io = Down::ChunkedIO.new(chunks: chunks, data: {object: object})
         io.size = object.content_length
         io
       end

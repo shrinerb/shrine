@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow `Storage::S3#open` and `Storage::S3#download` to accept additional options (@janko-m)
+
 * Forward any options given to `UploadedFile#open` or `UploadedFile#download` to the storage (@janko-m)
 
 * Update `direct_upload` plugin to support Roda 3 (@janko-m)
