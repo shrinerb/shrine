@@ -1,3 +1,7 @@
+## HEAD
+
+* Update `direct_upload` plugin to support Roda 3 (@janko-m)
+
 ## 2.7.0 (2017-09-11)
 
 * Deprecate the `Shrine::DownloadEndpoint` constant over `Shrine.download_endpoint` (@janko-m)
