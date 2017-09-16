@@ -194,6 +194,7 @@ class Shrine
       # with the file upload and returns the uploaded file as JSON.
       class App < Roda
         plugin :default_headers, "Content-Type"=>"application/json"
+        plugin :placeholder_string_matchers if Gem::Version.new(Roda::RodaVersion) >= Gem::Version.new("3.0.0")
 
         route do |r|
           r.on ":storage" do |storage_key|
