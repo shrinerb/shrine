@@ -100,6 +100,11 @@ class Shrine
     #     uploaded_file.url("image.jpg", host: "http://abc123.cloudfront.net")
     #     #=> "http://abc123.cloudfront.net/image.jpg"
     #
+    # You have the `:host` option passed automatically for every URL with the
+    # `default_url_options` plugin.
+    #
+    #     plugin :default_url_options, store: { host: "http://abc123.cloudfront.net" }
+    #
     # ## Accelerate endpoint
     #
     # To use Amazon S3's [Transfer Acceleration] feature, you can change the
