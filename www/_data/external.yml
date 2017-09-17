@@ -71,6 +71,9 @@
       -
         name: "Backgrounding and Video Transcoding (GoRails)"
         url: https://gorails.com/episodes/shrine-background-and-video-transcoding?autoplay=1
+      -
+        name: "Multiple File Uploads with Shrine (GoRails)"
+        url: https://gorails.com/episodes/multiple-file-uploads-with-shrine?autoplay=1
 -
   -
     title: Storages
