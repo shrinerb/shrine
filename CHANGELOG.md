@@ -1,5 +1,7 @@
 ## HEAD
 
+* Downcase the original file extension when generating an upload location (@janko-m)
+
 * Allow specifying the full record attribute name in `metadata_attributes` plugin (@janko-m)
 
 * Allow specifying metadata mappings on `metadata_attributes` plugin initialization (@janko-m)

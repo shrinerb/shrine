@@ -250,7 +250,7 @@ class Shrine
         # location.
         def generate_location(io, context = {})
           extension   = ".#{io.extension}" if io.is_a?(UploadedFile) && io.extension
-          extension ||= File.extname(extract_filename(io).to_s)
+          extension ||= File.extname(extract_filename(io).to_s).downcase
           basename  = generate_uid(io)
 
           basename + extension.to_s

@@ -279,6 +279,11 @@ describe Shrine do
       assert_match /\.rb$/, location
     end
 
+    it "downcases the extension" do
+      location = @uploader.generate_location(fakeio(filename: "avatar.JPG"))
+      assert_match /\.jpg$/, location
+    end
+
     it "handles no extension or no filename" do
       location = @uploader.generate_location(fakeio(filename: "avatar"))
       assert_match /^[\w-]+$/, location
