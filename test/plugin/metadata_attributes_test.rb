@@ -23,6 +23,15 @@ describe Shrine::Plugins::MetadataAttributes do
     assert_nil @attacher.record.avatar_type
   end
 
+  it "allows specifying full record attribute name" do
+    @attacher.record.singleton_class.instance_eval { attr_accessor :original_filename }
+    @attacher.class.metadata_attributes :filename => "original_filename"
+    @attacher.assign(fakeio("image", filename: "nature.jpg"))
+    assert_equal "nature.jpg", @attacher.record.original_filename
+    @attacher.assign(nil)
+    assert_nil @attacher.record.original_filename
+  end
+
   it "allows configuring mappings on plugin initialization" do
     @attacher.record.singleton_class.instance_eval { attr_accessor :avatar_size, :avatar_type }
     @attacher.shrine_class.plugin :metadata_attributes, :size => :size, :mime_type => :type

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow specifying the full record attribute name in `metadata_attributes` plugin (@janko-m)
+
 * Allow specifying metadata mappings on `metadata_attributes` plugin initialization (@janko-m)
 
 * Add support for ranged requests in `download_endpoint` and `rack_response` plugins (@janko-m)

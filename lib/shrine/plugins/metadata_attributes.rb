@@ -23,6 +23,16 @@ class Shrine
     #     user.avatar_size #=> nil
     #     user.avatar_type #=> nil
     #
+    # If you want to specify the full record attribute name, pass the record
+    # attribute name as a string instead of a symbol.
+    #
+    #     Attacher.metadata_attributes, :filename => "original_filename"
+    #
+    #     # ...
+    #
+    #     photo.image = image
+    #     photo.original_filename #=> "nature.jpg"
+    #
     # If any corresponding metadata attribute doesn't exist on the record, that
     # metadata sync will be silently skipped.
     module MetadataAttributes
@@ -43,12 +53,14 @@ class Shrine
           cached_file = get
 
           shrine_class.opts[:metadata_attributes_mappings].each do |source, destination|
-            next unless record.respond_to?(:"#{name}_#{destination}=")
+            attribute_name = destination.is_a?(Symbol) ? :"#{name}_#{destination}" : :"#{destination}"
+
+            next unless record.respond_to?(:"#{attribute_name}=")
 
             if cached_file
-              record.send(:"#{name}_#{destination}=", cached_file.metadata[source.to_s])
+              record.send(:"#{attribute_name}=", cached_file.metadata[source.to_s])
             else
-              record.send(:"#{name}_#{destination}=", nil)
+              record.send(:"#{attribute_name}=", nil)
             end
           end
         end
