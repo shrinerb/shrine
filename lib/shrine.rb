@@ -760,7 +760,8 @@ class Shrine
         # The extension derived from #id if present, otherwise from
         # #original_filename.
         def extension
-          File.extname(id)[1..-1] || File.extname(original_filename.to_s)[1..-1]
+          result = File.extname(id)[1..-1] || File.extname(original_filename.to_s)[1..-1]
+          result.downcase if result
         end
 
         # The filesize of the uploaded file.

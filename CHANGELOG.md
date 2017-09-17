@@ -1,5 +1,7 @@
 ## HEAD
 
+* Modify `UploadedFile#extension` to always return the extension in lowercase format (@janko-m)
+
 * Downcase the original file extension when generating an upload location (@janko-m)
 
 * Allow specifying the full record attribute name in `metadata_attributes` plugin (@janko-m)

@@ -115,6 +115,14 @@ describe Shrine::UploadedFile do
       uploaded_file = uploaded_file("id" => "foo.jpg", "metadata" => {"filename" => "foo.png"})
       assert_equal "jpg", uploaded_file.extension
     end
+
+    it "downcases the extracted extension" do
+      uploaded_file = uploaded_file("id" => "foo.JPG")
+      assert_equal "jpg", uploaded_file.extension
+
+      uploaded_file = uploaded_file("metadata" => {"filename" => "foo.JPG"})
+      assert_equal "jpg", uploaded_file.extension
+    end
   end
 
   describe "#size" do
