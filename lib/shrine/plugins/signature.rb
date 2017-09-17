@@ -29,24 +29,14 @@ class Shrine
     #       calculate_signature(io, :md5) if context[:action] == :cache
     #     end
     #
-    # The following hashing algorithms are supported:
-    #
-    # * `sha1`
-    # * `sha256`
-    # * `sha384`
-    # * `sha512`
-    # * `md5`
-    # * `crc32`
+    # The following hashing algorithms are supported: SHA1, SHA256, SHA384,
+    # SHA512, MD5, and CRC32.
     #
     # You can also choose which format will the calculated hash be encoded in:
     #
-    #     Shrine.calculate_signature(io, :md5, format: :hex)
+    #     Shrine.calculate_signature(io, :sha256, format: :hex)
     #
-    # The following encoding formats are supported:
-    #
-    # * `none`
-    # * `hex` (default)
-    # * `base64`
+    # The supported encoding formats are `hex` (default), `base64`, and `none`.
     module Signature
       module ClassMethods
         # Calculates `algorithm` hash of the contents of the IO object, and
