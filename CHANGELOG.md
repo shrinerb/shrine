@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add support for ranged requests in `download_endpoint` and `rack_response` plugins (@janko-m)
+
 * Allow `Storage::S3#open` and `Storage::S3#download` to accept additional options (@janko-m)
 
 * Forward any options given to `UploadedFile#open` or `UploadedFile#download` to the storage (@janko-m)

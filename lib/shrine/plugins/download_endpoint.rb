@@ -160,8 +160,9 @@ class Shrine
 
         def stream_file(data)
           uploaded_file = get_uploaded_file(data)
+          range         = env["HTTP_RANGE"]
 
-          status, headers, body = uploaded_file.to_rack_response(disposition: disposition)
+          status, headers, body = uploaded_file.to_rack_response(disposition: disposition, range: range)
           headers["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
 
           request.halt [status, headers, body]

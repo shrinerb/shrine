@@ -35,6 +35,21 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal "max-age=31536000", response.headers["Cache-Control"]
   end
 
+  it "returns Accept-Ranges" do
+    uploaded_file = @uploader.upload(fakeio)
+    response = app.get(uploaded_file.url)
+    assert_equal "bytes", response.headers["Accept-Ranges"]
+  end
+
+  it "supports ranged requests" do
+    uploaded_file = @uploader.upload(fakeio("content"))
+    response = app.get(uploaded_file.url, headers: { "Range" => "bytes=2-4" })
+    assert_equal 206,           response.status
+    assert_equal "bytes 2-4/7", response.headers["Content-Range"]
+    assert_equal "3",           response.headers["Content-Length"]
+    assert_equal "nte",         response.body_binary
+  end
+
   it "returns 404 for nonexisting file" do
     uploaded_file = @uploader.upload(fakeio)
     uploaded_file.data["id"] = "nonexistent"

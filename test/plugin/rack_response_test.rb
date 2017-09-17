@@ -94,4 +94,50 @@ describe Shrine::Plugins::RackResponse do
     response[2].close
     assert uploaded_file.to_io.closed?
   end
+
+  it "returns Accept-Ranges" do
+    uploaded_file = @uploader.upload(fakeio)
+    response = uploaded_file.to_rack_response
+    assert_equal "bytes", response[1]["Accept-Ranges"]
+  end
+
+  it "handles ranged responses" do
+    uploaded_file = @uploader.upload(fakeio("content"))
+    status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-6")
+    assert_equal 206,           status
+    assert_equal "bytes 0-6/7", headers["Content-Range"]
+    assert_equal "7",           headers["Content-Length"]
+    assert_equal "content",     body.each { |chunk| break chunk }
+
+    uploaded_file = @uploader.upload(fakeio("content"))
+    status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-2")
+    assert_equal 206,           status
+    assert_equal "bytes 0-2/7", headers["Content-Range"]
+    assert_equal "3",           headers["Content-Length"]
+    assert_equal "con",         body.each { |chunk| break chunk }
+
+    uploaded_file = @uploader.upload(fakeio("content"))
+    status, headers, body = uploaded_file.to_rack_response(range: "bytes=2-4")
+    assert_equal 206,           status
+    assert_equal "bytes 2-4/7", headers["Content-Range"]
+    assert_equal "3",           headers["Content-Length"]
+    assert_equal "nte",         body.each { |chunk| break chunk }
+
+    uploaded_file = @uploader.upload(fakeio("content"))
+    status, headers, body = uploaded_file.to_rack_response(range: "bytes=4-6")
+    assert_equal 206,           status
+    assert_equal "bytes 4-6/7", headers["Content-Range"]
+    assert_equal "3",           headers["Content-Length"]
+    assert_equal "ent",         body.each { |chunk| break chunk }
+  end
+
+  it "handles ranged responses with size metadata missing" do
+    uploaded_file = @uploader.upload(fakeio("content"))
+    uploaded_file.metadata.delete("size")
+    status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-6")
+    assert_equal 206,           status
+    assert_equal "bytes 0-6/7", headers["Content-Range"]
+    assert_equal "7",           headers["Content-Length"]
+    assert_equal "content",     body.each { |chunk| break chunk }
+  end
 end
