@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow specifying metadata mappings on `metadata_attributes` plugin initialization (@janko-m)
+
 * Add support for ranged requests in `download_endpoint` and `rack_response` plugins (@janko-m)
 
 * Allow `Storage::S3#open` and `Storage::S3#download` to accept additional options (@janko-m)

@@ -1,15 +1,13 @@
 class Shrine
   module Plugins
     # The `metadata_attributes` plugin allows you to sync attachment metadata
-    # to additional record attributes.
+    # to additional record attributes. You can provide a hash of mappings to
+    # the plugin call itself or the `Attacher.metadata_attributes` method:
     #
+    #     plugin :metadata_attributes, :size => :size, :mime_type => :type
+    #     # or
     #     plugin :metadata_attributes
-    #
-    # It provides `Attacher.metadata_attributes` method which allows you to
-    # specify mappings between metadata fields on the attachment and attribute
-    # names on the record.
-    #
-    #     Attacher.metadata_attributes :size => :size, :mime_type => :type
+    #     Attacher.metadata_attributes, :size => :size, :mime_type => :type
     #
     # The above configuration will sync `size` metadata field to
     # `<attachment>_size` record attribute, and `mime_type` metadata field to
@@ -28,8 +26,9 @@ class Shrine
     # If any corresponding metadata attribute doesn't exist on the record, that
     # metadata sync will be silently skipped.
     module MetadataAttributes
-      def self.configure(uploader)
+      def self.configure(uploader, mappings = {})
         uploader.opts[:metadata_attributes_mappings] ||= {}
+        uploader.opts[:metadata_attributes_mappings].merge!(mappings)
       end
 
       module AttacherClassMethods
