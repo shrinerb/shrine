@@ -58,13 +58,13 @@ class Shrine
     # and options, which allows them to be internationalized together with
     # other ActiveRecord validation messages.
     #
-    # class MyUploader < Shrine
-    #   plugin :validation_helpers
+    #     class MyUploader < Shrine
+    #       plugin :validation_helpers
     #
-    #   Attacher.validate do
-    #     validate_max_size 256 * 1024**2, message: ->(max) { [:max_size, max: max] }
-    #   end
-    # end
+    #       Attacher.validate do
+    #         validate_max_size 256 * 1024**2, message: ->(max) { [:max_size, max: max] }
+    #       end
+    #     end
     #
     # If you want to validate presence of the attachment, you can do it
     # directly on the model.
