@@ -107,6 +107,9 @@ class Shrine
     #
     #     Shrine.presign_endpoint(:cache, presign_location: "${filename}")
     #
+    # [FineUploader]: https://github.com/FineUploader/fine-uploader
+    # [Dropzone]: https://github.com/enyo/dropzone
+    # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
     # [Amazon S3]: https://aws.amazon.com/s3/
     # [Google Cloud Storage]: https://cloud.google.com/storage/
     # [Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/
