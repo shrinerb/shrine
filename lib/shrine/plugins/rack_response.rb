@@ -91,15 +91,13 @@ class Shrine
         # Returns an object that responds to #each and #close, which yields
         # contents of the file.
         def rack_body(range: nil)
-          chunks = Enumerator.new do |yielder|
-            if range
-              read_partial_chunks(range) { |chunk| yielder << chunk }
-            else
-              read_chunks { |chunk| yielder << chunk }
-            end
+          if range
+            body = enum_for(:read_partial_chunks, range)
+          else
+            body = enum_for(:read_chunks)
           end
 
-          Rack::BodyProxy.new(chunks) { io.close }
+          Rack::BodyProxy.new(body) { io.close }
         end
 
         # Yields reasonably sized chunks of uploaded file's partial content
