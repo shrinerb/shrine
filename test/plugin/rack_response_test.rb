@@ -95,13 +95,7 @@ describe Shrine::Plugins::RackResponse do
     assert uploaded_file.to_io.closed?
   end
 
-  it "returns Accept-Ranges" do
-    uploaded_file = @uploader.upload(fakeio)
-    response = uploaded_file.to_rack_response
-    assert_equal "bytes", response[1]["Accept-Ranges"]
-  end
-
-  it "handles ranged responses" do
+  it "returns ranged responses when :range is given" do
     uploaded_file = @uploader.upload(fakeio("content"))
     status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-6")
     assert_equal 206,           status
@@ -131,7 +125,7 @@ describe Shrine::Plugins::RackResponse do
     assert_equal "ent",         body.each { |chunk| break chunk }
   end
 
-  it "handles ranged responses with size metadata missing" do
+  it "returns correct ranged response even when size metadata is missing" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.metadata.delete("size")
     status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-6")
@@ -139,5 +133,13 @@ describe Shrine::Plugins::RackResponse do
     assert_equal "bytes 0-6/7", headers["Content-Range"]
     assert_equal "7",           headers["Content-Length"]
     assert_equal "content",     body.each { |chunk| break chunk }
+  end
+
+  it "returns Accept-Ranges when :range is given" do
+    uploaded_file = @uploader.upload(fakeio)
+    response = uploaded_file.to_rack_response
+    refute response[1].key?("Accept-Ranges")
+    response = uploaded_file.to_rack_response(range: nil)
+    assert_equal "bytes", response[1]["Accept-Ranges"]
   end
 end

@@ -57,7 +57,7 @@ class Shrine
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.
-        def to_rack_response(disposition: "inline", range: nil)
+        def to_rack_response(disposition: "inline", range: false)
           range = parse_http_range(range) if range
 
           status  = range ? 206 : 200
@@ -73,7 +73,7 @@ class Shrine
         # "Content-Disposition" headers, whose values are extracted from
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
-        def rack_headers(disposition:, range: nil)
+        def rack_headers(disposition:, range: false)
           length   = range ? range.end - range.begin + 1 : size || io.size
           type     = mime_type || Rack::Mime.mime_type(".#{extension}")
           filename = original_filename || id.split("/").last
@@ -83,7 +83,7 @@ class Shrine
           headers["Content-Type"]        = type
           headers["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
           headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{size||io.size}" if range
-          headers["Accept-Ranges"]       = "bytes"
+          headers["Accept-Ranges"]       = "bytes" unless range == false
 
           headers
         end
