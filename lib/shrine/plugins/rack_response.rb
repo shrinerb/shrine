@@ -46,14 +46,17 @@ class Shrine
     #
     # ## Range
     #
-    # Partial responses are also supported via the `:range` parameter, which
-    # accepts a value of the `Range` request header.
+    # [Partial responses][range requests] are also supported via the `:range`
+    # parameter, which accepts a value of the `Range` request header.
     #
-    #     status, headers, body = uploaded_file.to_rack_response(range: "bytes=100-200")
+    #     env["HTTP_RANGE"] #=> "bytes=100-200"
+    #     status, headers, body = uploaded_file.to_rack_response(range: env["HTTP_RANGE"])
     #     status                    #=> 206
     #     headers["Content-Length"] #=> "101"
     #     headers["Content-Range"]  #=> "bytes 100-200/1000"
     #     body                      # partial content
+    #
+    # [range requests]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.
