@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate `aws-sdk` 2.x in favour of the new `aws-sdk-s3` gem (@janko-m)
+
 * Modify `UploadedFile#extension` to always return the extension in lowercase format (@janko-m)
 
 * Downcase the original file extension when generating an upload location (@janko-m)
