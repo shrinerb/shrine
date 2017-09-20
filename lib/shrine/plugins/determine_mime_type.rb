@@ -144,19 +144,22 @@ class Shrine
         def extract_with_file(io)
           require "open3"
 
-          cmd     = %W[file --mime-type --brief -]
-          options = { stdin_data: io.read(MAGIC_NUMBER), binmode: true }
+          Open3.popen3(*%W[file --mime-type --brief -]) do |stdin, stdout, stderr, thread|
+            begin
+              IO.copy_stream(io, stdin.binmode)
+            rescue Errno::EPIPE
+            end
+            stdin.close
 
-          begin
-            stdout, stderr, status = Open3.capture3(*cmd, options)
-          rescue Errno::ENOENT
-            raise Error, "The `file` command-line tool is not installed"
+            status = thread.value
+
+            raise Error, stderr.read unless status.success?
+            $stderr.print(stderr.read)
+
+            stdout.read.strip
           end
-
-          raise Error, stderr unless status.success?
-          $stderr.print(stderr)
-
-          stdout.strip
+        rescue Errno::ENOENT
+          raise Error, "The `file` command-line tool is not installed"
         end
 
         def extract_with_filemagic(io)

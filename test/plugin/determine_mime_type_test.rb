@@ -14,6 +14,11 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", mime_type
     end
 
+    it "gives as as much of the file to standard input as needed" do
+      mime_type = @uploader.send(:extract_mime_type, fakeio("a" * 5*1024*1024))
+      assert_equal "text/plain", mime_type
+    end
+
     it "is able to determine MIME type for non-files" do
       mime_type = @uploader.send(:extract_mime_type, fakeio(image.read))
       assert_equal "image/jpeg", mime_type
@@ -25,21 +30,21 @@ describe Shrine::Plugins::DetermineMimeType do
     end
 
     it "raises error if file command is not found" do
-      Open3.stubs(:capture3).raises(Errno::ENOENT)
+      Open3.stubs(:popen3).raises(Errno::ENOENT)
       assert_raises(Shrine::Error) { @uploader.send(:extract_mime_type, image) }
     end
 
     it "raises error if file command failed" do
-      failed_result = Open3.capture3("file", "--foo")
-      Open3.stubs(:capture3).returns(failed_result)
+      failed_result = Open3.popen3("file", "--foo")
+      Open3.stubs(:popen3).yields(failed_result)
       assert_raises(Shrine::Error) { @uploader.send(:extract_mime_type, image) }
     end
 
     it "fowards any warnings to stderr" do
       assert_output(nil, "") { @uploader.send(:extract_mime_type, image) }
 
-      stderr_result = Open3.capture3("echo stderr 1>&2")
-      Open3.stubs(:capture3).returns(stderr_result)
+      stderr_result = Open3.popen3("echo stderr 1>&2")
+      Open3.stubs(:popen3).yields(stderr_result)
       assert_output(nil, "stderr\n") { @uploader.send(:extract_mime_type, image) }
     end
   end
