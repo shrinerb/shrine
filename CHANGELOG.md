@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow specifying custom attacher options (@arg)
+
 * Modify `UploadedFile#extension` to always return the extension in lowercase format (@janko-m)
 
 * Downcase the original file extension when generating an upload location (@janko-m)

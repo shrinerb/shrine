@@ -206,4 +206,13 @@ automatically:
 * deletes the uploaded file if attachment was replaced/removed or the record
   destroyed
 
+You can pass options to `Shrine::Attacher` (including `cache` and `store` override)
+by specifying them as arguments of `Shrine::Attachment.new`:
+
+```rb
+class Photo
+  include Shrine::Attachment.new(:image, cache: :storage_1, store: :storage_2, max_upload_size: 1.megabyte)
+end
+```
+
 [Using Attacher]: http://shrinerb.com/rdoc/files/doc/attacher_md.html

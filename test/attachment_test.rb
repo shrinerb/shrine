@@ -60,9 +60,21 @@ describe Shrine::Attachment do
     end
   end
 
-  it "passes options to attacher" do
-    user = attacher(attachment_options: { store: :cache, cache: :store }).record
-    assert_equal :cache, user.avatar_attacher.store.storage_key
-    assert_equal :store, user.avatar_attacher.cache.storage_key
+  describe 'Attacher options' do
+    it 'sets default cache and store options if not specified' do
+      assert_equal :store, @user.avatar_attacher.store.storage_key
+      assert_equal :cache, @user.avatar_attacher.cache.storage_key
+    end
+
+    it 'correctly sets cache and store options passed to attacher' do
+      user = attacher(attachment_options: { cache: :store, store: :cache }).record
+      assert_equal :store, user.avatar_attacher.cache.storage_key
+      assert_equal :cache, user.avatar_attacher.store.storage_key
+    end
+
+    it 'stores any custom options passed to attacher' do
+      user = attacher(attachment_options: { option: :value }).record
+      assert_equal({ option: :value }, user.avatar_attacher.options)
+    end
   end
 end
