@@ -27,10 +27,11 @@ attacher.get                                          # equivalent to `photo.ima
 The attacher object exposes the objects it uses:
 
 ```rb
-attacher.record #=> #<Photo>
-attacher.name   #=> :image
-attacher.cache  #=> #<ImageUploader @storage_key=:cache>
-attacher.store  #=> #<ImageUploader @storage_key=:store>
+attacher.record  #=> #<Photo>
+attacher.name    #=> :image
+attacher.cache   #=> #<ImageUploader @storage_key=:cache>
+attacher.store   #=> #<ImageUploader @storage_key=:store>
+attacher.options #=> custom attacher options
 ```
 
 The attacher will automatically use `:cache` and `:store` storages, but you can

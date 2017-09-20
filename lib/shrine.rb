@@ -494,10 +494,14 @@ class Shrine
         # the `Attacher.validate` block.
         attr_reader :errors
 
+        # Returns options passed to Attacher
+        attr_reader :options
+
         # Initializes the necessary attributes.
-        def initialize(record, name, cache: :cache, store: :store)
-          @cache   = shrine_class.new(cache)
-          @store   = shrine_class.new(store)
+        def initialize(record, name, **options)
+          @options  = options
+          @cache   = shrine_class.new(options.fetch(:cache, :cache))
+          @store   = shrine_class.new(options.fetch(:store, :store))
           @context = {record: record, name: name}
           @errors  = []
         end
