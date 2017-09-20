@@ -259,8 +259,7 @@ class Shrine
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def open(id, **options)
         object = object(id)
-        chunks = object.enum_for(:get, **options)
-        io = Down::ChunkedIO.new(chunks: chunks, data: {object: object})
+        io = Down::ChunkedIO.new(chunks: object.enum_for(:get, **options), data: { object: object })
         io.size = object.content_length
         io
       end
