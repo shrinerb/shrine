@@ -166,7 +166,7 @@ class Shrine
           require "filemagic"
 
           FileMagic.open(FileMagic::MAGIC_MIME_TYPE) do |filemagic|
-            filemagic.buffer(io.read(MAGIC_NUMBER))
+            filemagic.io(io, MAGIC_NUMBER)
           end
         end
 
