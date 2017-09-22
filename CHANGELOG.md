@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `:filemagic` analyzer close the FileMagic descriptor even in case of exceptions (@janko-m)
+
 * Make `:file` analyzer work for potential file types which have magic bytes farther than 256 KB (@janko-m)
 
 * Deprecate `aws-sdk` 2.x in favour of the new `aws-sdk-s3` gem (@janko-m)

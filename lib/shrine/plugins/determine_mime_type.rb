@@ -165,11 +165,9 @@ class Shrine
         def extract_with_filemagic(io)
           require "filemagic"
 
-          filemagic = FileMagic.new(FileMagic::MAGIC_MIME_TYPE)
-          mime_type = filemagic.buffer(io.read(MAGIC_NUMBER))
-          filemagic.close
-
-          mime_type
+          FileMagic.open(FileMagic::MAGIC_MIME_TYPE) do |filemagic|
+            filemagic.buffer(io.read(MAGIC_NUMBER))
+          end
         end
 
         def extract_with_mimemagic(io)
