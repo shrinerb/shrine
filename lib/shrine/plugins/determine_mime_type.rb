@@ -80,12 +80,16 @@ class Shrine
         # Determines the MIME type of the IO object by calling the specified
         # analyzer.
         def determine_mime_type(io)
-          analyzer = opts[:mime_type_analyzer]
-          analyzer = mime_type_analyzers[analyzer] if analyzer.is_a?(Symbol)
-          args     = [io, mime_type_analyzers].take(analyzer.arity.abs)
+          if opts[:mime_type_analyzer] == :default
+            mime_type = io.content_type if io.respond_to?(:content_type)
+          else
+            analyzer = opts[:mime_type_analyzer]
+            analyzer = mime_type_analyzers[analyzer] if analyzer.is_a?(Symbol)
+            args     = [io, mime_type_analyzers].take(analyzer.arity.abs)
 
-          mime_type = analyzer.call(*args)
-          io.rewind
+            mime_type = analyzer.call(*args)
+            io.rewind
+          end
 
           mime_type
         end

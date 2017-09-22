@@ -4,37 +4,38 @@ require "shrine/plugins/store_dimensions"
 describe Shrine::Plugins::StoreDimensions do
   before do
     @uploader = uploader { plugin :store_dimensions, analyzer: :fastimage }
+    @shrine = @uploader.class
   end
 
   describe ":fastimage analyzer" do
     it "extracts dimensions from files" do
-      dimensions = @uploader.send(:extract_dimensions, image)
+      dimensions = @shrine.extract_dimensions(image)
       assert_equal [100, 67], dimensions
     end
 
     it "extracts dimensions from non-files" do
-      dimensions = @uploader.send(:extract_dimensions, fakeio(image.read))
+      dimensions = @shrine.extract_dimensions(fakeio(image.read))
       assert_equal [100, 67], dimensions
     end
   end
 
   it "allows storing with custom extractor" do
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){[5, 10]} }
-    dimensions = @uploader.send(:extract_dimensions, fakeio)
+    @shrine.plugin :store_dimensions, analyzer: ->(io){[5, 10]}
+    dimensions = @shrine.extract_dimensions(fakeio)
     assert_equal [5, 10], dimensions
 
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io, analyzers){analyzers[:fastimage].call(io)} }
-    dimensions = @uploader.send(:extract_dimensions, image)
+    @shrine.plugin :store_dimensions, analyzer: ->(io, analyzers){analyzers[:fastimage].call(io)}
+    dimensions = @shrine.extract_dimensions(image)
     assert_equal [100, 67], dimensions
 
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){nil} }
-    dimensions = @uploader.send(:extract_dimensions, image)
+    @shrine.plugin :store_dimensions, analyzer: ->(io){nil}
+    dimensions = @shrine.extract_dimensions(image)
     assert_nil dimensions
   end
 
   it "always rewinds the IO" do
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io){io.read; [5, 10]} }
-    @uploader.send(:extract_dimensions, file = image)
+    @shrine.plugin :store_dimensions, analyzer: ->(io){io.read; [5, 10]}
+    @shrine.extract_dimensions(file = image)
     assert_equal 0, file.pos
   end
 
@@ -65,13 +66,8 @@ describe Shrine::Plugins::StoreDimensions do
     end
   end
 
-  it "provides class-level methods for extracting dimensions" do
-    @uploader = uploader { plugin :store_dimensions, analyzer: ->(io) { io.read; [10, 20] } }
-    dimensions = @uploader.class.extract_dimensions(io = fakeio("content"))
-    assert_equal [10, 20], dimensions
-    assert_equal "content", io.read
-
-    analyzers = @uploader.class.dimensions_analyzers
+  it "provides access to dimensions analyzers" do
+    analyzers = @shrine.dimensions_analyzers
     dimensions = analyzers[:fastimage].call(io = image)
     assert_equal [100, 67], dimensions
     assert_equal 0, io.pos
