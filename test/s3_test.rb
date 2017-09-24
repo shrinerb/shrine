@@ -363,26 +363,27 @@ describe Shrine::Storage::S3 do
       @s3.multi_delete(["foo"])
       refute @s3.exists?("foo")
     end
-
-    it "deletes in batches of 1000" do
-      deleted_keys = []
-      @s3.client.stub_responses(:delete_objects, -> (context) {
-        deleted_keys.concat(context.params[:delete][:objects].map { |o| o[:key] })
-      })
-      @s3.multi_delete(["foo"] * 1000 + ["bar"])
-      assert_equal ["foo"] * 1000 + ["bar"], deleted_keys
-    end
   end
 
   describe "#clear!" do
     it "deletes all objects in the bucket" do
       deleted_keys = []
-      @s3.client.stub_responses(:list_object_versions, versions: [{key: "foo", version_id: "0"}])
+      @s3.client.stub_responses(:list_objects, contents: [{ key: "foo" }])
       @s3.client.stub_responses(:delete_objects, -> (context) {
         deleted_keys.concat(context.params[:delete][:objects].map { |o| o[:key] })
       })
       @s3.clear!
       assert_equal ["foo"], deleted_keys
+    end
+
+    it "deletes subset of objects in the bucket" do
+      deleted_keys = []
+      @s3.client.stub_responses(:list_objects, contents: [{ key: "foo"}, { key: "bar" }])
+      @s3.client.stub_responses(:delete_objects, -> (context) {
+        deleted_keys.concat(context.params[:delete][:objects].map { |o| o[:key] })
+      })
+      @s3.clear! { |object| object.key == "bar" }
+      assert_equal ["bar"], deleted_keys
     end
   end
 

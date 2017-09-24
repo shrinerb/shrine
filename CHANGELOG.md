@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow `Storage::S3#clear!` to take a block for specifying which objects to delete (@janko-m)
+
 * Make `:filemagic` analyzer close the FileMagic descriptor even in case of exceptions (@janko-m)
 
 * Make `:file` analyzer work for potential file types which have magic bytes farther than 256 KB (@janko-m)

@@ -22,7 +22,7 @@ class Shrine
     #
     # It is initialized with the following 4 required options:
     #
-    #     storage = Shrine::Storage::S3.new(
+    #     s3 = Shrine::Storage::S3.new(
     #       access_key_id: "abc",
     #       secret_access_key: "xyz",
     #       region: "eu-west-1",
@@ -31,15 +31,15 @@ class Shrine
     #
     # The storage exposes the underlying Aws objects:
     #
-    #     storage.client #=> #<Aws::S3::Client>
-    #     storage.client.access_key_id #=> "abc"
-    #     storage.client.secret_access_key #=> "xyz"
-    #     storage.client.region #=> "eu-west-1"
+    #     s3.client #=> #<Aws::S3::Client>
+    #     s3.client.access_key_id #=> "abc"
+    #     s3.client.secret_access_key #=> "xyz"
+    #     s3.client.region #=> "eu-west-1"
     #
-    #     storage.bucket #=> #<Aws::S3::Bucket>
-    #     storage.bucket.name #=> "my-app"
+    #     s3.bucket #=> #<Aws::S3::Bucket>
+    #     s3.bucket.name #=> "my-app"
     #
-    #     storage.object("key") #=> #<Aws::S3::Object>
+    #     s3.object("key") #=> #<Aws::S3::Object>
     #
     # ## Prefix
     #
@@ -86,20 +86,20 @@ class Shrine
     # This storage supports various URL options that will be forwarded from
     # uploaded file.
     #
-    #     uploaded_file.url(public: true)   # public URL without signed parameters
-    #     uploaded_file.url(download: true) # forced download URL
+    #     s3.url(public: true)   # public URL without signed parameters
+    #     s3.url(download: true) # forced download URL
     #
     # All other options are forwarded to the aws-sdk-s3 gem:
     #
-    #     uploaded_file.url(expires_in: 15)
-    #     uploaded_file.url(virtual_host: true)
+    #     s3.url(expires_in: 15)
+    #     s3.url(virtual_host: true)
     #
     # ## CDN
     #
     # If you're using a CDN with S3 like Amazon CloudFront, you can specify
     # the `:host` option to `#url`:
     #
-    #     uploaded_file.url("image.jpg", host: "http://abc123.cloudfront.net")
+    #     s3.url("image.jpg", host: "http://abc123.cloudfront.net")
     #     #=> "http://abc123.cloudfront.net/image.jpg"
     #
     # You have the `:host` option passed automatically for every URL with the
@@ -153,6 +153,11 @@ class Shrine
     # If you're using S3 as a cache, you will probably want to periodically
     # delete old files which aren't used anymore. S3 has a built-in way to do
     # this, read [this article][object lifecycle] for instructions.
+    #
+    # Alternatively you can periodically call the `#clear!` method:
+    #
+    #     # deletes all objects that were uploaded more than 7 days ago
+    #     s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 }
     #
     # [uploading]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [copying]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
@@ -322,24 +327,32 @@ class Shrine
         object(id).presigned_post(options)
       end
 
-      # Deletes the file from S3.
+      # Deletes the file from the storage.
       def delete(id)
         object(id).delete
       end
 
-      # This is called when multiple files are being deleted at once. Issues a
-      # single MULTI DELETE command for each 1000 objects (S3 delete limit).
+      # Deletes multiple files at once from the storage.
       def multi_delete(ids)
-        ids.each_slice(1000) do |ids_batch|
-          delete_params = {objects: ids_batch.map { |id| {key: object(id).key} }}
-          bucket.delete_objects(delete: delete_params)
-        end
+        objects_to_delete = ids.map { |id| object(id) }
+        delete_objects(objects_to_delete)
       end
 
-      # Deletes all files from the storage.
-      def clear!
-        objects = bucket.object_versions(prefix: prefix)
-        objects.respond_to?(:batch_delete!) ? objects.batch_delete! : objects.delete
+      # If block is given, deletes all objects from the storage for which the
+      # block evaluates to true. Otherwise deletes all objects from the storage.
+      #
+      #     s3.clear!
+      #     # or
+      #     s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 }
+      def clear!(&block)
+        objects_to_delete = Enumerator.new do |yielder|
+          bucket.objects(prefix: prefix).each do |object|
+            condition = block.call(object) if block
+            yielder << object unless condition == false
+          end
+        end
+
+        delete_objects(objects_to_delete)
       end
 
       # Returns an `Aws::S3::Object` for the given id.
@@ -390,6 +403,15 @@ class Shrine
         io.is_a?(UploadedFile) &&
         io.storage.is_a?(Storage::S3) &&
         io.storage.client.config.access_key_id == client.config.access_key_id
+      end
+
+      # Deletes all objects in fewest requests possible (S3 only allows 1000
+      # objects to be deleted at once).
+      def delete_objects(objects)
+        objects.each_slice(1000) do |objects_batch|
+          delete_params = { objects: objects_batch.map { |object| { key: object.key } } }
+          bucket.delete_objects(delete: delete_params)
+        end
       end
 
       # Upload requests will fail if filename has non-ASCII characters, because
