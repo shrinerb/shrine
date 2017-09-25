@@ -135,7 +135,7 @@ class Shrine
 
         def _log_message_json(data)
           data[:files] = Array(data[:files]).join("-")
-          data.to_json
+          JSON.generate(data)
         end
 
         def _log_message_heroku(data)
