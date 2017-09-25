@@ -103,9 +103,9 @@ class Shrine
           _log(
             action:       action,
             phase:        context[:action],
-            uploader:     self.class,
+            uploader:     self.class.to_s,
             attachment:   context[:name],
-            record_class: (context[:record].class if context[:record]),
+            record_class: (context[:record].class.to_s if context[:record]),
             record_id:    (context[:record].id if context[:record].respond_to?(:id)),
             files:        (action == "process" ? [count(input), count(result)] : count(result)),
             duration:     ("%.2f" % duration).to_f,

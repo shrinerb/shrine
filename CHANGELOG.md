@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix `logging` plugin erroring on `:json` format when ActiveSupport is loaded (@janko-m)
+
 * Allow `Storage::S3#clear!` to take a block for specifying which objects to delete (@janko-m)
 
 * Make `:filemagic` analyzer close the FileMagic descriptor even in case of exceptions (@janko-m)
