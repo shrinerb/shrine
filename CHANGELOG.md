@@ -1,5 +1,7 @@
 ## HEAD
 
+* Expand relative directory paths when initializing `Storage::FileSystem` (@janko-m)
+
 * Fix `logging` plugin erroring on `:json` format when ActiveSupport is loaded (@janko-m)
 
 * Allow `Storage::S3#clear!` to take a block for specifying which objects to delete (@janko-m)

@@ -106,9 +106,9 @@ class Shrine
 
         if prefix
           @prefix = Pathname(relative(prefix))
-          @directory = Pathname(directory).join(@prefix)
+          @directory = Pathname(directory).join(@prefix).expand_path
         else
-          @directory = Pathname(directory)
+          @directory = Pathname(directory).expand_path
         end
 
         @host = host
