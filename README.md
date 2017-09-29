@@ -762,6 +762,14 @@ step in the default synchronous workflow.
 Shrine.plugin :upload_endpoint
 ```
 ```rb
+# config.ru (Rack)
+map "/images/upload" do
+  run ImageUploader.upload_endpoint(:cache)
+end
+
+# OR
+
+# config/routes.rb (Rails)
 Rails.application.routes.draw do
   mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
 end

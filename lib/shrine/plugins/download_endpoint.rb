@@ -15,7 +15,15 @@ class Shrine
     # After loading the plugin the endpoint should be mounted on the specified
     # prefix:
     #
-    #     Rails.appliations.routes.draw do
+    #     # config.ru (Rack)
+    #     map "/attachments" do
+    #       run Shrine.download_endpoint
+    #     end
+    #
+    #     # OR
+    #
+    #     # config/routes.rb (Rails)
+    #     Rails.application.routes.draw do
     #       mount Shrine.download_endpoint => "/attachments"
     #     end
     #

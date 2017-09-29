@@ -13,27 +13,32 @@ class Shrine
     #
     #     plugin :presign_endpoint
     #
-    # The plugin adds a `Shrine.presign_endpoint` method which accepts a
-    # storage identifier and returns a Rack application that accepts GET
-    # requests and generates a presign for the specified storage.
+    # The plugin adds a `Shrine.presign_endpoint` method which, given a storage
+    # identifier, returns a Rack application that accepts GET requests and
+    # generates a presign for the specified storage. You can run this Rack
+    # application inside your app:
     #
-    #     Shrine.presign_endpoint(:cache) # rack app
+    #     # config.ru (Rack)
+    #     map "/images/presign" do
+    #       run ImageUploader.presign_endpoint(:cache)
+    #     end
+    #
+    #     # OR
+    #
+    #     # config/routes.rb (Rails)
+    #     Rails.application.routes.draw do
+    #       mount ImageUploader.presign_endpoint(:cache) => "/images/presign"
+    #     end
     #
     # Asynchronous upload is typically meant to replace the caching phase in
     # the default synchronous workflow, so we want to generate parameters for
     # uploads to the temporary (`:cache`) storage.
     #
-    # We can mount the returned Rack application inside our application:
-    #
-    #     Rails.application.routes.draw do
-    #       mount Shrine.presign_endpoint(:cache) => "/presign"
-    #     end
-    #
     # The above will create a `GET /presign` endpoint, which generates presign
     # URL, fields, and headers using the specified storage, and returns it in
     # JSON format.
     #
-    #     # GET /presign
+    #     # GET /images/presign
     #     {
     #       "url": "https://my-bucket.s3-eu-west-1.amazonaws.com",
     #       "fields": {
@@ -57,7 +62,7 @@ class Shrine
     # By default the generated location won't have any file extension, but you
     # can specify one by sending the `filename` query parameter:
     #
-    #     GET /presign?filename=nature.jpg
+    #     GET /images/presign?filename=nature.jpg
     #
     # It's also possible to customize how the presign location is generated:
     #

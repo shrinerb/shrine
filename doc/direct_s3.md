@@ -94,6 +94,14 @@ route, so we just need to mount it in our application:
 Shrine.plugin :presign_endpoint
 ```
 ```rb
+# config.ru (Rack)
+map "/presign" do
+  run Shrine.presign_endpoint(:cache)
+end
+
+# OR
+
+# config/routes.rb (Rails)
 Rails.application.routes.draw do
   mount Shrine.presign_endpoint(:cache) => "/presign"
 end

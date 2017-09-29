@@ -11,24 +11,26 @@ class Shrine
     #
     #     plugin :upload_endpoint
     #
-    # The plugin adds a `Shrine.upload_endpoint` method which accepts a storage
-    # identifier and returns a Rack application that accepts multipart POST
-    # requests, and uploads received files to the specified storage.
+    # The plugin adds a `Shrine.upload_endpoint` method which, given a storage
+    # identifier, returns a Rack application that accepts multipart POST
+    # requests, and uploads received files to the specified storage. You can
+    # run this Rack application inside your app:
     #
-    #     Shrine.upload_endpoint(:cache) # rack app
+    #     # config.ru (Rack)
+    #     map "/images/upload" do
+    #       run ImageUploader.upload_endpoint(:cache)
+    #     end
+    #
+    #     # OR
+    #
+    #     # config/routes.rb (Rails)
+    #     Rails.application.routes.draw do
+    #       mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
+    #     end
     #
     # Asynchronous upload is typically meant to replace the caching phase in
     # the default synchronous workflow, so we want the uploads to go to
     # temporary (`:cache`) storage.
-    #
-    # When we want to mount the Rack application to our app, it's recommended
-    # to generate endpoints for specific uploaders. This is because different
-    # uploaders may have different uploading logic, and this also allows
-    # customizing the upload endpoint per uploader.
-    #
-    #     Rails.application.routes.draw do
-    #       mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
-    #     end
     #
     # The above will create a `POST /images/upload` endpoint, which uploads the
     # file received in the `file` param using `ImageUploader`, and returns a
