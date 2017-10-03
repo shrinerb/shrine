@@ -57,6 +57,9 @@
         name: "Shrine: un toolkit para gestionar uploads en Ruby (Madrid.rb)"
         url: https://player.vimeo.com/video/161742211
       -
+        name: "Shrine: Handle file uploads like it's 2017"
+        url: https://www.youtube.com/watch?v=plD-RkKEay0
+      -
         name: "File Uploads in Rails with Shrine (GoRails)"
         url: https://gorails.com/episodes/file-uploading-with-shrine?autoplay=1
       -
