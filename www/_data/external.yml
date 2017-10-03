@@ -74,6 +74,9 @@
       -
         name: "Multiple File Uploads with Shrine (GoRails)"
         url: https://gorails.com/episodes/multiple-file-uploads-with-shrine?autoplay=1
+      -
+        name: "Trix WYSIWYG Editor And File Uploads (GoRails)"
+        url: https://gorails.com/episodes/trix-editor?autoplay=1
 -
   -
     title: Storages
