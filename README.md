@@ -23,6 +23,7 @@ gem "shrine"
 ```
 
 ```rb
+# config/initializers/shrine.rb
 require "shrine"
 require "shrine/storage/file_system"
 
@@ -38,7 +39,7 @@ Shrine.plugin :rack_file # for non-Rails apps
 
 Next decide how you will name the attachment attribute on your model, and run a
 migration that adds an `<attachment>_data` text column, which Shrine will use
-to store all information about the attachment:
+to store all information about the attachment. Generate the migration with `rails g migration AddImageDataToPhotos image_data:text`:
 
 ```rb
 Sequel.migration do                           # class AddImageDataToPhotos < ActiveRecord::Migration
@@ -50,7 +51,7 @@ end                                           # end
 
 Now you can create an uploader class for the type of files you want to upload,
 and add a virtual attribute for handling attachments using this uploader to
-your model:
+your model. Generate the model with `rails g model ImageUploader --parent Shrine`:
 
 ```rb
 class ImageUploader < Shrine
