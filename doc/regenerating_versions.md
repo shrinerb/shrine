@@ -43,7 +43,7 @@ User.paged_each do |user|
   if attacher.stored? && !attachment.is_a?(Hash)
     file = some_processing(attachment.download)
     thumb = attacher.store!(file, version: :thumb)
-    attacher.swap({original: avatar, thumb: thumb})
+    attacher.swap({original: attachment, thumb: thumb})
   end
 end
 ```
