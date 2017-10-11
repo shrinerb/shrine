@@ -28,7 +28,7 @@ Shrine::Plugins::MetadataAttributes
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/metadata_attributes_rb.html">lib/shrine/plugins/metadata_attributes.rb</a>
+<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/metadata_attributes.rb">lib/shrine/plugins/metadata_attributes.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -36,15 +36,11 @@ Shrine::Plugins::MetadataAttributes
 <div id='text'>
 <div id='description'>
 <p>The <code>metadata_attributes</code> plugin allows you to sync attachment
-metadata to additional record attributes.</p>
+metadata to additional record attributes. You can provide a hash of
+mappings to the plugin call itself or the
+<code>Attacher.metadata_attributes</code> method:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">metadata_attributes</span></pre>
-
-<p>It provides <code>Attacher.metadata_attributes</code> method which allows
-you to specify mappings between metadata fields on the attachment and
-attribute names on the record.</p>
-
-<pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">metadata_attributes</span> :<span class="ruby-identifier">size</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">size</span>, :<span class="ruby-identifier">mime_type</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">type</span></pre>
+<pre>plugin :metadata_attributes, :size =&gt; :size, :mime_type =&gt; :type&#x000A;# or&#x000A;plugin :metadata_attributes&#x000A;Attacher.metadata_attributes, :size =&gt; :size, :mime_type =&gt; :type</pre>
 
 <p>The above configuration will sync <code>size</code> metadata field to
 <code>&lt;attachment&gt;_size</code> record attribute, and
@@ -52,6 +48,11 @@ attribute names on the record.</p>
 <code>&lt;attachment&gt;_type</code> record attribute.</p>
 
 <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]      <span class="ruby-comment">#=&gt; 95724</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_size</span>                  <span class="ruby-comment">#=&gt; 95724</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>] <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span>                  <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_size</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_type</span> <span class="ruby-comment">#=&gt; nil</span></pre>
+
+<p>If you want to specify the full record attribute name, pass the record
+attribute name as a string instead of a symbol.</p>
+
+<pre>Attacher.metadata_attributes, :filename =&gt; &quot;original_filename&quot;&#x000A;# ...&#x000A;&#x000A;photo.image = image&#x000A;photo.original_filename #=&gt; &quot;nature.jpg&quot;</pre>
 
 <p>If any corresponding metadata attribute doesn&#39;t exist on the record,
 that metadata sync will be silently skipped.</p>
@@ -79,7 +80,7 @@ that metadata sync will be silently skipped.</p>
 <a name='method-c-configure'></a>
 <div class='synopsis'>
 <span class='name'>configure</span>
-<span class='arguments'>(uploader)</span>
+<span class='arguments'>(uploader, mappings = {})</span>
 
 </div>
 <div class='description'>
@@ -89,7 +90,7 @@ that metadata sync will be silently skipped.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/metadata_attributes.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata_attributes_mappings</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/metadata_attributes.rb, line 39</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">mappings</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata_attributes_mappings</span>] <span class="ruby-operator">||=</span> {}&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata_attributes_mappings</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">mappings</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

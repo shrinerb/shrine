@@ -28,7 +28,7 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../../files/lib/shrine/plugins/download_endpoint_rb.html">lib/shrine/plugins/download_endpoint.rb</a>
+<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/download_endpoint.rb">lib/shrine/plugins/download_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -67,7 +67,7 @@ constant.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_download_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign_download_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 85</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:disposition</span>]  = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint_disposition</span>]&#x000A;&#x000A;  <span class="ruby-ivar">@download_endpoint</span> = <span class="ruby-identifier">endpoint_class</span>&#x000A;&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;  <span class="ruby-identifier">deprecate_constant</span>(<span class="ruby-value">:DownloadEndpoint</span>) <span class="ruby-keyword">if</span> <span class="ruby-constant">RUBY_VERSION</span> <span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;2.3&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign_download_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 93</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:disposition</span>]  = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint_disposition</span>]&#x000A;&#x000A;  <span class="ruby-ivar">@download_endpoint</span> = <span class="ruby-identifier">endpoint_class</span>&#x000A;&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;  <span class="ruby-identifier">deprecate_constant</span>(<span class="ruby-value">:DownloadEndpoint</span>) <span class="ruby-keyword">if</span> <span class="ruby-constant">RUBY_VERSION</span> <span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;2.3&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-download_endpoint'>
@@ -86,7 +86,7 @@ constant.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-download_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-download_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 80</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download_endpoint</span>&#x000A;  <span class="ruby-ivar">@download_endpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-download_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 88</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download_endpoint</span>&#x000A;  <span class="ruby-ivar">@download_endpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-download_endpoint_serializer'>
@@ -103,7 +103,7 @@ constant.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-download_endpoint_serializer-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-download_endpoint_serializer-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 96</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download_endpoint_serializer</span>&#x000A;  <span class="ruby-ivar">@download_endpoint_serializer</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Serializer</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-download_endpoint_serializer-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 104</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">download_endpoint_serializer</span>&#x000A;  <span class="ruby-ivar">@download_endpoint_serializer</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Serializer</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inherited'>
@@ -122,7 +122,7 @@ constant.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inherited-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 82</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

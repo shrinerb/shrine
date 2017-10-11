@@ -28,7 +28,7 @@ Shrine::Plugins::Activerecord
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/activerecord_rb.html">lib/shrine/plugins/activerecord.rb</a>
+<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/activerecord.rb">lib/shrine/plugins/activerecord.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -86,11 +86,7 @@ be strings, they can also be symbols or symbols and options, which allows
 them to be internationalized together with other ActiveRecord validation
 messages.</p>
 
-<p>class MyUploader &lt; <a href="../../Shrine.html">Shrine</a>  plugin
-:validation_helpers</p>
-
-<p>Attacher.validate do  validate_max_size 256 * 1024**2, message: -&gt;(max)
-{ [:max_size, max: max] }  end end</p>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">256</span> <span class="ruby-operator">*</span> <span class="ruby-value">1024</span><span class="ruby-operator">**</span><span class="ruby-value">2</span>, <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">max</span>) { [:<span class="ruby-identifier">max_size</span>, <span class="ruby-identifier">max</span><span class="ruby-operator">:</span> <span class="ruby-identifier">max</span>] }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>If you want to validate presence of the attachment, you can do it directly
 on the model.</p>

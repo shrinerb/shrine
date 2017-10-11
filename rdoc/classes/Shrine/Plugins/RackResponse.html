@@ -28,7 +28,7 @@ Shrine::Plugins::RackResponse
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/rack_response_rb.html">lib/shrine/plugins/rack_response.rb</a>
+<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/rack_response.rb">lib/shrine/plugins/rack_response.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -45,11 +45,13 @@ application.</p>
 <p>To convert a <code>Shrine::UploadedFile</code> into a Rack response, simply
 call <code>#to_rack_response</code>:</p>
 
-<pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;<span class="ruby-identifier">status</span>  <span class="ruby-comment">#=&gt; 200</span>&#x000A;<span class="ruby-identifier">headers</span> <span class="ruby-comment">#=&gt; {&quot;Content-Length&quot; =&gt; &quot;100&quot;, &quot;Content-Type&quot; =&gt; &quot;text/plain&quot;, &quot;Content-Disposition&quot; =&gt; &quot;inline; filename=\&quot;file.txt\&quot;&quot;}</span>&#x000A;<span class="ruby-identifier">body</span>    <span class="ruby-comment"># object that responds to #each and #close</span></pre>
+<pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;<span class="ruby-identifier">status</span>  <span class="ruby-comment">#=&gt; 200</span>&#x000A;<span class="ruby-identifier">headers</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;Content-Length&quot;      =&gt; &quot;100&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;Content-Type&quot;        =&gt; &quot;text/plain&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;Content-Disposition&quot; =&gt; &quot;inline; filename=\&quot;file.txt\&quot;&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;Accept-Ranges&quot;       =&gt; &quot;bytes&quot;</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">body</span>    <span class="ruby-comment"># object that responds to #each and #close</span></pre>
 
 <p>An example how this can be used in a Rails controller:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">file_response</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">0</span>]&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_response</span>[<span class="ruby-value">1</span>])&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">2</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="module-Shrine::Plugins::RackResponse-label-Disposition">Disposition<span><a href="#module-Shrine::Plugins::RackResponse-label-Disposition">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>By default the “Content-Disposition” header will use the
 <code>inline</code> disposition, but you can change it to
@@ -57,6 +59,15 @@ call <code>#to_rack_response</code>:</p>
 inside the browser:</p>
 
 <pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-identifier">disposition</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;attachment&quot;</span>)&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Disposition&quot;</span>] <span class="ruby-comment">#=&gt; &quot;attachment; filename=\&quot;file.txt\&quot;&quot;</span></pre>
+
+<h2 id="module-Shrine::Plugins::RackResponse-label-Range">Range<span><a href="#module-Shrine::Plugins::RackResponse-label-Range">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p><a
+href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">Partial
+responses</a> are also supported via the <code>:range</code> parameter,
+which accepts a value of the <code>Range</code> request header.</p>
+
+<pre class="ruby"><span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;HTTP_RANGE&quot;</span>] <span class="ruby-comment">#=&gt; &quot;bytes=100-200&quot;</span>&#x000A;<span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-identifier">range</span><span class="ruby-operator">:</span> <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;HTTP_RANGE&quot;</span>])&#x000A;<span class="ruby-identifier">status</span>                    <span class="ruby-comment">#=&gt; 206</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Length&quot;</span>] <span class="ruby-comment">#=&gt; &quot;101&quot;</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Range&quot;</span>]  <span class="ruby-comment">#=&gt; &quot;bytes 100-200/1000&quot;</span>&#x000A;<span class="ruby-identifier">body</span>                      <span class="ruby-comment"># partial content</span></pre>
 </div>
 <div id='context'>
 </div>

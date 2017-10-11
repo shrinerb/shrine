@@ -30,7 +30,7 @@ doc/release_notes/2.7.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-09-11 13:03:29 +0200</span>
+<span class='datetime'>2017-10-03 14:48:16 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -45,9 +45,9 @@ root URL, allowing users to fully choose the URL. They  also drop the Roda
 dependency.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>&#x000A;&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span></pre>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span>&#x000A;&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># creates a `GET /presign` endpoint</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `GET /presign` endpoint</span></pre>
 <ul><li>
 <p>The <code>rack_response</code> plugin has been extracted from
 <code>download_endpoint</code>. It  gives the ability to convert a
@@ -177,7 +177,7 @@ example, if you were using <code>Roda.use</code> to add middlewares, you
 can instead  wrap the endpoint in the middlewares directly:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">MyMiddleware</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">download_endpoint</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/attachments&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/attachments&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">use</span> <span class="ruby-constant">MyMiddleware</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">download_endpoint</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The <code>download_endpoint</code> doesn&#39;t generate URLs which end with
 uploaded file ID  anymore; instead it generates URLs with base64-encoded

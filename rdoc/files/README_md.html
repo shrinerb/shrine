@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+<span class='datetime'>2017-10-03 14:48:16 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -540,7 +540,7 @@ the caching step in the default synchronous workflow.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span></pre>
 
-<pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The above created a <code>POST /images/upload</code> endpoint. You can now
 use a client-side file upload library like <a

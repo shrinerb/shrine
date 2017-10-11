@@ -30,7 +30,7 @@ doc/direct_s3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-09-11 12:36:08 +0200</span>
+<span class='datetime'>2017-10-03 14:48:16 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -117,7 +117,7 @@ application:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span></pre>
 
-<pre class="ruby"><span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The above will create a <code>GET /presign</code> route, which returns the
 S3 URL which the file should be uploaded to, along with the required POST

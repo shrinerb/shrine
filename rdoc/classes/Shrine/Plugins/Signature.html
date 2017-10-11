@@ -28,7 +28,7 @@ Shrine::Plugins::Signature
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/signature_rb.html">lib/shrine/plugins/signature.rb</a>
+<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/signature.rb">lib/shrine/plugins/signature.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -57,33 +57,15 @@ generate one only for the original file, you can add a conditional:</p>
 
 <pre class="ruby"><span class="ruby-identifier">add_metadata</span> :<span class="ruby-identifier">md5</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">action</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">cache</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>The following hashing algorithms are supported:</p>
-<ul><li>
-<p><code>sha1</code></p>
-</li><li>
-<p><code>sha256</code></p>
-</li><li>
-<p><code>sha384</code></p>
-</li><li>
-<p><code>sha512</code></p>
-</li><li>
-<p><code>md5</code></p>
-</li><li>
-<p><code>crc32</code></p>
-</li></ul>
+<p>The following hashing algorithms are supported: SHA1, SHA256, SHA384,
+SHA512, MD5, and CRC32.</p>
 
 <p>You can also choose which format will the calculated hash be encoded in:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">hex</span>)</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">sha256</span>, <span class="ruby-identifier">format</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">hex</span>)</pre>
 
-<p>The following encoding formats are supported:</p>
-<ul><li>
-<p><code>none</code></p>
-</li><li>
-<p><code>hex</code> (default)</p>
-</li><li>
-<p><code>base64</code></p>
-</li></ul>
+<p>The supported encoding formats are <code>hex</code> (default),
+<code>base64</code>, and <code>none</code>.</p>
 </div>
 <div id='context'>
 </div>

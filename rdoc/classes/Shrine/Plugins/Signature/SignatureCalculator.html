@@ -28,7 +28,7 @@ Shrine::Plugins::Signature::SignatureCalculator
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../../files/lib/shrine/plugins/signature_rb.html">lib/shrine/plugins/signature.rb</a>
+<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/signature.rb">lib/shrine/plugins/signature.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 <div class='parent'>
@@ -113,7 +113,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/signature.rb, line 74</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">algorithm</span>, <span class="ruby-identifier">format</span>))&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;hash algorithm not supported: #{algorithm}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_ALGORITHMS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">algorithm</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;hash format not supported: #{format}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_FORMATS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">format</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@algorithm</span> = <span class="ruby-identifier">algorithm</span>&#x000A;  <span class="ruby-ivar">@format</span>    = <span class="ruby-identifier">format</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/signature.rb, line 64</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">algorithm</span>, <span class="ruby-identifier">format</span>))&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;hash algorithm not supported: #{algorithm}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_ALGORITHMS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">algorithm</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;hash format not supported: #{format}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_FORMATS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">format</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@algorithm</span> = <span class="ruby-identifier">algorithm</span>&#x000A;  <span class="ruby-ivar">@format</span>    = <span class="ruby-identifier">format</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -131,7 +131,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/signature.rb, line 82</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">hash</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;calculate_#{algorithm}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">encoded_hash</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;encode_#{format}&quot;</span>, <span class="ruby-identifier">hash</span>)&#x000A;  <span class="ruby-identifier">encoded_hash</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/signature.rb, line 72</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">hash</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;calculate_#{algorithm}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">encoded_hash</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;encode_#{format}&quot;</span>, <span class="ruby-identifier">hash</span>)&#x000A;  <span class="ruby-identifier">encoded_hash</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
