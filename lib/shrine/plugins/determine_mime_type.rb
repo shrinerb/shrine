@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `determine_mime_type` plugin allows you to determine and store the

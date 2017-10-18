@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `delete_promoted` plugin deletes files that have been promoted, after

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "shrine"
 
 require "forwardable"
@@ -34,7 +36,7 @@ class Shrine
       end
 
       def call(io_factory = default_io_factory)
-        storage.upload(io_factory.call, id = "foo", {})
+        storage.upload(io_factory.call, id = "foo".dup, {})
 
         lint_download(id) if storage.respond_to?(:download)
         lint_open(id)
@@ -43,17 +45,17 @@ class Shrine
         lint_delete(id)
 
         if storage.respond_to?(:move)
-          uploaded_file = uploader.upload(io_factory.call, location: "bar")
+          uploaded_file = uploader.upload(io_factory.call, location: "bar".dup)
           lint_move(uploaded_file, "quux")
         end
 
         if storage.respond_to?(:multi_delete)
-          storage.upload(io_factory.call, id = "baz")
+          storage.upload(io_factory.call, id = "baz".dup)
           lint_multi_delete(id)
         end
 
         if storage.respond_to?(:clear!)
-          storage.upload(io_factory.call, id = "quux")
+          storage.upload(io_factory.call, id = "quux".dup)
           lint_clear(id)
         end
       end

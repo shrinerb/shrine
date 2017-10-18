@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `backgrounding` plugin enables you to move promoting and deleting of

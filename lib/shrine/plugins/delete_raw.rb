@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `delete_raw` plugin will automatically delete raw files that have been

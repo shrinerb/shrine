@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `default_url_options` plugin allows you to specify URL options that

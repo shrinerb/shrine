@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   def self.version
     Gem::Version.new VERSION::STRING

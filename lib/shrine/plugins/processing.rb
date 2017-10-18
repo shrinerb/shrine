@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # Shrine uploaders can define the `#process` method, which will get called

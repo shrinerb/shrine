@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `moving` plugin will *move* files to storages instead of copying them,
