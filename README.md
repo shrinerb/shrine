@@ -340,19 +340,38 @@ The model attachment attributes and callbacks just delegate the behaviour
 to a `Shrine::Attacher` object.
 
 ```rb
-attacher = ImageUploader::Attacher.new(photo, :image) # returned by `photo.image_attacher`
+photo.image_attacher #=> #<Shrine::Attacher>
+```
+
+The `Shrine::Attacher` object can be instantiated and used directly:
+
+```rb
+attacher = ImageUploader::Attacher.new(photo, :image)
 
 attacher.assign(file) # equivalent to `photo.image = file`
 attacher.get          # equivalent to `photo.image`
 attacher.url          # equivalent to `photo.image_url`
 ```
 
-The attacher is what drives attaching files to models, and it functions
+The attacher is what drives attaching files to model instances, and it functions
 independently from models' attachment interface. This means that you can use it
 as an alternative, in case you prefer not to add additional attributes to the
 model, or prefer explicitness over callbacks. It's also useful when you need
 something more advanced which isn't available through the attachment
 attributes.
+
+The `Shrine::Attacher` by default uses `:cache` for temporary and `:store` for
+permanent storage, but you can specify a different storage:
+
+```rb
+ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
+
+# OR
+
+photo.image_attacher(cache: :other_cache, store: :other_store)
+photo.image = file # uploads to :other_cache storage
+photo.save         # promotes to :other_store storage
+```
 
 Whenever the attacher uploads or deletes files, it sends a `context` hash
 which includes `:record`, `:name`, and `:action` keys, so that you can perform

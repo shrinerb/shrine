@@ -9,6 +9,19 @@ describe Shrine::Attachment do
     it "is instantiated with a correct attacher class" do
       refute_equal Shrine, @user.avatar_attacher.shrine_class
     end
+
+    it "forwards attachment options to the attacher" do
+      @user = attacher(attachment_options: { store: :cache, cache: :store }).record
+      assert_equal :cache, @user.avatar_attacher.store.storage_key
+      assert_equal :store, @user.avatar_attacher.cache.storage_key
+    end
+
+    it "accepts additional attacher options" do
+      @user.avatar_attacher(cache: :store)
+      assert_equal :store, @user.avatar_attacher.cache.storage_key
+      @user.avatar_attacher(store: :cache)
+      assert_equal :cache, @user.avatar_attacher.store.storage_key
+    end
   end
 
   describe "<name>=" do
@@ -58,11 +71,5 @@ describe Shrine::Attachment do
     it "is pretty" do
       assert_match "Attachment(avatar)", @user.class.ancestors[1].inspect
     end
-  end
-
-  it "passes options to attacher" do
-    user = attacher(attachment_options: { store: :cache, cache: :store }).record
-    assert_equal :cache, user.avatar_attacher.store.storage_key
-    assert_equal :store, user.avatar_attacher.cache.storage_key
   end
 end

@@ -1,3 +1,7 @@
+## HEAD
+
+* Allow passing options to `Model#<attachment>_attacher` for overriding `Attacher` options (@janko-m)
+
 ## 2.8.0 (2017-10-11)
 
 * Expand relative directory paths when initializing `Storage::FileSystem` (@janko-m)

@@ -396,12 +396,13 @@ class Shrine
           @options = options
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}_attacher
+            def #{name}_attacher(options = {})
+              @#{name}_attacher   = nil if options.any?
               @#{name}_attacher ||= (
                 attachments    = self.class.ancestors.grep(Shrine::Attachment)
                 attachment     = attachments.find { |mod| mod.attachment_name == :#{name} }
                 attacher_class = attachment.shrine_class::Attacher
-                options        = attachment.options
+                options        = attachment.options.merge(options)
 
                 attacher_class.new(self, :#{name}, options)
               )
