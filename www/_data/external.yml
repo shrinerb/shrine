@@ -48,8 +48,8 @@
         name: Background file uploads to S3 using Shrine
         url: http://elixirator.com/blog/2017/background-file-uploads-to-s3-using-shrine.html
       -
-        name: Asynchronous Chat With Rails and ActionCable
-        url: https://scotch.io/tutorials/asynchronous-chat-with-rails-and-actioncable
+        name: Rails + Shrine + DropzoneJS
+        url: https://stephencodes.com/blog/rails-shrine-dropzonejs
   -
     title: Videos
     items:
