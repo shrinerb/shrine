@@ -10,13 +10,17 @@ class Shrine
     # jobs, by passing a block.
     #
     #     Shrine.plugin :backgrounding
+    #
+    #     # makes all uploaders use background jobs
     #     Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
     #     Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
     #
     # If you don't want to apply backgrounding for all uploaders, you can
-    # declare the hooks only for specific uploaders.
+    # declare the hooks only for specific uploaders (in this case it's still
+    # recommended to keep the plugin loaded globally).
     #
     #     class MyUploader < Shrine
+    #       # makes this uploader use background jobs
     #       Attacher.promote { |data| PromoteJob.perform_async(data) }
     #       Attacher.delete { |data| DeleteJob.perform_async(data) }
     #     end
