@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `store_dimensions` plugin extracts and stores dimensions of the

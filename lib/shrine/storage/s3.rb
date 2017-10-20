@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "shrine"
 begin
   require "aws-sdk-s3"

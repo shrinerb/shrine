@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `signature` plugin provides the ability to calculate a hash from file
@@ -102,14 +104,14 @@ class Shrine
         def calculate_crc32(io)
           require "zlib"
           crc = 0
-          crc = Zlib.crc32(io.read(16*1024, buffer ||= ""), crc) until io.eof?
+          crc = Zlib.crc32(io.read(16*1024, buffer ||= String.new), crc) until io.eof?
           crc.to_s
         end
 
         def calculate_digest(name, io)
           require "digest"
           digest = Digest.const_get(name).new
-          digest.update(io.read(16*1024, buffer ||= "")) until io.eof?
+          digest.update(io.read(16*1024, buffer ||= String.new)) until io.eof?
           digest.digest
         end
 

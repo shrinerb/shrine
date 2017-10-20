@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `refresh_metadata` plugin allows you to re-extract metadata from an

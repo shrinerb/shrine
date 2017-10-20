@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "logger"
 require "json"
 require "time"
@@ -74,7 +76,7 @@ class Shrine
         # doesn't output timestamps if on Heroku.
         def pretty_formatter
           proc do |severity, time, program_name, message|
-            output = "#{Process.pid}: #{message}\n"
+            output = "#{Process.pid}: #{message}\n".dup
             output.prepend "#{time.utc.iso8601(3)} " unless ENV["DYNO"]
             output
           end
@@ -123,11 +125,11 @@ class Shrine
         def _log_message_human(data)
           components = []
           components << "#{data[:action].upcase}"
-          components.last << "[#{data[:phase]}]" if data[:phase]
+          components[-1] += "[#{data[:phase]}]" if data[:phase]
           components << "#{data[:uploader]}"
-          components.last << "[:#{data[:attachment]}]" if data[:attachment]
+          components[-1] += "[:#{data[:attachment]}]" if data[:attachment]
           components << "#{data[:record_class]}" if data[:record_class]
-          components.last << "[#{data[:record_id]}]" if data[:record_id]
+          components[-1] += "[#{data[:record_id]}]" if data[:record_id]
           components << "#{Array(data[:files]).join("-")} #{"file#{"s" if Array(data[:files]).any?{|n| n > 1}}"}"
           components << "(#{data[:duration]}s)"
           components.join(" ")

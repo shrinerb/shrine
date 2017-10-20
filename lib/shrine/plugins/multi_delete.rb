@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `multi_delete` plugins allows you to leverage your storage's multi

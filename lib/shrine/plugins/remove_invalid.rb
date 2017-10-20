@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `remove_invalid` plugin automatically deletes a new assigned file if

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `restore_cached_data` plugin re-extracts metadata when assigning

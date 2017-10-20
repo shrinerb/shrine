@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `dynamic_storage` plugin allows you to register a storage using a

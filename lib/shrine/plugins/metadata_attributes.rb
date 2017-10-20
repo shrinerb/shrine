@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `metadata_attributes` plugin allows you to sync attachment metadata

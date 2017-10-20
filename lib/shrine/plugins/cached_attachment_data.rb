@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `cached_attachment_data` plugin adds the ability to retain the cached

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Shrine.deprecation("The migration_helpers plugin is deprecated and will be removed in Shrine 3. Attacher#cached? and Attacher#stored? have been moved to base.")
 
 class Shrine

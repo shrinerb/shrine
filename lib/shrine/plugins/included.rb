@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `included` plugin allows you to hook up to the `.included` hook of the

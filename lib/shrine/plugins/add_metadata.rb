@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `add_metadata` plugin provides a convenient method for extracting and

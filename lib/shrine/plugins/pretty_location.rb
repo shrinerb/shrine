@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `pretty_location` plugin attempts to generate a nicer folder structure

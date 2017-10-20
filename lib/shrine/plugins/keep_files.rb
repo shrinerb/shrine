@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
     # The `keep_files` plugin gives you the ability to prevent files from being
