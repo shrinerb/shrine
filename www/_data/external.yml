@@ -50,6 +50,9 @@
       -
         name: Rails + Shrine + DropzoneJS
         url: https://stephencodes.com/blog/rails-shrine-dropzonejs
+      -
+        name: Uploading Files with Rails and ActionCable
+        url: https://scotch.io/tutorials/uploading-files-with-rails-and-actioncable
   -
     title: Videos
     items:
