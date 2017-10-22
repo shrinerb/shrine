@@ -1,5 +1,7 @@
 ## HEAD
 
+* Freeze all string literals (@hmistry)
+
 * Allow passing options to `Model#<attachment>_attacher` for overriding `Attacher` options (@janko-m)
 
 ## 2.8.0 (2017-10-11)
