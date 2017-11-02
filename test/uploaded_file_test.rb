@@ -320,20 +320,19 @@ describe Shrine::UploadedFile do
     end
 
     it "deletes the Tempfile if there's an error in downloading the file (Shrine class level)" do
-      io_error = ->(src, dest) { raise IOError }
-      mock = Minitest::Mock.new
-      mock.expect(:close!, nil)
-      def mock.path
-        "some_path"
-      end
       @uploader.storage.instance_eval { undef download }
-      uploaded_file = @uploader.upload(fakeio("file"))
-      Tempfile.stub(:new, mock) do
-        IO.stub(:copy_stream, io_error) do
-          assert_raises(IOError) { uploaded_file.download }
-        end
+      Tempfile.stub(:new, tempfile = Tempfile.new) do
+        assert_raises(KeyError) { uploaded_file.download }
       end
-      mock.verify
+      assert tempfile.closed?
+      assert_nil tempfile.path
+    end
+
+    it "deletes tempfile if tempfile exists and there's error in downloading the file" do
+      @uploader.storage.instance_eval { undef download }
+      Tempfile.stub(:new, nil) do
+        assert_raises(KeyError) { uploaded_file.download }
+      end
     end
 
     it "uses extension from #id" do

@@ -288,19 +288,21 @@ describe Shrine::Storage::FileSystem do
     end
 
     deprecated "#download deletes the Tempfile if there's an error in downloading the file" do
-      io_error = ->(src, dest) { raise IOError }
-      mock = Minitest::Mock.new
-      mock.expect(:close!, nil)
-      def mock.path
-        "some_path"
-      end
+      @storage.instance_eval { def open(id, &block); raise SystemCallError, "error occurred"; end }
       @storage.upload(fakeio, "foo.jpg")
-      Tempfile.stub(:new, mock) do
-        IO.stub(:copy_stream, io_error) do
-          assert_raises(IOError) { @storage.download("foo.jpg") }
-        end
+      Tempfile.stub(:new, tempfile = Tempfile.new) do
+        assert_raises(SystemCallError) { @storage.download("foo.jpg") }
       end
-      mock.verify
+      assert tempfile.closed?
+      assert_nil tempfile.path
+    end
+
+    deprecated "#download deletes the Tempfile if tempfile exists and there's an error in downloading" do
+      @storage.instance_eval { def open(id, &block); raise SystemCallError, "error occurred"; end }
+      @storage.upload(fakeio, "foo.jpg")
+      Tempfile.stub(:new, nil) do
+        assert_raises(SystemCallError) { @storage.download("foo.jpg") }
+      end
     end
   end
 

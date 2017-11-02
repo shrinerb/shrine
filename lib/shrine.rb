@@ -804,7 +804,7 @@ class Shrine
               open(*args) { |io| IO.copy_stream(io, tempfile.path) }
               tempfile.tap(&:open)
             rescue
-              tempfile.close!
+              tempfile.close! if tempfile
               raise
             end
           end

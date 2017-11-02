@@ -209,7 +209,7 @@ class Shrine
             open(*args) { |file| IO.copy_stream(file, tempfile) }
             tempfile.tap(&:open)
           rescue
-            tempfile.close!
+            tempfile.close! if tempfile
             raise
           end
         else

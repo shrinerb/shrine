@@ -253,14 +253,14 @@ class Shrine
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def download(id, **options)
-        tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
         begin
+          tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
           (object = object(id)).get(response_target: tempfile, **options)
           tempfile.singleton_class.instance_eval { attr_accessor :content_type }
           tempfile.content_type = object.content_type
           tempfile.tap(&:open)
         rescue
-          tempfile.close!
+          tempfile.close! if tempfile
           raise
         end
       end
