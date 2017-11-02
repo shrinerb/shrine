@@ -226,6 +226,21 @@ describe Shrine::Storage::S3 do
       io = @s3.download("foo", range: "bytes=0-100")
       assert_equal "bytes=0-100", io.read
     end
+
+    it "deletes the Tempfile if there's an error in downloading the file" do
+      io_error = ->(response_target) { raise IOError }
+      mock = Minitest::Mock.new
+      mock.expect(:close!, nil)
+      Tempfile.stub(:new, mock) do
+        s3_object = @s3.object("foo")
+        @s3.stub(:object, s3_object) do
+          s3_object.stub(:get, io_error) do
+            assert_raises(IOError) { @s3.download("foo") }
+          end
+        end
+      end
+      mock.verify
+    end
   end
 
   describe "#open" do

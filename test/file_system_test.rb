@@ -286,6 +286,22 @@ describe Shrine::Storage::FileSystem do
     it "calls super for other methods" do
       assert_raises(NoMethodError) { @storage.foo }
     end
+
+    deprecated "#download deletes the Tempfile if there's an error in downloading the file" do
+      io_error = ->(src, dest) { raise IOError }
+      mock = Minitest::Mock.new
+      mock.expect(:close!, nil)
+      def mock.path
+        "some_path"
+      end
+      @storage.upload(fakeio, "foo.jpg")
+      Tempfile.stub(:new, mock) do
+        IO.stub(:copy_stream, io_error) do
+          assert_raises(IOError) { @storage.download("foo.jpg") }
+        end
+      end
+      mock.verify
+    end
   end
 
   def assert_permissions(expected, path)
