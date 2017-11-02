@@ -208,9 +208,9 @@ class Shrine
             tempfile = Tempfile.new(["shrine-filesystem", File.extname(args[0])], binmode: true)
             open(*args) { |file| IO.copy_stream(file, tempfile) }
             tempfile.tap(&:open)
-          rescue => err
+          rescue
             tempfile.close!
-            raise err
+            raise
           end
         else
           super

@@ -803,9 +803,9 @@ class Shrine
               tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
               open(*args) { |io| IO.copy_stream(io, tempfile.path) }
               tempfile.tap(&:open)
-            rescue => err
+            rescue
               tempfile.close!
-              raise err
+              raise
             end
           end
         end

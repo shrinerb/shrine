@@ -259,9 +259,9 @@ class Shrine
           tempfile.singleton_class.instance_eval { attr_accessor :content_type }
           tempfile.content_type = object.content_type
           tempfile.tap(&:open)
-        rescue => err
+        rescue
           tempfile.close!
-          raise err
+          raise
         end
       end
 
