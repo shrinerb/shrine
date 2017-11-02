@@ -23,7 +23,7 @@ direct uploads for fully asynchronous user experience.
   gem.email        = ["janko.marohnic@gmail.com"]
   gem.license      = "MIT"
 
-  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
+  gem.files        = Dir["README.md", "LICENSE.txt", "CHANGELOG.md", "lib/**/*.rb", "shrine.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
   gem.add_dependency "down", "~> 4.1"
