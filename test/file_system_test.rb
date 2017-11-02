@@ -74,7 +74,7 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "copies full file content" do
-      @storage.upload(input = fakeio("A" * 20_000), "foo.jpg")
+      @storage.upload(fakeio("A" * 20_000), "foo.jpg")
       assert_equal 20_000, @storage.open("foo.jpg").size
     end
 
