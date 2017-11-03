@@ -235,7 +235,13 @@ describe Shrine::UploadedFile do
   end
 
   describe "#open" do
-    it "yields to the block" do
+    it "returns the underlying IO if no block given" do
+      uploaded_file = @uploader.upload(fakeio)
+      assert io?(uploaded_file.open)
+      assert_equal uploaded_file.object_id, uploaded_file.object_id
+    end
+
+    it "yields to the block if given" do
       uploaded_file = @uploader.upload(fakeio)
       uploaded_file.open { @called = true }
       assert @called
