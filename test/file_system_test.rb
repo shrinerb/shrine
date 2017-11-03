@@ -290,7 +290,7 @@ describe Shrine::Storage::FileSystem do
     deprecated "#download deletes the Tempfile if there's an error in downloading the file" do
       @storage.instance_eval { def open(id, &block); raise SystemCallError, "error occurred"; end }
       @storage.upload(fakeio, "foo.jpg")
-      Tempfile.stub(:new, tempfile = Tempfile.new) do
+      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
         assert_raises(SystemCallError) { @storage.download("foo.jpg") }
       end
       assert tempfile.closed?

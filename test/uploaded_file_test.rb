@@ -321,7 +321,7 @@ describe Shrine::UploadedFile do
 
     it "deletes the Tempfile if there's an error in downloading the file (Shrine class level)" do
       @uploader.storage.instance_eval { undef download }
-      Tempfile.stub(:new, tempfile = Tempfile.new) do
+      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
         assert_raises(KeyError) { uploaded_file.download }
       end
       assert tempfile.closed?

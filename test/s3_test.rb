@@ -229,7 +229,7 @@ describe Shrine::Storage::S3 do
 
     it "deletes the Tempfile if there's an error in downloading the file" do
       io_error = ->(response_target) { raise IOError }
-      Tempfile.stub(:new, tempfile = Tempfile.new) do
+      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
         s3_object = @s3.object("foo")
         @s3.stub(:object, s3_object) do
           s3_object.stub(:get, io_error) do
