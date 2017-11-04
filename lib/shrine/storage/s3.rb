@@ -2,13 +2,17 @@
 
 require "shrine"
 begin
-  require "aws-sdk-s3"
+  aws_sdk_s3_present = require "aws-sdk-s3"
+  require "aws-sdk" unless aws_sdk_s3_present
   if Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.2.0")
     raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
   end
 rescue LoadError
-  Shrine.deprecation("Using aws-sdk 2.x is deprecated and support for it will be removed in Shrine 3, use the new aws-sdk-s3 gem instead.")
-  require "aws-sdk"
+  if aws_sdk_s3_present
+    Shrine.deprecation("Using aws-sdk 2.x is deprecated and support for it will be removed in Shrine 3, use the new aws-sdk-s3 gem instead.")
+  else
+    raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
+  end
   Aws.eager_autoload!(services: ["S3"])
 end
 require "down/chunked_io"
