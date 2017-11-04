@@ -368,7 +368,7 @@ describe Shrine::UploadedFile do
     it "returns the underlying IO" do
       uploaded_file = @uploader.upload(fakeio)
       assert io?(uploaded_file.to_io)
-      assert_equal uploaded_file.object_id, uploaded_file.object_id
+      assert_equal uploaded_file.to_io.object_id, uploaded_file.to_io.object_id
     end
   end
 
