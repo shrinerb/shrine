@@ -788,11 +788,13 @@ class Shrine
         def open(*args)
           return to_io unless block_given?
 
-          @io = storage.open(id, *args)
-          yield @io
-        ensure
-          @io.close if @io
-          @io = nil
+          begin
+            @io = storage.open(id, *args)
+            yield @io
+          ensure
+            @io.close if @io
+            @io = nil
+          end
         end
 
         # Calls `#download` on the storage if the storage implements it,
