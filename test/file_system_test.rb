@@ -283,26 +283,22 @@ describe Shrine::Storage::FileSystem do
       assert_equal "content", tempfile.read
     end
 
-    it "calls super for other methods" do
-      assert_raises(NoMethodError) { @storage.foo }
-    end
-
-    deprecated "#download deletes the Tempfile if there's an error in downloading the file" do
-      @storage.instance_eval { def open(id, &block); raise SystemCallError, "error occurred"; end }
-      @storage.upload(fakeio, "foo.jpg")
-      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
-        assert_raises(SystemCallError) { @storage.download("foo.jpg") }
-      end
+    deprecated "#download deletes the Tempfile if an error occurs while retrieving file contents" do
+      tempfile = Tempfile.new("")
+      Tempfile.stubs(:new).returns(tempfile)
+      assert_raises(Errno::ENOENT) { @storage.download("foo") }
       assert tempfile.closed?
       assert_nil tempfile.path
     end
 
-    deprecated "#download deletes the Tempfile if tempfile exists and there's an error in downloading" do
-      @storage.instance_eval { def open(id, &block); raise SystemCallError, "error occurred"; end }
-      @storage.upload(fakeio, "foo.jpg")
-      Tempfile.stub(:new, nil) do
-        assert_raises(SystemCallError) { @storage.download("foo.jpg") }
-      end
+    deprecated "#download propagates failures in creating tempfiles" do
+      Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
+      @storage.upload(fakeio, "foo")
+      assert_raises(Errno::EMFILE) { @storage.download("foo") }
+    end
+
+    it "calls super for other methods" do
+      assert_raises(NoMethodError) { @storage.foo }
     end
   end
 

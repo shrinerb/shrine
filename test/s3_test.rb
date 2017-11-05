@@ -227,30 +227,18 @@ describe Shrine::Storage::S3 do
       assert_equal "bytes=0-100", io.read
     end
 
-    it "deletes the Tempfile if there's an error in downloading the file" do
-      io_error = ->(response_target) { raise IOError }
-      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
-        s3_object = @s3.object("foo")
-        @s3.stub(:object, s3_object) do
-          s3_object.stub(:get, io_error) do
-            assert_raises(IOError) { @s3.download("foo") }
-          end
-        end
-      end
+    it "deletes the Tempfile if an error occurs while retrieving file contents" do
+      @s3.client.stub_responses(:get_object, "NetworkingError")
+      tempfile = Tempfile.new("")
+      Tempfile.stubs(:new).returns(tempfile)
+      assert_raises(Aws::S3::Errors::NetworkingError) { @s3.download("foo") }
       assert tempfile.closed?
       assert_nil tempfile.path
     end
 
-    it "deletes the Tempfile only if tempfile exists and there's an error in downloading" do
-      io_error = ->(response_target) { raise IOError }
-      Tempfile.stub(:new, nil) do
-        s3_object = @s3.object("foo")
-        @s3.stub(:object, s3_object) do
-          s3_object.stub(:get, io_error) do
-            assert_raises(IOError) { @s3.download("foo") }
-          end
-        end
-      end
+    it "propagates failures in creating tempfiles" do
+      Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
+      assert_raises(Errno::EMFILE) { @s3.download("foo") }
     end
   end
 

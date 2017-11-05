@@ -1,5 +1,7 @@
 ## HEAD
 
+* Delete tempfiles in case of errors in `UploadedFile#download` and `Storage::S3#download` (@hmistry)
+
 * Freeze all string literals (@hmistry)
 
 * Allow passing options to `Model#<attachment>_attacher` for overriding `Attacher` options (@janko-m)
