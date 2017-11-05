@@ -13,7 +13,8 @@ describe Shrine::UploadedFile do
   end
 
   it "is an IO" do
-    assert io?(@uploader.upload(fakeio))
+    uploaded_file = @uploader.upload(fakeio)
+    assert io?(uploaded_file)
   end
 
   describe "#initialize" do
@@ -238,7 +239,8 @@ describe Shrine::UploadedFile do
     it "returns the underlying IO if no block given" do
       uploaded_file = @uploader.upload(fakeio)
       assert io?(uploaded_file.open)
-      assert_equal uploaded_file.to_io.object_id, uploaded_file.to_io.object_id
+      refute uploaded_file.open.closed?
+      assert_equal uploaded_file.open, uploaded_file.open
     end
 
     it "yields to the block if given" do
@@ -389,7 +391,7 @@ describe Shrine::UploadedFile do
     it "returns the underlying IO" do
       uploaded_file = @uploader.upload(fakeio)
       assert io?(uploaded_file.to_io)
-      assert_equal uploaded_file.to_io.object_id, uploaded_file.to_io.object_id
+      assert_equal uploaded_file.to_io, uploaded_file.to_io
     end
   end
 
