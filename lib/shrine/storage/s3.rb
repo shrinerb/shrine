@@ -1,15 +1,25 @@
 # frozen_string_literal: true
 
 require "shrine"
-begin
-  require "aws-sdk-s3"
-  if Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.2.0")
-    raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
+  aws_gem = "aws-sdk-s3"
+  proc = Proc.new do
+    if Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.2.0")
+      raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
+    end
   end
+  retries = 0
+begin
+  require aws_gem
+  proc.call
 rescue LoadError
-  Shrine.deprecation("Using aws-sdk 2.x is deprecated and support for it will be removed in Shrine 3, use the new aws-sdk-s3 gem instead.")
-  require "aws-sdk"
-  Aws.eager_autoload!(services: ["S3"])
+  aws_gem = "aws-sdk"
+  proc = Proc.new do
+    Shrine.deprecation("Using aws-sdk 2.x is deprecated and support for it will be removed in Shrine 3, use the new aws-sdk-s3 gem instead.")
+    Aws.eager_autoload!(services: ["S3"])
+  end
+  retries += 1
+  retry if retries < 2
+  raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
 end
 require "down/chunked_io"
 require "uri"
