@@ -778,19 +778,23 @@ class Shrine
         end
         alias content_type mime_type
 
-        # Opens an IO object of the uploaded file for reading and yields it to
-        # the block, closing it after the block finishes. For opening without
-        # a block #to_io can be used.
+        # Opens an IO object of the uploaded file for reading, yields it to
+        # the block, and closes it after the block finishes. If opening without
+        # a block, it returns an opened IO object for the uploaded file.
         #
         #     uploaded_file.open do |io|
         #       puts io.read # prints the content of the file
         #     end
         def open(*args)
-          @io = storage.open(id, *args)
-          yield @io
-        ensure
-          @io.close if @io
-          @io = nil
+          return to_io unless block_given?
+
+          begin
+            @io = storage.open(id, *args)
+            yield @io
+          ensure
+            @io.close if @io
+            @io = nil
+          end
         end
 
         # Calls `#download` on the storage if the storage implements it,
