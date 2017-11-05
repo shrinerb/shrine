@@ -226,6 +226,32 @@ describe Shrine::Storage::S3 do
       io = @s3.download("foo", range: "bytes=0-100")
       assert_equal "bytes=0-100", io.read
     end
+
+    it "deletes the Tempfile if there's an error in downloading the file" do
+      io_error = ->(response_target) { raise IOError }
+      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
+        s3_object = @s3.object("foo")
+        @s3.stub(:object, s3_object) do
+          s3_object.stub(:get, io_error) do
+            assert_raises(IOError) { @s3.download("foo") }
+          end
+        end
+      end
+      assert tempfile.closed?
+      assert_nil tempfile.path
+    end
+
+    it "deletes the Tempfile only if tempfile exists and there's an error in downloading" do
+      io_error = ->(response_target) { raise IOError }
+      Tempfile.stub(:new, nil) do
+        s3_object = @s3.object("foo")
+        @s3.stub(:object, s3_object) do
+          s3_object.stub(:get, io_error) do
+            assert_raises(IOError) { @s3.download("foo") }
+          end
+        end
+      end
+    end
   end
 
   describe "#open" do

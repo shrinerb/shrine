@@ -319,6 +319,22 @@ describe Shrine::UploadedFile do
       assert_match "file", uploaded_file.download.read
     end
 
+    it "deletes the Tempfile if there's an error in downloading the file (Shrine class level)" do
+      @uploader.storage.instance_eval { undef download }
+      Tempfile.stub(:new, tempfile = Tempfile.new("foo")) do
+        assert_raises(KeyError) { uploaded_file.download }
+      end
+      assert tempfile.closed?
+      assert_nil tempfile.path
+    end
+
+    it "deletes tempfile if tempfile exists and there's error in downloading the file" do
+      @uploader.storage.instance_eval { undef download }
+      Tempfile.stub(:new, nil) do
+        assert_raises(KeyError) { uploaded_file.download }
+      end
+    end
+
     it "uses extension from #id" do
       @uploader.storage.instance_eval { undef download }
       uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
