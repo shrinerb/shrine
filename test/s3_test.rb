@@ -361,24 +361,6 @@ describe Shrine::Storage::S3 do
     end
   end
 
-  describe "#multi_delete" do
-    it "deletes multiple objects" do
-      @s3.client.stub_responses(:head_object)
-      @s3.client.stub_responses(:delete_objects, -> (context) {
-        deleted_keys = context.params[:delete][:objects].map { |o| o[:key] }
-        @s3.client.stub_responses(:head_object, -> (context) {
-          if deleted_keys.include?(context.params[:key])
-            { status_code: 404, body: "", headers: {} }
-          else
-            {}
-          end
-        })
-      })
-      @s3.multi_delete(["foo"])
-      refute @s3.exists?("foo")
-    end
-  end
-
   describe "#clear!" do
     it "deletes all objects in the bucket" do
       deleted_keys = []

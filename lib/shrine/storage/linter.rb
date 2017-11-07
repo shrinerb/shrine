@@ -49,11 +49,6 @@ class Shrine
           lint_move(uploaded_file, "quux")
         end
 
-        if storage.respond_to?(:multi_delete)
-          storage.upload(io_factory.call, id = "baz".dup)
-          lint_multi_delete(id)
-        end
-
         if storage.respond_to?(:clear!)
           storage.upload(io_factory.call, id = "quux".dup)
           lint_clear(id)
@@ -99,11 +94,6 @@ class Shrine
           error :exists?, "returns false for destination after #move" if !storage.exists?(id)
           error :exists?, "returns true for source after #move" if storage.exists?(uploaded_file.id)
         end
-      end
-
-      def lint_multi_delete(id)
-        storage.multi_delete([id])
-        error :exists?, "returns true for a file that was multi-deleted" if storage.exists?(id)
       end
 
       def lint_clear(id)

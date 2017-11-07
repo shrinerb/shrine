@@ -135,28 +135,6 @@ class Shrine
 end
 ```
 
-## Multi delete
-
-If your storage supports deleting multiple files at the same time, you can
-implement an additional method, which will automatically get picked up by the
-`multi_delete` plugin:
-
-```rb
-class Shrine
-  module Storage
-    class MyStorage
-      # ...
-
-      def multi_delete(ids)
-        # deletes multiple files at once
-      end
-
-      # ...
-    end
-  end
-end
-```
-
 ## Clearing
 
 While this method is not used by Shrine, it is good to give users the

@@ -341,12 +341,6 @@ class Shrine
         object(id).delete
       end
 
-      # Deletes multiple files at once from the storage.
-      def multi_delete(ids)
-        objects_to_delete = ids.map { |id| object(id) }
-        delete_objects(objects_to_delete)
-      end
-
       # If block is given, deletes all objects from the storage for which the
       # block evaluates to true. Otherwise deletes all objects from the storage.
       #

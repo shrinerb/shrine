@@ -54,12 +54,6 @@ describe Shrine::Plugins::Logging do
     assert_match /DELETE \S+ 2 files/, log
   end
 
-  it "counts array of files" do
-    @uploader.class.plugin :multi_delete
-    @uploader.delete([@uploader.upload(fakeio), @uploader.upload(fakeio)])
-    assert_match /DELETE \S+ 2 files/, log
-  end
-
   it "outputs context data" do
     @uploader.instance_eval { def process(io, context); io; end }
 

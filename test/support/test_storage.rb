@@ -17,10 +17,6 @@ class Shrine
       def movable?(io, id)
         io.is_a?(UploadedFile) && io.storage.is_a?(Storage::Memory)
       end
-
-      def multi_delete(ids)
-        ids.each { |id| delete(id) }
-      end
     end
   end
 end

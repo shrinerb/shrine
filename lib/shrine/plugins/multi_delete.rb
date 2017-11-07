@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The multi_delete plugin is deprecated and will be removed in Shrine 3.")
+
 class Shrine
   module Plugins
     # The `multi_delete` plugins allows you to leverage your storage's multi

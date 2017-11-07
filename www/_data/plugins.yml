@@ -138,10 +138,6 @@ Deleting:
     path: KeepFiles.html
     description: Allows you to keep files on the storage that would otherwise be deleted.
   -
-    name: multi_delete
-    path: MultiDelete.html
-    description: Allows you to delete multiple files at once, which some storages optimize.
-  -
     name: remove_invalid
     path: RemoveInvalid.html
     description: Automatically deletes and deassigns a new assigned file if it's invalid.

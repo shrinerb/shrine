@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate the `multi_delete` plugin (@janko-m)
+
 * Allow calling `UploadedFile#open` without passing a block (@hmistry)
 
 * Delete tempfiles in case of errors in `UploadedFile#download` and `Storage::S3#download` (@hmistry)

@@ -124,7 +124,6 @@ class Shrine
     # [image_processing]: https://github.com/janko-m/image_processing
     module Versions
       def self.load_dependencies(uploader, *)
-        uploader.plugin :multi_delete
         uploader.plugin :default_url
       end
 
@@ -196,8 +195,10 @@ class Shrine
         # Deletes each file individually, but uses S3's multi delete
         # capabilities.
         def _delete(uploaded_file, context)
-          if (versions = uploaded_file).is_a?(Hash)
-            _delete(versions.values, context)
+          if (hash = uploaded_file).is_a?(Hash)
+            hash.each do |name, version|
+              _delete(version, context)
+            end
           else
             super
           end

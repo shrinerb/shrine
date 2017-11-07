@@ -115,18 +115,6 @@ describe Shrine::Storage::Linter do
     assert_empty @storage.store
   end
 
-  describe "multi delete" do
-    it "tests that files don't exist anymore" do
-      @storage.instance_eval { def multi_delete(ids); end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "isn't tested if storage doesn't define it" do
-      @storage.instance_eval { undef multi_delete }
-      @linter.call
-    end
-  end
-
   describe "clear!" do
     it "tests that files don't exist after clearing" do
       @storage.instance_eval { def clear!; end }
