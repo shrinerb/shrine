@@ -63,7 +63,7 @@ Alternatively, if you're using Amazon S3 storage, in tests you can use
 
 ## Test data
 
-If you're creating test data dynamically using libraries like [factory_girl],
+If you're creating test data dynamically using libraries like [factory_bot],
 you can have the test file assigned dynamically when the record is created:
 
 ```rb
@@ -268,7 +268,7 @@ end
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
 [shrine-memory]: https://github.com/janko-m/shrine-memory
-[factory_girl]: https://github.com/thoughtbot/factory_girl
+[factory_bot]: https://github.com/thoughtbot/factory_bot
 [Capybara]: https://github.com/jnicklas/capybara
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
 [Rack::Test]: https://github.com/brynary/rack-test
