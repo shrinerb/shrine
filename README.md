@@ -37,7 +37,7 @@ Shrine.plugin :rack_file # for non-Rails apps
 ```
 
 Next decide how you will name the attachment attribute on your model, and run a
-migration that adds an `<attachment>_data` text column, which Shrine will use
+migration that adds an `<attachment>_data` `text`, `json` or `jsonb` column, which Shrine will use
 to store all information about the attachment:
 
 ```rb
