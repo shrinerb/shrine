@@ -239,7 +239,7 @@ Shrine. Let's assume we have a `Photo` model with the "image" attachment. First
 we need to create the `image_data` column for Shrine:
 
 ```rb
-add_column :photos, :image_data, :text
+add_column :photos, :image_data, :text # or :json or :jsonb if supported
 ```
 
 Afterwards we need to make new uploads write to the `image_data` column. This
@@ -271,7 +271,8 @@ module CarrierwaveShrineSynchronization
           data[name] = uploader_to_shrine_data(version)
         end
       end
-
+      # If you are using `json` or `jsonb` as a column data type, remove `.to_json`,
+      # otherwise the JSON object will be saved as an escaped string.
       write_attribute(:"#{name}_data", data.to_json)
     else
       write_attribute(:"#{name}_data", nil)
@@ -325,6 +326,20 @@ Now you should be able to rewrite your application so that it uses Shrine
 instead of CarrierWave, using equivalent Shrine storages. For help with
 translating the code from CarrierWave to Shrine, you can consult the reference
 below.
+
+You'll notice that if you add any metadata manually or using plugins within
+your Shrine uploader, the metadata will not be filled in after using the above
+migration script. You can either modify the synchroniziation class above or use
+the `refresh_metadata` plugin and run `.refresh_metadata!` on all uploaded
+files:
+
+```rb
+Photo.find_each do |photo|
+  Shrine.uploaded_file(photo.image) do |uploaded_file|
+    uploaded_file.refresh_metadata!
+  end
+end
+```
 
 ## CarrierWave to Shrine direct mapping
 
