@@ -53,6 +53,9 @@
       -
         name: Uploading Files with Rails and ActionCable
         url: https://scotch.io/tutorials/uploading-files-with-rails-and-actioncable
+      -
+        name: Creating Online Streaming Radio With Rails and Icecast
+        url: https://scotch.io/tutorials/creating-online-streaming-radio-with-rails-and-icecast
   -
     title: Videos
     items:
