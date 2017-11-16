@@ -335,11 +335,15 @@ files:
 
 ```rb
 Photo.find_each do |photo|
-  Shrine.uploaded_file(photo.image) do |uploaded_file|
-    uploaded_file.refresh_metadata!
-  end
+  attachment = Shrine.uploaded_file(photo.image, &:refresh_metadata!)
+  photo.update(image_data: attachment.to_json)
 end
 ```
+
+Note: If you are using versions for `Photo`, you'll have to load the `versions`
+plugin globally, not just in your uploader, for `Shrine.uploaded_file` to work
+with versions, since the `versions` plugin overrides the implementation of this
+method.
 
 ## CarrierWave to Shrine direct mapping
 
