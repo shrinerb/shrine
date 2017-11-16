@@ -184,8 +184,8 @@ describe Shrine::Storage::S3 do
       @s3.client.stub_responses(:put_object, -> (context) {
         @s3.client.stub_responses(:get_object, content_disposition: context.params[:content_disposition])
       })
-      @s3.upload(fakeio, "foo", content_disposition: 'inline; filename=""été bar.pdf""')
-      assert_equal "inline; filename=\"\"été bar.pdf\"\"", CGI.unescape(@s3.object("foo").get.content_disposition)
+      @s3.upload(fakeio, "foo", content_disposition: 'inline; filename=""été foo bar.pdf""')
+      assert_equal "inline; filename=\"\"été foo bar.pdf\"\"", CGI.unescape(@s3.object("foo").get.content_disposition)
     end
 
     it "applies default upload options" do
@@ -320,8 +320,10 @@ describe Shrine::Storage::S3 do
     end
 
     it "encodes non-ASCII characters, quotes, and spaces in :content_disposition" do
-      url = @s3.url("foo", response_content_disposition: 'inline; filename=""été bar.pdf""')
-      assert_includes CGI.unescape(CGI.unescape(URI(url).query.force_encoding("UTF-8"))), "inline; filename=\"\"été bar.pdf\"\""
+      url = @s3.url("foo", response_content_disposition: 'inline; filename=""été foo bar.pdf""')
+      unescaped_query = CGI.unescape(URI(url).query.force_encoding("UTF-8"))
+      assert_includes unescaped_query, 'filename="%22%C3%A9t%C3%A9 foo bar.pdf%22"'
+      assert_includes CGI.unescape(unescaped_query), "inline; filename=\"\"été foo bar.pdf\"\""
     end
   end
 
