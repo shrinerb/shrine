@@ -4,9 +4,9 @@ class Shrine
   module Plugins
     # The `signature` plugin provides the ability to calculate a hash from file
     # content. The hash can then be used as a checksum or just as a unique
-    # signature of the file.
+    # signature of the file. It is recommended to load this plugin globally.
     #
-    #     plugin :signature
+    #     Shrine.plugin :signature
     #
     # The plugin adds a `calculate_signature` instance and class method to
     # `Shrine`, which accepts the IO object and hashing algorithm and returns
@@ -14,6 +14,14 @@ class Shrine
     #
     #     Shrine.calculate_signature(io, :md5)
     #     #=> "9a0364b9e99bb480dd25e1f0284c8555"
+    #
+    # In case you want to use the plugin only for a specific uploader, you can
+    # use the following within the uploader:
+    #
+    #     plugin :signature
+    #
+    # This adds a calculate_signature instance and class method to the uploader
+    # class.
     #
     # You can then use the `add_metadata` plugin to add a new metadata field
     # with the calculated hash.
