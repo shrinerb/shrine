@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix S3 storage replacing spaces in filename with "+" symbols (@ndbroadbent)
+
 * Deprecate the `multi_delete` plugin (@janko-m)
 
 * Allow calling `UploadedFile#open` without passing a block (@hmistry)
