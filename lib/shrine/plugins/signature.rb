@@ -9,7 +9,7 @@ class Shrine
     #     Shrine.plugin :signature
     #
     # The plugin adds a `#calculate_signature` instance and class method to the
-    # uploader class, which accepts an IO object and a hashing algorithm, and
+    # uploader. The method accepts an IO object and a hashing algorithm, and
     # returns the calculated hash.
     #
     #     Shrine.calculate_signature(io, :md5)
