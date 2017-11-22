@@ -422,7 +422,7 @@ class Shrine
       # should automatically URI-decode filenames when downloading.
       def encode_content_disposition(content_disposition)
         content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
-          CGI.escape(filename).sub("+", " ")
+          CGI.escape(filename).gsub("+", " ")
         end
       end
     end
