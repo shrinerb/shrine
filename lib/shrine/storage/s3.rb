@@ -380,7 +380,7 @@ class Shrine
       # large files.
       def copy(io, id, **options)
         # pass :content_length on multipart copy to avoid an additional HEAD request
-        options = {multipart_copy: true, content_length: io.size}.update(options) if io.size && io.size >= @multipart_threshold[:copy]
+        options = { multipart_copy: true, content_length: io.size }.merge!(options) if io.size && io.size >= @multipart_threshold[:copy]
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
@@ -394,7 +394,7 @@ class Shrine
 
         if path
           # use `upload_file` for files because it can do multipart upload
-          options = {multipart_threshold: @multipart_threshold[:upload]}.update(options)
+          options = { multipart_threshold: @multipart_threshold[:upload] }.merge!(options)
           object(id).upload_file(path, **options)
         else
           object(id).put(body: io, **options)
