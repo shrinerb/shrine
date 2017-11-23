@@ -9,8 +9,7 @@ consists of three parts:
 
 ## Storages
 
-While in Paperclip you configure storage in the model, a Shrine storage is just
-a class which you configure individually:
+In Paperclip the storage is configure inside the global options:
 
 ```rb
 class Photo < ActiveRecord::Base
@@ -20,24 +19,24 @@ class Photo < ActiveRecord::Base
       bucket:            "my-bucket",
       access_key_id:     "abc",
       secret_access_key: "xyz",
-    },
-    s3_host_alias: "http://abc123.cloudfront.net",
+    }
 end
 ```
+
+In contrast, a Shrine storage is just a class which you configure individually:
+
 ```rb
 Shrine.storages[:store] = Shrine::Storage::S3.new(
   bucket:            "my-bucket",
   access_key_id:     "abc",
   secret_access_key: "xyz",
 )
-
-Shrine.plugin :default_url_options, store: {host: "http://abc123.cloudfront.net"}
 ```
 
 Paperclip doesn't have a concept of "temporary" storage, so it cannot retain
 uploaded files in case of validation errors, and [direct S3 uploads] cannot be
-implemented in a safe way. Shrine conceptually separates a "temporary" and
-"permanent" storage:
+implemented in a safe way. Shrine uses separate "temporary" and "permanent"
+storage for attaching files:
 
 ```rb
 Shrine.storages = {
@@ -500,6 +499,79 @@ user.avatar.id #=> "users/342/avatar/398543qjfdsf.jpg"
 Shrine doesn't have an equivalent to this, but the [Regenerating versions]
 guide provides some useful tips on how to do this.
 
+### `Paperclip::Storage::S3`
+
+The built-in [`Shrine::Storage::S3`] storage is a direct replacement for
+`Paperclip::Storage::S3`.
+
+#### `:s3_credentials`, `:s3_region`, `:bucket`
+
+The Shrine storage accepts `:access_key_id`, `:secret_access_key`, `:region`,
+and `:bucket` options in the initializer:
+
+```rb
+Shrine::Storage::S3.new(
+  access_key_id:     "...",
+  secret_access_key: "...",
+  region:            "...",
+  bucket:            "...",
+)
+```
+
+#### `:s3_headers`
+
+The object data can be configured via the `:upload_options` hash:
+
+```rb
+Shrine::Storage::S3.new(upload_options: {content_disposition: "attachment"}, **options)
+```
+
+You can use the `upload_options` plugin to set upload options dynamically.
+
+#### `:s3_permissions`
+
+The object permissions can be configured with the `:acl` upload option:
+
+```rb
+Shrine::Storage::S3.new(upload_options: {acl: "private"}, **options)
+```
+
+You can use the `upload_options` plugin to set upload options dynamically.
+
+#### `:s3_metadata`
+
+The object metadata can be configured with the `:metadata` upload option:
+
+```rb
+Shrine::Storage::S3.new(upload_options: {metadata: {"key" => "value"}}, **options)
+```
+
+You can use the `upload_options` plugin to set upload options dynamically.
+
+#### `:s3_protocol`, `:s3_host_alias`, `:s3_host_name`
+
+The `#url` method accepts a `:host` option for specifying a CDN host. You can
+use the `default_url_options` plugin to set it by default:
+
+```rb
+Shrine.plugin :default_url_options, store: {host: "http://abc123.cloudfront.net"}
+```
+
+#### `:path`
+
+The `#upload` method accepts the destination location as the second argument.
+
+```rb
+s3 = Shrine::Storage::S3.new(**options)
+s3.upload(io, "object/destination/path")
+```
+
+#### `:url`
+
+The Shrine storage has no replacement for the `:url` Paperclip option, and it
+isn't needed.
+
 [file]: http://linux.die.net/man/1/file
 [Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [direct S3 uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[`Shrine::Storage::S3`]:  http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html

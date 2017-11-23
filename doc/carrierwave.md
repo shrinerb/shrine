@@ -594,10 +594,6 @@ As mentioned before, in Shrine you register storages through `Shrine.storages`,
 and the attachment storages will automatically be `:cache` and `:store`, but
 you can change this with the `default_storage` plugin.
 
-#### `fog_*`
-
-These options are set on the [shrine-fog] storage.
-
 #### `delete_tmp_file_after_storage`, `remove_previously_stored_file_after_update`
 
 By default Shrine deletes cached and replaced files, but you can choose to keep
@@ -654,8 +650,64 @@ You can just add conditionals in processing code.
 No equivalent, it depends on your application whether you need the form to be
 multipart or not.
 
+### `CarrierWave::Storage::Fog`
+
+You can use [`Shrine::Storage::S3`] \(built-in\),
+[`Shrine::Storage::GoogleCloudStorage`], or generic [`Shrine::Storage::Fog`]
+storage. The reference will assume you're using S3 storage.
+
+#### `:fog_credentials`, `:fog_directory`
+
+The S3 Shrine storage accepts `:access_key_id`, `:secret_access_key`, `:region`,
+and `:bucket` options in the initializer:
+
+```rb
+Shrine::Storage::S3.new(
+  access_key_id:     "...",
+  secret_access_key: "...",
+  region:            "...",
+  bucket:            "...",
+)
+```
+
+#### `:fog_attributes`
+
+The object data can be configured via the `:upload_options` hash:
+
+```rb
+Shrine::Storage::S3.new(upload_options: {content_disposition: "attachment"}, **options)
+```
+
+#### `:fog_public`
+
+The object permissions can be configured with the `:acl` upload option:
+
+```rb
+Shrine::Storage::S3.new(upload_options: {acl: "private"}, **options)
+```
+
+#### `:fog_authenticated_url_expiration`
+
+The `#url` method accepts the `:expires_in` option, you can set the default
+expiration with the `default_url_options` plugin:
+
+```rb
+plugin :default_url_options, store: {expires_in: 600}
+```
+
+#### `:fog_use_ssl_for_aws`, `:fog_aws_accelerate`
+
+Shrine allows you to override the S3 endpoint:
+
+```rb
+Shrine::Storage::S3.new(endnpoint: "https://s3-accelerate.amazonaws.com", **options)
+```
+
 [image_processing]: https://github.com/janko-m/image_processing
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [shrine-fog]: https://github.com/janko-m/shrine-fog
 [direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[`Shrine::Storage::S3`]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[`Shrine::Storage::GoogleCloudStorage`]: https://github.com/renchap/shrine-google_cloud_storage
+[`Shrine::Storage::Fog`]: https://github.com/janko-m/shrine-fog
