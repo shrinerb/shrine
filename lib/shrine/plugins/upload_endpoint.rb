@@ -67,7 +67,7 @@ class Shrine
     #
     # The upload context will *not* contain `:record` and `:name` values, as
     # the upload happens independently of a database record. The endpoint will
-    # sent the following upload context:
+    # send the following upload context:
     #
     # * `:action` - holds the value `:upload`
     # * `:request` - holds an instance of `Rack::Request`
@@ -137,7 +137,7 @@ class Shrine
         end
       end
 
-      # Rack application that accepts multipart POSt request to the root URL,
+      # Rack application that accepts multipart POST request to the root URL,
       # calls `#upload` with the uploaded file, and returns the uploaded file
       # information in JSON format.
       class App
