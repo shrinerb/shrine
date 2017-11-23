@@ -285,9 +285,6 @@ can be done by including the below module to all models that have Paperclip
 attachments:
 
 ```rb
-require "fastimage"
-require "mime/types"
-
 module PaperclipShrineSynchronization
   def self.included(model)
     model.before_save do
@@ -329,7 +326,7 @@ module PaperclipShrineSynchronization
         size: attachment.size,
         filename: attachment.original_filename,
         content_type: attachment.content_type,
-      },
+      }
     }
   end
 
@@ -337,25 +334,10 @@ module PaperclipShrineSynchronization
   # files on the filesystem, make sure to subtract the appropriate part
   # from the path assigned to `:id`.
   def style_to_shrine_data(style)
-    attachment = style.attachment
-    path = attachment.path(style.name)
-    url = attachment.url(style.name)
-    file = attachment.instance_variable_get("@queued_for_write")[style.name]
-
-    size   = file.size if file
-    size ||= FastImage.new(url).content_length # OPTIONAL (makes an HTTP request)
-    size ||= File.size(path) if File.exist?(path)
-    filename = File.basename(path)
-    mime_type = MIME::Types.type_for(path).first.to_s.presence
-
     {
       storage: :store,
-      id: path,
-      metadata: {
-        size: size,
-        filename: filename,
-        mime_type: mime_type,
-      }
+      id: style.attachment.path(style.name),
+      metadata: {}
     }
   end
 end
@@ -384,6 +366,19 @@ Now you should be able to rewrite your application so that it uses Shrine
 instead of Paperclip, using equivalent Shrine storages. For help with
 translating the code from Paperclip to Shrine, you can consult the reference
 below.
+
+You'll notice that Shrine metadata will be absent from the migrated files' data
+(specifically versions). You can run a script that will fill in any missing
+metadata defined in your Shrine uploader:
+
+```rb
+Shrine.plugin :refresh_metadata
+
+Photo.find_each do |photo|
+  attachment = ImageUploader.uploaded_file(photo.image, &:refresh_metadata!)
+  photo.update(image_data: attachment.to_json)
+end
+```
 
 ## Paperclip to Shrine direct mapping
 

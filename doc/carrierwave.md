@@ -247,9 +247,6 @@ can be done by including the below module to all models that have CarrierWave
 attachments:
 
 ```rb
-require "fastimage"
-require "mime/types"
-
 module CarrierwaveShrineSynchronization
   def self.included(model)
     model.before_save do
@@ -271,8 +268,9 @@ module CarrierwaveShrineSynchronization
           data[name] = uploader_to_shrine_data(version)
         end
       end
-      # If you are using `json` or `jsonb` as a column data type, remove `.to_json`,
-      # otherwise the JSON object will be saved as an escaped string.
+
+      # Remove the `.to_json` if you're using a JSON column, otherwise the JSON
+      # object will be saved as an escaped string.
       write_attribute(:"#{name}_data", data.to_json)
     else
       write_attribute(:"#{name}_data", nil)
@@ -284,22 +282,13 @@ module CarrierwaveShrineSynchronization
   # If you'll be using `:prefix` on your Shrine storage, make sure to
   # subtract it from the path assigned as `:id`.
   def uploader_to_shrine_data(uploader)
-    path = uploader.store_path(read_attribute(uploader.mounted_as))
-
-    size   = uploader.file.size if changes.key?(uploader.mounted_as)
-    size ||= FastImage.new(uploader.url).content_length # OPTIONAL (makes an HTTP request)
-    size ||= File.size(File.join(uploader.root, path)) if File.exist?(path)
-    filename = File.basename(path)
-    mime_type = MIME::Types.type_for(path).first.to_s.presence
+    filename = read_attribute(uploader.mounted_as)
+    path     = uploader.store_path(filename)
 
     {
       storage: :store,
       id: path,
-      metadata: {
-        size: size,
-        filename: filename,
-        mime_type: mime_type,
-      },
+      metadata: { filename: filename }
     }
   end
 end
@@ -327,23 +316,18 @@ instead of CarrierWave, using equivalent Shrine storages. For help with
 translating the code from CarrierWave to Shrine, you can consult the reference
 below.
 
-You'll notice that if you add any metadata manually or using plugins within
-your Shrine uploader, the metadata will not be filled in after using the above
-migration script. You can either modify the synchroniziation class above or use
-the `refresh_metadata` plugin and run `.refresh_metadata!` on all uploaded
-files:
+You'll notice that Shrine metadata will be absent from the migrated files'
+data. You can run a script that will fill in any missing metadata defined in
+your Shrine uploader:
 
 ```rb
+Shrine.plugin :refresh_metadata
+
 Photo.find_each do |photo|
-  attachment = Shrine.uploaded_file(photo.image, &:refresh_metadata!)
+  attachment = ImageUploader.uploaded_file(photo.image, &:refresh_metadata!)
   photo.update(image_data: attachment.to_json)
 end
 ```
-
-Note: If you are using versions for `Photo`, you'll have to load the `versions`
-plugin globally, not just in your uploader, for `Shrine.uploaded_file` to work
-with versions, since the `versions` plugin overrides the implementation of this
-method.
 
 ## CarrierWave to Shrine direct mapping
 
