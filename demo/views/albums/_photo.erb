@@ -1,0 +1,21 @@
+<li>
+  <div class="media">
+    <div class="media-left">
+      <img src="<%= photo.image_url(:small) %>" width=150 class="img-thumbnail file-upload-preview media-object" id="preview-<%= idx %>">
+    </div>
+    <div class="media-body">
+      <div class="form-group">
+        <input type="hidden" name="album[photos_attributes][<%= idx %>][image]" class="file-upload-field" value="<%== photo.cached_image_data %>">
+        <input type="file" name="album[photos_attributes][<%= idx %>][image]" accept="<%= ImageUploader::TYPES.join(",") %>" class="file-upload-field" data-upload-server="<%= upload_server %>" data-preview="preview-<%= idx %>">
+      </div>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="album[photos_attributes][<%= idx %>][title]" value="<%== photo.title %>">
+      </div>
+      <% if photo.id %>
+        <input type="hidden" name="album[photos_attributes][<%= idx %>][id]" value="<%= photo.id %>">
+      <% end %>
+      Remove photo: <input type="checkbox" name="album[photos_attributes][<%= idx %>][_delete]" value="true">
+    </div>
+  </div>
+</li>

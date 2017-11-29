@@ -1,0 +1,12 @@
+<h1>Albums</h1>
+
+<a href="<%= new_album_path %>" class="btn btn-success">+ New Album</a>
+
+<ul>
+  <% albums.each do |album| %>
+    <li>
+      <img src="<%= album.cover_photo_url(:small) %>" width=100 class="img-thumbnail">
+      <a href="<%= album_path(album) %>"><%= album.name %></a>
+    </li>
+  <% end %>
+</ul>

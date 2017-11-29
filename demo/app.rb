@@ -1,52 +1,25 @@
 require "roda"
-require "tilt/erb"
 
-require "./models/album"
-require "./models/photo"
-
-require "./config/shrine"
+require "./routes/albums"
+require "./routes/direct_upload"
 
 class ShrineDemo < Roda
-  plugin :environments
   plugin :public
-
-  plugin :render
-  plugin :partials
-
-  use Rack::MethodOverride
-  plugin :all_verbs
-
-  use Rack::Session::Cookie, secret: "secret"
-  plugin :csrf, raise: true
-
-  plugin :indifferent_params
-
-  configure :development, :test do
-    require "./middleware/fake_s3"
-    use FakeS3
-  end
+  plugin :assets, css: "app.css", js: "app.js"
+  plugin :run_handler
 
   route do |r|
     r.public # serve static assets
-
-    r.is "presign" do
-      r.run Shrine.presign_endpoint(:cache)
-    end
-
-    @album = Album.first || Album.create(name: "My Album")
+    r.assets # serve dynamic assets
 
     r.root do
-      view(:index)
+      r.redirect "/albums", 301
     end
 
-    r.put "album" do
-      @album.update(params[:album])
-      r.redirect r.referer
+    r.on "albums" do
+      r.run Routes::Albums
     end
 
-    r.post "album/photos" do
-      photo = @album.add_photo(params[:photo])
-      partial("photo", locals: { photo: photo, idx: @album.photos.count })
-    end
+    r.run Routes::DirectUpload, not_found: :pass
   end
 end

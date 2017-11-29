@@ -1,0 +1,23 @@
+.container {
+  width: 800px;
+}
+
+.templates {
+  visibility: hidden;
+}
+
+.progress {
+  width: 300px;
+}
+
+.file-upload-preview[src=""] {
+  visibility: hidden;
+}
+
+.file-upload-list li {
+  margin-bottom: 20px;
+}
+
+.image-preview {
+  margin-top: 10px;
+}

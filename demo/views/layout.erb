@@ -1,18 +1,17 @@
 <html>
   <head>
-    <!-- jQuery-File-Upload -->
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script src="/assets/jquery.ui.widget.js"></script>
-    <script src="/assets/jquery.fileupload.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> <!-- Promise polyfill -->
+    <script src="/assets/axios.js"></script>
 
-    <!-- Bootstrap -->
-    <script src="/assets/bootstrap.js"></script>
     <link href="/assets/bootstrap.css" media="screen" rel="stylesheet">
+    <%= assets(:css) %>
   </head>
 
   <body>
     <div class="container">
       <%= yield %>
     </div>
+
+    <%= assets(:js) %>
   </body>
 </html>

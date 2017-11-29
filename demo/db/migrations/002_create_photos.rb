@@ -3,7 +3,8 @@ Sequel.migration do
     create_table(:photos) do
       primary_key :id
       foreign_key :album_id, :albums
-      String :image_data, text: true
+      column :title, String
+      column :image_data, String, text: true
     end
   end
 end
