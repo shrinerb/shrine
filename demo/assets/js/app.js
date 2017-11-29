@@ -29,7 +29,7 @@ document.addEventListener('change', function(e) {
         // remove progress bar
         formGroup.removeChild(progressBar);
 
-        if (fileInput.multiple) { // multiple uploads
+        if (fileInput.multiple) { // MULTIPLE UPLOAD
           // create a new resource and replace the "<INDEX>" placeholder with a unique identifier (current timestamp)
           var newResource = document.querySelector('.templates .' + fileInput.dataset.template).cloneNode(true);
           newResource.innerHTML = newResource.innerHTML.replace(/<INDEX>/g, Date.now().toString());
@@ -45,7 +45,7 @@ document.addEventListener('change', function(e) {
 
           // append the new resource to the associated list
           document.getElementByid(fileInput.dataset.uploadList).appendChild(newResource);
-        } else { // single upload
+        } else { // SINGLE UPLOAD
           // populate img tag src with data URI of the image for preview
           var imagePreview = document.getElementById(fileInput.dataset.preview);
           loadDataUri(file).then(function(dataUri) { imagePreview.src = dataUri });
