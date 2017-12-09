@@ -153,9 +153,9 @@ class Shrine
 
         # Converts a hash of data into a hash of versions.
         def uploaded_file(object, &block)
-          if (hash = object).is_a?(Hash) && !hash.key?("storage")
-            hash.inject({}) do |result, (name, data)|
-              result.update(name.to_sym => uploaded_file(data, &block))
+          if object.is_a?(Hash) && object.values.none? { |value| value.is_a?(String) }
+            object.inject({}) do |result, (name, data)|
+              result.merge!(name.to_sym => uploaded_file(data, &block))
             end
           else
             super
