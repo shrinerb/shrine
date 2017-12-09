@@ -94,11 +94,6 @@ Uploader.prototype.uploadToS3 = function(file) {
     });
 }
 
-Uploader.prototype.uploadToApp = function(file) {
-  return this.sendToApp(file)
-    .then(function(data) { return JSON.stringify(data) });
-}
-
 Uploader.prototype.fetchPresign = function(file) {
   return axios.get(this.presignEndpoint, {
       params:       { filename: file.name.match(/[^\/\\]+$/)[0] },
@@ -115,6 +110,11 @@ Uploader.prototype.sendToS3 = function(file, presign) {
 
   return uploadAxios.post(presign['url'], { file: file })
     .then(function(response) { return presign['fields']['key'] });
+}
+
+Uploader.prototype.uploadToApp = function(file) {
+  return this.sendToApp(file)
+    .then(function(data) { return JSON.stringify(data) });
 }
 
 Uploader.prototype.sendToApp = function(file) {
