@@ -109,6 +109,14 @@ describe Shrine::Plugins::Backgrounding do
       @user.update(avatar: fakeio)
       refute @attacher.instance_variable_get("@f").resume
     end
+
+    it "respects default storage set via Attachment.new" do
+      @uploader.class.storages[:other] = Shrine::Storage::Test.new
+      @user.class.include @uploader.class::Attachment.new(:avatar, store: :other)
+      @attacher.class.promote { |data| self.class.promote(data) }
+      @user.update(avatar: fakeio)
+      assert_equal "other", @user.reload.avatar.storage_key
+    end
   end
 
   describe "deleting" do

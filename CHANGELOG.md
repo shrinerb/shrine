@@ -1,5 +1,7 @@
 ## HEAD
 
+* Apply default storage options passed via `Attachment.new` in `backgrounding` plugin (@janko-m)
+
 * Fix S3 storage replacing spaces in filename with "+" symbols (@ndbroadbent)
 
 * Deprecate the `multi_delete` plugin (@janko-m)

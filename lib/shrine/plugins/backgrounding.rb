@@ -182,12 +182,13 @@ class Shrine
           record = load_record(data)
           name = data["name"].to_sym
 
-          if data["shrine_class"]
+          if record.respond_to?(:"#{name}_attacher")
+            attacher = record.send(:"#{name}_attacher")
+          elsif data["shrine_class"]
             shrine_class = Object.const_get(data["shrine_class"])
             attacher = shrine_class::Attacher.new(record, name)
           else
-            # anonymous uploader class, try to retrieve attacher from record
-            attacher = record.send("#{name}_attacher")
+            fail Error, "cannot load anonymous uploader class"
           end
 
           attacher
