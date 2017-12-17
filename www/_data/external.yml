@@ -1,6 +1,6 @@
 -
   -
-    title: Blog posts
+    title: Articles
     items:
       -
         name: Introducing Shrine
@@ -56,6 +56,9 @@
       -
         name: Creating Online Streaming Radio With Rails and Icecast
         url: https://scotch.io/tutorials/creating-online-streaming-radio-with-rails-and-icecast
+      -
+        name: Multiple Photo Upload using Shrine
+        url: https://github.com/pyksoft/multi-photo-upload#multiple-photo-upload-using-shrine
   -
     title: Videos
     items:
