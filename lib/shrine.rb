@@ -259,7 +259,7 @@ class Shrine
         end
 
         # Extracts filename, size and MIME type from the file, which is later
-        # accessible through `UploadedFile#metadata`.
+        # accessible through UploadedFile#metadata.
         def extract_metadata(io, context = {})
           {
             "filename"  => extract_filename(io),
@@ -325,8 +325,8 @@ class Shrine
         # and any upload options. The storage might modify the location or
         # metadata that were passed in. The uploaded IO is then closed.
         def copy(io, context)
-          location = context[:location]
-          metadata = context[:metadata]
+          location       = context[:location]
+          metadata       = context[:metadata]
           upload_options = context[:upload_options] || {}
 
           storage.upload(io, location, shrine_metadata: metadata, **upload_options)
