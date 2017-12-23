@@ -1,12 +1,22 @@
 <h1>Albums</h1>
 
-<a href="<%= new_album_path %>" class="btn btn-success">+ New Album</a>
+<div><a href="<%= new_album_path %>" class="btn btn-success">+ New Album</a></div>
 
-<ul>
-  <% albums.each do |album| %>
-    <li>
-      <img src="<%= album.cover_photo_url(:small) %>" width=100 class="img-thumbnail">
-      <a href="<%= album_path(album) %>"><%= album.name %></a>
-    </li>
-  <% end %>
-</ul>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Cover</th>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% albums.each do |album| %>
+      <tr>
+        <td><img src="<%= album.cover_photo_url(:small) %>" width=100 class="img-thumbnail"></td>
+        <td><%= album.name %></td>
+        <td><a href="<%= album_path(album) %>" class="btn btn-default">Edit</a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

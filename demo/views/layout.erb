@@ -1,9 +1,11 @@
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> <!-- Promise polyfill -->
-    <script src="/assets/axios.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> <!-- Promise polyfill for IE -->
+    <script src="https://unpkg.com/uppy"></script>
+    <script src="/assets/fetch.js"></script> <!-- window.fetch polyfill -->
 
     <link href="/assets/bootstrap.css" media="screen" rel="stylesheet">
+    <link href="https://unpkg.com/uppy/dist/uppy.min.css" rel="stylesheet">
     <%= assets(:css) %>
   </head>
 

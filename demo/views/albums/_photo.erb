@@ -5,8 +5,10 @@
     </div>
     <div class="media-body">
       <div class="form-group">
-        <input type="hidden" name="album[photos_attributes][<%= idx %>][image]" class="file-upload-field" value="<%== photo.cached_image_data %>">
-        <input type="file" name="album[photos_attributes][<%= idx %>][image]" accept="<%= ImageUploader::TYPES.join(",") %>" class="file-upload-field" data-upload-server="<%= upload_server %>" data-preview="preview-<%= idx %>">
+        <input type="hidden" name="album[photos_attributes][<%= idx %>][image]" value="<%== photo.cached_image_data %>">
+        <div class="uppy">
+          <input type="file" name="album[photos_attributes][<%= idx %>][image]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-photo-field-<%= idx %>" data-preview="preview-<%= idx %>" data-upload-server="<%= upload_server %>">
+        </div>
       </div>
       <div class="form-group">
         <label>Title</label>
