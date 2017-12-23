@@ -6,10 +6,6 @@
   visibility: hidden;
 }
 
-.progress {
-  width: 300px;
-}
-
 .file-upload-preview[src=""] {
   visibility: hidden;
 }
@@ -20,4 +16,5 @@
 
 .image-preview {
   margin-top: 10px;
+  display: inline-block;
 }

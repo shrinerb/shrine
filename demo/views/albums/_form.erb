@@ -20,8 +20,8 @@
   <div class="form-group">
     <label for="album-cover-photo-field">Cover photo</label>
     <input type="hidden" name="album[cover_photo]" value="<%== album.cached_cover_photo_data %>">
-    <div class="uppy">
-      <input type="file" name="album[cover_photo]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-cover-photo-field" data-preview=<%= "preview-cover-photo" %> data-upload-server="<%= upload_server %>">
+    <div class="uppy-file-input"  data-preview=<%= "preview-cover-photo" %> data-upload-server="<%= upload_server %>">
+      <input type="file" name="album[cover_photo]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-cover-photo-field">
     </div>
     <div class="image-preview">
       <img src="<%= album.cover_photo_url(:small) %>" width=300 class="img-thumbnail file-upload-preview" id="preview-cover-photo">
@@ -46,8 +46,5 @@
 <div class="templates">
   <div class="photo">
     <%= partial("albums/photo", locals: { photo: Photo.new, idx: "<INDEX>" }) %>
-  </div>
-  <div class="progress">
-    <div class="progress-bar"></div>
   </div>
 </div>

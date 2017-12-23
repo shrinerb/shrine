@@ -32,16 +32,9 @@ In production environment files are uploaded directly to S3, while in
 development and test environment they are uploaded to the app and stored on
 disk. The demo features both single and multiple uploads.
 
-On the client side I decided not to use any of the most popular file upload
-libraries:
-
-* [jQuery-File-Upload] - requires jQuery and doesn't have a low-level DOM-less API
-* [Dropzone.js] - doesn't require jQuery but doesn't have a low-level DOM-less API
-* [FineUploader] - doesn't require jQuery and has low-level DOM-less API but it has too specific requirements from upload/presign endpoints
-
-Instead I chose to use [Axios], a flexible JavaScript HTTP client library
-that allows tracking upload progress. The complete JavaScript implementation
-for the demo can be found in [app.js](/demo/assets/js/app.js).
+On the client side [Uppy] is used for handling file uploads. The complete
+JavaScript implementation for the demo can be found in
+[app.js](/demo/assets/js/app.js).
 
 ## Requirements
 
@@ -82,7 +75,4 @@ $ bundle exec rackup
 
 [Shrine]: https://github.com/janko-m/shrine
 [setup CORS]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
-[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-[Dropzone.js]: http://www.dropzonejs.com
-[FineUploader]: https://fineuploader.com
-[Axios]: https://github.com/axios/axios
+[Uppy]: https://uppy.io
