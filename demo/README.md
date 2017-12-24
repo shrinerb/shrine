@@ -22,9 +22,9 @@ This asynchronicity generally provides an ideal user experience, because the
 user doesn't have to wait for processing or deleting, and due to fallbacks
 they can be unaware of background jobs.
 
-Direct uploads and backgrounding also has performance advantages, since your
-app doesn't have to accept file uploads (instead files are uploaded directly to
-S3), and the web workers aren't blocked by processing, storing or deleting.
+Direct uploads and backgrounding also have performance advantages, since your
+app doesn't have to receive file uploads (as files are uploaded directly to S3),
+and the web workers aren't blocked by processing, storing or deleting.
 
 ## Implementation
 

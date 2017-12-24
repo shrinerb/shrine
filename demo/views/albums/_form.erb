@@ -1,5 +1,5 @@
-<form action="<%= form_action %>" method="post">
-  <input type="hidden" name="_method" value="<%= form_method %>"> <%# needed for PUT and DELETE requests %>
+<form action="<%= form_action %>" method="post" enctype="multipart/form-data">
+  <input type="hidden" name="_method" value="<%= form_method %>" \> <%# needed for PUT and DELETE requests %>
   <%= csrf_tag %>
 
   <% if album.errors.any? %>
@@ -14,23 +14,21 @@
 
   <div class="form-group">
     <label for="album-name-field">Name</label>
-    <input type="text" name="album[name]" value="<%= album.name %>" id="album-name-field">
+    <input type="text" name="album[name]" value="<%= album.name %>" id="album-name-field" \>
   </div>
 
   <div class="form-group">
     <label for="album-cover-photo-field">Cover photo</label>
-    <input type="hidden" name="album[cover_photo]" value="<%== album.cached_cover_photo_data %>">
-    <div class="uppy-file-input"  data-preview=<%= "preview-cover-photo" %> data-upload-server="<%= upload_server %>">
-      <input type="file" name="album[cover_photo]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-cover-photo-field">
-    </div>
+    <input type="hidden" name="album[cover_photo]" value="<%== album.cached_cover_photo_data %>" id="album-cover-photo-upload-result" \>
+    <input type="file" name="album[cover_photo]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-cover-photo-field" data-upload-server="<%= upload_server %>" data-preview-element="preview-cover-photo" data-upload-result-element="album-cover-photo-upload-result" \>
     <div class="image-preview">
-      <img src="<%= album.cover_photo_url(:small) %>" width=300 class="img-thumbnail file-upload-preview" id="preview-cover-photo">
+      <img src="<%= album.cover_photo_url(:small) %>" width=300 class="img-thumbnail file-upload-preview" id="preview-cover-photo" \>
     </div>
   </div>
 
   <div class="form-group">
     <label for="album-photos-field">Select photos</label>
-    <input type="file" multiple name="files[]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-photos-field" data-template="photo" data-upload-list="album-photo-list" data-upload-server="<%= upload_server %>">
+    <input type="file" multiple name="files[]" accept="<%= ImageUploader::TYPES.join(",") %>" id="album-photos-field" data-template="template-photo" data-upload-list="album-photo-list" data-upload-server="<%= upload_server %>" \>
   </div>
 
   <ul class="list-unstyled file-upload-list" id="album-photo-list">
@@ -39,12 +37,6 @@
     <% end %>
   </ul>
 
-  <input type="submit" value="Save" class="btn btn-primary">
+  <input type="submit" value="Save" class="btn btn-primary" \>
   <a href="<%= albums_path %>" class="btn btn-default">&larr; Back to albums</a>
 </form>
-
-<div class="templates">
-  <div class="photo">
-    <%= partial("albums/photo", locals: { photo: Photo.new, idx: "<INDEX>" }) %>
-  </div>
-</div>

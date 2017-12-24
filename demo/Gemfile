@@ -27,3 +27,10 @@ gem "sucker_punch", "~> 2.0"
 
 # Debugging
 gem "pry-byebug"
+
+# Testing
+gem "minitest"
+gem "capybara"
+gem "chromedriver-helper"
+gem "selenium-webdriver"
+gem "rake"

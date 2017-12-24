@@ -1,12 +1,22 @@
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> <!-- Promise polyfill for IE -->
-    <script src="https://unpkg.com/uppy"></script>
-    <script src="/assets/fetch.js"></script> <!-- window.fetch polyfill -->
+    <title>Shrine Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Shrine demo featuring multiple file uploads to S3 with Uppy" />
 
-    <link href="/assets/bootstrap.css" media="screen" rel="stylesheet">
-    <link href="https://unpkg.com/uppy/dist/uppy.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/babel-polyfill@6.26.0/dist/polyfill.min.js"></script> <!-- Babel polyfill -->
+    <script src="https://unpkg.com/whatwg-fetch@2.0.3/fetch.js"></script> <!-- window.fetch polyfill -->
+    <script src="https://unpkg.com/uppy@0.22.0/dist/uppy.min.js"></script>
+
+    <link href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" />
+    <link href="https://unpkg.com/uppy@0.22.0/dist/uppy.min.css" rel="stylesheet" />
     <%= assets(:css) %>
+
+    <script type="text/template" id="template-photo">
+      <%= partial("albums/photo", locals: { photo: Photo.new, idx: "{{index}}" }) %>
+    </script>
+
+    <%= csrf_metatag %>
   </head>
 
   <body>

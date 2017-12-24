@@ -2,10 +2,6 @@
   width: 800px;
 }
 
-.templates {
-  visibility: hidden;
-}
-
 .file-upload-preview[src=""] {
   visibility: hidden;
 }
