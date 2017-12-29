@@ -5,15 +5,14 @@
 // * uppy (https://uppy.io)
 
 function fileUpload(fileInput) {
-  var wrapper      = document.createElement('div')
   var imagePreview = document.getElementById(fileInput.dataset.previewElement)
 
-  fileInput.parentNode.replaceChild(wrapper, fileInput)
+  fileInput.style.display = 'none' // uppy will add its own file input
 
   var uppy = Uppy.Core({ id: fileInput.id, thumbnailGeneration: false })
     .use(Uppy.FileInput, {
-      target:             wrapper,
-      allowMultipleFiles: false
+      target:             fileInput.parentNode,
+      allowMultipleFiles: fileInput.multiple
     })
     .use(Uppy.ProgressBar, {
       target: imagePreview.parentNode
@@ -22,14 +21,14 @@ function fileUpload(fileInput) {
   if (fileInput.dataset.uploadServer == 's3') {
     uppy.use(Uppy.AwsS3, {
       getUploadParameters: function (file) {
-        return fetch('/presign?filename=' + file.name)
+        return fetch('/presign?filename=' + file.name) // Shrine's presign endpoint
           .then(function (response) { return response.json() })
           .then(function (data) { return { method: "POST", url: data.url, fields: data.fields } })
       }
     })
   } else {
     uppy.use(Uppy.XHRUpload, {
-      endpoint: '/upload',
+      endpoint: '/upload', // Shrine's upload endpoint
       fieldName: 'file',
       headers: { 'X-CSRF-Token': document.querySelector('meta[name=_csrf]').content }
     })
@@ -38,7 +37,7 @@ function fileUpload(fileInput) {
   uppy.run()
 
   uppy.on('upload-success', function (fileId, data) {
-    // retrieve uppy's file object (`file.data` contains the actual JavaScript file object)
+    // retrieve uppy's file object (`file.data` contains the actual JavaScript File object)
     var file = uppy.getFile(fileId)
 
     // show image preview
