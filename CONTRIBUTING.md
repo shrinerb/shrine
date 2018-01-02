@@ -38,12 +38,6 @@ best run using Rake:
 $ rake test
 ```
 
-You can also automatically run tests accross Ruby versions:
-
-```sh
-$ bin/test-versions
-```
-
 Code of Conduct
 ===============
 
