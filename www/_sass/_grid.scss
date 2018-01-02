@@ -47,6 +47,10 @@
       &:nth-child(2) {
         @include flex(2);
       }
+
+      &:nth-child(3) {
+        @include flex(2);
+      }
     }
   }
 }
