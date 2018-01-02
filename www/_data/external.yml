@@ -72,9 +72,6 @@
     title: Videos
     items:
       -
-        name: "Shrine: un toolkit para gestionar uploads en Ruby (Madrid.rb)"
-        url: https://player.vimeo.com/video/161742211
-      -
         name: "Shrine: Handle file uploads like it's 2017"
         url: https://www.youtube.com/watch?v=plD-RkKEay0
       -
