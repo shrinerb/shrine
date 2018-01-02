@@ -9,13 +9,24 @@ function fileUpload(fileInput) {
 
   fileInput.style.display = 'none' // uppy will add its own file input
 
-  var uppy = Uppy.Core({ id: fileInput.id, thumbnailGeneration: false })
+  var uppy = Uppy.Core({
+      id:                  fileInput.id,
+      thumbnailGeneration: false,
+      restrictions: {
+        maxFileSize:         fileInput.dataset.maxSize,
+        allowedFileTypes:    fileInput.accept.split(','),
+        maxNumberOfFiles:    100,
+      }
+    })
     .use(Uppy.FileInput, {
       target:             fileInput.parentNode,
-      allowMultipleFiles: fileInput.multiple
+      allowMultipleFiles: fileInput.multiple,
+    })
+    .use(Uppy.Informer, {
+      target: fileInput.parentNode,
     })
     .use(Uppy.ProgressBar, {
-      target: imagePreview.parentNode
+      target: imagePreview.parentNode,
     })
 
   if (fileInput.dataset.uploadServer == 's3') {
