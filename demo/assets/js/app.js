@@ -34,7 +34,6 @@ function fileUpload(fileInput) {
       getUploadParameters: function (file) {
         return fetch('/presign?filename=' + file.name) // Shrine's presign endpoint
           .then(function (response) { return response.json() })
-          .then(function (data) { return { method: "POST", url: data.url, fields: data.fields } })
       }
     })
   } else {
