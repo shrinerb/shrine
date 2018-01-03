@@ -13,9 +13,9 @@ function fileUpload(fileInput) {
       id:                  fileInput.id,
       thumbnailGeneration: false,
       restrictions: {
-        maxFileSize:         fileInput.dataset.maxSize,
-        allowedFileTypes:    fileInput.accept.split(','),
-        maxNumberOfFiles:    100,
+        maxFileSize:      fileInput.dataset.maxSize,
+        allowedFileTypes: fileInput.accept.split(','),
+        maxNumberOfFiles: 100,
       }
     })
     .use(Uppy.FileInput, {
