@@ -794,12 +794,11 @@ Rails.application.routes.draw do
 end
 ```
 
-The above created a `POST /images/upload` endpoint. You can now use a
-client-side file upload library like [FineUploader], [Dropzone] or
-[jQuery-File-Upload] to upload files asynchronously to the `/images/upload`
-endpoint the moment they are selected. Once the file has been uploaded, the
-endpoint will return JSON data of the uploaded file, which the client can then
-write to a hidden attachment field, to be submitted instead of the raw file.
+The above created a `POST /images/upload` endpoint. You can now use [Uppy] to
+upload files asynchronously to the `/images/upload` endpoint the moment they
+are selected. Once the file has been uploaded, the endpoint will return JSON
+data of the uploaded file, which the client can then write to a hidden
+attachment field, to be submitted instead of the raw file.
 
 Many popular storage services can accept file uploads directly from the client
 ([Amazon S3], [Google Cloud Storage], [Microsoft Azure Storage] etc), which
@@ -979,9 +978,7 @@ The gem is available as open source under the terms of the [MIT License].
 [Context]: https://github.com/janko-m/shrine#context
 [image_processing]: https://github.com/janko-m/image_processing
 [ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[FineUploader]: https://github.com/FineUploader/fine-uploader
-[Dropzone]: https://github.com/enyo/dropzone
-[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+[Uppy]: https://uppy.io
 [Amazon S3]: https://aws.amazon.com/s3/
 [Google Cloud Storage]: https://cloud.google.com/storage/
 [Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/

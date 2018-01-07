@@ -30,9 +30,9 @@ class Shrine
     #     end
     #
     # Now your application will get `POST /images/cache/upload` and `GET
-    # /images/cache/presign` routes. Whether you upload files to your app or to
-    # to a 3rd-party service, you'll probably want to use a JavaScript file
-    # upload library like [jQuery-File-Upload], [Dropzone] or [FineUploader].
+    # /images/cache/presign` routes. On the client side it is recommended to
+    # use [Uppy] for uploading files to the app or directly to the 3rd-party
+    # service.
     #
     # ## Uploads
     #
@@ -157,9 +157,7 @@ class Shrine
     # configuration.
     #
     # [Roda]: https://github.com/jeremyevans/roda
-    # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-    # [Dropzone]: https://github.com/enyo/dropzone
-    # [FineUploader]: https://github.com/FineUploader/fine-uploader
+    # [Uppy]: https://uppy.io
     # [Roda request]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
     # [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
     module DirectUpload

@@ -7,9 +7,8 @@ require "json"
 class Shrine
   module Plugins
     # The `upload_endpoint` plugin provides a Rack endpoint which accepts file
-    # uploads and forwards them to specified storage. It can be used with
-    # client-side file upload libraries like [FineUploader], [Dropzone] or
-    # [jQuery-File-Upload] for asynchronous uploads.
+    # uploads and forwards them to specified storage. On the client side it's
+    # recommended to use [Uppy] for asynchronous uploads.
     #
     #     plugin :upload_endpoint
     #
@@ -102,9 +101,7 @@ class Shrine
     #
     #     Shrine.upload_endpoint(:cache, max_size: 20*1024*1024)
     #
-    # [FineUploader]: https://github.com/FineUploader/fine-uploader
-    # [Dropzone]: https://github.com/enyo/dropzone
-    # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+    # [Uppy]: https://uppy.io
     module UploadEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_file

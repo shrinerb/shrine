@@ -87,11 +87,10 @@ to add the `multiple` attribute to the file field.
 <input type="file" multiple name="file">
 ```
 
-You can then use a generic JavaScript file upload library like
-[jQuery-File-Upload], [Dropzone] or [FineUploader] to asynchronously upload
-each of the selected files to your app or to an external service. See the
-`upload_endpoint` and `presign_endpoint` plugins, and [Direct Uploads to S3]
-guide for more details.
+On the client side you can then asynchronously upload each of the selected
+files to a direct upload endpoint. See documenation for the `upload_endpoint`
+and `presign_endpoint` plugins, as well as the [Direct Uploads to S3] guide for
+more details.
 
 After each upload finishes, you can generate a nested hash for the new
 associated record, and write the uploaded file JSON to the attachment field:
@@ -113,7 +112,4 @@ automatically take care of the attachment management.
 
 [`Sequel::Model.nested_attributes`]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html
 [`ActiveRecord::Base.accepts_nested_attributes_for`]: http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
-[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-[Dropzone]: https://github.com/enyo/dropzone
-[FineUploader]: https://github.com/FineUploader/fine-uploader
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html

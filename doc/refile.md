@@ -206,9 +206,9 @@ Shrine.presign_endpoint(:cache) # Rack app that generates presigns for specified
 ```
 
 Unlike Refile, Shrine doesn't ship with complete JavaScript which you can just
-include to make it work. Instead, you're expected to use one of the excellent
-JavaScript libraries for generic file uploads like [FineUploader], [Dropzone]
-or [jQuery-File-Upload]. See also the [Direct Uploads to S3] guide.
+include to make it work. However, [Uppy] is an excellent JavaScript file upload
+library that integrates wonderfully with Shrine, see the [demo app] for a
+complete example.
 
 ## Migrating from Refile
 
@@ -478,9 +478,7 @@ Shrine.plugin :remote_url
 [shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
 [Attache]: https://github.com/choonkeat/attache
 [image_processing]: https://github.com/janko-m/image_processing
-[FineUploader]: https://github.com/FineUploader/fine-uploader
-[Dropzone]: https://github.com/enyo/dropzone
-[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+[Uppy]: https://uppy.io
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Multiple Files]: http://shrinerb.com/rdoc/files/doc/multiple_files_md.html

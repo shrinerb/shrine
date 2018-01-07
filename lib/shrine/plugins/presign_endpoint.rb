@@ -8,10 +8,10 @@ class Shrine
   module Plugins
     # The `presign_endpoint` plugin provides a Rack endpoint which generates
     # the URL, fields, and headers that can be used to upload files directly to
-    # a storage service. It can be used with client-side file upload libraries
-    # like [FineUploader], [Dropzone] or [jQuery-File-Upload] for asynchronous
-    # uploads. Storage services that support direct uploads include [Amazon
-    # S3], [Google Cloud Storage], [Microsoft Azure Storage] and more.
+    # a storage service. On the client side it's recommended to use [Uppy] for
+    # asynchronous uploads. Storage services that support direct uploads
+    # include [Amazon S3], [Google Cloud Storage], [Microsoft Azure Storage]
+    # and more.
     #
     #     plugin :presign_endpoint
     #
@@ -114,9 +114,7 @@ class Shrine
     #
     #     Shrine.presign_endpoint(:cache, presign_location: "${filename}")
     #
-    # [FineUploader]: https://github.com/FineUploader/fine-uploader
-    # [Dropzone]: https://github.com/enyo/dropzone
-    # [jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
+    # [Uppy]: https://uppy.io
     # [Amazon S3]: https://aws.amazon.com/s3/
     # [Google Cloud Storage]: https://cloud.google.com/storage/
     # [Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/

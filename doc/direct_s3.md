@@ -127,11 +127,9 @@ request headers.
 }
 ```
 
-You can now use a client-side file upload library like [FineUploader],
-[Dropzone] or [jQuery-File-Upload] to upload selected files directly to S3.
-When the user selects a file, the client can make a request to the presign
-endpoint, and use the returned request information to upload the selected file
-directly to S3.
+On the client side you can then make a request to the presign endpoint as soon
+as the user selects a file, and use the returned request information to upload
+the selected file directly to S3. It's recommended to use [Uppy] for this.
 
 Once the file has been uploaded, you can generate a JSON representation of the
 uploaded file on the client-side, and write it to the hidden attachment field.
@@ -304,8 +302,6 @@ end
 
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
-[Dropzone]: https://github.com/enyo/dropzone
-[jQuery-File-Upload]: https://github.com/blueimp/jQuery-File-Upload
-[FineUploader]: https://github.com/FineUploader/fine-uploader
+[Uppy]: https://uppy.io
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
 [object lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
