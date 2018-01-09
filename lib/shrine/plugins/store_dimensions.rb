@@ -68,7 +68,7 @@ class Shrine
         # IO object.
         def dimensions_analyzers
           @dimensions_analyzers ||= DimensionsAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
-            hash.merge!(tool => DimensionsAnalyzer.new(tool).method(:call))
+            hash.merge!(tool => DimensionsAnalyzer.new(tool))
           end
         end
       end
