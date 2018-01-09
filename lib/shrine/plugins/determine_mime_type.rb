@@ -51,7 +51,7 @@ class Shrine
     # correctly determine MIME type of .css, .js, .json, .csv, .xml, or similar
     # text-based files, you can combine `file` and `mime_types` analyzers:
     #
-    #     plugin :determine_mime_type, analyzer: ->(io, analyzers) do
+    #     plugin :determine_mime_type, analyzer: -> (io, analyzers) do
     #       mime_type = analyzers[:file].call(io)
     #       mime_type = analyzers[:mime_types].call(io) if mime_type == "text/plain"
     #       mime_type

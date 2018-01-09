@@ -27,9 +27,9 @@ class Shrine
     #
     #     require "mini_magick"
     #
-    #     plugin :store_dimensions, analyzer: ->(io, analyzers) do
-    #       dimensions = analyzers[:fastimage].call(io)
-    #       dimensions || MiniMagick::Image.new(io).dimensions
+    #     plugin :store_dimensions, analyzer: -> (io, analyzers) do
+    #       dimensions = analyzers[:fastimage].call(io)        # try extracting dimensions with FastImage
+    #       dimensions || MiniMagick::Image.new(io).dimensions # otherwise fall back to MiniMagick
     #     end
     #
     # You can also use methods for extracting the dimensions directly:

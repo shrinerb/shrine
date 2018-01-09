@@ -9,28 +9,23 @@ describe Shrine::Plugins::StoreDimensions do
 
   describe ":fastimage analyzer" do
     it "extracts dimensions from files" do
-      dimensions = @shrine.extract_dimensions(image)
-      assert_equal [100, 67], dimensions
+      assert_equal [100, 67], @shrine.extract_dimensions(image)
     end
 
     it "extracts dimensions from non-files" do
-      dimensions = @shrine.extract_dimensions(fakeio(image.read))
-      assert_equal [100, 67], dimensions
+      assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
     end
   end
 
   it "allows storing with custom extractor" do
     @shrine.plugin :store_dimensions, analyzer: ->(io){[5, 10]}
-    dimensions = @shrine.extract_dimensions(fakeio)
-    assert_equal [5, 10], dimensions
+    assert_equal [5, 10], @shrine.extract_dimensions(fakeio)
 
     @shrine.plugin :store_dimensions, analyzer: ->(io, analyzers){analyzers[:fastimage].call(io)}
-    dimensions = @shrine.extract_dimensions(image)
-    assert_equal [100, 67], dimensions
+    assert_equal [100, 67], @shrine.extract_dimensions(image)
 
     @shrine.plugin :store_dimensions, analyzer: ->(io){nil}
-    dimensions = @shrine.extract_dimensions(image)
-    assert_nil dimensions
+    assert_nil @shrine.extract_dimensions(image)
   end
 
   it "always rewinds the IO" do
