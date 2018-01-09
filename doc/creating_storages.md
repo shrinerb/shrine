@@ -37,9 +37,21 @@ end
 ## Upload
 
 The job of `Storage#upload` is to upload the given IO object to the storage.
+It's recommended to use [HTTP.rb] for uploading, as it accepts any IO object
+that responds to `#read` (not just file objects), and it streams the IO data
+directly to the socket, making it suitable for large uploads.
+
+```rb
+require "http"
+
+# streaming raw upload
+HTTP.post("http://example.com/upload", body: io)
+# streaming multipart upload
+HTTP.post("http://example.com/upload", form: { file: HTTP::FormData::File.new(io) })
+```
+
 It's good practice to test the storage with a [fake IO] object which responds
-only to required methods. Some HTTP libraries don't support uploading non-file
-IOs, although for [Faraday] and [REST client] you can work around that.
+only to required methods, as not all received IO objects will be file objects.
 
 If your storage doesn't control which id the uploaded file will have, you
 can modify the `id` variable before returning:
@@ -213,6 +225,5 @@ Note that using the linter doesn't mean that you shouldn't write any manual
 tests for your storage. There will likely be some edge cases that won't be
 tested by the linter.
 
+[HTTP.rb]: https://github.com/httprb/http
 [fake IO]: https://github.com/janko-m/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/test/test_helper.rb#L20-L27
-[REST client]: https://github.com/janko-m/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/lib/shrine/storage/cloudinary.rb#L138-L141
-[Faraday]: https://github.com/janko-m/shrine-uploadcare/blob/2038781ace0f54d82fa06cc04c4c2958919208ad/lib/shrine/storage/uploadcare.rb#L140
