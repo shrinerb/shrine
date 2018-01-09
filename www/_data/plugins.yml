@@ -102,7 +102,11 @@ Metadata:
   -
     name: determine_mime_type
     path: DetermineMimeType.html
-    description: Allows you to determine the actual MIME type from file contents.
+    description: Determine the actual MIME type from file contents.
+  -
+    name: infer_extension
+    path: InferExtension.html
+    description: Deduce appropriate file extension based on the MIME type.
   -
     name: metadata_attributes
     path: MetadataAttributes.html

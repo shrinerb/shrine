@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `infer_extension` plugin for automatically deducing upload location extension from MIME type (@janko-m)
+
 * Apply default storage options passed via `Attachment.new` in `backgrounding` plugin (@janko-m)
 
 * Fix S3 storage replacing spaces in filename with "+" symbols (@ndbroadbent)
