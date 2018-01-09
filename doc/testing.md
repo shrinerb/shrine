@@ -240,30 +240,32 @@ end
 This also has the benefit of allowing you to test `ImageThumbnailsGenerator` in
 isolation.
 
-## Direct upload
+## Direct S3 uploads
 
-If you've set up direct uploads to Amazon S3 (using the `presign_endpoint`
-plugin), in tests you'll probably want to just use filesystem or memory storage
-to avoid network requests.
+If you want to do direct uploads to Amazon S3 in production, in development and
+tests you'll probably want to keep using filesystem storage to avoid making
+network requests.
 
-The easiest way to do that is to add an `upload_endpoint`, modify it so that it
-behaves like S3, and change `presign_endpoint` response to point to the upload
-endpoint. Here is how one could modify the test helper in a Rails application:
+The simplest way to do that is to use [Minio]. Minio is an open source object
+storage server with Amazon S3 compatible API. If you're on a Mac you can
+install it with Homebrew:
 
-```rb
-# test/test_helper.rb
+```
+$ brew install minio
+$ minio server data/
+```
 
-# create and mount a fake S3 upload endpoint
-Shrine.plugin :upload_endpoint
-fake_s3 = Shrine.upload_endpoint(:cache, upload_context: -> (request) {
-  { location: request.params["key"].match(/^cache\//).post_match }
-})
-Rails.application.routes.prepend { mount fake_s3 => "/s3" }
+Then you can open the Minio UI in the browser and create a new bucket. Once
+you've done that, all that's left to do is point aws-sdk-s3 to your Minio
+server:
 
-# override presigns to return URLs to the fake S3 upload endpoint
-Shrine.plugin :presign_endpoint, presign: -> (id, options, request) do
-  Struct.new(:url, :fields).new("#{request.base_url}/s3", { "key" => "cache/#{id}" })
-end
+```
+Shrine::Storage::S3.new(
+  access_key_id:     "MINIO_ACCESS_KEY_ID",
+  secret_access_key: "MINIO_SECRET_ACCESS_KEY",
+  bucket:            "MINIO_BUCKET",
+  region:            "us-east-1",
+)
 ```
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
@@ -274,3 +276,4 @@ end
 [Rack::Test]: https://github.com/brynary/rack-test
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
 [aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
+[Minio]: https://minio.io
