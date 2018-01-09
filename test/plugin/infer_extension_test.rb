@@ -53,7 +53,7 @@ describe Shrine::Plugins::InferExtension do
     end
 
     it "chooses one extension from available extensions" do
-      assert_equal ".jpe", @shrine.infer_extension("image/jpeg")
+      assert_equal ".jpeg", @shrine.infer_extension("image/jpeg")
     end
 
     it "returns empty string when it couldn't determine extension" do
