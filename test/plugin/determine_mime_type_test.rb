@@ -18,7 +18,7 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
     end
 
-    it "gives as as much of the file to standard input as needed" do
+    it "gives as much of the file to standard input as needed" do
       assert_equal "text/plain", @shrine.determine_mime_type(fakeio("a" * 5*1024*1024))
     end
 
