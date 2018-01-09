@@ -11,7 +11,13 @@ end
 ENV["MT_NO_EXPECTATIONS"] = "1" # disable Minitest's expectations monkey-patches
 
 require "minitest/autorun"
-require "minitest/pride"
+
+if ENV["CI"]
+  require "minitest/documentation"
+else
+  require "minitest/pride"
+end
+
 require "minitest/hooks/default"
 require "mocha/mini_test"
 
@@ -19,7 +25,6 @@ require "shrine"
 
 class Shrine
   def warn(*); end # disable mime_type warnings
-  #def self.deprecation(*); end
 end
 
 require "./test/support/generic_helper"
