@@ -77,6 +77,10 @@ describe Shrine::Plugins::InferExtension do
     uploaded_file = @uploader.upload(fakeio(content_type: "image/jpeg"))
     assert_equal ".jpeg", File.extname(uploaded_file.id)
     assert_nil uploaded_file.original_filename
+
+    uploaded_file = @uploader.upload(fakeio(filename: "nature.jpg", content_type: "image/jpeg"))
+    assert_equal ".jpg", File.extname(uploaded_file.id)
+    assert_equal "nature.jpg", uploaded_file.original_filename
   end
 
   it "provides access to extension inferrers" do
