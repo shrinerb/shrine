@@ -68,8 +68,17 @@ class Shrine
     # can use the [shrine-url] storage which allows you to assign a custom URL
     # as cached file ID, and pair that with the `backgrounding` plugin.
     #
+    # ## File extension
+    #
+    # When attaching from a remote URL, the uploaded file location will have
+    # the extension inferred from the URL. However, some URLs might not have an
+    # extension, in which case the uploaded file location also won't have the
+    # extension. If you want the upload location to always have an extension,
+    # you can load the `infer_extension` plugin to infer it from the MIME type.
+    #
+    #     plugin :infer_extension
+    #
     # [Down]: https://github.com/janko-m/down
-    # [Addressable]: https://github.com/sporkmonger/addressable
     # [shrine-url]: https://github.com/janko-m/shrine-url
     module RemoteUrl
       def self.configure(uploader, opts = {})
