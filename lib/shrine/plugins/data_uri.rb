@@ -34,6 +34,18 @@ class Shrine
     #     plugin :data_uri, error_message: "data URI was invalid"
     #     plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
     #
+    # ## File extension
+    #
+    # A data URI doesn't convey any information about the file extension, so
+    # when attaching from a data URI, the uploaded file location will be
+    # missing an extension. If you want the upload location to always have an
+    # extension, you can load the `infer_extension` plugin to infer it from the
+    # MIME type.
+    #
+    #     plugin :infer_extension
+    #
+    # ## `Shrine.data_uri`
+    #
     # If you just want to parse the data URI and create an IO object from it,
     # you can do that with `Shrine.data_uri`. If the data URI cannot be parsed,
     # a `Shrine::Plugins::DataUri::ParseError` will be raised.
@@ -52,19 +64,11 @@ class Shrine
     #     io.size         #=> 11
     #     io.read         #=> "raw content"
     #
-    # The created IO object won't convey any file extension (because it doesn't
-    # have a filename), but you can generate a filename based on the content
-    # type of the data URI:
+    # ## `UploadedFile#data_uri` and `UploadedFile#base64`
     #
-    #     require "mime/types"
-    #
-    #     plugin :data_uri, filename: ->(content_type) do
-    #       extension = MIME::Types[content_type].first.preferred_extension
-    #       "data_uri.#{extension}"
-    #     end
-    #
-    # This plugin also adds a `UploadedFile#data_uri` method (and `#base64`),
-    # which returns a base64-encoded data URI of any UploadedFile:
+    # This plugin also adds UploadedFile#data_uri method, which returns a
+    # base64-encoded data URI of the file content, and UploadedFile#base64,
+    # which simply returns the file content base64-encoded.
     #
     #     uploaded_file.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
     #     uploaded_file.base64   #=> "iVBORw0KGgoAAAANSUhEUgAAAAUA"
@@ -83,6 +87,8 @@ class Shrine
       def self.configure(uploader, opts = {})
         uploader.opts[:data_uri_filename] = opts.fetch(:filename, uploader.opts[:data_uri_filename])
         uploader.opts[:data_uri_error_message] = opts.fetch(:error_message, uploader.opts[:data_uri_error_message])
+
+        Shrine.deprecation("The :filename option is deprecated for the data_uri plugin, and will be removed in Shrine 3. Use the infer_extension plugin instead.") if opts[:filename]
       end
 
       module ClassMethods

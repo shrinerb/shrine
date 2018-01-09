@@ -105,8 +105,8 @@ describe Shrine::Plugins::DataUri do
     assert_equal 0,  io.size
   end
 
-  it "can generate filenames" do
-    @attacher.shrine_class.opts[:data_uri_filename] = ->(c) { "data_uri.#{c.split("/").last}" }
+  deprecated "can generate filenames" do
+    @attacher.shrine_class.plugin :data_uri, filename: ->(c) { "data_uri.#{c.split("/").last}" }
     io = @attacher.shrine_class.data_uri("data:image/png,content")
     assert_equal "image/png",    io.content_type
     assert_equal "data_uri.png", io.original_filename

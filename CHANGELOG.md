@@ -1,5 +1,7 @@
 ## HEAD
 
+* Deprecate `:filename` option of the `data_uri` plugin in favour of the new `infer_extension` plugin (@janko-m)
+
 * Add `infer_extension` plugin for automatically deducing upload location extension from MIME type (@janko-m)
 
 * Apply default storage options passed via `Attachment.new` in `backgrounding` plugin (@janko-m)
