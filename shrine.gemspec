@@ -37,7 +37,8 @@ direct uploads for fully asynchronous user experience.
 
   gem.add_development_dependency "roda"
   gem.add_development_dependency "rack"
-  gem.add_development_dependency "mimemagic"
+  gem.add_development_dependency "mimemagic", ">= 0.3.2"
+  gem.add_development_dependency "marcel"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "mini_mime", "~> 1.0"
   gem.add_development_dependency "fastimage"

@@ -82,6 +82,24 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
+  describe ":marcel analyzer" do
+    before do
+      @shrine.plugin :determine_mime_type, analyzer: :marcel
+    end
+
+    it "extracts MIME type of any IO" do
+      assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+    end
+
+    it "returns application/octet-stream for unidentified MIME types" do
+      assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃"))
+    end
+
+    it "returns nil for empty IOs" do
+      assert_nil @shrine.determine_mime_type(fakeio(""))
+    end
+  end
+
   describe ":mime_types analyzer" do
     before do
       @shrine.plugin :determine_mime_type, analyzer: :mime_types

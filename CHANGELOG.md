@@ -1,5 +1,7 @@
 ## HEAD
 
+* Added `:marcel` analyzer to `determine_mime_type` plugin (@janko-m)
+
 * Deprecate `:filename` option of the `data_uri` plugin in favour of the new `infer_extension` plugin (@janko-m)
 
 * Add `infer_extension` plugin for automatically deducing upload location extension from MIME type (@janko-m)

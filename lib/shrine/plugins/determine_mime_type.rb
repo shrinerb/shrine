@@ -30,6 +30,13 @@ class Shrine
     #   Unlike ruby-filemagic, mimemagic is a pure-ruby solution, so it will
     #   work across all Ruby implementations.
     #
+    # :marcel
+    # : Uses the [marcel] gem to determine the MIME type from file contents.
+    #   Marcel is Basecamp's wrapper around mimemagic, it adds priority logic
+    #   (preferring magic over name when given both), some extra type
+    #   definitions, and common type subclasses (including Keynote, Pages,
+    #   etc).
+    #
     # :mime_types
     # : Uses the [mime-types] gem to determine the MIME type from the file
     #   extension. Note that unlike other solutions, this analyzer is not
@@ -71,6 +78,7 @@ class Shrine
     # [Windows equivalent]: http://gnuwin32.sourceforge.net/packages/file.htm
     # [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic
     # [mimemagic]: https://github.com/minad/mimemagic
+    # [marcel]: https://github.com/basecamp/marcel
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
     # [mini_mime]: https://github.com/discourse/mini_mime
     module DetermineMimeType
@@ -127,7 +135,7 @@ class Shrine
       end
 
       class MimeTypeAnalyzer
-        SUPPORTED_TOOLS = [:file, :filemagic, :mimemagic, :mime_types, :mini_mime]
+        SUPPORTED_TOOLS = [:file, :filemagic, :mimemagic, :marcel, :mime_types, :mini_mime]
         MAGIC_NUMBER    = 256 * 1024
 
         def initialize(tool)
@@ -181,6 +189,12 @@ class Shrine
 
           mime = MimeMagic.by_magic(io)
           mime.type if mime
+        end
+
+        def extract_with_marcel(io)
+          require "marcel"
+
+          Marcel::MimeType.for(io)
         end
 
         def extract_with_mime_types(io)
