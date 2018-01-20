@@ -10,34 +10,78 @@ describe Shrine::Plugins::Versions do
   it "allows uploading versions" do
     versions = @uploader.upload(thumb: fakeio)
     assert_kind_of Shrine::UploadedFile, versions.fetch(:thumb)
+
+    versions = @uploader.upload([fakeio])
+    assert_kind_of Shrine::UploadedFile, versions.fetch(0)
+
+    versions = @uploader.upload(thumb: [fakeio])
+    assert_kind_of Shrine::UploadedFile, versions.fetch(:thumb).fetch(0)
   end
 
   it "allows processing into versions" do
     @uploader.instance_eval { def process(io, context); {thumb: io}; end }
     versions = @uploader.upload(fakeio("file"))
     assert_equal "file", versions.fetch(:thumb).read
+
+    @uploader.instance_eval { def process(io, context); [io]; end }
+    versions = @uploader.upload(fakeio("file"))
+    assert_equal "file", versions.fetch(0).read
+
+    @uploader.instance_eval { def process(io, context); {thumb: [io]}; end }
+    versions = @uploader.upload(fakeio("file"))
+    assert_equal "file", versions.fetch(:thumb).fetch(0).read
   end
 
   it "allows reprocessing versions" do
     @uploader.instance_eval { def process(hash, context); {thumb: hash.fetch(:thumb)}; end }
     versions = @uploader.upload(thumb: fakeio("thumb"))
     assert_equal "thumb", versions.fetch(:thumb).read
+
+    @uploader.instance_eval { def process(array, context); [array.fetch(0)]; end }
+    versions = @uploader.upload([fakeio("thumb")])
+    assert_equal "thumb", versions.fetch(0).read
+
+    @uploader.instance_eval { def process(nested, context); {thumb: nested.fetch(:thumb)}; end }
+    versions = @uploader.upload(thumb: [fakeio("thumb")])
+    assert_equal "thumb", versions.fetch(:thumb).fetch(0).read
   end
 
   it "makes #uploaded_file recognize versions" do
     uploaded_file = @uploader.upload(fakeio)
     retrieved = @uploader.class.uploaded_file("thumb" => uploaded_file.data)
     assert_equal Hash[thumb: uploaded_file], retrieved
+
+    uploaded_file = @uploader.upload(fakeio)
+    retrieved = @uploader.class.uploaded_file([uploaded_file.data])
+    assert_equal [uploaded_file], retrieved
+
+    uploaded_file = @uploader.upload(fakeio)
+    retrieved = @uploader.class.uploaded_file(thumb: [uploaded_file.data])
+    assert_equal Hash[thumb: [uploaded_file]], retrieved
   end
 
   it "passes the version name to location generator" do
     @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
     versions = @uploader.upload(thumb: fakeio)
     assert_equal "thumb", versions.fetch(:thumb).id
+
+    @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
+    versions = @uploader.upload([fakeio])
+    assert_equal "0", versions.fetch(0).id
+
+    @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
+    versions = @uploader.upload(thumb: [fakeio])
+    assert_equal "[:thumb, 0]", versions.fetch(:thumb).fetch(0).id
   end
 
   it "extends Shrine#uploaded?" do
     versions = @uploader.upload(thumb: fakeio)
+    assert @uploader.uploaded?(versions)
+
+    versions = @uploader.upload([fakeio])
+    assert @uploader.uploaded?(versions)
+
+    versions = @uploader.upload(thumb: [fakeio])
     assert @uploader.uploaded?(versions)
   end
 
@@ -46,6 +90,16 @@ describe Shrine::Plugins::Versions do
     deleted_versions = @uploader.delete(versions)
     assert_equal versions, deleted_versions
     refute deleted_versions[:thumb].exists?
+
+    versions = @uploader.upload([fakeio])
+    deleted_versions = @uploader.delete(versions)
+    assert_equal versions, deleted_versions
+    refute deleted_versions[0].exists?
+
+    versions = @uploader.upload(thumb: [fakeio])
+    deleted_versions = @uploader.delete(versions)
+    assert_equal versions, deleted_versions
+    refute deleted_versions[:thumb][0].exists?
   end
 
   deprecated "accepts version names" do
@@ -130,12 +184,23 @@ describe Shrine::Plugins::Versions do
     it "deprecates assigning cached versions" do
       versions = {thumb: @attacher.cache!(fakeio)}
       assert_output(nil, /deprecated/) { @attacher.assign(versions.to_json) }
+
+      versions = [@attacher.cache!(fakeio)]
+      assert_output(nil, /deprecated/) { @attacher.assign(versions.to_json) }
     end
 
     it "destroys versions successfully" do
       @attacher.set(thumb: @uploader.upload(fakeio))
       @attacher.destroy
       refute @attacher.get[:thumb].exists?
+
+      @attacher.set([@uploader.upload(fakeio)])
+      @attacher.destroy
+      refute @attacher.get[0].exists?
+
+      @attacher.set(thumb: [@uploader.upload(fakeio)])
+      @attacher.destroy
+      refute @attacher.get[:thumb][0].exists?
     end
 
     it "replaces versions sucessfully" do
@@ -143,12 +208,30 @@ describe Shrine::Plugins::Versions do
       @attacher.set(thumb: @uploader.upload(fakeio))
       @attacher.replace
       refute original[:thumb].exists?
+
+      @attacher.set(original = [@uploader.upload(fakeio)])
+      @attacher.set([@uploader.upload(fakeio)])
+      @attacher.replace
+      refute original[0].exists?
+
+      @attacher.set(original = {thumb: [@uploader.upload(fakeio)]})
+      @attacher.set(thumb: [@uploader.upload(fakeio)])
+      @attacher.replace
+      refute original[:thumb][0].exists?
     end
 
     it "promotes versions successfully" do
       @attacher.set(thumb: @attacher.cache!(fakeio))
       @attacher._promote
       assert @attacher.store.uploaded?(@attacher.get[:thumb])
+
+      @attacher.set([@attacher.cache!(fakeio)])
+      @attacher._promote
+      assert @attacher.store.uploaded?(@attacher.get[0])
+
+      @attacher.set(thumb: [@attacher.cache!(fakeio)])
+      @attacher._promote
+      assert @attacher.store.uploaded?(@attacher.get[:thumb][0])
     end
   end
 

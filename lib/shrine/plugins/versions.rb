@@ -61,21 +61,6 @@ class Shrine
     #       # ...
     #     end
     #
-    # ## Original file
-    #
-    # If you want to keep the original file, you can include the original
-    # `Shrine::UploadedFile` object as one of the versions:
-    #
-    #     process(:store) do |io, context|
-    #       # processing thumbnail
-    #       {original: io, thumbnail: thumbnail}
-    #     end
-    #
-    # If both temporary and permanent storage are Amazon S3, the cached original
-    # will simply be copied over to permanent storage (without any downloading
-    # and reuploading), so in these cases the performance impact of storing the
-    # original file in addition to processed versions is neglibible.
-    #
     # ## Fallbacks
     #
     # If versions are processed in a background job, there will be a period
@@ -107,6 +92,47 @@ class Shrine
     #
     #     user.avatar_url(:thumb_2x) # returns :thumb URL until :thumb_2x becomes available
     #     user.avatar_url(:large_2x) # returns :large URL until :large_2x becomes available
+    #
+    # ## Arrays
+    #
+    # In addition to Hashes, the plugin also supports Arrays of files. For
+    # example, you might want to split a PDf into pages:
+    #
+    #     process(:store) do |io, context|
+    #       pdf      = io.download
+    #       image    = MiniMagick::Image.new(pdf.path)
+    #       versions = []
+    #
+    #       image.pages.each_with_index do |page, index|
+    #         page_file = Tempfile.new("version-#{index}", binmode: true)
+    #         MiniMagick::Tool::Convert.new do |convert|
+    #           convert << page.path
+    #           convert << page_file.path
+    #         end
+    #         page_file.open # refresh updated file
+    #         versions << page_file
+    #       end
+    #
+    #       versions # array of pages
+    #     end
+    #
+    # You can also combine Hashes and Arrays, there is no limit to the level of
+    # nesting.
+    #
+    # ## Original file
+    #
+    # If you want to keep the original file, you can include the original
+    # `Shrine::UploadedFile` object as one of the versions:
+    #
+    #     process(:store) do |io, context|
+    #       # processing thumbnail
+    #       {original: io, thumbnail: thumbnail}
+    #     end
+    #
+    # If both temporary and permanent storage are Amazon S3, the cached original
+    # will simply be copied over to permanent storage (without any downloading
+    # and reuploading), so in these cases the performance impact of storing the
+    # original file in addition to processed versions is neglibible.
     #
     # ## Context
     #
@@ -154,9 +180,11 @@ class Shrine
         # Converts a hash of data into a hash of versions.
         def uploaded_file(object, &block)
           if object.is_a?(Hash) && object.values.none? { |value| value.is_a?(String) }
-            object.inject({}) do |result, (name, data)|
-              result.merge!(name.to_sym => uploaded_file(data, &block))
+            object.inject({}) do |result, (name, value)|
+              result.merge!(name.to_sym => uploaded_file(value, &block))
             end
+          elsif object.is_a?(Array)
+            object.map { |value| uploaded_file(value, &block) }
           else
             super
           end
@@ -165,9 +193,11 @@ class Shrine
 
       module InstanceMethods
         # Checks whether all versions are uploaded by this uploader.
-        def uploaded?(uploaded_file)
-          if (hash = uploaded_file).is_a?(Hash)
-            hash.all? { |name, version| uploaded?(version) }
+        def uploaded?(object)
+          if object.is_a?(Hash)
+            object.all? { |name, version| uploaded?(version) }
+          elsif object.is_a?(Array)
+            object.all? { |version| uploaded?(version) }
           else
             super
           end
@@ -184,9 +214,11 @@ class Shrine
             raise Error, ":location is not applicable to versions" if context.key?(:location)
             raise Error, "detected multiple versions that point to the same IO object: given versions: #{hash.keys}, unique versions: #{hash.invert.invert.keys}" if hash.invert.invert != hash
 
-            hash.inject({}) do |result, (name, version)|
-              result.update(name => _store(version, version: name, **context))
+            hash.inject({}) do |result, (name, value)|
+              result.merge!(name => _store(value, context.merge(version: name){|_, v1, v2| Array(v1) + Array(v2)}))
             end
+          elsif (array = io).is_a?(Array)
+            array.map.with_index { |value, idx| _store(value, context.merge(version: idx){|_, v1, v2| Array(v1) + Array(v2)}) }
           else
             super
           end
@@ -196,8 +228,12 @@ class Shrine
         # capabilities.
         def _delete(uploaded_file, context)
           if (hash = uploaded_file).is_a?(Hash)
-            hash.each do |name, version|
-              _delete(version, context)
+            hash.each do |name, value|
+              _delete(value, context)
+            end
+          elsif (array = uploaded_file).is_a?(Array)
+            array.each do |value|
+              _delete(value, context)
             end
           else
             super
@@ -244,16 +280,18 @@ class Shrine
 
         def assign_cached(value)
           cached_file = uploaded_file(value)
-          Shrine.deprecation("Assigning cached hash of files is deprecated for security reasons and will be removed in Shrine 3.") if cached_file.is_a?(Hash)
+          Shrine.deprecation("Assigning cached hash of files is deprecated for security reasons and will be removed in Shrine 3.") if cached_file.is_a?(Hash) || cached_file.is_a?(Array)
           super(cached_file)
         end
 
         # Converts the Hash of UploadedFile objects into a Hash of data.
-        def convert_to_data(value)
-          if value.is_a?(Hash)
-            value.inject({}) do |hash, (name, uploaded_file)|
-              hash.merge!(name => super(uploaded_file))
+        def convert_to_data(object)
+          if object.is_a?(Hash)
+            object.inject({}) do |hash, (name, value)|
+              hash.merge!(name => convert_to_data(value))
             end
+          elsif object.is_a?(Array)
+            object.map { |value| convert_to_data(value) }
           else
             super
           end

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Support arrays of files in `versions` plugin (@janko-m)
+
 * Added `:marcel` analyzer to `determine_mime_type` plugin (@janko-m)
 
 * Deprecate `:filename` option of the `data_uri` plugin in favour of the new `infer_extension` plugin (@janko-m)
