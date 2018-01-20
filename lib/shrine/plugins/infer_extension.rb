@@ -63,7 +63,7 @@ class Shrine
 
         def extension_inferrers
           @extension_inferrers ||= ExtensionInferrer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
-            hash.merge!(tool => ExtensionInferrer.new(tool))
+            hash.merge!(tool => ExtensionInferrer.new(tool).method(:call))
           end
         end
       end

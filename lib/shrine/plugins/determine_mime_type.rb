@@ -101,7 +101,7 @@ class Shrine
         # IO object.
         def mime_type_analyzers
           @mime_type_analyzers ||= MimeTypeAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
-            hash.merge!(tool => MimeTypeAnalyzer.new(tool))
+            hash.merge!(tool => MimeTypeAnalyzer.new(tool).method(:call))
           end
         end
       end
