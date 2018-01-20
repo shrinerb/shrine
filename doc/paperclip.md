@@ -324,7 +324,7 @@ module PaperclipShrineSynchronization
       metadata: {
         size: attachment.size,
         filename: attachment.original_filename,
-        content_type: attachment.content_type,
+        mime_type: attachment.content_type,
       }
     }
   end
@@ -496,7 +496,7 @@ user.avatar.id #=> "users/342/avatar/398543qjfdsf.jpg"
 
 #### `#reprocess!`
 
-Shrine doesn't have an equivalent to this, but the [Regenerating versions]
+Shrine doesn't have an equivalent to this, but the [Reprocessing versions]
 guide provides some useful tips on how to do this.
 
 ### `Paperclip::Storage::S3`
