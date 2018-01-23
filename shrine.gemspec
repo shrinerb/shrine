@@ -52,7 +52,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "activerecord", "~> 4.2"
 
   if RUBY_ENGINE == "jruby"
-    gem.add_development_dependency "activerecord-jdbcsqlite3-adapter"
+    gem.add_development_dependency "activerecord-jdbcsqlite3-adapter", "1.3.24"
   else
     gem.add_development_dependency "sqlite3"
   end
