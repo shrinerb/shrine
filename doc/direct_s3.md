@@ -299,7 +299,7 @@ s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete fil
 ```
 
 Alternatively you can add a bucket lifeycle rule to do this for you. This can
-be done either from the [AWS Console][lifecycle console] or via an [API
+be done either from the [AWS Console][lifecycle Console] or via an [API
 call][lifecycle API]:
 
 ```rb
