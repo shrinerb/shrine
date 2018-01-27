@@ -28,7 +28,7 @@ Shrine::Plugins::UploadEndpoint
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/upload_endpoint.rb">lib/shrine/plugins/upload_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/upload_endpoint.rb">lib/shrine/plugins/upload_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -36,12 +36,9 @@ Shrine::Plugins::UploadEndpoint
 <div id='text'>
 <div id='description'>
 <p>The <code>upload_endpoint</code> plugin provides a Rack endpoint which
-accepts file uploads and forwards them to specified storage. It can be used
-with client-side file upload libraries like <a
-href="https://github.com/FineUploader/fine-uploader">FineUploader</a>, <a
-href="https://github.com/enyo/dropzone">Dropzone</a> or <a
-href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
-for asynchronous uploads.</p>
+accepts file uploads and forwards them to specified storage. On the client
+side it&#39;s recommended to use <a href="https://uppy.io">Uppy</a> for
+asynchronous uploads.</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span></pre>
 
@@ -80,7 +77,7 @@ You can do that with the <code>:max_size</code> option:</p>
 
 <p>The upload context will <em>not</em> contain <code>:record</code> and
 <code>:name</code> values, as the upload happens independently of a
-database record. The endpoint will sent the following upload context:</p>
+database record. The endpoint will send the following upload context:</p>
 <ul><li>
 <p><code>:action</code> - holds the value <code>:upload</code></p>
 </li><li>
@@ -145,7 +142,7 @@ option:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb, line 111</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_max_size</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload_context</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload_context</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload_context</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_rack_response</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:rack_response</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_rack_response</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb, line 109</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_max_size</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:max_size</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_max_size</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload_context</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload_context</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload_context</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:upload</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_upload</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_rack_response</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:rack_response</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint_rack_response</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -162,7 +159,7 @@ option:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb, line 107</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb, line 105</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

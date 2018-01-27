@@ -28,7 +28,7 @@ Shrine::Plugins::Signature
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/signature.rb">lib/shrine/plugins/signature.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/signature.rb">lib/shrine/plugins/signature.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -36,14 +36,14 @@ Shrine::Plugins::Signature
 <div id='text'>
 <div id='description'>
 <p>The <code>signature</code> plugin provides the ability to calculate a hash
-from file content. The hash can then be used as a checksum or just as a
-unique signature of the file.</p>
+from file content. This hash can be used as a checksum or just as a unique
+signature for the uploaded file.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">signature</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">signature</span></pre>
 
-<p>The plugin adds a <code>calculate_signature</code> instance and class
-method to <code>Shrine</code>, which accepts the IO object and hashing
-algorithm and returns the calculated hash.</p>
+<p>The plugin adds a <code>#calculate_signature</code> instance and class
+method to the uploader. The method accepts an IO object and a hashing
+algorithm, and returns the calculated hash.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, :<span class="ruby-identifier">md5</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;9a0364b9e99bb480dd25e1f0284c8555&quot;</span></pre>
 

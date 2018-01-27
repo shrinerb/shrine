@@ -28,7 +28,7 @@ Shrine::Plugins::DefaultStorage
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/default_storage.rb">lib/shrine/plugins/default_storage.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/default_storage.rb">lib/shrine/plugins/default_storage.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -79,7 +79,7 @@ the <code>dynamic_storage</code> plugin. Example:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_storage.rb, line 15</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:cache</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:store</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_storage.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:cache</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:store</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

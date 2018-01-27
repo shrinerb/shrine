@@ -14,7 +14,7 @@
     <header class="header">
   <div class="container">
     <div>
-      <h1>Shrine (v2.8.0)</h1>
+      <h1>Shrine (v2.9.0)</h1>
       <p>
         <span class="text">File Attachment toolkit for Ruby applications</span>
         <svg class="icon" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
@@ -367,7 +367,14 @@
           <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/DetermineMimeType.html">determine_mime_type</a>:
         </dt>
         <dd>
-          <div>Allows you to determine the actual MIME type from file contents.</div>
+          <div>Determine the actual MIME type from file contents.</div>
+        </dd>
+        
+        <dt>
+          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/InferExtension.html">infer_extension</a>:
+        </dt>
+        <dd>
+          <div>Deduce appropriate file extension based on the MIME type.</div>
         </dd>
         
         <dt>
@@ -429,13 +436,6 @@
         </dt>
         <dd>
           <div>Allows you to keep files on the storage that would otherwise be deleted.</div>
-        </dd>
-        
-        <dt>
-          <a href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/MultiDelete.html">multi_delete</a>:
-        </dt>
-        <dd>
-          <div>Allows you to delete multiple files at once, which some storages optimize.</div>
         </dd>
         
         <dt>
@@ -535,6 +535,9 @@
         
         <li>
           
+          <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_9_0_md.html">2.9.0</a>
+          |
+          
           <a href="http://shrinerb.com/rdoc/files/doc/release_notes/2_8_0_md.html">2.8.0</a>
           |
           
@@ -613,7 +616,7 @@
         
         <div class="col">
           
-          <h3>Blog posts</h3>
+          <h3>Official articles</h3>
           <ul>
             
             <li>
@@ -623,20 +626,8 @@
             </li>
             
             <li>
-              <a href="http://katafrakt.me/2016/02/04/shrine-hanami-uploads/">
-                Uploading files with Shrine in Hanami
-              </a>
-            </li>
-            
-            <li>
               <a href="http://twin.github.io/file-uploads-asynchronous-world">
                 Asynchronous File Uploads
-              </a>
-            </li>
-            
-            <li>
-              <a href="http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/">
-                Rails File Uploading You Can Believe in...
               </a>
             </li>
             
@@ -683,6 +674,29 @@
             </li>
             
             <li>
+              <a href="https://twin.github.io/better-file-uploads-with-shrine-direct-uploads/">
+                Better File Uploads with Shrine: Direct Uploads
+              </a>
+            </li>
+            
+          </ul>
+          
+          <h3>Other articles</h3>
+          <ul>
+            
+            <li>
+              <a href="http://katafrakt.me/2016/02/04/shrine-hanami-uploads/">
+                Uploading files with Shrine in Hanami
+              </a>
+            </li>
+            
+            <li>
+              <a href="http://www.sitepoint.com/rails-file-uploading-you-can-believe-in-with-shrine/">
+                Rails File Uploading You Can Believe in...
+              </a>
+            </li>
+            
+            <li>
               <a href="https://code.tutsplus.com/tutorials/uploading-files-with-rails-and-shrine--cms-27596">
                 Uploading Files With Rails and Shrine
               </a>
@@ -707,8 +721,44 @@
             </li>
             
             <li>
-              <a href="https://scotch.io/tutorials/asynchronous-chat-with-rails-and-actioncable">
-                Asynchronous Chat With Rails and ActionCable
+              <a href="https://stephencodes.com/blog/rails-shrine-dropzonejs">
+                Rails + Shrine + DropzoneJS
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://scotch.io/tutorials/uploading-files-with-rails-and-actioncable">
+                Uploading Files with Rails and ActionCable
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://scotch.io/tutorials/creating-online-streaming-radio-with-rails-and-icecast">
+                Creating Streaming Radio With Rails and Icecast
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://github.com/pyksoft/multi-photo-upload#multiple-photo-upload-using-shrine">
+                Multiple Photo Upload using Shrine
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://www.ironin.it/blog/store-your-files-on-s3-using-the-ruby-shrine-gem-part-1.html">
+                Store Your Files on S3: Setup & Configuration
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://www.ironin.it/blog/store-your-files-on-s3-using-the-ruby-shrine-gem-part-2.html">
+                Store Your Files on S3: Direct Uploads
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://www.ironin.it/blog/store-your-files-on-s3-using-the-ruby-shrine-gem-part-3.html">
+                Store Your Files on S3: Uploading from a URL
               </a>
             </li>
             
@@ -716,12 +766,6 @@
           
           <h3>Videos</h3>
           <ul>
-            
-            <li>
-              <a href="https://player.vimeo.com/video/161742211">
-                Shrine: un toolkit para gestionar uploads en Ruby (Madrid.rb)
-              </a>
-            </li>
             
             <li>
               <a href="https://www.youtube.com/watch?v=plD-RkKEay0">
@@ -768,6 +812,12 @@
             <li>
               <a href="https://gorails.com/episodes/trix-editor?autoplay=1">
                 Trix WYSIWYG Editor And File Uploads (GoRails)
+              </a>
+            </li>
+            
+            <li>
+              <a href="https://gorails.com/episodes/digital-ocean-spaces-with-rails?autoplay=1">
+                Uploading Files to DigitalOcean Spaces (GoRails)
               </a>
             </li>
             

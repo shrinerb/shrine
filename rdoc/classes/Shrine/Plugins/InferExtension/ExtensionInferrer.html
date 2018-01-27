@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::InferExtension::ExtensionInferrer</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+Shrine::Plugins::InferExtension::ExtensionInferrer
+</h1>
+<ol class='paths'>
+<li>
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-call">call</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>SUPPORTED_TOOLS</td>
+<td>=</td>
+<td class='context-item-value'>[:rack_mime, :mime_types, :mini_mime]</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span>
+<span class='arguments'>(tool)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 89</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">tool</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;unsupported extension inferrer tool: #{tool}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">tool</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@tool</span> = <span class="ruby-identifier">tool</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-call'>
+<a name='method-i-call'></a>
+<div class='synopsis'>
+<span class='name'>call</span>
+<span class='arguments'>(mime_type)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 95</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">mime_type</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">mime_type</span>.<span class="ruby-identifier">nil?</span>&#x000A;&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;infer_with_#{@tool}&quot;</span>, <span class="ruby-identifier">mime_type</span>)&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-node">&quot;.#{extension}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">extension</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;.&quot;</span>)&#x000A;  <span class="ruby-identifier">extension</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::InferExtension</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::InferExtension
+</h1>
+<ol class='paths'>
+<li>
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>The <code>infer_extension</code> plugin allows deducing the appropriate
+file extension for the upload location based on the MIME type of the file.
+This is useful when using <code>data_uri</code> and <code>remote_url</code>
+plugins, where the file extension is not or might not be known.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span></pre>
+
+<p>The upload location will gain the inferred extension only if couldn&#39;t
+be determined from the filename. By default <code>Rack::Mime</code> will be
+used for inferring the extension, but you can also choose a different
+inferrer:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span>, <span class="ruby-identifier">inferrer</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">mime_types</span></pre>
+
+<p>The following inferrers are accepted:</p>
+<table class="rdoc-list note-list"><tbody><tr><td class='label'>:rack_mime</td><td>
+<p>(Default). Uses the <code>Rack::Mime</code> module to infer the appropriate
+extension from MIME type.</p>
+</td></tr><tr><td class='label'>:mime_types</td><td>
+<p>Uses the <a
+href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem to
+infer the appropriate extension from MIME  type.</p>
+</td></tr><tr><td class='label'>:mini_mime</td><td>
+<p>Uses the <a href="https://github.com/discourse/mini_mime">mini_mime</a> gem
+to infer the appropriate extension from MIME  type.</p>
+</td></tr></tbody></table>
+
+<p>You can also define your own inferrer, with the possibility to call the
+built-in inferrers:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span>, <span class="ruby-identifier">inferrer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">mime_type</span>, <span class="ruby-identifier">inferrers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># don&#39;t add extension if the file is a text file</span>&#x000A;  <span class="ruby-identifier">inferrrs</span>[:<span class="ruby-identifier">rack_mime</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">mime_type</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>You can also use methods for inferring extension directly:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">infer_extension</span>(<span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;<span class="ruby-comment"># =&gt; &quot;.jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">extension_inferrers</span>[:<span class="ruby-identifier">mime_types</span>].<span class="ruby-identifier">call</span>(<span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;<span class="ruby-comment"># =&gt; &quot;.jpeg&quot;</span></pre>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="InferExtension/ClassMethods.html">Shrine::Plugins::InferExtension::ClassMethods</a></li>
+<li><a href="InferExtension/InstanceMethods.html">Shrine::Plugins::InferExtension::InstanceMethods</a></li>
+<li><a href="InferExtension/ExtensionInferrer.html">Shrine::Plugins::InferExtension::ExtensionInferrer</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 50</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:extension_inferrer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:inferrer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_inferrer</span>, <span class="ruby-value">:rack_mime</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

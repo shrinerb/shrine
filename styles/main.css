@@ -510,6 +510,14 @@ label {
       -webkit-flex: 2;
       -moz-flex: 2;
       -ms-flex: 2;
+      flex: 2; }
+    .external .col:nth-child(3) {
+      -webkit-box-flex: 2;
+      -moz-box-flex: 2;
+      box-flex: 2;
+      -webkit-flex: 2;
+      -moz-flex: 2;
+      -ms-flex: 2;
       flex: 2; } }
 
 .header {

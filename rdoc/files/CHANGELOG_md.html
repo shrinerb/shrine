@@ -30,12 +30,44 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:09:24 +0200</span>
+<span class='datetime'>2018-01-27 14:16:36 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.9.0+-282018-01-27-29">2.9.0 (2018-01-27)<span><a href="#label-2.9.0+-282018-01-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Support arrays of files in <code>versions</code> plugin (@janko-m)</p>
+</li><li>
+<p>Added <code>:marcel</code> analyzer to <code>determine_mime_type</code>
+plugin (@janko-m)</p>
+</li><li>
+<p>Deprecate <code>:filename</code> option of the <code>data_uri</code> plugin
+in favour of the new <code>infer_extension</code> plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>infer_extension</code> plugin for automatically deducing upload
+location extension from MIME type (@janko-m)</p>
+</li><li>
+<p>Apply default storage options passed via <code>Attachment.new</code> in
+<code>backgrounding</code> plugin (@janko-m)</p>
+</li><li>
+<p>Fix S3 storage replacing spaces in filename with "+" symbols (@ndbroadbent)</p>
+</li><li>
+<p>Deprecate the <code>multi_delete</code> plugin (@janko-m)</p>
+</li><li>
+<p>Allow calling <code>UploadedFile#open</code> without passing a block
+(@hmistry)</p>
+</li><li>
+<p>Delete tempfiles in case of errors in <code>UploadedFile#download</code>
+and <code>Storage::S3#download</code> (@hmistry)</p>
+</li><li>
+<p>Freeze all string literals (@hmistry)</p>
+</li><li>
+<p>Allow passing options to <code>Model#&lt;attachment&gt;_attacher</code> for
+overriding <code>Attacher</code> options (@janko-m)</p>
+</li></ul>
+
 <h2 id="label-2.8.0+-282017-10-11-29">2.8.0 (2017-10-11)<span><a href="#label-2.8.0+-282017-10-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Expand relative directory paths when initializing

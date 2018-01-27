@@ -28,7 +28,7 @@ Shrine::Plugins::Versions
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/versions.rb">lib/shrine/plugins/versions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/versions.rb">lib/shrine/plugins/versions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -66,18 +66,6 @@ block to <code>Shrine.uploaded_file</code> and it will yield each file:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">attachment_data</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">uploaded_file</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<h2 id="module-Shrine::Plugins::Versions-label-Original+file">Original file<span><a href="#module-Shrine::Plugins::Versions-label-Original+file">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>If you want to keep the original file, you can include the original
-<code>Shrine::UploadedFile</code> object as one of the versions:</p>
-
-<pre class="ruby"><span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># processing thumbnail</span>&#x000A;  {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">thumbnail</span><span class="ruby-operator">:</span> <span class="ruby-identifier">thumbnail</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>If both temporary and permanent storage are Amazon S3, the cached original
-will simply be copied over to permanent storage (without any downloading
-and reuploading), so in these cases the performance impact of storing the
-original file in addition to processed versions is neglibible.</p>
-
 <h2 id="module-Shrine::Plugins::Versions-label-Fallbacks">Fallbacks<span><a href="#module-Shrine::Plugins::Versions-label-Fallbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If versions are processed in a background job, there will be a period where
@@ -100,6 +88,28 @@ can have URLs for versions that are yet to be processed fall back to
 existing versions:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span>, <span class="ruby-identifier">fallbacks</span><span class="ruby-operator">:</span> {&#x000A;  :<span class="ruby-identifier">thumb_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">thumb</span>,&#x000A;  :<span class="ruby-identifier">large_2x</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">large</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-comment"># ... (background job is kicked off)</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(:<span class="ruby-identifier">thumb_2x</span>) <span class="ruby-comment"># returns :thumb URL until :thumb_2x becomes available</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(:<span class="ruby-identifier">large_2x</span>) <span class="ruby-comment"># returns :large URL until :large_2x becomes available</span></pre>
+
+<h2 id="module-Shrine::Plugins::Versions-label-Arrays">Arrays<span><a href="#module-Shrine::Plugins::Versions-label-Arrays">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>In addition to Hashes, the plugin also supports Arrays of files. For
+example, you might want to split a PDf into pages:</p>
+
+<pre class="ruby"><span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">pdf</span>      = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>&#x000A;  <span class="ruby-identifier">image</span>    = <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">pdf</span>.<span class="ruby-identifier">path</span>)&#x000A;  <span class="ruby-identifier">versions</span> = []&#x000A;&#x000A;  <span class="ruby-identifier">image</span>.<span class="ruby-identifier">pages</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">page</span>, <span class="ruby-identifier">index</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">page_file</span> = <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;version-#{index}&quot;</span>, <span class="ruby-identifier">binmode</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>)&#x000A;    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Tool</span><span class="ruby-operator">::</span><span class="ruby-constant">Convert</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">convert</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">convert</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">page</span>.<span class="ruby-identifier">path</span>&#x000A;      <span class="ruby-identifier">convert</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">page_file</span>.<span class="ruby-identifier">path</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-identifier">page_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-comment"># refresh updated file</span>&#x000A;    <span class="ruby-identifier">versions</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">page_file</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">versions</span> <span class="ruby-comment"># array of pages</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>You can also combine Hashes and Arrays, there is no limit to the level of
+nesting.</p>
+
+<h2 id="module-Shrine::Plugins::Versions-label-Original+file">Original file<span><a href="#module-Shrine::Plugins::Versions-label-Original+file">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>If you want to keep the original file, you can include the original
+<code>Shrine::UploadedFile</code> object as one of the versions:</p>
+
+<pre class="ruby"><span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># processing thumbnail</span>&#x000A;  {<span class="ruby-identifier">original</span><span class="ruby-operator">:</span> <span class="ruby-identifier">io</span>, <span class="ruby-identifier">thumbnail</span><span class="ruby-operator">:</span> <span class="ruby-identifier">thumbnail</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>If both temporary and permanent storage are Amazon S3, the cached original
+will simply be copied over to permanent storage (without any downloading
+and reuploading), so in these cases the performance impact of storing the
+original file in addition to processed versions is neglibible.</p>
 
 <h2 id="module-Shrine::Plugins::Versions-label-Context">Context<span><a href="#module-Shrine::Plugins::Versions-label-Context">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -143,7 +153,7 @@ generating location or a default URL.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 129</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The versions Shrine plugin doesn&#39;t need the :names option anymore, you can safely remove it.&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:names</span>)&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_names</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:names</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_names</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_fallbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:fallbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:version_fallbacks</span>, {}))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions_fallback_to_original</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:fallback_to_original</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:versions_fallback_to_original</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 155</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The versions Shrine plugin doesn&#39;t need the :names option anymore, you can safely remove it.&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:names</span>)&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_names</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:names</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_names</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:version_fallbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:fallbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:version_fallbacks</span>, {}))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:versions_fallback_to_original</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:fallback_to_original</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:versions_fallback_to_original</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -160,7 +170,7 @@ generating location or a default URL.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 124</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:multi_delete</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_dependencies-source'><span class="ruby-comment"># File lib/shrine/plugins/versions.rb, line 151</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

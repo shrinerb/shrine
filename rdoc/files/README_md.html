@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-03 14:48:16 +0200</span>
+<span class='datetime'>2018-01-27 13:45:06 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -70,9 +70,9 @@ initializer which sets up the storage and loads the ORM plugin:</p>
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>), <span class="ruby-comment"># temporary</span>&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>), <span class="ruby-comment"># permanent</span>&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span> <span class="ruby-comment"># or :activerecord</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">cached_attachment_data</span> <span class="ruby-comment"># for forms</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">rack_file</span> <span class="ruby-comment"># for non-Rails apps</span></pre>
 
 <p>Next decide how you will name the attachment attribute on your model, and
-run a migration that adds an <code>&lt;attachment&gt;_data</code> text
-column, which <a href="../classes/Shrine.html">Shrine</a> will use to store
-all information about the attachment:</p>
+run a migration that adds an <code>&lt;attachment&gt;_data</code> text or
+JSON column, which <a href="../classes/Shrine.html">Shrine</a> will use to
+store all information about the attachment:</p>
 
 <pre class="ruby"><span class="ruby-constant">Sequel</span>.<span class="ruby-identifier">migration</span> <span class="ruby-keyword">do</span>                           <span class="ruby-comment"># class AddImageDataToPhotos &lt; ActiveRecord::Migration</span>&#x000A;  <span class="ruby-identifier">change</span> <span class="ruby-keyword">do</span>                                   <span class="ruby-comment">#   def change</span>&#x000A;    <span class="ruby-identifier">add_column</span> :<span class="ruby-identifier">photos</span>, :<span class="ruby-identifier">image_data</span>, :<span class="ruby-identifier">text</span>    <span class="ruby-comment">#     add_column :photos, :image_data, :text</span>&#x000A;  <span class="ruby-keyword">end</span>                                         <span class="ruby-comment">#   end</span>&#x000A;<span class="ruby-keyword">end</span>                                           <span class="ruby-comment"># end</span></pre>
 
@@ -286,14 +286,25 @@ uploads</a>, via the hidden form field.</p>
 <p>The model attachment attributes and callbacks just delegate the behaviour
 to a <code>Shrine::Attacher</code> object.</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>) <span class="ruby-comment"># returned by `photo.image_attacher`</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># equivalent to `photo.image = file`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span>          <span class="ruby-comment"># equivalent to `photo.image`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>          <span class="ruby-comment"># equivalent to `photo.image_url`</span></pre>
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span></pre>
 
-<p>The attacher is what drives attaching files to models, and it functions
-independently from models&#39; attachment interface. This means that you
-can use it as an alternative, in case you prefer not to add additional
-attributes to the model, or prefer explicitness over callbacks. It&#39;s
-also useful when you need something more advanced which isn&#39;t available
-through the attachment attributes.</p>
+<p>The <code>Shrine::Attacher</code> object can be instantiated and used
+directly:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>)&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># equivalent to `photo.image = file`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span>          <span class="ruby-comment"># equivalent to `photo.image`</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span>          <span class="ruby-comment"># equivalent to `photo.image_url`</span></pre>
+
+<p>The attacher is what drives attaching files to model instances, and it
+functions independently from models&#39; attachment interface. This means
+that you can use it as an alternative, in case you prefer not to add
+additional attributes to the model, or prefer explicitness over callbacks.
+It&#39;s also useful when you need something more advanced which isn&#39;t
+available through the attachment attributes.</p>
+
+<p>The <code>Shrine::Attacher</code> by default uses <code>:cache</code> for
+temporary and <code>:store</code> for permanent storage, but you can
+specify a different storage:</p>
+
+<pre class="ruby"><span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, :<span class="ruby-identifier">image</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>(<span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span> <span class="ruby-comment"># uploads to :other_cache storage</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>         <span class="ruby-comment"># promotes to :other_store storage</span></pre>
 
 <p>Whenever the attacher uploads or deletes files, it sends a
 <code>context</code> hash which includes <code>:record</code>,
@@ -543,14 +554,11 @@ the caching step in the default synchronous workflow.</p>
 <pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>) =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The above created a <code>POST /images/upload</code> endpoint. You can now
-use a client-side file upload library like <a
-href="https://github.com/FineUploader/fine-uploader">FineUploader</a>, <a
-href="https://github.com/enyo/dropzone">Dropzone</a> or <a
-href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
-to upload files asynchronously to the <code>/images/upload</code> endpoint
-the moment they are selected. Once the file has been uploaded, the endpoint
-will return JSON data of the uploaded file, which the client can then write
-to a hidden attachment field, to be submitted instead of the raw file.</p>
+use <a href="https://uppy.io">Uppy</a> to upload files asynchronously to
+the <code>/images/upload</code> endpoint the moment they are selected. Once
+the file has been uploaded, the endpoint will return JSON data of the
+uploaded file, which the client can then write to a hidden attachment
+field, to be submitted instead of the raw file.</p>
 
 <p>Many popular storage services can accept file uploads directly from the
 client (<a href="https://aws.amazon.com/s3/">Amazon S3</a>, <a
@@ -619,13 +627,25 @@ as well.</p>
 
 <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>From time to time you&#39;ll want to clean your temporary storage from old
-files. Amazon S3 provides <a
-href="http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html">a
-built-in solution</a>, and for FileSystem you can run something like this
-periodically:</p>
+<p><a href="../classes/Shrine.html">Shrine</a> doesn&#39;t automatically
+delete files uploaded to temporary storage, instead you should set up a
+separate recurring task that will automatically delete old cached files.</p>
 
-<pre class="ruby"><span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span>) <span class="ruby-comment"># delete files older than 1 week</span></pre>
+<p>Most of <a href="../classes/Shrine.html">Shrine</a> storage objects come
+with a <code>#clear!</code> method, which you can call in a recurring
+script. For FileSystem and S3 storage it would look like this:</p>
+
+<pre class="ruby"><span class="ruby-comment"># FileSystem storage</span>&#x000A;<span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-identifier">older_than</span><span class="ruby-operator">:</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span>) <span class="ruby-comment"># delete files older than 1 week</span></pre>
+
+<pre class="ruby"><span class="ruby-comment"># S3 storage</span>&#x000A;<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">last_modified</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># delete files older than 1 week</span></pre>
+
+<p>Note that for S3 you can also configure bucket lifecycle rules to do this
+for you. This can be done either from the [AWS Console][S3 lifecycle
+console] or via an <a
+href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method">API
+call</a>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">client</span> = <span class="ruby-constant">Aws</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span><span class="ruby-operator">::</span><span class="ruby-constant">Client</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;)&#x000A;&#x000A;<span class="ruby-identifier">client</span>.<span class="ruby-identifier">put_bucket_lifecycle_configuration</span>(&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">lifecycle_configuration</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-identifier">rules</span><span class="ruby-operator">:</span> [{&#x000A;      <span class="ruby-identifier">expiration</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">days</span><span class="ruby-operator">:</span> <span class="ruby-value">7</span> },&#x000A;      <span class="ruby-identifier">filter</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache/&quot;</span> },&#x000A;      <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache-clear&quot;</span>,&#x000A;      <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Enabled&quot;</span>&#x000A;    }]&#x000A;  }&#x000A;)</pre>
 
 <h2 id="label-Logging">Logging<span><a href="#label-Logging">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -666,11 +686,11 @@ href="https://github.com/janko-m/shrine-imgix">Imgix</a> and <a
 href="https://github.com/janko-m/shrine-uploadcare">Uploadcare</a>.</p>
 
 <p>If you don&#39;t want to use a commercial service, <a
-href="https://github.com/choonkeat/attache">Attache</a> and <a
-href="http://markevans.github.io/dragonfly/">Dragonfly</a> are great
-open-source image servers. For Attache a <a
-href="../classes/Shrine.html">Shrine</a> integration is in progress, while
-for Dragonfly it is not needed.</p>
+href="http://markevans.github.io/dragonfly/">Dragonfly</a> is a great
+open-source image server. See <a
+href="https://twin.github.io/better-file-uploads-with-shrine-processing/">this
+blog post</a> on how you can integrate Dragonfly with <a
+href="../classes/Shrine.html">Shrine</a>.</p>
 
 <h2 id="label-Chunked+-26+Resumable+uploads">Chunked &amp; Resumable uploads<span><a href="#label-Chunked+-26+Resumable+uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

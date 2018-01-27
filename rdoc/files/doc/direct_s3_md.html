@@ -30,7 +30,7 @@ doc/direct_s3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-03 14:48:16 +0200</span>
+<span class='datetime'>2018-01-27 13:51:45 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -65,24 +65,29 @@ times out.</p>
 </li></ul>
 
 <p>You can start by setting both temporary and permanent storage to S3 with
-different prefixes (or even buckets):</p>
+different prefixes (or even different buckets):</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.2&quot;</span></pre>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;abc&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;123&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;my-region&quot;</span>,&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;my-bucket&quot;</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
 
 <h2 id="label-Enabling+CORS">Enabling CORS<span><a href="#label-Enabling+CORS">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>In order to be able upload files directly to your S3 bucket, you need
-enable CORS. You can do that in the AWS S3 Console by clicking on
-“Properties &gt; Permissions &gt; Add CORS Configuration”, and then just
-follow the Amazon documentation on how to write a CORS file.</p>
+enable CORS. You can do that from the AWS S3 Console by going to your
+bucket, clicking on the “Permissions” tab, then on “CORS Configuration”,
+and following the <a
+href="http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html">guide for
+configuring CORS</a>.</p>
 
-<p><a
-href="http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html">docs.aws.amazon.com/AmazonS3/latest/dev/cors.html</a></p>
+<p>Alternatively you can configure CORS via an <a
+href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method">API
+call</a>:</p>
 
-<p>Note that due to DNS propagation it may take some time for update of the
-CORS settings to be applied.</p>
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">client</span> = <span class="ruby-constant">Aws</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span><span class="ruby-operator">::</span><span class="ruby-constant">Client</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;)&#x000A;&#x000A;<span class="ruby-identifier">client</span>.<span class="ruby-identifier">put_bucket_cors</span>(&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">cors_configuration</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-identifier">cors_rules</span><span class="ruby-operator">:</span> [{&#x000A;      <span class="ruby-identifier">allowed_headers</span><span class="ruby-operator">:</span> [<span class="ruby-string">&quot;Authorization&quot;</span>, <span class="ruby-string">&quot;Content-Type&quot;</span>, <span class="ruby-string">&quot;Origin&quot;</span>],&#x000A;      <span class="ruby-identifier">allowed_methods</span><span class="ruby-operator">:</span> [<span class="ruby-string">&quot;GET&quot;</span>, <span class="ruby-string">&quot;POST&quot;</span>],&#x000A;      <span class="ruby-identifier">allowed_origins</span><span class="ruby-operator">:</span> [<span class="ruby-string">&quot;*&quot;</span>],&#x000A;      <span class="ruby-identifier">max_age_seconds</span><span class="ruby-operator">:</span> <span class="ruby-value">3000</span>,&#x000A;    }]&#x000A;  }&#x000A;)</pre>
+
+<p>Note that due to DNS propagation it may take some time for the CORS update
+to be applied.</p>
 
 <h2 id="label-File+hash">File hash<span><a href="#label-File+hash">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -125,13 +130,10 @@ parameters and request headers.</p>
 
 <pre class="ruby"><span class="ruby-comment"># GET /presign</span>&#x000A;{&#x000A;  <span class="ruby-string">&quot;url&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;https://my-bucket.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-string">&quot;fields&quot;</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-string">&quot;key&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache/b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-string">&quot;policy&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-credential&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-algorithm&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-date&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-string">&quot;x-amz-signature&quot;</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  },&#x000A;  <span class="ruby-string">&quot;headers&quot;</span><span class="ruby-operator">:</span> {}&#x000A;}</pre>
 
-<p>You can now use a client-side file upload library like <a
-href="https://github.com/FineUploader/fine-uploader">FineUploader</a>, <a
-href="https://github.com/enyo/dropzone">Dropzone</a> or <a
-href="https://github.com/blueimp/jQuery-File-Upload">jQuery-File-Upload</a>
-to upload selected files directly to S3. When the user selects a file, the
-client can make a request to the presign endpoint, and use the returned
-request information to upload the selected file directly to S3.</p>
+<p>On the client side you can then make a request to the presign endpoint as
+soon as the user selects a file, and use the returned request information
+to upload the selected file directly to S3. It&#39;s recommended to use <a
+href="https://uppy.io">Uppy</a> for this.</p>
 
 <p>Once the file has been uploaded, you can generate a JSON representation of
 the uploaded file on the client-side, and write it to the hidden attachment
@@ -161,21 +163,46 @@ For generating the form we can use
 href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method">Aws::S3::PresignedPost</a>
 object with <code>#url</code> and <code>#fields</code> attributes:</p>
 
-<pre>&lt;%&#x000A;  presign = Shrine.storages[:cache].presign SecureRandom.hex,&#x000A;    success_action_redirect: new_album_url,&#x000A;    allow_any: [&#39;utf8&#39;, &#39;authenticity_token&#39;]&#x000A;%&gt;&#x000A;&lt;form action=&quot;&lt;%= presign.url %&gt;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;&#x000A;  &lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;&#x000A;  &lt;% presign.fields.each do |name, value| %&gt;&#x000A;    &lt;input type=&quot;hidden&quot; name=&quot;&lt;%= name %&gt;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x000A;  &lt;% end %&gt;&#x000A;  &lt;input type=&quot;submit&quot; value=&quot;Upload&quot;&gt;&#x000A;&lt;/form&gt;</pre>
+<pre>&lt;%&#x000A;  presign = Shrine.storages[:cache].presign SecureRandom.hex,&#x000A;                                            success_action_redirect: new_album_url&#x000A;%&gt;&#x000A;&lt;form action=&quot;&lt;%= presign.url %&gt;&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;&#x000A;  &lt;% presign.fields.each do |name, value| %&gt;&#x000A;    &lt;input type=&quot;hidden&quot; name=&quot;&lt;%= name %&gt;&quot; value=&quot;&lt;%= value %&gt;&quot;&gt;&#x000A;  &lt;% end %&gt;&#x000A;  &lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;&#x000A;  &lt;input type=&quot;submit&quot; value=&quot;Upload&quot;&gt;&#x000A;&lt;/form&gt;</pre>
 
-<p>Note the additional <code>success_action_redirect</code> option which tells
-S3 where to redirect to after the file has been uploaded. We also tell S3
-to exclude the <code>utf8</code> and <code>authenticity_token</code> fields
-that the Rails form builder generates.</p>
+<p>Note the additional <code>:success_action_redirect</code> option which
+tells S3 where to redirect to after the file has been uploaded. If
+you&#39;re using the Rails form builder to generate this form, you might
+need to also tell S3 to ignore the additional <code>utf8</code> and
+<code>authenticity_token</code> fields that Rails generates:</p>
+
+<pre>&lt;%&#x000A;  presign = Shrine.storages[:cache].presign SecureRandom.hex,&#x000A;                                            allow_any: [&quot;utf8&quot;, &quot;authenticity_token&quot;],&#x000A;                                            success_action_redirect: new_album_url&#x000A;%&gt;</pre>
 
 <p>Let&#39;s assume we specified the redirect URL to be a page which renders
 the form for a new record. S3 will include some information about the
 upload in form of GET parameters in the URL, out of which we only need the
 <code>key</code> parameter:</p>
 
-<pre>&lt;%&#x000A;  cached_file = {&#x000A;    storage: &quot;cache&quot;,&#x000A;    id: params[:key][/cache\/(.+)/, 1], # we have to remove the prefix part&#x000A;    metadata: {},&#x000A;  }&#x000A;%&gt;&#x000A;&lt;form action=&quot;/albums&quot; method=&quot;post&quot;&gt;&#x000A;  &lt;input type=&quot;hidden&quot; name=&quot;album[image]&quot; value=&quot;&lt;%= cached_file.to_json %&gt;&quot;&gt;&#x000A;  &lt;input type=&quot;submit&quot; value=&quot;Save&quot;&gt;&#x000A;&lt;/form&gt;</pre>
+<pre>&lt;%&#x000A;  cached_file = {&#x000A;    storage: &quot;cache&quot;,&#x000A;    id: params[:key][/cache\/(.+)/, 1], # we subtract the storage prefix&#x000A;    metadata: {},&#x000A;  }&#x000A;%&gt;&#x000A;&lt;form action=&quot;/albums&quot; method=&quot;post&quot;&gt;&#x000A;  &lt;input type=&quot;hidden&quot; name=&quot;album[image]&quot; value=&quot;&lt;%= cached_file.to_json %&gt;&quot;&gt;&#x000A;  &lt;input type=&quot;submit&quot; value=&quot;Save&quot;&gt;&#x000A;&lt;/form&gt;</pre>
 
-<h2 id="label-Metadata">Metadata<span><a href="#label-Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Object+data">Object data<span><a href="#label-Object+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>When the cached S3 object is copied to permanent storage, the destination
+S3 object will by default inherit any object data that was assigned to the
+cached object via presign parameters. However, S3 will by default also
+ignore any new object parameters that are given to the copy request.</p>
+
+<p>Whether object data will be copied or replaced depends on the value of the
+<code>:metadata_directive</code> parameter:</p>
+<ul><li>
+<p><code>&quot;COPY&quot;</code> - destination object will inherit source
+object data and any new data will be ignored (default)</p>
+</li><li>
+<p><code>&quot;REPLACE&quot;</code> - destination object will not inherit any
+of the source object data and will accept new data</p>
+</li></ul>
+
+<p>You can use the <code>upload_options</code> plugin to change the
+<code>:metadata_directive</code> option when S3 objects are copied:</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-identifier">metadata_directive</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;REPLACE&quot;</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Shrine+metadata"><a href="../../classes/Shrine.html">Shrine</a> metadata<span><a href="#label-Shrine+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>With direct uploads any metadata has to be extracted on the client-side,
 since the file upload doesn&#39;t touch the application, so the <a
@@ -200,11 +227,19 @@ with the following trick:</p>
 
 <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Since directly uploaded files will stay in your temporary storage, you will
-want to periodically delete the old ones that were already promoted.
-Luckily, Amazon provides <a
-href="http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html">a
-built-in solution</a> for that.</p>
+<p>Directly uploaded files won&#39;t automatically be deleted from your
+temporary storage, so you&#39;ll want to periodically clear them. One way
+to do that is by setting up recurring script which calls
+<code>Shrine::Storage::S3#clear!</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">cache</span>]&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">last_modified</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># delete files older than 1 week</span></pre>
+
+<p>Alternatively you can add a bucket lifeycle rule to do this for you. This
+can be done either from the [AWS Console][lifecycle console] or via an <a
+href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method">API
+call</a>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">client</span> = <span class="ruby-constant">Aws</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span><span class="ruby-operator">::</span><span class="ruby-constant">Client</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;)&#x000A;&#x000A;<span class="ruby-identifier">client</span>.<span class="ruby-identifier">put_bucket_lifecycle_configuration</span>(&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>,&#x000A;  <span class="ruby-identifier">lifecycle_configuration</span><span class="ruby-operator">:</span> {&#x000A;    <span class="ruby-identifier">rules</span><span class="ruby-operator">:</span> [{&#x000A;      <span class="ruby-identifier">expiration</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">days</span><span class="ruby-operator">:</span> <span class="ruby-value">7</span> },&#x000A;      <span class="ruby-identifier">filter</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache/&quot;</span> },&#x000A;      <span class="ruby-identifier">id</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;cache-clear&quot;</span>,&#x000A;      <span class="ruby-identifier">status</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;Enabled&quot;</span>&#x000A;    }]&#x000A;  }&#x000A;)</pre>
 
 <h2 id="label-Eventual+consistency">Eventual consistency<span><a href="#label-Eventual+consistency">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

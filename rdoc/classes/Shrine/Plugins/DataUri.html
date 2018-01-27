@@ -28,7 +28,7 @@ Shrine::Plugins::DataUri
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/1c585bf7d06ed8550281544b0d6fca57f397eeed/lib/shrine/plugins/data_uri.rb">lib/shrine/plugins/data_uri.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/data_uri.rb">lib/shrine/plugins/data_uri.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -60,6 +60,18 @@ to the attachment column. You can change the default error message:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;data URI was invalid&quot;</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span>, <span class="ruby-identifier">error_message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">uri</span>) { <span class="ruby-constant">I18n</span>.<span class="ruby-identifier">t</span>(<span class="ruby-string">&quot;errors.data_uri_invalid&quot;</span>) }</pre>
 
+<h2 id="module-Shrine::Plugins::DataUri-label-File+extension">File extension<span><a href="#module-Shrine::Plugins::DataUri-label-File+extension">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>A data URI doesn&#39;t convey any information about the file extension, so
+when attaching from a data URI, the uploaded file location will be missing
+an extension. If you want the upload location to always have an extension,
+you can load the <code>infer_extension</code> plugin to infer it from the
+MIME type.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span></pre>
+
+<h2 id="module-Shrine::Plugins::DataUri-label-Shrine.data_uri"><code>Shrine.data_uri</code><span><a href="#module-Shrine::Plugins::DataUri-label-Shrine.data_uri">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
 <p>If you just want to parse the data URI and create an IO object from it, you
 can do that with <code>Shrine.data_uri</code>. If the data URI cannot be
 parsed, a <code>Shrine::Plugins::DataUri::ParseError</code> will be raised.</p>
@@ -71,15 +83,11 @@ parser also supports raw data URIs which aren&#39;t base64-encoded.</p>
 
 <pre class="ruby"><span class="ruby-comment"># or YourUploader.data_uri(&quot;...&quot;)</span>&#x000A;<span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">data_uri</span>(<span class="ruby-string">&quot;data:,raw%20content&quot;</span>)&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span> <span class="ruby-comment">#=&gt; &quot;text/plain&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>         <span class="ruby-comment">#=&gt; 11</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>         <span class="ruby-comment">#=&gt; &quot;raw content&quot;</span></pre>
 
-<p>The created IO object won&#39;t convey any file extension (because it
-doesn&#39;t have a filename), but you can generate a filename based on the
-content type of the data URI:</p>
+<h2 id="module-Shrine::Plugins::DataUri-label-UploadedFile-23data_uri+and+UploadedFile-23base64"><code>UploadedFile#data_uri</code> and <code>UploadedFile#base64</code><span><a href="#module-Shrine::Plugins::DataUri-label-UploadedFile-23data_uri+and+UploadedFile-23base64">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;mime/types&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">data_uri</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">content_type</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">extension</span> = <span class="ruby-constant">MIME</span><span class="ruby-operator">::</span><span class="ruby-constant">Types</span>[<span class="ruby-identifier">content_type</span>].<span class="ruby-identifier">first</span>.<span class="ruby-identifier">preferred_extension</span>&#x000A;  <span class="ruby-node">&quot;data_uri.#{extension}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>This plugin also adds a <code>UploadedFile#data_uri</code> method (and
-<code>#base64</code>), which returns a base64-encoded data URI of any
-UploadedFile:</p>
+<p>This plugin also adds UploadedFile#data_uri method, which returns a
+base64-encoded data URI of the file content, and UploadedFile#base64, which
+simply returns the file content base64-encoded.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">data_uri</span> <span class="ruby-comment">#=&gt; &quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">base64</span>   <span class="ruby-comment">#=&gt; &quot;iVBORw0KGgoAAAANSUhEUgAAAAUA&quot;</span></pre>
 </div>
@@ -162,7 +170,7 @@ UploadedFile:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 81</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_filename</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:filename</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_filename</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_error_message</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:error_message</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_error_message</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 86</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_filename</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:filename</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_filename</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_error_message</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:error_message</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:data_uri_error_message</span>])&#x000A;&#x000A;  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The :filename option is deprecated for the data_uri plugin, and will be removed in Shrine 3. Use the infer_extension plugin instead.&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:filename</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

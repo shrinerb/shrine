@@ -30,7 +30,7 @@ doc/testing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-09-11 13:15:18 +0200</span>
+<span class='datetime'>2018-01-20 16:11:10 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -92,7 +92,7 @@ stubs</a>.</p>
 <h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If you&#39;re creating test data dynamically using libraries like <a
-href="https://github.com/thoughtbot/factory_girl">factory_girl</a>, you can
+href="https://github.com/thoughtbot/factory_bot">factory_bot</a>, you can
 have the test file assigned dynamically when the record is created:</p>
 
 <pre class="ruby"><span class="ruby-identifier">factory</span> :<span class="ruby-identifier">photo</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">image</span> { <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>) }&#x000A;<span class="ruby-keyword">end</span></pre>
@@ -206,18 +206,23 @@ Since the only requirement of the processor is that it responds to
 <p>This also has the benefit of allowing you to test
 <code>ImageThumbnailsGenerator</code> in isolation.</p>
 
-<h2 id="label-Direct+upload">Direct upload<span><a href="#label-Direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Direct+S3+uploads">Direct S3 uploads<span><a href="#label-Direct+S3+uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If you&#39;ve set up direct uploads to Amazon S3 (using the
-<code>presign_endpoint</code> plugin), in tests you&#39;ll probably want to
-just use filesystem or memory storage to avoid network requests.</p>
+<p>If you want to do direct uploads to Amazon S3 in production, in development
+and tests you&#39;ll probably want to keep using filesystem storage to
+avoid making network requests.</p>
 
-<p>The easiest way to do that is to add an <code>upload_endpoint</code>,
-modify it so that it behaves like S3, and change
-<code>presign_endpoint</code> response to point to the upload endpoint.
-Here is how one could modify the test helper in a Rails application:</p>
+<p>The simplest way to do that is to use <a href="https://minio.io">Minio</a>.
+Minio is an open source object storage server with Amazon S3 compatible
+API. If you&#39;re on a Mac you can install it with Homebrew:</p>
 
-<pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;&#x000A;<span class="ruby-comment"># create and mount a fake S3 upload endpoint</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>&#x000A;<span class="ruby-identifier">fake_s3</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>, <span class="ruby-identifier">upload_context</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">request</span>) {&#x000A;  { <span class="ruby-identifier">location</span><span class="ruby-operator">:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;key&quot;</span>].<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^cache\//</span>).<span class="ruby-identifier">post_match</span> }&#x000A;})&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">prepend</span> { <span class="ruby-identifier">mount</span> <span class="ruby-identifier">fake_s3</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;/s3&quot;</span> }&#x000A;&#x000A;<span class="ruby-comment"># override presigns to return URLs to the fake S3 upload endpoint</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span>, <span class="ruby-identifier">presign</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">id</span>, <span class="ruby-identifier">options</span>, <span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">Struct</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">url</span>, :<span class="ruby-identifier">fields</span>).<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;#{request.base_url}/s3&quot;</span>, { <span class="ruby-string">&quot;key&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;cache/#{id}&quot;</span> })&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre>$ brew install minio&#x000A;$ minio server data/</pre>
+
+<p>Then you can open the Minio UI in the browser and create a new bucket. Once
+you&#39;ve done that, all that&#39;s left to do is point aws-sdk-s3 to your
+Minio server:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-identifier">access_key_id</span><span class="ruby-operator">:</span>     <span class="ruby-string">&quot;MINIO_ACCESS_KEY_ID&quot;</span>,&#x000A;  <span class="ruby-identifier">secret_access_key</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;MINIO_SECRET_ACCESS_KEY&quot;</span>,&#x000A;  <span class="ruby-identifier">bucket</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;MINIO_BUCKET&quot;</span>,&#x000A;  <span class="ruby-identifier">region</span><span class="ruby-operator">:</span>            <span class="ruby-string">&quot;us-east-1&quot;</span>,&#x000A;)</pre>
 </div>
 <div id='context'>
 </div>
