@@ -49,11 +49,33 @@ Shrine.storages = {
 ## Enabling CORS
 
 In order to be able upload files directly to your S3 bucket, you need enable
-CORS. You can do that in the AWS S3 Console by clicking on "Properties >
-Permissions > Add CORS Configuration", and then just follow the Amazon
-documentation on how to write a CORS file.
+CORS. You can do that from the AWS S3 Console by going to your bucket, clicking
+on the "Permissions" tab, then on "CORS Configuration", and following the
+[guide for configuring CORS][CORS guide].
 
-http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
+Alternatively you can configure CORS via an [API call][CORS API]:
+
+```rb
+require "aws-sdk-s3"
+
+client = Aws::S3::Client.new(
+  access_key_id:     "<YOUR KEY>",
+  secret_access_key: "<YOUR SECRET>",
+  region:            "<REGION>",
+)
+
+client.put_bucket_cors(
+  bucket: "<YOUR BUCKET>",
+  cors_configuration: {
+    cors_rules: [{
+      allowed_headers: ["Authorization", "Content-Type", "Origin"],
+      allowed_methods: ["GET", "POST"],
+      allowed_origins: ["*"],
+      max_age_seconds: 3000,
+    }]
+  }
+)
+```
 
 Note that due to DNS propagation it may take some time for update of the CORS
 settings to be applied.
@@ -267,9 +289,40 @@ end
 
 ## Clearing cache
 
-Since directly uploaded files will stay in your temporary storage, you will
-want to periodically delete the old ones that were already promoted. Luckily,
-Amazon provides [a built-in solution][object lifecycle] for that.
+Directly uploaded files won't automatically be deleted from your temporary
+storage, so you'll want to periodically clear them. One way to do that is
+by setting up recurring script which calls `Shrine::Storage::S3#clear!`:
+
+```rb
+s3 = Shrine.storages[:cache]
+s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete files older than 1 week
+```
+
+Alternatively you can add a bucket lifeycle rule to do this for you. This can
+be done either from the [AWS Console][lifecycle console] or via an [API
+call][lifecycle API]:
+
+```rb
+require "aws-sdk-s3"
+
+client = Aws::S3::Client.new(
+  access_key_id:     "<YOUR KEY>",
+  secret_access_key: "<YOUR SECRET>",
+  region:            "<REGION>",
+)
+
+client.put_bucket_lifecycle_configuration(
+  bucket: "<YOUR BUCKET>",
+  lifecycle_configuration: {
+    rules: [{
+      expiration: { days: 7 },
+      filter: { prefix: "cache/" },
+      id: "cache-clear",
+      status: "Enabled"
+    }]
+  }
+)
+```
 
 ## Eventual consistency
 
@@ -304,4 +357,7 @@ end
 [demo app]: https://github.com/janko-m/shrine/tree/master/demo
 [Uppy]: https://uppy.io
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
-[object lifecycle]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
+[CORS guide]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
+[CORS API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method
+[lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
+[lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method

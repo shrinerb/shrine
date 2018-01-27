@@ -883,8 +883,8 @@ s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete fil
 ```
 
 Note that for S3 you can also configure bucket lifecycle rules to do this for
-you. This can be done either from the [UI][S3 lifecycle UI] or via an [API
-call][S3 lifecycle API]:
+you. This can be done either from the [AWS Console][S3 lifecycle console] or
+via an [API call][S3 lifecycle API]:
 
 ```rb
 require "aws-sdk-s3"
@@ -1035,6 +1035,6 @@ The gem is available as open source under the terms of the [MIT License].
 [roda_demo]: https://github.com/janko-m/shrine/tree/master/demo
 [rails_demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [backgrounding libraries]: https://github.com/janko-m/shrine/wiki/Backgrounding-libraries
-[S3 lifecycle UI]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
+[S3 lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [S3 lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [processing post]: https://twin.github.io/better-file-uploads-with-shrine-processing/
