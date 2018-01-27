@@ -24,7 +24,7 @@ storage service is beneficial for several reasons:
   times out.
 
 You can start by setting both temporary and permanent storage to S3 with
-different prefixes (or even buckets):
+different prefixes (or even different buckets):
 
 ```rb
 # Gemfile
@@ -34,10 +34,10 @@ gem "aws-sdk-s3", "~> 1.2"
 require "shrine/storage/s3"
 
 s3_options = {
-  access_key_id:     "abc",
-  secret_access_key: "123",
-  region:            "my-region",
-  bucket:            "my-bucket",
+  access_key_id:     "<YOUR KEY>",
+  secret_access_key: "<YOUR SECRET>",
+  bucket:            "<YOUR BUCKET>",
+  region:            "<REGION>",
 }
 
 Shrine.storages = {
@@ -77,8 +77,8 @@ client.put_bucket_cors(
 )
 ```
 
-Note that due to DNS propagation it may take some time for update of the CORS
-settings to be applied.
+Note that due to DNS propagation it may take some time for the CORS update to
+be applied.
 
 ## File hash
 
