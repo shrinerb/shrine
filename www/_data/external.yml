@@ -74,6 +74,9 @@
       -
         name: "Store Your Files on S3: Uploading from a URL"
         url: https://www.ironin.it/blog/store-your-files-on-s3-using-the-ruby-shrine-gem-part-3.html
+      -
+        name: "How to use Trix and Shrine for WYSIWYG Editing with Drag-and-Drop Image Uploading"
+        url: http://headway.io/blog/how-to-use-trix-and-shrine-for-wysiwyg-editing-with-drag-and-drop-image-uploading/
   -
     title: Videos
     items:
