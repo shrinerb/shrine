@@ -60,7 +60,7 @@ class Shrine
         # Assigns the subclass a copy of the logger.
         def inherited(subclass)
           super
-          subclass.opts[:logging_logger] = subclass.opts[:logging_logger].dup
+          subclass.opts[:logging_logger] = subclass.opts[:logging_logger].dup if subclass.opts[:logging_logger]
         end
 
         def logger=(logger)
