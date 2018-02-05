@@ -57,6 +57,12 @@ class Shrine
       end
 
       module ClassMethods
+        # Assigns the subclass a copy of the logger.
+        def inherited(subclass)
+          super
+          subclass.opts[:logging_logger] = subclass.opts[:logging_logger].dup
+        end
+
         def logger=(logger)
           @logger = logger || Logger.new(nil)
         end
@@ -68,6 +74,7 @@ class Shrine
             logger.level = Logger::INFO
             logger.level = Logger::WARN if ENV["RACK_ENV"] == "test"
             logger.formatter = pretty_formatter
+            opts[:logging_logger] = logger
             logger
           )
         end
