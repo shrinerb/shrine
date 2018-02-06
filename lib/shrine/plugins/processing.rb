@@ -41,8 +41,10 @@ class Shrine
     # can declare multiple blocks, and they will be performed in the same order,
     # with output from previous block being the input to next.
     #
-    # You can manually trigger the defined processing via the uploader, you
-    # just need to specify `:action` to the name of your processing block:
+    # ## Manually Run Processing
+    #
+    # You can manually trigger the defined processing via the uploader by calling
+    # `#upload` or `#process` and setting `:action` to the name of your processing block:
     #
     #     uploader.upload(file, action: :store)  # process and upload
     #     uploader.process(file, action: :store) # only process
