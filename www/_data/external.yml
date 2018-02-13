@@ -169,6 +169,9 @@
         name: shrine-color
         url: https://github.com/jnylen/shrine-color
       -
+        name: shrine-lambda
+        url: https://github.com/texpert/shrine-lambda
+      -
         name: hanami-shrine
         url: https://github.com/katafrakt/hanami-shrine
       -
