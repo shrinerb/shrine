@@ -115,19 +115,19 @@ describe Shrine::Plugins::Logging do
     assert uploader.logger.level, Logger::INFO
   end
 
-  it "creates new Logger in subclass if logger not instantiated in Shrine" do
+  it "creates new Logger in Shrine if logger not instantiated in Shrine and passes it to subclass" do
     uploader = Class.new(Shrine)
     uploader.plugin :logging
     subclass = Class.new(uploader)
-    refute_same subclass.logger, uploader.logger
+    assert_same subclass.logger, uploader.logger
   end
 
-  it "creates new Logger in subclass if logger is instantiated in Shrine" do
+  it "passes logger to subclass if logger is already instantiated in Shrine" do
     uploader = Class.new(Shrine)
     uploader.plugin :logging
     uploader.logger
     subclass = Class.new(uploader)
-    refute_same subclass.logger, uploader.logger
+    assert_same subclass.logger, uploader.logger
   end
 
   it "inherits logger level for subclass from logger in Shrine" do
@@ -138,21 +138,21 @@ describe Shrine::Plugins::Logging do
     assert_equal subclass.logger.level, uploader.logger.level
   end
 
-  it "does not change Shrine logger level if subclass logger level is changed" do
+  it "does change Shrine logger level if subclass logger level is changed" do
     uploader = Class.new(Shrine)
     uploader.plugin :logging
     uploader.logger.level = Logger::WARN
     subclass = Class.new(uploader)
     subclass.logger.level = Logger::ERROR
-    assert_equal uploader.logger.level, Logger::WARN
+    assert_equal uploader.logger.level, Logger::ERROR
   end
 
-  it "does not change subclass logger level if Shrine logger level is changed" do
+  it "does change subclass logger level if Shrine logger level is changed" do
     uploader = Class.new(Shrine)
     uploader.plugin :logging
     uploader.logger.level = Logger::WARN
     subclass = Class.new(uploader)
     uploader.logger.level = Logger::ERROR
-    assert_equal subclass.logger.level, Logger::WARN
+    assert_equal subclass.logger.level, Logger::ERROR
   end
 end
