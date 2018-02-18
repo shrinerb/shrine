@@ -23,7 +23,7 @@
     <input type="file" name="album[cover_photo]" accept="<%= ImageUploader::ALLOWED_TYPES.join(",") %>" id="album-cover-photo-field" data-upload-server="<%= upload_server %>" data-preview-element="preview-cover-photo" data-upload-result-element="album-cover-photo-upload-result" \>
   </div>
   <div class="image-preview">
-    <img src="<%= album.cover_photo_url(:small) %>" width=300 class="img-thumbnail file-upload-preview" id="preview-cover-photo" \>
+    <img src="<%= album.cover_photo_url(:thumbnail) %>" width=300 class="img-thumbnail file-upload-preview" id="preview-cover-photo" \>
   </div>
 
   <div class="form-group">

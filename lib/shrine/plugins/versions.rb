@@ -14,13 +14,11 @@ class Shrine
     #     plugin :processing
     #
     #     process(:store) do |io, context|
-    #       original = io.download
+    #       size_800 = resize_to_limit(io,       800, 800) { |cmd| cmd.auto_orient }
+    #       size_500 = resize_to_limit(size_800, 500, 500)
+    #       size_300 = resize_to_limit(size_500, 300, 300)
     #
-    #       size_800 = resize_to_limit!(original, 800, 800) { |cmd| cmd.auto_orient }
-    #       size_500 = resize_to_limit(size_800,  500, 500)
-    #       size_300 = resize_to_limit(size_500,  300, 300)
-    #
-    #       {large: size_800, medium: size_500, small: size_300}
+    #       { original: io, large: size_800, medium: size_500, small: size_300}
     #     end
     #
     # You probably want to load the `delete_raw` plugin to automatically
@@ -31,6 +29,7 @@ class Shrine
     #
     #     user.avatar_data #=>
     #     # '{
+    #     #   "original": {"id":"0gsdf.jpg", "storage":"store", "metadata":{...}},
     #     #   "large": {"id":"lg043.jpg", "storage":"store", "metadata":{...}},
     #     #   "medium": {"id":"kd9fk.jpg", "storage":"store", "metadata":{...}},
     #     #   "small": {"id":"932fl.jpg", "storage":"store", "metadata":{...}}
@@ -38,9 +37,10 @@ class Shrine
     #
     #     user.avatar #=>
     #     # {
-    #     #   :large =>  #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
-    #     #   :medium => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
-    #     #   :small =>  #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
+    #     #   :original => #<Shrine::UploadedFile @data={"id"=>"0gsdf.jpg", ...}>,
+    #     #   :large    => #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
+    #     #   :medium   => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
+    #     #   :small    => #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
     #     # }
     #
     #     user.avatar[:medium]     #=> #<Shrine::UploadedFile>
@@ -121,12 +121,13 @@ class Shrine
     #
     # ## Original file
     #
-    # If you want to keep the original file, you can include the original
-    # `Shrine::UploadedFile` object as one of the versions:
+    # It's recommended to always keep the original file after processing
+    # versions, which you can do by adding the yielded `Shrine::UploadedFile`
+    # object as one of the versions, by convention named `:original`:
     #
     #     process(:store) do |io, context|
     #       # processing thumbnail
-    #       {original: io, thumbnail: thumbnail}
+    #       { original: io, thumbnail: thumbnail }
     #     end
     #
     # If both temporary and permanent storage are Amazon S3, the cached original
