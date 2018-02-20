@@ -1,3 +1,7 @@
+## HEAD
+
+* Inherit the logger on subclassing `Shrine` and make it shared across subclasses (@hmistry)
+
 ## 2.9.0 (2018-01-27)
 
 * Support arrays of files in `versions` plugin (@janko-m)

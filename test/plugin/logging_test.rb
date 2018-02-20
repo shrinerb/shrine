@@ -112,7 +112,7 @@ describe Shrine::Plugins::Logging do
   it "sets default logger level set to Logger::INFO" do
     uploader = Class.new(Shrine)
     uploader.plugin :logging
-    assert uploader.logger.level, Logger::INFO
+    assert_equal uploader.logger.level, Logger::INFO
   end
 
   it "creates new Logger in Shrine if logger not instantiated in Shrine and passes it to subclass" do
