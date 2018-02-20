@@ -51,25 +51,26 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:logging_logger] = opts.fetch(:logger, uploader.opts[:logging_logger])
         uploader.opts[:logging_stream] = opts.fetch(:stream, uploader.opts.fetch(:logging_stream, $stdout))
+        uploader.opts[:logging_logger] = opts.fetch(:logger, uploader.opts.fetch(:logging_logger, uploader.create_logger))
         uploader.opts[:logging_format] = opts.fetch(:format, uploader.opts.fetch(:logging_format, :human))
       end
 
       module ClassMethods
         def logger=(logger)
-          @logger = logger || Logger.new(nil)
+          @logger = logger
         end
 
-        # Initializes a new logger if it hasn't been initialized.
         def logger
-          @logger ||= opts[:logging_logger] || (
-            logger = Logger.new(opts[:logging_stream])
-            logger.level = Logger::INFO
-            logger.level = Logger::WARN if ENV["RACK_ENV"] == "test"
-            logger.formatter = pretty_formatter
-            logger
-          )
+          @logger ||= opts[:logging_logger]
+        end
+
+        def create_logger
+          logger = Logger.new(opts[:logging_stream])
+          logger.level = Logger::INFO
+          logger.level = Logger::WARN if ENV["RACK_ENV"] == "test"
+          logger.formatter = pretty_formatter
+          logger
         end
 
         # It makes logging preamble simpler than the default logger. Also, it

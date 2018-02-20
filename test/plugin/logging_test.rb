@@ -108,4 +108,51 @@ describe Shrine::Plugins::Logging do
     assert_match "after logging",  log.lines[1]
     assert_match "STORE",          log.lines[2]
   end
+
+  it "sets default logger level set to Logger::INFO" do
+    uploader = Class.new(Shrine)
+    uploader.plugin :logging
+    assert uploader.logger.level, Logger::INFO
+  end
+
+  it "creates new Logger in Shrine if logger not instantiated in Shrine and passes it to subclass" do
+    uploader = Class.new(Shrine)
+    uploader.plugin :logging
+    subclass = Class.new(uploader)
+    assert_same subclass.logger, uploader.logger
+  end
+
+  it "passes logger to subclass if logger is already instantiated in Shrine" do
+    uploader = Class.new(Shrine)
+    uploader.plugin :logging
+    uploader.logger
+    subclass = Class.new(uploader)
+    assert_same subclass.logger, uploader.logger
+  end
+
+  it "inherits logger level for subclass from logger in Shrine" do
+    uploader = Class.new(Shrine)
+    uploader.plugin :logging
+    uploader.logger.level = Logger::WARN
+    subclass = Class.new(uploader)
+    assert_equal subclass.logger.level, uploader.logger.level
+  end
+
+  it "does change Shrine logger level if subclass logger level is changed" do
+    uploader = Class.new(Shrine)
+    uploader.plugin :logging
+    uploader.logger.level = Logger::WARN
+    subclass = Class.new(uploader)
+    subclass.logger.level = Logger::ERROR
+    assert_equal uploader.logger.level, Logger::ERROR
+  end
+
+  it "does change subclass logger level if Shrine logger level is changed" do
+    uploader = Class.new(Shrine)
+    uploader.plugin :logging
+    uploader.logger.level = Logger::WARN
+    subclass = Class.new(uploader)
+    uploader.logger.level = Logger::ERROR
+    assert_equal subclass.logger.level, Logger::ERROR
+  end
 end
