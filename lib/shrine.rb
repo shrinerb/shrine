@@ -13,17 +13,7 @@ class Shrine
   # Raised when a file is not a valid IO.
   class InvalidFile < Error
     def initialize(io, missing_methods)
-      @io, @missing_methods = io, missing_methods
-    end
-
-    def message
-      "#{@io.inspect} is not a valid IO object (it doesn't respond to #{missing_methods_string})"
-    end
-
-    private
-
-    def missing_methods_string
-      @missing_methods.map { |m, args| "##{m}" }.join(", ")
+      super "#{io.inspect} is not a valid IO object (it doesn't respond to #{missing_methods.map{|m, args|"##{m}"}.join(", ")})"
     end
   end
 
