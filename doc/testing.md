@@ -252,21 +252,34 @@ install it with Homebrew:
 
 ```
 $ brew install minio
+```
+
+Now you can start the Minio server and give it a directory where it will store
+the data:
+
+```
 $ minio server data/
 ```
 
-Then you can open the Minio UI in the browser and create a new bucket. Once
-you've done that, all that's left to do is point aws-sdk-s3 to your Minio
-server:
+This command will print out the credentials for the running Minio server, as
+well as a link to the Minio web interface. Follow that link and create a new
+bucket. Once you've done that, all that's lef to do is configure
+`Shrine::Storage::S3` with the credentials of your Minio server:
 
 ```
 Shrine::Storage::S3.new(
-  access_key_id:     "MINIO_ACCESS_KEY_ID",
-  secret_access_key: "MINIO_SECRET_ACCESS_KEY",
-  bucket:            "MINIO_BUCKET",
+  access_key_id:     "MINIO_ACCESS_KEY_ID",     # "AccessKey" value
+  secret_access_key: "MINIO_SECRET_ACCESS_KEY", # "SecretKey" value
+  endpoint:          "MINIO_HOST",              # "Endpoint"  value
+  bucket:            "MINIO_BUCKET",            # name of the bucket you created
   region:            "us-east-1",
+  force_path_style:  true,
 )
 ```
+
+The `:endpoint` option will make `aws-sdk-s3` point all URLs to your Minio
+server (instead of `s3.amazonaws.com`), and `:force_path_style` tells it not
+to use subdomains when generating URLs.
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
 [shrine-memory]: https://github.com/janko-m/shrine-memory
