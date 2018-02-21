@@ -266,7 +266,7 @@ well as a link to the Minio web interface. Follow that link and create a new
 bucket. Once you've done that, all that's lef to do is configure
 `Shrine::Storage::S3` with the credentials of your Minio server:
 
-```
+```rb
 Shrine::Storage::S3.new(
   access_key_id:     "MINIO_ACCESS_KEY_ID",     # "AccessKey" value
   secret_access_key: "MINIO_SECRET_ACCESS_KEY", # "SecretKey" value
