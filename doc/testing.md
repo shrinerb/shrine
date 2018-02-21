@@ -268,10 +268,10 @@ bucket. Once you've done that, all that's lef to do is configure
 
 ```rb
 Shrine::Storage::S3.new(
-  access_key_id:     "MINIO_ACCESS_KEY_ID",     # "AccessKey" value
-  secret_access_key: "MINIO_SECRET_ACCESS_KEY", # "SecretKey" value
-  endpoint:          "MINIO_HOST",              # "Endpoint"  value
-  bucket:            "MINIO_BUCKET",            # name of the bucket you created
+  access_key_id:     "MINIO_ACCESS_KEY", # "AccessKey" value
+  secret_access_key: "MINIO_SECRET_KEY", # "SecretKey" value
+  endpoint:          "MINIO_ENDPOINT",   # "Endpoint"  value
+  bucket:            "MINIO_BUCKET",     # name of the bucket you created
   region:            "us-east-1",
   force_path_style:  true,
 )
