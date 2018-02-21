@@ -251,7 +251,7 @@ storage server with Amazon S3 compatible API. If you're on a Mac you can
 install it with Homebrew:
 
 ```
-$ brew install minio
+$ brew install minio/stable/minio
 ```
 
 Now you can start the Minio server and give it a directory where it will store
