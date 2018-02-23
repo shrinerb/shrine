@@ -201,7 +201,7 @@ class Shrine
           require "mime/types"
 
           if filename = extract_filename(io)
-            mime_type = MIME::Types.of(filename).first
+            mime_type = MIME::Types.of(filename).partition(&:registered?).flatten.first
             mime_type.content_type if mime_type
           end
         end
