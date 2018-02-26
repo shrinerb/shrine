@@ -5,17 +5,14 @@
 ### Brief Description
 Write a brief description of the issue.
 
-### Steps to reproduce
-Write step by step instructions to reproduce it.
-
 ### Expected behavior
-Tell us what you expected should happen.
+Tell us what you expected to happen.
 
 ### Actual behavior
 Tell us what happens instead.
 
-### Code to demonstrate issue
-Write the simplest possible self-contained example code to show the problem, and the full backtrace of any exception. There are [Sequel/ActiveRecord templates](https://github.com/janko-m/shrine/blob/master/CONTRIBUTING.md) if needed.
+### Simplest self-contained example code to demonstrate issue
+Provide a self-contained example code (see the [Sequel/ActiveRecord templates](https://github.com/janko-m/shrine/blob/master/CONTRIBUTING.md)) to show the problem, and the full backtrace of any exception.
 
 ### System configuration
 **Ruby version**:
