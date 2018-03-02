@@ -124,6 +124,9 @@
         name: shrine-fog
         url: https://github.com/janko-m/shrine-fog
       -
+        name: shrine-ftp
+        url: https://github.com/ProjectResound/shrine-ftp
+      -
         name: shrine-google_cloud_storage
         url: https://github.com/renchap/shrine-google_cloud_storage
       -
