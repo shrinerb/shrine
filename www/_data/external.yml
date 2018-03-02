@@ -112,6 +112,9 @@
     title: Storages
     items:
       -
+        name: shrine-aliyun-oss
+        url: https://github.com/zillou/shrine-aliyun-oss
+      -
         name: shrine-cloudinary
         url: https://github.com/janko-m/shrine-cloudinary
       -
