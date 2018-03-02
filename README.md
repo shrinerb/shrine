@@ -238,10 +238,10 @@ It comes with many convenient methods that delegate to the storage:
 
 ```rb
 uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/949sdjg834.jpg"
-uploaded_file.download #=> #<Tempfile>
+uploaded_file.download #=> #<File:/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20180302-33119-1h1vjbq.jpg>
 uploaded_file.exists?  #=> true
 uploaded_file.open { |io| io.read }
-uploaded_file.delete
+uploaded_file.delete   # deletes the file from the storage
 ```
 
 It also implements the IO-like interface that conforms to Shrine's IO
