@@ -225,6 +225,18 @@ describe Shrine do
       assert_raises(Shrine::InvalidFile) { @uploader.store(:not_an_io) }
     end
 
+    it "accepts IO objects with unknown size" do
+      io = StringIO.new
+      io.instance_eval { undef size }
+      uploaded_file = @uploader.store(io)
+      assert_equal "", uploaded_file.read
+
+      io = StringIO.new
+      io.instance_eval { def size; nil; end }
+      uploaded_file = @uploader.store(io)
+      assert_equal "", uploaded_file.read
+    end
+
     it "passes objects which satisfy IO interface through #method_missing" do
       delegator_class = Struct.new(:object) do
         def method_missing(name, *args, &block)

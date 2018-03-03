@@ -2,6 +2,10 @@
 
 * Inherit the logger on subclassing `Shrine` and make it shared across subclasses (@hmistry)
 
+* Don't require IO size to be known on upload (@janko-m)
+
+* Deprecate `Shrine::IO_METHODS` constant (@janko-m)
+
 ## 2.9.0 (2018-01-27)
 
 * Support arrays of files in `versions` plugin (@janko-m)

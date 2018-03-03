@@ -82,86 +82,209 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#upload" do
-    it "uploads IOs in a single request" do
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:put_object, ->(context) {
-        assert_instance_of FakeIO, context.params[:body]
-        assert_equal "foo",        context.params[:key]
+    describe "on IO object with size" do
+      it "uploads in a single request" do
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:put_object, ->(context) {
+          assert_instance_of FakeIO, context.params[:body]
+          assert_equal "foo",        context.params[:key]
 
-        @s3.client.stub_responses(:head_object)
-      })
-      @s3.upload(fakeio("content"), "foo")
-      assert @s3.exists?("foo")
+          @s3.client.stub_responses(:head_object)
+        })
+        @s3.upload(fakeio("content"), "foo")
+        assert @s3.exists?("foo")
+      end
     end
 
-    it "uploads small files in a single request" do
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:put_object, ->(context) {
-        assert_instance_of File, context.params[:body]
-        assert_equal "foo",      context.params[:key]
+    describe "on file object" do
+      it "uploads in a single request if small" do
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:put_object, ->(context) {
+          assert_instance_of File,    context.params[:body]
+          assert_equal "foo",         context.params[:key]
+          assert_equal "public-read", context.params[:acl]
 
-        @s3.client.stub_responses(:head_object)
-      })
-      tempfile = Tempfile.new("")
-      File.write(tempfile.path, "content")
-      @s3.upload(tempfile, "foo")
-      assert @s3.exists?("foo")
+          @s3.client.stub_responses(:head_object)
+        })
+        tempfile = Tempfile.new("")
+        File.write(tempfile.path, "content")
+        @s3.upload(tempfile, "foo", acl: "public-read")
+        assert @s3.exists?("foo")
+      end
+
+      it "uploads in multipart requests if large" do
+        @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:create_multipart_upload, -> (context) {
+          assert_equal "public-read", context.params[:acl]
+          { upload_id: "upload_id" }
+        })
+        @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
+          @s3.client.stub_responses(:head_object)
+        })
+        tempfile = Tempfile.new("")
+        File.write(tempfile.path, "a" * 5*1024*1024)
+        @s3.upload(tempfile, "foo", acl: "public-read")
+        assert @s3.exists?("foo")
+      end
     end
 
-    it "uploads large files in a multipart request" do
-      @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
-        @s3.client.stub_responses(:head_object)
-      })
-      tempfile = Tempfile.new("")
-      File.write(tempfile.path, "a" * 5*1024*1024)
-      @s3.upload(tempfile, "foo")
-      assert @s3.exists?("foo")
+    describe "on filesystem file" do
+      it "uploads in a single request if small" do
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:put_object, -> (context) {
+          assert_equal 0,             context.params[:body].size
+          assert_equal "public-read", context.params[:acl]
+
+          @s3.client.stub_responses(:head_object)
+        })
+        uploaded_file = @uploader.class.new(:filesystem).upload(fakeio(""))
+        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        assert @s3.exists?("foo")
+      end
+
+      it "uploads in multipart requests if large" do
+        @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:create_multipart_upload, -> (context) {
+          assert_equal "public-read", context.params[:acl]
+          { upload_id: "upload_id" }
+        })
+        @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
+          @s3.client.stub_responses(:head_object)
+        })
+        uploaded_file = @uploader.class.new(:filesystem).upload(fakeio("a" * 5*1024*1024))
+        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        assert @s3.exists?("foo")
+      end
     end
 
-    it "uploads large Shrine::UploadedFile FileSystem objects in a multipart request" do
-      @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
-        @s3.client.stub_responses(:head_object)
-      })
-      uploaded_file = @uploader.class.new(:filesystem).upload(fakeio("a" * 5*1024*1024))
-      @s3.upload(uploaded_file, "foo")
-      assert @s3.exists?("foo")
+    describe "on S3 file" do
+      it "copies in a single request if small" do
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:copy_object, -> (context) {
+          assert_equal "public-read", context.params[:acl]
+          @s3.client.stub_responses(:head_object)
+        })
+        uploaded_file = @uploader.upload(fakeio)
+        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        assert @s3.exists?("foo")
+      end
+
+      it "copies in single request if size is unknown" do
+        @s3 = s3(multipart_threshold: { copy: 5*1024*1024 })
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:copy_object, -> (context) {
+          @s3.client.stub_responses(:head_object)
+        })
+        uploaded_file = @uploader.upload(fakeio("a" * 5*1024*1024))
+        uploaded_file.metadata["size"] = nil
+        @s3.upload(uploaded_file, "foo")
+        assert @s3.exists?("foo")
+      end
+
+      it "copies in multipart requests if large" do
+        @s3 = s3(multipart_threshold: { copy: 5*1024*1024 })
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
+          @s3.client.stub_responses(:head_object)
+        })
+        uploaded_file = @uploader.upload(fakeio("a" * 5*1024*1024))
+        @s3.upload(uploaded_file, "foo")
+        assert @s3.exists?("foo")
+      end
     end
 
-    it "copies small Shrine::UploadedFile S3 objects in a single request" do
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:copy_object, -> (context) {
-        @s3.client.stub_responses(:head_object)
-      })
-      uploaded_file = @uploader.upload(fakeio)
-      @s3.upload(uploaded_file, "foo")
-      assert @s3.exists?("foo")
-    end
+    describe "on IO object without size" do
+      it "uses multipart upload" do
+        ios = [
+          fakeio("a" * 7*1024*1024).tap { |io| io.instance_eval { undef size } },
+          fakeio("a" * 7*1024*1024).tap { |io| io.instance_eval { def size; nil; end } },
+        ]
 
-    it "copies large Shrine::UploadedFile S3 objects in a multipart request" do
-      @s3 = s3(multipart_threshold: { copy: 5*1024*1024 })
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
-        @s3.client.stub_responses(:head_object)
-      })
-      uploaded_file = @uploader.upload(fakeio("a" * 5*1024*1024))
-      @s3.upload(uploaded_file, "foo")
-      assert @s3.exists?("foo")
-    end
+        ios.each do |io|
+          @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
+          @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+          @s3.client.stub_responses(:create_multipart_upload, -> (context) {
+            assert_equal "public-read", context.params[:acl]
+            { upload_id: "upload_id" }
+          })
+          @s3.client.stub_responses(:upload_part, -> (context) {
+            case context.params[:part_number]
+            when 1 then assert_equal 5*1024*1024, context.params[:body].size
+            when 2 then assert_equal 2*1024*1024, context.params[:body].size
+            else        assert false, "there are more multipart parts than expected"
+            end
 
-    it "uses single copy request if Shrine::UploadedFile S3 object doesn't have a size" do
-      @s3 = s3(multipart_threshold: { copy: 5*1024*1024 })
-      @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
-      @s3.client.stub_responses(:copy_object, -> (context) {
-        @s3.client.stub_responses(:head_object)
-      })
-      uploaded_file = @uploader.upload(fakeio("a" * 5*1024*1024))
-      uploaded_file.metadata["size"] = nil
-      @s3.upload(uploaded_file, "foo")
-      assert @s3.exists?("foo")
+            { etag: "etag#{context.params[:part_number]}" }
+          })
+          @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
+            expected_parts = [
+              { part_number: 1, etag: "etag1" },
+              { part_number: 2, etag: "etag2" },
+            ]
+            assert_equal expected_parts, context.params[:multipart_upload][:parts]
+
+            @s3.client.stub_responses(:head_object)
+          })
+          @s3.upload(io, "foo", acl: "public-read")
+          assert @s3.exists?("foo")
+        end
+      end
+
+      it "works correctly for empty IO" do
+        @s3 = s3
+        @s3.client.stub_responses(:head_object, status_code: 404, body: "", headers: {})
+        @s3.client.stub_responses(:upload_part, -> (context) {
+          assert_equal 1, context.params[:part_number]
+          assert_equal 0, context.params[:body].size
+
+          { etag: "etag" }
+        })
+        @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
+          assert_equal [{ part_number: 1, etag: "etag" }], context.params[:multipart_upload][:parts]
+
+          @s3.client.stub_responses(:head_object)
+        })
+        io = fakeio("").tap { |io| io.instance_eval { undef size } }
+        @s3.upload(io, "foo")
+        assert @s3.exists?("foo")
+      end
+
+      it "aborts multipart upload on exceptions" do
+        @s3.client.stub_responses(:create_multipart_upload, -> (context) {
+          @s3.client.stub_responses(:list_multipart_uploads, uploads: [{ upload_id: "upload_id" }])
+          { upload_id: "upload_id" }
+        })
+        @s3.client.stub_responses(:upload_part, "NetworkError")
+        @s3.client.stub_responses(:abort_multipart_upload, -> (context) {
+          @s3.client.stub_responses(:list_multipart_uploads, uploads: [])
+        })
+        @s3.client.stub_responses(:complete_multipart_upload, -> (context) {
+          assert false, "multipart upload should not be completed on exception"
+        })
+        io = fakeio.tap { |io| io.instance_eval { undef size } }
+        assert_raises(Aws::S3::Errors::NetworkError) { @s3.upload(io, "foo") }
+        assert_equal [], @s3.bucket.multipart_uploads.to_a
+      end
+
+      it "propagates exception when creating multipart upload" do
+        @s3.client.stub_responses(:create_multipart_upload, "NetworkError")
+        io = fakeio.tap { |io| io.instance_eval { undef size } }
+        assert_raises(Aws::S3::Errors::NetworkError) { @s3.upload(io, "foo") }
+      end
+
+      it "backfills size metadata if missing" do
+        io = fakeio("content")
+        io.instance_eval { undef size }
+        uploaded_file = @uploader.upload(io)
+        assert_equal 7, uploaded_file.metadata["size"]
+
+        io = fakeio("content")
+        io.instance_eval { def size; 3; end }
+        uploaded_file = @uploader.upload(io)
+        assert_equal 3, uploaded_file.metadata["size"]
+      end
     end
 
     it "forwards mime_type metadata" do
@@ -189,7 +312,7 @@ describe Shrine::Storage::S3 do
     end
 
     it "applies default upload options" do
-      @s3 = s3(upload_options: {content_type: "foo/bar"})
+      @s3 = s3(upload_options: { content_type: "foo/bar" })
       @s3.client.stub_responses(:put_object, -> (context) {
         @s3.client.stub_responses(:get_object, content_type: context.params[:content_type])
       })

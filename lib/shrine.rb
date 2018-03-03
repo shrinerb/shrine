@@ -26,6 +26,7 @@ class Shrine
     size:   [],
     close:  [],
   }
+  deprecate_constant(:IO_METHODS) if RUBY_VERSION > "2.3"
 
   # Core class that represents a file uploaded to a storage. The instance
   # methods for this class are added by Shrine::Plugins::Base::FileMethods, the
@@ -279,7 +280,7 @@ class Shrine
 
         # Extracts the filesize from the IO object.
         def extract_size(io)
-          io.size
+          io.size if io.respond_to?(:size)
         end
 
         # It first asserts that `io` is a valid IO object. It then extracts
@@ -356,7 +357,7 @@ class Shrine
         # object doesn't respond to one of these methods, a Shrine::InvalidFile
         # error is raised.
         def _enforce_io(io)
-          missing_methods = IO_METHODS.select { |m, a| !io.respond_to?(m) }
+          missing_methods = %i[read eof? rewind close].select { |m| !io.respond_to?(m) }
           raise InvalidFile.new(io, missing_methods) if missing_methods.any?
         end
 

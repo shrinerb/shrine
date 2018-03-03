@@ -15,9 +15,11 @@ rescue LoadError => exception
     raise exception
   end
 end
+
 require "down/chunked_io"
 require "uri"
 require "cgi"
+require "tempfile"
 
 class Shrine
   module Storage
@@ -172,6 +174,8 @@ class Shrine
     # [Transfer Acceleration]: http://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
     # [object lifecycle]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     class S3
+      MIN_PART_SIZE = 5 * 1024 * 1024 # 5MB
+
       attr_reader :client, :bucket, :prefix, :host, :upload_options
 
       # Initializes a storage for uploading to S3.
@@ -248,7 +252,8 @@ class Shrine
         if copyable?(io)
           copy(io, id, **options)
         else
-          put(io, id, **options)
+          bytes_uploaded = put(io, id, **options)
+          shrine_metadata["size"] ||= bytes_uploaded
         end
       end
 
@@ -396,8 +401,50 @@ class Shrine
           # use `upload_file` for files because it can do multipart upload
           options = { multipart_threshold: @multipart_threshold[:upload] }.merge!(options)
           object(id).upload_file(path, **options)
+          File.size(path)
         else
-          object(id).put(body: io, **options)
+          io.open if io.is_a?(UploadedFile)
+
+          if io.respond_to?(:size) && io.size
+            object(id).put(body: io, **options)
+            io.size
+          else
+            # IO has unknown size, so we have to use multipart upload
+            multipart_put(io, id, **options)
+          end
+        end
+      end
+
+      # Uploads the file to S3 using multipart upload.
+      def multipart_put(io, id, **options)
+        multipart_upload = object(id).initiate_multipart_upload(**options)
+        parts = upload_parts(multipart_upload, io)
+        bytes_uploaded = parts.inject(0) { |size, part| size + part.delete(:size) }
+        multipart_upload.complete(multipart_upload: { parts: parts })
+        bytes_uploaded
+      rescue
+        multipart_upload.abort if multipart_upload
+        raise
+      end
+
+      def upload_parts(multipart_upload, io)
+        1.step.inject([]) do |parts, part_number|
+          parts << upload_part(multipart_upload, io, part_number)
+          break parts if io.eof?
+          parts
+        end
+      end
+
+      def upload_part(multipart_upload, io, part_number)
+        Tempfile.create("shrine-s3-part-#{part_number}") do |body|
+          multipart_part = multipart_upload.part(part_number)
+
+          IO.copy_stream(io, body, MIN_PART_SIZE)
+          body.rewind
+
+          response = multipart_part.upload(body: body)
+
+          { part_number: part_number, size: body.size, etag: response.etag }
         end
       end
 

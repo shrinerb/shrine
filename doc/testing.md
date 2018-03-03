@@ -169,7 +169,7 @@ class FakeIO
   end
 
   extend Forwardable
-  delegate Shrine::IO_METHODS.keys => :@io
+  delegate %i[read rewind eof? close size] => :@io
 end
 ```
 

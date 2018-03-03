@@ -33,7 +33,7 @@ class Minitest::HooksSpec
   end
 
   def io?(object)
-    missing_methods = Shrine::IO_METHODS.reject do |m, a|
+    missing_methods = %i[read rewind eof? close size].reject do |m, a|
       object.respond_to?(m) && [a.count, -1].include?(object.method(m).arity)
     end
     missing_methods.empty?
