@@ -71,7 +71,13 @@ describe Shrine::Plugins::Logging do
     JSON.parse(log[/\{.+\}/])
   end
 
-  it "supports Heroku-style format" do
+  it "supports logfmt format" do
+    @uploader.opts[:logging_format] = :logfmt
+    @uploader.upload(fakeio, @context)
+    assert_match "action=store phase=store", log
+  end
+
+  deprecated "supports Heroku format" do
     @uploader.opts[:logging_format] = :heroku
     @uploader.upload(fakeio, @context)
     assert_match "action=store phase=store", log

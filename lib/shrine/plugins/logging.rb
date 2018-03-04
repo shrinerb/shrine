@@ -22,7 +22,7 @@ class Shrine
     #
     # :format
     # :  This allows you to change the logging output into something that may be
-    #    easier to grep. Accepts `:human` (default), `:json` and `:heroku`.
+    #    easier to grep. Accepts `:human` (default), `:json` and `:logfmt`.
     #
     # :stream
     # :  The default logging stream is `$stdout`, but you may want to change it,
@@ -40,7 +40,7 @@ class Shrine
     #     plugin :logging, format: :json
     #     # {"action":"upload","phase":"cache","uploader":"ImageUploader","attachment":"avatar",...}
     #
-    #     plugin :logging, format: :heroku
+    #     plugin :logging, format: :logfmt
     #     # action=upload phase=cache uploader=ImageUploader attachment=avatar record_class=User ...
     #
     # Logging is by default disabled in tests, but you can enable it by setting
@@ -54,6 +54,8 @@ class Shrine
         uploader.opts[:logging_stream] = opts.fetch(:stream, uploader.opts.fetch(:logging_stream, $stdout))
         uploader.opts[:logging_logger] = opts.fetch(:logger, uploader.opts.fetch(:logging_logger, uploader.create_logger))
         uploader.opts[:logging_format] = opts.fetch(:format, uploader.opts.fetch(:logging_format, :human))
+
+        Shrine.deprecation("The :heroku logging format has been renamed to :logfmt. Using :heroku name will stop being supported in Shrine 3.") if uploader.opts[:logging_format] == :heroku
       end
 
       module ClassMethods
@@ -141,10 +143,11 @@ class Shrine
           JSON.generate(data)
         end
 
-        def _log_message_heroku(data)
+        def _log_message_logfmt(data)
           data[:files] = Array(data[:files]).join("-")
           data.map { |key, value| "#{key}=#{value}" }.join(" ")
         end
+        alias _log_message_heroku _log_message_logfmt # deprecated alias
 
         # We may have one file, a hash of versions, or an array of files or
         # hashes.

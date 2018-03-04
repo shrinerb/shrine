@@ -1,10 +1,12 @@
 ## HEAD
 
-* Inherit the logger on subclassing `Shrine` and make it shared across subclasses (@hmistry)
+* Soft-rename `:heroku` logging format to `:logfmt` (@janko-m)
+
+* Deprecate `Shrine::IO_METHODS` constant (@janko-m)
 
 * Don't require IO size to be known on upload (@janko-m)
 
-* Deprecate `Shrine::IO_METHODS` constant (@janko-m)
+* Inherit the logger on subclassing `Shrine` and make it shared across subclasses (@hmistry)
 
 ## 2.9.0 (2018-01-27)
 
