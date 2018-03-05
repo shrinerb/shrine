@@ -3,17 +3,35 @@ require "shrine/plugins/store_dimensions"
 
 describe Shrine::Plugins::StoreDimensions do
   before do
-    @uploader = uploader { plugin :store_dimensions, analyzer: :fastimage }
+    @uploader = uploader { plugin :store_dimensions }
     @shrine = @uploader.class
   end
 
   describe ":fastimage analyzer" do
+    before do
+      @shrine.plugin :store_dimensions, analyzer: :fastimage
+    end
+
     it "extracts dimensions from files" do
       assert_equal [100, 67], @shrine.extract_dimensions(image)
     end
 
     it "extracts dimensions from non-files" do
       assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
+    end
+  end
+
+  describe ":mini_magick analyzer" do
+    before do
+      @shrine.plugin :store_dimensions, analyzer: :mini_magick
+    end
+
+    it "extracts dimensions from files" do
+      assert_equal [100, 67], @shrine.extract_dimensions(image)
+    end
+
+    it "doesn't extract dimensions from non-files" do
+      assert_nil @shrine.extract_dimensions(fakeio(image.read))
     end
   end
 

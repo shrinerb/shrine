@@ -2,14 +2,14 @@
 
 class Shrine
   module Plugins
-    # The `store_dimensions` plugin extracts and stores dimensions of the
-    # uploaded image using the [fastimage] gem, which has built-in protection
-    # agains [image bombs].
+    # The `store_dimensions` plugin extracts dimensions of uploaded images and
+    # stores them into the metadata hash.
     #
     #     plugin :store_dimensions
     #
-    # It adds "width" and "height" metadata values to Shrine::UploadedFile,
-    # and creates `#width`, `#height` and `#dimensions` reader methods.
+    # The dimensions are stored as "width" and "height" metadata values on the
+    # Shrine::UploadedFile object. For convenience the plugin also adds
+    # `#width`, `#height` and `#dimensions` reader methods.
     #
     #     image = uploader.upload(file)
     #
@@ -21,18 +21,34 @@ class Shrine
     #     # or
     #     image.dimensions #=> [300, 500]
     #
-    # You can provide your own custom dimensions analyzer, and reuse any of the
-    # built-in analyzers; you just need to return a two-element array of width
-    # and height, or nil to signal that dimensions weren't extracted.
+    # By default the [fastimage] gem is used to extract dimensions. You can
+    # choose a different built-in analyzer via the `:analyzer` option:
     #
-    #     require "mini_magick"
+    #     plugin :store_dimensions, analyzer: :mini_magick
+    #
+    # The following analyzers are supported:
+    #
+    # :fastimage
+    # : (Default). Uses the [FastImage] gem to extract dimensions from any IO
+    #   object. FastImage has built-in protection against [image bombs].
+    #
+    # :mini_magick
+    # : Uses the [MiniMagick] gem to extract dimensions from File objects.
+    #   Newer versions of ImageMagick have built-in protection against [image
+    #   bombs].
+    #
+    # You can also create your own custom dimensions analyzer, where you can
+    # reuse any of the built-in analyzers. The analyzer is a lambda that
+    # accepts an IO object and returns width and height as a two-element array,
+    # or `nil` if dimensions could not be extracted.
     #
     #     plugin :store_dimensions, analyzer: -> (io, analyzers) do
-    #       dimensions = analyzers[:fastimage].call(io)        # try extracting dimensions with FastImage
-    #       dimensions || MiniMagick::Image.new(io).dimensions # otherwise fall back to MiniMagick
+    #       dimensions   = analyzers[:fastimage].call(io)   # try extracting dimensions with FastImage
+    #       dimensions ||= analyzers[:mini_magick].call(io) # otherwise fall back to MiniMagick
+    #       dimensions
     #     end
     #
-    # You can also use methods for extracting the dimensions directly:
+    # You can use methods for extracting the dimensions directly:
     #
     #     # or YourUploader.extract_dimensions(io)
     #     Shrine.extract_dimensions(io) # calls the defined analyzer
@@ -42,7 +58,8 @@ class Shrine
     #     Shrine.dimensions_analyzers[:fastimage].call(io) # calls a built-in analyzer
     #     #=> [300, 400]
     #
-    # [fastimage]: https://github.com/sdsykes/fastimage
+    # [FastImage]: https://github.com/sdsykes/fastimage
+    # [MiniMagick]: https://github.com/minimagick/minimagick
     # [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
     module StoreDimensions
       def self.configure(uploader, opts = {})
@@ -112,7 +129,7 @@ class Shrine
       end
 
       class DimensionsAnalyzer
-        SUPPORTED_TOOLS = [:fastimage]
+        SUPPORTED_TOOLS = [:fastimage, :mini_magick]
 
         def initialize(tool)
           raise ArgumentError, "unsupported dimensions analysis tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
@@ -131,6 +148,11 @@ class Shrine
         def extract_with_fastimage(io)
           require "fastimage"
           FastImage.size(io)
+        end
+
+        def extract_with_mini_magick(io)
+          require "mini_magick"
+          MiniMagick::Image.new(io.path).dimensions if io.respond_to?(:path)
         end
       end
     end

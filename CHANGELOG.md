@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:mini_magick` analyzer to `store_dimensions` plugin (@janko-m)
+
 * Soft-rename `:heroku` logging format to `:logfmt` (@janko-m)
 
 * Deprecate `Shrine::IO_METHODS` constant (@janko-m)
