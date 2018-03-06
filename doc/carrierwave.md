@@ -700,7 +700,7 @@ plugin :default_url_options, store: {expires_in: 600}
 Shrine allows you to override the S3 endpoint:
 
 ```rb
-Shrine::Storage::S3.new(endnpoint: "https://s3-accelerate.amazonaws.com", **options)
+Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com", **options)
 ```
 
 [image_processing]: https://github.com/janko-m/image_processing
