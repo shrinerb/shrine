@@ -226,4 +226,4 @@ tests for your storage. There will likely be some edge cases that won't be
 tested by the linter.
 
 [HTTP.rb]: https://github.com/httprb/http
-[fake IO]: https://github.com/janko-m/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/test/test_helper.rb#L20-L27
+[fake IO]: https://github.com/shrinerb/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/test/test_helper.rb#L20-L27

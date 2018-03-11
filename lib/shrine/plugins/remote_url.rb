@@ -79,7 +79,7 @@ class Shrine
     #     plugin :infer_extension
     #
     # [Down]: https://github.com/janko-m/down
-    # [shrine-url]: https://github.com/janko-m/shrine-url
+    # [shrine-url]: https://github.com/shrinerb/shrine-url
     module RemoteUrl
       def self.configure(uploader, opts = {})
         raise Error, "The :max_size option is required for remote_url plugin" if !opts.key?(:max_size) && !uploader.opts.key?(:remote_url_max_size)

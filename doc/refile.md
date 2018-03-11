@@ -473,12 +473,12 @@ Shrine.plugin :remote_url
 <% end %>
 ```
 
-[shrine-cloudinary]: https://github.com/janko-m/shrine-cloudinary
-[shrine-imgix]: https://github.com/janko-m/shrine-imgix
-[shrine-uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[shrine-imgix]: https://github.com/shrinerb/shrine-imgix
+[shrine-uploadcare]: https://github.com/shrinerb/shrine-uploadcare
 [Attache]: https://github.com/choonkeat/attache
 [image_processing]: https://github.com/janko-m/image_processing
 [Uppy]: https://uppy.io
 [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[demo app]: https://github.com/janko-m/shrine/tree/master/demo
+[demo app]: https://github.com/shrinerb/shrine/tree/master/demo
 [Multiple Files]: http://shrinerb.com/rdoc/files/doc/multiple_files_md.html

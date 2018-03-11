@@ -114,6 +114,6 @@ post = Post.create(image: open("https://example.com/image-from-internet.jpg"))
 ```
 
 [ruby-shrine]: https://groups.google.com/forum/#!forum/ruby-shrine
-[Shrine code of conduct]: https://github.com/janko-m/shrine/blob/master/CODE_OF_CONDUCT.md
+[Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
 [SQLite]: https://www.sqlite.org

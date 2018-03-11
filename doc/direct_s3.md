@@ -354,7 +354,7 @@ end
 ```
 
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
-[demo app]: https://github.com/janko-m/shrine/tree/master/demo
+[demo app]: https://github.com/shrinerb/shrine/tree/master/demo
 [Uppy]: https://uppy.io
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
 [CORS guide]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html

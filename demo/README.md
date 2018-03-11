@@ -73,6 +73,6 @@ Once you have all of these things set up, you can run the app:
 $ bundle exec rackup
 ```
 
-[Shrine]: https://github.com/janko-m/shrine
+[Shrine]: https://github.com/shrinerb/shrine
 [setup CORS]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [Uppy]: https://uppy.io

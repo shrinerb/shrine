@@ -18,7 +18,7 @@ tying them to record's lifecycle. It natively supports background jobs and
 direct uploads for fully asynchronous user experience.
   END
 
-  gem.homepage     = "https://github.com/janko-m/shrine"
+  gem.homepage     = "https://github.com/shrinerb/shrine"
   gem.authors      = ["Janko Marohnić"]
   gem.email        = ["janko.marohnic@gmail.com"]
   gem.license      = "MIT"

@@ -12,7 +12,7 @@ Tell us what you expected to happen.
 Tell us what happens instead.
 
 ### Simplest self-contained example code to demonstrate issue
-Provide a self-contained example code (see the [Sequel/ActiveRecord templates](https://github.com/janko-m/shrine/blob/master/CONTRIBUTING.md)) to show the problem, and the full backtrace of any exception.
+Provide a self-contained example code (see the [Sequel/ActiveRecord templates](https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md)) to show the problem, and the full backtrace of any exception.
 
 ### System configuration
 **Ruby version**:

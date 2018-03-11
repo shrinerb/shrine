@@ -116,13 +116,13 @@
         url: https://github.com/zillou/shrine-aliyun-oss
       -
         name: shrine-cloudinary
-        url: https://github.com/janko-m/shrine-cloudinary
+        url: https://github.com/shrinerb/shrine-cloudinary
       -
         name: shrine-flickr
-        url: https://github.com/janko-m/shrine-flickr
+        url: https://github.com/shrinerb/shrine-flickr
       -
         name: shrine-fog
-        url: https://github.com/janko-m/shrine-fog
+        url: https://github.com/shrinerb/shrine-fog
       -
         name: shrine-ftp
         url: https://github.com/ProjectResound/shrine-ftp
@@ -134,13 +134,13 @@
         url: https://github.com/verynear/shrine-google_drive_storage
       -
         name: shrine-gridfs
-        url: https://github.com/janko-m/shrine-gridfs
+        url: https://github.com/shrinerb/shrine-gridfs
       -
         name: shrine-imgix
-        url: https://github.com/janko-m/shrine-imgix
+        url: https://github.com/shrinerb/shrine-imgix
       -
         name: shrine-memory
-        url: https://github.com/janko-m/shrine-memory
+        url: https://github.com/shrinerb/shrine-memory
       -
         name: shrine-redis
         url: https://github.com/dbongo/shrine-redis
@@ -149,19 +149,19 @@
         url: https://github.com/jordanandree/shrine-scp
       -
         name: shrine-sql
-        url: https://github.com/janko-m/shrine-sql
+        url: https://github.com/shrinerb/shrine-sql
       -
         name: shrine-thumbor
         url: https://github.com/havran/shrine-thumbor
       -
         name: shrine-transloadit
-        url: https://github.com/janko-m/shrine-transloadit
+        url: https://github.com/shrinerb/shrine-transloadit
       -
         name: shrine-uploadcare
-        url: https://github.com/janko-m/shrine-uploadcare
+        url: https://github.com/shrinerb/shrine-uploadcare
       -
         name: shrine-url
-        url: https://github.com/janko-m/shrine-url
+        url: https://github.com/shrinerb/shrine-url
       -
         name: shrine-storage-you_tube
         url: https://github.com/thedyrt/shrine-storage-you_tube
@@ -182,20 +182,20 @@
         url: https://github.com/katafrakt/hanami-shrine
       -
         name: shrine-mongoid
-        url: https://github.com/janko-m/shrine-mongoid
+        url: https://github.com/shrinerb/shrine-mongoid
       -
         name: shrine-reform
-        url: https://github.com/janko-m/shrine-reform
+        url: https://github.com/shrinerb/shrine-reform
       -
         name: shrine-tus
-        url: https://github.com/janko-m/shrine-tus
+        url: https://github.com/shrinerb/shrine-tus
 -
   -
     title: Applications
     items:
       -
         name: Cloudinary demo
-        url: https://github.com/janko-m/shrine-cloudinary/tree/master/demo
+        url: https://github.com/shrinerb/shrine-cloudinary/tree/master/demo
       -
         name: Dropzone demo
         url: https://github.com/codyeatworld/example-shrine-dropzone
@@ -207,19 +207,19 @@
         url: https://github.com/erikdahlstrand/shrine-rails-example
       -
         name: Resumable uploads demo
-        url: https://github.com/janko-m/shrine-tus-demo
+        url: https://github.com/shrinerb/shrine-tus-demo
       -
         name: Roda demo (official)
-        url: https://github.com/janko-m/shrine/tree/master/demo
+        url: https://github.com/shrinerb/shrine/tree/master/demo
       -
         name: ROM & dry-rb demo
-        url: https://github.com/janko-m/shrine-rom-example
+        url: https://github.com/shrinerb/shrine-rom-example
       -
         name: Transloadit demo
-        url: https://github.com/janko-m/shrine-transloadit/tree/master/demo
+        url: https://github.com/shrinerb/shrine-transloadit/tree/master/demo
       -
         name: Uploadcare demo
-        url: https://github.com/janko-m/shrine-uploadcare/tree/master/demo
+        url: https://github.com/shrinerb/shrine-uploadcare/tree/master/demo
 
   -
     title: Libraries

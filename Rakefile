@@ -51,7 +51,7 @@ namespace :website do
         file_link = document.css(".header .paths li a").first
         file_link_html = file_link.to_xml
 
-        file_link["href"] = "https://github.com/janko-m/shrine/blob/#{revision}/#{file_link.text}"
+        file_link["href"] = "https://github.com/shrinerb/shrine/blob/#{revision}/#{file_link.text}"
 
         new_html = html.sub(file_link_html, "#{file_link.to_xml} #{github_icon}")
 

@@ -282,7 +282,7 @@ server (instead of `s3.amazonaws.com`), and `:force_path_style` tells it not
 to use subdomains when generating URLs.
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
-[shrine-memory]: https://github.com/janko-m/shrine-memory
+[shrine-memory]: https://github.com/shrinerb/shrine-memory
 [factory_bot]: https://github.com/thoughtbot/factory_bot
 [Capybara]: https://github.com/jnicklas/capybara
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method

@@ -8,8 +8,8 @@ If you're not sure why you should care, you're encouraged to read the
 ## Resources
 
 - Documentation: [shrinerb.com](http://shrinerb.com)
-- Source: [github.com/janko-m/shrine](https://github.com/janko-m/shrine)
-- Bugs: [github.com/janko-m/shrine/issues](https://github.com/janko-m/shrine/issues)
+- Source: [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)
+- Bugs: [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues)
 - Help & Discussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
 
 ## Quick start
@@ -1008,7 +1008,7 @@ The gem is available as open source under the terms of the [MIT License].
 [plugins]: http://shrinerb.com/#plugins
 [`file`]: http://linux.die.net/man/1/file
 [backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
-[Context]: https://github.com/janko-m/shrine#context
+[Context]: https://github.com/shrinerb/shrine#context
 [image_processing]: https://github.com/janko-m/image_processing
 [ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [Uppy]: https://uppy.io
@@ -1017,22 +1017,22 @@ The gem is available as open source under the terms of the [MIT License].
 [Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/
 [upload_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
 [presign_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
-[Cloudinary]: https://github.com/janko-m/shrine-cloudinary
-[Imgix]: https://github.com/janko-m/shrine-imgix
-[Uploadcare]: https://github.com/janko-m/shrine-uploadcare
+[Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[Imgix]: https://github.com/shrinerb/shrine-imgix
+[Uploadcare]: https://github.com/shrinerb/shrine-uploadcare
 [Dragonfly]: http://markevans.github.io/dragonfly/
 [tus]: http://tus.io
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
 [tus-js-client]: https://github.com/tus/tus-js-client
-[shrine-tus-demo]: https://github.com/janko-m/shrine-tus-demo
-[shrine-url]: https://github.com/janko-m/shrine-url
+[shrine-tus-demo]: https://github.com/shrinerb/shrine-tus-demo
+[shrine-url]: https://github.com/shrinerb/shrine-url
 [Roda]: https://github.com/jeremyevans/roda
 [Refile]: https://github.com/refile/refile
 [MIT License]: http://opensource.org/licenses/MIT
-[CoC]: https://github.com/janko-m/shrine/blob/master/CODE_OF_CONDUCT.md
-[roda_demo]: https://github.com/janko-m/shrine/tree/master/demo
+[CoC]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
+[roda_demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails_demo]: https://github.com/erikdahlstrand/shrine-rails-example
-[backgrounding libraries]: https://github.com/janko-m/shrine/wiki/Backgrounding-libraries
+[backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
 [S3 lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [S3 lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [processing post]: https://twin.github.io/better-file-uploads-with-shrine-processing/
