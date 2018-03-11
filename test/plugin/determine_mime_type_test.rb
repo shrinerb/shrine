@@ -121,6 +121,10 @@ describe Shrine::Plugins::DetermineMimeType do
     it "returns nil for empty IOs" do
       assert_nil @shrine.determine_mime_type(fakeio(""))
     end
+
+    it "prioritizes text/csv as registered, over text/comma-separated-values" do
+      assert_equal "text/csv", @shrine.determine_mime_type(fakeio(filename: "report.csv"))
+    end
   end
 
   describe ":mini_mime analyzer" do
