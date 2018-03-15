@@ -52,7 +52,7 @@ require "sequel"
 require "shrine"
 require "shrine/storage/file_system"
 require "tmpdir"
-require "open-uri"
+require "down"
 
 Shrine.plugin :sequel
 Shrine.storages = {
@@ -74,7 +74,7 @@ class Post < Sequel::Model
   include MyUploader::Attachment.new(:image)
 end
 
-post = Post.create(image: open("https://example.com/image-from-internet.jpg"))
+post = Post.create(image: Down.download("https://example.com/image-from-internet.jpg"))
 
 # Your code for reproducing
 ```
@@ -87,7 +87,7 @@ require "active_record"
 require "shrine"
 require "shrine/storage/file_system"
 require "tmpdir"
-require "open-uri"
+require "down"
 
 Shrine.plugin :activerecord
 Shrine.storages = {
@@ -108,7 +108,7 @@ class Post < ActiveRecord::Base
   include MyUploader::Attachment.new(:image)
 end
 
-post = Post.create(image: open("https://example.com/image-from-internet.jpg"))
+post = Post.create(image: Down.download("https://example.com/image-from-internet.jpg"))
 
 # Your code for reproducing
 ```
