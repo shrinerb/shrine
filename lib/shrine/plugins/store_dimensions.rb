@@ -30,12 +30,13 @@ class Shrine
     #
     # :fastimage
     # : (Default). Uses the [FastImage] gem to extract dimensions from any IO
-    #   object. FastImage has built-in protection against [image bombs].
+    #   object.
     #
     # :mini_magick
     # : Uses the [MiniMagick] gem to extract dimensions from File objects.
-    #   Newer versions of ImageMagick have built-in protection against [image
-    #   bombs].
+    #
+    # :ruby_vips
+    # : Uses the [ruby-vips] gem to extract dimensions from File objects.
     #
     # You can also create your own custom dimensions analyzer, where you can
     # reuse any of the built-in analyzers. The analyzer is a lambda that
@@ -60,7 +61,7 @@ class Shrine
     #
     # [FastImage]: https://github.com/sdsykes/fastimage
     # [MiniMagick]: https://github.com/minimagick/minimagick
-    # [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
+    # [ruby-vips]: https://github.com/jcupitt/ruby-vips
     module StoreDimensions
       def self.configure(uploader, opts = {})
         uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))
@@ -129,7 +130,7 @@ class Shrine
       end
 
       class DimensionsAnalyzer
-        SUPPORTED_TOOLS = [:fastimage, :mini_magick]
+        SUPPORTED_TOOLS = [:fastimage, :mini_magick, :ruby_vips]
 
         def initialize(tool)
           raise ArgumentError, "unsupported dimensions analysis tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
@@ -153,6 +154,11 @@ class Shrine
         def extract_with_mini_magick(io)
           require "mini_magick"
           MiniMagick::Image.new(io.path).dimensions if io.respond_to?(:path)
+        end
+
+        def extract_with_ruby_vips(io)
+          require "vips"
+          Vips::Image.new_from_file(io.path).size if io.respond_to?(:path)
         end
       end
     end

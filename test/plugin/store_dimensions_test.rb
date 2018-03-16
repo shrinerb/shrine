@@ -35,6 +35,20 @@ describe Shrine::Plugins::StoreDimensions do
     end
   end
 
+  describe ":ruby_vips analyzer" do
+    before do
+      @shrine.plugin :store_dimensions, analyzer: :ruby_vips
+    end
+
+    it "extracts dimensions from files" do
+      assert_equal [100, 67], @shrine.extract_dimensions(image)
+    end
+
+    it "doesn't extract dimensions from non-files" do
+      assert_nil @shrine.extract_dimensions(fakeio(image.read))
+    end
+  end
+
   it "allows storing with custom extractor" do
     @shrine.plugin :store_dimensions, analyzer: ->(io){[5, 10]}
     assert_equal [5, 10], @shrine.extract_dimensions(fakeio)
