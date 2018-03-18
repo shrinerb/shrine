@@ -15,6 +15,9 @@
         name: Shrine meets Transloadit
         url: https://twin.github.io/shrine-meets-transloadit/
       -
+        name: Adding Direct S3 Uploads to a Roda App with Shrine
+        url: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#file-walkthrough-md
+      -
         name: "Better File Uploads with Shrine: Motivation"
         url: https://twin.github.io/better-file-uploads-with-shrine-motivation/
       -
