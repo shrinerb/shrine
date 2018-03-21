@@ -2,8 +2,6 @@ require "./config/shrine"
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
-
   ALLOWED_TYPES = %w[image/jpeg image/png]
   MAX_SIZE      = 10*1024*1024 # 10 MB
 
@@ -23,7 +21,13 @@ class ImageUploader < Shrine
   end
 
   process(:store) do |io, context|
-    thumbnail = resize_to_limit(io, 300, 300) { |cmd| cmd.auto_orient }
+    original = io.download
+
+    thumbnail = ImageProcessing::MiniMagick
+      .source(original)
+      .resize_to_limit!(600, nil)
+
+    original.close!
 
     { original: io, thumbnail: thumbnail }
   end

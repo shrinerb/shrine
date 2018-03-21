@@ -500,18 +500,25 @@ images, I created the [image_processing] gem which you can use with Shrine:
 
 ```rb
 # Gemfile
-gem "image_processing"
-gem "mini_magick", ">= 4.3.5"
+gem "image_processing", "~> 0.10"
+gem "mini_magick", "~> 4.0"
 ```
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
   plugin :processing
 
   process(:store) do |io, context|
-    resize_to_limit!(io.download, 800, 800) { |cmd| cmd.auto_orient } # orient rotated images
+    original = io.download
+
+    resized = ImageProcessing::MiniMagick
+      .source(original)
+      .resize_to_limit!(800, 800)
+
+    original.close!
+
+    resized
   end
 end
 ```
@@ -541,17 +548,21 @@ deleted after uploading.
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
   plugin :processing
   plugin :versions   # enable Shrine to handle a hash of files
   plugin :delete_raw # delete processed files after uploading
 
   process(:store) do |io, context|
-    size_800 = resize_to_limit(io,       800, 800) { |cmd| cmd.auto_orient } # orient rotated images
-    size_500 = resize_to_limit(size_800, 500, 500)
-    size_300 = resize_to_limit(size_500, 300, 300)
+    original = io.download
+    pipeline = ImageProcessing::MiniMagick.source(original)
 
-    {original: io, large: size_800, medium: size_500, small: size_300}
+    size_800 = pipeline.resize_to_limit!(800, 800)
+    size_500 = pipeline.resize_to_limit!(500, 500)
+    size_300 = pipeline.resize_to_limit!(300, 300)
+
+    original.close!
+
+    { original: io, large: size_800, medium: size_500, small: size_300 }
   end
 end
 ```

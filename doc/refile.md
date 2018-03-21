@@ -65,17 +65,23 @@ an open-source solution, [Attache], which you can also use with Shrine.
 This is how you would process multiple versions in Shrine:
 
 ```rb
+require "image_processing/mini_magick"
+
 class ImageUploader < Shrine
-  include ImageProcessing::MiniMagick
   plugin :processing
   plugin :versions
 
   process(:store) do |io, context|
-    size_800 = resize_to_limit(io.download, 800, 800)
-    size_500 = resize_to_limit(size_800,    500, 500)
-    size_300 = resize_to_limit(size_500,    300, 300)
+    original = io.download
+    pipeline = ImageProcessing::MiniMagick.source(original)
 
-    {original: size_800, medium: size_500, small: size_300}
+    size_800 = pipeline.resize_to_limit!(800, 800)
+    size_500 = pipeline.resize_to_limit!(500, 500)
+    size_300 = pipeline.resize_to_limit!(300, 300)
+
+    original.close!
+
+    { original: io, large: size_800, medium: size_500, small: size_300 }
   end
 end
 ```

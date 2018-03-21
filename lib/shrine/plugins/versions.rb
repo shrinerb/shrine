@@ -10,13 +10,19 @@ class Shrine
     # Here is an example of processing image thumbnails using the
     # [image_processing] gem:
     #
-    #     include ImageProcessing::MiniMagick
+    #     require "image_processing/mini_magick"
+    #
     #     plugin :processing
     #
     #     process(:store) do |io, context|
-    #       size_800 = resize_to_limit(io,       800, 800) { |cmd| cmd.auto_orient }
-    #       size_500 = resize_to_limit(size_800, 500, 500)
-    #       size_300 = resize_to_limit(size_500, 300, 300)
+    #       original = io.download
+    #       pipeline = ImageProcessing::MiniMagick.source(original)
+    #
+    #       size_800 = pipeline.resize_to_limit!(800, 800)
+    #       size_500 = pipeline.resize_to_limit!(500, 500)
+    #       size_300 = pipeline.resize_to_limit!(300, 300)
+    #
+    #       original.close!
     #
     #       { original: io, large: size_800, medium: size_500, small: size_300}
     #     end

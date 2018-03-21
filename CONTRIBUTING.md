@@ -54,11 +54,12 @@ require "shrine/storage/file_system"
 require "tmpdir"
 require "down"
 
-Shrine.plugin :sequel
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "cache"),
   store: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "store"),
 }
+
+Shrine.plugin :sequel
 
 class MyUploader < Shrine
   # plugins and uploading logic
@@ -89,11 +90,12 @@ require "shrine/storage/file_system"
 require "tmpdir"
 require "down"
 
-Shrine.plugin :activerecord
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "cache"),
   store: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "store"),
 }
+
+Shrine.plugin :activerecord
 
 class MyUploader < Shrine
   # plugins and uploading logic

@@ -31,10 +31,18 @@ class Shrine
     #
     # An example of resizing an image using the [image_processing] library:
     #
-    #     include ImageProcessing::MiniMagick
+    #     require "image_processing/mini_magick"
     #
     #     process(:store) do |io, context|
-    #       resize_to_limit!(io.download, 800, 800)
+    #       original = io.download
+    #
+    #       resized = ImageProcessing::MiniMagick
+    #         .source(original)
+    #         .resize_to_limit!(800, 800)
+    #
+    #       original.close!
+    #
+    #       resized
     #     end
     #
     # The declarations are additive and inheritable, so for the same action you
