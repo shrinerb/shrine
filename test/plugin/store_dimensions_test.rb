@@ -51,6 +51,12 @@ describe Shrine::Plugins::StoreDimensions do
     end
   end
 
+  it "automatically extracts dimensions on upload" do
+    uploaded_file = @uploader.upload(image)
+    assert_equal 100, uploaded_file.metadata["width"]
+    assert_equal 67,  uploaded_file.metadata["height"]
+  end
+
   it "allows storing with custom extractor" do
     @shrine.plugin :store_dimensions, analyzer: ->(io){[5, 10]}
     assert_equal [5, 10], @shrine.extract_dimensions(fakeio)

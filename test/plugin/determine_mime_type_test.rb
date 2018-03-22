@@ -160,6 +160,11 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
+  it "automatically extracts mime type on upload" do
+    uploaded_file = @uploader.upload(image)
+    assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
+  end
+
   it "has a default analyzer" do
     assert_equal "image/jpeg", @shrine.determine_mime_type(fakeio(image.read))
   end
