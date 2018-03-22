@@ -692,9 +692,11 @@ user.errors.to_hash #=> {cv: ["is too large (max is 5 MB)"]}
 You can also do custom validations:
 
 ```rb
-class DocumentUploader < Shrine
+class ImageUploader < Shrine
   Attacher.validate do
-    errors << "has more than 3 pages" if get.metadata["pages"] > 3
+    get.download do |tempfile|
+      errors << "image is corrupted" unless ImageProcessing::MiniMagick.valid_image?(tempfile)
+    end
   end
 end
 ```
