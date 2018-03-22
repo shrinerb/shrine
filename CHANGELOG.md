@@ -1,5 +1,7 @@
 ## HEAD
 
+* Remove `:rack_mime` extension inferrer from the `infer_extension` plugin (@janko-m)
+
 * Allow `UploadedFile#download` to accept a block for temporary file download (@janko-m)
 
 * Add `:ruby_vips` analyzer to `store_dimensions` plugin (@janko-m)

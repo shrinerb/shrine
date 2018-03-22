@@ -10,19 +10,15 @@ class Shrine
     #     plugin :infer_extension
     #
     # The upload location will gain the inferred extension only if couldn't be
-    # determined from the filename. By default `Rack::Mime` will be used for
+    # determined from the filename. By default `MIME::Types` will be used for
     # inferring the extension, but you can also choose a different inferrer:
     #
-    #     plugin :infer_extension, inferrer: :mime_types
+    #     plugin :infer_extension, inferrer: :mini_mime
     #
     # The following inferrers are accepted:
     #
-    # :rack_mime
-    # : (Default). Uses the `Rack::Mime` module to infer the appropriate
-    #   extension from MIME type.
-    #
     # :mime_types
-    # : Uses the [mime-types] gem to infer the appropriate extension from MIME
+    # : (Default). Uses the [mime-types] gem to infer the appropriate extension from MIME
     #   type.
     #
     # :mini_mime
@@ -49,7 +45,7 @@ class Shrine
     # [mini_mime]: https://github.com/discourse/mini_mime
     module InferExtension
       def self.configure(uploader, opts = {})
-        uploader.opts[:extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :rack_mime))
+        uploader.opts[:extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :mime_types))
       end
 
       module ClassMethods
@@ -89,7 +85,7 @@ class Shrine
       end
 
       class ExtensionInferrer
-        SUPPORTED_TOOLS = [:rack_mime, :mime_types, :mini_mime]
+        SUPPORTED_TOOLS = [:mime_types, :mini_mime]
 
         def initialize(tool)
           raise Error, "unknown extension inferrer #{tool.inspect}, supported inferrers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
@@ -106,13 +102,6 @@ class Shrine
         end
 
         private
-
-        def infer_with_rack_mime(mime_type)
-          require "rack/mime"
-
-          mime_types = Rack::Mime::MIME_TYPES
-          mime_types.key(mime_type)
-        end
 
         def infer_with_mime_types(mime_type)
           require "mime/types"

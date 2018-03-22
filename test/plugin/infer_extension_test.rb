@@ -7,24 +7,6 @@ describe Shrine::Plugins::InferExtension do
     @shrine = @uploader.class
   end
 
-  describe ":rack_mime analyzer" do
-    before do
-      @shrine.plugin :infer_extension, inferrer: :rack_mime
-    end
-
-    it "determines extension from MIME type" do
-      assert_equal ".png", @shrine.infer_extension("image/png")
-    end
-
-    it "chooses one extension from available extensions" do
-      assert_equal ".jpeg", @shrine.infer_extension("image/jpeg")
-    end
-
-    it "returns empty string when it couldn't determine extension" do
-      assert_nil @shrine.infer_extension("foo")
-    end
-  end
-
   describe ":mime_types analyzer" do
     before do
       @shrine.plugin :infer_extension, inferrer: :mime_types
@@ -69,7 +51,7 @@ describe Shrine::Plugins::InferExtension do
     @shrine.plugin :infer_extension, inferrer: ->(mime_type) { ".foo" }
     assert_equal ".foo", @shrine.infer_extension("image/jpeg")
 
-    @shrine.plugin :infer_extension, inferrer: ->(mime_type, inferrers) { inferrers[:rack_mime].call(mime_type) }
+    @shrine.plugin :infer_extension, inferrer: ->(mime_type, inferrers) { inferrers[:mime_types].call(mime_type) }
     assert_equal ".jpeg", @shrine.infer_extension("image/jpeg")
   end
 
@@ -86,8 +68,8 @@ describe Shrine::Plugins::InferExtension do
   it "provides access to extension inferrers" do
     inferrers = @shrine.extension_inferrers
 
-    assert_equal ".jpeg", inferrers[:rack_mime].call("image/jpeg")
     assert_equal ".jpeg", inferrers[:mime_types].call("image/jpeg")
+    assert_equal ".jpeg", inferrers[:mini_mime].call("image/jpeg")
   end
 
   it "returns Shrine::Error on unknown inferrer" do
