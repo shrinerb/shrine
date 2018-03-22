@@ -72,7 +72,7 @@ class Shrine
         # analyzer.
         def extract_dimensions(io)
           analyzer = opts[:dimensions_analyzer]
-          analyzer = dimensions_analyzers[analyzer] if analyzer.is_a?(Symbol)
+          analyzer = dimensions_analyzer(analyzer) if analyzer.is_a?(Symbol)
           args = [io, dimensions_analyzers].take(analyzer.arity.abs)
 
           dimensions = analyzer.call(*args)
@@ -86,8 +86,13 @@ class Shrine
         # IO object.
         def dimensions_analyzers
           @dimensions_analyzers ||= DimensionsAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
-            hash.merge!(tool => DimensionsAnalyzer.new(tool).method(:call))
+            hash.merge!(tool => dimensions_analyzer(tool))
           end
+        end
+
+        # Returns callable dimensions analyzer object.
+        def dimensions_analyzer(name)
+          DimensionsAnalyzer.new(name).method(:call)
         end
       end
 
@@ -133,7 +138,7 @@ class Shrine
         SUPPORTED_TOOLS = [:fastimage, :mini_magick, :ruby_vips]
 
         def initialize(tool)
-          raise ArgumentError, "unknown dimensions analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
+          raise Error, "unknown dimensions analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end

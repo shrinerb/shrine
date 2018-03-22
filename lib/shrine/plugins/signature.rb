@@ -64,8 +64,8 @@ class Shrine
         attr_reader :algorithm, :format
 
         def initialize(algorithm, format:)
-          raise ArgumentError, "unknown hash algorithm #{algorithm.inspect}, supported algorithms are: #{SUPPORTED_ALGORITHMS.join(",")}" unless SUPPORTED_ALGORITHMS.include?(algorithm)
-          raise ArgumentError, "unknown hash format #{format.inspect}, supported formats are: #{SUPPORTED_FORMATS.join(",")}" unless SUPPORTED_FORMATS.include?(format)
+          raise Error, "unknown hash algorithm #{algorithm.inspect}, supported algorithms are: #{SUPPORTED_ALGORITHMS.join(",")}" unless SUPPORTED_ALGORITHMS.include?(algorithm)
+          raise Error, "unknown hash format #{format.inspect}, supported formats are: #{SUPPORTED_FORMATS.join(",")}" unless SUPPORTED_FORMATS.include?(format)
 
           @algorithm = algorithm
           @format    = format

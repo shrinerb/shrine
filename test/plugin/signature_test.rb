@@ -70,11 +70,11 @@ describe Shrine::Plugins::Signature do
   end
 
   it "raises an error on unsupported hash algorithm" do
-    assert_raises(ArgumentError) { @uploader.calculate_signature(fakeio, :unknown) }
+    assert_raises(Shrine::Error) { @uploader.calculate_signature(fakeio, :unknown) }
   end
 
   it "raises an error on unsupported hash format" do
-    assert_raises(ArgumentError) { @uploader.calculate_signature(fakeio, :md5, format: :unknown) }
+    assert_raises(Shrine::Error) { @uploader.calculate_signature(fakeio, :md5, format: :unknown) }
   end
 
   it "can calculate hash both from instance and class level" do

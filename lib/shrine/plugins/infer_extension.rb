@@ -55,7 +55,7 @@ class Shrine
       module ClassMethods
         def infer_extension(mime_type)
           inferrer = opts[:extension_inferrer]
-          inferrer = extension_inferrers[inferrer] if inferrer.is_a?(Symbol)
+          inferrer = extension_inferrer(inferrer) if inferrer.is_a?(Symbol)
           args     = [mime_type, extension_inferrers].take(inferrer.arity.abs)
 
           inferrer.call(*args)
@@ -63,8 +63,12 @@ class Shrine
 
         def extension_inferrers
           @extension_inferrers ||= ExtensionInferrer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
-            hash.merge!(tool => ExtensionInferrer.new(tool).method(:call))
+            hash.merge!(tool => extension_inferrer(tool))
           end
+        end
+
+        def extension_inferrer(name)
+          ExtensionInferrer.new(name).method(:call)
         end
       end
 
@@ -88,7 +92,7 @@ class Shrine
         SUPPORTED_TOOLS = [:rack_mime, :mime_types, :mini_mime]
 
         def initialize(tool)
-          raise ArgumentError, "unknown extension inferrer #{tool.inspect}, supported inferrers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
+          raise Error, "unknown extension inferrer #{tool.inspect}, supported inferrers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end

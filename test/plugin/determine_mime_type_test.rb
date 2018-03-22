@@ -189,4 +189,11 @@ describe Shrine::Plugins::DetermineMimeType do
     assert_equal "application/json", mime_type
     assert_equal "content", io.read
   end
+
+  it "returns Shrine::Error on unknown analyzer" do
+    assert_raises Shrine::Error do
+      @shrine.plugin :determine_mime_type, analyzer: :foo
+      @shrine.determine_mime_type(fakeio)
+    end
+  end
 end

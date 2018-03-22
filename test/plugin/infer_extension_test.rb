@@ -89,4 +89,11 @@ describe Shrine::Plugins::InferExtension do
     assert_equal ".jpeg", inferrers[:rack_mime].call("image/jpeg")
     assert_equal ".jpeg", inferrers[:mime_types].call("image/jpeg")
   end
+
+  it "returns Shrine::Error on unknown inferrer" do
+    assert_raises Shrine::Error do
+      @shrine.plugin :infer_extension, inferrer: :foo
+      @shrine.infer_extension("image/png")
+    end
+  end
 end

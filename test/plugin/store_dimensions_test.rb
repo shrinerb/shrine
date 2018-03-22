@@ -99,4 +99,11 @@ describe Shrine::Plugins::StoreDimensions do
     assert_equal [100, 67], dimensions
     assert_equal 0, io.pos
   end
+
+  it "returns Shrine::Error on unknown analyzer" do
+    assert_raises Shrine::Error do
+      @shrine.plugin :store_dimensions, analyzer: :foo
+      @shrine.extract_dimensions(image)
+    end
+  end
 end

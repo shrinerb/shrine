@@ -94,7 +94,7 @@ class Shrine
             mime_type = io.content_type if io.respond_to?(:content_type)
           else
             analyzer = opts[:mime_type_analyzer]
-            analyzer = mime_type_analyzers[analyzer] if analyzer.is_a?(Symbol)
+            analyzer = mime_type_analyzer(analyzer) if analyzer.is_a?(Symbol)
             args     = [io, mime_type_analyzers].take(analyzer.arity.abs)
 
             mime_type = analyzer.call(*args)
@@ -109,8 +109,13 @@ class Shrine
         # IO object.
         def mime_type_analyzers
           @mime_type_analyzers ||= MimeTypeAnalyzer::SUPPORTED_TOOLS.inject({}) do |hash, tool|
-            hash.merge!(tool => MimeTypeAnalyzer.new(tool).method(:call))
+            hash.merge!(tool => mime_type_analyzer(tool))
           end
+        end
+
+        # Returns callable mime type analyzer object.
+        def mime_type_analyzer(name)
+          MimeTypeAnalyzer.new(name).method(:call)
         end
       end
 
@@ -139,7 +144,7 @@ class Shrine
         MAGIC_NUMBER    = 256 * 1024
 
         def initialize(tool)
-          raise ArgumentError, "unknown mime type analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
+          raise Error, "unknown mime type analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end
