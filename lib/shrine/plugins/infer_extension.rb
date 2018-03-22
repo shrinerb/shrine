@@ -88,7 +88,7 @@ class Shrine
         SUPPORTED_TOOLS = [:rack_mime, :mime_types, :mini_mime]
 
         def initialize(tool)
-          raise ArgumentError, "unsupported extension inferrer tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
+          raise ArgumentError, "unknown extension inferrer #{tool.inspect}, supported inferrers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end

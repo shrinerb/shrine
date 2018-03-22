@@ -139,7 +139,7 @@ class Shrine
         MAGIC_NUMBER    = 256 * 1024
 
         def initialize(tool)
-          raise ArgumentError, "unsupported mime type analysis tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
+          raise ArgumentError, "unknown mime type analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end

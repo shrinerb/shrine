@@ -133,7 +133,7 @@ class Shrine
         SUPPORTED_TOOLS = [:fastimage, :mini_magick, :ruby_vips]
 
         def initialize(tool)
-          raise ArgumentError, "unsupported dimensions analysis tool: #{tool}" unless SUPPORTED_TOOLS.include?(tool)
+          raise ArgumentError, "unknown dimensions analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
           @tool = tool
         end
