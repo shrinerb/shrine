@@ -313,58 +313,69 @@ describe Shrine::UploadedFile do
   end
 
   describe "#download" do
-    it "delegates to the storage when it defines downloading" do
-      @uploader.storage.instance_eval { def download(id); Tempfile.new("foo"); end }
-      uploaded_file = @uploader.upload(fakeio)
-      assert_instance_of Tempfile, uploaded_file.download
-      assert_match "foo", uploaded_file.download.path
+    describe "when Storage#download is defined" do
+      before do
+        @tempfile = Tempfile.new("")
+        @uploader.storage.stubs(:download).returns(@tempfile)
+      end
+
+      it "delegates to Storage#download" do
+        uploaded_file = @uploader.upload(fakeio)
+        assert_equal @tempfile, uploaded_file.download
+      end
+
+      it "forwards any options to Storage#download" do
+        uploaded_file = @uploader.upload(fakeio)
+        @uploader.storage.expects(:download).with(uploaded_file.id, foo: "bar")
+        uploaded_file.download(foo: "bar")
+      end
+
+      it "propagates exceptions that occured in Storage#download" do
+        @uploader.storage.stubs(:download).raises(Errno::EMFILE) # too many open files
+        assert_raises(Errno::EMFILE) { uploaded_file.download }
+      end
     end
 
-    it "downloads the file to a Tempfile" do
-      @uploader.storage.instance_eval { undef download }
-      uploaded_file = @uploader.upload(fakeio("file"))
-      assert_instance_of Tempfile, uploaded_file.download
-      assert_match "file", uploaded_file.download.read
-    end
+    describe "when Storage#download is not defined" do
+      before do
+        @uploader.storage.instance_eval { undef download }
+        @uploaded_file = @uploader.upload(fakeio("file"))
+      end
 
-    it "uses extension from #id" do
-      @uploader.storage.instance_eval { undef download }
-      uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-      assert_match /\.jpg$/, uploaded_file.download.path
-    end
+      it "downloads file content to a Tempfile in binary encoding" do
+        downloaded = @uploaded_file.download
+        assert_instance_of Tempfile, downloaded
+        assert_match "file", downloaded.read
+        assert downloaded.binmode?
+      end
 
-    it "uses extension from #original_filename" do
-      @uploader.storage.instance_eval { undef download }
-      uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
-      assert_match /\.jpg$/, uploaded_file.download.path
-    end
+      it "applies extension from #id" do
+        uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
+        assert_match /\.jpg$/, uploaded_file.download.path
+      end
 
-    it "forwards any options to Storage#download" do
-      uploaded_file = @uploader.upload(fakeio)
-      @uploader.storage.expects(:download).with(uploaded_file.id, foo: "bar")
-      uploaded_file.download(foo: "bar")
-    end
+      it "applies extension from #original_filename" do
+        uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
+        assert_match /\.jpg$/, uploaded_file.download.path
+      end
 
-    it "forwards any options to Storage#open" do
-      uploaded_file = @uploader.upload(fakeio)
-      @uploader.storage.instance_eval { undef download }
-      uploaded_file.expects(:open).with(foo: "bar")
-      uploaded_file.download(foo: "bar")
-    end
+      it "forwards any options to Storage#open" do
+        uploaded_file = @uploader.upload(fakeio)
+        uploaded_file.expects(:open).with(foo: "bar")
+        uploaded_file.download(foo: "bar")
+      end
 
-    it "deletes the Tempfile if an error occurs while retrieving file contents" do
-      @uploader.storage.instance_eval { undef download }
-      tempfile = Tempfile.new("")
-      Tempfile.stubs(:new).returns(tempfile)
-      assert_raises(KeyError) { uploaded_file.download }
-      assert tempfile.closed?
-      assert_nil tempfile.path
-    end
+      it "deletes the Tempfile in case of exceptions" do
+        Tempfile.stubs(:new).returns(tempfile = Tempfile.new(""))
+        assert_raises(KeyError) { uploaded_file.download }
+        assert tempfile.closed?
+        assert_nil tempfile.path
+      end
 
-    it "propagates failures in creating tempfiles" do
-      @uploader.storage.instance_eval { undef download }
-      Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
-      assert_raises(Errno::EMFILE) { uploaded_file.download }
+      it "propagates exceptions that occured when creating the Tempfile" do
+        Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
+        assert_raises(Errno::EMFILE) { uploaded_file.download }
+      end
     end
   end
 
