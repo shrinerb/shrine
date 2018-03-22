@@ -30,8 +30,9 @@ describe Shrine::Plugins::StoreDimensions do
       assert_equal [100, 67], @shrine.extract_dimensions(image)
     end
 
-    it "doesn't extract dimensions from non-files" do
-      assert_nil @shrine.extract_dimensions(fakeio(image.read))
+    it "extracts dimensions from non-files" do
+      assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
+      assert_equal [100, 67], @shrine.extract_dimensions(@uploader.upload(image))
     end
   end
 
@@ -44,8 +45,9 @@ describe Shrine::Plugins::StoreDimensions do
       assert_equal [100, 67], @shrine.extract_dimensions(image)
     end
 
-    it "doesn't extract dimensions from non-files" do
-      assert_nil @shrine.extract_dimensions(fakeio(image.read))
+    it "extracts dimensions from non-files" do
+      assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
+      assert_equal [100, 67], @shrine.extract_dimensions(@uploader.upload(image))
     end
   end
 

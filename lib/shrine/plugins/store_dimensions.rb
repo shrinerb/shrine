@@ -33,10 +33,12 @@ class Shrine
     #   object.
     #
     # :mini_magick
-    # : Uses the [MiniMagick] gem to extract dimensions from File objects.
+    # : Uses the [MiniMagick] gem to extract dimensions from File objects. If
+    #   non-file IO object is given it will be temporarily downloaded to disk.
     #
     # :ruby_vips
-    # : Uses the [ruby-vips] gem to extract dimensions from File objects.
+    # : Uses the [ruby-vips] gem to extract dimensions from File objects. If
+    #   non-file IO object is given it will be temporarily downloaded to disk.
     #
     # You can also create your own custom dimensions analyzer, where you can
     # reuse any of the built-in analyzers. The analyzer is a lambda that
@@ -101,10 +103,7 @@ class Shrine
         def extract_metadata(io, context)
           width, height = extract_dimensions(io)
 
-          super.update(
-            "width"  => width,
-            "height" => height,
-          )
+          super.merge!("width" => width, "height" => height)
         end
 
         private
@@ -158,12 +157,23 @@ class Shrine
 
         def extract_with_mini_magick(io)
           require "mini_magick"
-          MiniMagick::Image.new(io.path).dimensions if io.respond_to?(:path)
+          ensure_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
         end
 
         def extract_with_ruby_vips(io)
           require "vips"
-          Vips::Image.new_from_file(io.path).size if io.respond_to?(:path)
+          ensure_file(io) { |file| Vips::Image.new_from_file(file.path).size }
+        end
+
+        def ensure_file(io)
+          if io.respond_to?(:path)
+            yield io
+          else
+            Tempfile.create("shrine-store_dimensions") do |tempfile|
+              IO.copy_stream(io, tempfile.path)
+              yield tempfile
+            end
+          end
         end
       end
     end
