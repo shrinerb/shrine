@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow `UploadedFile#download` to accept a block for temporary file download (@janko-m)
+
 * Add `:ruby_vips` analyzer to `store_dimensions` plugin (@janko-m)
 
 * Add `:mini_magick` analyzer to `store_dimensions` plugin (@janko-m)

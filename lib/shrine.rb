@@ -769,13 +769,24 @@ class Shrine
         end
         alias content_type mime_type
 
-        # Opens an IO object of the uploaded file for reading, yields it to
-        # the block, and closes it after the block finishes. If opening without
-        # a block, it returns an opened IO object for the uploaded file.
+        # Calls `#open` on the storage to open the uploaded file for reading.
+        # Most storages will return a lazy IO object which dynamically
+        # retrieves file content from the storage as the object is being read.
         #
-        #     uploaded_file.open do |io|
-        #       puts io.read # prints the content of the file
-        #     end
+        # If a block is given, the opened IO object is yielded to the block,
+        # and at the end of the block it's automatically closed. In this case
+        # the return value of the method is the block return value.
+        #
+        # If no block is given, the opened IO object is returned.
+        #
+        #     uploaded_file.open #=> IO object returned by the storage
+        #     uploaded_file.read #=> "..."
+        #     uploaded_file.close
+        #
+        #     # or
+        #
+        #     uploaded_file.open { |io| io.read }
+        #     #=> "..."
         def open(*args)
           return to_io unless block_given?
 
@@ -790,19 +801,33 @@ class Shrine
 
         # Calls `#download` on the storage if the storage implements it,
         # otherwise uses #open to stream the underlying IO to a Tempfile.
+        #
+        # If a block is given, the opened Tempfile object is yielded to the
+        # block, and at the end of the block it's automatically closed and
+        # deleted. In this case the return value of the method is the block
+        # return value.
+        #
+        # If no block is given, the opened Tempfile is returned.
+        #
+        #     uploaded_file.download
+        #     #=> #<File:/var/folders/.../20180302-33119-1h1vjbq.jpg>
+        #
+        #     # or
+        #
+        #     uploaded_file.download { |tempfile| tempfile.read } # tempfile is deleted
+        #     #=> "..."
         def download(*args)
           if storage.respond_to?(:download)
-            storage.download(id, *args)
+            tempfile = storage.download(id, *args)
           else
-            begin
-              tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-              open(*args) { |io| IO.copy_stream(io, tempfile.path) }
-              tempfile.tap(&:open)
-            rescue
-              tempfile.close! if tempfile
-              raise
-            end
+            tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
+            open(*args) { |io| IO.copy_stream(io, tempfile.path) }
+            tempfile.open
           end
+
+          block_given? ? yield(tempfile) : tempfile
+        ensure
+          tempfile.close! if ($! || block_given?) && tempfile
         end
 
         # Part of complying to the IO interface. It delegates to the internally

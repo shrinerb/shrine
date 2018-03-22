@@ -330,6 +330,22 @@ describe Shrine::UploadedFile do
         uploaded_file.download(foo: "bar")
       end
 
+      it "yields the tempfile if block is given" do
+        uploaded_file.download { |tempfile| @block = tempfile }
+        assert_equal @tempfile, @block
+      end
+
+      it "returns the block return value" do
+        result = uploaded_file.download { |tempfile| "result" }
+        assert_equal "result", result
+      end
+
+      it "closes and deletes the tempfile after the block" do
+        uploaded_file.download { |tempfile| refute tempfile.closed? }
+        assert @tempfile.closed?
+        assert_nil @tempfile.path
+      end
+
       it "propagates exceptions that occured in Storage#download" do
         @uploader.storage.stubs(:download).raises(Errno::EMFILE) # too many open files
         assert_raises(Errno::EMFILE) { uploaded_file.download }
@@ -345,6 +361,7 @@ describe Shrine::UploadedFile do
       it "downloads file content to a Tempfile in binary encoding" do
         downloaded = @uploaded_file.download
         assert_instance_of Tempfile, downloaded
+        refute downloaded.closed?
         assert_match "file", downloaded.read
         assert downloaded.binmode?
       end
@@ -363,6 +380,25 @@ describe Shrine::UploadedFile do
         uploaded_file = @uploader.upload(fakeio)
         uploaded_file.expects(:open).with(foo: "bar")
         uploaded_file.download(foo: "bar")
+      end
+
+      it "yields the tempfile if block is given" do
+        uploaded_file = @uploader.upload(fakeio)
+        uploaded_file.download { |tempfile| @block = tempfile }
+        assert_instance_of Tempfile, @block
+      end
+
+      it "returns the block return value" do
+        uploaded_file = @uploader.upload(fakeio)
+        result = uploaded_file.download { |tempfile| "result" }
+        assert_equal "result", result
+      end
+
+      it "closes and deletes the tempfile after the block" do
+        uploaded_file = @uploader.upload(fakeio)
+        tempfile = uploaded_file.download { |tempfile| refute tempfile.closed?; tempfile }
+        assert tempfile.closed?
+        assert_nil tempfile.path
       end
 
       it "deletes the Tempfile in case of exceptions" do
