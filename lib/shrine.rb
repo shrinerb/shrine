@@ -821,7 +821,7 @@ class Shrine
             tempfile = storage.download(id, *args)
           else
             tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-            open(*args) { |io| IO.copy_stream(io, tempfile.path) }
+            open(*args) { |io| IO.copy_stream(io, tempfile) }
             tempfile.open
           end
 
