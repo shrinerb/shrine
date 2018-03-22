@@ -86,6 +86,15 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_match %r{http://example.com/attachments/\S+}, uploaded_file.url
   end
 
+  it "returns same URL regardless of metadata order" do
+    uploaded_file = @uploader.upload(fakeio)
+    uploaded_file.data["metadata"] = { "filename" => "a", "mime_type" => "b", "size" => "c" }
+    url1 = uploaded_file.url
+    uploaded_file.data["metadata"] = { "mime_type" => "b", "size" => "c", "filename" => "a" }
+    url2 = uploaded_file.url
+    assert_equal url1, url2
+  end
+
   it "returns regular URL for non-selected storages" do
     @uploader.class.plugin :download_endpoint, storages: []
     uploaded_file = @uploader.upload(fakeio)

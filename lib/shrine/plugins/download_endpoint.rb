@@ -131,7 +131,7 @@ class Shrine
         # long.
         def download_identifier
           semantical_metadata = metadata.select { |name, _| %w[filename size mime_type].include?(name) }
-          download_serializer.dump(data.merge("metadata" => semantical_metadata))
+          download_serializer.dump(data.merge("metadata" => semantical_metadata.sort.to_h))
         end
 
         def download_serializer

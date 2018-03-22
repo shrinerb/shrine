@@ -1,5 +1,7 @@
 ## HEAD
 
+* Keep download endpoint URL the same regardless of metadata ordering (@MSchmidt)
+
 * Remove `:rack_mime` extension inferrer from the `infer_extension` plugin (@janko-m)
 
 * Allow `UploadedFile#download` to accept a block for temporary file download (@janko-m)
