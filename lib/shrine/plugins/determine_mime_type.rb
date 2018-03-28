@@ -189,10 +189,10 @@ class Shrine
         def extract_with_fastimage(io)
           require "fastimage"
 
-          mime_type = FastImage.type(io)
-          "image/#{mime_type}" if mime_type
+          type = FastImage.type(io)
+          "image/#{type}" if type
         end
-        
+
         def extract_with_filemagic(io)
           require "filemagic"
 
