@@ -20,6 +20,10 @@ class Shrine
     #   contents. It is installed by default on most operating systems, but the
     #   [Windows equivalent] needs to be installed separately.
     #
+    # :fastimage
+    # : Uses the [fastimage] gem to determine the MIME type from file contents.
+    #   Fastimage is optimized for speed over accuracy. Best used for image content.
+    #
     # :filemagic
     # : Uses the [ruby-filemagic] gem to determine the MIME type from file
     #   contents, using a similar MIME database as the `file` utility. Unlike
@@ -81,6 +85,7 @@ class Shrine
     # [marcel]: https://github.com/basecamp/marcel
     # [mime-types]: https://github.com/mime-types/ruby-mime-types
     # [mini_mime]: https://github.com/discourse/mini_mime
+    # [fastimage]: https://github.com/sdsykes/fastimage
     module DetermineMimeType
       def self.configure(uploader, opts = {})
         uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:mime_type_analyzer, :file))
@@ -140,7 +145,7 @@ class Shrine
       end
 
       class MimeTypeAnalyzer
-        SUPPORTED_TOOLS = [:file, :filemagic, :mimemagic, :marcel, :mime_types, :mini_mime]
+        SUPPORTED_TOOLS = [:fastimage, :file, :filemagic, :mimemagic, :marcel, :mime_types, :mini_mime]
         MAGIC_NUMBER    = 256 * 1024
 
         def initialize(tool)
@@ -181,6 +186,13 @@ class Shrine
           raise Error, "The `file` command-line tool is not installed"
         end
 
+        def extract_with_fastimage(io)
+          require "fastimage"
+
+          mime_type = FastImage.type(io)
+          "image/#{mime_type}" if mime_type
+        end
+        
         def extract_with_filemagic(io)
           require "filemagic"
 

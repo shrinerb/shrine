@@ -8,7 +8,7 @@ describe Shrine::Plugins::DetermineMimeType do
     @uploader = uploader { plugin :determine_mime_type }
     @shrine = @uploader.class
   end
-
+  
   describe ":file analyzer" do
     before do
       @shrine.plugin :determine_mime_type, analyzer: :file
@@ -50,6 +50,24 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
+  describe ":fastimage analyzer" do
+    before do
+      @shrine.plugin :determine_mime_type, analyzer: :fastimage
+    end
+
+    it "extracts MIME type of any IO" do
+      assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+    end
+
+    it "returns nil for unidentified MIME types" do
+      assert_nil @shrine.determine_mime_type(fakeio("😃"))
+    end
+
+    it "returns nil for empty IOs" do
+      assert_nil @shrine.determine_mime_type(fakeio(""))
+    end
+  end
+  
   describe ":filemagic analyzer" do
     before do
       @shrine.plugin :determine_mime_type, analyzer: :filemagic
