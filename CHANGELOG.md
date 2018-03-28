@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:fastimage` analyzer to `determine_mime_type` plugin (@mokolabs)
+
 * Keep download endpoint URL the same regardless of metadata ordering (@MSchmidt)
 
 * Remove `:rack_mime` extension inferrer from the `infer_extension` plugin (@janko-m)
