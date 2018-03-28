@@ -34,7 +34,7 @@ describe Shrine::Plugins::StoreDimensions do
       assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
       assert_equal [100, 67], @shrine.extract_dimensions(@uploader.upload(image))
     end
-  end
+  end unless ENV["CI"]
 
   describe ":ruby_vips analyzer" do
     before do
@@ -49,7 +49,7 @@ describe Shrine::Plugins::StoreDimensions do
       assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
       assert_equal [100, 67], @shrine.extract_dimensions(@uploader.upload(image))
     end
-  end
+  end unless ENV["CI"]
 
   it "automatically extracts dimensions on upload" do
     uploaded_file = @uploader.upload(image)
