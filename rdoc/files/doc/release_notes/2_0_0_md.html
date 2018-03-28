@@ -30,7 +30,7 @@ doc/release_notes/2.0.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-03-11 17:24:01 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -43,7 +43,7 @@ new signature of <code>#upload</code> and <code>#move</code> methods on the
 storage class should  be:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">shrine_metadata</span><span class="ruby-operator">:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-identifier">shrine_metadata</span><span class="ruby-operator">:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">shrine_metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">shrine_metadata:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The <code>Shrine::Confirm</code> functionality has been removed from
 storages&#39;  specification, storages should update <code>clear!</code> to
@@ -111,12 +111,12 @@ support Rubinius anymore.</p>
 
 <h1 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>The <a href="https://github.com/janko-m/shrine-reform">shrine-reform</a>
+<p>The <a href="https://github.com/shrinerb/shrine-reform">shrine-reform</a>
 plugin has been released, which makes <a
 href="../../../classes/Shrine.html">Shrine</a> attachments  work with <a
 href="https://github.com/apotonick/reform">Reform</a> objects.</p>
 </li><li>
-<p>The <a href="https://github.com/janko-m/shrine-mongoid">shrine-mongoid</a>
+<p>The <a href="https://github.com/shrinerb/shrine-mongoid">shrine-mongoid</a>
 plugin has been released, which makes <a
 href="../../../classes/Shrine.html">Shrine</a> attachments  work with <a
 href="https://github.com/mongodb/mongoid">Mongoid</a> models.</p>
@@ -124,7 +124,7 @@ href="https://github.com/mongodb/mongoid">Mongoid</a> models.</p>
 
 <h1 id="label-New+storages">New storages<span><a href="#label-New+storages">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>The <a href="https://github.com/janko-m/shrine-memory">shrine-memory</a>
+<p>The <a href="https://github.com/shrinerb/shrine-memory">shrine-memory</a>
 storage has been released, which saves uploaded files  in memory (useful in
 tests).</p>
 </li></ul>
@@ -135,13 +135,13 @@ tests).</p>
 analyzer in determine_mime_type plugin.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">mimemagic</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">analyzers</span>[<span class="ruby-value">:mimemagic</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">analyzers</span>[<span class="ruby-value">:file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The built-in analyzers can now be used when implementing a custom
 dimensions  analyzer in store_dimensions plugin.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">analyzers</span>[:<span class="ruby-identifier">filemagic</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">dimensions</span> <span class="ruby-operator">||</span> <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">analyzers</span>[<span class="ruby-value">:filemagic</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">dimensions</span> <span class="ruby-operator">||</span> <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p><code>Shrine::Attacher#cache!</code>, <code>#store!</code> and
 <code>#delete!</code> are now public (they are  wrappers for
@@ -193,7 +193,7 @@ non-Sequel models.</p>
 <p>Plugin options are now persisted when reapplying plugins.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">download_endpoint</span>, <span class="ruby-identifier">storages</span><span class="ruby-operator">:</span> [:<span class="ruby-identifier">store</span>], <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;/downloads&quot;</span>, <span class="ruby-identifier">disposition</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;inline&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">DocumentUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># all other options above will be persisted</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">download_endpoint</span>, <span class="ruby-identifier">disposition</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;attachment&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:download_endpoint</span>, <span class="ruby-value">storages:</span> [<span class="ruby-value">:store</span>], <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;/downloads&quot;</span>, <span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;inline&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">DocumentUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># all other options above will be persisted</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:download_endpoint</span>, <span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;attachment&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The <code>:include_error</code> has been removed from remote_url plugin,
 the error will  now be included in the second argument depending on

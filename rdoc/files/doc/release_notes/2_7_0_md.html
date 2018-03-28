@@ -30,7 +30,7 @@ doc/release_notes/2.7.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,18 +45,18 @@ root URL, allowing users to fully choose the URL. They  also drop the Roda
 dependency.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `POST /images/upload` endpoint</span></pre>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(:<span class="ruby-identifier">cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `GET /presign` endpoint</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>&#x000A;&#x000A;<span class="ruby-comment"># config.ru</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># creates a `GET /presign` endpoint</span></pre>
 <ul><li>
 <p>The <code>rack_response</code> plugin has been extracted from
 <code>download_endpoint</code>. It  gives the ability to convert a
 <code>Shrine::UploadedFile</code> object into a Rack  response triple.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">rack_response</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_response</span></pre>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">file_response</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span> <span class="ruby-comment"># returns a Rack response triple</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">0</span>]&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_response</span>[<span class="ruby-value">1</span>])&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">2</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">file_response</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span> <span class="ruby-comment"># returns a Rack response triple</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">0</span>]&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_response</span>[<span class="ruby-value">1</span>])&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">2</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -67,14 +67,14 @@ to  be a lightweight replacement for the <a
 href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">mini_mime</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_mime</span></pre>
 <ul><li>
 <p><code>Shrine::Attachment.new</code> now accepts additional options that are
 forwarded to  <code>Shrine::Attacher.new</code>. This allows for overriding
 temporary and permanent  storages per attachment declaration.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:other_cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The <code>activerecord</code> plugin now allows validation error messages
 to be an  array, which is passed as arguments to
@@ -82,7 +82,7 @@ to be an  array, which is passed as arguments to
 error message generation and i18n to ActiveRecord.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">256</span> <span class="ruby-operator">*</span> <span class="ruby-value">1024</span><span class="ruby-operator">**</span><span class="ruby-value">2</span>, <span class="ruby-identifier">message</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">max</span>) { [:<span class="ruby-identifier">too_large</span>, <span class="ruby-identifier">max</span><span class="ruby-operator">:</span> <span class="ruby-identifier">max</span>] }</pre>
+<pre class="ruby"><span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">256</span> <span class="ruby-operator">*</span> <span class="ruby-value">1024</span><span class="ruby-operator">**</span><span class="ruby-value">2</span>, <span class="ruby-value">message:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">max</span>) { [<span class="ruby-value">:too_large</span>, <span class="ruby-value">max:</span> <span class="ruby-identifier">max</span>] }</pre>
 
 <h2 id="label-Other+Improvements">Other Improvements<span><a href="#label-Other+Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>

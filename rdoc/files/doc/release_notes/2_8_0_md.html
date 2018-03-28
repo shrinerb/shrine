@@ -30,7 +30,7 @@ doc/release_notes/2.8.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-01-27 13:53:11 +0100</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -43,7 +43,7 @@ href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">range
 requests</a> via the <code>:range</code>  parameter.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-identifier">range</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;bytes=100-200&quot;</span>)&#x000A;<span class="ruby-identifier">status</span>                    <span class="ruby-comment">#=&gt; 206</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Length&quot;</span>] <span class="ruby-comment">#=&gt; &quot;101&quot;</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Range&quot;</span>]  <span class="ruby-comment">#=&gt; &quot;bytes 100-200/1000&quot;</span>&#x000A;<span class="ruby-identifier">body</span>                      <span class="ruby-comment"># partial content</span></pre>
+<pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-value">range:</span> <span class="ruby-string">&quot;bytes=100-200&quot;</span>)&#x000A;<span class="ruby-identifier">status</span>                    <span class="ruby-comment">#=&gt; 206</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Length&quot;</span>] <span class="ruby-comment">#=&gt; &quot;101&quot;</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Range&quot;</span>]  <span class="ruby-comment">#=&gt; &quot;bytes 100-200/1000&quot;</span>&#x000A;<span class="ruby-identifier">body</span>                      <span class="ruby-comment"># partial content</span></pre>
 <ul><li>
 <p>The <code>Shrine::Storage::S3.clear!</code> method now accepts a block for
 filtering  which objects to delete.</p>
@@ -75,13 +75,13 @@ which are forwarded to <code>Aws::S3::Client#get_object</code>.</p>
 column names  by using strings instead of symbols.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">metadata_attributes</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">original_filename</span>  <span class="ruby-comment"># uses the &quot;&lt;attachment&gt;_original_filename&quot; column</span>&#x000A;<span class="ruby-comment"># VS</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">metadata_attributes</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;original_filename&quot;</span> <span class="ruby-comment"># uses the &quot;original_filename&quot; column</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">filename:</span> <span class="ruby-value">:original_filename</span>  <span class="ruby-comment"># uses the &quot;&lt;attachment&gt;_original_filename&quot; column</span>&#x000A;<span class="ruby-comment"># VS</span>&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">filename:</span> <span class="ruby-string">&quot;original_filename&quot;</span> <span class="ruby-comment"># uses the &quot;original_filename&quot; column</span></pre>
 <ul><li>
 <p>You can now specify metadata mappings on <code>metadata_attributes</code>
 plugin  initialization.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># before you needed to do this:</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">metadata_attributes</span>&#x000A;  <span class="ruby-identifier">metadata_attributes</span> <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">filename</span>, <span class="ruby-identifier">mime_type</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">type</span>&#x000A;&#x000A;  <span class="ruby-comment"># but now you can also do this:</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">metadata_attributes</span>, <span class="ruby-identifier">filename</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">filename</span>, <span class="ruby-identifier">mime_type</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># before you needed to do this:</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>&#x000A;  <span class="ruby-identifier">metadata_attributes</span> <span class="ruby-value">filename:</span> <span class="ruby-value">:filename</span>, <span class="ruby-value">mime_type:</span> <span class="ruby-value">:type</span>&#x000A;&#x000A;  <span class="ruby-comment"># but now you can also do this:</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">filename:</span> <span class="ruby-value">:filename</span>, <span class="ruby-value">mime_type:</span> <span class="ruby-value">:type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The generated upload location will now always have the file extension in 
 lowercase format, even if the original file extension was uppercased.</p>

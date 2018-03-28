@@ -28,7 +28,7 @@ Shrine::Plugins::RefreshMetadata::FileMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/refresh_metadata.rb">lib/shrine/plugins/refresh_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/refresh_metadata.rb">lib/shrine/plugins/refresh_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -61,7 +61,7 @@ Shrine::Plugins::RefreshMetadata::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-refresh_metadata-21-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-refresh_metadata-21-source'><span class="ruby-comment"># File lib/shrine/plugins/refresh_metadata.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">refresh_metadata!</span>(<span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">refreshed_metadata</span> = <span class="ruby-identifier">open</span> { <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">extract_metadata</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">context</span>) }&#x000A;  <span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">refreshed_metadata</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-refresh_metadata-21-source'><span class="ruby-comment"># File lib/shrine/plugins/refresh_metadata.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">refresh_metadata!</span>(<span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-identifier">refreshed_metadata</span> = <span class="ruby-identifier">open</span> { <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">extract_metadata</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">context</span>) }&#x000A;  <span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">refreshed_metadata</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

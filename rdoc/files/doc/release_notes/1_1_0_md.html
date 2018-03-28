@@ -30,7 +30,7 @@ doc/release_notes/1.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-03-11 17:23:57 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -47,9 +47,9 @@ authenticating downloads.</p>
 backing up  stored files upon upload.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span></pre>
 
-<pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">avatar</span><span class="ruby-operator">:</span> <span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads to :store and :backup_store</span></pre>
+<pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">avatar:</span> <span class="ruby-identifier">image</span>) <span class="ruby-comment"># uploads to :store and :backup_store</span></pre>
 <ul><li>
 <p>The <code>delete_uploaded</code> plugin has been added for automatically
 deleting files  after they&#39;re uploaded (useful for removing temporary
@@ -59,14 +59,14 @@ files in versions).</p>
 generating  storage-specific upload options.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> [:<span class="ruby-identifier">original</span>, :<span class="ruby-identifier">thumb</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[:<span class="ruby-identifier">version</span>])&#x000A;    {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;private&quot;</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> [<span class="ruby-value">:original</span>, <span class="ruby-value">:thumb</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">context</span>[<span class="ruby-value">:version</span>])&#x000A;    {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span>}&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;private&quot;</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The <code>keep_location</code> plugin has been added, which allows keeping
 file location  when moving from cache to store, which can be useful when
 debugging.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_location</span>, :<span class="ruby-identifier">cache</span> =<span class="ruby-operator">&gt;</span> :<span class="ruby-identifier">store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:keep_location</span>, <span class="ruby-value">:cache</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:store</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">image</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; &quot;cache&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">save</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">storage_key</span> <span class="ruby-comment">#=&gt; &quot;store&quot;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;abc123.jpg&quot;</span></pre>
 <ul><li>
@@ -74,7 +74,7 @@ debugging.</p>
 functionality):</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/#{context[:name]}/missing.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/#{context[:name]}/missing.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/avatar/missing.jpg&quot;</span></pre>
 <ul><li>
@@ -84,31 +84,31 @@ deleting and  deassigning cached files that were invalid.</p>
 
 <h1 id="label-New+storages">New storages<span><a href="#label-New+storages">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>The <a href="https://github.com/janko-m/shrine-fog">shrine-fog</a> storage
+<p>The <a href="https://github.com/shrinerb/shrine-fog">shrine-fog</a> storage
 has been created for storing files on any of the  cloud services supported
 by <a href="https://github.com/fog/fog">Fog</a>.</p>
 </li><li>
-<p>The <a href="https://github.com/janko-m/shrine-imgix">shrine-imgix</a>
+<p>The <a href="https://github.com/shrinerb/shrine-imgix">shrine-imgix</a>
 storage has been created which intergrates with the <a
 href="http://www.imgix.com">Imgix</a>  service which provides on-the-fly
 processing.</p>
 </li><li>
 <p>The <a
-href="https://github.com/janko-m/shrine-cloudinary">shrine-cloudinary</a>
+href="https://github.com/shrinerb/shrine-cloudinary">shrine-cloudinary</a>
 storage as been created for storing files on  <a
 href="http://cloudinary.com">Cloudinary</a>, which supports upfront, eager
 and on-the-fly processing.</p>
 </li><li>
-<p>The <a href="https://github.com/janko-m/shrine-flickr">shrine-flickr</a>
+<p>The <a href="https://github.com/shrinerb/shrine-flickr">shrine-flickr</a>
 storage as been created for storing files on  <a
 href="https://www.flickr.com">Flickr</a>, which automatically generates
 various sizes of your photos upon  upload.</p>
 </li><li>
-<p>The <a href="https://github.com/janko-m/shrine-gridfs">shrine-gridfs</a>
+<p>The <a href="https://github.com/shrinerb/shrine-gridfs">shrine-gridfs</a>
 storage has been created for storing files in MongoDB  using the <a
 href="https://docs.mongodb.org/v3.0/core/gridfs/">GridFS</a> data model.</p>
 </li><li>
-<p>The <a href="https://github.com/janko-m/shrine-sql">shrine-sql</a> storage
+<p>The <a href="https://github.com/shrinerb/shrine-sql">shrine-sql</a> storage
 has been created for storing files in any SQL  database.</p>
 </li></ul>
 
@@ -118,7 +118,7 @@ has been created for storing files in any SQL  database.</p>
 additional options  on upload and presigning.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">upload_options</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">acl</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;public-read&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)</pre>
 <ul><li>
 <p>The <code>:max_size</code> has been (re)added to <code>direct_upload</code>
 plugin, for limiting  the maximum accepted filesize.</p>

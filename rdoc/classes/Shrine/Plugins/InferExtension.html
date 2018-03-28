@@ -28,7 +28,7 @@ Shrine::Plugins::InferExtension
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -40,21 +40,18 @@ file extension for the upload location based on the MIME type of the file.
 This is useful when using <code>data_uri</code> and <code>remote_url</code>
 plugins, where the file extension is not or might not be known.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span></pre>
 
 <p>The upload location will gain the inferred extension only if couldn&#39;t
-be determined from the filename. By default <code>Rack::Mime</code> will be
-used for inferring the extension, but you can also choose a different
+be determined from the filename. By default <code>MIME::Types</code> will
+be used for inferring the extension, but you can also choose a different
 inferrer:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span>, <span class="ruby-identifier">inferrer</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">mime_types</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">inferrer:</span> <span class="ruby-value">:mini_mime</span></pre>
 
 <p>The following inferrers are accepted:</p>
-<table class="rdoc-list note-list"><tbody><tr><td class='label'>:rack_mime</td><td>
-<p>(Default). Uses the <code>Rack::Mime</code> module to infer the appropriate
-extension from MIME type.</p>
-</td></tr><tr><td class='label'>:mime_types</td><td>
-<p>Uses the <a
+<table class="rdoc-list note-list"><tbody><tr><td class='label'>:mime_types</td><td>
+<p>(Default). Uses the <a
 href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem to
 infer the appropriate extension from MIME  type.</p>
 </td></tr><tr><td class='label'>:mini_mime</td><td>
@@ -65,11 +62,11 @@ to infer the appropriate extension from MIME  type.</p>
 <p>You can also define your own inferrer, with the possibility to call the
 built-in inferrers:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span>, <span class="ruby-identifier">inferrer</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">mime_type</span>, <span class="ruby-identifier">inferrers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># don&#39;t add extension if the file is a text file</span>&#x000A;  <span class="ruby-identifier">inferrrs</span>[:<span class="ruby-identifier">rack_mime</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">mime_type</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">inferrer:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">mime_type</span>, <span class="ruby-identifier">inferrers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># don&#39;t add extension if the file is a text file</span>&#x000A;  <span class="ruby-identifier">inferrrs</span>[<span class="ruby-value">:rack_mime</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">mime_type</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>You can also use methods for inferring extension directly:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">infer_extension</span>(<span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;<span class="ruby-comment"># =&gt; &quot;.jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">extension_inferrers</span>[:<span class="ruby-identifier">mime_types</span>].<span class="ruby-identifier">call</span>(<span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;<span class="ruby-comment"># =&gt; &quot;.jpeg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">infer_extension</span>(<span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;<span class="ruby-comment"># =&gt; &quot;.jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">extension_inferrers</span>[<span class="ruby-value">:mime_types</span>].<span class="ruby-identifier">call</span>(<span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;<span class="ruby-comment"># =&gt; &quot;.jpeg&quot;</span></pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -105,7 +102,7 @@ built-in inferrers:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 50</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:extension_inferrer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:inferrer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_inferrer</span>, <span class="ruby-value">:rack_mime</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 46</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:extension_inferrer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:inferrer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_inferrer</span>, <span class="ruby-value">:mime_types</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

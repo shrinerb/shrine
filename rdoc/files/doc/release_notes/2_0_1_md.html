@@ -30,7 +30,7 @@ doc/release_notes/2.0.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -42,7 +42,7 @@ Last Update:
 default_url plugin was loaded before versions</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span> &#x000A;  <span class="ruby-identifier">plugin</span>(:<span class="ruby-identifier">default_url</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span> }&#x000A;  <span class="ruby-identifier">plugin</span>(:<span class="ruby-identifier">versions</span>) <span class="ruby-comment"># doesn&#39;t remove default_url anymore</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span> &#x000A;  <span class="ruby-identifier">plugin</span>(<span class="ruby-value">:default_url</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span> }&#x000A;  <span class="ruby-identifier">plugin</span>(<span class="ruby-value">:versions</span>) <span class="ruby-comment"># doesn&#39;t remove default_url anymore</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

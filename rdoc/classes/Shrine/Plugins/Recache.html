@@ -28,7 +28,7 @@ Shrine::Plugins::Recache
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/recache.rb">lib/shrine/plugins/recache.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/recache.rb">lib/shrine/plugins/recache.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -41,7 +41,7 @@ for example when you want to generate some versions upfront (so the user
 immediately sees them) and other versions you want to generate in the
 promotion phase in a background job.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">recache</span>&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">processing</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">recache</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform cheap processing</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(:<span class="ruby-identifier">store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform more expensive processing</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:recache</span>&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(<span class="ruby-value">:recache</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform cheap processing</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># perform more expensive processing</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>Recaching will be automatically triggered in a “before save” callback, but
 if you&#39;re using the attacher directly, you can call it manually:</p>

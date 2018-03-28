@@ -30,7 +30,7 @@ doc/release_notes/2.3.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -43,7 +43,7 @@ record to  another. Duplicating the model instance will automatically
 create a copy  of the attachment.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">copy</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:copy</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">photo_id</span>)&#x000A;<span class="ruby-identifier">duplicated_photo</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">dup</span> <span class="ruby-comment"># duplicates the attachment</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">duplicated_photo</span>.<span class="ruby-identifier">image</span></pre>
 

@@ -28,7 +28,7 @@ Shrine::Plugins::RemoveAttachment
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/remove_attachment.rb">lib/shrine/plugins/remove_attachment.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/remove_attachment.rb">lib/shrine/plugins/remove_attachment.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -38,13 +38,13 @@ Shrine::Plugins::RemoveAttachment
 <p>The <code>remove_attachment</code> plugin allows you to delete attachments
 through checkboxes on the web form.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remove_attachment</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:remove_attachment</span></pre>
 
 <p>If for example your attachment is called “avatar”, this plugin will add
 <code>#remove_avatar</code> and <code>#remove_avatar=</code> methods to
 your model. This allows you to add a form field for removing attachments:</p>
 
-<pre class="ruby"><span class="ruby-identifier">form</span>.<span class="ruby-identifier">check_box</span> :<span class="ruby-identifier">remove_avatar</span></pre>
+<pre class="ruby"><span class="ruby-identifier">form</span>.<span class="ruby-identifier">check_box</span> <span class="ruby-value">:remove_avatar</span></pre>
 </div>
 <div id='context'>
 </div>

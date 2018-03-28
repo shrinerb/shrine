@@ -28,7 +28,7 @@ Shrine::Plugins::Backup
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/backup.rb">lib/shrine/plugins/backup.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/backup.rb">lib/shrine/plugins/backup.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -38,18 +38,18 @@ Shrine::Plugins::Backup
 <p>The <code>backup</code> plugin allows you to automatically back up stored
 files to an additional storage.</p>
 
-<pre class="ruby"><span class="ruby-identifier">storages</span>[:<span class="ruby-identifier">backup_store</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">storages</span>[<span class="ruby-value">:backup_store</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span></pre>
 
 <p>After a file is stored, it will be reuploaded from store to the provided
 backup storage.</p>
 
-<pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">avatar</span><span class="ruby-operator">:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploaded both to :store and :backup_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">avatar:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploaded both to :store and :backup_store</span></pre>
 
 <p>By default whenever stored files are deleted backed up files are deleted as
 well, but you can keep files on the “backup” storage by passing
 <code>delete: false</code>:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">backup</span>, <span class="ruby-identifier">storage</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">backup_store</span>, <span class="ruby-identifier">delete</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span>, <span class="ruby-value">delete:</span> <span class="ruby-keyword">false</span></pre>
 
 <p>Note that when adding this plugin with already existing stored files, <a
 href="../../Shrine.html">Shrine</a> won&#39;t know whether a stored file is
@@ -90,7 +90,7 @@ manually back up the existing stored files.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:storage</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_delete</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:delete</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:backup_delete</span>, <span class="ruby-keyword">true</span>))&#x000A;&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :storage option is required for backup plugin&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>].<span class="ruby-identifier">nil?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:storage</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_delete</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:delete</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:backup_delete</span>, <span class="ruby-keyword">true</span>))&#x000A;&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :storage option is required for backup plugin&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:backup_storage</span>].<span class="ruby-identifier">nil?</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

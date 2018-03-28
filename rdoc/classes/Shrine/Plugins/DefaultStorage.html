@@ -28,7 +28,7 @@ Shrine::Plugins::DefaultStorage
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/default_storage.rb">lib/shrine/plugins/default_storage.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/default_storage.rb">lib/shrine/plugins/default_storage.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -39,13 +39,13 @@ Shrine::Plugins::DefaultStorage
 storages are going to be used for this uploader&#39;s attacher (the default
 is <code>:cache</code> and <code>:store</code>).</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">cache</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">special_cache</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">special_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_storage</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:special_cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:special_store</span></pre>
 
 <p>You can also pass a block and choose the values depending on the record
 values and the name of the attachment. This is useful if you&#39;re using
 the <code>dynamic_storage</code> plugin. Example:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_storage</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>) { :<span class="ruby-node">&quot;store_#{record.username}&quot;</span> }</pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_storage</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>) { <span class="ruby-value">:&quot;store_#{record.username}&quot;</span> }</pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -79,7 +79,7 @@ the <code>dynamic_storage</code> plugin. Example:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_storage.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:cache</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:store</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_storage.rb, line 16</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:cache</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_cache</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:store</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_storage_store</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -28,7 +28,7 @@ Shrine::Plugins::PrettyLocation
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/pretty_location.rb">lib/shrine/plugins/pretty_location.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/pretty_location.rb">lib/shrine/plugins/pretty_location.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -38,7 +38,7 @@ Shrine::Plugins::PrettyLocation
 <p>The <code>pretty_location</code> plugin attempts to generate a nicer folder
 structure for uploaded files.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span></pre>
 
 <p>This plugin uses the context information from the <a
 href="../Attacher.html">Attacher</a> to try to generate a nested folder
@@ -52,7 +52,7 @@ name is used in the location. If you want to include the namespace, you can
 pass in the <code>:namespace</code> option with the desired separator as
 the value:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span>, <span class="ruby-identifier">namespace</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;_&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog_user/.../493g82jf23.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">pretty_location</span>, <span class="ruby-identifier">namespace</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog/user/.../493g82jf23.jpg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span>, <span class="ruby-value">namespace:</span> <span class="ruby-string">&quot;_&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog_user/.../493g82jf23.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span>, <span class="ruby-value">namespace:</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog/user/.../493g82jf23.jpg&quot;</span></pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -86,7 +86,7 @@ the value:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/pretty_location.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:namespace</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/pretty_location.rb, line 27</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:namespace</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

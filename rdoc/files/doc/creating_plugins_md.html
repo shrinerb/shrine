@@ -30,7 +30,7 @@ doc/creating_plugins.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -49,9 +49,9 @@ plugins that ship with <a href="../../classes/Shrine.html">Shrine</a>, you
 need to put the plugin in <code>shrine/plugins/my_plugin.rb</code> in the
 load path, and register it:</p>
 
-<pre class="ruby"><span class="ruby-comment"># shrine/plugins/my_plugin.rb</span>&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Plugins</span>&#x000A;    <span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">register_plugin</span>(:<span class="ruby-identifier">my_plugin</span>, <span class="ruby-constant">MyPlugin</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># shrine/plugins/my_plugin.rb</span>&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">Plugins</span>&#x000A;    <span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">register_plugin</span>(<span class="ruby-value">:my_plugin</span>, <span class="ruby-constant">MyPlugin</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">my_plugin</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:my_plugin</span></pre>
 
 <p>The way to make plugins actually extend Shrine&#39;s core classes is by
 defining special modules inside the plugin. Here&#39;s a list of all
@@ -62,25 +62,25 @@ defining special modules inside the plugin. Here&#39;s a list of all
 <p>For example, this is how you would make your plugin add some logging to
 uploading:</p>
 
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">InstanceMethods</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;      <span class="ruby-identifier">time</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>&#x000A;      <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;      <span class="ruby-identifier">duration</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">time</span>&#x000A;      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Upload duration: #{duration}s&quot;</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">InstanceMethods</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;      <span class="ruby-identifier">time</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>&#x000A;      <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;      <span class="ruby-identifier">duration</span> = <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">time</span>&#x000A;      <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;Upload duration: #{duration}s&quot;</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>Notice that we can call <code>super</code> to get the original behaviour.
 In addition to these modules, you can also make your plugin configurable:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">my_plugin</span>, <span class="ruby-identifier">foo</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;bar&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:my_plugin</span>, <span class="ruby-value">foo:</span> <span class="ruby-string">&quot;bar&quot;</span></pre>
 
 <p>You can do this by adding a <code>.configure</code> method to your plugin,
 which will be given any passed in arguments or blocks. Typically you&#39;ll
 want to save these options into Shrine&#39;s <code>opts</code>, so that you
 can access them inside of Shrine&#39;s methods.</p>
 
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;    <span class="ruby-identifier">uploader</span> <span class="ruby-comment"># The uploader class which called `.plugin`</span>&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">my_plugin_options</span>] = <span class="ruby-identifier">options</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">InstanceMethods</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier">foo</span>&#x000A;      <span class="ruby-identifier">opts</span>[:<span class="ruby-identifier">my_plugin_options</span>] <span class="ruby-comment">#=&gt; {foo: &quot;bar&quot;}</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;    <span class="ruby-identifier">uploader</span> <span class="ruby-comment"># The uploader class which called `.plugin`</span>&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:my_plugin_options</span>] = <span class="ruby-identifier">options</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">module</span> <span class="ruby-constant">InstanceMethods</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">foo</span>&#x000A;      <span class="ruby-identifier">opts</span>[<span class="ruby-value">:my_plugin_options</span>] <span class="ruby-comment">#=&gt; {foo: &quot;bar&quot;}</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>If your plugin depends on other plugins, you can load them inside of
 <code>.load_dependencies</code> (which is given the same arguments as
 <code>.configure</code>):</p>
 
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">versions</span> <span class="ruby-comment"># depends on the versions plugin</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span> <span class="ruby-comment"># depends on the versions plugin</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

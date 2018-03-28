@@ -30,7 +30,7 @@ doc/release_notes/2.4.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -42,7 +42,7 @@ Last Update:
 generating options.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-identifier">response_content_disposition</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;attachment; filename=\&quot;#{io.original_filename}\&quot;&quot;</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-value">response_content_disposition:</span> <span class="ruby-node">&quot;attachment; filename=\&quot;#{io.original_filename}\&quot;&quot;</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The <code>activerecord</code> plugin supports JSON and JSONB PostgreSQL
 columns.</p>
@@ -115,7 +115,7 @@ URL option. The  original <code>:host</code> option still works, but will
 be removed in <a href="../../../classes/Shrine.html">Shrine</a> 3.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-comment"># now deprecated</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;&#x000A;<span class="ruby-comment"># can be passed to #url</span>&#x000A;<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>)&#x000A;&#x000A;<span class="ruby-comment"># or can be set automatically using `default_url_options` plugin</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">host</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>}</pre>
+<pre class="ruby"><span class="ruby-comment"># now deprecated</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;&#x000A;<span class="ruby-comment"># can be passed to #url</span>&#x000A;<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>)&#x000A;&#x000A;<span class="ruby-comment"># or can be set automatically using `default_url_options` plugin</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> {<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>}</pre>
 <ul><li>
 <p>Accepting data in form of a JSON string by
 <code>Shrine.uploaded_file</code> has been  deprecated,

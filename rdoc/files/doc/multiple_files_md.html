@@ -30,7 +30,7 @@ doc/multiple_files.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-01-10 19:42:15 +0100</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -88,19 +88,19 @@ href="http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMeth
 <p>Let&#39;s create a table for our attachments, and add a foreign key for the
 main table:</p>
 
-<pre class="ruby"><span class="ruby-constant">Sequel</span>.<span class="ruby-identifier">migration</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">change</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">create_table</span> :<span class="ruby-identifier">photos</span> <span class="ruby-keyword">do</span>&#x000A;      <span class="ruby-identifier">primary_key</span> :<span class="ruby-identifier">id</span>&#x000A;      <span class="ruby-identifier">foreign_key</span> :<span class="ruby-identifier">album_id</span>, :<span class="ruby-identifier">albums</span>&#x000A;      <span class="ruby-identifier">column</span>      :<span class="ruby-identifier">image_data</span>, :<span class="ruby-identifier">text</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Sequel</span>.<span class="ruby-identifier">migration</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">change</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">create_table</span> <span class="ruby-value">:photos</span> <span class="ruby-keyword">do</span>&#x000A;      <span class="ruby-identifier">primary_key</span> <span class="ruby-value">:id</span>&#x000A;      <span class="ruby-identifier">foreign_key</span> <span class="ruby-value">:album_id</span>, <span class="ruby-value">:albums</span>&#x000A;      <span class="ruby-identifier">column</span>      <span class="ruby-value">:image_data</span>, <span class="ruby-value">:text</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>In our new model we can create a <a
 href="../../classes/Shrine.html">Shrine</a> attachment attribute:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-2.+Nested+attributes">2. Nested attributes<span><a href="#label-2.+Nested+attributes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>In our main model we can now declare the association to the new table, and
 allow it to directly accept attributes for the associated records:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Album</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">one_to_many</span> :<span class="ruby-identifier">photos</span>&#x000A;&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">nested_attributes</span> <span class="ruby-comment"># load the plugin</span>&#x000A;  <span class="ruby-identifier">nested_attributes</span> :<span class="ruby-identifier">photos</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Album</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">one_to_many</span> <span class="ruby-value">:photos</span>&#x000A;&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:nested_attributes</span> <span class="ruby-comment"># load the plugin</span>&#x000A;  <span class="ruby-identifier">nested_attributes</span> <span class="ruby-value">:photos</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-3.+View">3. View<span><a href="#label-3.+View">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

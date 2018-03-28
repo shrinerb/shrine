@@ -30,12 +30,43 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-01-27 14:16:36 +0100</span>
+<span class='datetime'>2018-03-28 23:45:48 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.10.0+-282018-03-28-29">2.10.0 (2018-03-28)<span><a href="#label-2.10.0+-282018-03-28-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Add <code>:fastimage</code> analyzer to <code>determine_mime_type</code>
+plugin (@mokolabs)</p>
+</li><li>
+<p>Keep download endpoint URL the same regardless of metadata ordering
+(@MSchmidt)</p>
+</li><li>
+<p>Remove <code>:rack_mime</code> extension inferrer from the
+<code>infer_extension</code> plugin (@janko-m)</p>
+</li><li>
+<p>Allow <code>UploadedFile#download</code> to accept a block for temporary
+file download (@janko-m)</p>
+</li><li>
+<p>Add <code>:ruby_vips</code> analyzer to <code>store_dimensions</code>
+plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>:mini_magick</code> analyzer to <code>store_dimensions</code>
+plugin (@janko-m)</p>
+</li><li>
+<p>Soft-rename <code>:heroku</code> logging format to <code>:logfmt</code>
+(@janko-m)</p>
+</li><li>
+<p>Deprecate <code>Shrine::IO_METHODS</code> constant (@janko-m)</p>
+</li><li>
+<p>Don&#39;t require IO size to be known on upload (@janko-m)</p>
+</li><li>
+<p>Inherit the logger on subclassing <code>Shrine</code> and make it shared
+across subclasses (@hmistry)</p>
+</li></ul>
+
 <h2 id="label-2.9.0+-282018-01-27-29">2.9.0 (2018-01-27)<span><a href="#label-2.9.0+-282018-01-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Support arrays of files in <code>versions</code> plugin (@janko-m)</p>

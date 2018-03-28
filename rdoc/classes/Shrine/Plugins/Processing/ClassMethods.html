@@ -28,7 +28,7 @@ Shrine::Plugins::Processing::ClassMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/processing.rb">lib/shrine/plugins/processing.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/processing.rb">lib/shrine/plugins/processing.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -61,7 +61,7 @@ Shrine::Plugins::Processing::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-process-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-process-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 59</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">process</span>(<span class="ruby-identifier">action</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>][<span class="ruby-identifier">action</span>] <span class="ruby-operator">||=</span> []&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>][<span class="ruby-identifier">action</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-process-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 69</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">process</span>(<span class="ruby-identifier">action</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>][<span class="ruby-identifier">action</span>] <span class="ruby-operator">||=</span> []&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>][<span class="ruby-identifier">action</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">block</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

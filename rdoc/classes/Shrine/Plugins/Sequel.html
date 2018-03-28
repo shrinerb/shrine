@@ -28,7 +28,7 @@ Shrine::Plugins::Sequel
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/sequel.rb">lib/shrine/plugins/sequel.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/sequel.rb">lib/shrine/plugins/sequel.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -38,7 +38,7 @@ Shrine::Plugins::Sequel
 <p>The <code>sequel</code> plugin extends the “attachment” interface with
 support for <a href="Sequel.html">Sequel</a>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:sequel</span></pre>
 
 <h2 id="module-Shrine::Plugins::Sequel-label-Callbacks">Callbacks<span><a href="#module-Shrine::Plugins::Sequel-label-Callbacks">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -57,13 +57,13 @@ support for <a href="Sequel.html">Sequel</a>.</p>
 <p>Since attaching first saves the record with a cached attachment, then saves
 again with a stored attachment, you can detect this in callbacks:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">avatar</span>)&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_save</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed_columns</span>.<span class="ruby-identifier">include?</span>(:<span class="ruby-identifier">avatar</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;      <span class="ruby-comment"># cached</span>&#x000A;    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">changed_columns</span>.<span class="ruby-identifier">include?</span>(:<span class="ruby-identifier">avatar</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;      <span class="ruby-comment"># promoted</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:avatar</span>)&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">before_save</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">changed_columns</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value">:avatar</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span>&#x000A;      <span class="ruby-comment"># cached</span>&#x000A;    <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">changed_columns</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-value">:avatar</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;      <span class="ruby-comment"># promoted</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>If you don&#39;t want the attachment module to add any callbacks to the
 model, and would instead prefer to call these actions manually, you can
 disable callbacks:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>, <span class="ruby-identifier">callbacks</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:sequel</span>, <span class="ruby-value">callbacks:</span> <span class="ruby-keyword">false</span></pre>
 
 <h2 id="module-Shrine::Plugins::Sequel-label-Validations">Validations<span><a href="#module-Shrine::Plugins::Sequel-label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -71,12 +71,12 @@ disable callbacks:</p>
 will added to Sequel&#39;s errors upon validation. Note that if you want to
 validate presence of the attachment, you can do it directly on the model.</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(:<span class="ruby-identifier">avatar</span>)&#x000A;  <span class="ruby-identifier">validates_presence_of</span> :<span class="ruby-identifier">avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:avatar</span>)&#x000A;  <span class="ruby-identifier">validates_presence_of</span> <span class="ruby-value">:avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>If don&#39;t want the attachment module to merge file validations errors
 into model errors, you can disable it:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">sequel</span>, <span class="ruby-identifier">validations</span><span class="ruby-operator">:</span> <span class="ruby-keyword">false</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:sequel</span>, <span class="ruby-value">validations:</span> <span class="ruby-keyword">false</span></pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -112,7 +112,7 @@ into model errors, you can disable it:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/sequel.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:sequel_callbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:callbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:sequel_callbacks</span>, <span class="ruby-keyword">true</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:sequel_validations</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:validations</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:sequel_validations</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/sequel.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:sequel_callbacks</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:callbacks</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:sequel_callbacks</span>, <span class="ruby-keyword">true</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:sequel_validations</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:validations</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:sequel_validations</span>, <span class="ruby-keyword">true</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

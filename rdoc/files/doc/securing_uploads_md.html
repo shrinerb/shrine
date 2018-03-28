@@ -30,7 +30,7 @@ doc/securing_uploads.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -57,7 +57,7 @@ hold the actual MIME type of the the file. However, you can load the
 href="http://linux.die.net/man/1/file">file</a> utility to determine the
 MIME type from magic file headers.</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Limit+filesize">Limit filesize<span><a href="#label-Limit+filesize">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -67,7 +67,7 @@ at which you can apply filesize limits, depending on how you&#39;re
 accepting uploads. Firstly, you should probably add a filesize validation
 to prevent large files from being uploaded to <code>:store</code>:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_size</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>In the following sections we talk about various strategies to prevent files
 from being uploaded to cache and the temporary directory.</p>
@@ -78,13 +78,13 @@ from being uploaded to cache and the temporary directory.</p>
 plugin, you can pass in the <code>:max_size</code> option to reject files
 that are larger than the specified limit:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">upload_endpoint</span>, <span class="ruby-identifier">max_size</span><span class="ruby-operator">:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>, <span class="ruby-value">max_size:</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 20 MB</span></pre>
 
 <p>If you&#39;re doing direct uploads to Amazon S3 using the
 <code>presign_endpoint</code> plugin, you can pass in the
 <code>:content_length_range</code> presign option:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">presign_endpoint</span>, <span class="ruby-identifier">presign_options</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-identifier">content_length_range</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-value">content_length_range:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Limiting+filesize+at+application+level">Limiting filesize at application level<span><a href="#label-Limiting+filesize+at+application+level">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -101,7 +101,7 @@ href="../../classes/Shrine.html">Shrine</a> storage, but tell <a
 href="../../classes/Shrine.html">Shrine</a> to immediately delete the file
 if it failed validations by loading the <code>remove_invalid</code> plugin.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">remove_invalid</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:remove_invalid</span></pre>
 
 <h3 id="label-Paranoid+filesize+limiting">Paranoid filesize limiting<span><a href="#label-Paranoid+filesize+limiting">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -109,7 +109,7 @@ if it failed validations by loading the <code>remove_invalid</code> plugin.</p>
 you don&#39;t really care about the error message, you can use the
 <code>hooks</code> plugin and raise an error:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(:<span class="ruby-identifier">read</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">FileTooLarge</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">before_upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:read</span>)&#x000A;      <span class="ruby-identifier">raise</span> <span class="ruby-constant">FileTooLarge</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-value">20</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Limit+image+dimensions">Limit image dimensions<span><a href="#label-Limit+image+dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -126,7 +126,7 @@ determining image dimensions which has built-in protection against image
 bombs (ImageMagick for example doesn&#39;t), but you still need to prevent
 those files from being attached and processed:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">store_dimensions</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_width</span>  <span class="ruby-value">2500</span>&#x000A;    <span class="ruby-identifier">validate_max_height</span> <span class="ruby-value">2500</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_max_width</span>  <span class="ruby-value">2500</span>&#x000A;    <span class="ruby-identifier">validate_max_height</span> <span class="ruby-value">2500</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>If you&#39;re doing processing on caching, you can use the fastimage gem
 directly in a conditional.</p>
@@ -150,7 +150,7 @@ yourself from such attacks, you can load the
 re-extract metadata from cached files on assignment and override the
 received metadata.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">restore_cached_data</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span></pre>
 
 <h2 id="label-Limit+number+of+files">Limit number of files<span><a href="#label-Limit+number+of+files">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -163,7 +163,7 @@ href="https://github.com/kickstarter/rack-attack">rack-attack</a>.</p>
 <p>Also, it&#39;s generally a good idea to limit the <em>minimum</em> filesize
 as well as maximum, to prevent uploading large amounts of small files:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_min_size</span> <span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 10 KB</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">validate_min_size</span> <span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span> <span class="ruby-comment"># 10 KB</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-References">References<span><a href="#label-References">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>

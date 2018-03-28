@@ -28,7 +28,7 @@ Shrine::Plugins::StoreDimensions::DimensionsAnalyzer
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 <div class='parent'>
@@ -60,7 +60,7 @@ Superclass:
 <tr class='top-aligned-row context-row'>
 <td class='context-item-name'>SUPPORTED_TOOLS</td>
 <td>=</td>
-<td class='context-item-value'>[:fastimage]</td>
+<td class='context-item-value'>[:fastimage, :mini_magick, :ruby_vips]</td>
 <td>&nbsp;</td>
 <td class='context-item-desc'></td>
 </tr>
@@ -83,7 +83,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 116</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">tool</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;unsupported dimensions analysis tool: #{tool}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">tool</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@tool</span> = <span class="ruby-identifier">tool</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 138</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">tool</span>)&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;unknown dimensions analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(&quot;,&quot;)}&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">tool</span>)&#x000A;&#x000A;  <span class="ruby-ivar">@tool</span> = <span class="ruby-identifier">tool</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -101,7 +101,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 122</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;extract_with_#{@tool}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;  <span class="ruby-identifier">dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 144</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;extract_with_#{@tool}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;  <span class="ruby-identifier">dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

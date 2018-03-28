@@ -28,7 +28,7 @@ Shrine::Plugins::DefaultUrlOptions
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/default_url_options.rb">lib/shrine/plugins/default_url_options.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/default_url_options.rb">lib/shrine/plugins/default_url_options.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -39,14 +39,14 @@ Shrine::Plugins::DefaultUrlOptions
 options that will be applied by default for uploaded files of specified
 storages.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> {<span class="ruby-identifier">download</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>}</pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> {<span class="ruby-value">download:</span> <span class="ruby-keyword">true</span>}</pre>
 
 <p>You can also generate the default URL options dynamically by using a block,
 which will receive the <a href="../UploadedFile.html">UploadedFile</a>
 object along with any options that were passed to
 <code>UploadedFile#url</code>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">default_url_options</span>, <span class="ruby-identifier">store</span><span class="ruby-operator">:</span> <span class="ruby-operator">-</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-identifier">response_content_disposition</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;attachment; filename=\&quot;#{io.original_filename}\&quot;&quot;</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>&#x000A;  {<span class="ruby-value">response_content_disposition:</span> <span class="ruby-node">&quot;attachment; filename=\&quot;#{io.original_filename}\&quot;&quot;</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>In both cases the default options are merged with options passed to
 <code>UploadedFile#url</code>, and the latter will always have precedence
@@ -84,7 +84,7 @@ over default options.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_url_options.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url_options</span>] = (<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url_options</span>] <span class="ruby-operator">||</span> {}).<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_url_options.rb, line 21</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url_options</span>] = (<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url_options</span>] <span class="ruby-operator">||</span> {}).<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

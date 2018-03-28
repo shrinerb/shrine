@@ -30,7 +30,7 @@ doc/release_notes/2.9.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-01-27 14:16:36 +0100</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -45,7 +45,7 @@ the extension is always  unknown), or the <code>remote_url</code> plugin
 (where the extension might not be  known).</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">infer_extension</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span></pre>
 
 <h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -55,7 +55,7 @@ Basecamp&#39;s wrapper around the existing <a
 href="https://github.com/minad/mimemagic">MimeMagic</a>.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">determine_mime_type</span>, <span class="ruby-identifier">analyzer</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">marcel</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span></pre>
 <ul><li>
 <p>The <code>versions</code> plugin now supports saving arrays of files, as
 well as nested  structures of arrays and hashes.</p>
@@ -75,7 +75,7 @@ called.</p>
 which are forwarded to  <code>Shrine::Attacher.new</code>.</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>(<span class="ruby-identifier">store</span><span class="ruby-operator">:</span> :<span class="ruby-identifier">other_store</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">image</span><span class="ruby-operator">:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploads to :other_store</span></pre>
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>(<span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>) <span class="ruby-comment"># uploads to :other_store</span></pre>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>

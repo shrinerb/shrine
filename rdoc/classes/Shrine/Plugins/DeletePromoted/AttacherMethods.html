@@ -28,7 +28,7 @@ Shrine::Plugins::DeletePromoted::AttacherMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/delete_promoted.rb">lib/shrine/plugins/delete_promoted.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/delete_promoted.rb">lib/shrine/plugins/delete_promoted.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -61,7 +61,7 @@ Shrine::Plugins::DeletePromoted::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-promote-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine/plugins/delete_promoted.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier">promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">action</span><span class="ruby-operator">:</span> <span class="ruby-value">:promote</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine/plugins/delete_promoted.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">get</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">_delete</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:promote</span>)&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

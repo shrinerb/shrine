@@ -28,7 +28,7 @@ Shrine::Plugins::KeepFiles
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/keep_files.rb">lib/shrine/plugins/keep_files.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/keep_files.rb">lib/shrine/plugins/keep_files.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -52,7 +52,7 @@ the old one.</p>
 
 <p>For example, the following will keep destroyed and replaced files:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">keep_files</span>, <span class="ruby-identifier">destroyed</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>, <span class="ruby-identifier">replaced</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:keep_files</span>, <span class="ruby-value">destroyed:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">replaced:</span> <span class="ruby-keyword">true</span></pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -86,7 +86,7 @@ the old one.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">keep_files</span> = (<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">||=</span> [])&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:destroyed</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">keep_files</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:destroyed</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">keep_files</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:destroyed</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:destroyed</span>)&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:replaced</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">keep_files</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:replaced</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">keep_files</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:replaced</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:replaced</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 24</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">keep_files</span> = (<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>] <span class="ruby-operator">||=</span> [])&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:destroyed</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">keep_files</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:destroyed</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">keep_files</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:destroyed</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:destroyed</span>)&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:replaced</span>] <span class="ruby-operator">?</span> <span class="ruby-identifier">keep_files</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">:replaced</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">keep_files</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:replaced</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:replaced</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

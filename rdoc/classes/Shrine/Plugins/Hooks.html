@@ -28,7 +28,7 @@ Shrine::Plugins::Hooks
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/janko-m/shrine/blob/5a3c6b59eca9dbf4d79a6a75a6bc801937222856/lib/shrine/plugins/hooks.rb">lib/shrine/plugins/hooks.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/hooks.rb">lib/shrine/plugins/hooks.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -38,13 +38,13 @@ Shrine::Plugins::Hooks
 <p>The <code>hooks</code> plugin allows you to trigger some code around
 processing/storing/deleting of each file.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> :<span class="ruby-identifier">hooks</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span></pre>
 
 <p><a href="../../Shrine.html">Shrine</a> uses instance methods for hooks. To
 define a hook for an uploader, you just add an instance method to the
 uploader:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">around_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">rescue</span>&#x000A;    <span class="ruby-constant">ExceptionNotifier</span>.<span class="ruby-identifier">processing_failed</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">around_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">rescue</span>&#x000A;    <span class="ruby-constant">ExceptionNotifier</span>.<span class="ruby-identifier">processing_failed</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>Each hook will be called with 2 arguments, <code>io</code> and
 <code>context</code>. You should always call <code>super</code> when
@@ -87,7 +87,7 @@ when deleting a file:</p>
 <p>By default every <code>around_*</code> hook returns the result of the
 corresponding operation:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-identifier">result</span>.<span class="ruby-identifier">class</span> <span class="ruby-comment">#=&gt; Shrine::UploadedFile</span>&#x000A;    <span class="ruby-identifier">result</span> <span class="ruby-comment"># it&#39;s good to always return the result for consistent behaviour</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">around_store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-identifier">result</span>.<span class="ruby-identifier">class</span> <span class="ruby-comment">#=&gt; Shrine::UploadedFile</span>&#x000A;    <span class="ruby-identifier">result</span> <span class="ruby-comment"># it&#39;s good to always return the result for consistent behaviour</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

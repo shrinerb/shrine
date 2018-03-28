@@ -30,7 +30,7 @@ doc/release_notes/1.3.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2017-10-12 00:15:49 +0200</span>
+<span class='datetime'>2018-01-27 14:30:47 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -50,7 +50,7 @@ message.</p>
 handling of uploading logic in ORM hooks:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">before_save</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">column_changed?</span>(:<span class="ruby-identifier">image</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">image_stored?</span> <span class="ruby-comment"># promote</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">before_save</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">column_changed?</span>(<span class="ruby-value">:image</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">image_stored?</span> <span class="ruby-comment"># promote</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
@@ -113,7 +113,7 @@ doesn&#39;t modify the  input <code>UploadedFile</code> anymore.</p>
 achieved by overriding <code>Shrine#generate_location</code>:</p>
 </li></ul>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">context</span>[:<span class="ruby-identifier">phase</span>] <span class="ruby-operator">==</span> :<span class="ruby-identifier">store</span>&#x000A;      <span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:phase</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:store</span>&#x000A;      <span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>
