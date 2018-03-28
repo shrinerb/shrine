@@ -1,6 +1,5 @@
 require "test_helper"
 require "shrine/plugins/remote_url"
-require "mocha/mini_test"
 
 describe Shrine::Plugins::RemoteUrl do
   before do
