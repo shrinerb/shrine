@@ -105,21 +105,17 @@ class Shrine
     # example, you might want to split a PDf into pages:
     #
     #     process(:store) do |io, context|
-    #       pdf      = io.download
-    #       image    = MiniMagick::Image.new(pdf.path)
-    #       versions = []
+    #       pdf        = io.download
+    #       page_count = MiniMagick::Image.new(pdf.path).pages.count
+    #       pipeline   = ImageProcessing::MiniMagick.source(pdf).convert("jpg")
     #
-    #       image.pages.each_with_index do |page, index|
-    #         page_file = Tempfile.new("version-#{index}", binmode: true)
-    #         MiniMagick::Tool::Convert.new do |convert|
-    #           convert << page.path
-    #           convert << page_file.path
-    #         end
-    #         page_file.open # refresh updated file
-    #         versions << page_file
+    #       pages = page_count.times.map do |page_number|
+    #         pipeline.loader(page: page_number).call
     #       end
     #
-    #       versions # array of pages
+    #       pdf.close!
+    #
+    #       pages # array of pages
     #     end
     #
     # You can also combine Hashes and Arrays, there is no limit to the level of
