@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The direct_upload plugin has been deprecated in favor of upload_endpoint and presign_endpoint plugins. The direct_upload plugin will be removed in Shrine 3.")
+
 require "roda"
 require "json"
 
