@@ -115,7 +115,7 @@ class Shrine
     #
     #       pdf.close!
     #
-    #       pages # array of pages
+    #       { pages: pages } # array of pages
     #     end
     #
     # You can also combine Hashes and Arrays, there is no limit to the level of
