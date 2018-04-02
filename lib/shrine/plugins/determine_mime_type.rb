@@ -155,8 +155,6 @@ class Shrine
         end
 
         def call(io)
-          return nil if io.eof? # empty file doesn't have a MIME type
-
           mime_type = send(:"extract_with_#{@tool}", io)
           io.rewind
 
@@ -180,7 +178,8 @@ class Shrine
             raise Error, stderr.read unless status.success?
             $stderr.print(stderr.read)
 
-            stdout.read.strip
+            mime_type = stdout.read.strip
+            mime_type unless mime_type == "application/x-empty"
           end
         rescue Errno::ENOENT
           raise Error, "The `file` command-line tool is not installed"
@@ -197,7 +196,8 @@ class Shrine
           require "filemagic"
 
           FileMagic.open(FileMagic::MAGIC_MIME_TYPE) do |filemagic|
-            filemagic.buffer(io.read(MAGIC_NUMBER))
+            mime_type = filemagic.buffer(io.read(MAGIC_NUMBER).to_s)
+            mime_type unless mime_type == "application/x-empty"
           end
         end
 
@@ -210,6 +210,8 @@ class Shrine
 
         def extract_with_marcel(io)
           require "marcel"
+
+          return nil if io.eof? # marcel returns "application/octet-stream" for empty files
 
           Marcel::MimeType.for(io)
         end

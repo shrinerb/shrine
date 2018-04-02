@@ -8,7 +8,7 @@ describe Shrine::Plugins::DetermineMimeType do
     @uploader = uploader { plugin :determine_mime_type }
     @shrine = @uploader.class
   end
-  
+
   describe ":file analyzer" do
     before do
       @shrine.plugin :determine_mime_type, analyzer: :file
@@ -18,7 +18,7 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
     end
 
-    it "gives as much of the file to standard input as needed" do
+    it "returns text/plain for unidentified MIME types" do
       assert_equal "text/plain", @shrine.determine_mime_type(fakeio("a" * 5*1024*1024))
     end
 
@@ -67,7 +67,7 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_nil @shrine.determine_mime_type(fakeio(""))
     end
   end
-  
+
   describe ":filemagic analyzer" do
     before do
       @shrine.plugin :determine_mime_type, analyzer: :filemagic
@@ -75,6 +75,10 @@ describe Shrine::Plugins::DetermineMimeType do
 
     it "determines MIME type from file contents" do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+    end
+
+    it "returns text/plain for unidentified MIME types" do
+      assert_equal "text/plain", @shrine.determine_mime_type(fakeio("😃"))
     end
 
     it "returns nil for empty IOs" do
@@ -128,16 +132,16 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
     end
 
-    it "returns nil on unkown extension" do
+    it "extracts MIME type from file extension when IO is empty" do
+      assert_equal "image/png", @shrine.determine_mime_type(fakeio("", filename: "image.png"))
+    end
+
+    it "returns nil on unknown extension" do
       assert_nil @shrine.determine_mime_type(fakeio(filename: "file.foo"))
     end
 
     it "returns nil when input is not a file" do
       assert_nil @shrine.determine_mime_type(fakeio)
-    end
-
-    it "returns nil for empty IOs" do
-      assert_nil @shrine.determine_mime_type(fakeio(""))
     end
   end
 
@@ -151,16 +155,16 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
     end
 
+    it "extracts MIME type from file extension when IO is empty" do
+      assert_equal "image/png", @shrine.determine_mime_type(fakeio("", filename: "image.png"))
+    end
+
     it "returns nil on unkown extension" do
       assert_nil @shrine.determine_mime_type(fakeio(filename: "file.foo"))
     end
 
     it "returns nil when input is not a file" do
       assert_nil @shrine.determine_mime_type(fakeio)
-    end
-
-    it "returns nil for empty IOs" do
-      assert_nil @shrine.determine_mime_type(fakeio(""))
     end
   end
 
