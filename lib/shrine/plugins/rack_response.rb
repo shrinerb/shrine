@@ -29,11 +29,11 @@ class Shrine
     #     class FilesController < ActionController::Base
     #       def download
     #         # ...
-    #         file_response = record.attachment.to_rack_response
+    #         file_status, file_headers, file_body = record.attachment.to_rack_response
     #
-    #         response.status = file_response[0]
-    #         response.headers.merge!(file_response[1])
-    #         self.response_body = file_response[2]
+    #         response.status = file_status
+    #         response.headers.merge!(file_headers)
+    #         self.response_body = file_body
     #       end
     #     end
     #
