@@ -237,11 +237,12 @@ uploaded_file.to_json  #=> '{"id":"949sdjg834.jpg","storage":"store","metadata":
 It comes with many convenient methods that delegate to the storage:
 
 ```rb
-uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/949sdjg834.jpg"
-uploaded_file.open     #=> IO object
-uploaded_file.download #=> #<File:/var/folders/.../20180302-33119-1h1vjbq.jpg>
-uploaded_file.exists?  #=> true
-uploaded_file.delete   # deletes the file from the storage
+uploaded_file.url                 #=> "https://my-bucket.s3.amazonaws.com/949sdjg834.jpg"
+uploaded_file.open                # opens the uploaded file
+uploaded_file.download            #=> #<File:/var/folders/.../20180302-33119-1h1vjbq.jpg>
+uploaded_file.stream(destination) # streams content into the given destination
+uploaded_file.exists?             #=> true
+uploaded_file.delete              # deletes the file from the storage
 
 # open/download the uploaded file for the duration of the block
 uploaded_file.open     { |io| io.read }
