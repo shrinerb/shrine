@@ -800,7 +800,7 @@ class Shrine
         end
 
         # Calls `#download` on the storage if the storage implements it,
-        # otherwise uses #open to stream the underlying IO to a Tempfile.
+        # otherwise streams content into a newly created Tempfile.
         #
         # If a block is given, the opened Tempfile object is yielded to the
         # block, and at the end of the block it's automatically closed and
@@ -821,7 +821,7 @@ class Shrine
             tempfile = storage.download(id, *args)
           else
             tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-            open(*args) { |io| IO.copy_stream(io, tempfile) }
+            stream(tempfile, *args)
             tempfile.open
           end
 

@@ -409,6 +409,15 @@ describe Shrine::UploadedFile do
         assert_nil tempfile.path
       end
 
+      it "rewinds the uploaded file and keeps it open if it was already open" do
+        uploaded_file = @uploader.upload(fakeio("content"))
+        uploaded_file.open
+        uploaded_file.storage.expects(:open).never
+        tempfile = uploaded_file.download
+        assert_equal "content", tempfile.read
+        assert_equal "content", uploaded_file.read
+      end
+
       it "propagates exceptions that occured when creating the Tempfile" do
         Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
         assert_raises(Errno::EMFILE) { uploaded_file.download }

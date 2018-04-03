@@ -1,5 +1,7 @@
 ## HEAD
 
+* Modify `UploadedFile#download` not to reopen the uploaded file if it's already open (@janko-m)
+
 * Add `UploadedFile#stream` for streaming content into a writable object (@janko-m)
 
 * Deprecate `direct_upload` plugin in favor of `upload_endpoint` and `presign_endpoint` plugins (@janko-m)
