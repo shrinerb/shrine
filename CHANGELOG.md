@@ -1,5 +1,7 @@
 ## HEAD
 
+* Work around a bug in older versions of the `file` command with empty files (@janko-m)
+
 * Modify `UploadedFile#download` not to reopen the uploaded file if it's already open (@janko-m)
 
 * Add `UploadedFile#stream` for streaming content into a writable object (@janko-m)

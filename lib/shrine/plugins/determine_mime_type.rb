@@ -166,6 +166,8 @@ class Shrine
         def extract_with_file(io)
           require "open3"
 
+          return nil if io.eof? # file command returns "application/x-empty" for empty files
+
           Open3.popen3(*%W[file --mime-type --brief -]) do |stdin, stdout, stderr, thread|
             begin
               IO.copy_stream(io, stdin.binmode)
@@ -178,8 +180,7 @@ class Shrine
             raise Error, stderr.read unless status.success?
             $stderr.print(stderr.read)
 
-            mime_type = stdout.read.strip
-            mime_type unless mime_type == "application/x-empty"
+            stdout.read.strip
           end
         rescue Errno::ENOENT
           raise Error, "The `file` command-line tool is not installed"
@@ -195,9 +196,10 @@ class Shrine
         def extract_with_filemagic(io)
           require "filemagic"
 
+          return nil if io.eof? # FileMagic returns "application/x-empty" for empty files
+
           FileMagic.open(FileMagic::MAGIC_MIME_TYPE) do |filemagic|
-            mime_type = filemagic.buffer(io.read(MAGIC_NUMBER).to_s)
-            mime_type unless mime_type == "application/x-empty"
+            filemagic.buffer(io.read(MAGIC_NUMBER))
           end
         end
 
