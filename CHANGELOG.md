@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `UploadedFile#stream` for streaming content into a writable object (@janko-m)
+
 * Deprecate `direct_upload` plugin in favor of `upload_endpoint` and `presign_endpoint` plugins (@janko-m)
 
 ## 2.10.1 (2018-04-02)

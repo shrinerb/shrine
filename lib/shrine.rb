@@ -830,6 +830,26 @@ class Shrine
           tempfile.close! if ($! || block_given?) && tempfile
         end
 
+        # Streams uploaded file content into the sepcified destination. The
+        # destination object needs to respond to `#write`, which accepts a
+        # string and returns the number of bytes written.
+        #
+        # If the uploaded file is already opened, it will be simply rewinded
+        # after streaming finishes. Otherwise the uploaded file is opened and
+        # then closed after streaming.
+        #
+        #     destination = StringIO.new
+        #     uploaded_file.stream(destination)
+        #     destination.string #=> "..."
+        def stream(destination, *args)
+          if @io
+            IO.copy_stream(io, destination)
+            io.rewind
+          else
+            open(*args) { |io| IO.copy_stream(io, destination) }
+          end
+        end
+
         # Part of complying to the IO interface. It delegates to the internally
         # opened IO object.
         def read(*args)

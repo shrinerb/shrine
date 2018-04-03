@@ -416,6 +416,25 @@ describe Shrine::UploadedFile do
     end
   end
 
+  describe "#stream" do
+    it "opens and closes the file after streaming if it was not open" do
+      uploaded_file = @uploader.upload(fakeio("content"))
+      uploaded_file.stream(destination = StringIO.new)
+      assert_equal "content", destination.string
+      uploaded_file.storage.expects(:open)
+      uploaded_file.to_io
+    end
+
+    it "rewinds the uploaded file and keeps it open if it was already open" do
+      uploaded_file = @uploader.upload(fakeio("content"))
+      uploaded_file.open
+      uploaded_file.storage.expects(:open).never
+      uploaded_file.stream(destination = StringIO.new)
+      assert_equal "content", destination.string
+      assert_equal "content", uploaded_file.read
+    end
+  end
+
   describe "#replace" do
     it "uploads another file to the same location" do
       uploaded_file = @uploader.upload(fakeio("file"))
