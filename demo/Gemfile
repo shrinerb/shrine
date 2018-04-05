@@ -20,7 +20,7 @@ gem "dotenv"
 gem "fastimage" # for extracting dimensions
 
 # Processing
-gem "image_processing", "~> 0.10"
+gem "image_processing", "~> 1.0"
 gem "mini_magick", "~> 4.0"
 
 # Background jobs

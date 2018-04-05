@@ -503,11 +503,14 @@ with any file processing functionality, because that is a generic problem that
 belongs in separate libraries. If the type of files you're uploading are
 images, I created the [image_processing] gem which you can use with Shrine:
 
+```sh
+$ brew install imagemagick
+```
 ```rb
 # Gemfile
-gem "image_processing", "~> 0.10"
-gem "mini_magick", "~> 4.0"
+gem "image_processing", "~> 1.0"
 ```
+
 ```rb
 require "image_processing/mini_magick"
 
