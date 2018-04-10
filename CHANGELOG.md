@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't remove bucket name from S3 URL path with `:host` when `:force_path_style` is set (@janko-m)
+
 * Work around a bug in older versions of the `file` command with empty files (@janko-m)
 
 * Modify `UploadedFile#download` not to reopen the uploaded file if it's already open (@janko-m)

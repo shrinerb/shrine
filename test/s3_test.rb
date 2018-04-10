@@ -432,14 +432,17 @@ describe Shrine::Storage::S3 do
       url = s3(bucket: "my.bucket").url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
       assert_equal "http://123.cloudfront.net/foo/bar%20quux", url
 
-      url = s3(force_path_style: true).url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", url
+      url = s3(bucket: "my.bucket").url("my.bucket/foo/bar quux", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/my.bucket/foo/bar%20quux", url
 
-      url = s3(force_path_style: true).url("my-bucket/bar quux", host: "http://123.cloudfront.net", public: true)
+      url = s3(bucket: "my-bucket").url("my-bucket/bar quux", host: "http://123.cloudfront.net", public: true)
       assert_equal "http://123.cloudfront.net/my-bucket/bar%20quux", url
 
-      url = s3.url("my-bucket/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/my-bucket/bar%20quux", url
+      url = s3(bucket: "my-bucket", force_path_style: true).url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/my-bucket/foo/bar%20quux", url
+
+      url = s3(bucket: "my-bucket", force_path_style: true).url("my-bucket/bar quux", host: "http://123.cloudfront.net", public: true)
+      assert_equal "http://123.cloudfront.net/my-bucket/my-bucket/bar%20quux", url
     end
 
     it "encodes non-ASCII characters, quotes, and spaces in :content_disposition" do
