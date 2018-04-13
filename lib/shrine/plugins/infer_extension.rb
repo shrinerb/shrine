@@ -30,7 +30,7 @@ class Shrine
     #
     #     plugin :infer_extension, inferrer: -> (mime_type, inferrers) do
     #       # don't add extension if the file is a text file
-    #       inferrrs[:rack_mime].call(mime_type) unless mime_type == "text/plain"
+    #       inferrers[:rack_mime].call(mime_type) unless mime_type == "text/plain"
     #     end
     #
     # You can also use methods for inferring extension directly:
