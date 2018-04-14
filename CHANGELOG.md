@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't raise exception in `:mini_magick` and `:ruby_vips` dimensions analyzers when image is invalid (@janko-m)
+
 * Don't remove bucket name from S3 URL path with `:host` when `:force_path_style` is set (@janko-m)
 
 * Work around a bug in older versions of the `file` command with empty files (@janko-m)

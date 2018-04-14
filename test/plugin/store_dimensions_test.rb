@@ -19,6 +19,10 @@ describe Shrine::Plugins::StoreDimensions do
     it "extracts dimensions from non-files" do
       assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
     end
+
+    it "returns nil for non-images" do
+      assert_nil @shrine.extract_dimensions(fakeio)
+    end
   end
 
   describe ":mini_magick analyzer" do
@@ -34,6 +38,10 @@ describe Shrine::Plugins::StoreDimensions do
       assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
       assert_equal [100, 67], @shrine.extract_dimensions(@uploader.upload(image))
     end
+
+    it "returns nil for non-images" do
+      assert_nil @shrine.extract_dimensions(fakeio)
+    end
   end unless ENV["CI"]
 
   describe ":ruby_vips analyzer" do
@@ -48,6 +56,10 @@ describe Shrine::Plugins::StoreDimensions do
     it "extracts dimensions from non-files" do
       assert_equal [100, 67], @shrine.extract_dimensions(fakeio(image.read))
       assert_equal [100, 67], @shrine.extract_dimensions(@uploader.upload(image))
+    end
+
+    it "returns nil for non-images" do
+      assert_nil @shrine.extract_dimensions(fakeio)
     end
   end unless ENV["CI"]
 

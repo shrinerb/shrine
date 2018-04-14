@@ -158,11 +158,13 @@ class Shrine
         def extract_with_mini_magick(io)
           require "mini_magick"
           ensure_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
+        rescue MiniMagick::Error
         end
 
         def extract_with_ruby_vips(io)
           require "vips"
           ensure_file(io) { |file| Vips::Image.new_from_file(file.path).size }
+        rescue Vips::Error
         end
 
         def ensure_file(io)
