@@ -37,6 +37,11 @@ class Shrine
     #       bucket: "my-app",
     #     )
     #
+    # The core features of this storage requires the following AWS permissions:
+    # `s3:ListBucket`, `s3:PutObject`, `s3:GetObject`, and `s3:DeleteObject`.
+    # If you have additional upload options configured such as setting object
+    # ACLs, then additional permissions may be required.
+    #
     # The storage exposes the underlying Aws objects:
     #
     #     s3.client #=> #<Aws::S3::Client>
