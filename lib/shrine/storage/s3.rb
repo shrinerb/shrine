@@ -28,7 +28,7 @@ class Shrine
     #
     #     gem "aws-sdk-s3", "~> 1.2"
     #
-    # It is initialized with the following 4 required options:
+    # It can be initialized by providing the bucket name and credentials:
     #
     #     s3 = Shrine::Storage::S3.new(
     #       access_key_id: "abc",
@@ -178,34 +178,37 @@ class Shrine
 
       attr_reader :client, :bucket, :prefix, :host, :upload_options
 
-      # Initializes a storage for uploading to S3.
+      # Initializes a storage for uploading to S3. All options are forwarded to
+      # [`Aws::S3::Client#initialize`], except the following:
       #
-      # :access_key_id
-      # :secret_access_key
-      # :region
       # :bucket
-      # :   Credentials required by the `aws-sdk-s3` gem.
+      # : (Required). Name of the S3 bucket.
       #
       # :prefix
-      # :   "Folder" name inside the bucket to store files into.
+      # : "Directory" inside the bucket to store files into.
       #
       # :upload_options
-      # :   Additional options that will be used for uploading files, they will
-      #     be passed to [`Aws::S3::Object#put`], [`Aws::S3::Object#copy_from`]
-      #     and [`Aws::S3::Bucket#presigned_post`].
+      # : Additional options that will be used for uploading files, they will
+      #   be passed to [`Aws::S3::Object#put`], [`Aws::S3::Object#copy_from`]
+      #   and [`Aws::S3::Bucket#presigned_post`].
       #
       # :multipart_threshold
-      # :   If the input file is larger than the specified size, a parallelized
-      #     multipart will be used for the upload/copy. Defaults to
-      #     `{upload: 15*1024*1024, copy: 100*1024*1024}` (15MB for upload
-      #     requests, 100MB for copy requests).
+      # : If the input file is larger than the specified size, a parallelized
+      #   multipart will be used for the upload/copy. Defaults to
+      #   `{upload: 15*1024*1024, copy: 100*1024*1024}` (15MB for upload
+      #   requests, 100MB for copy requests).
       #
-      # All other options are forwarded to [`Aws::S3::Client#initialize`].
+      # In addition to specifying the `:bucket`, you'll also need to provide
+      # AWS credentials. The most common way is to provide them directly via
+      # `:access_key_id`, `:secret_access_key`, and `:region` options. But you
+      # can also use any other way of authentication specified in the [AWS SDK
+      # documentation][configuring AWS SDK].
       #
       # [`Aws::S3::Object#put`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
       # [`Aws::S3::Object#copy_from`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
+      # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, **s3_options)
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
         resource = Aws::S3::Resource.new(**s3_options)
