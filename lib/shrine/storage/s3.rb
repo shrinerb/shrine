@@ -68,7 +68,7 @@ class Shrine
     # Sometimes you'll want to add additional upload options to all S3 uploads.
     # You can do that by passing the `:upload` option:
     #
-    #     Shrine::Storage::S3.new(upload_options: {acl: "private"}, **s3_options)
+    #     Shrine::Storage::S3.new(upload_options: { acl: "private" }, **s3_options)
     #
     # These options will be passed to aws-sdk-s3's methods for [uploading],
     # [copying] and [presigning].
@@ -88,7 +88,7 @@ class Shrine
     #
     # or when using the uploader directly
     #
-    #     uploader.upload(file, upload_options: {acl: "private"})
+    #     uploader.upload(file, upload_options: { acl: "private" })
     #
     # Note that, unlike the `:upload_options` storage option, upload options
     # given on the uploader level won't be forwarded for generating presigns,
@@ -150,15 +150,15 @@ class Shrine
     # multipart copy if they're larger than 150MB, but you can change the
     # thresholds via `:multipart_threshold`.
     #
-    #     thresholds = {upload: 30*1024*1024, copy: 200*1024*1024}
+    #     thresholds = { upload: 30*1024*1024, copy: 200*1024*1024 }
     #     Shrine::Storage::S3.new(multipart_threshold: thresholds, **s3_options)
     #
     # If you want to change how many threads aws-sdk-s3 will use for multipart
     # upload/copy, you can use the `upload_options` plugin to specify
     # `:thread_count`.
     #
-    #     plugin :upload_options, store: ->(io, context) do
-    #       {thread_count: 5}
+    #     plugin :upload_options, store: -> (io, context) do
+    #       { thread_count: 5 }
     #     end
     #
     # ## Clearing cache
