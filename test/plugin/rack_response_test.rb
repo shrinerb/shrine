@@ -4,9 +4,7 @@ require "rack/test_app"
 
 describe Shrine::Plugins::RackResponse do
   before do
-    @uploader = uploader do
-      plugin :rack_response
-    end
+    @uploader = uploader { plugin :rack_response }
   end
 
   it "returns 200 status" do
