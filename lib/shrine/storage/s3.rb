@@ -363,8 +363,7 @@ class Shrine
       def clear!(&block)
         objects_to_delete = Enumerator.new do |yielder|
           bucket.objects(prefix: prefix).each do |object|
-            condition = block.call(object) if block
-            yielder << object unless condition == false
+            yielder << object if block.nil? || block.call(object)
           end
         end
 
