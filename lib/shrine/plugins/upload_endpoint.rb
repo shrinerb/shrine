@@ -3,6 +3,7 @@
 require "rack"
 
 require "json"
+require "digest"
 
 class Shrine
   module Plugins
@@ -61,6 +62,16 @@ class Shrine
     #
     # If the uploaded file is larger than the specified value, a `413 Payload
     # Too Large` response will be returned.
+    #
+    # ## Checksum
+    #
+    # If you want the upload endpoint to verify the integrity of the uploaded
+    # file, you can include the `Content-MD5` header in the request filled
+    # with the base64-encoded MD5 hash of the file calculated on the client
+    # side, and it will automatically be verified on the received file.
+    #
+    # If the checksums don't match, a `460 Checksum Mismatch` response is
+    # returned.
     #
     # ## Context
     #
@@ -187,6 +198,8 @@ class Shrine
           error!(400, "Upload Not Found") unless file.is_a?(Hash) && file[:tempfile]
           error!(413, "Upload Too Large") if @max_size && file[:tempfile].size > @max_size
 
+          verify_checksum!(file[:tempfile], request.env["HTTP_CONTENT_MD5"]) if request.env["HTTP_CONTENT_MD5"]
+
           @shrine_class.rack_file(file)
         end
 
@@ -220,6 +233,14 @@ class Shrine
           else
             [200, {"Content-Type" => "application/json"}, [object.to_json]]
           end
+        end
+
+        # Verifies the provided checksum against the received file.
+        def verify_checksum!(file, provided_checksum)
+          error!(400, "The Content-MD5 you specified was invalid") if provided_checksum.length != 24
+
+          calculated_checksum = Digest::MD5.file(file.path).base64digest
+          error!(460, "The Content-MD5 you specified did not match what was recieved") if provided_checksum != calculated_checksum
         end
 
         # Used for early returning an error response.

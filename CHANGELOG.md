@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add ability to specify upload checksum in `upload_endpoint` plugin (@janko-m)
+
 * Don't raise exception in `:mini_magick` and `:ruby_vips` dimensions analyzers when image is invalid (@janko-m)
 
 * Don't remove bucket name from S3 URL path with `:host` when `:force_path_style` is set (@janko-m)

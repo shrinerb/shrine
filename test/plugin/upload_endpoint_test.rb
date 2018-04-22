@@ -83,6 +83,19 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal image.read, uploaded_file.read
   end
 
+  it "verifies provided checksum" do
+    response = app.post "/", multipart: {file: image}, headers: {"Content-MD5" => Digest::MD5.base64digest(image.read)}
+    assert_equal 200, response.status
+
+    response = app.post "/", multipart: {file: image}, headers: {"Content-MD5" => Digest::MD5.base64digest("")}
+    assert_equal 460, response.status
+    assert_equal "The Content-MD5 you specified did not match what was recieved", response.body_binary
+
+    response = app.post "/", multipart: {file: image}, headers: {"Content-MD5" => "foo"}
+    assert_equal 400, response.status
+    assert_equal "The Content-MD5 you specified was invalid", response.body_binary
+  end
+
   it "accepts response proc" do
     @uploader.class.plugin :upload_endpoint, rack_response: -> (o, r) do
       [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
