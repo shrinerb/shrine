@@ -337,7 +337,7 @@ class Shrine
         url
       end
 
-      # Returns a signature for direct uploads. Internally it calls
+      # Returns URL, params and headers for direct uploads. Internally it calls
       # [`Aws::S3::Bucket#presigned_post`], and forwards any additional options
       # to it.
       #
@@ -346,7 +346,9 @@ class Shrine
         options = @upload_options.merge(options)
         options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
 
-        object(id).presigned_post(options)
+        presigned_post = object(id).presigned_post(options)
+
+        Struct.new(:url, :fields).new(presigned_post.url, presigned_post.fields)
       end
 
       # Deletes the file from the storage.

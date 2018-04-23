@@ -127,6 +127,39 @@ describe Shrine::Storage::Linter do
     end
   end
 
+  describe "#presign" do
+    before do
+      @storage.instance_eval { def presign(id, **options); { url: "foo" }; end }
+    end
+
+    it "passes for correct implementation" do
+      @linter.call
+    end
+
+    it "tests that result is a Hash" do
+      @storage.instance_eval { def presign(id, **options); Object.new; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "passes for result that responds to #to_h" do
+      @storage.instance_eval { def presign(id, **options); Struct.new(:url).new("foo"); end }
+      @linter.call
+    end
+
+    it "tests that Hash includes :url key" do
+      @storage.instance_eval { def presign(id, **options); {}; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+
+      @storage.instance_eval { def presign(id, **options); Struct.new(:fields).new({}); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that method accepts options" do
+      @storage.instance_eval { def presign(id); { url: "foo" }; end }
+      assert_raises(ArgumentError) { @linter.call }
+    end
+  end
+
   it "can print errors as warnings" do
     @storage.instance_eval { def exists?(id); true; end }
     linter = Shrine::Storage::Linter.new(@storage, action: :warn)

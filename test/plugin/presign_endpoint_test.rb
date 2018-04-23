@@ -56,11 +56,11 @@ describe Shrine::Plugins::PresignEndpoint do
   it "accepts presign proc" do
     @uploader.class.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
-      presign: -> (i, o, r) { {url: "foo", fields: o, headers: {}} }
+      presign: -> (i, o, r) { {url: "foo", fields: o, headers: {"foo" => "bar"}} }
     response = app.get "/"
     assert_match "foo",        response.body_json["url"]
     assert_equal "image/jpeg", response.body_json["fields"]["content_type"]
-    assert_equal Hash.new,     response.body_json["headers"]
+    assert_equal "bar",        response.body_json["headers"]["foo"]
   end
 
   it "sets default fields and headers for presign" do
@@ -73,7 +73,7 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal Hash.new, response.body_json["headers"]
   end
 
-  it "supports presign as an object" do
+  it "supports presign as an object that responds to #to_h" do
     @uploader.class.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { Struct.new(:url, :fields).new("foo", o) }
@@ -83,12 +83,14 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal Hash.new,     response.body_json["headers"]
   end
 
-  it "allows presigns to provide headers" do
+  deprecated "supports presign as a custom object" do
     @uploader.class.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
-      presign: -> (i, o, r) { OpenStruct.new(url: "foo", fields: {}, headers: {"foo" => "bar"}) }
+      presign: -> (i, o, r) { Object.new.tap { |o| def o.url; "foo"; end; def o.fields; {}; end } }
     response = app.get "/"
-    assert_equal Hash["foo" => "bar"], response.body_json["headers"]
+    assert_match "foo",    response.body_json["url"]
+    assert_equal Hash.new, response.body_json["fields"]
+    assert_equal Hash.new, response.body_json["headers"]
   end
 
   it "accepts response proc" do
@@ -96,7 +98,7 @@ describe Shrine::Plugins::PresignEndpoint do
       [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
     response = app.get "/"
-    assert_equal ["url", "fields", "headers"], JSON.parse(response.body_binary)["data"].keys
+    assert_equal ["fields", "headers", "url"], JSON.parse(response.body_binary)["data"].keys.sort
     assert_equal "application/vnd.api+json", response.headers["Content-Type"]
   end
 

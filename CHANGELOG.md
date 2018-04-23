@@ -1,5 +1,9 @@
 ## HEAD
 
+* Return a `Struct` instead of a `Aws::S3::PresignedPost` object in `S3#presign` (@janko-m)
+
+* Deprecate `Storage#presign` returning a custom object in `presign_endpoint` (@janko-m)
+
 * Allow `Storage#presign` to return a Hash in `presign_endpoint` (@janko-m)
 
 * Add ability to specify upload checksum in `upload_endpoint` plugin (@janko-m)

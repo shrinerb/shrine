@@ -53,6 +53,10 @@ class Shrine
           storage.upload(io_factory.call, id = "quux".dup)
           lint_clear(id)
         end
+
+        if storage.respond_to?(:presign)
+          lint_presign(id)
+        end
       end
 
       def lint_download(id)
@@ -99,6 +103,12 @@ class Shrine
       def lint_clear(id)
         storage.clear!
         error :clear!, "file still #exists? after clearing" if storage.exists?(id)
+      end
+
+      def lint_presign(id)
+        data = storage.presign(id, {})
+        error :presign, "result should be a Hash" unless data.respond_to?(:to_h)
+        error :presign, "result should include :url key" unless data.to_h.key?(:url)
       end
 
       private
