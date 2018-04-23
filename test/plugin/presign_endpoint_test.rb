@@ -3,7 +3,6 @@ require "shrine/plugins/presign_endpoint"
 require "shrine/storage/s3"
 require "rack/test_app"
 require "json"
-require "ostruct"
 
 describe Shrine::Plugins::PresignEndpoint do
   def app
@@ -57,7 +56,27 @@ describe Shrine::Plugins::PresignEndpoint do
   it "accepts presign proc" do
     @uploader.class.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
-      presign: -> (i, o, r) { OpenStruct.new(url: "foo", fields: o) }
+      presign: -> (i, o, r) { {url: "foo", fields: o, headers: {}} }
+    response = app.get "/"
+    assert_match "foo",        response.body_json["url"]
+    assert_equal "image/jpeg", response.body_json["fields"]["content_type"]
+    assert_equal Hash.new,     response.body_json["headers"]
+  end
+
+  it "sets default fields and headers for presign" do
+    @uploader.class.plugin :presign_endpoint,
+      presign_options: { content_type: "image/jpeg" },
+      presign: -> (i, o, r) { {url: "foo"} }
+    response = app.get "/"
+    assert_match "foo",    response.body_json["url"]
+    assert_equal Hash.new, response.body_json["fields"]
+    assert_equal Hash.new, response.body_json["headers"]
+  end
+
+  it "supports presign as an object" do
+    @uploader.class.plugin :presign_endpoint,
+      presign_options: { content_type: "image/jpeg" },
+      presign: -> (i, o, r) { Struct.new(:url, :fields).new("foo", o) }
     response = app.get "/"
     assert_match "foo",        response.body_json["url"]
     assert_equal "image/jpeg", response.body_json["fields"]["content_type"]

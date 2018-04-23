@@ -220,11 +220,15 @@ class Shrine
             presign = storage.presign(location, options)
           end
 
-          url     = presign.url
-          fields  = presign.fields
-          headers = presign.headers if presign.respond_to?(:headers)
+          if presign.is_a?(Hash)
+            { fields: {}, headers: {} }.merge(presign)
+          else
+            url     = presign.url
+            fields  = presign.fields
+            headers = presign.headers if presign.respond_to?(:headers)
 
-          { url: url, fields: fields.to_h, headers: headers.to_h }
+            { url: url, fields: fields.to_h, headers: headers.to_h }
+          end
         end
 
         # Transforms the presign hash into a JSON response. It returns a Rack

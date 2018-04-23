@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow `Storage#presign` to return a Hash in `presign_endpoint` (@janko-m)
+
 * Add ability to specify upload checksum in `upload_endpoint` plugin (@janko-m)
 
 * Don't raise exception in `:mini_magick` and `:ruby_vips` dimensions analyzers when image is invalid (@janko-m)
