@@ -76,7 +76,9 @@ describe Shrine::Plugins::Parallelize do
   end
 
   it "propagates any errors" do
+    Thread.report_on_exception = false if Thread.respond_to?(:report_on_exception)
     @uploader.storage.instance_eval { def upload(*); raise; end }
     assert_raises(RuntimeError) { @uploader.upload(fakeio) }
+    Thread.report_on_exception = true if Thread.respond_to?(:report_on_exception)
   end
 end
