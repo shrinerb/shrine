@@ -95,7 +95,7 @@ class Shrine
     # `:presign` option:
     #
     #     plugin :presign_endpoint, presign: -> (id, options, request) do
-    #       # return an object that responds to #url, #fields, and #headers
+    #       # return a Hash with :url, :fields, and :headers keys
     #     end
     #
     # ## Response
@@ -103,8 +103,8 @@ class Shrine
     # The response returned by the endpoint can be customized via the
     # `:rack_response` option:
     #
-    #     plugin :presign_endpoint, rack_response: -> (hash, request) do
-    #       body = { endpoint: hash[:url], params: hash[:fields], headers: hash[:headers] }.to_json
+    #     plugin :presign_endpoint, rack_response: -> (data, request) do
+    #       body = { endpoint: data[:url], params: data[:fields], headers: data[:headers] }.to_json
     #       [201, { "Content-Type" => "application/json" }, [body]]
     #     end
     #
@@ -215,17 +215,17 @@ class Shrine
         # option is given, calls that instead of calling `#presign`.
         def generate_presign(location, options, request)
           if @presign
-            presign = @presign.call(location, options, request)
+            data = @presign.call(location, options, request)
           else
-            presign = storage.presign(location, options)
+            data = storage.presign(location, options)
           end
 
-          if presign.is_a?(Hash)
-            { fields: {}, headers: {} }.merge(presign)
+          if data.is_a?(Hash)
+            { fields: {}, headers: {} }.merge(data)
           else
-            url     = presign.url
-            fields  = presign.fields
-            headers = presign.headers if presign.respond_to?(:headers)
+            url     = data.url
+            fields  = data.fields
+            headers = data.headers if data.respond_to?(:headers)
 
             { url: url, fields: fields.to_h, headers: headers.to_h }
           end
