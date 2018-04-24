@@ -9,7 +9,7 @@ rvm:
   - 2.4
   - 2.5
   - ruby-head
-  - jruby-9.1.15.0
+  - jruby-9.1.17.0
   - jruby-head
 
 before_install:
