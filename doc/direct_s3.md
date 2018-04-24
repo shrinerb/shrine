@@ -28,6 +28,7 @@ different prefixes (or even different buckets):
 
 ```rb
 # Gemfile
+gem "shrine", "~> 2.11"
 gem "aws-sdk-s3", "~> 1.2"
 ```
 ```rb
@@ -69,7 +70,7 @@ client.put_bucket_cors(
   cors_configuration: {
     cors_rules: [{
       allowed_headers: ["Authorization", "Content-Type", "Origin"],
-      allowed_methods: ["GET", "POST"],
+      allowed_methods: ["GET", "POST", "PUT"],
       allowed_origins: ["*"],
       max_age_seconds: 3000,
     }]
@@ -79,27 +80,6 @@ client.put_bucket_cors(
 
 Note that due to DNS propagation it may take some time for the CORS update to
 be applied.
-
-## File hash
-
-After direct S3 uploads we'll need to manually construct Shrine's JSON
-representation of an uploaded file:
-
-```rb
-{
-  "id": "349234854924394", # requied
-  "storage": "cache", # required
-  "metadata": {
-    "size": 45461, # optional, but recommended
-    "filename": "foo.jpg", # optional
-    "mime_type": "image/jpeg" # optional
-  }
-}
-```
-
-* `id` – location of the file on S3 (minus the `:prefix`)
-* `storage` – direct uploads typically use the `:cache` storage
-* `metadata` – hash of metadata extracted from the file
 
 ## Strategy A (dynamic)
 
@@ -113,7 +93,7 @@ upload the file to S3. The `presign_endpoint` plugin gives us this presign
 route, so we just need to mount it in our application:
 
 ```rb
-Shrine.plugin :presign_endpoint
+Shrine.plugin :presign_endpoint, presign_options: { method: :put }
 ```
 ```rb
 # config.ru (Rack)
@@ -129,34 +109,28 @@ Rails.application.routes.draw do
 end
 ```
 
-The above will create a `GET /presign` route, which returns the S3 URL which
-the file should be uploaded to, along with the required POST parameters and
-request headers.
+The above will create a `GET /presign` route, which internally calls
+[`Shrine::Storage::S3#presign`], returning the HTTP verb (PUT) and the S3 URL
+to which the file should be uploaded, along with the required parameters (will
+only be present for POST presigns) and request headers.
 
 ```rb
 # GET /presign
 {
-  "url": "https://my-bucket.s3-eu-west-1.amazonaws.com",
-  "fields": {
-    "key": "cache/b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
-    "policy": "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19",
-    "x-amz-credential": "AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request",
-    "x-amz-algorithm": "AWS4-HMAC-SHA256",
-    "x-amz-date": "20151024T001129Z",
-    "x-amz-signature": "c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4"
-  },
+  "method": "put",
+  "url": "https://my-bucket.s3.eu-central-1.amazonaws.com/cache/my-key?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIMDH2HTSB3RKB4WQ%2F20180424%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20180424T212022Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=1036b9cefe52f0b46c1f257f6817fc3c55cd8d9004f87a38cf86177762359375",
+  "fields": {},
   "headers": {}
 }
 ```
 
-On the client side you can then make a request to the presign endpoint as soon
-as the user selects a file, and use the returned request information to upload
+On the client side you can make it so that, when the user selects a file,
+upload parameters are fetched from presign endpoint, and are used to upload
 the selected file directly to S3. It's recommended to use [Uppy] for this.
 
 Once the file has been uploaded, you can generate a JSON representation of the
-uploaded file on the client-side, and write it to the hidden attachment field.
-The `id` field needs to be equal to the `key` presign field minus the storage
-`:prefix`.
+uploaded file on the client-side, and write it to the hidden attachment field
+(or send it directly in an AJAX request).
 
 ```rb
 {
@@ -170,9 +144,14 @@ The `id` field needs to be equal to the `key` presign field minus the storage
 }
 ```
 
-This JSON string will now be submitted and assigned to the attachment attribute
-instead of the raw file. See the [demo app] for an example JavaScript
-implementation of multiple direct S3 uploads.
+* `id` – location of the file on S3 (minus the `:prefix`)
+* `storage` – direct uploads typically use the `:cache` storage
+* `metadata` – hash of metadata extracted from the file
+
+Once submitted this JSON will then be assigned to the attachment attribute
+instead of the raw file. See [this walkthrough][direct S3 upload walkthrough]
+for adding direct S3 uploads from scratch using [Uppy], as well as the [demo
+app] for a complete example of multiple direct S3 uploads.
 
 ## Strategy B (static)
 
@@ -182,8 +161,8 @@ implementation of multiple direct S3 uploads.
 
 An alternative to the previous strategy is to generate an S3 upload form on
 page render. The user can then select a file and submit it directly to S3. For
-generating the form we can use `Shrine::Storage::S3#presign`, which returns a
-[`Aws::S3::PresignedPost`] object with `#url` and `#fields` attributes:
+generating the form can use [`Shrine::Storage::S3#presign`], which returns URL
+and form fields that should be used for the upload.
 
 ```rb
 presigned_data = Shrine.storages[:cache].presign(
@@ -287,6 +266,26 @@ class MyUploader < Shrine
 end
 ```
 
+## Checksum
+
+To have AWS S3 verify the integrity of the uploaded data, you can use a
+checksum. For that you first need to tell AWS S3 that you're going to be
+including the `Content-MD5` request header in the upload request, by adding
+the `:content_md5` presign option.
+
+```rb
+Shrine.plugin :presign_endpoint, presign_options: -> (request) do
+  {
+    content_md5: request.params["checksum"],
+    method: :put,
+  }
+end
+```
+
+With the above setup, you can pass the MD5 hash of the file via the `checksum`
+query parameter in the request to the presign endpoint. See [this
+walkthrough][checksum walkthrough] for a complete JavaScript solution.
+
 ## Clearing cache
 
 Directly uploaded files won't automatically be deleted from your temporary
@@ -353,7 +352,10 @@ Shrine::Attacher.promote do |data|
 end
 ```
 
+[`Shrine::Storage::S3#presign`]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
+[direct S3 upload walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-s3-uploads-to-a-roda--sequel-app-with-shrine
+[checksum walkthrough]: https://gist.github.com/janko-m/4470b5fb0737c5c1f8bcfe8cdc3fd296#using-checksums-to-verify-integrity-of-direct-uploads-with-shrine--uppy
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
 [Uppy]: https://uppy.io
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode

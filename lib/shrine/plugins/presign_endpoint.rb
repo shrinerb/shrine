@@ -90,6 +90,8 @@ class Shrine
     #       }
     #     end
     #
+    # The `:presign_options` can be a Proc or a Hash.
+    #
     # ## Presign
     #
     # You can also customize how the presign itself is generated via the

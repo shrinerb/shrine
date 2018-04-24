@@ -66,9 +66,10 @@ class Shrine
     # ## Checksum
     #
     # If you want the upload endpoint to verify the integrity of the uploaded
-    # file, you can include the `Content-MD5` header in the request filled
-    # with the base64-encoded MD5 hash of the file calculated on the client
-    # side, and it will automatically be verified on the received file.
+    # file, you can include the `Content-MD5` header in the request filled with
+    # the base64-encoded MD5 hash of the file that was calculated prior to the
+    # upload, and the endpoint will automatically use it to verify the uploaded
+    # data.
     #
     # If the checksums don't match, a `460 Checksum Mismatch` response is
     # returned.
