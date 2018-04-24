@@ -108,6 +108,7 @@ class Shrine
       def lint_presign(id)
         data = storage.presign(id, {})
         error :presign, "result should be a Hash" unless data.respond_to?(:to_h)
+        error :presign, "result should include :method key" unless data.to_h.key?(:method)
         error :presign, "result should include :url key" unless data.to_h.key?(:url)
       end
 

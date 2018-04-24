@@ -454,9 +454,10 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#presign" do
-    it "returns a PresignedPost for the given id" do
+    it "returns POST request data for the given id" do
       presign = @s3.presign("foo")
-      refute_empty presign.url
+      assert_equal :post, presign.method
+      assert_match /^http/, presign.url
       assert_equal "foo", presign.fields["key"]
     end
 
@@ -479,6 +480,7 @@ describe Shrine::Storage::S3 do
 
     it "can generate parameters for PUT method" do
       data = @s3.presign("foo", method: :put)
+      assert_equal :put, data[:method]
       assert_includes data[:url], "X-Amz-Signature"
     end
 

@@ -352,7 +352,7 @@ class Shrine
         if method == :post
           presigned_post = object(id).presigned_post(options)
 
-          Struct.new(:url, :fields).new(presigned_post.url, presigned_post.fields)
+          Struct.new(:method, :url, :fields).new(method, presigned_post.url, presigned_post.fields)
         else
           url = object(id).presigned_url(method, options)
 
@@ -372,7 +372,7 @@ class Shrine
             headers[header_name] = options[option_name] if options.key?(option_name)
           end
 
-          { url: url, headers: headers }
+          { method: method, url: url, headers: headers }
         end
       end
 

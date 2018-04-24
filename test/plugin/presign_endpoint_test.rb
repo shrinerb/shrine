@@ -27,6 +27,7 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal response.body_binary.bytesize.to_s, response.headers["Content-Length"]
     assert_equal "no-store",                         response.headers["Cache-Control"]
 
+    assert_instance_of String, response.body_json["method"]
     assert_instance_of String, response.body_json["url"]
     assert_instance_of Hash,   response.body_json["fields"]
     assert_instance_of Hash,   response.body_json["headers"]
@@ -98,7 +99,7 @@ describe Shrine::Plugins::PresignEndpoint do
       [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
     response = app.get "/"
-    assert_equal ["fields", "headers", "url"], JSON.parse(response.body_binary)["data"].keys.sort
+    assert_equal ["fields", "headers", "method", "url"], JSON.parse(response.body_binary)["data"].keys.sort
     assert_equal "application/vnd.api+json", response.headers["Content-Type"]
   end
 

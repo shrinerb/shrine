@@ -129,7 +129,7 @@ describe Shrine::Storage::Linter do
 
   describe "#presign" do
     before do
-      @storage.instance_eval { def presign(id, **options); { url: "foo" }; end }
+      @storage.instance_eval { def presign(id, **options); { method: "post", url: "foo" }; end }
     end
 
     it "passes for correct implementation" do
@@ -142,20 +142,28 @@ describe Shrine::Storage::Linter do
     end
 
     it "passes for result that responds to #to_h" do
-      @storage.instance_eval { def presign(id, **options); Struct.new(:url).new("foo"); end }
+      @storage.instance_eval { def presign(id, **options); Struct.new(:method, :url).new("post", "foo"); end }
       @linter.call
     end
 
     it "tests that Hash includes :url key" do
-      @storage.instance_eval { def presign(id, **options); {}; end }
+      @storage.instance_eval { def presign(id, **options); { method: "post" }; end }
       assert_raises(Shrine::LintError) { @linter.call }
 
-      @storage.instance_eval { def presign(id, **options); Struct.new(:fields).new({}); end }
+      @storage.instance_eval { def presign(id, **options); Struct.new(:method).new("post"); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "tests that Hash includes :method key" do
+      @storage.instance_eval { def presign(id, **options); { url: "foo" }; end }
+      assert_raises(Shrine::LintError) { @linter.call }
+
+      @storage.instance_eval { def presign(id, **options); Struct.new(:url).new("foo"); end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
 
     it "tests that method accepts options" do
-      @storage.instance_eval { def presign(id); { url: "foo" }; end }
+      @storage.instance_eval { def presign(id); { method: "post", url: "foo" }; end }
       assert_raises(ArgumentError) { @linter.call }
     end
   end

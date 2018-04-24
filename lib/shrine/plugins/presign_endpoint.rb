@@ -36,12 +36,13 @@ class Shrine
     # the default synchronous workflow, so we want to generate parameters for
     # uploads to the temporary (`:cache`) storage.
     #
-    # The above will create a `GET /presign` endpoint, which generates presign
-    # URL, fields, and headers using the specified storage, and returns it in
-    # JSON format.
+    # The above will create a `GET /presign` endpoint which returns request
+    # method, URL, fields, and headers needed for a single upload directly to
+    # the storage service.
     #
     #     # GET /images/presign
     #     {
+    #       "method": "post",
     #       "url": "https://my-bucket.s3-eu-west-1.amazonaws.com",
     #       "fields": {
     #         "key": "b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
@@ -54,10 +55,10 @@ class Shrine
     #       "headers": {}
     #     }
     #
-    # This gives the client all the information it needs to make the upload
-    # request to the selected file to the storage service. The `url` field is
-    # the request URL, `fields` are the required POST parameters, and `headers`
-    # are the required request headers.
+    # * `method` – request verb
+    # * `url` – request URL
+    # * `fields` – request parameters
+    # * `headers` – request headers
     #
     # ## Location
     #

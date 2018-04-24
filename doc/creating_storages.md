@@ -102,6 +102,7 @@ additional information from the server, you can implement a `#presign` method,
 which will be used by the `presign_endpoint` plugin. The `#presign` method
 should return a Hash with the following keys:
 
+* `:method` – HTTP verb that should be used
 * `:url` – URL to which the file should be uploaded to
 * `:fields` – Hash of request parameters that should be used for the upload (optional)
 * `:headers` – Hash of request headers that should be used for the upload (optional)
@@ -113,7 +114,7 @@ class Shrine
       # ...
 
       def presign(id, **options)
-        # returns a Hash with :url, :fields, and :headers keys
+        # returns a Hash with :method, :url, :fields, and :headers keys
       end
 
       # ...
