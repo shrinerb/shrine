@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add ability to specify `method: :put` in `S3#presign` to generate data for PUT upload (@janko-m)
+
 * Return a `Struct` instead of a `Aws::S3::PresignedPost` object in `S3#presign` (@janko-m)
 
 * Deprecate `Storage#presign` returning a custom object in `presign_endpoint` (@janko-m)

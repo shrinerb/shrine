@@ -476,6 +476,33 @@ describe Shrine::Storage::S3 do
       presign = s3.presign("foo")
       assert_equal "http://my-bucket.foo.com", presign.url
     end
+
+    it "can generate parameters for PUT method" do
+      data = @s3.presign("foo", method: :put)
+      assert_includes data[:url], "X-Amz-Signature"
+    end
+
+    it "adds required headers for PUT method" do
+      data = @s3.presign "foo",
+        method: :put,
+        content_length:      1,
+        content_type:        "text/plain",
+        content_disposition: "attachment",
+        content_encoding:    "gzip",
+        content_language:    "en-US",
+        content_md5:         "foo"
+
+      expected_headers = {
+        "Content-Length"       => 1,
+        "Content-Type"         => "text/plain",
+        "Content-Disposition"  => "attachment",
+        "Content-Encoding"     => "gzip",
+        "Content-Language"     => "en-US",
+        "Content-MD5"          => "foo"
+      }
+
+      assert_equal expected_headers, data[:headers]
+    end
   end
 
   describe "#delete" do

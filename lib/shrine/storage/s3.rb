@@ -337,18 +337,43 @@ class Shrine
         url
       end
 
-      # Returns URL, params and headers for direct uploads. Internally it calls
-      # [`Aws::S3::Bucket#presigned_post`], and forwards any additional options
-      # to it.
+      # Returns URL, params and headers for direct uploads. By default it
+      # generates data for a POST request, calling [`Aws::S3::Object#presigned_post`].
+      # You can also specify `method: :put` to generate data for a PUT request,
+      # using [`Aws::S3::Object#presigned_url`]. Any additional options are
+      # forwarded to the underlying AWS SDK method.
       #
-      # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
-      def presign(id, **options)
+      # [`Aws::S3::Object#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
+      # [`Aws::S3::Object#presigned_url`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
+      def presign(id, method: :post, **options)
         options = @upload_options.merge(options)
         options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
 
-        presigned_post = object(id).presigned_post(options)
+        if method == :post
+          presigned_post = object(id).presigned_post(options)
 
-        Struct.new(:url, :fields).new(presigned_post.url, presigned_post.fields)
+          Struct.new(:url, :fields).new(presigned_post.url, presigned_post.fields)
+        else
+          url = object(id).presigned_url(method, options)
+
+          # When any of these options are specified, the corresponding request
+          # headers must be included in the upload request.
+          required_headers = {
+            content_length:      "Content-Length",
+            content_type:        "Content-Type",
+            content_disposition: "Content-Disposition",
+            content_encoding:    "Content-Encoding",
+            content_language:    "Content-Language",
+            content_md5:         "Content-MD5",
+          }
+
+          headers = {}
+          required_headers.each do |option_name, header_name|
+            headers[header_name] = options[option_name] if options.key?(option_name)
+          end
+
+          { url: url, headers: headers }
+        end
       end
 
       # Deletes the file from the storage.
