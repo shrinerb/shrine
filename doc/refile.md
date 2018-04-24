@@ -427,10 +427,10 @@ No equivalent in Shrine, but take a look at the "[Multiple Files]" guide.
 
 The following Refile code
 
-```erb
-<%= form_for @user do |form| %>
-  <%= form.attachment_field :profile_image %>
-<% end %>
+```rb
+form_for @user do |form|
+  form.attachment_field :profile_image
+end
 ```
 
 is equivalent to the following Shrine code
@@ -438,11 +438,11 @@ is equivalent to the following Shrine code
 ```rb
 Shrine.plugin :cached_attachment_data
 ```
-```erb
-<%= form_for @user do |form| %>
-  <%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %>
-  <%= form.file_field :profile_image %>
-<% end %>
+```rb
+form_for @user do |form|
+  form.hidden_field :profile_image, value: @user.cached_profile_image_data
+  form.file_field :profile_image
+end
 ```
 
 ### Model methods
@@ -455,12 +455,12 @@ Shrine comes with a `remove_attachment` plugin which adds the same
 ```rb
 Shrine.plugin :remove_attachment
 ```
-```erb
-<%= form_for @user do |form| %>
-  <%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %>
-  <%= form.file_field :profile_image %>
-  <%= form.check_box :remove_profile_image %>
-<% end %>
+```rb
+form_for @user do |form|
+  form.hidden_field :profile_image, value: @user.cached_profile_image_data
+  form.file_field :profile_image
+  form.check_box :remove_profile_image
+end
 ```
 
 #### `remote_<attachment>_url`
@@ -471,12 +471,12 @@ Shrine comes with a `remote_url` plugin which adds the same
 ```rb
 Shrine.plugin :remote_url
 ```
-```erb
-<%= form_for @user do |form| %>
-  <%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %>
-  <%= form.file_field :profile_image %>
-  <%= form.text_field :profile_image_remote_url %>
-<% end %>
+```rb
+form_for @user do |form|
+  form.hidden_field :profile_image, value: @user.cached_profile_image_data
+  form.file_field :profile_image
+  form.text_field :profile_image_remote_url
+end
 ```
 
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary

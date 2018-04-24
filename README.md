@@ -68,30 +68,34 @@ Let's now add the form fields which will use this virtual attribute. We need
 (1) a file field for choosing files, and (2) a hidden field for retaining the
 uploaded file in case of validation errors and [direct uploads].
 
-```erb
-<form action="/photos" method="post" enctype="multipart/form-data">
-  <input name="photo[image]" type="hidden" value="<%= @photo.cached_image_data %>">
-  <input name="photo[image]" type="file">
-</form>
+```rb
+# Forme
+Forme.form(@photo, action: "/photos", method: "post", enctype: "multipart/form-data") do |f|
+  f.input :image, type: :hidden, value: @photo.cached_image_data
+  f.input :image, type: :file
+  f.button "Create"
+end
 
-<!-- ActionView::Helpers::FormHelper -->
-<%= form_for @photo do |f| %>
-  <%= f.hidden_field :image, value: @photo.cached_image_data %>
-  <%= f.file_field :image %>
-<% end %>
+# Rails Form Builder
+form_for @photo do |f|
+  f.hidden_field :image, value: @photo.cached_image_data
+  f.file_field :image
+  f.submit
+end
 
-<!-- SimpleForm -->
-<%= simple_form_for @photo do |f| %>
-  <%= f.input :image, as: :hidden, input_html: {value: @photo.cached_image_data} %>
-  <%= f.input :image, as: :file %>
-<% end %>
+# SimpleForm
+simple_form_for @photo do |f|
+  f.input :image, as: :hidden, input_html: { value: @photo.cached_image_data }
+  f.input :image, as: :file
+  f.button :submit
+end
 ```
 
 Note that the file field needs to go *after* the hidden field, so that
 selecting a new file can always override the cached file in the hidden field.
-Also notice the `enctype="multipart/form-data"` HTML attribute, which is
-required for submitting files through the form, though the Rails form builder
-will automatically generate it for you.
+The `enctype="multipart/form-data"` HTML attribute is required for submitting
+files through the form, which the Rails form builder will automatically
+generate for you when it detects a file field.
 
 Now in your router/controller the attachment request parameter can be assigned
 to the model like any other attribute:
@@ -104,10 +108,10 @@ end
 ```
 
 Once a file is uploaded and attached to the record, you can retrieve a URL to
-the uploaded file and display it:
+the uploaded file and display it on the page:
 
-```erb
-<img src="<%= @photo.image_url %>">
+```rb
+image_tag @photo.image_url
 ```
 
 ## Storage

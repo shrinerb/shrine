@@ -158,8 +158,8 @@ uploaded file on the client-side, and write it to the hidden attachment field.
 The `id` field needs to be equal to the `key` presign field minus the storage
 `:prefix`.
 
-```html
-<input type='hidden' name='photo[image]' value='{
+```rb
+{
   "id": "302858ldg9agjad7f3ls.jpg",
   "storage": "cache",
   "metadata": {
@@ -167,7 +167,7 @@ The `id` field needs to be equal to the `key` presign field minus the storage
     "filename": "nature.jpg",
     "mime_type": "image/jpeg",
   }
-}'>
+}
 ```
 
 This JSON string will now be submitted and assigned to the attachment attribute
@@ -185,19 +185,19 @@ page render. The user can then select a file and submit it directly to S3. For
 generating the form we can use `Shrine::Storage::S3#presign`, which returns a
 [`Aws::S3::PresignedPost`] object with `#url` and `#fields` attributes:
 
-```erb
-<%
-  presign = Shrine.storages[:cache].presign SecureRandom.hex,
-                                            success_action_redirect: new_album_url
-%>
+```rb
+presigned_data = Shrine.storages[:cache].presign(
+  SecureRandom.hex,
+  success_action_redirect: new_album_url
+)
 
-<form action="<%= presign.url %>" method="post" enctype="multipart/form-data">
-  <% presign.fields.each do |name, value| %>
-    <input type="hidden" name="<%= name %>" value="<%= value %>">
-  <% end %>
-  <input type="file" name="file">
-  <input type="submit" value="Upload">
-</form>
+Forme.form(action: presigned_data[:url], method: "post", enctype: "multipart/form-data") do |f|
+  presigned_data[:fields].each do |name, value|
+    f.input :hidden, name: name, value: value
+  end
+  f.input :file, name: "file"
+  f.input :submit, value: "Upload"
+end
 ```
 
 Note the additional `:success_action_redirect` option which tells S3 where to
@@ -206,30 +206,30 @@ builder to generate this form, you might need to also tell S3 to ignore the
 additional `utf8` and `authenticity_token` fields that Rails generates:
 
 ```rb
-<%
-  presign = Shrine.storages[:cache].presign SecureRandom.hex,
-                                            allow_any: ["utf8", "authenticity_token"],
-                                            success_action_redirect: new_album_url
-%>
+presigned_data = Shrine.storages[:cache].presign(
+  SecureRandom.hex,
+  allow_any: ["utf8", "authenticity_token"],
+  success_action_redirect: new_album_url
+)
+
+# ...
 ```
 
 Let's assume we specified the redirect URL to be a page which renders the form
 for a new record. S3 will include some information about the upload in form of
 GET parameters in the URL, out of which we only need the `key` parameter:
 
-```erb
-<%
-  cached_file = {
-    storage: "cache",
-    id: params[:key][/cache\/(.+)/, 1], # we subtract the storage prefix
-    metadata: {},
-  }
-%>
+```rb
+cached_file = {
+  storage: "cache",
+  id: request.params[:key][/cache\/(.+)/, 1], # we subtract the storage prefix
+  metadata: {},
+}
 
-<form action="/albums" method="post">
-  <input type="hidden" name="album[image]" value="<%= cached_file.to_json %>">
-  <input type="submit" value="Save">
-</form>
+Forme.form(@album, action: "/albums", method: "post") do |f|
+  f.input :image, type: :hidden, value: cached_file.to_json
+  f.button "Save"
+end
 ```
 
 ## Object data

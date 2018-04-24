@@ -570,11 +570,11 @@ that you can use for retaining the cached file:
 ```rb
 Shrine.plugin :cached_attachment_data
 ```
-```erb
-<%= form_for @user do |f| %>
-  <%= f.hidden_field :avatar, value: @user.cached_avatar_data %>
-  <%= f.file_field :avatar %>
-<% end %>
+```rb
+form_for @user do |f|
+  f.hidden_field :avatar, value: @user.cached_avatar_data
+  f.file_field :avatar
+end
 ```
 
 #### `#remote_<attachment>_url`
