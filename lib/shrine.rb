@@ -170,6 +170,27 @@ class Shrine
           end
         end
 
+        # Temporarily converts an IO-like object into a file. If the input IO
+        # object is already a file, it simply yields it to the block, otherwise
+        # it copies IO content into a Tempfile object which is then yielded and
+        # afterwards deleted.
+        #
+        #     Shrine.with_file(io) { |file| file.path }
+        def with_file(io)
+          if io.respond_to?(:path)
+            yield io
+          elsif io.is_a?(UploadedFile)
+            io.download { |tempfile| yield tempfile }
+          else
+            Tempfile.create("shrine-file", binmode: true) do |file|
+              IO.copy_stream(io, file.path)
+              io.rewind
+
+              yield file
+            end
+          end
+        end
+
         # Prints a deprecation warning to standard error.
         def deprecation(message)
           warn "SHRINE DEPRECATION WARNING: #{message}"

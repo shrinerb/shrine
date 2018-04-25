@@ -3,6 +3,7 @@ require "test_helper"
 describe Shrine do
   before do
     @uploader = uploader
+    @shrine = @uploader.class
   end
 
   describe ".inherited" do
@@ -75,66 +76,102 @@ describe Shrine do
   describe ".uploaded_file" do
     it "accepts data as Hash" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @uploader.class.uploaded_file(uploaded_file.data)
+      retrieved = @shrine.uploaded_file(uploaded_file.data)
       assert_equal uploaded_file, retrieved
     end
 
     it "accepts data as JSON" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @uploader.class.uploaded_file(uploaded_file.to_json)
+      retrieved = @shrine.uploaded_file(uploaded_file.to_json)
       assert_equal uploaded_file, retrieved
     end
 
     it "accepts an UploadedFile" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @uploader.class.uploaded_file(uploaded_file)
+      retrieved = @shrine.uploaded_file(uploaded_file)
       assert_equal uploaded_file, retrieved
     end
 
     it "yields the converted file" do
       uploaded_file = @uploader.upload(fakeio)
-      @uploader.class.uploaded_file(uploaded_file.data) { |o| @yielded = o }
+      @shrine.uploaded_file(uploaded_file.data) { |o| @yielded = o }
       assert_equal uploaded_file, @yielded
     end
 
     it "raises an error on invalid input" do
-      assert_raises(Shrine::Error) { @uploader.class.uploaded_file(:foo) }
+      assert_raises(Shrine::Error) { @shrine.uploaded_file(:foo) }
     end
   end
 
   describe ".find_storage" do
     it "finds by symbol names" do
-      assert_equal @uploader.storage, @uploader.class.find_storage(:store)
+      assert_equal @uploader.storage, @shrine.find_storage(:store)
     end
 
     it "finds by string names" do
-      assert_equal @uploader.storage, @uploader.class.find_storage("store")
+      assert_equal @uploader.storage, @shrine.find_storage("store")
     end
 
     it "raises an error if storage wasn't found" do
-      assert_raises(Shrine::Error) { @uploader.class.find_storage(:foo) }
+      assert_raises(Shrine::Error) { @shrine.find_storage(:foo) }
+    end
+  end
+
+  describe ".with_file" do
+    it "yields File objects unchanged" do
+      file = File.open(__FILE__)
+      @shrine.with_file(file) do |object|
+        assert_equal file, object
+      end
+    end
+
+    it "yields Tempfile objects unchanged" do
+      tempfile = Tempfile.new("")
+      @shrine.with_file(tempfile) do |object|
+        assert_equal tempfile, object
+      end
+    end
+
+    it "temporarily downloads Shrine::UploadedFile objects" do
+      uploaded_file = @uploader.upload(fakeio, location: "file.txt")
+      tempfile = @shrine.with_file(uploaded_file) do |tempfile|
+        assert_instance_of Tempfile, tempfile
+        assert_equal ".txt", File.extname(tempfile.path)
+        assert_equal uploaded_file.read, tempfile.read
+        tempfile
+      end
+      assert_nil tempfile.path
+    end
+
+    it "temporarily downloads IO-like objects" do
+      file = @shrine.with_file(fakeio("content")) do |file|
+        assert_instance_of File, file
+        assert_equal "content", file.read
+        file
+      end
+      refute File.exist?(file.path)
     end
   end
 
   describe "#initialize" do
     it "accepts symbol and string storage names" do
-      uploader = @uploader.class.new(:store)
+      uploader = @shrine.new(:store)
       assert_equal :store, uploader.storage_key
       assert_equal @uploader.storage, uploader.storage
 
-      uploader = @uploader.class.new("store")
+      uploader = @shrine.new("store")
       assert_equal :store, uploader.storage_key
       assert_equal @uploader.storage, uploader.storage
     end
 
     it "raises an error on unknown storage" do
-      assert_raises(Shrine::Error) { @uploader.class.new(:foo) }
+      assert_raises(Shrine::Error) { @shrine.new(:foo) }
     end
   end
 
   it "has #storage_key, #storage and #opts" do
     assert_equal :store, @uploader.storage_key
-    assert_equal @uploader.class.storages[:store], @uploader.storage
+    assert_equal @shrine.storages[:store], @uploader.storage
     assert_equal Hash.new, @uploader.opts
   end
 
@@ -171,7 +208,7 @@ describe Shrine do
   describe "#store" do
     it "returns instance of correct UploadedFile" do
       uploaded_file = @uploader.store(fakeio)
-      assert_instance_of @uploader.class::UploadedFile, uploaded_file
+      assert_instance_of @shrine::UploadedFile, uploaded_file
     end
 
     it "uploads the file without processing" do
@@ -254,9 +291,9 @@ describe Shrine do
 
   describe "#uploaded?" do
     it "returns true if storages match" do
-      cached_file = @uploader.class.new(:cache).upload(fakeio)
-      assert @uploader.class.new(:cache).uploaded?(cached_file)
-      refute @uploader.class.new(:store).uploaded?(cached_file)
+      cached_file = @shrine.new(:cache).upload(fakeio)
+      assert @shrine.new(:cache).uploaded?(cached_file)
+      refute @shrine.new(:store).uploaded?(cached_file)
     end
   end
 

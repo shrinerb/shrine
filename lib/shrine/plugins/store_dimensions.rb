@@ -157,25 +157,14 @@ class Shrine
 
         def extract_with_mini_magick(io)
           require "mini_magick"
-          ensure_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
+          Shrine.with_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
         rescue MiniMagick::Error
         end
 
         def extract_with_ruby_vips(io)
           require "vips"
-          ensure_file(io) { |file| Vips::Image.new_from_file(file.path).size }
+          Shrine.with_file(io) { |file| Vips::Image.new_from_file(file.path).size }
         rescue Vips::Error
-        end
-
-        def ensure_file(io)
-          if io.respond_to?(:path)
-            yield io
-          else
-            Tempfile.create("shrine-store_dimensions") do |tempfile|
-              IO.copy_stream(io, tempfile.path)
-              yield tempfile
-            end
-          end
         end
       end
     end

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `Shrine.with_file` for temporarily converting an IO-like object into a file (@janko-m)
+
 * Add `:method` value to the `S3#presign` result indicating the HTTP verb that should be used (@janko-m)
 
 * Add ability to specify `method: :put` in `S3#presign` to generate data for PUT upload (@janko-m)

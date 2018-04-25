@@ -5,7 +5,7 @@ class Shrine
   module Storage
     class Test < Memory
       def download(id)
-        tempfile = Tempfile.new("shrine", binmode: true)
+        tempfile = Tempfile.new(["shrine", File.extname(id)], binmode: true)
         IO.copy_stream(open(id), tempfile)
         tempfile.tap(&:open)
       end
