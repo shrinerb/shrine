@@ -1,4 +1,4 @@
-## HEAD
+## 2.11.0 (2018-04-28)
 
 * Add `Shrine.with_file` for temporarily converting an IO-like object into a file (@janko-m)
 
@@ -18,17 +18,13 @@
 
 * Don't remove bucket name from S3 URL path with `:host` when `:force_path_style` is set (@janko-m)
 
-* Work around a bug in older versions of the `file` command with empty files (@janko-m)
+* Correctly determine MIME type from extension of empty files (@janko-m)
 
 * Modify `UploadedFile#download` not to reopen the uploaded file if it's already open (@janko-m)
 
 * Add `UploadedFile#stream` for streaming content into a writable object (@janko-m)
 
 * Deprecate `direct_upload` plugin in favor of `upload_endpoint` and `presign_endpoint` plugins (@janko-m)
-
-## 2.10.1 (2018-04-02)
-
-* Correctly determine MIME type from extension of empty files (@janko-m)
 
 ## 2.10.0 (2018-03-28)
 
