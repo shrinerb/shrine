@@ -30,7 +30,7 @@ doc/release_notes/2.1.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-01-27 14:30:47 +0100</span>
+<span class='datetime'>2018-04-25 01:26:04 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -77,12 +77,12 @@ is that  the following "recommended" usage actually produces bugs when
 image is  invalid:</p>
 </li></ul>
 
-<pre>&lt;%= form_for @photo do |f| %&gt;&#x000A;  &lt;% f.hidden_field :cached_image_data %&gt;&#x000A;  &lt;% f.file_filed :image %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:cached_image_data</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_filed</span> <span class="ruby-value">:image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The recommended and correct way now to build forms is by keeping the 
 <code>#&lt;attachment&gt;=</code> setter:</p>
 
-<pre>&lt;%= form_for @photo do |f| %&gt;&#x000A;  &lt;% f.hidden_field :image, value: @photo.cached_image_data %&gt;&#x000A;  &lt;% f.file_filed :image %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@photo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@photo</span>.<span class="ruby-identifier">cached_image_data</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_filed</span> <span class="ruby-value">:image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
 <p>The restore_cached_data now sends the <code>Shrine::UploadedFile</code> to 
 <code>#extract_metadata</code>, instead of the result of

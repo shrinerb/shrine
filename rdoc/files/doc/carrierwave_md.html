@@ -30,7 +30,7 @@ doc/carrierwave.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-03-23 00:54:06 +0100</span>
+<span class='datetime'>2018-04-27 00:16:41 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -68,10 +68,10 @@ retrieves files from the filesystem, you can only set the directory. With
 (<code>:cache</code>) and permanent (<code>:store</code>) storage are
 first-class citizens and fully configurable, so you can also have files
 <em>cached</em> on S3 (preferrably via <a
-href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">direct
+href="https://shrinerb.com/rdoc/files/doc/direct_s3_md.html">direct
 uploads</a>):</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
 
 <h2 id="label-Uploader">Uploader<span><a href="#label-Uploader">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -115,7 +115,7 @@ way of regenerating versions, because that has to be written and optimized
 differently depending on whether you&#39;re adding or removing a version,
 what ORM are you using, how many records there are in the database etc. The
 <a
-href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
+href="https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
 versions</a> guide provides some useful tips on this task.</p>
 
 <h3 id="label-Validations">Validations<span><a href="#label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h3>
@@ -388,7 +388,7 @@ method that you can use for retaining the cached file:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:cached_attachment_data</span></pre>
 
-<pre>&lt;%= form_for @user do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :avatar, value: @user.cached_avatar_data %&gt;&#x000A;  &lt;%= f.file_field :avatar %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@user</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:avatar</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@user</span>.<span class="ruby-identifier">cached_avatar_data</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">file_field</span> <span class="ruby-value">:avatar</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h4 id="label-23remote_-3Cattachment-3E_url"><code>#remote_&lt;attachment&gt;_url</code><span><a href="#label-23remote_-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -462,7 +462,7 @@ be multipart or not.</p>
 <h3 id="label-CarrierWave-3A-3AStorage-3A-3AFog"><code>CarrierWave::Storage::Fog</code><span><a href="#label-CarrierWave-3A-3AStorage-3A-3AFog">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>You can use <a
-href="http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html">Shrine::Storage::S3</a>
+href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html">Shrine::Storage::S3</a>
 (built-in), <a
 href="https://github.com/renchap/shrine-google_cloud_storage">Shrine::Storage::GoogleCloudStorage</a>,
 or generic <a

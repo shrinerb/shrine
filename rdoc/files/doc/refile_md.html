@@ -30,7 +30,7 @@ doc/refile.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-03-23 00:54:06 +0100</span>
+<span class='datetime'>2018-04-25 02:09:49 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -323,7 +323,7 @@ href="../../classes/Shrine.html">Shrine</a>.</p>
 
 <p>No equivalent in <a href="../../classes/Shrine.html">Shrine</a>, but take a
 look at the “<a
-href="http://shrinerb.com/rdoc/files/doc/multiple_files_md.html">Multiple
+href="https://shrinerb.com/rdoc/files/doc/multiple_files_md.html">Multiple
 Files</a>” guide.</p>
 
 <h3 id="label-Form+helpers">Form helpers<span><a href="#label-Form+helpers">&para;</a> <a href="#top">&uarr;</a></span></h3>
@@ -332,14 +332,14 @@ Files</a>” guide.</p>
 
 <p>The following Refile code</p>
 
-<pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.attachment_field :profile_image %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@user</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">form</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">attachment_field</span> <span class="ruby-value">:profile_image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>is equivalent to the following <a
 href="../../classes/Shrine.html">Shrine</a> code</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:cached_attachment_data</span></pre>
 
-<pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %&gt;&#x000A;  &lt;%= form.file_field :profile_image %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@user</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">form</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:profile_image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@user</span>.<span class="ruby-identifier">cached_profile_image_data</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">file_field</span> <span class="ruby-value">:profile_image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Model+methods">Model methods<span><a href="#label-Model+methods">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -351,7 +351,7 @@ href="../../classes/Shrine.html">Shrine</a> code</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:remove_attachment</span></pre>
 
-<pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %&gt;&#x000A;  &lt;%= form.file_field :profile_image %&gt;&#x000A;  &lt;%= form.check_box :remove_profile_image %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@user</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">form</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:profile_image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@user</span>.<span class="ruby-identifier">cached_profile_image_data</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">file_field</span> <span class="ruby-value">:profile_image</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">check_box</span> <span class="ruby-value">:remove_profile_image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h4 id="label-remote_-3Cattachment-3E_url"><code>remote_&lt;attachment&gt;_url</code><span><a href="#label-remote_-3Cattachment-3E_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -361,7 +361,7 @@ href="../../classes/Shrine.html">Shrine</a> code</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:remote_url</span></pre>
 
-<pre>&lt;%= form_for @user do |form| %&gt;&#x000A;  &lt;%= form.hidden_field :profile_image, value: @user.cached_profile_image_data %&gt;&#x000A;  &lt;%= form.file_field :profile_image %&gt;&#x000A;  &lt;%= form.text_field :profile_image_remote_url %&gt;&#x000A;&lt;% end %&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">form_for</span> <span class="ruby-ivar">@user</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">form</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">hidden_field</span> <span class="ruby-value">:profile_image</span>, <span class="ruby-value">value:</span> <span class="ruby-ivar">@user</span>.<span class="ruby-identifier">cached_profile_image_data</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">file_field</span> <span class="ruby-value">:profile_image</span>&#x000A;  <span class="ruby-identifier">form</span>.<span class="ruby-identifier">text_field</span> <span class="ruby-value">:profile_image_remote_url</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

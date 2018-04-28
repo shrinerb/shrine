@@ -30,7 +30,7 @@ doc/multiple_files.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-01-27 14:30:47 +0100</span>
+<span class='datetime'>2018-04-25 02:09:49 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -107,13 +107,13 @@ allow it to directly accept attributes for the associated records:</p>
 <p>In order to allow the user to select multiple files in the form, we just
 need to add the <code>multiple</code> attribute to the file field.</p>
 
-<pre>&lt;input type=&quot;file&quot; multiple name=&quot;file&quot;&gt;</pre>
+<pre class="ruby"><span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:file</span>, <span class="ruby-value">name:</span> <span class="ruby-value">:file</span>, <span class="ruby-value">multiple:</span> <span class="ruby-keyword">true</span>&#x000A;<span class="ruby-comment"># &lt;input type=&quot;file&quot; name=&quot;file&quot; multiple /&gt;</span></pre>
 
 <p>On the client side you can then asynchronously upload each of the selected
 files to a direct upload endpoint. See documenation for the
 <code>upload_endpoint</code> and <code>presign_endpoint</code> plugins, as
 well as the <a
-href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">Direct Uploads
+href="https://shrinerb.com/rdoc/files/doc/direct_s3_md.html">Direct Uploads
 to S3</a> guide for more details.</p>
 
 <p>After each upload finishes, you can generate a nested hash for the new

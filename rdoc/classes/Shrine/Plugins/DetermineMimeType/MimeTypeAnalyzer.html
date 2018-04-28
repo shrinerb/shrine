@@ -28,7 +28,7 @@ Shrine::Plugins::DetermineMimeType::MimeTypeAnalyzer
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/determine_mime_type.rb">lib/shrine/plugins/determine_mime_type.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/determine_mime_type_rb.html">lib/shrine/plugins/determine_mime_type.rb</a>
 </li>
 </ol>
 <div class='parent'>
@@ -108,7 +108,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 156</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-keyword">return</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">eof?</span> <span class="ruby-comment"># empty file doesn&#39;t have a MIME type</span>&#x000A;&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;extract_with_#{@tool}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 156</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;extract_with_#{@tool}&quot;</span>, <span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

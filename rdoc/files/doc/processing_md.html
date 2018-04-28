@@ -1,0 +1,275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>processing.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>processing.md
+</h1>
+<div class='paths'>
+doc/processing.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2018-04-28 21:04:51 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-File+Processing">File Processing<span><a href="#label-File+Processing">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p><a href="../../classes/Shrine.html">Shrine</a> allows you to process files
+before they&#39;re uploaded to a storage. It&#39;s generally best to
+process cached files when they&#39;re being promoted to permanent storage,
+because (a) at that point the file has already been successfully validated,
+(b) the parent record has been saved and the database transaction has been
+committed, and © this can be delayed into a background job.</p>
+
+<p>You can define processing using the <code>processing</code> plugin, which
+we&#39;ll use to hook into the <code>:store</code> phase (when cached file
+is uploaded to permanent storage).</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">io</span>      <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>&#x000A;    <span class="ruby-identifier">context</span> <span class="ruby-comment">#=&gt; {:record=&gt;#&lt;Photo...&gt;,:name=&gt;:image,...}</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The processing block yields two arguments: <code>io</code>, a <a
+href="http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html">Shrine::UploadedFile</a>
+object that&#39;s uploaded to temporary storage, and <code>context</code>,
+a Hash that contains additional data such as the model instance and
+attachment name. The block result should be file(s) that will be uploaded
+to permanent storage.</p>
+
+<p><a href="../../classes/Shrine.html">Shrine</a> treats processing as a
+functional transformation; you are given the original file, and how
+you&#39;re going to perform processing is entirely up to you, you only need
+to return the processed files at the end of the block that you want to
+save. Then <a href="../../classes/Shrine.html">Shrine</a> will continue to
+upload those files to the storage. Note that <strong>it&#39;s recommended
+to always keep the original file</strong>, just in case you&#39;ll ever
+need to reprocess it.</p>
+
+<p>It&#39;s a good idea to also load the <code>delete_raw</code> plugin to
+automatically delete processed files after they&#39;re uploaded.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span> <span class="ruby-comment"># automatically delete processed files after uploading</span>&#x000A;&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Single+file">Single file<span><a href="#label-Single+file">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Let&#39;s say that you have an image that you want to optimize before
+it&#39;s saved to permanent storage. This is how you might do it with the
+<a href="https://github.com/toy/image_optim">image_optim</a> gem:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_optim&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_optim_pack&quot;</span> <span class="ruby-comment"># precompiled binaries</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_optim&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">original</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>&#x000A;&#x000A;    <span class="ruby-identifier">image_optim</span>    = <span class="ruby-constant">ImageOptim</span>.<span class="ruby-identifier">new</span>&#x000A;    <span class="ruby-identifier">optimized_path</span> = <span class="ruby-identifier">image_optim</span>.<span class="ruby-identifier">optimize_image</span>(<span class="ruby-identifier">original</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;    <span class="ruby-identifier">original</span>.<span class="ruby-identifier">close!</span>&#x000A;&#x000A;    <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">optimized_path</span>, <span class="ruby-string">&quot;rb&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>Notice that, because the image_optim gem works with files on disk, we had
+to download the cached file from temporary storage before optimizing it.
+Afterwards we also close and delete it using <code>Tempfile#close!</code>.</p>
+
+<h2 id="label-Versions">Versions<span><a href="#label-Versions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>When you&#39;re handling images, it&#39;s very common to want to generate
+various thumbnails from the original image, and display them on your site.
+It&#39;s recommended to use the <strong><a
+href="https://github.com/janko-m/image_processing">ImageProcessing</a></strong>
+gem for generating image thumbnails, as it has a convenient and flexible
+API, and comes with good defaults for the web.</p>
+
+<p>Since we&#39;ll be storing multiple derivates of the original file,
+we&#39;ll need to also load the <code>versions</code> plugin, which allows
+us to return a Hash of processed files. For processing we&#39;ll be using
+the <code>ImageProcessing::MiniMagick</code> backend, which performs
+processing with <a
+href="http://www.graphicsmagick.org">ImageMagick}[https://www.imagemagick.org]/{GraphicsMagick</a>.</p>
+
+<pre>$ brew install imagemagick</pre>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_processing&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.0&quot;</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">original</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>&#x000A;    <span class="ruby-identifier">pipeline</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    <span class="ruby-identifier">size_800</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;    <span class="ruby-identifier">size_500</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;    <span class="ruby-identifier">size_300</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;&#x000A;    <span class="ruby-identifier">original</span>.<span class="ruby-identifier">close!</span>&#x000A;&#x000A;    { <span class="ruby-value">original:</span> <span class="ruby-identifier">io</span>, <span class="ruby-value">large:</span> <span class="ruby-identifier">size_800</span>, <span class="ruby-value">medium:</span> <span class="ruby-identifier">size_500</span>, <span class="ruby-value">small:</span> <span class="ruby-identifier">size_300</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-libvips">libvips<span><a href="#label-libvips">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Alternatively, you can also process files with <strong><a
+href="http://jcupitt.github.io/libvips/">libvips</a></strong>, which has
+shown to be multiple times faster than ImageMagick, with lower memory usage
+on top of that (see <a
+href="https://github.com/jcupitt/libvips/wiki/Why-is-libvips-quick">Why is
+libvips quick</a>). Using libvips is as easy as installing libvips and
+switching to the <code>ImageProcessing::Vips</code> backend.</p>
+
+<pre>$ brew install vips</pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/vips&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">original</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>&#x000A;    <span class="ruby-identifier">pipeline</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">Vips</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    <span class="ruby-identifier">size_800</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;    <span class="ruby-identifier">size_500</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;    <span class="ruby-identifier">size_300</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;&#x000A;    <span class="ruby-identifier">original</span>.<span class="ruby-identifier">close!</span>&#x000A;&#x000A;    { <span class="ruby-value">original:</span> <span class="ruby-identifier">io</span>, <span class="ruby-value">large:</span> <span class="ruby-identifier">size_800</span>, <span class="ruby-value">medium:</span> <span class="ruby-identifier">size_500</span>, <span class="ruby-value">small:</span> <span class="ruby-identifier">size_300</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-External">External<span><a href="#label-External">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Since processing is so dynamic, you&#39;re not limited to using the
+ImageProcessing gem, you can also use a 3rd-party service to generate
+thumbnails for you. Here is the same example as above, but this time using
+<a href="https://imageoptim.com/api">ImageOptim.com</a> to do the
+processing (not to be confused with the <a
+href="https://github.com/toy/image_optim">image_optim</a> gem):</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;down&quot;</span>, <span class="ruby-string">&quot;~&gt; 4.4&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;http&quot;</span>, <span class="ruby-string">&quot;~&gt; 3.2&quot;</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down/http&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-constant">IMAGE_OPTIM_URL</span> = <span class="ruby-string">&quot;https://im2.io/&lt;USERNAME&gt;&quot;</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">down</span> = <span class="ruby-constant">Down</span><span class="ruby-operator">::</span><span class="ruby-constant">Http</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">method:</span> <span class="ruby-value">:post</span>)&#x000A;&#x000A;    <span class="ruby-identifier">size_800</span> = <span class="ruby-identifier">down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-node">&quot;#{IMAGE_OPTIM_URL}/800x800/#{io.url}&quot;</span>)&#x000A;    <span class="ruby-identifier">size_500</span> = <span class="ruby-identifier">down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-node">&quot;#{IMAGE_OPTIM_URL}/500x500/#{io.url}&quot;</span>)&#x000A;    <span class="ruby-identifier">size_300</span> = <span class="ruby-identifier">down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-node">&quot;#{IMAGE_OPTIM_URL}/300x300/#{io.url}&quot;</span>)&#x000A;&#x000A;    { <span class="ruby-value">original:</span> <span class="ruby-identifier">io</span>, <span class="ruby-value">large:</span> <span class="ruby-identifier">size_800</span>, <span class="ruby-value">medium:</span> <span class="ruby-identifier">size_500</span>, <span class="ruby-value">small:</span> <span class="ruby-identifier">size_300</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>We used the <a href="https://github.com/janko-m/down">Down</a> gem to
+download response bodies into tempfiles, specifically its <a
+href="https://github.com/httprb/http">HTTP.rb</a> backend, as it supports
+changing the request method and uses an order of magnitude less memory than
+the default backend. Notice that we didn&#39;t have to download the
+original file from temporary storage as ImageOptim.com allows us to provide
+a URL.</p>
+
+<h2 id="label-Conditional+processing">Conditional processing<span><a href="#label-Conditional+processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>As we&#39;ve seen, Shrine&#39;s processing API allows us to process files
+with regular Ruby code. This means that we can make processing dynamic by
+using regular Ruby conditionals.</p>
+
+<p>For example, let&#39;s say we want our thumbnails to be either JPEGs or
+PNGs, and we also want to save JPEGs as progressive (interlaced).
+Here&#39;s how the code for this might look like:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/vips&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">original</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>&#x000A;    <span class="ruby-identifier">pipeline</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">Vips</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    <span class="ruby-comment"># the `io` object contains the MIME type of the original file</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-operator">!=</span> <span class="ruby-string">&quot;image/png&quot;</span>&#x000A;      <span class="ruby-identifier">pipeline</span> = <span class="ruby-identifier">pipeline</span>&#x000A;        .<span class="ruby-identifier">convert</span>(<span class="ruby-string">&quot;jpeg&quot;</span>)&#x000A;        .<span class="ruby-identifier">saver</span>(<span class="ruby-value">interlace:</span> <span class="ruby-keyword">true</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">size_800</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;    <span class="ruby-identifier">size_500</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;    <span class="ruby-identifier">size_300</span> = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;&#x000A;    <span class="ruby-identifier">original</span>.<span class="ruby-identifier">close!</span>&#x000A;&#x000A;    { <span class="ruby-value">original:</span> <span class="ruby-identifier">io</span>, <span class="ruby-value">large:</span> <span class="ruby-identifier">size_800</span>, <span class="ruby-value">medium:</span> <span class="ruby-identifier">size_500</span>, <span class="ruby-value">small:</span> <span class="ruby-identifier">size_300</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Processing+other+file+types">Processing other file types<span><a href="#label-Processing+other+file+types">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>So far we&#39;ve only been talking about processing images. However, there
+is nothing image-specific in Shrine&#39;s processing API, you can just as
+well process any other types of files. The processing tool doesn&#39;t need
+to have any special <a href="../../classes/Shrine.html">Shrine</a>
+integration, the ImageProcessing gem that we saw earlier is a completely
+generic gem.</p>
+
+<p>To demonstrate, here is an example of transcoding videos using <a
+href="https://github.com/streamio/streamio-ffmpeg">streamio-ffmpeg</a>:</p>
+
+<pre>$ brew install ffmpeg</pre>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;streamio-ffmpeg&quot;</span></pre>
+
+<pre>require &quot;streamio-ffmpeg&quot;&#x000A;class VideoUploader &lt; Shrine&#x000A;  plugin :processing&#x000A;  plugin :versions&#x000A;  plugin :delete_raw&#x000A;&#x000A;  process(:store) do |io, context|&#x000A;    original   = io.download&#x000A;    transcoded = Tempfile.new([&quot;transcoded&quot;, &quot;.mp4&quot;], binmode: true)&#x000A;    screenshot = Tempfile.new([&quot;screenshot&quot;, &quot;.jpg&quot;], binmode: true)&#x000A;&#x000A;    movie = FFMPEG::Movie.new(mov.path)&#x000A;    movie.transcode(transcoded.path)&#x000A;    movie.screenshot(screenshot.path)&#x000A;&#x000A;    [transcoded, screenshot].each(&amp;:open) # refresh file descriptors&#x000A;    original.close!&#x000A;&#x000A;    { original: io, transcoded: transcoded, screenshot: screenshot }&#x000A;  end</pre>
+
+<h2 id="label-On-the-fly+processing">On-the-fly processing<span><a href="#label-On-the-fly+processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Generating image thumbnails on upload can be a pain to maintain, because
+whenever you need to add a new version or change an existing one, you need
+to perform this change for all existing uploads. <a
+href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">This
+guide</a> explains the process in more detail.</p>
+
+<p>As an alternative, it&#39;s very common to generate thumbnails dynamically,
+when their URL is first requested, and then cache the processing result for
+future requests. This strategy is known as “on-the-fly processing”, and
+it&#39;s suitable for smaller files such as images.</p>
+
+<p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t ship with
+on-the-fly processing functionality, as that&#39;s a separate
+responsibility that belongs in its own project. There are various open
+source solutions that provide this functionality:</p>
+<ul><li>
+<p><a target="_top" href="http://markevans.github.io/dragonfly/">Dragonfly</a></p>
+</li><li>
+<p><a href="https://github.com/DarthSim/imgproxy">imgproxy</a></p>
+</li><li>
+<p><a href="https://github.com/h2non/imaginary">imaginary</a></p>
+</li><li>
+<p><a target="_top" href="http://thumbor.org">thumbor</a></p>
+</li><li>
+<p><a target="_top" href="http://flyimg.io">flyimg</a></p>
+</li><li>
+<p>…</p>
+</li></ul>
+
+<p>as well as many commercial solutions. To prove that you can really use
+them, let&#39;s see how we can hook up <a
+href="http://markevans.github.io/dragonfly/">Dragonfly</a> with <a
+href="../../classes/Shrine.html">Shrine</a>. We&#39;ll also see how we can
+use <a href="https://cloudinary.com">Cloudinary</a>, as an example of a
+commercial solution.</p>
+
+<h3 id="label-Dragonfly">Dragonfly<span><a href="#label-Dragonfly">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Dragonfly is a mature file attachment library that comes with functionality
+for on-the-fly processing. At first it might appear that Dragonfly can only
+be used as an alternative to <a
+href="../../classes/Shrine.html">Shrine</a>, but Dragonfly&#39;s app that
+performs on-the-fly processing can actually be used standalone.</p>
+
+<p>To set up Dragonfly, we&#39;ll insert its middleware that serves files and
+add basic <a
+href="http://markevans.github.io/dragonfly/configuration">configuration</a>:</p>
+
+<pre class="ruby"><span class="ruby-constant">Dragonfly</span>.<span class="ruby-identifier">app</span>.<span class="ruby-identifier">configure</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">url_format</span> <span class="ruby-string">&quot;/attachments/:job&quot;</span>&#x000A;  <span class="ruby-identifier">secret</span> <span class="ruby-string">&quot;my secure secret&quot;</span> <span class="ruby-comment"># used to generate the protective SHA</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">use</span> <span class="ruby-constant">Dragonfly</span><span class="ruby-operator">::</span><span class="ruby-constant">Middleware</span></pre>
+
+<p>If you&#39;re storing files in a cloud service like AWS S3, you should give
+them public access so that you can generate non-expiring URLs. This way
+Dragonfly URLs will not change and thus be cacheable, without having to use
+Dragonfly&#39;s own S3 data store which requires pulling in <a
+href="https://github.com/fog/fog-aws">fog-aws</a>.</p>
+
+<p>To give new S3 objects public access, add <code>{ acl:&#x000A;&quot;public-read&quot; }</code> to upload options (note that any existing
+S3 objects&#39; ACLs will have to be manually updated):</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> { <span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span> }, <span class="ruby-operator">**</span><span class="ruby-identifier">other_options</span>)</pre>
+
+<p>Now you can generate Dragonfly URLs from <code>Shrine::UploadedFile</code>
+objects:</p>
+
+<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">thumbnail_url</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">dimensions</span>)&#x000A;  <span class="ruby-constant">Dragonfly</span>.<span class="ruby-identifier">app</span>&#x000A;    .<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">public:</span> <span class="ruby-keyword">true</span>))&#x000A;    .<span class="ruby-identifier">thumb</span>(<span class="ruby-identifier">dimensions</span>)&#x000A;    .<span class="ruby-identifier">url</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">thumbnail_url</span>(<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>, <span class="ruby-string">&quot;500x400&quot;</span>) <span class="ruby-comment">#=&gt; &quot;/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn...&quot;</span></pre>
+
+<h3 id="label-Cloudinary">Cloudinary<span><a href="#label-Cloudinary">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p><a href="https://cloudinary.com">Cloudinary</a> is a nice service for
+on-the-fly image processing. The <a
+href="https://github.com/shrinerb/shrine-cloudinary">shrine-cloudinary</a>
+gem provides a <a href="../../classes/Shrine.html">Shrine</a> storage that
+we can set for our temporary and permanent storage:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine-cloudinary&quot;</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;cloudinary&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/cloudinary&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Cloudinary</span>.<span class="ruby-identifier">config</span>(&#x000A;  <span class="ruby-value">cloud_name:</span> <span class="ruby-string">&quot;&lt;YOUR_CLOUD_NAME&gt;&quot;</span>,&#x000A;  <span class="ruby-value">api_key:</span>    <span class="ruby-string">&quot;&lt;YOUR_API_KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-value">api_secret:</span> <span class="ruby-string">&quot;&lt;YOUR_API_SECRET&gt;&quot;</span>,&#x000A;)&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Cloudinary</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Cloudinary</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
+
+<p>Now when we upload our images to Cloudinary, we can generate URLs with
+various processing parameters:</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">url</span>(<span class="ruby-value">width:</span> <span class="ruby-value">100</span>, <span class="ruby-value">height:</span> <span class="ruby-value">100</span>, <span class="ruby-value">crop:</span> <span class="ruby-value">:fit</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;http://res.cloudinary.com/myapp/image/upload/w_100,h_100,c_fit/nature.jpg&quot;</span></pre>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -30,7 +30,7 @@ doc/paperclip.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-03-23 00:54:06 +0100</span>
+<span class='datetime'>2018-04-27 00:16:58 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -65,7 +65,7 @@ just a class which you configure individually:</p>
 
 <p>Paperclip doesn&#39;t have a concept of “temporary” storage, so it cannot
 retain uploaded files in case of validation errors, and <a
-href="http://shrinerb.com/rdoc/files/doc/direct_s3_md.html">direct S3
+href="https://shrinerb.com/rdoc/files/doc/direct_s3_md.html">direct S3
 uploads</a> cannot be implemented in a safe way. <a
 href="../../classes/Shrine.html">Shrine</a> uses separate “temporary” and
 “permanent” storage for attaching files:</p>
@@ -108,7 +108,7 @@ way of regenerating versions, because that has to be written and optimized
 differently depending on whether you&#39;re adding or removing a version,
 what ORM are you using, how many records there are in the database etc. The
 <a
-href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
+href="https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
 versions</a> guide provides some useful tips on this task.</p>
 
 <h3 id="label-Validations">Validations<span><a href="#label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h3>
@@ -260,7 +260,7 @@ and explain Shrine&#39;s equivalents:</p>
 automatically use <code>:cache</code> and <code>:store</code> storages
 which you have to register:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads&quot;</span>),&#x000A;}</pre>
 
 <p>You can change that for a specific uploader with the
 <code>default_storage</code> plugin.</p>
@@ -328,13 +328,13 @@ but the closest is probably <code>#id</code>:</p>
 
 <p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t have an
 equivalent to this, but the <a
-href="http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
+href="https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
 versions</a> guide provides some useful tips on how to do this.</p>
 
 <h3 id="label-Paperclip-3A-3AStorage-3A-3AS3"><code>Paperclip::Storage::S3</code><span><a href="#label-Paperclip-3A-3AStorage-3A-3AS3">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>The built-in <a
-href="http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html">Shrine::Storage::S3</a>
+href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html">Shrine::Storage::S3</a>
 storage is a direct replacement for <code>Paperclip::Storage::S3</code>.</p>
 
 <h4 id="label-3As3_credentials-2C+-3As3_region-2C+-3Abucket"><code>:s3_credentials</code>, <code>:s3_region</code>, <code>:bucket</code><span><a href="#label-3As3_credentials-2C+-3As3_region-2C+-3Abucket">&para;</a> <a href="#top">&uarr;</a></span></h4>

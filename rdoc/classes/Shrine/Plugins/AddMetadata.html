@@ -28,7 +28,7 @@ Shrine::Plugins::AddMetadata
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/add_metadata_rb.html">lib/shrine/plugins/add_metadata.rb</a>
 </li>
 </ol>
 </div>
@@ -38,26 +38,32 @@ Shrine::Plugins::AddMetadata
 <p>The <code>add_metadata</code> plugin provides a convenient method for
 extracting and adding custom metadata values.</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:pages</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PDF</span><span class="ruby-operator">::</span><span class="ruby-constant">Reader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">page_count</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">begin</span>&#x000A;    <span class="ruby-constant">Exif</span><span class="ruby-operator">::</span><span class="ruby-constant">Data</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>).<span class="ruby-identifier">to_h</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Exif</span><span class="ruby-operator">::</span><span class="ruby-constant">NotReadable</span> <span class="ruby-comment"># not a valid image</span>&#x000A;    {}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>The above will add “pages” to the metadata hash, and also create the
-<code>#pages</code> reader method on <a
+<p>The above will add “exif” to the metadata hash, and also create the
+<code>#exif</code> reader method on <a
 href="../UploadedFile.html">Shrine::UploadedFile</a>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">document</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;pages&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">document</span>.<span class="ruby-identifier">pages</span></pre>
+<pre class="ruby"><span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>]&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">exif</span></pre>
 
 <p>You can also extract multiple metadata values at once, by using
-<code>add_metadata</code> without an argument, and returning a hash of
+<code>add_metadata</code> without an argument and returning a hash of
 metadata.</p>
 
-<pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">begin</span>&#x000A;    <span class="ruby-identifier">data</span> = <span class="ruby-constant">Exif</span><span class="ruby-operator">::</span><span class="ruby-constant">Data</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Exif</span><span class="ruby-operator">::</span><span class="ruby-constant">NotReadable</span> <span class="ruby-comment"># not a valid image</span>&#x000A;    <span class="ruby-keyword">next</span> {}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  { <span class="ruby-value">date_time:</span>     <span class="ruby-identifier">data</span>.<span class="ruby-identifier">date_time</span>,&#x000A;    <span class="ruby-value">flash:</span>         <span class="ruby-identifier">data</span>.<span class="ruby-identifier">flash</span>,&#x000A;    <span class="ruby-value">focal_length:</span>  <span class="ruby-identifier">data</span>.<span class="ruby-identifier">focal_length</span>,&#x000A;    <span class="ruby-value">exposure_time:</span> <span class="ruby-identifier">data</span>.<span class="ruby-identifier">exposure_time</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>In this case <a href="../../Shrine.html">Shrine</a> won&#39;t automatically
 create reader methods for the extracted metadata on <a
 href="../UploadedFile.html">Shrine::UploadedFile</a>, but you can create
-them via <code>metadata_method</code>.</p>
+them via <code>#metadata_method</code>.</p>
 
-<pre class="ruby"><span class="ruby-identifier">metadata_method</span> <span class="ruby-value">:duration</span>, <span class="ruby-value">:bitrate</span>, <span class="ruby-value">:resolution</span>, <span class="ruby-value">:frame_rate</span></pre>
+<pre class="ruby"><span class="ruby-identifier">metadata_method</span> <span class="ruby-value">:date_time</span>, <span class="ruby-value">:flash</span></pre>
+
+<p>The <code>io</code> might not always be a file object, so if you&#39;re
+using an analyzer which requires the source file to be on disk, you can use
+<code>Shrine.with_file</code> to ensure you have a file object.</p>
+
+<pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>) }&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -92,7 +98,7 @@ them via <code>metadata_method</code>.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 38</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = []&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 59</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = []&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

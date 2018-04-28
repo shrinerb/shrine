@@ -28,7 +28,7 @@ Shrine::Plugins::InferExtension
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/infer_extension_rb.html">lib/shrine/plugins/infer_extension.rb</a>
 </li>
 </ol>
 </div>
@@ -62,7 +62,7 @@ to infer the appropriate extension from MIME  type.</p>
 <p>You can also define your own inferrer, with the possibility to call the
 built-in inferrers:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">inferrer:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">mime_type</span>, <span class="ruby-identifier">inferrers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># don&#39;t add extension if the file is a text file</span>&#x000A;  <span class="ruby-identifier">inferrrs</span>[<span class="ruby-value">:rack_mime</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">mime_type</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">inferrer:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">mime_type</span>, <span class="ruby-identifier">inferrers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># don&#39;t add extension if the file is a text file</span>&#x000A;  <span class="ruby-identifier">inferrers</span>[<span class="ruby-value">:rack_mime</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">mime_type</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>You can also use methods for inferring extension directly:</p>
 

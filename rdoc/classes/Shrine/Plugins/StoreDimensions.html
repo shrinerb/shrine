@@ -28,7 +28,7 @@ Shrine::Plugins::StoreDimensions
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/store_dimensions_rb.html">lib/shrine/plugins/store_dimensions.rb</a>
 </li>
 </ol>
 </div>
@@ -36,7 +36,8 @@ Shrine::Plugins::StoreDimensions
 <div id='text'>
 <div id='description'>
 <p>The <code>store_dimensions</code> plugin extracts dimensions of uploaded
-images and stores them into the metadata hash.</p>
+images and stores them into the metadata hash (by default it uses the <a
+href="https://github.com/sdsykes/fastimage">fastimage</a> gem).</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span></pre>
 
@@ -47,18 +48,19 @@ and <code>#dimensions</code> reader methods.</p>
 
 <pre class="ruby"><span class="ruby-identifier">image</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;width&quot;</span>]  <span class="ruby-comment">#=&gt; 300</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;height&quot;</span>] <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">width</span>  <span class="ruby-comment">#=&gt; 300</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">height</span> <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">image</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [300, 500]</span></pre>
 
-<p>By default the [fastimage] gem is used to extract dimensions. You can
-choose a different built-in analyzer via the <code>:analyzer</code> option:</p>
+<p>By default the <a href="https://github.com/sdsykes/fastimage">fastimage</a>
+gem is used to extract dimensions. You can choose a different built-in
+analyzer via the <code>:analyzer</code> option:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_magick</span></pre>
 
 <p>The following analyzers are supported:</p>
 <table class="rdoc-list note-list"><tbody><tr><td class='label'>:fastimage</td><td>
 <p>(Default). Uses the <a
-href="https://github.com/sdsykes/fastimage">FastImage</a> gem to extract
+href="https://github.com/sdsykes/fastimage">fastimage</a> gem to extract
 dimensions from any IO  object.</p>
 </td></tr><tr><td class='label'>:mini_magick</td><td>
-<p>Uses the <a href="https://github.com/minimagick/minimagick">MiniMagick</a>
+<p>Uses the <a href="https://github.com/minimagick/minimagick">mini_magick</a>
 gem to extract dimensions from File objects. If  non-file IO object is
 given it will be temporarily downloaded to disk.</p>
 </td></tr><tr><td class='label'>:ruby_vips</td><td>
@@ -113,7 +115,7 @@ an IO object and returns width and height as a two-element array, or
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 67</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:dimensions_analyzer</span>, <span class="ruby-value">:fastimage</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 68</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:dimensions_analyzer</span>, <span class="ruby-value">:fastimage</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

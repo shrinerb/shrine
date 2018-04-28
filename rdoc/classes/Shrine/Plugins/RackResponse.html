@@ -28,7 +28,7 @@ Shrine::Plugins::RackResponse
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/rack_response.rb">lib/shrine/plugins/rack_response.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/rack_response_rb.html">lib/shrine/plugins/rack_response.rb</a>
 </li>
 </ol>
 </div>
@@ -49,7 +49,7 @@ call <code>#to_rack_response</code>:</p>
 
 <p>An example how this can be used in a Rails controller:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">file_response</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">0</span>]&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_response</span>[<span class="ruby-value">1</span>])&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_response</span>[<span class="ruby-value">2</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">file_status</span>, <span class="ruby-identifier">file_headers</span>, <span class="ruby-identifier">file_body</span> = <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">file_status</span>&#x000A;    <span class="ruby-identifier">response</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">file_headers</span>)&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">file_body</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="module-Shrine::Plugins::RackResponse-label-Disposition">Disposition<span><a href="#module-Shrine::Plugins::RackResponse-label-Disposition">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

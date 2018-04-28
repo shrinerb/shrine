@@ -28,7 +28,7 @@ Shrine::Plugins::MetadataAttributes
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/c2872f38bf8936d7e6bd064caa68f9798317fde5/lib/shrine/plugins/metadata_attributes.rb">lib/shrine/plugins/metadata_attributes.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/metadata_attributes_rb.html">lib/shrine/plugins/metadata_attributes.rb</a>
 </li>
 </ol>
 </div>
@@ -40,7 +40,7 @@ metadata to additional record attributes. You can provide a hash of
 mappings to the plugin call itself or the
 <code>Attacher.metadata_attributes</code> method:</p>
 
-<pre>plugin :metadata_attributes, :size =&gt; :size, :mime_type =&gt; :type&#x000A;# or&#x000A;plugin :metadata_attributes&#x000A;Attacher.metadata_attributes, :size =&gt; :size, :mime_type =&gt; :type</pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>, <span class="ruby-value">:size</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:size</span>, <span class="ruby-value">:mime_type</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:type</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:metadata_attributes</span>&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">metadata_attributes</span> <span class="ruby-value">:size</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:size</span>, <span class="ruby-value">:mime_type</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-value">:type</span></pre>
 
 <p>The above configuration will sync <code>size</code> metadata field to
 <code>&lt;attachment&gt;_size</code> record attribute, and
@@ -52,7 +52,7 @@ mappings to the plugin call itself or the
 <p>If you want to specify the full record attribute name, pass the record
 attribute name as a string instead of a symbol.</p>
 
-<pre>Attacher.metadata_attributes, :filename =&gt; &quot;original_filename&quot;&#x000A;# ...&#x000A;&#x000A;photo.image = image&#x000A;photo.original_filename #=&gt; &quot;nature.jpg&quot;</pre>
+<pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">metadata_attributes</span> <span class="ruby-value">:filename</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;original_filename&quot;</span>&#x000A;&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">image</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;nature.jpg&quot;</span></pre>
 
 <p>If any corresponding metadata attribute doesn&#39;t exist on the record,
 that metadata sync will be silently skipped.</p>
