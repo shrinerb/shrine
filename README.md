@@ -2,7 +2,7 @@
 
 Shrine is a toolkit for file attachments in Ruby applications. Some highlights:
 
-* **Modular design** – the [plugin system][creating plugin] allows you to load only the functionality you need
+* **Modular design** – the [plugin system][plugin system] allows you to load only the functionality you need
 * **Memory friendly** – streaming uploads and downloads make it work great with large files
 * **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and others
 * **ORM integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [Hanami::Model][hanami plugin] and [Mongoid][mongoid plugin]
@@ -854,6 +854,7 @@ mailing lists is expected to follow the [Shrine code of conduct][CoC].
 The gem is available as open source under the terms of the [MIT License].
 
 [Shrine]: https://shrinerb.com
+[plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [FileSystem]: https://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
 [S3]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
 [GCS]: https://github.com/renchap/shrine-google_cloud_storage
