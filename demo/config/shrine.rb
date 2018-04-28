@@ -34,8 +34,12 @@ Shrine.plugin :logging
 Shrine.plugin :determine_mime_type
 Shrine.plugin :cached_attachment_data
 Shrine.plugin :restore_cached_data
-Shrine.plugin :presign_endpoint if ENV["RACK_ENV"] == "production"
-Shrine.plugin :upload_endpoint if ENV["RACK_ENV"] != "production"
+
+if ENV["RACK_ENV"] == "production"
+  Shrine.plugin :presign_endpoint, presign_options: { method: :put }
+else
+  Shrine.plugin :upload_endpoint
+end
 
 Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
