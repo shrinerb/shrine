@@ -358,19 +358,13 @@ class Shrine
 
           # When any of these options are specified, the corresponding request
           # headers must be included in the upload request.
-          required_headers = {
-            content_length:      "Content-Length",
-            content_type:        "Content-Type",
-            content_disposition: "Content-Disposition",
-            content_encoding:    "Content-Encoding",
-            content_language:    "Content-Language",
-            content_md5:         "Content-MD5",
-          }
-
           headers = {}
-          required_headers.each do |option_name, header_name|
-            headers[header_name] = options[option_name] if options.key?(option_name)
-          end
+          headers["Content-Length"]      = options[:content_length]      if options[:content_length]
+          headers["Content-Type"]        = options[:content_type]        if options[:content_type]
+          headers["Content-Disposition"] = options[:content_disposition] if options[:content_disposition]
+          headers["Content-Encoding"]    = options[:content_encoding]    if options[:content_encoding]
+          headers["Content-Language"]    = options[:content_language]    if options[:content_language]
+          headers["Content-MD5"]         = options[:content_md5]         if options[:content_md5]
 
           { method: method, url: url, headers: headers }
         end
