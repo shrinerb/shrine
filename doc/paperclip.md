@@ -409,7 +409,7 @@ which you have to register:
 ```rb
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads"),
 }
 ```
 
@@ -578,6 +578,6 @@ The Shrine storage has no replacement for the `:url` Paperclip option, and it
 isn't needed.
 
 [file]: http://linux.die.net/man/1/file
-[Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
-[direct S3 uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[`Shrine::Storage::S3`]:  http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[Reprocessing versions]: https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[direct S3 uploads]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[`Shrine::Storage::S3`]:  https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html

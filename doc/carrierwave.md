@@ -40,7 +40,7 @@ via [direct uploads]):
 ```rb
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
-  store: Shrine::Storage::S3.new(prefix: "store", **s3_options),
+  store: Shrine::Storage::S3.new(**s3_options),
 }
 ```
 
@@ -711,9 +711,9 @@ Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com", **optio
 
 [image_processing]: https://github.com/janko-m/image_processing
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
-[Reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[Reprocessing versions]: https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [shrine-fog]: https://github.com/shrinerb/shrine-fog
-[direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[`Shrine::Storage::S3`]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[direct uploads]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[`Shrine::Storage::S3`]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
 [`Shrine::Storage::GoogleCloudStorage`]: https://github.com/renchap/shrine-google_cloud_storage
 [`Shrine::Storage::Fog`]: https://github.com/shrinerb/shrine-fog

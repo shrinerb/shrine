@@ -36,9 +36,10 @@ class Shrine
     # the default synchronous workflow, so we want to generate parameters for
     # uploads to the temporary (`:cache`) storage.
     #
-    # The above will create a `GET /presign` endpoint which returns request
-    # method, URL, fields, and headers needed for a single upload directly to
-    # the storage service.
+    # The above will create a `GET /images/presign` endpoint, which calls
+    # `#presign` on the storage and returns the HTTP verb, URL, fields, and
+    # headers needed for a single upload directly to the storage service, in
+    # JSON format.
     #
     #     # GET /images/presign
     #     {
@@ -46,7 +47,7 @@ class Shrine
     #       "url": "https://my-bucket.s3-eu-west-1.amazonaws.com",
     #       "fields": {
     #         "key": "b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8",
-    #         "policy": "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJzaHJpbmUtdGVzdGluZyJ9LHsia2V5IjoiYjdkNTc1ODUwYmE2MWI0NGU3Y2M4YTliZmY4OGU5ZGZkYjE2NTQ0ZDk4OGNkYzI1ZjhkZDEyMTAwNGM4In0seyJ4LWFtei1jcmVkZW50aWFsIjoiQUtJQUlKRjU1VE1aWlk0NVVUNlEvMjAxNTEwMjQvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LHsieC1hbXotYWxnb3JpdGhtIjoiQVdTNC1ITUFDLVNIQTI1NiJ9LHsieC1hbXotZGF0ZSI6IjIwMTUxMDI0VDAwMTEyOVoifV19",
+    #         "policy": "eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ...",
     #         "x-amz-credential": "AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request",
     #         "x-amz-algorithm": "AWS4-HMAC-SHA256",
     #         "x-amz-date": "20151024T001129Z",
@@ -55,9 +56,9 @@ class Shrine
     #       "headers": {}
     #     }
     #
-    # * `method` – request verb
+    # * `method` – HTTP verb
     # * `url` – request URL
-    # * `fields` – request parameters
+    # * `fields` – POST parameters
     # * `headers` – request headers
     #
     # ## Location
@@ -65,7 +66,7 @@ class Shrine
     # By default the generated location won't have any file extension, but you
     # can specify one by sending the `filename` query parameter:
     #
-    #     GET /images/presign?filename=nature.jpg
+    #     # GET /images/presign?filename=nature.jpg
     #
     # It's also possible to customize how the presign location is generated:
     #

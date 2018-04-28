@@ -206,4 +206,4 @@ automatically:
 * deletes the uploaded file if attachment was replaced/removed or the record
   destroyed
 
-[Using Attacher]: http://shrinerb.com/rdoc/files/doc/attacher_md.html
+[Using Attacher]: https://shrinerb.com/rdoc/files/doc/attacher_md.html

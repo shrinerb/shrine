@@ -23,8 +23,8 @@ storage service is beneficial for several reasons:
   request-response lifecycle might not be able to finish before the request
   times out.
 
-You can start by setting both temporary and permanent storage to S3 with
-different prefixes (or even different buckets):
+To start, let's set both temporary and permanent storage to S3, with the
+temporary storage uploading to the `cache/` directory:
 
 ```rb
 # Gemfile
@@ -43,7 +43,7 @@ s3_options = {
 
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
-  store: Shrine::Storage::S3.new(prefix: "store", **s3_options),
+  store: Shrine::Storage::S3.new(**s3_options),
 }
 ```
 
@@ -150,8 +150,9 @@ uploaded file on the client-side, and write it to the hidden attachment field
 
 Once submitted this JSON will then be assigned to the attachment attribute
 instead of the raw file. See [this walkthrough][direct S3 upload walkthrough]
-for adding direct S3 uploads from scratch using [Uppy], as well as the [demo
-app] for a complete example of multiple direct S3 uploads.
+for adding dynamic direct S3 uploads from scratch using [Uppy], as well as the
+[Roda][roda demo] or [Rails][rails demo] demo app for a complete example of
+multiple direct S3 uploads.
 
 ## Strategy B (static)
 
@@ -257,10 +258,10 @@ following trick:
 ```rb
 class MyUploader < Shrine
   plugin :processing
+  plugin :refresh_metadata
 
   process(:store) do |io, context|
-    real_metadata = io.open { |opened_io| extract_metadata(opened_io, context) }
-    io.metadata.update(real_metadata)
+    io.refresh_metadata!
     io # return the same cached IO
   end
 end
@@ -352,14 +353,24 @@ Shrine::Attacher.promote do |data|
 end
 ```
 
+## Testing
+
+To avoid network requests in your test and development environment, you can use
+[Minio]. Minio is an open source object storage server with AWS S3 compatible
+API which you can run locally. See how to set it up in the [Testing][minio
+setup] guide.
+
 [`Shrine::Storage::S3#presign`]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
 [direct S3 upload walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-s3-uploads-to-a-roda--sequel-app-with-shrine
 [checksum walkthrough]: https://gist.github.com/janko-m/4470b5fb0737c5c1f8bcfe8cdc3fd296#using-checksums-to-verify-integrity-of-direct-uploads-with-shrine--uppy
-[demo app]: https://github.com/shrinerb/shrine/tree/master/demo
+[roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
+[rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [Uppy]: https://uppy.io
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
 [CORS guide]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [CORS API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method
 [lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
+[Minio]: https://minio.io
+[minio setup]: https://shrinerb.com/rdoc/files/doc/testing_md.html#label-Minio

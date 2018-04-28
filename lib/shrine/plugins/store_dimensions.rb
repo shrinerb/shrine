@@ -3,7 +3,8 @@
 class Shrine
   module Plugins
     # The `store_dimensions` plugin extracts dimensions of uploaded images and
-    # stores them into the metadata hash.
+    # stores them into the metadata hash (by default it uses the [fastimage]
+    # gem).
     #
     #     plugin :store_dimensions
     #
@@ -29,11 +30,11 @@ class Shrine
     # The following analyzers are supported:
     #
     # :fastimage
-    # : (Default). Uses the [FastImage] gem to extract dimensions from any IO
+    # : (Default). Uses the [fastimage] gem to extract dimensions from any IO
     #   object.
     #
     # :mini_magick
-    # : Uses the [MiniMagick] gem to extract dimensions from File objects. If
+    # : Uses the [mini_magick] gem to extract dimensions from File objects. If
     #   non-file IO object is given it will be temporarily downloaded to disk.
     #
     # :ruby_vips
@@ -61,8 +62,8 @@ class Shrine
     #     Shrine.dimensions_analyzers[:fastimage].call(io) # calls a built-in analyzer
     #     #=> [300, 400]
     #
-    # [FastImage]: https://github.com/sdsykes/fastimage
-    # [MiniMagick]: https://github.com/minimagick/minimagick
+    # [fastimage]: https://github.com/sdsykes/fastimage
+    # [mini_magick]: https://github.com/minimagick/minimagick
     # [ruby-vips]: https://github.com/jcupitt/ruby-vips
     module StoreDimensions
       def self.configure(uploader, opts = {})

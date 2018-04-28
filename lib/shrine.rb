@@ -772,8 +772,8 @@ class Shrine
           metadata["filename"]
         end
 
-        # The extension derived from #id if present, otherwise from
-        # #original_filename.
+        # The extension derived from #id if present, otherwise it's derived
+        # from #original_filename.
         def extension
           result = File.extname(id)[1..-1] || File.extname(original_filename.to_s)[1..-1]
           result.downcase if result
@@ -851,17 +851,17 @@ class Shrine
           tempfile.close! if ($! || block_given?) && tempfile
         end
 
-        # Streams uploaded file content into the sepcified destination. The
-        # destination object needs to respond to `#write`, which accepts a
-        # string and returns the number of bytes written.
+        # Streams uploaded file content into the specified destination. The
+        # destination object is given directly to `IO.copy_stream`, so it can
+        # be either a path on disk or an object that responds to `#write`.
         #
         # If the uploaded file is already opened, it will be simply rewinded
         # after streaming finishes. Otherwise the uploaded file is opened and
         # then closed after streaming.
         #
-        #     destination = StringIO.new
-        #     uploaded_file.stream(destination)
-        #     destination.string #=> "..."
+        #     uploaded_file.stream(StringIO.new)
+        #     # or
+        #     uploaded_file.stream("/path/to/destination")
         def stream(destination, *args)
           if @io
             IO.copy_stream(io, destination)

@@ -55,8 +55,8 @@ require "tmpdir"
 require "down"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "cache"),
-  store: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "store"),
+  cache: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
+  store: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
 }
 
 Shrine.plugin :sequel
@@ -91,8 +91,8 @@ require "tmpdir"
 require "down"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "cache"),
-  store: Shrine::Storage::FileSystem.new(Dir.tmpdir, prefix: "store"),
+  cache: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
+  store: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
 }
 
 Shrine.plugin :activerecord

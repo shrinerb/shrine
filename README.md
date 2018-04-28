@@ -1,13 +1,22 @@
-# Shrine
+# [Shrine]
 
-Shrine is a toolkit for file attachments in Ruby applications.
+Shrine is a toolkit for file attachments in Ruby applications. Some highlights:
 
-If you're not sure why you should care, you're encouraged to read the
-[motivation behind creating Shrine][motivation].
+* **Modular design** – the [plugin system][creating plugin] allows you to load only the functionality you need
+* **Memory friendly** – streaming uploads and downloads make it work great with large files
+* **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and others
+* **ORM integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [Hanami::Model][hanami plugin] and [Mongoid][mongoid plugin]
+* **Flexible processing** – generate thumbnails with [ImageMagick] or [libvips] using the [ImageProcessing][image_processing] gem
+* **Metadata validation** – [validate files][validation_helpers plugin] based on [extracted metadata][Extracting Metadata]
+* **Direct uploads** – upload asynchronously [to your app][upload_endpoint plugin] or [to the cloud][presign_endpoint plugin] using [Uppy]
+* **Resumable uploads** – make large file uploads [resumable][tus] by pointing [Uppy][uppy tus plugin] to a [resumable endpoint][tus-ruby-server]
+* **Background jobs** – built-in support for [background processing][backgrounding plugin] that supports [any backgrounding library][backgrounding libraries]
+
+If you're curious how it compares to other file attachment libraries, see the [Advantages of Shrine].
 
 ## Resources
 
-- Documentation: [shrinerb.com](http://shrinerb.com)
+- Documentation: [shrinerb.com](https://shrinerb.com)
 - Source: [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)
 - Bugs: [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues)
 - Help & Discussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
@@ -19,7 +28,7 @@ loads the ORM plugin:
 
 ```rb
 # Gemfile
-gem "shrine"
+gem "shrine", "~> 2.0"
 ```
 
 ```rb
@@ -28,11 +37,12 @@ require "shrine/storage/file_system"
 
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"), # temporary
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"), # permanent
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads"),       # permanent
 }
 
 Shrine.plugin :sequel # or :activerecord
-Shrine.plugin :cached_attachment_data # for forms
+Shrine.plugin :cached_attachment_data # for retaining the cached file across form redisplays
+Shrine.plugin :restore_cached_data # re-extract metadata when attaching a cached file
 Shrine.plugin :rack_file # for non-Rails apps
 ```
 
@@ -66,24 +76,25 @@ end
 
 Let's now add the form fields which will use this virtual attribute. We need
 (1) a file field for choosing files, and (2) a hidden field for retaining the
-uploaded file in case of validation errors and [direct uploads].
+uploaded file in case of validation errors and for potential [direct
+uploads][direct S3 uploads guide].
 
 ```rb
-# Forme
+# with Forme:
 Forme.form(@photo, action: "/photos", method: "post", enctype: "multipart/form-data") do |f|
   f.input :image, type: :hidden, value: @photo.cached_image_data
   f.input :image, type: :file
   f.button "Create"
 end
 
-# Rails Form Builder
+# with Rails form builder:
 form_for @photo do |f|
   f.hidden_field :image, value: @photo.cached_image_data
   f.file_field :image
   f.submit
 end
 
-# SimpleForm
+# with Simple Form:
 simple_form_for @photo do |f|
   f.input :image, as: :hidden, input_html: { value: @photo.cached_image_data }
   f.input :image, as: :file
@@ -93,9 +104,9 @@ end
 
 Note that the file field needs to go *after* the hidden field, so that
 selecting a new file can always override the cached file in the hidden field.
-The `enctype="multipart/form-data"` HTML attribute is required for submitting
-files through the form, which the Rails form builder will automatically
-generate for you when it detects a file field.
+Also notice the `enctype="multipart/form-data"` HTML attribute, which is
+required for submitting files through the form; the Rails form builder
+will automatically generate this for you.
 
 Now in your router/controller the attachment request parameter can be assigned
 to the model like any other attribute:
@@ -108,7 +119,7 @@ end
 ```
 
 Once a file is uploaded and attached to the record, you can retrieve a URL to
-the uploaded file and display it on the page:
+the uploaded file with `#<attachment>_url` and display it on the page:
 
 ```rb
 image_tag @photo.image_url
@@ -117,13 +128,13 @@ image_tag @photo.image_url
 ## Storage
 
 A "storage" in Shrine is an object responsible for managing files on a specific
-storage service (filesystem, Amazon S3 etc), which implements a generic method
-interface. Storages are configured directly and registered under a name in
-`Shrine.storages`, so that they can be later used by uploaders.
+storage service (disk, AWS S3, Google Cloud etc), which implements a generic
+method interface. Storages are configured directly and registered under a name
+in `Shrine.storages`, so that they can later be used by uploaders.
 
 ```rb
 # Gemfile
-gem "aws-sdk-s3", "~> 1.2" # for Amazon S3 storage
+gem "aws-sdk-s3", "~> 1.2" # for AWS S3 storage
 ```
 ```rb
 require "shrine/storage/s3"
@@ -137,25 +148,26 @@ s3_options = {
 
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
-  store: Shrine::Storage::S3.new(prefix: "store", **s3_options),
+  store: Shrine::Storage::S3.new(**s3_options),
 }
 ```
 
-The above example sets up Amazon S3 storage both for temporary and permanent
-storage, which allows for [direct uploads]. The `:cache` and `:store` names are
-special only in terms that the attacher will automatically pick them up, but
-you can also register more than two storages under different names.
+The above example sets up AWS S3 storage both for temporary and permanent
+storage, which is suitable for [direct uploads][direct S3 uploads guide]. The
+`:cache` and `:store` names are special only in terms that the attacher will
+automatically pick them up, but you can also register more storages under
+different names.
 
 Shrine ships with [FileSystem] and [S3] storage, take a look at their
-documentation for more details on various features they support. There are also
-[many more Shrine storages][external storages] shipping as external gems.
+documentation for more details on various features they support. There are
+[many more Shrine storages][external storages] provided by external gems, and
+you can also [create your own storage][creating storage].
 
 ## Uploader
 
 Uploaders are subclasses of `Shrine`, and are essentially wrappers around
-storages. In addition to actually calling the underlying storage when they need
-to, they also perform many generic tasks which aren't related to a particular
-storage (like processing, extracting metadata, logging etc).
+storages. They perform common tasks around upload that aren't related to a
+particular storage.
 
 ```rb
 class ImageUploader < Shrine
@@ -168,7 +180,7 @@ uploader #=> uploader for storage registered under `:store`
 ```
 
 It's common to create an uploader for each type of file that you want to handle
-(image, video, audio, document etc), but you can structure them any way that
+(image, video, audio, document etc), but really you can organize them in any way
 you like.
 
 ### Uploading
@@ -187,45 +199,45 @@ Some of the tasks performed by `#upload` include:
 * extracting metadata
 * generating location
 * uploading (this is where the storage is called)
-* closing the file
+* closing the uploaded file
 
 ### IO abstraction
 
-Shrine is able to upload any IO-like object that respond to `#read`, `#size`,
-`#rewind`, `#eof?` and `#close`. This foremost includes all real IO objects
+Shrine is able to upload any IO-like object that responds to `#read`,
+`#rewind`, `#eof?` and `#close`. This includes built-in IO and IO-like objects
 like File, Tempfile and StringIO.
 
 When a file is uploaded to a Rails app, it will be represented by an
 ActionDispatch::Http::UploadedFile object in the params. This is also an
 IO-like object accepted by Shrine. In other Rack applications the uploaded file
-will be represented as a Hash, but it can still be attached when [`rack_file`]
+will be represented as a Hash, but it can still be attached when `rack_file`
 plugin is loaded.
 
-Finally, the `Shrine::UploadedFile` object, returned by uploading, is itself an
-IO-like object. This makes it incredibly easy to reupload a file from one
-storage to another, and this is used by the attacher to reupload a file stored
-on temporary storage to permanent storage.
-
-### Deleting
-
-The uploader can also delete uploaded files via `#delete`. Internally this just
-delegates to the uploaded file, but some plugins bring additional behaviour
-(e.g. logging).
+Here are some examples of IO objects that can be uploaded:
 
 ```rb
-uploaded_file = uploader.upload(file)
-# ...
-uploader.delete(uploaded_file)
+uploader.upload File.open("/path/to/file", "rb")             # upload from disk
+uploader.upload StringIO.new("file content")                 # upload from memory
+uploader.upload ActionDispatch::Http::UploadedFile.new       # upload from Rails controller
+uploader.upload Shrine.rack_file({ tempfile: Tempfile.new }) # upload from Rack controller
+uploader.upload Rack::Test::UploadedFile.new                 # upload from rack-test
+uploader.upload Down.open("https://example.org/file")        # upload from internet
 ```
+
+`Shrine::UploadedFile`, the object returned after upload, is itself an IO-like
+object as well. This makes it trivial to reupload a file from one storage to
+another, and this is used by the attacher to reupload a file stored on
+temporary storage to permanent storage.
 
 ## Uploaded file
 
 The `Shrine::UploadedFile` object represents the file that was uploaded to the
-storage. It contains the following information:
+storage, and it's what's returned from `Shrine#upload` or when retrieving a
+record attachment. It contains the following information:
 
 * `storage` – identifier of the storage the file was uploaded to
-* `id` – the location of the file on the storage
-* `metadata` – file metadata that was extracted during upload
+* `id` – location of the file on the storage
+* `metadata` – file metadata that was extracted before upload
 
 ```rb
 uploaded_file = uploader.upload(file)
@@ -244,7 +256,7 @@ It comes with many convenient methods that delegate to the storage:
 uploaded_file.url                 #=> "https://my-bucket.s3.amazonaws.com/949sdjg834.jpg"
 uploaded_file.open                # opens the uploaded file
 uploaded_file.download            #=> #<File:/var/folders/.../20180302-33119-1h1vjbq.jpg>
-uploaded_file.stream(destination) # streams content into the given destination
+uploaded_file.stream(destination) # streams uploaded content into a writable destination
 uploaded_file.exists?             #=> true
 uploaded_file.delete              # deletes the file from the storage
 
@@ -254,13 +266,20 @@ uploaded_file.download { |tempfile| tempfile.read }
 ```
 
 It also implements the IO-like interface that conforms to Shrine's IO
-abstraction, which allows it to be uploaded to other storages.
+abstraction, which allows it to be uploaded again to other storages.
 
 ```rb
 uploaded_file.read   # returns content of the uploaded file
 uploaded_file.eof?   # returns true if the whole IO was read
 uploaded_file.rewind # rewinds the IO
 uploaded_file.close  # closes the IO
+```
+
+If you want to retrieve the content of the uploaded file, you can use a
+combination of `#open` and `#read`:
+
+```rb
+uploaded_file.open(&:read) #=> "..." (binary content of the uploaded file)
 ```
 
 ## Attachment
@@ -286,7 +305,7 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-You can choose whichever of these three syntaxes you prefer. In any case this
+You can choose whichever of these three syntaxes you prefer. Either of these
 will create a `Shrine::Attachment` module with attachment methods for the
 specified attribute, which then get added to your model when you include it:
 
@@ -320,9 +339,8 @@ photo.destroy
 photo.image.exists? #=> false
 ```
 
-If there is already a file attached, and the attachment is overriden (either
-with a new file or no file), the previous attachment will get deleted when the
-record gets saved.
+If there is already a file attached and a new file is attached, the previous
+attachment will get deleted when the record gets saved.
 
 ```rb
 photo.update(image: new_file) # changes the attachment and deletes previous
@@ -332,21 +350,17 @@ photo.update(image: nil)      # removes the attachment and deletes previous
 
 In addition to assigning raw files, you can also assign a JSON representation
 of files that are already uploaded to the temporary storage. This allows Shrine
-to retain cached files in case of validation errors, and handle [direct
-uploads], via the hidden form field.
+to retain cached files in case of validation errors and handle [direct
+uploads] via the hidden form field.
 
 ```rb
-photo.image = '{
-  "id": "9260ea09d8effd.jpg",
-  "storage": "cache",
-  "metadata": { ... }
-}'
+photo.image = '{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{...}}'
 ```
 
 ## Attacher
 
 The model attachment attributes and callbacks just delegate the behaviour
-to a `Shrine::Attacher` object.
+to ther underlying `Shrine::Attacher` object.
 
 ```rb
 photo.image_attacher #=> #<Shrine::Attacher>
@@ -385,9 +399,9 @@ photo.save         # promotes to :other_store storage
 Whenever the attacher uploads or deletes files, it sends a `context` hash
 which includes `:record`, `:name`, and `:action` keys, so that you can perform
 processing or generate location differently depending on this information. See
-[Context] section for more details.
+"Context" section for more details.
 
-For more information about `Shrine::Attacher`, see [Using Attacher] guide.
+For more information about `Shrine::Attacher`, see the [Using Attacher] guide.
 
 ## Plugin system
 
@@ -410,9 +424,12 @@ class ImageUploader < Shrine
 end
 ```
 
+If you want to extend Shrine functionality with custom behaviour, you can also
+[create your own plugin][creating plugin].
+
 ## Metadata
 
-Shrine automatically extracts available file metadata and saves them to the
+Shrine automatically extracts some basic file metadata and saves them to the
 `Shrine::UploadedFile`. You can access them through the `#metadata` hash or via
 metadata methods:
 
@@ -432,80 +449,43 @@ uploaded_file.size              #=> 345993
 
 ### MIME type
 
-By default "mime_type" will be inherited from `#content_type` of the uploaded
-file, which is set from the "Content-Type" request header, but this header is
-determined by the browser solely based on the file extension. This means that
-by default Shrine's "mime_type" is **not guaranteed** to hold the actual MIME
-type of the file.
+By default `mime_type` will be inherited from `#content_type` attribute of the
+uploaded file, which is set from the `Content-Type` request header. However,
+this header is determined by the browser solely based on the file extension.
+This means that by default Shrine's `mime_type` is *not guaranteed* to hold
+the actual MIME type of the file.
 
-However, if you load the `determine_mime_type` plugin, that will make Shrine
-always extract the MIME type from **file content**.
+To remedy that, you can load the `determine_mime_type` plugin, which will make
+Shrine extract the MIME type from *file content*.
 
 ```rb
 Shrine.plugin :determine_mime_type
 ```
 ```rb
-File.write("image.png", "<?php ... ?>") # PHP file with a .png extension
-photo = Photo.create(image: File.open("image.png"))
+photo = Photo.create(image: StringIO.new("<?php ... ?>"))
 photo.image.mime_type #=> "text/x-php"
 ```
 
-By the default the UNIX [`file`] utility is used, but you can also choose a
-different analyzer, see plugin's documentation for more details.
+By the default the UNIX [`file`] utility is used to determine the MIME type,
+but you can also choose a different analyzer – see the plugin documentation for
+more details.
 
 ### Custom metadata
 
-In addition to the built-in metadata, you can also extract and store completely
-custom metadata with the `add_metadata` plugin. For example, if we're uploading
-videos, we could store additional video-specific metadata:
-
-```rb
-require "streamio-ffmpeg"
-
-class VideoUploader < Shrine
-  plugin :add_metadata
-
-  add_metadata do |io, context|
-    movie = FFMPEG::Movie.new(io.path)
-
-    { "duration"   => movie.duration,
-      "bitrate"    => movie.bitrate,
-      "resolution" => movie.resolution,
-      "frame_rate" => movie.frame_rate }
-  end
-end
-```
-```rb
-video.metadata["duration"]   #=> 7.5
-video.metadata["bitrate"]    #=> 481
-video.metadata["resolution"] #=> "640x480"
-video.metadata["frame_rate"] #=> 16.72
-```
+In addition to `size`, `filename`, and `mime_type`, you can also extract image
+dimensions using the `store_dimensions` plugin, as well as any custom metadata
+using the `add_metadata` plugin. Check out the [Extracting Metadata] guide for
+more details.
 
 ## Processing
 
-You can have Shrine perform file processing before uploading to storage. It's
-generally best to process files prior to uploading to permanent storage,
-because at that point the selected file has been succesfully validated, and
-this part can be moved into a background job.
+Shrine's `processing` plugin allows you to intercept when the cached file is
+being uploaded to permanent storage, and do any file processing your might want.
 
-This promote phase is called `:store`, and we can use the `processing` plugin
-to define processing for that phase:
-
-```rb
-class ImageUploader < Shrine
-  plugin :processing
-
-  process(:store) do |io, context|
-    # ...
-  end
-end
-```
-
-Now, how do we do the actual processing? Well, Shrine actually doesn't ship
-with any file processing functionality, because that is a generic problem that
-belongs in separate libraries. If the type of files you're uploading are
-images, I created the [image_processing] gem which you can use with Shrine:
+If you're uploading images, it's common to want to generate various thumbnails.
+It's recommended to use the **[ImageProcessing][image_processing]** gem for
+this, which provides a convenient API over [ImageMagick] and [libvips]. You
+also need to load the `versions` plugin to be able to save multiple files.
 
 ```sh
 $ brew install imagemagick
@@ -514,53 +494,11 @@ $ brew install imagemagick
 # Gemfile
 gem "image_processing", "~> 1.0"
 ```
-
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :processing
-
-  process(:store) do |io, context|
-    original = io.download
-
-    resized = ImageProcessing::MiniMagick
-      .source(original)
-      .resize_to_limit!(800, 800)
-
-    original.close!
-
-    resized
-  end
-end
-```
-
-Here the `io` is a cached `Shrine::UploadedFile`, so we need to download it to
-a file, since file processing tools usually work with files on the filesystem.
-
-Shrine treats file processing as a functional transformation; you are given the
-original file, and how you're going to perform processing is entirely up to
-you, you only need to return the processed files at the end of the block. Then
-instead of uploading the original file, Shrine will continue to upload the
-files that the processing block returned.
-
-### Versions
-
-Sometimes we want to generate multiple files as the result of processing. If
-we're uploading images, we might want to store various thumbnails alongside the
-original image. If we're uploading videos, we might want to save screenshots
-or transcode the video into different formats.
-
-To be able to save multiple files, we just need to load the `versions` plugin,
-and then in processing block we can return a Hash of files. It is recommended
-to also load the `delete_raw` plugin, so that processed files are automatically
-deleted after uploading.
-
-```rb
-require "image_processing/mini_magick"
-
-class ImageUploader < Shrine
-  plugin :processing
+  plugin :processing # allows hooking into promoting
   plugin :versions   # enable Shrine to handle a hash of files
   plugin :delete_raw # delete processed files after uploading
 
@@ -609,39 +547,11 @@ photo.image[:medium].mime_type #=> "image/jpeg"
 The `versions` plugin also expands `#<attachment>_url` to accept version names:
 
 ```rb
-photo.image_url(:large) #=> "..."
+photo.image_url(:large) #=> "https://..."
 ```
 
-### Custom processing
-
-Your processing tool doesn't have to be in any way designed for Shrine
-([image_processing] that we saw earlier is a generic library), the only thing
-that you need to do is return processed files as some kind of IO objects. Here
-is an example of transcoding a video using [ffmpeg]:
-
-```rb
-require "streamio-ffmpeg"
-
-class VideoUploader < Shrine
-  plugin :processing
-  plugin :versions
-  plugin :delete_raw
-
-  process(:store) do |io, context|
-    mov        = io.download
-    video      = Tempfile.new(["video", ".mp4"], binmode: true)
-    screenshot = Tempfile.new(["screenshot", ".jpg"], binmode: true)
-
-    movie = FFMPEG::Movie.new(mov.path)
-    movie.transcode(video.path)
-    movie.screenshot(screenshot.path)
-
-    mov.delete
-
-    {video: video, screenshot: screenshot}
-  end
-end
-```
+For more details, including examples of how to do custom processing, see the
+[File Processing] guide.
 
 ## Context
 
@@ -650,16 +560,16 @@ argument, which is forwarded to all other tasks like processing, extracting
 metadata and generating location.
 
 ```rb
-uploader.upload(file, {foo: "bar"}) # context hash is forwarded to all tasks around upload
+uploader.upload(file, { foo: "bar" }) # context hash is forwarded to all tasks around upload
 ```
 
 Some options are actually recognized by Shrine, like `:location` and
-`:upload_options`, and some are added by plugins. However, most options are
-there just to provide you context, for more flexibility in performing tasks and
-better logging.
+`:upload_options`, some are added by plugins, and the rest are there just to
+provide additional context, for more flexibility in performing tasks and more
+descriptive logging.
 
 The attacher automatically includes additional `context` information for each
-upload and delete:
+upload and delete operation:
 
 * `context[:record]` – model instance where the file is attached
 * `context[:name]` – name of the attachment attribute on the model
@@ -676,7 +586,7 @@ end
 ## Validation
 
 Shrine can perform file validations for files assigned to the model. The
-validations are registered inside a `Attacher.validate` block, and you can load
+validations are defined inside the `Attacher.validate` block, and you can load
 the `validation_helpers` plugin to get convenient file validation methods:
 
 ```rb
@@ -694,62 +604,18 @@ end
 user = User.new
 user.cv = File.open("cv.pdf")
 user.valid? #=> false
-user.errors.to_hash #=> {cv: ["is too large (max is 5 MB)"]}
+user.errors.to_hash #=> {:cv=>["is too large (max is 5 MB)"]}
 ```
 
-You can also do custom validations:
-
-```rb
-class ImageUploader < Shrine
-  Attacher.validate do
-    get.download do |tempfile|
-      errors << "image is corrupted" unless ImageProcessing::MiniMagick.valid_image?(tempfile)
-    end
-  end
-end
-```
-
-When file validations fail, Shrine will by default keep the invalid cached file
-assigned to the model instance. If you want the invalid file to be deassigned,
-you can load the `remove_invalid` plugin.
-
-The `Attacher.validate` block is executed in context of a `Shrine::Attacher`
-instance:
-
-```rb
-class DocumentUploader < Shrine
-  Attacher.validate do
-    self   #=> #<Shrine::Attacher>
-
-    get    #=> #<Shrine::UploadedFile>
-    record #=> #<User>
-    name   #=> :cv
-  end
-end
-```
-
-Validations are inherited from superclasses, but you need to call them manually
-when defining more validations:
-
-```ruby
-class ApplicationUploader < Shrine
-  Attacher.validate { validate_max_size 5.megabytes }
-end
-
-class ImageUploader < ApplicationUploader
-  Attacher.validate do
-    super() # empty braces are required
-    validate_mime_type_inclusion %w[image/jpeg image/jpg image/png]
-  end
-end
-```
+See the [File Validation] guide and `validation_helpers` plugin documentation
+for more details.
 
 ## Location
 
 Before Shrine uploads a file, it generates a random location for it. By default
 the hierarchy is flat; all files are stored in the root directory of the
-storage. You can change how the location is generated by overriding
-`#generate_location`:
+storage. The `pretty_location` plugin provides a nice default hierarchy, but
+you can also override `#generate_location` with a custom implementation:
 
 ```rb
 class ImageUploader < Shrine
@@ -773,7 +639,7 @@ uploads/
 ```
 
 Note that there should always be a random component in the location, so that
-any ORM dirty tracking is detected properly. Inside `#generate_location` you
+the ORM dirty tracking is detected properly. Inside `#generate_location` you
 can also access the extracted metadata through `context[:metadata]`.
 
 When uploading single files, it's possible to bypass `#generate_location` via
@@ -785,20 +651,17 @@ uploader.upload(file, location: "some/specific/location.mp4")
 
 ## Direct uploads
 
-While having files uploaded on form submit is simplest to implement, it doesn't
-provide the best user experience, because the user doesn't know how long they
-need to wait for the file to get uploaded.
+To really improve the user experience, it's recommended to start uploading the
+files asynchronously as soon they're selected. This way the UI is still
+responsive during upload, so the user can fill in other fields while the files
+are being uploaded, and if you display a progress bar they can see when the
+upload will finish.
 
-To improve the user experience, the application can actually start uploading
-the file **asynchronously** already when it has been selected, and provide a
-progress bar. This way the user can estimate when the upload is going to
-finish, and they can continue filling in other fields in the form while the
-file is being uploaded.
-
-Shrine comes with the `upload_endpoint` plugin, which provides a Rack endpoint
-that accepts file uploads and forwards them to specified storage. We want to
-set it up to upload to *temporary* storage, because we're replacing the caching
-step in the default synchronous workflow.
+The asynchronous uploads will have to go to a separate endpoint than the one
+where the form is submitted. You can use Shrine's `upload_endpoint` plugin to
+create a Rack app that accepts file uploads and forwards them to the specified
+storage. We want to set it up to upload to *temporary* storage (`:cache`),
+because we're replacing the caching step from the default synchronous workflow.
 
 ```rb
 Shrine.plugin :upload_endpoint
@@ -817,25 +680,37 @@ Rails.application.routes.draw do
 end
 ```
 
-The above created a `POST /images/upload` endpoint. You can now use [Uppy] to
-upload files asynchronously to the `/images/upload` endpoint the moment they
-are selected. Once the file has been uploaded, the endpoint will return JSON
-data of the uploaded file, which the client can then write to a hidden
-attachment field, to be submitted instead of the raw file.
+The above will add a `POST /images/upload` route to your app. You can now
+use the **[Uppy]** JavaScript library to upload files to this endpoint as soon
+they're selected, and write the result to the hidden field. The JavaScript code
+for this will depend on your application, see [this walkthrough][direct uploads
+walkthrough] that adds direct uploads from scratch.
 
-Many popular storage services can accept file uploads directly from the client
-([Amazon S3], [Google Cloud Storage], [Microsoft Azure Storage] etc), which
-means you can avoid uploading files through your app. If you're using one of
-these storage services, you can use the `presign_endpoint` plugin to generate
-URL, fields, and headers that can be used to upload files directly to the
-storage service. The only difference from the `upload_endpoint` workflow is
-that the client has the extra step of fetching the request information before
-uploading the file.
+You can also upload files directly to the cloud (AWS S3, Google Cloud etc),
+using Shrine's `presign_endpoint` plugin. See [this walkthrough][direct S3
+uploads walkthrough] that adds direct S3 uploads from scratch using Uppy, as
+well as the [Direct Uploads to S3][direct S3 uploads guide] guide that provides
+some useful tips. Also check out the [Roda][roda demo] or [Rails][rails demo]
+demo app which implements multiple uploads directly to S3.
 
-See the [upload_endpoint] and [presign_endpoint] plugin documentations and
-[Direct Uploads to S3][direct uploads] guide for more details, as well as the
-[Roda][roda_demo] and [Rails][rails_demo] demo apps which implement multiple
-uploads directly to S3.
+### Resumable uploads
+
+When your app is dealing with large uploads (e.g. videos), keep in mind that it
+can be challening for your users to upload these large files to your app,
+depending on their internet connection. If the connection breaks at any point
+during uploading, the upload needs to be restarted from the beginning.
+
+Luckily, there is a solution for this. **[Tus.io][tus]** is an open protocol
+for resumable file uploads, which enables the client and the server to achieve
+reliable file uploads even on unstable connections, by enabling the upload to
+be resumed in case of interruptions, even after the browser was closed or the
+device was shut down.
+
+On the client side you can use [Uppy][uppy tus plugin] with [tus-js-client],
+have it upload files to a [tus-ruby-server], and finally attach the uploaded
+files with the help of [shrine-tus]. See [this walkthrough][resumable uploads
+walkthrough] that adds resumable uploads from scratch, as well as the [Roda
+demo][resumable demo] for a complete example.
 
 ## Backgrounding
 
@@ -866,24 +741,10 @@ class DeleteJob
 end
 ```
 
-The above puts all promoting (uploading cached file to permanent storage) and
-deleting of files into background jobs using Sidekiq. Obviously instead of
-Sidekiq you can use [any other backgrounding library][backgrounding libraries].
-
-The main advantages of Shrine's backgrounding support over other file attachment
-libraries are:
-
-* **User experience** – Before starting the background job, Shrine will save the
-  record with the cached attachment so that it can be immediately shown to the
-  user. With other file upload libraries users cannot see the file until the
-  background job has finished.
-* **Simplicity** – Instead of shipping with workers for you, Shrine allows you
-  to write your own workers and plug them in very easily. And no extra
-  columns are required.
-* **Generality** – This setup will automatically be used for all uploaders,
-  types of files and models.
-* **Safety** – All of Shrine's features have been designed to take delayed
-  storing into account, and concurrent requests are handled as well.
+The above puts promoting (uploading cached file to permanent storage) and
+deleting of files for all uploaders into background jobs using Sidekiq.
+Obviously instead of Sidekiq you can use [any other backgrounding
+library][backgrounding libraries].
 
 ## Clearing cache
 
@@ -891,7 +752,7 @@ Shrine doesn't automatically delete files uploaded to temporary storage, instead
 you should set up a separate recurring task that will automatically delete old
 cached files.
 
-Most of Shrine storage objects come with a `#clear!` method, which you can call
+Most of Shrine storage classes come with a `#clear!` method, which you can call
 in a recurring script. For FileSystem and S3 storage it would look like this:
 
 ```rb
@@ -905,9 +766,9 @@ s3 = Shrine.storages[:cache]
 s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete files older than 1 week
 ```
 
-Note that for S3 you can also configure bucket lifecycle rules to do this for
-you. This can be done either from the [AWS Console][S3 lifecycle console] or
-via an [API call][S3 lifecycle API]:
+Note that for AWS S3 you can also configure bucket lifecycle rules to do this
+for you. This can be done either from the [AWS Console][S3 lifecycle console]
+or via an [API call][S3 lifecycle API]:
 
 ```rb
 require "aws-sdk-s3"
@@ -968,38 +829,6 @@ Because `opts` is cloned in subclasses, overriding settings works with
 inheritance. The `opts` hash is used internally by plugins to store
 configuration.
 
-## On-the-fly processing
-
-Shrine allows you to define processing that will be performed on upload.
-However, what if you want to have processing performed on-the-fly when the URL
-is requested? Unlike Refile or Dragonfly, Shrine doesn't come with an image
-server built in; instead it expects you to integrate any of the existing
-generic image servers.
-
-Shrine has integrations for many commercial on-the-fly processing services,
-including [Cloudinary], [Imgix] and [Uploadcare].
-
-If you don't want to use a commercial service, [Dragonfly] is a great
-open-source image server. See [this blog post][processing post] on how you can
-integrate Dragonfly with Shrine.
-
-## Chunked & Resumable uploads
-
-When you're accepting large file uploads, you normally want to split it into
-multiple chunks. This way if an upload fails, it is just for one chunk and can
-be retried, while the previous chunks remain uploaded.
-
-[Tus][tus] is an open protocol for resumable file uploads, which enables the
-client and the server to achieve reliable file uploads, even on unstable
-networks, with the possibility to resume the upload even after the browser is
-closed or the device are shut down. You can use a client library like
-[tus-js-client] to upload the file to [tus-ruby-server], and attach the
-uploaded file to a record using [shrine-url]. See [shrine-tus-demo] for an
-example of complete implementation.
-
-Another option might be to do chunked uploads directly to your storage service,
-if the storage service supports it (e.g. Amazon S3 or Google Cloud Storage).
-
 ## Inspiration
 
 Shrine was heavily inspired by [Refile] and [Roda]. From Refile it borrows the
@@ -1013,6 +842,7 @@ system.
 * CarrierWave
 * Dragonfly
 * Refile
+* Active Storage
 
 ## Code of Conduct
 
@@ -1023,41 +853,50 @@ mailing lists is expected to follow the [Shrine code of conduct][CoC].
 
 The gem is available as open source under the terms of the [MIT License].
 
-[motivation]: https://twin.github.io/better-file-uploads-with-shrine-motivation/
-[FileSystem]: http://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
-[S3]: http://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
-[direct uploads]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[external storages]: http://shrinerb.com/#external
-[`rack_file`]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/RackFile.html
-[Using Attacher]: http://shrinerb.com/rdoc/files/doc/attacher_md.html
-[plugins]: http://shrinerb.com/#plugins
-[`file`]: http://linux.die.net/man/1/file
-[backgrounding]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
-[Context]: https://github.com/shrinerb/shrine#context
-[image_processing]: https://github.com/janko-m/image_processing
-[ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[Uppy]: https://uppy.io
-[Amazon S3]: https://aws.amazon.com/s3/
-[Google Cloud Storage]: https://cloud.google.com/storage/
-[Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/
-[upload_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
-[presign_endpoint]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
+[Shrine]: https://shrinerb.com
+[FileSystem]: https://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
+[S3]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[GCS]: https://github.com/renchap/shrine-google_cloud_storage
 [Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
-[Imgix]: https://github.com/shrinerb/shrine-imgix
-[Uploadcare]: https://github.com/shrinerb/shrine-uploadcare
-[Dragonfly]: http://markevans.github.io/dragonfly/
-[tus]: http://tus.io
+[Transloadit]: https://github.com/shrinerb/shrine-transloadit
+[activerecord plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Activerecord.html
+[sequel plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html
+[hanami plugin]: https://github.com/katafrakt/hanami-shrine
+[mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
+[image_processing]: https://github.com/janko-m/image_processing
+[ImageMagick]: https://www.imagemagick.org/script/index.php
+[libvips]: http://jcupitt.github.io/libvips/
+[validation_helpers plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html
+[upload_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
+[presign_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
+[Uppy]: https://uppy.io
+[tus]: https://tus.io
+[uppy tus plugin]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[backgrounding plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
+[Advantages of Shrine]: https://shrinerb.com/rdoc/files/doc/advantages_md.html
+[external storages]: https://shrinerb.com/#external
+[creating storage]: https://shrinerb.com/rdoc/files/doc/creating_storages_md.html
+[creating plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
+[Using Attacher]: https://shrinerb.com/rdoc/files/doc/attacher_md.html
+[plugins]: https://shrinerb.com/#plugins
+[`file`]: http://linux.die.net/man/1/file
+[Extracting Metadata]: https://shrinerb.com/rdoc/files/doc/metadata_md.html
+[File Processing]: https://shrinerb.com/rdoc/files/doc/processing_md.html
+[File Validation]: https://shrinerb.com/rdoc/files/doc/validation_md.html
+[direct uploads walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-uploads-to-a-roda--sequel-app-with-shrine
+[direct S3 uploads walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-s3-uploads-to-a-roda--sequel-app-with-shrine
+[direct S3 uploads guide]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
+[rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [tus-js-client]: https://github.com/tus/tus-js-client
-[shrine-tus-demo]: https://github.com/shrinerb/shrine-tus-demo
-[shrine-url]: https://github.com/shrinerb/shrine-url
-[Roda]: https://github.com/jeremyevans/roda
-[Refile]: https://github.com/refile/refile
-[MIT License]: http://opensource.org/licenses/MIT
-[CoC]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
-[roda_demo]: https://github.com/shrinerb/shrine/tree/master/demo
-[rails_demo]: https://github.com/erikdahlstrand/shrine-rails-example
+[shrine-tus]: https://github.com/shrinerb/shrine-tus
+[resumable uploads walkthrough]: https://gist.github.com/janko-m/f05188205cb9af75a27ead78d068b5d3#adding-resumable-uploads-to-a-roda--sequel-app-with-shrine
+[resumable demo]: https://github.com/shrinerb/shrine-tus-demo
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
 [S3 lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [S3 lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
-[processing post]: https://twin.github.io/better-file-uploads-with-shrine-processing/
+[Roda]: https://github.com/jeremyevans/roda
+[Refile]: https://github.com/refile/refile
+[CoC]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
+[MIT License]: http://opensource.org/licenses/MIT

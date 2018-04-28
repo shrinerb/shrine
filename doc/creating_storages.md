@@ -1,10 +1,8 @@
 # Creating a New Storage
 
-## Essentials
-
 Shrine ships with the FileSystem and S3 storages, but it's also easy to create
-your own. A storage is a class which needs to implement to the following
-methods:
+your own. A storage is a class which needs to implement `#upload`, `#url`,
+`#open`, `#exists?`, and `#delete` methods.
 
 ```rb
 class Shrine
@@ -14,16 +12,16 @@ class Shrine
         # uploads `io` to the location `id`, can accept upload options
       end
 
-      def url(id, **options)
-        # returns URL to the remote file, accepts options for customizing the URL
-      end
-
-      def open(id)
+      def open(id, **options)
         # returns the remote file as an IO-like object
       end
 
+      def url(id, **options)
+        # returns URL to the remote file, can accept URL options
+      end
+
       def exists?(id)
-        # checks if the file exists on the storage
+        # returns whether the file exists on storage
       end
 
       def delete(id)
@@ -36,10 +34,27 @@ end
 
 ## Upload
 
-The job of `Storage#upload` is to upload the given IO object to the storage.
-It's recommended to use [HTTP.rb] for uploading, as it accepts any IO object
-that responds to `#read` (not just file objects), and it streams the IO data
-directly to the socket, making it suitable for large uploads.
+The `#upload` storage method is called by `Shrine#upload`, it accepts an IO
+object (`io`) and upload location (`id`) and is expected to upload the IO
+content to the specified location. It's also given `:shrine_metadata` that was
+extracted from the IO, which can be used for specifying request headers on
+upload. The storage can also support custom upload options (which can be
+utilized with the `upload_options` plugin).
+
+```rb
+class MyStorage
+  # ...
+  def upload(io, id, shrine_metadata: {}, **upload_options)
+    # uploads `io` to the location `id`, can accept upload options
+  end
+  # ...
+end
+```
+
+Unless you're already using a Ruby SDK, it's recommended to use [HTTP.rb] for
+uploading. It accepts any IO object that responds to `#read` (not just file
+objects), and it streams the request body directly to the TCP socket, both for
+raw and multipart uploads, making it suitable for large uploads.
 
 ```rb
 require "http"
@@ -63,8 +78,9 @@ def upload(io, id, shrine_metadata: {}, **upload_options)
 end
 ```
 
-Likewise, if you need to save some information into the metadata after upload,
-you can modify the metadata hash:
+Likewise, if you need to save some information into the metadata after upload
+(e.g. if the MIME type of the file changes on upload), you can modify the
+metadata hash:
 
 ```rb
 def upload(io, id, shrine_metadata: {}, **upload_options)
@@ -73,33 +89,121 @@ def upload(io, id, shrine_metadata: {}, **upload_options)
 end
 ```
 
-## Download
+## Open
 
-Shrine automatically downloads the file to a Tempfile using `#open`. However,
-if you would like to do custom downloading, you can define `#download` and
-Shrine will use that instead:
+The `#open` storage method is called by various `Shrine::UploadedFile` methods
+that retrieve uploaded file content. It accepts the file location and is
+expected to return an IO-like object (that implements `#read`, `#size`,
+`#rewind`, `#eof?`, and `#close`) that represents the uploaded file.
+
 
 ```rb
-class Shrine
-  module Storage
-    class MyStorage
-      # ...
-
-      def download(id)
-        # download the file to a Tempfile
-      end
-
-      # ...
-    end
+class MyStorage
+  # ...
+  def open(id, **options)
+    # returns the remote file as an IO-like object
   end
+  # ...
 end
 ```
+
+Ideally, the returned IO object should lazily retrieve uploaded content, so
+that in cases where metadata needs to be extracted from an uploaded file, only
+a small portion of the file will be downloaded.
+
+It's recommended to use the [Down] gem for this. If the storage exposes its
+files over HTTP, you can use `Down.open`, otherwise if it's possible to stream
+chunks of content from the storage, that can be wrapped in a `Down::ChunkedIO`.
+It's recommended to use the [`Down::Http`] backend, as the [HTTP.rb] gem
+allocates an order of magnitude less memory when reading the response body
+compared to `Net::HTTP`.
+
+The storage can support additional options to customize how the file will be
+opened, `Shrine::UploadedFile#open` and `Shrine::UploadedFile#download` will
+forward any given options to `#open`.
+
+## Download
+
+`Shrine::UploadedFile#download` by default uses the `#open` storage method to
+stream file content to a Tempfile. However, if you would like to use your own
+custom way of downloading to a file, you can define `#download` on the storage
+and `Shrine::UploadedFile#download` will automatically call that instead.
+
+```rb
+class MyStorage
+  # ...
+  def download(id, **options)
+    # download the uploaded file to a Tempfile
+  end
+  # ...
+end
+```
+
+The storage can support additional options to customize how the file will be
+downloaded, `Shrine::UploadedFile#download` will forward any given options to
+`#download`.
+
+## Url
+
+The `#url` storage method is called by `Shrine::UploadedFile#url`, it accepts a
+file location and is expected to return a resolvable URL to the uploaded file.
+Custom URL options can be supported if needed, `Shrine::UploadedFile#url` will
+forward any given options to `#url`.
+
+```rb
+class MyStorage
+  # ...
+  def url(id, **options)
+    # returns URL to the remote file, can accept URL options
+  end
+  # ...
+end
+```
+
+If the storage does not have uploaded files accessible via HTTP, the `#url`
+method should return `nil`. Note that in this case users can use the
+`download_endpoint` or `rack_response` plugins to create a downloadable link,
+which are implemented in terms of `#open`.
+
+## Exists
+
+The `#exists?` storage method is called by `Shrine::UploadedFile#exists?`, it
+accepts a file location and should return `true` if the file exists on the
+storage and `false` otherwise.
+
+```rb
+class MyStorage
+  # ...
+  def exists?(id)
+    # returns whether the file exists on storage
+  end
+  # ...
+end
+```
+
+## Delete
+
+The `#delete` storage method is called by `Shrine::UploadedFile#delete`, it
+accepts a file location and is expected to delete the file from the storage.
+
+```rb
+class MyStorage
+  # ...
+  def delete(id)
+    # deletes the file from the storage
+  end
+  # ...
+end
+```
+
+For convenience of use, this method should not raise an exception if the file
+doesn't exist.
 
 ## Presign
 
 If the storage service supports direct uploads, and requires fetching
 additional information from the server, you can implement a `#presign` method,
-which will be used by the `presign_endpoint` plugin. The `#presign` method
+which will be called by the `presign_endpoint` plugin. The `#presign` method
 should return a Hash with the following keys:
 
 * `:method` – HTTP verb that should be used
@@ -108,65 +212,52 @@ should return a Hash with the following keys:
 * `:headers` – Hash of request headers that should be used for the upload (optional)
 
 ```rb
-class Shrine
-  module Storage
-    class MyStorage
-      # ...
-
-      def presign(id, **options)
-        # returns a Hash with :method, :url, :fields, and :headers keys
-      end
-
-      # ...
-    end
+class MyStorage
+  # ...
+  def presign(id, **options)
+    # returns a Hash with :method, :url, :fields, and :headers keys
   end
+  # ...
 end
 ```
+
+The storage can support additional options to customize how the presign will be
+generated, those can be forwarded via the `:presign_options` option on the
+`presign_endpoint` plugin.
 
 ## Move
 
-If your storage can move files, you can add 2 additional methods, and they will
-automatically get used by the `moving` plugin:
+If your storage can move files, you can add the additional `#move` and
+`#movable?` methods, and they will automatically get used if the `moving`
+plugin is loaded.
 
 ```rb
-class Shrine
-  module Storage
-    class MyStorage
-      # ...
-
-      def move(io, id, **upload_options)
-        # does the moving of the `io` to the location `id`
-      end
-
-      def movable?(io, id)
-        # whether the given `io` is movable to the location `id`
-      end
-
-      # ...
-    end
+class MyStorage
+  # ...
+  def move(io, id, **upload_options)
+    # does the moving of the `io` to the location `id`
   end
+
+  def movable?(io, id)
+    # whether the given `io` is movable to the location `id`
+  end
+  # ...
 end
 ```
 
-## Clearing
+## Clear
 
 While this method is not used by Shrine, it is good to give users the
 possibility to delete all files in a storage, and the conventional name for
-this method is `#clear!`:
+this method is `#clear!`.
 
 ```rb
-class Shrine
-  module Strorage
-    class MyStorage
-      # ...
-
-      def clear!
-        # deletes all files in the storage
-      end
-
-      # ...
-    end
+class MyStorage
+  # ...
+  def clear!
+    # deletes all files in the storage
   end
+  # ...
 end
 ```
 
@@ -176,18 +267,12 @@ If your storage supports updating data of existing files (e.g. some metadata),
 the convention is to create an `#update` method:
 
 ```rb
-class Shrine
-  module Storage
-    class MyStorage
-      # ...
-
-      def update(id, options = {})
-        # update data of the file
-      end
-
-      # ...
-    end
+class MyStorage
+  # ...
+  def update(id, **options)
+    # update data of the file
   end
+  # ...
 end
 ```
 
@@ -227,4 +312,6 @@ tests for your storage. There will likely be some edge cases that won't be
 tested by the linter.
 
 [HTTP.rb]: https://github.com/httprb/http
-[fake IO]: https://github.com/shrinerb/shrine-cloudinary/blob/ca587c580ea0762992a2df33fd590c9a1e534905/test/test_helper.rb#L20-L27
+[fake IO]: https://github.com/shrinerb/shrine/blob/master/test/support/fakeio.rb
+[Down]: https://github.com/janko-m/down
+[`Down::Http`]: https://github.com/janko-m/down#httprb

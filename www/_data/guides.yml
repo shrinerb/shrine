@@ -1,4 +1,7 @@
 -
+  name: Advantages of Shrine
+  path: advantages_md.html
+-
   name: Creating a New Plugin
   path: creating_plugins_md.html
 -
@@ -10,6 +13,15 @@
 -
   name: Direct Uploads to S3
   path: direct_s3_md.html
+-
+  name: Extracting Metadata
+  path: metadata_md.html
+-
+  name: File Processing
+  path: processing_md.html
+-
+  name: File Validation
+  path: validation_md.html
 -
   name: Migrating to Different Location
   path: changing_location_md.html

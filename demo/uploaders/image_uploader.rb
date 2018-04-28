@@ -10,7 +10,7 @@ class ImageUploader < Shrine
   plugin :processing
   plugin :versions
   plugin :validation_helpers
-  plugin :store_dimensions
+  plugin :store_dimensions, analyzer: :mini_magick
 
   Attacher.validate do
     validate_max_size MAX_SIZE

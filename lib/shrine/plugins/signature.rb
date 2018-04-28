@@ -36,7 +36,7 @@ class Shrine
     #
     # You can also choose which format will the calculated hash be encoded in:
     #
-    #     Shrine.calculate_signature(io, :sha256, format: :hex)
+    #     Shrine.calculate_signature(io, :sha256, format: :base64)
     #
     # The supported encoding formats are `hex` (default), `base64`, and `none`.
     module Signature

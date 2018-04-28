@@ -13,7 +13,7 @@ current store (let's say that you're migrating from FileSystem to S3):
 ```rb
 Shrine.storages = {
   cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
-  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads/store"),
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads"),
   new_store: Shrine::Storage::S3.new(**s3_options),
 }
 

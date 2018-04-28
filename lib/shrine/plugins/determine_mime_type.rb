@@ -11,7 +11,7 @@ class Shrine
     # and the result is automatically written to the `mime_type` metadata
     # field. You can choose a different built-in MIME type analyzer:
     #
-    #     plugin :determine_mime_type, analyzer: :filemagic
+    #     plugin :determine_mime_type, analyzer: :marcel
     #
     # The following analyzers are accepted:
     #

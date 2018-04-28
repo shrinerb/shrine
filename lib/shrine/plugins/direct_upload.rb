@@ -161,7 +161,7 @@ class Shrine
     # [Roda]: https://github.com/jeremyevans/roda
     # [Uppy]: https://uppy.io
     # [Roda request]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
-    # [Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+    # [Direct Uploads to S3]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
     module DirectUpload
       def self.load_dependencies(uploader, *)
         uploader.plugin :rack_file

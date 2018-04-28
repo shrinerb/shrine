@@ -15,8 +15,14 @@
         name: Shrine meets Transloadit
         url: https://twin.github.io/shrine-meets-transloadit/
       -
-        name: Adding Direct S3 Uploads to a Roda App with Shrine
-        url: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#file-walkthrough-md
+        name: Resumable File Uploads in Ruby
+        url: https://twin.github.io/resumable-file-uploads-in-ruby/
+      -
+        name: Adding Direct (S3) Uploads to a Roda App with Shrine
+        url: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5
+      -
+        name: Adding Resumable Uploads to a Roda App with Shrine
+        url: https://gist.github.com/janko-m/f05188205cb9af75a27ead78d068b5d3#adding-resumable-uploads-to-a-roda--sequel-app-with-shrine
       -
         name: "Better File Uploads with Shrine: Motivation"
         url: https://twin.github.io/better-file-uploads-with-shrine-motivation/
@@ -191,7 +197,7 @@
         url: https://github.com/shrinerb/shrine-tus
 -
   -
-    title: Applications
+    title: Demos
     items:
       -
         name: Cloudinary demo
@@ -222,8 +228,11 @@
         url: https://github.com/shrinerb/shrine-uploadcare/tree/master/demo
 
   -
-    title: Libraries
+    title: Projects
     items:
+      -
+        name: Cortex CMS
+        url: https://docs.cortexcms.org
       -
         name: rails_admin_shrine
         url: https://github.com/iquest/rails_admin_shrine

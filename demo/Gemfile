@@ -17,11 +17,9 @@ gem "sqlite3"
 gem "shrine", path: ".."
 gem "aws-sdk-s3", "~> 1.2"
 gem "dotenv"
-gem "fastimage" # for extracting dimensions
 
 # Processing
 gem "image_processing", "~> 1.0"
-gem "mini_magick", "~> 4.0"
 
 # Background jobs
 gem "sucker_punch", "~> 2.0"

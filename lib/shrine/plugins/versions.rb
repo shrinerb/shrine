@@ -154,7 +154,7 @@ class Shrine
     #
     # If you want to re-create a single or all versions, refer to the [reprocessing versions] guide for details.
     #
-    # [reprocessing versions]: http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+    # [reprocessing versions]: https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
     # [image_processing]: https://github.com/janko-m/image_processing
     module Versions
       def self.load_dependencies(uploader, *)

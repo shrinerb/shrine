@@ -36,16 +36,12 @@ end
 
 ## Storage
 
-If you're using an external storage in development, it is common in tests to
-switch to a filesystem storage. However, that means that you'll also have to
-clean up the test directory between tests, and writing to filesystem can affect
-the performance of your tests.
-
-If your tests are run in a single process, instead of filesystem you can use
-[memory storage][shrine-memory], which is both faster and doesn't require you
-to clean up anything between tests.
+If you're using FileSystem storage and your tests run in a single process,
+you can switch to [memory storage][shrine-memory], which is both faster and
+doesn't require you to clean up anything between tests.
 
 ```rb
+# Gemfile
 gem "shrine-memory"
 ```
 ```rb
@@ -58,8 +54,49 @@ Shrine.storages = {
 }
 ```
 
-Alternatively, if you're using Amazon S3 storage, in tests you can use
-[aws-sdk-ruby stubs].
+If you're using AWS S3 storage, in you can switch to using [Minio] (explained
+below), both in test and development environment. Alternatively, you can [stub
+aws-sdk-s3 requests][aws-sdk-ruby stubs] in tests.
+
+### Minio
+
+[Minio] is an open source object storage server with AWS S3 compatible API which
+you can run locally. The advantage of using Minio for your development and test
+environments is that all AWS S3 functionality should still continue to work,
+including direct uploads, so you don't need to update your code.
+
+If you're on a Mac you can install it with Homebrew:
+
+```
+$ brew install minio/stable/minio
+```
+
+Afterwards you can start the Minio server and give it a directory where it will
+store the data:
+
+```
+$ minio server data/
+```
+
+This command will print out the credentials for the running Minio server, as
+well as a link to the Minio web interface. Follow that link and create a new
+bucket. Once you've done that, you can configure `Shrine::Storage::S3` to use
+your Minio server:
+
+```rb
+Shrine::Storage::S3.new(
+  access_key_id:     "<MINIO_ACCESS_KEY>", # "AccessKey" value
+  secret_access_key: "<MINIO_SECRET_KEY>", # "SecretKey" value
+  endpoint:          "<MINIO_ENDPOINT>",   # "Endpoint"  value
+  bucket:            "<MINIO_BUCKET>",     # name of the bucket you created
+  region:            "us-east-1",
+  force_path_style:  true,
+)
+```
+
+The `:endpoint` option will make aws-sdk-s3 point all URLs to your Minio server
+(instead of `s3.amazonaws.com`), and `:force_path_style` tells it not to use
+subdomains when generating URLs.
 
 ## Test data
 
@@ -239,47 +276,6 @@ end
 
 This also has the benefit of allowing you to test `ImageThumbnailsGenerator` in
 isolation.
-
-## Direct S3 uploads
-
-If you want to do direct uploads to Amazon S3 in production, in development and
-tests you'll probably want to keep using filesystem storage to avoid making
-network requests.
-
-The simplest way to do that is to use [Minio]. Minio is an open source object
-storage server with Amazon S3 compatible API. If you're on a Mac you can
-install it with Homebrew:
-
-```
-$ brew install minio/stable/minio
-```
-
-Now you can start the Minio server and give it a directory where it will store
-the data:
-
-```
-$ minio server data/
-```
-
-This command will print out the credentials for the running Minio server, as
-well as a link to the Minio web interface. Follow that link and create a new
-bucket. Once you've done that, all that's lef to do is configure
-`Shrine::Storage::S3` with the credentials of your Minio server:
-
-```rb
-Shrine::Storage::S3.new(
-  access_key_id:     "MINIO_ACCESS_KEY", # "AccessKey" value
-  secret_access_key: "MINIO_SECRET_KEY", # "SecretKey" value
-  endpoint:          "MINIO_ENDPOINT",   # "Endpoint"  value
-  bucket:            "MINIO_BUCKET",     # name of the bucket you created
-  region:            "us-east-1",
-  force_path_style:  true,
-)
-```
-
-The `:endpoint` option will make `aws-sdk-s3` point all URLs to your Minio
-server (instead of `s3.amazonaws.com`), and `:force_path_style` tells it not
-to use subdomains when generating URLs.
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
 [shrine-memory]: https://github.com/shrinerb/shrine-memory

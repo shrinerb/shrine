@@ -9,7 +9,7 @@ class Shrine
     #     plugin :metadata_attributes, :size => :size, :mime_type => :type
     #     # or
     #     plugin :metadata_attributes
-    #     Attacher.metadata_attributes, :size => :size, :mime_type => :type
+    #     Attacher.metadata_attributes :size => :size, :mime_type => :type
     #
     # The above configuration will sync `size` metadata field to
     # `<attachment>_size` record attribute, and `mime_type` metadata field to
@@ -28,7 +28,7 @@ class Shrine
     # If you want to specify the full record attribute name, pass the record
     # attribute name as a string instead of a symbol.
     #
-    #     Attacher.metadata_attributes, :filename => "original_filename"
+    #     Attacher.metadata_attributes :filename => "original_filename"
     #
     #     # ...
     #

@@ -233,4 +233,4 @@ attacher.delete!(stored_file)        # delegates to `Shrine#delete`
 The `#cache!` and `#store!` only upload the file to the storage, they don't
 write to record's data column.
 
-[file migrations]: http://shrinerb.com/rdoc/files/doc/migrating_storage_md.html
+[file migrations]: https://shrinerb.com/rdoc/files/doc/migrating_storage_md.html

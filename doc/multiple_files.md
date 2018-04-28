@@ -113,4 +113,4 @@ automatically take care of the attachment management.
 
 [`Sequel::Model.nested_attributes`]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html
 [`ActiveRecord::Base.accepts_nested_attributes_for`]: http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
-[Direct Uploads to S3]: http://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[Direct Uploads to S3]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
