@@ -265,10 +265,13 @@ to upload them to your app, especially on flaky internet connections. With
 a simple HTTP request, should there be any interruption during the execution,
 the whole upload needs to be retried from the beginning.
 
-To fix this problem, the community has created an open HTTP-based protocol for
-resumable uploads – **[tus]**. There even exists a [Ruby server
-implementation][tus-ruby-server] for this protocol ready to use. Finally, for
-attaching files uploaded via the tus protocol you can use the [shrine-tus] gem.
+To fix this problem, [Transloadit] company has created an open HTTP-based
+protocol for resumable uploads – **[tus]**. To use it, you can choose from
+numerous client and server [implementations][tus implementations] of the
+protocol. In this case you would typically have a [JavaScript
+client][tus-js-client] (via [Uppy][uppy tus]) upload to a [Ruby
+server][tus-ruby-server], and then attach uploaded files using the handy
+[Shrine integration][shrine-tus].
 
 ## Security
 
@@ -340,7 +343,11 @@ limit.
 [background job]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
 [Down streaming]: https://github.com/janko-m/down#streaming
+[Transloadit]: https://transloadit.com
 [tus]: https://tus.io
+[tus implementations]: https://tus.io/implementations.html
+[tus-js-client]: https://github.com/tus/tus-js-client
+[uppy tus]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [ImageTragick]: https://imagetragick.com

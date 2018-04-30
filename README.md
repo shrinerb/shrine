@@ -696,9 +696,10 @@ demo app which implements multiple uploads directly to S3.
 ### Resumable uploads
 
 When your app is dealing with large uploads (e.g. videos), keep in mind that it
-can be challening for your users to upload these large files to your app,
-depending on their internet connection. If the connection breaks at any point
-during uploading, the upload needs to be restarted from the beginning.
+can be challening for your users to upload these large files to your app. Many
+users might not have a great internet connection, and if it happens to break at
+any point during uploading, they would need to restart the upload from the
+beginning.
 
 Luckily, there is a solution for this. **[Tus.io][tus]** is an open protocol
 for resumable file uploads, which enables the client and the server to achieve
@@ -706,11 +707,11 @@ reliable file uploads even on unstable connections, by enabling the upload to
 be resumed in case of interruptions, even after the browser was closed or the
 device was shut down.
 
-On the client side you can use [Uppy][uppy tus plugin] with [tus-js-client],
-have it upload files to a [tus-ruby-server], and finally attach the uploaded
-files with the help of [shrine-tus]. See [this walkthrough][resumable uploads
-walkthrough] that adds resumable uploads from scratch, as well as the [Roda
-demo][resumable demo] for a complete example.
+On the client side you can use [Uppy][uppy tus] with [tus-js-client], have it
+upload files to a [tus-ruby-server], and finally attach the uploaded files with
+the help of [shrine-tus]. See [this walkthrough][resumable uploads walkthrough]
+that adds resumable uploads from scratch, as well as the [Roda demo][resumable
+demo] for a complete example.
 
 ## Backgrounding
 
@@ -872,7 +873,7 @@ The gem is available as open source under the terms of the [MIT License].
 [presign_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
 [Uppy]: https://uppy.io
 [tus]: https://tus.io
-[uppy tus plugin]: https://uppy.io/docs/tus/
+[uppy tus]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
 [backgrounding plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [Advantages of Shrine]: https://shrinerb.com/rdoc/files/doc/advantages_md.html
