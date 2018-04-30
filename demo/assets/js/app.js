@@ -16,7 +16,7 @@ function fileUpload(fileInput) {
         maxFileSize:      fileInput.dataset.maxSize,
         allowedFileTypes: fileInput.accept.split(','),
         maxNumberOfFiles: 100,
-      }
+      },
     })
     .use(Uppy.FileInput, {
       target:             fileInput.parentNode,
@@ -71,6 +71,9 @@ function fileUpload(fileInput) {
     // set hidden field value to the uploaded file data so that it's submitted with the form as the attachment
     var hiddenInput = document.getElementById(fileInput.dataset.uploadResultElement)
     hiddenInput.value = uploadedFileData
+
+    // clear Uppy's file input field from selected files
+    fileInput.parentNode.querySelector('.uppy-FileInput-input').value = ''
   })
 
   return uppy
@@ -92,7 +95,7 @@ document.querySelectorAll('input[type=file]').forEach(function (fileInput) {
       })
 
       // remove selected files
-      fileInput.value = ""
+      fileInput.value = ''
     })
   } else {
     fileUpload(fileInput)
