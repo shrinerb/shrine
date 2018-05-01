@@ -9,7 +9,7 @@ Shrine is a toolkit for file attachments in Ruby applications. Some highlights:
 * **Flexible processing** – generate thumbnails with [ImageMagick] or [libvips] using the [ImageProcessing][image_processing] gem
 * **Metadata validation** – [validate files][validation_helpers plugin] based on [extracted metadata][Extracting Metadata]
 * **Direct uploads** – upload asynchronously [to your app][upload_endpoint plugin] or [to the cloud][presign_endpoint plugin] using [Uppy]
-* **Resumable uploads** – make large file uploads [resumable][tus] by pointing [Uppy][uppy tus plugin] to a [resumable endpoint][tus-ruby-server]
+* **Resumable uploads** – make large file uploads [resumable][tus] by pointing [Uppy][uppy tus] to a [resumable endpoint][tus-ruby-server]
 * **Background jobs** – built-in support for [background processing][backgrounding plugin] that supports [any backgrounding library][backgrounding libraries]
 
 If you're curious how it compares to other file attachment libraries, see the [Advantages of Shrine].
