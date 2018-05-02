@@ -79,7 +79,7 @@ class Shrine
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
         def rack_headers(disposition:, range: false)
-          length   = range ? range.end - range.begin + 1 : size || io.size
+          length   = range ? range.size : size || io.size
           type     = mime_type || Rack::Mime.mime_type(".#{extension}")
           filename = original_filename || id.split("/").last
 
