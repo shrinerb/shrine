@@ -10,8 +10,7 @@ function fileUpload(fileInput) {
   fileInput.style.display = 'none' // uppy will add its own file input
 
   var uppy = Uppy.Core({
-      id:                  fileInput.id,
-      thumbnailGeneration: false,
+      id: fileInput.id,
       restrictions: {
         maxFileSize:      fileInput.dataset.maxSize,
         allowedFileTypes: fileInput.accept.split(','),
@@ -25,7 +24,7 @@ function fileUpload(fileInput) {
     .use(Uppy.Informer, {
       target: fileInput.parentNode,
     })
-    .use(Uppy.ProgressBar, {
+    .use(Uppy.StatusBar, {
       target: imagePreview.parentNode,
     })
 
@@ -46,17 +45,14 @@ function fileUpload(fileInput) {
 
   uppy.run()
 
-  uppy.on('upload-success', function (fileId, data) {
-    // retrieve uppy's file object (`file.data` contains the actual JavaScript File object)
-    var file = uppy.getFile(fileId)
-
+  uppy.on('upload-success', function (file, data, uploadURL) {
     // show image preview
-    imagePreview.src = file.preview
+    imagePreview.src = URL.createObjectURL(file.data)
 
     if (fileInput.dataset.uploadServer == 's3') {
       // construct uploaded file data in the format that Shrine expects
       var uploadedFileData = JSON.stringify({
-        id: file.uploadURL.match(/\/cache\/([^\?]+)/)[1], // extract key without prefix
+        id: uploadURL.match(/\/cache\/([^\?]+)/)[1], // extract key without prefix
         storage: 'cache',
         metadata: {
           size:      file.size,
