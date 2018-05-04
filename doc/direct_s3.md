@@ -362,8 +362,8 @@ setup] guide.
 
 [`Shrine::Storage::S3#presign`]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign
 [`Aws::S3::PresignedPost`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Bucket.html#presigned_post-instance_method
-[direct S3 upload walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-s3-uploads-to-a-roda--sequel-app-with-shrine
-[checksum walkthrough]: https://gist.github.com/janko-m/4470b5fb0737c5c1f8bcfe8cdc3fd296#using-checksums-to-verify-integrity-of-direct-uploads-with-shrine--uppy
+[direct S3 upload walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads
+[checksum walkthrough]: https://github.com/shrinerb/shrine/wiki/Using-Checksums-in-Direct-Uploads
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [Uppy]: https://uppy.io

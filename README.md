@@ -887,14 +887,14 @@ The gem is available as open source under the terms of the [MIT License].
 [Extracting Metadata]: https://shrinerb.com/rdoc/files/doc/metadata_md.html
 [File Processing]: https://shrinerb.com/rdoc/files/doc/processing_md.html
 [File Validation]: https://shrinerb.com/rdoc/files/doc/validation_md.html
-[direct uploads walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-uploads-to-a-roda--sequel-app-with-shrine
-[direct S3 uploads walkthrough]: https://gist.github.com/janko-m/9aea154d72eb85b1fbfa16e1d77946e5#adding-direct-s3-uploads-to-a-roda--sequel-app-with-shrine
+[direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
+[direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
 [direct S3 uploads guide]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [tus-js-client]: https://github.com/tus/tus-js-client
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
-[resumable uploads walkthrough]: https://gist.github.com/janko-m/f05188205cb9af75a27ead78d068b5d3#adding-resumable-uploads-to-a-roda--sequel-app-with-shrine
+[resumable uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
 [S3 lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
