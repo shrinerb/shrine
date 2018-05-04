@@ -281,6 +281,7 @@ class VideoUploader < Shrine
 
     { original: io, transcoded: transcoded, screenshot: screenshot }
   end
+end
 ```
 
 ## On-the-fly processing
