@@ -37,7 +37,7 @@ class Shrine
     # uploads to the temporary (`:cache`) storage.
     #
     # The above will create a `GET /images/presign` endpoint, which calls
-    # `#presign` on the storage and returns the HTTP verb, URL, fields, and
+    # `#presign` on the storage and returns the HTTP verb, URL, params, and
     # headers needed for a single upload directly to the storage service, in
     # JSON format.
     #
@@ -55,11 +55,6 @@ class Shrine
     #       },
     #       "headers": {}
     #     }
-    #
-    # * `method` – HTTP verb
-    # * `url` – request URL
-    # * `fields` – POST parameters
-    # * `headers` – request headers
     #
     # ## Location
     #
