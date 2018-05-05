@@ -14,7 +14,10 @@
     <%= assets(:css) %>
 
     <script type="text/template" id="template-photo">
-      <%= partial("albums/photo", locals: { photo: Photo.new, idx: "{{index}}" }) %>
+      <% f = Forme::Form.new(Album.new, labeler: :explicit) %>
+      <% f.with_obj(Photo.new, ["photos_attributes", "{{index}}"]) do %>
+        <%= partial("albums/photo", locals: { f: f }) %>
+      <% end %>
     </script>
 
     <%= csrf_metatag %>

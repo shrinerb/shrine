@@ -171,12 +171,12 @@ presigned_data = Shrine.storages[:cache].presign(
   success_action_redirect: new_album_url
 )
 
-Forme.form(action: presigned_data[:url], method: "post", enctype: "multipart/form-data") do |f|
+form action: presigned_data[:url], method: "post", enctype: "multipart/form-data" do |f|
   presigned_data[:fields].each do |name, value|
     f.input :hidden, name: name, value: value
   end
   f.input :file, name: "file"
-  f.input :submit, value: "Upload"
+  f.button "Submit"
 end
 ```
 
@@ -206,7 +206,7 @@ cached_file = {
   metadata: {},
 }
 
-Forme.form(@album, action: "/albums", method: "post") do |f|
+form @album, action: "/albums", method: "post" do |f|
   f.input :image, type: :hidden, value: cached_file.to_json
   f.button "Save"
 end

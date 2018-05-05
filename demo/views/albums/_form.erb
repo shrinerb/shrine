@@ -1,5 +1,5 @@
 <% form album, { action: form_action, method: "post", enctype: "multipart/form-data" }, labeler: :explicit do |f| %>
-  <input type="hidden" name="_method" value="<%= form_method %>" \> <%# needed for PUT and DELETE requests %>
+  <%= f.input :hidden, name: "_method", value: form_method, obj: nil %> <%# # used in tandem with Rack::MethodOverride to enable PUT requests %>
 
   <div class="form-group">
     <%= f.input :name %>
@@ -7,7 +7,7 @@
 
   <div class="form-group">
     <%= f.input :cover_photo, type: :hidden, value: album.cached_cover_photo_data, id: "album-cover-photo-upload-result", label: nil %>
-    <%= f.input :cover_photo, type: :file, value: nil, accept: ImageUploader::ALLOWED_TYPES.join(","), data: { "upload-server": upload_server, "preview-element": "preview-cover-photo", "upload-result-element": "album-cover-photo-upload-result" } %>
+    <%= f.input :cover_photo, type: :file, attr: { accept: ImageUploader::ALLOWED_TYPES.join(",") }, data: { "upload-server": upload_server, "preview-element": "preview-cover-photo", "upload-result-element": "album-cover-photo-upload-result" }, value: nil %>
   </div>
 
   <div class="image-preview">
@@ -15,12 +15,12 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :photos, type: :file, name: "files[]", attr: { multiple: true }, label: "Select photos", accept: ImageUploader::ALLOWED_TYPES.join(","), data: { "template": "template-photo", "upload-list": "album-photo-list", "upload-server": upload_server } %>
+    <%= f.input :photos, type: :file, attr: { multiple: true, accept: ImageUploader::ALLOWED_TYPES.join(",") }, label: "Select photos", data: { "template": "template-photo", "upload-list": "album-photo-list", "upload-server": upload_server }, value: nil %>
   </div>
 
   <ul class="list-unstyled file-upload-list" id="album-photo-list">
-    <% album.photos.each_with_index do |photo, idx| %>
-      <%= partial("albums/photo", locals: { photo: photo, idx: idx }) %>
+    <% f.subform :photos, legend: nil do %>
+      <%= partial("albums/photo", locals: { f: f }) %>
     <% end %>
   </ul>
 

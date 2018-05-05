@@ -1,4 +1,5 @@
-<% f = Forme::Form.new({}, namespace: "album[photos_attributes][#{idx}]", labeler: :explicit, label: nil) %>
+<% photo = f.obj %>
+<% idx   = f.namespaces.last %>
 
 <li class="album-photo">
   <div class="media">
@@ -7,16 +8,15 @@
     </div>
     <div class="media-body">
       <div class="form-group">
-        <%= f.input :hidden, key: :image, value: photo.cached_image_data, id: "album-photo-upload-result-#{idx}" %>
-        <%= f.input :file, key: :image, id: "album-photo-field-#{idx}", accept: ImageUploader::ALLOWED_TYPES.join(","), data: { "preview-element": "album-photo-preview-#{idx}", "upload-result-element": "album-photo-upload-result-#{idx}", "upload-server": upload_server } %>
+        <%= f.input :image, type: :hidden, value: photo.cached_image_data, id: "album-photo-upload-result-#{idx}", label: nil %>
+        <%= f.input :image, type: :file, attr: { accept: ImageUploader::ALLOWED_TYPES.join(",") }, data: { "preview-element": "album-photo-preview-#{idx}", "upload-result-element": "album-photo-upload-result-#{idx}", "upload-server": upload_server }, value: nil, label: nil %>
       </div>
       <div class="form-group">
-        <%= f.input :text, key: :title, label: "Title", value: photo.title, id: "album-photo-title-field-#{idx}" %>
+        <%= f.input :title %>
       </div>
-      <% if photo.id %>
-        <%= f.input :hidden, key: :id, value: photo.id %>
-        Remove photo: <%= f.input :checkbox, key: :_delete, value: true %>
-      <% end %>
+      <div class="form-group">
+        <%= f.input :_delete, type: :checkbox, label: "Remove photo" unless photo.new? %>
+      </div>
     </div>
   </div>
 </li>
