@@ -8,6 +8,7 @@ gem "rack_csrf"
 # Rendering
 gem "tilt", ">= 2.0.8"
 gem "erubi"
+gem "forme"
 
 # Database
 gem "sequel"
@@ -17,8 +18,6 @@ gem "sqlite3"
 gem "shrine", path: ".."
 gem "aws-sdk-s3", "~> 1.2"
 gem "dotenv"
-
-# Processing
 gem "image_processing", "~> 1.0"
 
 # Background jobs

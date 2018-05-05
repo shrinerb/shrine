@@ -1,3 +1,5 @@
+<% f = Forme::Form.new({}, namespace: "album[photos_attributes][#{idx}]", labeler: :explicit, label: nil) %>
+
 <li class="album-photo">
   <div class="media">
     <div class="media-left">
@@ -5,17 +7,16 @@
     </div>
     <div class="media-body">
       <div class="form-group">
-        <input type="hidden" name="album[photos_attributes][<%= idx %>][image]" value="<%== photo.cached_image_data %>" id="album-photo-upload-result-<%= idx %>" />
-        <input type="file" name="album[photos_attributes][<%= idx %>][image]" accept="<%= ImageUploader::ALLOWED_TYPES.join(",") %>" id="album-photo-field-<%= idx %>" data-preview-element="album-photo-preview-<%= idx %>" data-upload-result-element="album-photo-upload-result-<%= idx %>" data-upload-server="<%= upload_server %>"  />
+        <%= f.input :hidden, key: :image, value: photo.cached_image_data, id: "album-photo-upload-result-#{idx}" %>
+        <%= f.input :file, key: :image, id: "album-photo-field-#{idx}", accept: ImageUploader::ALLOWED_TYPES.join(","), data: { "preview-element": "album-photo-preview-#{idx}", "upload-result-element": "album-photo-upload-result-#{idx}", "upload-server": upload_server } %>
       </div>
       <div class="form-group">
-        <label for="album-photo-title-field-<%= idx %>">Title</label>
-        <input type="text" name="album[photos_attributes][<%= idx %>][title]" value="<%== photo.title %>" id="album-photo-title-field-<%= idx %>" />
+        <%= f.input :text, key: :title, label: "Title", value: photo.title, id: "album-photo-title-field-#{idx}" %>
       </div>
       <% if photo.id %>
-        <input type="hidden" name="album[photos_attributes][<%= idx %>][id]" value="<%= photo.id %>" />
+        <%= f.input :hidden, key: :id, value: photo.id %>
+        Remove photo: <%= f.input :checkbox, key: :_delete, value: true %>
       <% end %>
-      Remove photo: <input type="checkbox" name="album[photos_attributes][<%= idx %>][_delete]" value="true" />
     </div>
   </div>
 </li>

@@ -5,6 +5,7 @@ module Routes
     plugin :environments
 
     plugin :render
+    plugin :forme
     plugin :partials
     plugin :assets, css: "app.css", js: "app.js"
 

@@ -1,34 +1,22 @@
-<form action="<%= form_action %>" method="post" enctype="multipart/form-data">
+<% form album, { action: form_action, method: "post", enctype: "multipart/form-data" }, labeler: :explicit do |f| %>
   <input type="hidden" name="_method" value="<%= form_method %>" \> <%# needed for PUT and DELETE requests %>
   <%= csrf_tag %>
 
-  <% if album.errors.any? %>
-    <div class="validation-errors alert alert-danger">
-      <ul class="list-unstyled">
-        <% album.errors.full_messages.each do |message| %>
-          <li>Album <%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="form-group">
-    <label for="album-name-field">Name</label>
-    <input type="text" name="album[name]" value="<%= album.name %>" id="album-name-field" \>
+    <%= f.input :name %>
   </div>
 
   <div class="form-group">
-    <label for="album-cover-photo-field">Cover photo</label>
-    <input type="hidden" name="album[cover_photo]" value="<%== album.cached_cover_photo_data %>" id="album-cover-photo-upload-result" \>
-    <input type="file" name="album[cover_photo]" accept="<%= ImageUploader::ALLOWED_TYPES.join(",") %>" id="album-cover-photo-field" data-upload-server="<%= upload_server %>" data-preview-element="preview-cover-photo" data-upload-result-element="album-cover-photo-upload-result" \>
+    <%= f.input :cover_photo, type: :hidden, value: album.cached_cover_photo_data, id: "album-cover-photo-upload-result", label: nil %>
+    <%= f.input :cover_photo, type: :file, value: nil, accept: ImageUploader::ALLOWED_TYPES.join(","), data: { "upload-server": upload_server, "preview-element": "preview-cover-photo", "upload-result-element": "album-cover-photo-upload-result" } %>
   </div>
+
   <div class="image-preview">
     <img src="<%= album.cover_photo_url(:thumbnail) %>" width=300 class="img-thumbnail file-upload-preview" id="preview-cover-photo" \>
   </div>
 
   <div class="form-group">
-    <label for="album-photos-field">Select photos</label>
-    <input type="file" multiple name="files[]" accept="<%= ImageUploader::ALLOWED_TYPES.join(",") %>" id="album-photos-field" data-template="template-photo" data-upload-list="album-photo-list" data-upload-server="<%= upload_server %>" \>
+    <%= f.input :photos, type: :file, name: "files[]", attr: { multiple: true }, label: "Select photos", accept: ImageUploader::ALLOWED_TYPES.join(","), data: { "template": "template-photo", "upload-list": "album-photo-list", "upload-server": upload_server } %>
   </div>
 
   <ul class="list-unstyled file-upload-list" id="album-photo-list">
@@ -39,4 +27,4 @@
 
   <input type="submit" value="Save" class="btn btn-primary" \>
   <a href="<%= albums_path %>" class="btn btn-default">&larr; Back to albums</a>
-</form>
+<% end %>
