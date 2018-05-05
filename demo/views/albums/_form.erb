@@ -1,6 +1,5 @@
 <% form album, { action: form_action, method: "post", enctype: "multipart/form-data" }, labeler: :explicit do |f| %>
   <input type="hidden" name="_method" value="<%= form_method %>" \> <%# needed for PUT and DELETE requests %>
-  <%= csrf_tag %>
 
   <div class="form-group">
     <%= f.input :name %>
