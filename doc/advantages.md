@@ -185,18 +185,23 @@ end
 ### On-the-fly processing
 
 Shrine is primarily designed for processing files on upload, since that's
-applicable to all types of files, while on-the-fly processing that [Dragonfly],
-[Refile], and [Active Storage] offer makes sense only for images.
+applicable to all types of files, though on-the-fly processing that [Dragonfly],
+[Refile], and [Active Storage] can make managing image thumbnails a lot easier.
 
 However, there are many specialized solutions that provide on-the-fly
 processing functionality, both open source and commercial, and it's fairly easy
 to apply them to files uploaded by Shrine.
 
 ```rb
-Dragonfly.app
-  .fetch_url(photo.image_url) # image uploaded by Shrine
-  .thumb("800x800")
-  .url #=> "/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn..."
+def thumbnail_url(uploaded_file, dimensions)
+  Dragonfly.app
+    .fetch(uploaded_file.url)
+    .thumb(dimensions)
+    .url
+end
+```
+```rb
+thumbnail_url(photo.image, "500x400") #=> "/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn..."
 ```
 
 ## Metadata

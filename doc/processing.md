@@ -325,6 +325,7 @@ basic [configuration][Dragonfly configuration]:
 Dragonfly.app.configure do
   url_format "/attachments/:job"
   secret "my secure secret" # used to generate the protective SHA
+  plugin :imagemagick
 end
 
 use Dragonfly::Middleware
@@ -341,6 +342,8 @@ updated):
 
 ```rb
 Shrine::Storage::S3.new(upload_options: { acl: "public-read" }, **other_options)
+# ...
+Shrine.plugin :default_url_options, cache: { public: true }, store: { public: true }
 ```
 
 Now you can generate Dragonfly URLs from `Shrine::UploadedFile` objects:
@@ -348,7 +351,7 @@ Now you can generate Dragonfly URLs from `Shrine::UploadedFile` objects:
 ```rb
 def thumbnail_url(uploaded_file, dimensions)
   Dragonfly.app
-    .fetch(uploaded_file.url(public: true))
+    .fetch(uploaded_file.url)
     .thumb(dimensions)
     .url
 end
