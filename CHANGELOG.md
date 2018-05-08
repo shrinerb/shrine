@@ -1,3 +1,7 @@
+## HEAD
+
+* Make `UploadedFile#open` always open a new IO object and close the previous one (@janko-m)
+
 ## 2.11.0 (2018-04-28)
 
 * Add `Shrine.with_file` for temporarily converting an IO-like object into a file (@janko-m)

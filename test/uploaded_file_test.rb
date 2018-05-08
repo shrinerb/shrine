@@ -240,10 +240,18 @@ describe Shrine::UploadedFile do
       uploaded_file = @uploader.upload(fakeio)
       assert io?(uploaded_file.open)
       refute uploaded_file.open.closed?
-      assert_equal uploaded_file.open, uploaded_file.open
+      refute_equal uploaded_file, uploaded_file.open
     end
 
-    it "yields to the block if given" do
+    it "closes the previuos IO" do
+      uploaded_file = @uploader.upload(fakeio)
+      io1 = uploaded_file.open
+      io2 = uploaded_file.open
+      refute_equal io1, io2
+      assert io1.closed?
+    end
+
+    it "yields to the block if it's given" do
       uploaded_file = @uploader.upload(fakeio)
       uploaded_file.open { @called = true }
       assert @called
@@ -307,7 +315,7 @@ describe Shrine::UploadedFile do
 
     it "forwards any options to Storage#open" do
       uploaded_file = @uploader.upload(fakeio)
-      @uploader.storage.expects(:open).with(uploaded_file.id, foo: "bar")
+      @uploader.storage.expects(:open).with(uploaded_file.id, foo: "bar").returns(fakeio)
       uploaded_file.open(foo: "bar") {}
     end
   end

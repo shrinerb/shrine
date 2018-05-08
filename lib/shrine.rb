@@ -806,16 +806,17 @@ class Shrine
         #
         #     # or
         #
-        #     uploaded_file.open { |io| io.read }
-        #     #=> "..."
+        #     uploaded_file.open { |io| io.read } # the IO is automatically closed
         def open(*args)
-          return to_io unless block_given?
+          @io.close if @io
+          @io = storage.open(id, *args)
+
+          return @io unless block_given?
 
           begin
-            @io = storage.open(id, *args)
             yield @io
           ensure
-            @io.close if @io
+            @io.close
             @io = nil
           end
         end
@@ -836,7 +837,6 @@ class Shrine
         #     # or
         #
         #     uploaded_file.download { |tempfile| tempfile.read } # tempfile is deleted
-        #     #=> "..."
         def download(*args)
           if storage.respond_to?(:download)
             tempfile = storage.download(id, *args)
@@ -967,7 +967,7 @@ class Shrine
         # Returns an opened IO object for the uploaded file by calling `#open`
         # on the storage.
         def io
-          @io ||= storage.open(id)
+          @io || open
         end
       end
     end
