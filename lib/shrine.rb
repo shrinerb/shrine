@@ -808,7 +808,7 @@ class Shrine
         #
         #     uploaded_file.open { |io| io.read } # the IO is automatically closed
         def open(*args)
-          @io.close if @io
+          @io.close if @io && !(@io.respond_to?(:closed?) && @io.closed?)
           @io = storage.open(id, *args)
 
           return @io unless block_given?
