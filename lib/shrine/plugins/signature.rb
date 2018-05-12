@@ -75,8 +75,7 @@ class Shrine
           hash = send(:"calculate_#{algorithm}", io)
           io.rewind
 
-          encoded_hash = send(:"encode_#{format}", hash)
-          encoded_hash
+          send(:"encode_#{format}", hash)
         end
 
         private
