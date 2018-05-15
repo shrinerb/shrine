@@ -31,10 +31,10 @@ class Shrine
     # It can be initialized by providing the bucket name and credentials:
     #
     #     s3 = Shrine::Storage::S3.new(
+    #       bucket: "my-app", # required
     #       access_key_id: "abc",
     #       secret_access_key: "xyz",
     #       region: "eu-west-1",
-    #       bucket: "my-app",
     #     )
     #
     # The core features of this storage requires the following AWS permissions:

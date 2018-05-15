@@ -19,7 +19,8 @@ class Photo < ActiveRecord::Base
       bucket:            "my-bucket",
       access_key_id:     "abc",
       secret_access_key: "xyz",
-    }
+    },
+    s3_region: "eu-west-1",
 end
 ```
 
@@ -30,6 +31,7 @@ Shrine.storages[:store] = Shrine::Storage::S3.new(
   bucket:            "my-bucket",
   access_key_id:     "abc",
   secret_access_key: "xyz",
+  region:            "eu-west-1",
 )
 ```
 

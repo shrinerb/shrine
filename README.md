@@ -141,10 +141,10 @@ gem "aws-sdk-s3", "~> 1.2" # for AWS S3 storage
 require "shrine/storage/s3"
 
 s3_options = {
+  bucket:            "my-bucket", # required
   access_key_id:     "abc",
   secret_access_key: "xyz",
   region:            "my-region",
-  bucket:            "my-bucket",
 }
 
 Shrine.storages = {

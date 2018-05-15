@@ -35,9 +35,9 @@ gem "aws-sdk-s3", "~> 1.2"
 require "shrine/storage/s3"
 
 s3_options = {
+  bucket:            "<YOUR BUCKET>", # required
   access_key_id:     "<YOUR KEY>",
   secret_access_key: "<YOUR SECRET>",
-  bucket:            "<YOUR BUCKET>",
   region:            "<REGION>",
 }
 

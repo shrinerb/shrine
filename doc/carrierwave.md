@@ -19,15 +19,17 @@ CarrierWave.configure do |config|
     provider:              "AWS",
     aws_access_key_id:     "abc",
     aws_secret_access_key: "xyz",
+    region:                "eu-west-1",
   }
   config.fog_directory = "my-bucket"
 end
 ```
 ```rb
 Shrine.storages[:store] = Shrine::Storage::S3.new(
-  bucket:                "my-bucket",
-  aws_access_key_id:     "abc",
-  aws_secret_access_key: "xyz",
+  bucket:            "my-bucket",
+  access_key_id:     "abc",
+  secret_access_key: "xyz",
+  region:            "eu-west-1",
 )
 ```
 
