@@ -9,10 +9,10 @@
     <div class="media-body">
       <div class="form-group">
         <%= f.input :image, type: :hidden, value: photo.cached_image_data, id: "album-photo-upload-result-#{idx}", label: nil %>
-        <%= f.input :image, type: :file, attr: { accept: ImageUploader::ALLOWED_TYPES.join(",") }, data: { "preview-element": "album-photo-preview-#{idx}", "upload-result-element": "album-photo-upload-result-#{idx}", "upload-server": upload_server }, value: nil, label: nil %>
+        <%= f.input :image, type: :file, attr: { accept: ImageUploader::ALLOWED_TYPES.join(",") }, data: { "preview-element": "album-photo-preview-#{idx}", "upload-result-element": "album-photo-upload-result-#{idx}", "upload-server": upload_server }, class: "form-control", value: nil, label: nil %>
       </div>
       <div class="form-group">
-        <%= f.input :title %>
+        <%= f.input :title, class: "form-control" %>
       </div>
       <div class="form-group">
         <%= f.input :_delete, type: :checkbox, label: "Remove photo" unless photo.new? %>

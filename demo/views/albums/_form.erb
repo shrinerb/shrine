@@ -1,8 +1,8 @@
-<% form album, { action: form_action, method: "post", enctype: "multipart/form-data" }, labeler: :explicit do |f| %>
+<% form album, { action: form_action, enctype: "multipart/form-data" }, labeler: :explicit do |f| %>
   <%= f.input :hidden, name: "_method", value: form_method, obj: nil %> <%# # used in tandem with Rack::MethodOverride to enable PUT requests %>
 
   <div class="form-group">
-    <%= f.input :name %>
+    <%= f.input :name, class: "form-control" %>
   </div>
 
   <div class="form-group">
