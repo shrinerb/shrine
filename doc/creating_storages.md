@@ -52,7 +52,7 @@ end
 ```
 
 Unless you're already using a Ruby SDK, it's recommended to use [HTTP.rb] for
-uploading. It accepts any IO object that responds to `#read` (not just file
+uploading. It accepts any IO object that implements `IO#read` (not just file
 objects), and it streams the request body directly to the TCP socket, both for
 raw and multipart uploads, making it suitable for large uploads.
 
