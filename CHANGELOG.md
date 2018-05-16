@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:rewindable` option to `S3#open` for disabling caching of read content to disk (@janko-m)
+
 * Make `UploadedFile#open` always open a new IO object and close the previous one (@janko-m)
 
 ## 2.11.0 (2018-04-28)

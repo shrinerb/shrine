@@ -382,6 +382,12 @@ describe Shrine::Storage::S3 do
       assert_equal      "text/plain",     io.data[:object].content_type
     end
 
+    it "accepts :rewindable option" do
+      @s3.client.stub_responses(:get_object, body: "content")
+      io = @s3.open("foo", rewindable: false)
+      assert_raises(IOError) { io.rewind }
+    end
+
     it "accepts additional options" do
       @s3.client.stub_responses(:get_object, -> (context) {
         { body: context.params[:range] }

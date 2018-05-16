@@ -279,13 +279,21 @@ class Shrine
         raise
       end
 
-      # Returns a `Down::ChunkedIO` object representing the S3 object. Any
-      # additional options are forwarded to [`Aws::S3::Object#get`].
+      # Returns a `Down::ChunkedIO` object that downloads S3 object content
+      # on-demand. By default, read content will be cached onto disk so that
+      # it can be rewinded, but if you don't need that you can pass
+      # `rewindable: false`.
+      #
+      # Any additional options are forwarded to [`Aws::S3::Object#get`].
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
-      def open(id, **options)
+      def open(id, rewindable: true, **options)
         object = object(id)
-        io = Down::ChunkedIO.new(chunks: object.enum_for(:get, **options), data: { object: object })
+        io = Down::ChunkedIO.new(
+          chunks:     object.enum_for(:get, **options),
+          rewindable: rewindable,
+          data:       { object: object },
+        )
         io.size = object.content_length
         io
       end
