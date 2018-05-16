@@ -264,8 +264,9 @@ class Shrine
         end
       end
 
-      # Downloads the file from S3, and returns a `Tempfile`. Any additional
-      # options are forwarded to [`Aws::S3::Object#get`].
+      # Downloads the file from S3 and returns a `Tempfile`. The download will
+      # be automatically retried up to 3 times. Any additional options are
+      # forwarded to [`Aws::S3::Object#get`].
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def download(id, **options)
