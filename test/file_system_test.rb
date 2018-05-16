@@ -187,6 +187,11 @@ describe Shrine::Storage::FileSystem do
       @storage.upload(fakeio, "foo.jpg")
       assert @storage.open("foo.jpg").binmode?
     end
+
+    it "accepts additional File#open options" do
+      @storage.upload(fakeio, "foo.jpg")
+      @storage.open("foo.jpg", external_encoding: "utf-8")
+    end
   end
 
   describe "#delete" do

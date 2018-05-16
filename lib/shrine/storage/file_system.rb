@@ -151,9 +151,10 @@ class Shrine
           (io.is_a?(UploadedFile) && io.storage.is_a?(Storage::FileSystem))
       end
 
-      # Opens the file on the given location in read mode.
-      def open(id, &block)
-        path(id).open("rb", &block)
+      # Opens the file on the given location in read mode. Accepts additional
+      # `File.open` arguments.
+      def open(id, *args, &block)
+        path(id).open("rb", *args, &block)
       end
 
       # Returns true if the file exists on the filesystem.
