@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix encoding issues when uploading IO object with unknown size to S3 (@janko-m)
+
 * Accept additional `File.open` arguments in `FileSystem#open` (@janko-m)
 
 * Add `:rewindable` option to `S3#open` for disabling caching of read content to disk (@janko-m)

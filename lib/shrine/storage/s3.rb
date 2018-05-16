@@ -515,13 +515,12 @@ class Shrine
 
         # Uploads at most 5MB of IO content into a single multipart part.
         def upload_part(multipart_upload, io, part_number)
-          Tempfile.create("shrine-s3-part-#{part_number}") do |body|
-            multipart_part = multipart_upload.part(part_number)
-
+          Tempfile.create("shrine-s3-part-#{part_number}", binmode: true) do |body|
             IO.copy_stream(io, body, MIN_PART_SIZE)
             body.rewind
 
-            response = multipart_part.upload(body: body)
+            multipart_part = multipart_upload.part(part_number)
+            response       = multipart_part.upload(body: body)
 
             { part_number: part_number, size: body.size, etag: response.etag }
           end
