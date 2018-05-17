@@ -82,7 +82,7 @@ uploads][direct S3 uploads guide].
 
 ```rb
 # with Forme:
-form @photo, action: "/photos", method: "post", enctype: "multipart/form-data" do |f|
+form @photo, action: "/photos", enctype: "multipart/form-data" do |f|
   f.input :image, type: :hidden, value: @photo.cached_image_data
   f.input :image, type: :file
   f.button "Create"

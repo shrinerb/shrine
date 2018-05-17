@@ -206,7 +206,7 @@ cached_file = {
   metadata: {},
 }
 
-form @album, action: "/albums", method: "post" do |f|
+form @album, action: "/albums" do |f|
   f.input :image, type: :hidden, value: cached_file.to_json
   f.button "Save"
 end

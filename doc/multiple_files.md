@@ -84,8 +84,8 @@ In order to allow the user to select multiple files in the form, we just need
 to add the `multiple` attribute to the file field.
 
 ```rb
-f.input :file, name: :file, multiple: true
-# <input type="file" name="file" multiple />
+f.input :file, attr: { multiple: true }
+# <input type="file" multiple="true" />
 ```
 
 On the client side you can then asynchronously upload each of the selected
