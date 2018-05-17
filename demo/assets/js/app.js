@@ -12,19 +12,16 @@ function fileUpload(fileInput) {
   var uppy = Uppy.Core({
       id: fileInput.id,
       restrictions: {
-        maxFileSize:      fileInput.dataset.maxSize,
         allowedFileTypes: fileInput.accept.split(','),
-        maxNumberOfFiles: 100,
       },
     })
     .use(Uppy.FileInput, {
-      target:             fileInput.parentNode,
-      allowMultipleFiles: fileInput.multiple,
+      target: fileInput.parentNode,
     })
     .use(Uppy.Informer, {
       target: fileInput.parentNode,
     })
-    .use(Uppy.StatusBar, {
+    .use(Uppy.ProgressBar, {
       target: imagePreview.parentNode,
     })
 
@@ -68,9 +65,6 @@ function fileUpload(fileInput) {
     // set hidden field value to the uploaded file data so that it's submitted with the form as the attachment
     var hiddenInput = document.getElementById(fileInput.dataset.uploadResultElement)
     hiddenInput.value = uploadedFileData
-
-    // clear Uppy's file input field from selected files
-    fileInput.parentNode.querySelector('.uppy-FileInput-input').value = ''
   })
 
   return uppy
