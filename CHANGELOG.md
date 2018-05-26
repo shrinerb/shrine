@@ -1,5 +1,9 @@
 ## HEAD
 
+* Deprecate `:storages` option in `download_endpoint` plugin in favour of `UploadedFile#download_url` (@janko-m)
+
+* Add `:redirect` option to `download_endpoint` plugin for redirecting to the uploaded file (@janko-m)
+
 * Fix encoding issues when uploading IO object with unknown size to S3 (@janko-m)
 
 * Accept additional `File.open` arguments in `FileSystem#open` (@janko-m)

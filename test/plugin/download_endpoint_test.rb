@@ -8,13 +8,14 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   before do
-    @uploader = uploader { plugin :download_endpoint, storages: [:cache, :store] }
+    @uploader = uploader { plugin :download_endpoint }
+    @shrine = @uploader.class
   end
 
   it "returns a file response" do
     io = fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, content_type: "text/plain", filename: "content.txt")
     uploaded_file = @uploader.upload(io)
-    response = app.get(uploaded_file.url)
+    response = app.get(uploaded_file.download_url)
     assert_equal 200, response.status
     assert_equal uploaded_file.read, response.body_binary
     assert_equal uploaded_file.size.to_s, response.headers["Content-Length"]
@@ -23,27 +24,43 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "applies :disposition to response" do
-    @uploader = uploader { plugin :download_endpoint, storages: [:cache, :store], disposition: "attachment" }
+    @uploader = uploader { plugin :download_endpoint, disposition: "attachment" }
     uploaded_file = @uploader.upload(fakeio)
-    response = app.get(uploaded_file.url)
+    response = app.get(uploaded_file.download_url)
     assert_equal "attachment; filename=\"#{uploaded_file.id}\"", response.headers["Content-Disposition"]
   end
 
   it "returns Cache-Control" do
     uploaded_file = @uploader.upload(fakeio)
-    response = app.get(uploaded_file.url)
+    response = app.get(uploaded_file.download_url)
     assert_equal "max-age=31536000", response.headers["Cache-Control"]
+  end
+
+  it "accepts :redirect with true" do
+    @uploader = uploader { plugin :download_endpoint, redirect: true }
+    uploaded_file = @uploader.upload(fakeio)
+    response = app.get(uploaded_file.download_url)
+    assert_equal 302, response.status
+    assert_match %r{^memory://\w+$}, response.headers["Location"]
+  end
+
+  it "accepts :redirect with proc" do
+    @uploader = uploader { plugin :download_endpoint, redirect: -> (uploaded_file, request) { "/foo" } }
+    uploaded_file = @uploader.upload(fakeio)
+    response = app.get(uploaded_file.download_url)
+    assert_equal 302, response.status
+    assert_equal "/foo", response.headers["Location"]
   end
 
   it "returns Accept-Ranges" do
     uploaded_file = @uploader.upload(fakeio)
-    response = app.get(uploaded_file.url)
+    response = app.get(uploaded_file.download_url)
     assert_equal "bytes", response.headers["Accept-Ranges"]
   end
 
   it "supports ranged requests" do
     uploaded_file = @uploader.upload(fakeio("content"))
-    response = app.get(uploaded_file.url, headers: { "Range" => "bytes=2-4" })
+    response = app.get(uploaded_file.download_url, headers: { "Range" => "bytes=2-4" })
     assert_equal 206,           response.status
     assert_equal "bytes 2-4/7", response.headers["Content-Range"]
     assert_equal "3",           response.headers["Content-Length"]
@@ -53,7 +70,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   it "returns 404 for nonexisting file" do
     uploaded_file = @uploader.upload(fakeio)
     uploaded_file.data["id"] = "nonexistent"
-    response = app.get(uploaded_file.url)
+    response = app.get(uploaded_file.download_url)
     assert_equal 404, response.status
     assert_equal "File Not Found", response.body_binary
     assert_equal "text/plain", response.content_type
@@ -62,28 +79,28 @@ describe Shrine::Plugins::DownloadEndpoint do
   it "returns 404 for nonexisting storage" do
     uploaded_file = @uploader.upload(fakeio)
     @uploader.class.storages.delete(uploaded_file.storage_key.to_sym)
-    response = app.get(uploaded_file.url)
+    response = app.get(uploaded_file.download_url)
     assert_equal 404, response.status
     assert_equal "File Not Found", response.body_binary
     assert_equal "text/plain", response.content_type
   end
 
   it "adds :host to the URL" do
-    @uploader.class.plugin :download_endpoint, host: "http://example.com"
+    @shrine.plugin :download_endpoint, host: "http://example.com"
     uploaded_file = @uploader.upload(fakeio)
-    assert_match %r{http://example.com/\S+}, uploaded_file.url
+    assert_match %r{http://example.com/\S+}, uploaded_file.download_url
   end
 
   it "adds :prefix to the URL" do
-    @uploader.class.plugin :download_endpoint, prefix: "attachments"
+    @shrine.plugin :download_endpoint, prefix: "attachments"
     uploaded_file = @uploader.upload(fakeio)
-    assert_match %r{/attachments/\S+}, uploaded_file.url
+    assert_match %r{/attachments/\S+}, uploaded_file.download_url
   end
 
   it "adds :host and :prefix to the URL" do
-    @uploader.class.plugin :download_endpoint, host: "http://example.com", prefix: "attachments"
+    @shrine.plugin :download_endpoint, host: "http://example.com", prefix: "attachments"
     uploaded_file = @uploader.upload(fakeio)
-    assert_match %r{http://example.com/attachments/\S+}, uploaded_file.url
+    assert_match %r{http://example.com/attachments/\S+}, uploaded_file.download_url
   end
 
   it "returns same URL regardless of metadata order" do
@@ -95,12 +112,6 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal url1, url2
   end
 
-  it "returns regular URL for non-selected storages" do
-    @uploader.class.plugin :download_endpoint, storages: []
-    uploaded_file = @uploader.upload(fakeio)
-    assert_match /#{uploaded_file.id}$/, uploaded_file.url
-  end
-
   it "supports legacy URLs" do
     uploaded_file = @uploader.upload(fakeio)
     response = app.get("/#{uploaded_file.storage_key}/#{uploaded_file.id}")
@@ -108,12 +119,20 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "makes the endpoint inheritable" do
-    endpoint1 = Class.new(@uploader.class).download_endpoint
-    endpoint2 = Class.new(@uploader.class).download_endpoint
+    endpoint1 = Class.new(@shrine).download_endpoint
+    endpoint2 = Class.new(@shrine).download_endpoint
     refute_equal endpoint1, endpoint2
   end
 
+  deprecated "supports :storages option" do
+    @uploader = uploader { plugin :download_endpoint, storages: [:cache] }
+    cached_file = @uploader.class.new(:cache).upload(fakeio)
+    stored_file = @uploader.class.new(:store).upload(fakeio)
+    assert_match %r{^/\w+$},         cached_file.url
+    assert_match %r{^memory://\w+$}, stored_file.url
+  end
+
   deprecated "adds DownloadEndpoint constant" do
-    assert_equal @uploader.class.download_endpoint, @uploader.class::DownloadEndpoint
+    assert_equal @shrine.download_endpoint, @shrine::DownloadEndpoint
   end
 end
