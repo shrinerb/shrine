@@ -33,7 +33,7 @@ class Shrine
     # You can dynamically pass options to the downloader by using
     # `Attacher#assign_remote_url`:
     #
-    #     attacher.assign_remote_url("http://example.com/cool-image.png", { 'Authorization' => 'Basic ...' })
+    #     attacher.assign_remote_url("http://example.com/cool-image.png", downloader: { 'Authorization' => 'Basic ...' })
     #
     # ## Maximum size
     #
@@ -118,11 +118,11 @@ class Shrine
         # Downloads the remote file and assigns it. If download failed, sets
         # the error message and assigns the url to an instance variable so that
         # it shows up in the form.
-        def assign_remote_url(url, options = {})
+        def assign_remote_url(url, downloader: {})
           return if url == ""
 
           begin
-            downloaded_file = download(url, options)
+            downloaded_file = download(url, downloader)
           rescue => error
             download_error = error
           end

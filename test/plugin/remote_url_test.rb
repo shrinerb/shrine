@@ -56,7 +56,7 @@ describe Shrine::Plugins::RemoteUrl do
 
   it "accepts additional downloader options" do
     @attacher.shrine_class.opts[:remote_url_downloader] = ->(url, max_size:, **options){fakeio(options.to_s)}
-    @attacher.assign_remote_url(good_url, foo: "bar")
+    @attacher.assign_remote_url(good_url, downloader: { foo: "bar" })
     assert_equal "{:foo=>\"bar\"}", @user.avatar.read
   end
 
