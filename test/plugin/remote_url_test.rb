@@ -47,11 +47,17 @@ describe Shrine::Plugins::RemoteUrl do
   it "accepts custom downloader" do
     @attacher.shrine_class.opts[:remote_url_downloader] = ->(url, **){fakeio(url)}
     @user.avatar_remote_url = "foo"
-    assert_equal "foo", @attacher.record.avatar.read
+    assert_equal "foo", @user.avatar.read
   end
 
   it "defaults downloader to :open_uri" do
     assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url_downloader]
+  end
+
+  it "accepts additional downloader options" do
+    @attacher.shrine_class.opts[:remote_url_downloader] = ->(url, max_size:, **options){fakeio(options.to_s)}
+    @attacher.assign_remote_url(good_url, foo: "bar")
+    assert_equal "{:foo=>\"bar\"}", @user.avatar.read
   end
 
   it "transforms download errors into validation errors" do

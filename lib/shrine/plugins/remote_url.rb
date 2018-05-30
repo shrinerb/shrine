@@ -28,6 +28,13 @@ class Shrine
     # around the `open-uri` standard library. Note that Down expects the given
     # URL to be URI-encoded.
     #
+    # ## Dynamic options
+    #
+    # You can dynamically pass options to the downloader by using
+    # `Attacher#assign_remote_url`:
+    #
+    #     attacher.assign_remote_url("http://example.com/cool-image.png", { 'Authorization' => 'Basic ...' })
+    #
     # ## Maximum size
     #
     # It's a good practice to limit the maximum filesize of the remote file:
@@ -50,8 +57,10 @@ class Shrine
     #
     #     require "down/http"
     #
-    #     plugin :remote_url, max_size: 20*1024*1024, downloader: ->(url, max_size:) do
-    #       Down::Http.download(url, max_size: max_size, follow: { max_hops: 4 }, timeout: { read: 3 })
+    #     plugin :remote_url, max_size: 20*1024*1024, downloader: -> (url, max_size:, **options) do
+    #       Down::Http.download(url, max_size: max_size, **options) do |http|
+    #         http.follow(max_hops: 2).timeout(connect: 2, read: 2)
+    #       end
     #     end
     #
     # ## Errors
@@ -60,7 +69,7 @@ class Shrine
     # equal to the error message. You can change the default error message:
     #
     #     plugin :remote_url, error_message: "download failed"
-    #     plugin :remote_url, error_message: ->(url, error) { I18n.t("errors.download_failed") }
+    #     plugin :remote_url, error_message: -> (url, error) { I18n.t("errors.download_failed") }
     #
     # ## Background
     #
@@ -109,11 +118,11 @@ class Shrine
         # Downloads the remote file and assigns it. If download failed, sets
         # the error message and assigns the url to an instance variable so that
         # it shows up in the form.
-        def remote_url=(url)
+        def assign_remote_url(url, options = {})
           return if url == ""
 
           begin
-            downloaded_file = download(url)
+            downloaded_file = download(url, options)
           rescue => error
             download_error = error
           end
@@ -127,6 +136,11 @@ class Shrine
           end
         end
 
+        # Alias for #assign_remote_url.
+        def remote_url=(url)
+          assign_remote_url(url)
+        end
+
         # Form builders require the reader as well.
         def remote_url
           @remote_url
@@ -137,18 +151,18 @@ class Shrine
         # Downloads the file using the "down" gem or a custom downloader.
         # Checks the file size and terminates the download early if the file
         # is too big.
-        def download(url)
+        def download(url, options)
           downloader = shrine_class.opts[:remote_url_downloader]
           downloader = method(:"download_with_#{downloader}") if downloader.is_a?(Symbol)
           max_size = shrine_class.opts[:remote_url_max_size]
 
-          downloader.call(url, max_size: max_size)
+          downloader.call(url, { max_size: max_size }.merge(options))
         end
 
         # We silence any download errors, because for the user's point of view
         # the download simply failed.
-        def download_with_open_uri(url, max_size:)
-          Down.download(url, max_size: max_size)
+        def download_with_open_uri(url, options)
+          Down.download(url, options)
         end
 
         def download_error_message(url, error)
