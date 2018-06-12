@@ -5,15 +5,12 @@ module Routes
     plugin :environments
 
     plugin :render
-    plugin :forme
+    plugin :forme_route_csrf
     plugin :partials
     plugin :assets, css: "app.css", js: "app.js"
 
     use Rack::MethodOverride
     plugin :all_verbs
-
-    use Rack::Session::Cookie, secret: "secret"
-    plugin :csrf, raise: true
 
     plugin :indifferent_params
     plugin :path

@@ -7,7 +7,7 @@
 
   <div class="form-group">
     <%= f.input :cover_photo, type: :hidden, value: album.cached_cover_photo_data, id: "album-cover-photo-upload-result" %>
-    <%= f.input :cover_photo, type: :file, attr: { accept: ImageUploader::ALLOWED_TYPES.join(",") }, data: { upload_server: upload_server, preview_element: "preview-cover-photo", upload_result_element: "album-cover-photo-upload-result" }, dasherize_data: true %>
+    <%= f.input :cover_photo, type: :file, attr: { accept: ImageUploader::ALLOWED_TYPES.join(",") }, data: { upload_server: upload_server, upload_csrf_token: csrf_token("/upload"), preview_element: "preview-cover-photo", upload_result_element: "album-cover-photo-upload-result" }, dasherize_data: true %>
   </div>
 
   <div class="image-preview">
@@ -15,7 +15,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :photos, type: :file, attr: { multiple: true, accept: ImageUploader::ALLOWED_TYPES.join(",") }, label: "Select photos", data: { template: "template-photo", upload_list: "album-photo-list", upload_server: upload_server }, dasherize_data: true %>
+    <%= f.input :photos, type: :file, attr: { multiple: true, accept: ImageUploader::ALLOWED_TYPES.join(",") }, label: "Select photos", data: { template: "template-photo", upload_list: "album-photo-list", upload_server: upload_server, upload_csrf_token: csrf_token("/upload") }, dasherize_data: true %>
   </div>
 
   <ul class="list-unstyled file-upload-list" id="album-photo-list">
