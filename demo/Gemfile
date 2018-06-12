@@ -8,7 +8,7 @@ gem "rack_csrf"
 # Rendering
 gem "tilt", ">= 2.0.8"
 gem "erubi"
-gem "forme"
+gem "forme", "~> 1.8"
 
 # Database
 gem "sequel"
