@@ -41,8 +41,6 @@ function fileUpload(fileInput) {
     })
   }
 
-  uppy.run()
-
   uppy.on('upload-success', function (file, data, uploadURL) {
     // show image preview
     imagePreview.src = URL.createObjectURL(file.data)
