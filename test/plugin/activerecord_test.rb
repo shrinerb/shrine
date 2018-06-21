@@ -11,7 +11,7 @@ describe Shrine::Plugins::Activerecord do
       t.string :name
       t.text :avatar_data
     end
-    ActiveRecord::Base.raise_in_transactional_callbacks = true unless RUBY_VERSION >= "2.3.0"
+    ActiveRecord::Base.raise_in_transactional_callbacks = true unless ActiveRecord.version >= Gem::Version.new("5.0.0")
 
     user_class = Object.const_set("User", Class.new(ActiveRecord::Base))
     user_class.table_name = :users
@@ -146,7 +146,7 @@ describe Shrine::Plugins::Activerecord do
     it "isn't triggered when callback chain is halted" do
       @user.update(avatar: fakeio)
       uploaded_file = @user.avatar
-      if RUBY_VERSION >= "2.3.0"
+      if ActiveRecord.version >= Gem::Version.new("5.0.0")
         @user.class.before_save { throw(:abort) }
       else
         @user.class.before_save { false }
