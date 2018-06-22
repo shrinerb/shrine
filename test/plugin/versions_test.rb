@@ -181,12 +181,12 @@ describe Shrine::Plugins::Versions do
   end
 
   describe "Attacher" do
-    it "deprecates assigning cached versions" do
+    it "allows assigning cached versions" do
       versions = {thumb: @attacher.cache!(fakeio)}
-      assert_output(nil, /deprecated/) { @attacher.assign(versions.to_json) }
+      @attacher.assign(versions.to_json)
 
       versions = [@attacher.cache!(fakeio)]
-      assert_output(nil, /deprecated/) { @attacher.assign(versions.to_json) }
+      @attacher.assign(versions.to_json)
     end
 
     it "destroys versions successfully" do

@@ -286,13 +286,7 @@ class Shrine
           shrine_class.opts[:versions_fallback_to_original]
         end
 
-        def assign_cached(value)
-          cached_file = uploaded_file(value)
-          Shrine.deprecation("Assigning cached hash of files is deprecated for security reasons and will be removed in Shrine 3.") if cached_file.is_a?(Hash) || cached_file.is_a?(Array)
-          super(cached_file)
-        end
-
-        # Converts the Hash of UploadedFile objects into a Hash of data.
+        # Converts the Hash/Array of UploadedFile objects into a Hash/Array of data.
         def convert_to_data(object)
           if object.is_a?(Hash)
             object.inject({}) do |hash, (name, value)|

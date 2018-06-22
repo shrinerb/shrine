@@ -1,5 +1,7 @@
 ## HEAD
 
+* Un-deprecate assigning cached versions (@janko-m)
+
 * Add `Attacher#assign_remote_url` which allows dynamically passing downloader options (@janko-m)
 
 * Deprecate `:storages` option in `download_endpoint` plugin in favour of `UploadedFile#download_url` (@janko-m)
