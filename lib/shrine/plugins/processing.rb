@@ -34,15 +34,11 @@ class Shrine
     #     require "image_processing/mini_magick"
     #
     #     process(:store) do |io, context|
-    #       original = io.download
-    #
-    #       resized = ImageProcessing::MiniMagick
-    #         .source(original)
-    #         .resize_to_limit!(800, 800)
-    #
-    #       original.close!
-    #
-    #       resized
+    #       io.download do |original|
+    #         ImageProcessing::MiniMagick
+    #           .source(original)
+    #           .resize_to_limit!(800, 800)
+    #       end
     #     end
     #
     # The declarations are additive and inheritable, so for the same action you

@@ -15,16 +15,17 @@ class Shrine
     #     plugin :processing
     #
     #     process(:store) do |io, context|
-    #       original = io.download
-    #       pipeline = ImageProcessing::MiniMagick.source(original)
+    #       versions = { original: io } # retain original
     #
-    #       size_800 = pipeline.resize_to_limit!(800, 800)
-    #       size_500 = pipeline.resize_to_limit!(500, 500)
-    #       size_300 = pipeline.resize_to_limit!(300, 300)
+    #       io.download do |original|
+    #         pipeline = ImageProcessing::MiniMagick.source(original)
     #
-    #       original.close!
+    #         versions[:large]  = pipeline.resize_to_limit!(800, 800)
+    #         versions[:medium] = pipeline.resize_to_limit!(500, 500)
+    #         versions[:small]  = pipeline.resize_to_limit!(300, 300)
+    #       end
     #
-    #       { original: io, large: size_800, medium: size_500, small: size_300}
+    #       versions # return the hash of processed files
     #     end
     #
     # You probably want to load the `delete_raw` plugin to automatically
@@ -105,17 +106,18 @@ class Shrine
     # example, you might want to split a PDf into pages:
     #
     #     process(:store) do |io, context|
-    #       pdf        = io.download
-    #       page_count = MiniMagick::Image.new(pdf.path).pages.count
-    #       pipeline   = ImageProcessing::MiniMagick.source(pdf).convert("jpg")
+    #       versions = { pages: [] }
     #
-    #       pages = page_count.times.map do |page_number|
-    #         pipeline.loader(page: page_number).call
+    #       io.download do |pdf|
+    #         page_count = MiniMagick::Image.new(pdf.path).pages.count
+    #         pipeline   = ImageProcessing::MiniMagick.source(pdf).convert("jpg")
+    #
+    #         page_count.times do |page_number|
+    #           versions[:pages] << pipeline.loader(page: page_number).call
+    #         end
     #       end
     #
-    #       pdf.close!
-    #
-    #       { pages: pages } # array of pages
+    #       versions
     #     end
     #
     # You can also combine Hashes and Arrays, there is no limit to the level of

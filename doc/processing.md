@@ -110,16 +110,17 @@ class ImageUploader < Shrine
   plugin :delete_raw
 
   process(:store) do |io, context|
-    original = io.download
-    pipeline = ImageProcessing::MiniMagick.source(original)
+    versions = { original: io } # retain original
 
-    size_800 = pipeline.resize_to_limit!(800, 800)
-    size_500 = pipeline.resize_to_limit!(500, 500)
-    size_300 = pipeline.resize_to_limit!(300, 300)
+    io.download do |original|
+      pipeline = ImageProcessing::MiniMagick.source(original)
 
-    original.close!
+      versions[:large]  = pipeline.resize_to_limit!(800, 800)
+      versions[:medium] = pipeline.resize_to_limit!(500, 500)
+      versions[:small]  = pipeline.resize_to_limit!(300, 300)
+    end
 
-    { original: io, large: size_800, medium: size_500, small: size_300 }
+    versions # return the hash of processed files
   end
 end
 ```
@@ -144,16 +145,17 @@ class ImageUploader < Shrine
   plugin :delete_raw
 
   process(:store) do |io, context|
-    original = io.download
-    pipeline = ImageProcessing::Vips.source(original)
+    versions = { original: io } # retain original
 
-    size_800 = pipeline.resize_to_limit!(800, 800)
-    size_500 = pipeline.resize_to_limit!(500, 500)
-    size_300 = pipeline.resize_to_limit!(300, 300)
+    io.download do |original|
+      pipeline = ImageProcessing::Vips.source(original) # instead of ImageProcessing::MiniMagick
 
-    original.close!
+      versions[:large]  = pipeline.resize_to_limit!(800, 800)
+      versions[:medium] = pipeline.resize_to_limit!(500, 500)
+      versions[:small]  = pipeline.resize_to_limit!(300, 300)
+    end
 
-    { original: io, large: size_800, medium: size_500, small: size_300 }
+    versions # return the hash of processed files
   end
 end
 ```
@@ -218,23 +220,24 @@ class ImageUploader < Shrine
   plugin :delete_raw
 
   process(:store) do |io, context|
-    original = io.download
-    pipeline = ImageProcessing::Vips.source(original)
+    versions = { original: io } # retain original
 
-    # the `io` object contains the MIME type of the original file
-    if io.mime_type != "image/png"
-      pipeline = pipeline
-        .convert("jpeg")
-        .saver(interlace: true)
+    io.download do |original|
+      pipeline = ImageProcessing::Vips.source(original)
+
+      # Shrine::UploadedFile object contains information about the MIME type
+      unless %w[image/png].include?(io.mime_type)
+        pipeline = pipeline
+          .convert("jpeg")
+          .saver(interlace: true)
+      end
+
+      versions[:large]  = pipeline.resize_to_limit!(800, 800)
+      versions[:medium] = pipeline.resize_to_limit!(500, 500)
+      versions[:small]  = pipeline.resize_to_limit!(300, 300)
     end
 
-    size_800 = pipeline.resize_to_limit!(800, 800)
-    size_500 = pipeline.resize_to_limit!(500, 500)
-    size_300 = pipeline.resize_to_limit!(300, 300)
-
-    original.close!
-
-    { original: io, large: size_800, medium: size_500, small: size_300 }
+    versions # return the hash of processed files
   end
 end
 ```
