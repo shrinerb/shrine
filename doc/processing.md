@@ -91,7 +91,7 @@ defaults for the web.
 Since we'll be storing multiple derivates of the original file, we'll need to
 also load the `versions` plugin, which allows us to return a Hash of processed
 files. For processing we'll be using the `ImageProcessing::MiniMagick` backend,
-which performs processing with [ImageMagick]/[GraphicsMagick].
+which performs processing with [ImageMagick] or [GraphicsMagick].
 
 ```sh
 $ brew install imagemagick
