@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix subclassing not inheriting storage resolvers from superclass in `dynamic_storage` plugin (@janko-m)
+
 * Un-deprecate assigning cached versions (@janko-m)
 
 * Add `Attacher#assign_remote_url` which allows dynamically passing downloader options (@janko-m)

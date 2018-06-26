@@ -20,9 +20,13 @@ class Shrine
     #
     # This can be useful in combination with the `default_storage` plugin.
     module DynamicStorage
+      def self.configure(uploader, options = {})
+        uploader.opts[:dynamic_storages] ||= {}
+      end
+
       module ClassMethods
         def dynamic_storages
-          @dynamic_storages ||= {}
+          opts[:dynamic_storages]
         end
 
         def storage(regex, &block)
