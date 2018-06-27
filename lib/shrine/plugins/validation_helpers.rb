@@ -60,13 +60,13 @@ class Shrine
 
       # Returns filesize in a human readable format with units.
       # Uses the binary JEDEC unit system, i.e. 1.0 KB = 1024 bytes
-      PRETTY_FILESIZE = lambda do |num|
-        return "0.0 B" if num == 0
+      PRETTY_FILESIZE = lambda do |bytes|
+        return "0.0 B" if bytes == 0
 
-        exp = Math.log(num, 1024).floor
+        exp = Math.log(bytes, 1024).floor
         max_exp = FILESIZE_UNITS.length - 1
         exp = max_exp if exp > max_exp
-        "%.1f %s" % [num.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
+        "%.1f %s" % [bytes.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
       end
 
       module AttacherClassMethods
