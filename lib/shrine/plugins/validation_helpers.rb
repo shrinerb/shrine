@@ -63,7 +63,7 @@ class Shrine
       PRETTY_FILESIZE = lambda do |num|
         return "0.0 B" if num == 0
 
-        exp = (Math.log10(num) / Math.log10(1024)).to_i
+        exp = Math.log(num, 1024).floor
         max_exp = FILESIZE_UNITS.length - 1
         exp = max_exp if exp > max_exp
         "%.1f %s" % [num.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
