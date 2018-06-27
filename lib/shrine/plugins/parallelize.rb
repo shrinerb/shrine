@@ -68,7 +68,6 @@ class Shrine
 
         def spawn_thread
           Thread.new do
-            Thread.current.abort_on_exception = true
             loop do
               task = @tasks.deq(true) rescue break
               task.call
