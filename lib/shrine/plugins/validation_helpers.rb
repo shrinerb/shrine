@@ -44,8 +44,8 @@ class Shrine
       end
 
       DEFAULT_MESSAGES = {
-        max_size: ->(max) { "is too large (max is #{max.to_f/1024/1024} MB)" },
-        min_size: ->(min) { "is too small (min is #{min.to_f/1024/1024} MB)" },
+        max_size: ->(max) { "is too large (max is #{PRETTY_FILESIZE.call(max)})" },
+        min_size: ->(min) { "is too small (min is #{PRETTY_FILESIZE.call(min)})" },
         max_width: ->(max) { "is too wide (max is #{max} px)" },
         min_width: ->(min) { "is too narrow (min is #{min} px)" },
         max_height: ->(max) { "is too tall (max is #{max} px)" },
@@ -55,6 +55,19 @@ class Shrine
         extension_inclusion: ->(list) { "isn't of allowed format (allowed formats: #{list.join(", ")})" },
         extension_exclusion: ->(list) { "is of forbidden format" },
       }
+
+      FILESIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"].freeze
+
+      # Returns filesize in a human readable format with units.
+      # Uses the binary JEDEC unit system, i.e. 1.0 KB = 1024 bytes
+      PRETTY_FILESIZE = lambda do |bytes|
+        return "0.0 B" if bytes == 0
+
+        exp = Math.log(bytes, 1024).floor
+        max_exp = FILESIZE_UNITS.length - 1
+        exp = max_exp if exp > max_exp
+        "%.1f %s" % [bytes.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
+      end
 
       module AttacherClassMethods
         def default_validation_messages

@@ -597,4 +597,28 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal 1, @attacher.errors.size
     end
   end
+
+  describe "#PRETTY_FILESIZE" do
+    it "returns 0.0 B if size = 0" do
+      assert_equal "0.0 B", Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE.call(0)
+    end
+
+    it "returns correct units from bytes to yoltabytes" do
+      units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+
+      units.each_with_index do |unit, index|
+        size = 1024 ** index
+        assert_equal "#{1}.0 #{unit}", Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE.call(size)
+      end
+
+      size = 1024 ** 10
+      assert_equal "1048576.0 YB", Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE.call(size)
+
+      units.each_with_index do |unit, index|
+        next if index == 0
+        size = 1023 * 1024 ** index
+        assert_equal "1023.0 #{unit}", Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE.call(size)
+      end
+    end
+  end
 end
