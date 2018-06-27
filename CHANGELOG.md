@@ -1,5 +1,7 @@
 ## HEAD
 
+* Use the appropriate unit in error messages of filesize validators in `validation_helpers` plugin (@hmistry)
+
 * Fix subclassing not inheriting storage resolvers from superclass in `dynamic_storage` plugin (@janko-m)
 
 * Un-deprecate assigning cached versions (@janko-m)
