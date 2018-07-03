@@ -1,5 +1,7 @@
 ## HEAD
 
+* Raise `Shrine::Error` when child process failed to be spawned in `:file` MIME type analyzer (@hmistry)
+
 * Use the appropriate unit in error messages of filesize validators in `validation_helpers` plugin (@hmistry)
 
 * Fix subclassing not inheriting storage resolvers from superclass in `dynamic_storage` plugin (@janko-m)

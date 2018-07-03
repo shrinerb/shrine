@@ -32,18 +32,21 @@ describe Shrine::Plugins::DetermineMimeType do
 
     it "raises error if file command is not found" do
       Open3.stubs(:popen3).raises(Errno::ENOENT)
-      assert_raises(Shrine::Error) { @shrine.determine_mime_type(image) }
+      exception = assert_raises(Shrine::Error) { @shrine.determine_mime_type(fakeio) }
+      assert_equal "file command-line tool is not installed", exception.message
     end
 
     it "raises error if file command failed" do
       failed_result = Open3.popen3("file", "--foo")
       Open3.stubs(:popen3).yields(failed_result)
-      assert_raises(Shrine::Error) { @shrine.determine_mime_type(image) }
+      exception = assert_raises(Shrine::Error) { @shrine.determine_mime_type(fakeio) }
+      assert_match "file command failed: ", exception.message
     end
 
-    it "raises error if file command thread.value is nil" do
+    it "raises error if file command failed to spawn" do
       Open3.expects(:popen3).yields(StringIO.new, StringIO.new, StringIO.new, Thread.new {})
-      assert_raises(Shrine::Error) { @shrine.determine_mime_type(fakeio("d")) }
+      exception = assert_raises(Shrine::Error) { @shrine.determine_mime_type(fakeio("d")) }
+      assert_match "file command failed to spawn: ", exception.message
     end
 
     it "fowards any warnings to stderr" do

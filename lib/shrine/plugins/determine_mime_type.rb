@@ -177,13 +177,14 @@ class Shrine
 
             status = thread.value
 
-            raise Error, stderr.read unless !status.nil? && status.success?
+            raise Error, "file command failed to spawn: #{stderr.read}" if status.nil?
+            raise Error, "file command failed: #{stderr.read}" unless status.success?
             $stderr.print(stderr.read)
 
             stdout.read.strip
           end
         rescue Errno::ENOENT
-          raise Error, "The `file` command-line tool is not installed"
+          raise Error, "file command-line tool is not installed"
         end
 
         def extract_with_fastimage(io)
