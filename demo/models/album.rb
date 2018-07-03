@@ -6,10 +6,10 @@ class Album < Sequel::Model
   nested_attributes :photos, destroy: true
   add_association_dependencies photos: :destroy
 
-  include ImageUploader::Attachment.new(:cover_photo)
+  include ImageUploader::Attachment.new(:cover_photo)  # ImageUploader will attach and manage `cover_photo`
 
   def validate
     super
-    validates_presence [:name, :cover_photo]
+    validates_presence [:name, :cover_photo]  # Normal model validations - optional
   end
 end

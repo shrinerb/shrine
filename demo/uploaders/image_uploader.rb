@@ -1,3 +1,6 @@
+# This is a subclass of Shrine base that will be further configured for it's requirements.
+# This will be included in the model to manage the file.
+
 require "./config/shrine"
 require "image_processing/mini_magick"
 
@@ -12,6 +15,7 @@ class ImageUploader < Shrine
   plugin :validation_helpers
   plugin :store_dimensions, analyzer: :mini_magick
 
+  # File validations (requires `validation_helpers` plugin)
   Attacher.validate do
     validate_max_size MAX_SIZE
     if validate_mime_type_inclusion(ALLOWED_TYPES)
@@ -20,6 +24,7 @@ class ImageUploader < Shrine
     end
   end
 
+  # Additional processing (requires `processing` plugin)
   process(:store) do |io, context|
     original = io.download
 
@@ -29,6 +34,6 @@ class ImageUploader < Shrine
 
     original.close!
 
-    { original: io, thumbnail: thumbnail }
+    { original: io, thumbnail: thumbnail }  # Hash of versions requires `versions` plugin
   end
 end
