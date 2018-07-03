@@ -1,5 +1,6 @@
 require "roda"
 
+# Base Roda route configuration
 module Routes
   class Base < Roda
     plugin :environments

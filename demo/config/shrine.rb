@@ -1,10 +1,14 @@
-require "./config/credentials"
+# This is a general base configuration for Shrine in the app.
+# It's typically placed in a `config` and/or `initializers` folder.
 
+require "./config/credentials"
 require "shrine"
 
+# needed by `backgrounding` plugin
 require "./jobs/promote_job"
 require "./jobs/delete_job"
 
+# use S3 for production and local file for other environments
 if ENV["RACK_ENV"] == "production"
   require "shrine/storage/s3"
 
@@ -15,6 +19,7 @@ if ENV["RACK_ENV"] == "production"
     secret_access_key: ENV.fetch("S3_SECRET_ACCESS_KEY"),
   }
 
+  # both `cache` and `store` storages are needed
   Shrine.storages = {
     cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
     store: Shrine::Storage::S3.new(**s3_options),
@@ -22,6 +27,7 @@ if ENV["RACK_ENV"] == "production"
 else
   require "shrine/storage/file_system"
 
+  # both `cache` and `store` storages are needed
   Shrine.storages = {
     cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"),
     store: Shrine::Storage::FileSystem.new("public", prefix: "uploads"),
@@ -41,5 +47,6 @@ else
   Shrine.plugin :upload_endpoint
 end
 
+# needed by `backgrounding` plugin
 Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }

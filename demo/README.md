@@ -1,7 +1,8 @@
 # Shrine demo using Roda & Sequel
 
-This is a Roda & Sequel demo for [Shrine]. It allows the user to create albums
-and attach images. The demo shows an advanced workflow:
+*(Looking for the Rails version - see the [Rails demo]. Before you head over there, give this demo a try. Roda is just as capable as Rails without the bloat and super flexible on a per route basis because you only add on what you need! One thing to note - Roda places Rails controller-like code in routes because it's route centric, the rest is pretty similar to Rails.)*
+
+This is a Roda & Sequel demo for [Shrine]. It allows the user to create albums and attach images. The demo shows an advanced workflow:
 
 Uploading:
 
@@ -35,6 +36,20 @@ disk. The demo features both single and multiple uploads.
 On the client side [Uppy] is used for handling file uploads. The complete
 JavaScript implementation for the demo can be found in
 [app.js](/demo/assets/js/app.js).
+
+Files of interest:
+* [app.rb]
+* [config/shrine.rb]
+* [jobs/delete_job.rb]
+* [jobs/promote_job.rb]
+* [uploaders/image_uploader.rb]
+* [db/migrations/001_create_albums.rb]
+* [db/migrations/002_create_photos.rb]
+* [models/album.rb]
+* [models/photo.rb]
+* [routes/albums.rb]
+* [routes/direct_upload.rb]
+* [views/\*]
 
 ## Requirements
 
@@ -76,3 +91,16 @@ $ bundle exec rackup
 [Shrine]: https://github.com/shrinerb/shrine
 [setup CORS]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [Uppy]: https://uppy.io
+[Rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
+[app.rb]: https://github.com/shrinerb/shrine/blob/master/demo/app.rb
+[config/shrine.rb]: https://github.com/shrinerb/shrine/blob/master/demo/config/shrine.rb
+[jobs/delete_job.rb]: https://github.com/shrinerb/shrine/blob/master/demo/jobs/delete_job.rb
+[jobs/promote_job.rb]: https://github.com/shrinerb/shrine/blob/master/demo/jobs/promote_job.rb
+[uploaders/image_uploader.rb]: https://github.com/shrinerb/shrine/blob/master/demo/app.rb
+[db/migrations/001_create_albums.rb]: https://github.com/shrinerb/shrine/blob/master/demo/db/migrations/001_create_albums.rb
+[db/migrations/002_create_photos.rb]: https://github.com/shrinerb/shrine/blob/master/demo/db/migrations/002_create_photos.rb
+[models/album.rb]: https://github.com/shrinerb/shrine/blob/master/demo/models/album.rb
+[models/photo.rb]: https://github.com/shrinerb/shrine/blob/master/demo/models/photo.rb
+[routes/albums.rb]: https://github.com/shrinerb/shrine/blob/master/demo/routes/albums.rb
+[routes/direct_upload.rb]: https://github.com/shrinerb/shrine/blob/master/demo/routes/direct_upload.rb
+[views/\*]: https://github.com/shrinerb/shrine/blob/master/demo/views/

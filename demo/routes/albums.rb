@@ -5,12 +5,15 @@ require "./models/photo"
 module Routes
   class Albums < Base
     route do |r|
+      # Only '/albums'
       r.is do
+        # GET '/albums'
         r.get do
           albums = Album.all
           view("albums/index", locals: { albums: albums })
         end
 
+        # POST '/albums'
         r.post do
           album = Album.new(params[:album])
           if album.valid?
@@ -22,18 +25,22 @@ module Routes
         end
       end
 
+      # GET '/albums/new'
       r.get "new" do
         album = Album.new
         view("albums/new", locals: { album: album })
       end
 
+      # Only '/albums/:id'
       r.is Integer do |album_id|
         album = Album[album_id] or not_found!
 
+        # GET '/albums/:id'
         r.get do
           view("albums/show", locals: { album: album })
         end
 
+        # PUT '/albums/:id'
         r.put do
           album.set(params[:album])
           if album.valid?
@@ -44,6 +51,7 @@ module Routes
           end
         end
 
+        # DELETE '/albums/:id'
         r.delete do
           album.destroy
           r.redirect albums_path

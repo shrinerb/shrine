@@ -17,14 +17,17 @@ class ShrineDemo < Roda
 
     check_csrf!
 
+    # redirect '/' to '/albums'
     r.root do
       r.redirect "/albums", 301
     end
 
+    # all '/albums'
     r.on "albums" do
       r.run Routes::Albums
     end
 
+    # all other routes
     r.run Routes::DirectUpload, not_found: :pass
   end
 end
