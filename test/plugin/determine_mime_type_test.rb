@@ -41,6 +41,11 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_raises(Shrine::Error) { @shrine.determine_mime_type(image) }
     end
 
+    it "raises error if file command thread.value is nil" do
+      Open3.expects(:popen3).yields(StringIO.new, StringIO.new, StringIO.new, Thread.new {})
+      assert_raises(Shrine::Error) { @shrine.determine_mime_type(fakeio("d")) }
+    end
+
     it "fowards any warnings to stderr" do
       assert_output(nil, "") { @shrine.determine_mime_type(image) }
 

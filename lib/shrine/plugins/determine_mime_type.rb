@@ -177,7 +177,7 @@ class Shrine
 
             status = thread.value
 
-            raise Error, stderr.read unless status.success?
+            raise Error, stderr.read unless !status.nil? && status.success?
             $stderr.print(stderr.read)
 
             stdout.read.strip
