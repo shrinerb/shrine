@@ -4,6 +4,6 @@ class PromoteJob
   include SuckerPunch::Job
 
   def perform(data)
-    Shrine::Attacher.promote(data)  # Required by `backgrounding` plugin
+    Shrine::Attacher.promote(data)  # finish promoting (`backgrounding` plugin)
   end
 end

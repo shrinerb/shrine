@@ -92,15 +92,15 @@ $ bundle exec rackup
 [setup CORS]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [Uppy]: https://uppy.io
 [Rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
-[app.rb]: https://github.com/shrinerb/shrine/blob/master/demo/app.rb
-[config/shrine.rb]: https://github.com/shrinerb/shrine/blob/master/demo/config/shrine.rb
-[jobs/delete_job.rb]: https://github.com/shrinerb/shrine/blob/master/demo/jobs/delete_job.rb
-[jobs/promote_job.rb]: https://github.com/shrinerb/shrine/blob/master/demo/jobs/promote_job.rb
-[uploaders/image_uploader.rb]: https://github.com/shrinerb/shrine/blob/master/demo/app.rb
-[db/migrations/001_create_albums.rb]: https://github.com/shrinerb/shrine/blob/master/demo/db/migrations/001_create_albums.rb
-[db/migrations/002_create_photos.rb]: https://github.com/shrinerb/shrine/blob/master/demo/db/migrations/002_create_photos.rb
-[models/album.rb]: https://github.com/shrinerb/shrine/blob/master/demo/models/album.rb
-[models/photo.rb]: https://github.com/shrinerb/shrine/blob/master/demo/models/photo.rb
-[routes/albums.rb]: https://github.com/shrinerb/shrine/blob/master/demo/routes/albums.rb
-[routes/direct_upload.rb]: https://github.com/shrinerb/shrine/blob/master/demo/routes/direct_upload.rb
-[views/\*]: https://github.com/shrinerb/shrine/blob/master/demo/views/
+[app.rb]: /demo/app.rb
+[config/shrine.rb]: /demo/config/shrine.rb
+[jobs/delete_job.rb]: /demo/jobs/delete_job.rb
+[jobs/promote_job.rb]: /demo/jobs/promote_job.rb
+[uploaders/image_uploader.rb]: /demo/uploaders/image_uploader.rb
+[db/migrations/001_create_albums.rb]: /demo/db/migrations/001_create_albums.rb
+[db/migrations/002_create_photos.rb]: /demo/db/migrations/002_create_photos.rb
+[models/album.rb]: /demo/models/album.rb
+[models/photo.rb]: /demo/models/photo.rb
+[routes/albums.rb]: /demo/routes/albums.rb
+[routes/direct_upload.rb]: /demo/routes/direct_upload.rb
+[views/\*]: /demo/views/

@@ -47,6 +47,6 @@ else
   Shrine.plugin :upload_endpoint
 end
 
-# needed by `backgrounding` plugin
+# delay promoting and deleting files to a background job (`backgrounding` plugin)
 Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
