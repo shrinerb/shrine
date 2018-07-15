@@ -181,6 +181,12 @@
         name: shrine-color
         url: https://github.com/jnylen/shrine-color
       -
+        name: shrine-configurable_storage
+        url: https://github.com/SleeplessByte/shrine-configurable_storage
+      -
+        name: shrine-content_addressable
+        url: https://github.com/SleeplessByte/shrine-content_addressable
+      -
         name: shrine-lambda
         url: https://github.com/texpert/shrine-lambda
       -
