@@ -151,7 +151,7 @@ class Shrine
         # If it fails, it sets the error message and assigns the uri in an
         # instance variable so that it shows up on the UI.
         def data_uri=(uri)
-          return if uri == ""
+          return if uri == "" || uri.nil?
 
           data_file = shrine_class.data_uri(uri)
           assign(data_file)
