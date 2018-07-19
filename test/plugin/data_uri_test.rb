@@ -21,6 +21,12 @@ describe Shrine::Plugins::DataUri do
     assert @user.avatar
   end
 
+  it "ignores nil strings" do
+    @user.avatar_data_uri = "data:image/png,content"
+    @user.avatar_data_uri = nil
+    assert @user.avatar
+  end
+
   it "retains the data uri value if uploading doesn't succeed" do
     @user.avatar_data_uri = "data:image/png,content"
     assert_nil @user.avatar_data_uri
