@@ -1,5 +1,9 @@
 ## HEAD
 
+* Ignore nil values when assigning files from a remote URL (@janko-m)
+
+* Ignore nil values when assigning files from a data URI (@GeekOnCoffee)
+
 * Raise `Shrine::Error` when child process failed to be spawned in `:file` MIME type analyzer (@hmistry)
 
 * Use the appropriate unit in error messages of filesize validators in `validation_helpers` plugin (@hmistry)

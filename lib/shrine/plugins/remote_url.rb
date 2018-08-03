@@ -119,7 +119,7 @@ class Shrine
         # the error message and assigns the url to an instance variable so that
         # it shows up in the form.
         def assign_remote_url(url, downloader: {})
-          return if url == ""
+          return if url == "" || url.nil?
 
           begin
             downloaded_file = download(url, downloader)

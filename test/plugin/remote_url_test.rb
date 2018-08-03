@@ -32,8 +32,16 @@ describe Shrine::Plugins::RemoteUrl do
   end
 
   it "ignores empty urls" do
+    @user.avatar = fakeio
     @user.avatar_remote_url = ""
-    refute @user.avatar
+    assert @user.avatar
+    assert_nil @user.avatar_remote_url
+  end
+
+  it "ignores nil values" do
+    @user.avatar = fakeio
+    @user.avatar_remote_url = nil
+    assert @user.avatar
     assert_nil @user.avatar_remote_url
   end
 

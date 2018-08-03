@@ -16,15 +16,17 @@ describe Shrine::Plugins::DataUri do
   end
 
   it "ignores empty strings" do
-    @user.avatar_data_uri = "data:image/png,content"
+    @user.avatar = fakeio
     @user.avatar_data_uri = ""
     assert @user.avatar
+    assert_nil @user.avatar_data_uri
   end
 
-  it "ignores nil strings" do
-    @user.avatar_data_uri = "data:image/png,content"
+  it "ignores nil values" do
+    @user.avatar = fakeio
     @user.avatar_data_uri = nil
     assert @user.avatar
+    assert_nil @user.avatar_data_uri
   end
 
   it "retains the data uri value if uploading doesn't succeed" do
