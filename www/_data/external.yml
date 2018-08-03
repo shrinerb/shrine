@@ -61,7 +61,7 @@
         url: http://elixirator.com/blog/2017/background-file-uploads-to-s3-using-shrine.html
       -
         name: Rails + Shrine + DropzoneJS
-        url: https://stephencodes.com/blog/rails-shrine-dropzonejs
+        url: https://stephencodes.com/post/1_rails_shrine_dropzone_js/
       -
         name: Uploading Files with Rails and ActionCable
         url: https://scotch.io/tutorials/uploading-files-with-rails-and-actioncable
