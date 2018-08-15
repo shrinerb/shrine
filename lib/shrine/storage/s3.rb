@@ -439,7 +439,7 @@ class Shrine
           object(id).upload_file(path, **options)
           File.size(path)
         else
-          io.open if io.is_a?(UploadedFile)
+          io.to_io if io.is_a?(UploadedFile) # open if not already opened
 
           if io.respond_to?(:size) && io.size
             object(id).put(body: io, **options)
