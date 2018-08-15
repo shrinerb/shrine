@@ -36,4 +36,11 @@ class Minitest::HooksSpec
     missing_methods = %i[read rewind eof? close size].select { |m| !object.respond_to?(m) }
     missing_methods.empty?
   end
+
+  def tempfile(content, basename = "")
+    tempfile = Tempfile.new(basename, binmode: true)
+    tempfile.write(content)
+    tempfile.rewind
+    tempfile
+  end
 end
