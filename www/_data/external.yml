@@ -121,6 +121,9 @@
         name: shrine-aliyun-oss
         url: https://github.com/zillou/shrine-aliyun-oss
       -
+        name: shrine-azure
+        url: https://github.com/cortexinsight/shrine-azure
+      -
         name: shrine-cloudinary
         url: https://github.com/shrinerb/shrine-cloudinary
       -
