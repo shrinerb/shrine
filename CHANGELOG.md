@@ -1,4 +1,4 @@
-## HEAD
+## 2.12.0 (2018-08-22)
 
 * Ignore nil values when assigning files from a remote URL (@janko-m)
 
