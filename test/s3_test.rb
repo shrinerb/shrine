@@ -161,11 +161,9 @@ describe Shrine::Storage::S3 do
 
         assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
-        assert_equal 5*1024*1024,                @s3.client.api_requests[1][:params][:body].size
 
         assert_equal :upload_part,               @s3.client.api_requests[2][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
-        assert_equal 1*1024*1024,                @s3.client.api_requests[2][:params][:body].size
 
         assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
@@ -215,14 +213,10 @@ describe Shrine::Storage::S3 do
         assert_equal :upload_part_copy,          @s3.client.api_requests[1][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
         assert_equal "my-bucket/bar",            @s3.client.api_requests[1][:params][:copy_source]
-        assert_equal 1,                          @s3.client.api_requests[1][:params][:part_number]
-        assert_equal "bytes=0-5242879",          @s3.client.api_requests[1][:params][:copy_source_range]
 
         assert_equal :upload_part_copy,          @s3.client.api_requests[2][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
         assert_equal "my-bucket/bar",            @s3.client.api_requests[2][:params][:copy_source]
-        assert_equal 2,                          @s3.client.api_requests[2][:params][:part_number]
-        assert_equal "bytes=5242880-6291455",    @s3.client.api_requests[2][:params][:copy_source_range]
 
         assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
