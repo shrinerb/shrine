@@ -1,81 +1,75 @@
 -
   -
-    name: "2.12"
+    name: "2.12.0"
+    abbr: "2.12"
     path: "2_12_0_md.html"
   -
-    name: "2.11"
+    name: "2.11.0"
+    abbr: "2.11"
     path: "2_11_0_md.html"
   -
-    name: "2.10.1"
-    path: "2_10_1_md.html"
-  -
-    name: "2.10"
+    name: "2.10.0"
+    abbr: "2.10"
     path: "2_10_0_md.html"
 -
   -
-    name: "2.9"
+    name: "2.9.0"
+    abbr: "2.9"
     path: "2_9_0_md.html"
   -
-    name: "2.8"
+    name: "2.8.0"
+    abbr: "2.8"
     path: "2_8_0_md.html"
   -
-    name: "2.7"
+    name: "2.7.0"
+    abbr: "2.7"
     path: "2_7_0_md.html"
   -
-    name: "2.6.1"
-    path: "2_6_1_md.html"
-  -
-    name: "2.6"
+    name: "2.6.0"
+    abbr: "2.6"
     path: "2_6_0_md.html"
   -
-    name: "2.5"
+    name: "2.5.0"
+    abbr: "2.5"
     path: "2_5_0_md.html"
   -
-    name: "2.4.1"
-    path: "2_4_1_md.html"
-  -
-    name: "2.4"
+    name: "2.4.0"
+    abbr: "2.4"
     path: "2_4_0_md.html"
   -
-    name: "2.3.1"
-    path: "2_3_1_md.html"
-  -
-    name: "2.3"
+    name: "2.3.0"
+    abbr: "2.3"
     path: "2_3_0_md.html"
   -
-    name: "2.2"
+    name: "2.2.0"
+    abbr: "2.2"
     path: "2_2_0_md.html"
   -
-    name: "2.1.1"
-    path: "2_1_1_md.html"
-  -
-    name: "2.1"
+    name: "2.1.0"
+    abbr: "2.1"
     path: "2_1_0_md.html"
   -
-    name: "2.0.1"
-    path: "2_0_1_md.html"
-  -
-    name: "2.0"
+    name: "2.0.0"
+    abbr: "2.0"
     path: "2_0_0_md.html"
 -
   -
-    name: "1.4.2"
-    path: "1_4_2_md.html"
-  -
-    name: "1.4.1"
-    path: "1_4_1_md.html"
-  -
-    name: "1.4"
+    name: "1.4.0"
+    abbr: "1.4"
     path: "1_4_0_md.html"
   -
-    name: "1.3"
+    name: "1.3.0"
+    abbr: "1.3"
     path: "1_3_0_md.html"
   -
-    name: "1.2"
+    name: "1.2.0"
+    abbr: "1.2"
     path: "1_2_0_md.html"
   -
-    name: "1.1"
+    name: "1.1.0"
+    abbr: "1.1"
     path: "1_1_0_md.html"
   -
-    name: "1.0"
+    name: "1.0.0"
+    abbr: "1.0"
     path: "1_0_0_md.html"
