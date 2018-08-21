@@ -241,7 +241,7 @@ class Album < ActiveRecord::Base
 end
 ```
 
-### 6. Conclusion
+### Conclusion
 
 Now we have a simple interface for accepting multiple attachments, which
 internally uses nested attributes to create multiple associated records, each
