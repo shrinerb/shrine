@@ -28,7 +28,7 @@ Shrine::Plugins::DynamicStorage
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/dynamic_storage_rb.html">lib/shrine/plugins/dynamic_storage.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/dynamic_storage.rb">lib/shrine/plugins/dynamic_storage.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -51,6 +51,13 @@ instance of <code>MatchData</code>.</p>
 <p>This can be useful in combination with the <code>default_storage</code>
 plugin.</p>
 </div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+</ol>
+</div>
 <div id='context'>
 </div>
 <div id='class-list'>
@@ -60,6 +67,26 @@ plugin.</p>
 </ol>
 </div>
 <div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, options = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storages</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
 </div>
 
 </div>

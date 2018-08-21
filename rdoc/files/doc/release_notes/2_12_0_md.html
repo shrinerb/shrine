@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>2.12.0.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>2.12.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/2.12.0.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2018-08-22 01:35:58 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The <code>Shrine::Attacher#assign_remote_url</code> method has been added,
+which acts the  same as <code>#remote_url=</code> but allows you to also
+dynamically provide options to  the underlying downloader
+(<code>Down.download</code> by default).</p>
+</li></ul>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign_remote_url</span>(<span class="ruby-string">&quot;https://example.com/image.jpg&quot;</span>, <span class="ruby-value">downloader:</span> { <span class="ruby-string">&#39;Cookie&#39;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&#39;abc123&#39;</span> })</pre>
+<ul><li>
+<p>The <code>Shrine::UploadedFile#download_url</code> method has been added to
+the  <code>download_endpoint</code> plugin for explicitly generating the
+file URL through  the download endpoint.</p>
+</li><li>
+<p>The <code>:redirect</code> option has been added to
+<code>download_endpoint</code> plugin, which  makes download URLs redirect
+directly to the uploaded file on its storage.  This allows you to avoding
+streaming the file through your app, and thus not  having it impact your
+request throughput.</p>
+</li><li>
+<p>The <code>Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE</code>
+callbable has been  added, which takes the filesize in bytes and returns
+the representation in  correct unit. This can be used when providing custom
+validation error messages.</p>
+</li></ul>
+
+<pre class="ruby"><span class="ruby-identifier">pretty_filesize</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">ValidationHelpers</span><span class="ruby-operator">::</span><span class="ruby-constant">PRETTY_FILESIZE</span>&#x000A;<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)           <span class="ruby-comment">#=&gt; &quot;1.0 KB&quot;</span>&#x000A;<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>)    <span class="ruby-comment">#=&gt; &quot;1.5 MB&quot;</span>&#x000A;<span class="ruby-identifier">pretty_filesize</span>.<span class="ruby-identifier">call</span>(<span class="ruby-value">2</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment">#=&gt; &quot;2.0 GB&quot;</span></pre>
+
+<h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The <code>Shrine::Storage::FileSystem#open</code> now forwards any
+additional options to  <code>File.open</code>.</p>
+</li><li>
+<p>The <code>Shrine::Storage::S3#open</code> method now accepts the
+<code>:rewindable</code> option to  disable caching read content to disk.</p>
+</li><li>
+<p>In validation error messages in filesize validators in the 
+<code>validation_helpers</code> plugin show specified limits in the
+appropriate unit,  instead of always using megabytes.</p>
+</li><li>
+<p><code>Shrine::UploadedFile#open</code> will now always open a new IO
+object, and close  the previous one. This way the uploaded file will be
+reopened if it&#39;s closed.</p>
+</li><li>
+<p>Fixed possible encoding issues in <code>Shrine::Storage::S3#upload</code>
+when filesize  is unknown.</p>
+</li><li>
+<p>The registered storage resolvers in the <code>dynamic_storage</code> plugin
+are now  correctly inherited upon subclassing.</p>
+</li><li>
+<p>The <code>:file</code> MIME type analyzer from
+<code>determine_mime_type</code> plugin will now  raise an explicit
+<code>Shrine::Error</code> when the subprocess from the shell command 
+failed to be spawned.</p>
+</li><li>
+<p><code>Attacher#data_uri=</code> and <code>Attacher#remote_url=</code> in
+addition to <code>&quot;&quot;</code> now also  ignore <code>nil</code>
+values, instead of raising an exception.</p>
+</li></ul>
+
+<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The <code>:storages</code> option has been deprecated in the
+<code>download_endpoint</code> plugin  in favour of the new
+<code>Shrine::UploadedFile#download_url</code> method.</p>
+</li><li>
+<p>The deprecation of assigning cached versions has been undone, as it can be
+a  useful feature.</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -28,7 +28,7 @@ Shrine::Plugins::DataUri::FileMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../../files/lib/shrine/plugins/data_uri_rb.html">lib/shrine/plugins/data_uri.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/data_uri.rb">lib/shrine/plugins/data_uri.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -64,7 +64,7 @@ Shrine::Plugins::DataUri::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-base64-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-base64-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 177</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">base64</span>&#x000A;  <span class="ruby-identifier">binary</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">strict_encode64</span>(<span class="ruby-identifier">binary</span>)&#x000A;  <span class="ruby-identifier">binary</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-base64-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 178</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">base64</span>&#x000A;  <span class="ruby-identifier">binary</span> = <span class="ruby-identifier">open</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span> }&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">strict_encode64</span>(<span class="ruby-identifier">binary</span>)&#x000A;  <span class="ruby-identifier">binary</span>.<span class="ruby-identifier">clear</span> <span class="ruby-comment"># deallocate string</span>&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-data_uri'>
@@ -83,7 +83,7 @@ Shrine::Plugins::DataUri::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-data_uri-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-data_uri-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 172</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>&#x000A;  <span class="ruby-ivar">@data_uri</span> <span class="ruby-operator">||=</span> <span class="ruby-node">&quot;data:#{mime_type || &quot;text/plain&quot;};base64,#{base64}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-data_uri-source'><span class="ruby-comment"># File lib/shrine/plugins/data_uri.rb, line 173</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">data_uri</span>&#x000A;  <span class="ruby-ivar">@data_uri</span> <span class="ruby-operator">||=</span> <span class="ruby-node">&quot;data:#{mime_type || &quot;text/plain&quot;};base64,#{base64}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

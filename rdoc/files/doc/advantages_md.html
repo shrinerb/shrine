@@ -30,7 +30,7 @@ doc/advantages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-04-28 21:40:30 +0200</span>
+<span class='datetime'>2018-07-10 13:38:52 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -207,18 +207,20 @@ input, and you&#39;re expected to return processed file(s) on the output.</p>
 
 <p><a href="../../classes/Shrine.html">Shrine</a> is primarily designed for
 processing files on upload, since that&#39;s applicable to all types of
-files, while on-the-fly processing that <a
+files, though on-the-fly processing that <a
 href="http://markevans.github.io/dragonfly/">Dragonfly</a>, <a
 href="https://github.com/refile/refile">Refile</a>, and <a
 href="https://github.com/rails/rails/tree/master/activestorage#active-storage">Active
-Storage</a> offer makes sense only for images.</p>
+Storage</a> can make managing image thumbnails a lot easier.</p>
 
 <p>However, there are many specialized solutions that provide on-the-fly
 processing functionality, both open source and commercial, and it&#39;s
 fairly easy to apply them to files uploaded by <a
 href="../../classes/Shrine.html">Shrine</a>.</p>
 
-<pre class="ruby">Dragonfly.app&#x000A;  .fetch_url(photo.image_url) # image uploaded by Shrine&#x000A;  .thumb(&quot;800x800&quot;)&#x000A;  .url #=&gt; &quot;/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn...&quot;</pre>
+<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">thumbnail_url</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-identifier">dimensions</span>)&#x000A;  <span class="ruby-constant">Dragonfly</span>.<span class="ruby-identifier">app</span>&#x000A;    .<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>)&#x000A;    .<span class="ruby-identifier">thumb</span>(<span class="ruby-identifier">dimensions</span>)&#x000A;    .<span class="ruby-identifier">url</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">thumbnail_url</span>(<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>, <span class="ruby-string">&quot;500x400&quot;</span>) <span class="ruby-comment">#=&gt; &quot;/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn...&quot;</span></pre>
 
 <h2 id="label-Metadata">Metadata<span><a href="#label-Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -298,13 +300,17 @@ upload them to your app, especially on flaky internet connections. With a
 simple HTTP request, should there be any interruption during the execution,
 the whole upload needs to be retried from the beginning.</p>
 
-<p>To fix this problem, the community has created an open HTTP-based protocol
-for resumable uploads – <strong><a href="https://tus.io">tus</a></strong>.
-There even exists a <a
-href="https://github.com/janko-m/tus-ruby-server">Ruby server
-implementation</a> for this protocol ready to use. Finally, for attaching
-files uploaded via the tus protocol you can use the <a
-href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> gem.</p>
+<p>To fix this problem, <a href="https://transloadit.com">Transloadit</a>
+company has created an open HTTP-based protocol for resumable uploads –
+<strong><a href="https://tus.io">tus</a></strong>. To use it, you can
+choose from numerous client and server <a
+href="https://tus.io/implementations.html">implementations</a> of the
+protocol. In this case you would typically have a <a
+href="https://github.com/tus/tus-js-client">JavaScript client</a> (via <a
+href="https://uppy.io/docs/tus/">Uppy</a>) upload to a <a
+href="https://github.com/janko-m/tus-ruby-server">Ruby server</a>, and then
+attach uploaded files using the handy <a
+href="https://github.com/shrinerb/shrine-tus">Shrine integration</a>.</p>
 
 <h2 id="label-Security">Security<span><a href="#label-Security">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

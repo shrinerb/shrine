@@ -28,7 +28,7 @@ Shrine::Plugins::PresignEndpoint
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/presign_endpoint_rb.html">lib/shrine/plugins/presign_endpoint.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/presign_endpoint.rb">lib/shrine/plugins/presign_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -60,19 +60,10 @@ to the temporary (<code>:cache</code>) storage.</p>
 
 <p>The above will create a <code>GET /images/presign</code> endpoint, which
 calls <code>#presign</code> on the storage and returns the HTTP verb, URL,
-fields, and headers needed for a single upload directly to the storage
+params, and headers needed for a single upload directly to the storage
 service, in JSON format.</p>
 
 <pre class="ruby"><span class="ruby-comment"># GET /images/presign</span>&#x000A;{&#x000A;  <span class="ruby-value">&quot;method&quot;:</span> <span class="ruby-string">&quot;post&quot;</span>,&#x000A;  <span class="ruby-value">&quot;url&quot;:</span> <span class="ruby-string">&quot;https://my-bucket.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-value">&quot;fields&quot;:</span> {&#x000A;    <span class="ruby-value">&quot;key&quot;:</span> <span class="ruby-string">&quot;b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-value">&quot;policy&quot;:</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ...&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-credential&quot;:</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-algorithm&quot;:</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-date&quot;:</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-signature&quot;:</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  },&#x000A;  <span class="ruby-value">&quot;headers&quot;:</span> {}&#x000A;}</pre>
-<ul><li>
-<p><code>method</code> – HTTP verb</p>
-</li><li>
-<p><code>url</code> – request URL</p>
-</li><li>
-<p><code>fields</code> – POST parameters</p>
-</li><li>
-<p><code>headers</code> – request headers</p>
-</li></ul>
 
 <h2 id="module-Shrine::Plugins::PresignEndpoint-label-Location">Location<span><a href="#module-Shrine::Plugins::PresignEndpoint-label-Location">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -147,7 +138,7 @@ you can specify one by sending the <code>filename</code> query parameter:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/presign_endpoint.rb, line 125</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_location</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_location</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_location</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_options</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_options</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_options</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_rack_response</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:rack_response</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_rack_response</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/presign_endpoint.rb, line 121</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_location</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_location</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_location</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_options</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign_options</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign_options</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:presign</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_presign</span>])&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_rack_response</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:rack_response</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:presign_endpoint_rack_response</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

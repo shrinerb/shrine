@@ -28,7 +28,7 @@ Shrine::Plugins
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../files/lib/shrine_rb.html">lib/shrine.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 <li class='other'>
 <a href="../../files/lib/shrine/plugins/activerecord_rb.html">lib/shrine/plugins/activerecord.rb</a>
@@ -266,7 +266,7 @@ register itself correctly.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 64</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 65</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-register_plugin'>
@@ -289,7 +289,7 @@ used by plugin files. Example:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-register_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 76</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 77</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

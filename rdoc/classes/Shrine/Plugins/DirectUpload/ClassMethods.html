@@ -28,7 +28,7 @@ Shrine::Plugins::DirectUpload::ClassMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../../files/lib/shrine/plugins/direct_upload_rb.html">lib/shrine/plugins/direct_upload.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/direct_upload.rb">lib/shrine/plugins/direct_upload.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -65,7 +65,7 @@ constant.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_upload_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign_upload_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 186</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_upload_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:UploadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign_upload_endpoint-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 187</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_upload_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">klass</span>)&#x000A;  <span class="ruby-identifier">endpoint_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:shrine_class</span>] = <span class="ruby-keyword">self</span>&#x000A;  <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:UploadEndpoint</span>, <span class="ruby-identifier">endpoint_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inherited'>
@@ -84,7 +84,7 @@ constant.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inherited-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 180</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine/plugins/direct_upload.rb, line 181</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_upload_endpoint</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

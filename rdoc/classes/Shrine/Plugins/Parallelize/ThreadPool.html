@@ -28,7 +28,7 @@ Shrine::Plugins::Parallelize::ThreadPool
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../../files/lib/shrine/plugins/parallelize_rb.html">lib/shrine/plugins/parallelize.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/parallelize.rb">lib/shrine/plugins/parallelize.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 <div class='parent'>
@@ -70,7 +70,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 52</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">size</span>)&#x000A;  <span class="ruby-ivar">@size</span> = <span class="ruby-identifier">size</span>&#x000A;  <span class="ruby-ivar">@tasks</span> = <span class="ruby-constant">Queue</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 53</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">size</span>)&#x000A;  <span class="ruby-ivar">@size</span> = <span class="ruby-identifier">size</span>&#x000A;  <span class="ruby-ivar">@tasks</span> = <span class="ruby-constant">Queue</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -88,7 +88,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-enqueue-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-enqueue-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 57</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">enqueue</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">task</span>)&#x000A;  <span class="ruby-ivar">@tasks</span>.<span class="ruby-identifier">enq</span>(<span class="ruby-identifier">task</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-enqueue-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 58</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">enqueue</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">task</span>)&#x000A;  <span class="ruby-ivar">@tasks</span>.<span class="ruby-identifier">enq</span>(<span class="ruby-identifier">task</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-perform'>
@@ -105,7 +105,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-perform-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-perform-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>&#x000A;  <span class="ruby-identifier">threads</span> = <span class="ruby-ivar">@size</span>.<span class="ruby-identifier">times</span>.<span class="ruby-identifier">map</span> { <span class="ruby-identifier">spawn_thread</span> }&#x000A;  <span class="ruby-identifier">threads</span>.<span class="ruby-identifier">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:join</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-perform-source'><span class="ruby-comment"># File lib/shrine/plugins/parallelize.rb, line 62</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>&#x000A;  <span class="ruby-identifier">threads</span> = <span class="ruby-ivar">@size</span>.<span class="ruby-identifier">times</span>.<span class="ruby-identifier">map</span> { <span class="ruby-identifier">spawn_thread</span> }&#x000A;  <span class="ruby-identifier">threads</span>.<span class="ruby-identifier">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:join</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

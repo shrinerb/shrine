@@ -30,12 +30,51 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-04-28 22:46:53 +0200</span>
+<span class='datetime'>2018-08-22 01:35:16 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.12.0+-282018-08-22-29">2.12.0 (2018-08-22)<span><a href="#label-2.12.0+-282018-08-22-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Ignore nil values when assigning files from a remote URL (@janko-m)</p>
+</li><li>
+<p>Ignore nil values when assigning files from a data URI (@GeekOnCoffee)</p>
+</li><li>
+<p>Raise <code>Shrine::Error</code> when child process failed to be spawned in
+<code>:file</code> MIME type analyzer (@hmistry)</p>
+</li><li>
+<p>Use the appropriate unit in error messages of filesize validators in
+<code>validation_helpers</code> plugin (@hmistry)</p>
+</li><li>
+<p>Fix subclassing not inheriting storage resolvers from superclass in
+<code>dynamic_storage</code> plugin (@janko-m)</p>
+</li><li>
+<p>Un-deprecate assigning cached versions (@janko-m)</p>
+</li><li>
+<p>Add <code>Attacher#assign_remote_url</code> which allows dynamically
+passing downloader options (@janko-m)</p>
+</li><li>
+<p>Deprecate <code>:storages</code> option in <code>download_endpoint</code>
+plugin in favour of <code>UploadedFile#download_url</code> (@janko-m)</p>
+</li><li>
+<p>Add <code>:redirect</code> option to <code>download_endpoint</code> plugin
+for redirecting to the uploaded file (@janko-m)</p>
+</li><li>
+<p>Fix encoding issues when uploading IO object with unknown size to S3
+(@janko-m)</p>
+</li><li>
+<p>Accept additional <code>File.open</code> arguments in
+<code>FileSystem#open</code> (@janko-m)</p>
+</li><li>
+<p>Add <code>:rewindable</code> option to <code>S3#open</code> for disabling
+caching of read content to disk (@janko-m)</p>
+</li><li>
+<p>Make <code>UploadedFile#open</code> always open a new IO object and close
+the previous one (@janko-m)</p>
+</li></ul>
+
 <h2 id="label-2.11.0+-282018-04-28-29">2.11.0 (2018-04-28)<span><a href="#label-2.11.0+-282018-04-28-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>Shrine.with_file</code> for temporarily converting an IO-like

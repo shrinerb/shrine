@@ -28,7 +28,7 @@ Shrine::Plugins::Processing
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/processing_rb.html">lib/shrine/plugins/processing.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/processing.rb">lib/shrine/plugins/processing.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -57,7 +57,7 @@ declaratively define file processing for specified actions.</p>
 href="https://github.com/janko-m/image_processing">image_processing</a>
 library:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">original</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>&#x000A;&#x000A;  <span class="ruby-identifier">resized</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;    .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;    .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;&#x000A;  <span class="ruby-identifier">original</span>.<span class="ruby-identifier">close!</span>&#x000A;&#x000A;  <span class="ruby-identifier">resized</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The declarations are additive and inheritable, so for the same action you
 can declare multiple blocks, and they will be performed in the same order,
@@ -107,7 +107,7 @@ with output from previous block being the input to next.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 64</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>] = {}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>] = {}&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

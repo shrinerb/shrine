@@ -28,7 +28,7 @@ Shrine::Plugins::ValidationHelpers
 </h1>
 <ol class='paths'>
 <li>
-<a href="../../../files/lib/shrine/plugins/validation_helpers_rb.html">lib/shrine/plugins/validation_helpers.rb</a>
+<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/validation_helpers.rb">lib/shrine/plugins/validation_helpers.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -88,8 +88,8 @@ href="ValidationHelpers/AttacherMethods.html">AttacherMethods</a>.</p>
 <td class='context-item-name'>DEFAULT_MESSAGES</td>
 <td>=</td>
 <td class='context-item-value'>{
-max_size: ->(max) { "is too large (max is #{max.to_f/1024/1024} MB)" },
-min_size: ->(min) { "is too small (min is #{min.to_f/1024/1024} MB)" },
+max_size: ->(max) { "is too large (max is #{PRETTY_FILESIZE.call(max)})" },
+min_size: ->(min) { "is too small (min is #{PRETTY_FILESIZE.call(min)})" },
 max_width: ->(max) { "is too wide (max is #{max} px)" },
 min_width: ->(min) { "is too narrow (min is #{min} px)" },
 max_height: ->(max) { "is too tall (max is #{max} px)" },
@@ -101,6 +101,30 @@ extension_exclusion: ->(list) { "is of forbidden format" },
 }</td>
 <td>&nbsp;</td>
 <td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>FILESIZE_UNITS</td>
+<td>=</td>
+<td class='context-item-value'>["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"].freeze</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>PRETTY_FILESIZE</td>
+<td>=</td>
+<td class='context-item-value'>lambda do |bytes|
+return "0.0 B" if bytes == 0
+
+exp = Math.log(bytes, 1024).floor
+max_exp = FILESIZE_UNITS.length - 1
+exp = max_exp if exp > max_exp
+"%.1f %s" % [bytes.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
+end</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'>
+<p>Returns filesize in a human readable format with units. Uses the binary
+JEDEC unit system, i.e. 1.0 KB = 1024 bytes</p>
+</td>
 </tr>
 </table>
 </div>
@@ -121,7 +145,7 @@ extension_exclusion: ->(list) { "is of forbidden format" },
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb, line 41</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>] = (<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>] <span class="ruby-operator">||</span> {}).<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_messages</span>] <span class="ruby-operator">||</span> {})&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb, line 42</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>] = (<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>] <span class="ruby-operator">||</span> {}).<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_messages</span>] <span class="ruby-operator">||</span> {})&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

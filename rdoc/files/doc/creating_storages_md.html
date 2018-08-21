@@ -30,7 +30,7 @@ doc/creating_storages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-04-27 00:05:35 +0200</span>
+<span class='datetime'>2018-07-10 13:38:52 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -61,7 +61,7 @@ custom upload options (which can be utilized with the
 
 <p>Unless you&#39;re already using a Ruby SDK, it&#39;s recommended to use <a
 href="https://github.com/httprb/http">HTTP.rb</a> for uploading. It accepts
-any IO object that responds to <code>#read</code> (not just file objects),
+any IO object that implements <code>IO#read</code> (not just file objects),
 and it streams the request body directly to the TCP socket, both for raw
 and multipart uploads, making it suitable for large uploads.</p>
 
