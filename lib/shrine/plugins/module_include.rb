@@ -19,7 +19,7 @@ class Shrine
     #       def included(model)
     #         super
     #
-    #         module_eval <<-RUBY, __FILE__, __LINE + 1
+    #         module_eval <<-RUBY, __FILE__, __LINE__ + 1
     #           def #{@name}_size(version)
     #             if #{@name}.is_a?(Hash)
     #               #{@name}[version].size
