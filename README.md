@@ -716,6 +716,9 @@ the help of [shrine-tus]. See [this walkthrough][resumable uploads walkthrough]
 that adds resumable uploads from scratch, as well as the [Roda demo][resumable
 demo] for a complete example.
 
+Alternatively, you can have resumable uploads directly to S3 using the
+[AwsS3Multipart] Uppy plugin, accompanied with the [uppy-s3_multipart] gem.
+
 ## Backgrounding
 
 Shrine is the first file attachment library designed for backgrounding support.
@@ -905,3 +908,5 @@ The gem is available as open source under the terms of the [MIT License].
 [Refile]: https://github.com/refile/refile
 [CoC]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [MIT License]: http://opensource.org/licenses/MIT
+[AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
+[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart

@@ -69,8 +69,8 @@ client.put_bucket_cors(
   bucket: "<YOUR BUCKET>",
   cors_configuration: {
     cors_rules: [{
-      allowed_headers: ["Authorization", "Content-Type", "Origin"],
-      allowed_methods: ["GET", "POST", "PUT"],
+      allowed_headers: ["Authorization", "Content-Type", "Origin", "ETag"],
+      allowed_methods: ["GET", "POST", "PUT", "DELETE"],
       allowed_origins: ["*"],
       max_age_seconds: 3000,
     }]
