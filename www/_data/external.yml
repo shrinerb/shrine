@@ -83,6 +83,9 @@
       -
         name: "How to use Trix and Shrine for WYSIWYG Editing with Drag-and-Drop Image Uploading"
         url: http://headway.io/blog/how-to-use-trix-and-shrine-for-wysiwyg-editing-with-drag-and-drop-image-uploading/
+      -
+        name: "Happy users uploading files with Rails 5, Shrine, and Vue.js"
+        url: https://itnext.io/happy-users-uploading-files-with-rails-5-shrine-and-vue-js-bbcc470a327f
   -
     title: Videos
     items:
