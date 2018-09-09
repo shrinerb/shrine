@@ -112,11 +112,9 @@ describe Shrine::Storage::S3 do
 
         assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
-        assert_equal 5*1024*1024,                @s3.client.api_requests[1][:params][:body].size
 
         assert_equal :upload_part,               @s3.client.api_requests[2][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
-        assert_equal 1*1024*1024,                @s3.client.api_requests[2][:params][:body].size
 
         assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
