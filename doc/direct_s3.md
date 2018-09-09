@@ -47,39 +47,44 @@ Shrine.storages = {
 }
 ```
 
-## Enabling CORS
+## Bucket CORS configuration
 
-In order to be able upload files directly to your S3 bucket, you need enable
-CORS. You can do that from the AWS S3 Console by going to your bucket, clicking
-on the "Permissions" tab, then on "CORS Configuration", and following the
-[guide for configuring CORS][CORS guide].
+In order to be able upload files directly to your S3 bucket, you'll need to
+update your bucket's CORS configuration, as public uploads are not allowed by
+default. You can do that from the AWS S3 Console by going to your bucket,
+clicking on the "Permissions" tab and then on "CORS Configuration".
 
-Alternatively you can configure CORS via an [API call][CORS API]:
+If you're using [Uppy], this is the recommended CORS configuration for the
+[Aws S3 plugin] that should work for both POST and PUT uploads:
 
-```rb
-require "aws-sdk-s3"
-
-client = Aws::S3::Client.new(
-  access_key_id:     "<YOUR KEY>",
-  secret_access_key: "<YOUR SECRET>",
-  region:            "<REGION>",
-)
-
-client.put_bucket_cors(
-  bucket: "<YOUR BUCKET>",
-  cors_configuration: {
-    cors_rules: [{
-      allowed_headers: ["Authorization", "Content-Type", "Origin", "ETag"],
-      allowed_methods: ["GET", "POST", "PUT", "DELETE"],
-      allowed_origins: ["*"],
-      max_age_seconds: 3000,
-    }]
-  }
-)
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+  <CORSRule>
+    <AllowedOrigin>https://my-app.com</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
+    <AllowedHeader>Authorization</AllowedHeader>
+    <AllowedHeader>x-amz-date</AllowedHeader>
+    <AllowedHeader>x-amz-content-sha256</AllowedHeader>
+    <AllowedHeader>content-type</AllowedHeader>
+  </CORSRule>
+  <CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <MaxAgeSeconds>3000</MaxAgeSeconds>
+  </CORSRule>
+</CORSConfiguration>
 ```
 
-Note that due to DNS propagation it may take some time for the CORS update to
-be applied.
+Where `https://my-app.com` is the URL to your app (in development you can set
+this to `*`). For rationale and additional details, see the [plugin docs][uppy
+aws-s3 cors].
+
+Note that once you've updated the CORS configuration of your bucket, it may
+take some time for the change to be applied.
 
 ## Strategy A (dynamic)
 
@@ -367,6 +372,8 @@ setup] guide.
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [Uppy]: https://uppy.io
+[Aws S3 plugin]: https://uppy.io/docs/aws-s3/
+[uppy aws-s3 cors]: https://uppy.io/docs/aws-s3/#S3-Bucket-configuration
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
 [CORS guide]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [CORS API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method
