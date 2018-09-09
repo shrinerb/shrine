@@ -553,8 +553,8 @@ The `versions` plugin also expands `#<attachment>_url` to accept version names:
 photo.image_url(:large) #=> "https://..."
 ```
 
-For more details, including examples of how to do custom processing, see the
-[File Processing] guide.
+For more details, including examples of how to do custom and on-the-fly
+processing, see the [File Processing] guide.
 
 ## Context
 

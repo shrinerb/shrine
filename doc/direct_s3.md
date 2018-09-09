@@ -79,12 +79,9 @@ If you're using [Uppy], this is the recommended CORS configuration for the
 </CORSConfiguration>
 ```
 
-Where `https://my-app.com` is the URL to your app (in development you can set
-this to `*`). For rationale and additional details, see the [plugin docs][uppy
-aws-s3 cors].
-
-Note that once you've updated the CORS configuration of your bucket, it may
-take some time for the change to be applied.
+Replace `https://my-app.com` with the URL to your app (in development you can
+set this to `*`). Once you've hit "Save", it may take some time for the
+new CORS settings to be applied.
 
 ## Strategy A (dynamic)
 
