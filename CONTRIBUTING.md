@@ -23,6 +23,16 @@ Pull Request Guidelines
 3. Follow the style conventions of the surrounding code.  In most
    cases, this is standard ruby style.
 
+Understanding the codebase
+==========================
+
+See the [Design of Shrine] guide for a general overview of Shrine's core
+classes.
+
+Shrine is built entirely out of plugins, including the base functionality, so
+it's recommended to read the [Creating a New Plugin] guide to better understand
+how the plugin system is organized.
+
 Running tests
 =============
 
@@ -119,3 +129,5 @@ post = Post.create(image: Down.download("https://example.com/image-from-internet
 [Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
 [SQLite]: https://www.sqlite.org
+[Design of Shrine]: https://shrinerb.com/rdoc/files/doc/design_md.html
+[Creating a New Plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
