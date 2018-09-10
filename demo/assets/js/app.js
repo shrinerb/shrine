@@ -75,7 +75,8 @@ document.querySelectorAll('input[type=file]').forEach(function (fileInput) {
         // create a new copy of the resource for the selected file
         var template = document.getElementById(fileInput.dataset.template)
         var uploadList = document.getElementById(fileInput.dataset.uploadList)
-        uploadList.insertAdjacentHTML('beforeend', template.innerHTML.replace(/{{index}}/g, Date.now()))
+        var uniqueId = Date.now().toString(36) + Math.random().toString(36).substr(2, 9)
+        uploadList.insertAdjacentHTML('beforeend', template.innerHTML.replace(/{{index}}/g, uniqueId))
 
         // trigger file upload on the new resource
         var singleFileInput = uploadList.lastElementChild.querySelector('input[type=file]')
