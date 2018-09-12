@@ -263,6 +263,14 @@ class Shrine
 
         # Updates with the new file only if the attachment hasn't changed.
         def swap(new_file)
+          # This does what the `find_record` approach is supposed to do -- but reliably.
+          # By using the atomic_update method -- but swap isn't neccesarly only used in
+          # promotion, for instance it's in the recommended instructions for regenerating versions.
+          # Is this new implementation going to cause problems?
+          if self.respond_to?(:safe_update, true)
+            return safe_update(new_file)
+          end
+
           if self.class.respond_to?(:find_record)
             reloaded = self.class.find_record(record.class, record.id)
             return if reloaded.nil? || self.class.new(reloaded, name).read != read

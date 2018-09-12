@@ -136,6 +136,45 @@ class Shrine
           record.save(validate: false)
         end
 
+        # Updates the file only if our data hasn't changed in the db since we loaded it
+        # In this case using an optimistic locking type of approach, although not AR's feature.
+        #
+        # Called by backgrounding plugin in `swap`, for promotion.
+        #
+        # Does NOT call any callbacks. (There's no test this makes fail, but I think maybe there
+        # should be, and this means this is no good. You will not get your model callbacks on backgrounded
+        # promotion now, is that bad?)
+        #
+        # There's also no test for the race-condition avoidance that this or the find_record implementation
+        # was meant to avoid.
+        def atomic_update(uploaded_file)
+          raise ActiveRecordError, "cannot safe_update a new record" if new_record?
+          raise ActiveRecordError, "cannot safe_update a destroyed record" if destroyed?
+
+          # original value we have in memory
+          previous_data_value = record.send(data_attribute)
+
+          # change it in the model, post promotion, with no persistence.
+          _set(uploaded_file)
+
+          current_data_value = record.send(data_attribute)
+
+          # A crazy atomic save that will only update the relevant data column,
+          # and will only update it if the shrine data had not changed -- a form of
+          # optimistic locking
+          update_count = record.class.where(id: record.id, data_attribute => previous_data_value).update_all(data_attribute => current_data_value)
+
+          if update_count == 0
+            # nevermind, it didn't work, undo it, return false for failure
+            write(previous_data_value)
+            return false
+          else
+            # Tell AR it's not actually an unsaved change, we changed it out of band.
+            record.clear_attribute_changes([data_attribute.to_sym])
+            return true
+          end
+        end
+
         # If the data attribute represents a JSON column, it needs to receive a
         # Hash.
         def convert_before_write(value)
