@@ -234,8 +234,7 @@ class Shrine
           end
         end
 
-        # Deletes each file individually, but uses S3's multi delete
-        # capabilities.
+        # Deletes each file individually
         def _delete(uploaded_file, context)
           if (hash = uploaded_file).is_a?(Hash)
             hash.each do |name, value|
