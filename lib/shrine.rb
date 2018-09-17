@@ -218,7 +218,7 @@ class Shrine
 
         # The main method for uploading files. Takes an IO-like object and an
         # optional context hash (used internally by Shrine::Attacher). It calls
-        # user-defined #process, and aferwards it calls #store. The `io` is
+        # user-defined #process, and afterwards it calls #store. The `io` is
         # closed after upload.
         def upload(io, context = {})
           io = processed(io, context) || io
@@ -537,7 +537,7 @@ class Shrine
           end
         end
 
-        # Accepts a Shrine::UploadedFile object and writes is to the attachment
+        # Accepts a Shrine::UploadedFile object and writes it to the attachment
         # attribute. It then runs file validations, and records that the
         # attachment has changed.
         def set(uploaded_file)
@@ -681,7 +681,7 @@ class Shrine
           set(cached_file)
         end
 
-        # Writes the uploaded file the attachment attribute. Overriden in ORM
+        # Writes the uploaded file to the attachment attribute. Overriden in ORM
         # plugins to additionally save the model instance.
         def update(uploaded_file)
           _set(uploaded_file)
