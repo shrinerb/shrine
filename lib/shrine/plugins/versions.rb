@@ -225,7 +225,7 @@ class Shrine
             raise Error, "detected multiple versions that point to the same IO object: given versions: #{hash.keys}, unique versions: #{hash.invert.invert.keys}" if hash.invert.invert != hash
 
             hash.inject({}) do |result, (name, value)|
-              result.merge!(name => _store(value, context.merge(version: name){|_, v1, v2| Array(v1) + Array(v2)}))
+              result.merge!(name.to_s => _store(value, context.merge(version: name){|_, v1, v2| Array(v1) + Array(v2)}))
             end
           elsif (array = io).is_a?(Array)
             array.map.with_index { |value, idx| _store(value, context.merge(version: idx){|_, v1, v2| Array(v1) + Array(v2)}) }
