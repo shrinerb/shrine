@@ -633,8 +633,8 @@ class Shrine
         # Returns a Shrine::UploadedFile instantiated from the data written to
         # the attachment attribute.
         def get
-          file = read
-          uploaded_file(file) if file
+          value = read
+          uploaded_file(value) if value
         end
 
         # Reads from the `<attachment>_data` attribute on the model instance.
