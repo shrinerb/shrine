@@ -165,7 +165,7 @@ form @album, action: "/photos", enctype: "multipart/form-data" do |f|
 end
 
 # with Rails form builder:
-form_for @album do |f|
+form_for @album, html: { enctype: "multipart/form-data" } do |f|
   f.text_field :title
   f.fields_for :photos do |p| # adds new `album[photos_attributes]` parameter
     p.hidden_field :image, value: p.object.cached_image_data
