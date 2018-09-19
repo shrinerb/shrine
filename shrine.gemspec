@@ -44,7 +44,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "mini_magick", "~> 4.0" unless ENV["CI"]
   gem.add_development_dependency "ruby-vips", "~> 2.0" unless ENV["CI"]
-  gem.add_development_dependency "aws-sdk-s3", "~> 1.2"
+  gem.add_development_dependency "aws-sdk-s3", "~> 1.16"
   gem.add_development_dependency "aws-sdk-core", "~> 3.23"
 
   unless RUBY_ENGINE == "jruby" || ENV["CI"]
