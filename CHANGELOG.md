@@ -1,3 +1,11 @@
+## HEAD
+
+* In `S3#upload` do multipart upload for large non-file IO objects (@janko-m)
+
+* In `S3#upload` switch to `Aws::S3::Object#upload_stream` for multipart uploads of IO objects of unknown size (@janko-m)
+
+* In `S3#upload` deprecate using aws-sdk-s3 lower than 1.14 when uploading IO objects of unknown size (@janko-m)
+
 ## 2.12.0 (2018-08-22)
 
 * Ignore nil values when assigning files from a remote URL (@janko-m)

@@ -273,8 +273,6 @@ describe Shrine::Storage::S3 do
 
         ios.each do |io|
           @s3 = s3
-          @s3.client.stub_responses(:create_multipart_upload, { upload_id: "upload_id" })
-          @s3.client.stub_responses(:upload_part, [{ etag: "etag1" }, { etag: "etag2" }])
           @s3.upload(io, "foo", acl: "public-read")
           assert_equal 4, @s3.client.api_requests.size
 
@@ -284,48 +282,20 @@ describe Shrine::Storage::S3 do
 
           assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
           assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
-          assert_equal "upload_id",                @s3.client.api_requests[1][:params][:upload_id]
-          assert_equal 1,                          @s3.client.api_requests[1][:params][:part_number]
-          assert_equal 5*1024*1024,                @s3.client.api_requests[1][:context].http_request.headers["content-length"].to_i
 
           assert_equal :upload_part,               @s3.client.api_requests[2][:operation_name]
           assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
-          assert_equal "upload_id",                @s3.client.api_requests[2][:params][:upload_id]
-          assert_equal 2,                          @s3.client.api_requests[2][:params][:part_number]
-          assert_equal 1*1024*1024,                @s3.client.api_requests[2][:context].http_request.headers["content-length"].to_i
 
           assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
           assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
-          assert_equal "upload_id",                @s3.client.api_requests[3][:params][:upload_id]
-          assert_equal 1,                          @s3.client.api_requests[3][:params][:multipart_upload][:parts][0][:part_number]
-          assert_equal "etag1",                    @s3.client.api_requests[3][:params][:multipart_upload][:parts][0][:etag]
-          assert_equal 2,                          @s3.client.api_requests[3][:params][:multipart_upload][:parts][1][:part_number]
-          assert_equal "etag2",                    @s3.client.api_requests[3][:params][:multipart_upload][:parts][1][:etag]
         end
-      end
-
-      it "works correctly for empty IO" do
-        @s3.client.stub_responses(:upload_part, { etag: "etag" })
-        io = fakeio("").tap { |io| io.instance_eval { undef size } }
-        @s3.upload(io, "foo")
-        assert_equal 3, @s3.client.api_requests.size
-
-        assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
-
-        assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
-        assert_equal 1,                          @s3.client.api_requests[1][:params][:part_number]
-        assert_equal 0,                          @s3.client.api_requests[1][:context].http_request.headers["content-length"].to_i
-
-        assert_equal :complete_multipart_upload, @s3.client.api_requests[2][:operation_name]
-        assert_equal 1,                          @s3.client.api_requests[2][:params][:multipart_upload][:parts][0][:part_number]
-        assert_equal "etag",                     @s3.client.api_requests[2][:params][:multipart_upload][:parts][0][:etag]
       end
 
       it "aborts multipart upload on exceptions" do
         @s3.client.stub_responses(:create_multipart_upload, { upload_id: "upload_id" })
         @s3.client.stub_responses(:upload_part, "NetworkError")
         io = fakeio.tap { |io| io.instance_eval { undef size } }
-        assert_raises(Aws::S3::Errors::NetworkError) { @s3.upload(io, "foo") }
+        assert_raises(Aws::S3::MultipartUploadError) { @s3.upload(io, "foo") }
         assert_equal 3, @s3.client.api_requests.size
 
         assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
