@@ -56,8 +56,9 @@ Storages are typically not used directly, but through `Shrine`.
 
 ## `Shrine`
 
-A `Shrine` object (also called an "uploader") acts as a wrapper around a
-storage. First the storage needs to be registered under a name:
+A `Shrine` object (also called an "uploader") is essentially a wrapper around
+the `#upload` storage method. First the storage needs to be registered under a
+name:
 
 ```rb
 Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
@@ -76,12 +77,17 @@ following:
 
 * generates a unique location
 * extracts metadata
-* uploads the file
+* uploads the file (calls `Storage#upload`)
 * closes the file
 * creates a `Shrine::UploadedFile` from the data
 
-In applications it's common to create subclasses of `Shrine`, in order to allow
-having different uploading logic for different types of files.
+`Shrine` class and subclasses are also used for loading plugins that extend all
+core classes. Each `Shrine` subclass has its own subclass of each of the core
+classes (`Shrine::UploadedFile`, `Shrine::Attacher`, and `Shrine::Attachment`),
+which makes it possible to have different `Shrine` subclasses with differently
+customized attachment logic. See [Creating a New Plugin] guide and [The plugin
+system of Sequel and Roda] article for more details on the design of Shrine's
+plugin system.
 
 ## `Shrine::UploadedFile`
 
@@ -207,3 +213,6 @@ automatically:
   destroyed
 
 [Using Attacher]: https://shrinerb.com/rdoc/files/doc/attacher_md.html
+[Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
+[Creating a New Plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
+[The plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
