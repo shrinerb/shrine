@@ -34,10 +34,11 @@ development and test environment they are uploaded to the app and stored on
 disk. The demo features both single and multiple uploads.
 
 On the client side [Uppy] is used for handling file uploads. The complete
-JavaScript implementation for the demo can be found in
-[app.js](/demo/assets/js/app.js).
+JavaScript implementation for the demo can be found in [assets/js/app.js].
 
 Files of interest:
+
+* [assets/js/app.js]
 * [app.rb]
 * [config/shrine.rb]
 * [jobs/delete_job.rb]
@@ -92,6 +93,7 @@ $ bundle exec rackup
 [setup CORS]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [Uppy]: https://uppy.io
 [Rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
+[assets/js/app.js]: /demo/assets/js/app.js
 [app.rb]: /demo/app.rb
 [config/shrine.rb]: /demo/config/shrine.rb
 [jobs/delete_job.rb]: /demo/jobs/delete_job.rb

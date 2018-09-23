@@ -65,7 +65,7 @@ Let's create a table for the main resource and attachments, and add a foreign
 key in the attachment table for the main table:
 
 ```rb
-# Sequel
+# with Sequel:
 Sequel.migration do
   change do
     create_table :albums do
@@ -81,7 +81,7 @@ Sequel.migration do
   end
 end
 
-# Active Record
+# with Active Record:
 class CreateAlbumsAndPhotos < ActiveRecord::Migration
   def change
     create_table :albums do |t|
@@ -102,12 +102,12 @@ In the Photo model, create a Shrine attachment attribute named `image`
 (`:image` matches the `_data` column prefix above):
 
 ```rb
-# Sequel
+# with Sequel:
 class Photo < Sequel::Model
   include ImageUploader::Attachment.new(:image)
 end
 
-# Active Record
+# with Active Record:
 class Photo < ActiveRecord::Base
   include ImageUploader::Attachment.new(:image)
 end
@@ -121,7 +121,7 @@ relationship to the photos table, and allow it to directly accept attributes
 for the associated photo records by enabling nested attributes:
 
 ```rb
-# Sequel
+# with Sequel:
 class Album < Sequel::Model
   one_to_many :photos
   plugin :association_dependencies, photos: :destroy # destroy photos when album is destroyed
@@ -130,7 +130,7 @@ class Album < Sequel::Model
   nested_attributes :photos, destroy: true
 end
 
-# Active Record
+# with Active Record:
 class Album < ActiveRecord::Base
   has_many :photos, dependent: :destroy
   accepts_nested_attributes_for :photos, allow_destroy: true
@@ -141,6 +141,7 @@ Documentation on nested attributes:
 
 * [`Sequel::Model.nested_attributes`]
 * [`ActiveRecord::Base.accepts_nested_attributes_for`]
+* [`Mongoid::Document.accepts_nested_attributes_for`]
 
 ### 3. Create the View
 
@@ -179,37 +180,69 @@ end
 
 In your controller you should still be able to assign all the attributes to the
 album, just remember to whitelist the new parameter for the nested attributes,
-in this case `photos_attributes`.
+in this case `album[photos_attributes]`.
 
-### 4. Direct Upload
+### 4a. Form upload
 
-On the client side, you can asynchronously upload each of the files to a direct
-upload endpoint as soon as they're selected. There are two methods of
-implementing direct uploads: upload to your app using the [`upload_endpoint`]
-plugin or upload to directly to storage like S3 using the [`presign_endpoint`]
-plugin. It's recommended to use [Uppy] to handle the uploads on the client side.
+If you would like to avoid writing JavaScript, you can have selected files
+uploaded via the form, and then in your controller you can assign them in the
+format of nested attributes. You'll want to merge these newly uploaded photos
+with the existing photos params that will come from the nested form fields.
+This could look something like this:
+
+```rb
+# In your controller:
+
+# transform the list of uploaded files into a photos attributes hash
+new_photos_attributes = params[:files].inject({}) do |hash, file|
+  hash.merge!(SecureRandom.hex => { image: file })
+end
+
+# merge new photos attributes with existing (`album_params` is whitelisted `params[:album]`)
+photos_attributes = album_params[:photos_attributes].to_h.merge(new_photos_attributes)
+album_attributes  = album_params.merge(photos_attributes: photos_attributes)
+
+# create the album with photos
+Album.create(album_params)
+```
+
+In this case you need to make sure your form tag has
+`enctype="multipart/form-data"` attributes specified, otherwise form upload
+won't succeed.
+
+### 4b. Direct upload
+
+Alternatively, you can have selected files immediately uploaded to a direct
+upload endpoint, as soon as they're selected. It's recommended to use [Uppy]
+for handling client side file uploads. There are two methods of implementing
+direct uploads: to your app using the [`upload_endpoint`] plugin, or directly
+to a storage like S3 using the [`presign_endpoint`] plugin. See the
+walkthroughs for setting up simple [direct app uploads] and [direct S3
+uploads], as well as the [Roda][roda demo] or [Rails][rails demo] demo app
+which implement multiple file uploads.
 
 Once files are uploaded asynchronously, you can dynamically insert photo
-attachment fields for the `image` attribute to the form filled with uploaded
-file data, so that the corresponding photo records are automatically created
-after form submission. The hidden attachment fields should contain uploaded
-file data in JSON format, just like when doing single direct uploads. The
-attachment field names should be namespaced according to the convention that
-the nested attributes feature expects. In this case it should be
-`album[photos_attributes][<idx>]`, where `<idx>` is any incrementing integer
-(e.g. you can use the current UNIX timestamp).
+attachment fields for the `image` attachment attribute into the form, where the
+hidden field is filled with uploaded file data in JSON format, just like when
+doing single direct uploads. The attachment field names should be namespaced
+according to the convention that the nested attributes feature expects. In this
+case it should be `album[photos_attributes][<uid>]`, where `<uid>` is any
+unique string.
 
 ```rb
 # naming format in which photos fields should be generated and submitted
 album[photos_attributes][11111][image] = '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
 album[photos_attributes][29323][image] = '{"id":"sg0fg.jpg","storage":"cache","metadata":{...}}'
 album[photos_attributes][34820][image] = '{"id":"041jd.jpg","storage":"cache","metadata":{...}}'
-# ...
 ```
 
-See the walkthroughs for setting up simple [direct app uploads] and
-[direct S3 uploads], and the [Roda][roda demo] or [Rails][rails demo] demo app
-which implements multiple file uploads.
+In your controller you don't need to make any changes to handle the nested
+photos attributes (other than allowing them), your ORM will take care of
+creating, updating, or removing the associated photos.
+
+```rb
+Album.create(album_params) # or `params[:album]`
+```
 
 ### 5. Adding Validations
 
@@ -229,28 +262,38 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-# Sequel
+# with Sequel:
 class Album < Sequel::Model
   # ... (nested_attributes already enables validating associated photos) ...
 end
 
-# ActiveRecord
+# with ActiveRecord:
 class Album < ActiveRecord::Base
   # ...
   validates_associated :photos
 end
 ```
 
+Note that by default only metadata set on the client side will be available for
+validations. Shrine will not automatically run metadata extraction for directly
+uploaded files, as this would require (at least partially) downloading each
+file from storage, which could be an unwanted performance penalty. If you want
+metadata to be extracted on the server side, you can load the
+`restore_cached_data` plugin which will make metadata extraction run on
+assignment, or you can extract the metadata manually (e.g. in a background job)
+using the `refresh_metadata` plugin.
+
 ### Conclusion
 
 Now we have a simple interface for accepting multiple attachments, which
-internally uses nested attributes to create multiple associated records, each
-with a single attachment. After creation you can also add new attachments, or
-update and delete existing ones, which the nested attributes feature gives you
-for free.
+internally uses the nested attributes feature of your ORM to create multiple
+associated records, each with a single attachment. After creation you can also
+add new attachments, or update and delete existing ones, which the nested
+attributes feature gives you for free.
 
 [`Sequel::Model.nested_attributes`]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html
 [`ActiveRecord::Base.accepts_nested_attributes_for`]: http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
+[`Mongoid::Document.accepts_nested_attributes_for`]: https://docs.mongodb.com/mongoid/master/tutorials/mongoid-nested-attributes/
 [`upload_endpoint`]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
 [`presign_endpoint`]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
 [Uppy]: https://uppy.io
