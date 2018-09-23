@@ -87,7 +87,7 @@ following:
 core classes. Each `Shrine` subclass has its own subclass of each of the core
 classes (`Shrine::UploadedFile`, `Shrine::Attacher`, and `Shrine::Attachment`),
 which makes it possible to have different `Shrine` subclasses with differently
-customized attachment logic. See [Creating a New Plugin] guide and [The plugin
+customized attachment logic. See [Creating a New Plugin] guide and the [Plugin
 system of Sequel and Roda] article for more details on the design of Shrine's
 plugin system.
 
@@ -217,4 +217,4 @@ automatically:
 [Using Attacher]: https://shrinerb.com/rdoc/files/doc/attacher_md.html
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
 [Creating a New Plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
-[The plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/

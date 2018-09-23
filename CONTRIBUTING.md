@@ -26,12 +26,14 @@ Pull Request Guidelines
 Understanding the codebase
 ==========================
 
-See the [Design of Shrine] guide for a general overview of Shrine's core
+* The [Design of Shrine] guide gives a general overview of Shrine's core
 classes.
 
-Shrine is built entirely out of plugins, including the base functionality, so
-it's recommended to read the [Creating a New Plugin] guide to better understand
-how the plugin system is organized.
+* The [Creating a New Plugin] guide and the [Plugin system of Sequel and Roda]
+  article explain how Shrine's plugin system works.
+
+* The [Notes on study of shrine implementation] article gives an in-depth
+  walkthrough through the Shrine codebase.
 
 Running tests
 =============
@@ -131,3 +133,5 @@ post = Post.create(image: Down.download("https://example.com/image-from-internet
 [SQLite]: https://www.sqlite.org
 [Design of Shrine]: https://shrinerb.com/rdoc/files/doc/design_md.html
 [Creating a New Plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
+[Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
