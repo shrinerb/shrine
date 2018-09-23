@@ -1,5 +1,7 @@
 # The Design of Shrine
 
+*If you want an in-depth walkthrough through the Shrine codebase, see [Notes on study of shrine implementation] article by Jonathan Rochkind.*
+
 There are five main types of objects that you deal with in Shrine:
 
 * Storage

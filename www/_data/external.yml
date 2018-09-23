@@ -86,6 +86,9 @@
       -
         name: "Happy users uploading files with Rails 5, Shrine, and Vue.js"
         url: https://itnext.io/happy-users-uploading-files-with-rails-5-shrine-and-vue-js-bbcc470a327f
+      -
+        name: "Notes on study of shrine implementation"
+        url: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
   -
     title: Videos
     items:
