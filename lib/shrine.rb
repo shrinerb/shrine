@@ -627,14 +627,13 @@ class Shrine
         # Returns true if attachment is present and stored.
         def stored?
           file = get
-          file && store.uploaded?(get)
+          file && store.uploaded?(file)
         end
 
         # Returns a Shrine::UploadedFile instantiated from the data written to
         # the attachment attribute.
         def get
-          value = read
-          uploaded_file(value) if value
+          uploaded_file(read) if read
         end
 
         # Reads from the `<attachment>_data` attribute on the model instance.
