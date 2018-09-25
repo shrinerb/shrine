@@ -536,27 +536,27 @@ describe Shrine::Storage::S3 do
 
   describe "#presign" do
     it "returns POST request data for the given id" do
-      presign = @s3.presign("foo")
-      assert_equal :post, presign.method
-      assert_match /^http/, presign.url
-      assert_equal "foo", presign.fields["key"]
+      data = @s3.presign("foo")
+      assert_equal :post, data[:method]
+      assert_match /^http/, data[:url]
+      assert_equal "foo", data[:fields]["key"]
     end
 
     it "accepts additional options" do
-      presign = @s3.presign("foo", content_type: "image/jpeg")
-      assert_equal "image/jpeg", presign.fields["Content-Type"]
+      data = @s3.presign("foo", content_type: "image/jpeg")
+      assert_equal "image/jpeg", data[:fields]["Content-Type"]
     end
 
     it "applies default upload options" do
       @s3 = s3(upload_options: { content_type: "image/jpeg" })
-      presign = @s3.presign("foo")
-      assert_equal "image/jpeg", presign.fields["Content-Type"]
+      data = @s3.presign("foo")
+      assert_equal "image/jpeg", data[:fields]["Content-Type"]
     end
 
     it "works with the :endpoint option" do
-      s3 = s3(endpoint: "http://foo.com")
-      presign = s3.presign("foo")
-      assert_equal "http://my-bucket.foo.com", presign.url
+      @s3 = s3(endpoint: "http://foo.com")
+      data = @s3.presign("foo")
+      assert_equal "http://my-bucket.foo.com", data[:url]
     end
 
     it "can generate parameters for PUT method" do
@@ -585,6 +585,16 @@ describe Shrine::Storage::S3 do
       }
 
       assert_equal expected_headers, data[:headers]
+    end
+
+    it "respects :prefix" do
+      @s3 = s3(prefix: "prefix")
+
+      data = @s3.presign("foo")
+      assert_equal "prefix/foo", data[:fields]["key"]
+
+      data = @s3.presign("foo", method: :put)
+      assert_equal "/prefix/foo", URI(data[:url]).path
     end
 
     it "respects :public" do
