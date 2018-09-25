@@ -119,6 +119,24 @@ class Shrine
     #
     #     plugin :default_url_options, store: { host: "http://abc123.cloudfront.net" }
     #
+    # If you would like to [serve private content via CloudFront], you need to
+    # sign the object URLs with a special signer, such as
+    # [`Aws::CloudFront::UrlSigner`] provided by the `aws-sdk-cloudfront` gem.
+    # The S3 storage initializer accepts a `:signer` block, which you can use
+    # to call your signer:
+    #
+    #
+    #     require "aws-sdk-cloudfront"
+    #
+    #     signer = Aws::CloudFront::UrlSigner.new(
+    #       key_pair_id:      "cf-keypair-id",
+    #       private_key_path: "./cf_private_key.pem"
+    #     )
+    #
+    #     Shrine::Storage::S3.new(signer: signer.method(:signed_url))
+    #     # or
+    #     Shrine::Storage::S3.new(signer: -> (url, **options) { signer.signed_url(url, **options) })
+    #
     # ## Accelerate endpoint
     #
     # To use Amazon S3's [Transfer Acceleration] feature, you can change the
@@ -177,10 +195,12 @@ class Shrine
     # [aws-sdk-s3]: https://github.com/aws/aws-sdk-ruby/tree/master/gems/aws-sdk-s3
     # [Transfer Acceleration]: http://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html
     # [object lifecycle]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
+    # [serve private content via CloudFront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html
+    # [`Aws::CloudFront::UrlSigner`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html
     class S3
       MIN_PART_SIZE = 5 * 1024 * 1024 # 5MB
 
-      attr_reader :client, :bucket, :prefix, :host, :upload_options
+      attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer
 
       # Initializes a storage for uploading to S3. All options are forwarded to
       # [`Aws::S3::Client#initialize`], except the following:
@@ -213,7 +233,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, **s3_options)
+      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, **s3_options)
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
         resource = Aws::S3::Resource.new(**s3_options)
 
@@ -229,6 +249,7 @@ class Shrine
         @host = host
         @upload_options = upload_options
         @multipart_threshold = multipart_threshold
+        @signer = signer
       end
 
       # Returns an `Aws::S3::Resource` object.
@@ -330,7 +351,7 @@ class Shrine
         options[:response_content_disposition] ||= "attachment" if download
         options[:response_content_disposition] = encode_content_disposition(options[:response_content_disposition]) if options[:response_content_disposition]
 
-        if public
+        if public || signer
           url = object(id).public_url(**options)
         else
           url = object(id).presigned_url(:get, **options)
@@ -340,6 +361,10 @@ class Shrine
           uri = URI.parse(url)
           uri.path = uri.path.match(/^\/#{bucket.name}/).post_match unless uri.host.include?(bucket.name) || client.config.force_path_style
           url = URI.join(host, uri.request_uri).to_s
+        end
+
+        if signer
+          url = signer.call(url, **options)
         end
 
         url

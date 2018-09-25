@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add ability to specify a custom `:signer` for `Shrine::Storage::S3#url` (@janko-m)
+
 * In `S3#upload` do multipart upload for large non-file IO objects (@janko-m)
 
 * In `S3#upload` switch to `Aws::S3::Object#upload_stream` for multipart uploads of IO objects of unknown size (@janko-m)

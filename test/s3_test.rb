@@ -507,6 +507,16 @@ describe Shrine::Storage::S3 do
       assert_equal "http://123.cloudfront.net/my-bucket/my-bucket/bar%20quux", url
     end
 
+    it "uses the custom signer" do
+      @s3 = s3(signer: -> (url, **options) { "#{url}?#{options.map{|k,v|"#{k}=#{v}"}.join("&")}" })
+
+      url = @s3.url("foo", bar: "baz")
+      assert_equal "https://my-bucket.s3.us-stubbed-1.amazonaws.com/foo?bar=baz", url
+
+      url = @s3.url("foo", host: "https://123.cloudfront.net", bar: "baz")
+      assert_equal "https://123.cloudfront.net/foo?bar=baz", url
+    end
+
     it "encodes non-ASCII characters, quotes, and spaces in :content_disposition" do
       url = @s3.url("foo", response_content_disposition: 'inline; filename=""été foo bar.pdf""')
       unescaped_query = CGI.unescape(URI(url).query.force_encoding("UTF-8"))
