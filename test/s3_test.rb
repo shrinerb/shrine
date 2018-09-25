@@ -325,9 +325,18 @@ describe Shrine::Storage::S3 do
 
       it "respects :prefix" do
         @s3 = s3(prefix: "prefix")
-        io = fakeio.tap { |io| io.instance_eval { undef size } }
-        @s3.upload(io, "foo")
+        @s3.upload(fakeio, "foo")
         assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
+      end
+
+      it "respects :public" do
+        @s3 = s3(public: true)
+
+        @s3.upload(fakeio, "foo")
+        assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
+
+        @s3.upload(fakeio, "foo", acl: "public-read-write")
+        assert_equal "public-read-write", @s3.client.api_requests[1][:params][:acl]
       end
     end
 
@@ -576,6 +585,16 @@ describe Shrine::Storage::S3 do
       }
 
       assert_equal expected_headers, data[:headers]
+    end
+
+    it "respects :public" do
+      @s3 = s3(public: true)
+
+      data = @s3.presign("foo")
+      assert_equal "public-read", data[:fields]["acl"]
+
+      data = @s3.presign("foo", method: :put)
+      assert_includes data[:url], "x-amz-acl=public-read"
     end
   end
 

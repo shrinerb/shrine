@@ -54,6 +54,18 @@ class Shrine
     #
     #     s3.object("key") #=> #<Aws::S3::Object>
     #
+    # ## Public uploads
+    #
+    # By default, uploaded S3 objects will have private visibility, meaning
+    # they can only be accessed via signed expiring URLs generated using your
+    # private S3 credentials. If you would like to generate public URLs, you
+    # can tell S3 storage to make uploads public:
+    #
+    #     s3 = Shrine::Storage::S3.new(public: true, **s3_options)
+    #
+    #     s3.upload(io, "key") # uploads with "public-read" ACL
+    #     s3.url("key")        # returns public (unsigned) object URL
+    #
     # ## Prefix
     #
     # The `:prefix` option can be specified for uploading all files inside
@@ -200,7 +212,7 @@ class Shrine
     class S3
       MIN_PART_SIZE = 5 * 1024 * 1024 # 5MB
 
-      attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer
+      attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer, :public
 
       # Initializes a storage for uploading to S3. All options are forwarded to
       # [`Aws::S3::Client#initialize`], except the following:
@@ -233,7 +245,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, **s3_options)
+      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
         resource = Aws::S3::Resource.new(**s3_options)
 
@@ -250,6 +262,7 @@ class Shrine
         @upload_options = upload_options
         @multipart_threshold = multipart_threshold
         @signer = signer
+        @public = public
       end
 
       # Returns an `Aws::S3::Resource` object.
@@ -271,9 +284,10 @@ class Shrine
         options = {}
         options[:content_type] = content_type if content_type
         options[:content_disposition] = "inline; filename=\"#{filename}\"" if filename
+        options[:acl] = "public-read" if public
 
-        options.update(@upload_options)
-        options.update(upload_options)
+        options.merge!(@upload_options)
+        options.merge!(upload_options)
 
         options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
 
@@ -327,11 +341,6 @@ class Shrine
 
       # Returns the presigned URL to the file.
       #
-      # :public
-      # :  Controls whether the URL is signed (`false`) or unsigned (`true`).
-      #    Note that for unsigned URLs the S3 bucket need to be modified to allow
-      #    public URLs. Defaults to `false`.
-      #
       # :host
       # :  This option replaces the host part of the returned URL, and is
       #    typically useful for setting CDN hosts (e.g.
@@ -347,7 +356,7 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
-      def url(id, download: nil, public: nil, host: self.host, **options)
+      def url(id, download: nil, public: self.public, host: self.host, **options)
         options[:response_content_disposition] ||= "attachment" if download
         options[:response_content_disposition] = encode_content_disposition(options[:response_content_disposition]) if options[:response_content_disposition]
 
@@ -378,8 +387,13 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Object#presigned_url`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
-      def presign(id, method: :post, **options)
-        options = @upload_options.merge(options)
+      def presign(id, method: :post, **presign_options)
+        options = {}
+        options[:acl] = "public-read" if public
+
+        options.merge!(@upload_options)
+        options.merge!(presign_options)
+
         options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
 
         if method == :post

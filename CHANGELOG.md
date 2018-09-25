@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:public` option to `S3#initialize` for enabling public uploads (@janko-m)
+
 * Add ability to specify a custom `:signer` for `Shrine::Storage::S3#url` (@janko-m)
 
 * In `S3#upload` do multipart upload for large non-file IO objects (@janko-m)
