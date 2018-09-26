@@ -873,7 +873,7 @@ The gem is available as open source under the terms of the [MIT License].
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [image_processing]: https://github.com/janko-m/image_processing
 [ImageMagick]: https://www.imagemagick.org/script/index.php
-[libvips]: http://jcupitt.github.io/libvips/
+[libvips]: http://libvips.github.io/libvips/
 [validation_helpers plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html
 [upload_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
 [presign_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html

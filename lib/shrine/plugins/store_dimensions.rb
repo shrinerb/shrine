@@ -64,7 +64,7 @@ class Shrine
     #
     # [fastimage]: https://github.com/sdsykes/fastimage
     # [mini_magick]: https://github.com/minimagick/minimagick
-    # [ruby-vips]: https://github.com/jcupitt/ruby-vips
+    # [ruby-vips]: https://github.com/libvips/ruby-vips
     module StoreDimensions
       def self.configure(uploader, opts = {})
         uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))

@@ -324,15 +324,15 @@ limit.
 [mime-types]: https://github.com/mime-types/ruby-mime-types
 [mini_mime]: https://github.com/discourse/mini_mime
 [MiniMagick]: https://github.com/minimagick/minimagick
-[ruby-vips]: https://github.com/jcupitt/ruby-vips
+[ruby-vips]: https://github.com/libvips/ruby-vips
 [God objects]: https://en.wikipedia.org/wiki/God_object
 [ImageMagick]: https://www.imagemagick.org
 [refile-mini_magick]: https://github.com/refile/refile-mini_magick
 [ImageProcessing]: https://github.com/janko-m/image_processing
 [auto orienting]: https://www.imagemagick.org/script/command-line-options.php#auto-orient
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
-[libvips]: http://jcupitt.github.io/libvips/
-[Why is libvips quick]: https://github.com/jcupitt/libvips/wiki/Why-is-libvips-quick
+[libvips]: http://libvips.github.io/libvips/
+[Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
 [metadata]: https://shrinerb.com/rdoc/files/doc/metadata_md.html
 [store_dimensions]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/StoreDimensions.html
 [add_metadata]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/AddMetadata.html

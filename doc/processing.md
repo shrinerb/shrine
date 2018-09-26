@@ -404,8 +404,8 @@ photo.image.url(width: 100, height: 100, crop: :fit)
 [`ImageProcessing::MiniMagick`]: https://github.com/janko-m/image_processing/blob/master/doc/minimagick.md
 [ImageMagick]: https://www.imagemagick.org
 [GraphicsMagick]: http://www.graphicsmagick.org
-[libvips]: http://jcupitt.github.io/libvips/
-[Why is libvips quick]: https://github.com/jcupitt/libvips/wiki/Why-is-libvips-quick
+[libvips]: http://libvips.github.io/libvips/
+[Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
 [ImageOptim.com]: https://imageoptim.com/api
 [Down]: https://github.com/janko-m/down
 [HTTP.rb]: https://github.com/httprb/http

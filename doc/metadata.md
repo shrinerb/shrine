@@ -210,4 +210,4 @@ uploaded_file.metadata #=> {"filename"=>"nature.jpg","size"=>532894,"mime_type"=
 [Marcel]: https://github.com/basecamp/marcel
 [FastImage]: https://github.com/sdsykes/fastimage
 [MiniMagick]: https://github.com/minimagick/minimagick
-[ruby-vips]: https://github.com/jcupitt/ruby-vips
+[ruby-vips]: https://github.com/libvips/ruby-vips
