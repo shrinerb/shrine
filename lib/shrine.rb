@@ -13,7 +13,8 @@ class Shrine
   # Raised when a file is not a valid IO.
   class InvalidFile < Error
     def initialize(io, missing_methods)
-      super "#{io.inspect} is not a valid IO object (it doesn't respond to #{missing_methods.map{|m, args|"##{m}"}.join(", ")})"
+      super "#{io.inspect} is not a valid IO object (it doesn't respond to \
+        #{missing_methods.map{|m, _|"##{m}"}.join(", ")})"
     end
   end
 
@@ -541,7 +542,8 @@ class Shrine
         # attribute. It then runs file validations, and records that the
         # attachment has changed.
         def set(uploaded_file)
-          @old = get unless uploaded_file == get
+          file = get
+          @old = file unless uploaded_file == file
           _set(uploaded_file)
           validate
         end
@@ -601,7 +603,8 @@ class Shrine
         # Deletes the current attachment, typically called after destroying the
         # record.
         def destroy
-          _delete(get, action: :destroy) if get && !cache.uploaded?(get)
+          file = get
+          _delete(file, action: :destroy) if file && !cache.uploaded?(file)
         end
 
         # Delegates to #delete!, overriden for backgrounding.
@@ -617,12 +620,14 @@ class Shrine
 
         # Returns true if attachment is present and cached.
         def cached?
-          get && cache.uploaded?(get)
+          file = get
+          file && cache.uploaded?(file)
         end
 
         # Returns true if attachment is present and stored.
         def stored?
-          get && store.uploaded?(get)
+          file = get
+          file && store.uploaded?(file)
         end
 
         # Returns a Shrine::UploadedFile instantiated from the data written to

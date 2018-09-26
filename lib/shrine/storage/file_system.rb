@@ -165,8 +165,9 @@ class Shrine
       # Delets the file, and by default deletes the containing directory if
       # it's empty.
       def delete(id)
-        path(id).delete
-        clean(path(id)) if clean?
+        path = path(id)
+        path.delete
+        clean(path) if clean?
       rescue Errno::ENOENT
       end
 
@@ -241,8 +242,9 @@ class Shrine
 
       # Creates all intermediate directories for that location.
       def path!(id)
-        FileUtils.mkdir_p(path(id).dirname, mode: directory_permissions)
-        path(id)
+        path = path(id)
+        FileUtils.mkdir_p(path.dirname, mode: directory_permissions)
+        path
       end
 
       def relative_path(id)
