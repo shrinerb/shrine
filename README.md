@@ -362,7 +362,7 @@ photo.image = '{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{...}}'
 ## Attacher
 
 The model attachment attributes and callbacks just delegate the behaviour
-to ther underlying `Shrine::Attacher` object.
+to their underlying `Shrine::Attacher` object.
 
 ```rb
 photo.image_attacher #=> #<Shrine::Attacher>
