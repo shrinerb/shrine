@@ -84,7 +84,7 @@ class Shrine
           location = super
           current_extension = File.extname(location)
 
-          if current_extension.empty? || self.class.opts[:infer_extension_force]
+          if current_extension.empty? || opts[:infer_extension_force]
             inferred_extension = infer_extension(mime_type)
             location = location.chomp(current_extension) << inferred_extension unless inferred_extension.empty?
           end
