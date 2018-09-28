@@ -9,9 +9,15 @@ class Shrine
     #
     #     plugin :infer_extension
     #
-    # The upload location will gain the inferred extension only if couldn't be
-    # determined from the filename. By default `MIME::Types` will be used for
-    # inferring the extension, but you can also choose a different inferrer:
+    # Ordinarily, the upload location will gain the inferred extension only if couldn't be
+    # determined from the filename. However, you can pass `force: true` to force the inferred
+    # extension to be used rather than an extension from the original filename. This can be used to
+    # canonicalize extensions (jpg, jpeg => jpeg), or replace an incorrect original extension.
+    #
+    #     plugin :infer_extension, force: true
+    #
+    # By default `MIME::Types` will be used for inferring the extension, but you can also
+    # choose a different inferrer:
     #
     #     plugin :infer_extension, inferrer: :mini_mime
     #
@@ -46,6 +52,7 @@ class Shrine
     module InferExtension
       def self.configure(uploader, opts = {})
         uploader.opts[:extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :mime_types))
+        uploader.opts[:extension_inferrer_force] = opts.fetch(:force, false)
       end
 
       module ClassMethods
@@ -73,7 +80,13 @@ class Shrine
           mime_type = (context[:metadata] || {})["mime_type"]
 
           location  = super
-          location += infer_extension(mime_type) if File.extname(location).empty?
+
+          if File.extname(location).empty?
+            location += infer_extension(mime_type)
+          elsif self.class.opts[:extension_inferrer_force] && (inferred = infer_extension(mime_type))
+            location = location.chomp(File.extname(location)) << inferred
+          end
+
           location
         end
 
