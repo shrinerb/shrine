@@ -67,18 +67,23 @@ describe Shrine::Plugins::InferExtension do
     assert_equal "nature.jpg", uploaded_file.original_filename
   end
 
-  describe "force: true" do
-    before do
-      @uploader = uploader { plugin :infer_extension, force: true }
-    end
+  it "replaces the existing extension on force: true" do
+    @shrine.plugin :infer_extension, force: true
 
-    it "replaces with inferred extension when generating location" do
-      uploaded_file = @uploader.upload(fakeio(filename: "nature.wrong", content_type: "image/jpeg"))
-      assert_equal ".jpeg", File.extname(uploaded_file.id)
+    uploaded_file = @uploader.upload(fakeio(filename: "nature.wrong", content_type: "image/jpeg"))
+    assert_equal ".jpeg", File.extname(uploaded_file.id)
 
-      uploaded_file = @uploader.upload(fakeio(filename: "nature.mp3", content_type: "image/jpeg"))
-      assert_equal ".jpeg", File.extname(uploaded_file.id)
-    end
+    uploaded_file = @uploader.upload(fakeio(filename: "nature.mp3", content_type: "image/jpeg"))
+    assert_equal ".jpeg", File.extname(uploaded_file.id)
+
+    uploaded_file = @uploader.upload(fakeio(filename: "nature", content_type: "image/jpeg"))
+    assert_equal ".jpeg", File.extname(uploaded_file.id)
+
+    uploaded_file = @uploader.upload(fakeio(filename: "nature.jpeg"))
+    assert_equal ".jpeg", File.extname(uploaded_file.id)
+
+    uploaded_file = @uploader.upload(fakeio(filename: "nature"))
+    assert_equal "", File.extname(uploaded_file.id)
   end
 
   it "provides access to extension inferrers" do

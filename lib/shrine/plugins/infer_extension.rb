@@ -5,27 +5,29 @@ class Shrine
     # The `infer_extension` plugin allows deducing the appropriate file
     # extension for the upload location based on the MIME type of the file.
     # This is useful when using `data_uri` and `remote_url` plugins, where the
-    # file extension is not or might not be known.
+    # file extension might not be known.
     #
     #     plugin :infer_extension
     #
-    # Ordinarily, the upload location will gain the inferred extension only if couldn't be
-    # determined from the filename. However, you can pass `force: true` to force the inferred
-    # extension to be used rather than an extension from the original filename. This can be used to
-    # canonicalize extensions (jpg, jpeg => jpeg), or replace an incorrect original extension.
+    # Ordinarily, the upload location will gain the inferred extension only if
+    # it couldn't be determined from the filename. However, you can pass
+    # `force: true` to force the inferred extension to be used rather than an
+    # extension from the original filename. This can be used to canonicalize
+    # extensions (jpg, jpeg => jpeg), or replace an incorrect original
+    # extension.
     #
     #     plugin :infer_extension, force: true
     #
-    # By default `MIME::Types` will be used for inferring the extension, but you can also
-    # choose a different inferrer:
+    # By default `MIME::Types` will be used for inferring the extension, but
+    # you can also choose a different inferrer:
     #
     #     plugin :infer_extension, inferrer: :mini_mime
     #
     # The following inferrers are accepted:
     #
     # :mime_types
-    # : (Default). Uses the [mime-types] gem to infer the appropriate extension from MIME
-    #   type.
+    # : (Default). Uses the [mime-types] gem to infer the appropriate extension
+    #   from MIME type.
     #
     # :mini_mime
     # : Uses the [mini_mime] gem to infer the appropriate extension from MIME
@@ -51,13 +53,13 @@ class Shrine
     # [mini_mime]: https://github.com/discourse/mini_mime
     module InferExtension
       def self.configure(uploader, opts = {})
-        uploader.opts[:extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :mime_types))
-        uploader.opts[:extension_inferrer_force] = opts.fetch(:force, false)
+        uploader.opts[:infer_extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :mime_types))
+        uploader.opts[:infer_extension_force] = opts.fetch(:force, uploader.opts.fetch(:infer_extension_force, false))
       end
 
       module ClassMethods
         def infer_extension(mime_type)
-          inferrer = opts[:extension_inferrer]
+          inferrer = opts[:infer_extension_inferrer]
           inferrer = extension_inferrer(inferrer) if inferrer.is_a?(Symbol)
           args     = [mime_type, extension_inferrers].take(inferrer.arity.abs)
 
@@ -79,12 +81,12 @@ class Shrine
         def generate_location(io, context = {})
           mime_type = (context[:metadata] || {})["mime_type"]
 
-          location  = super
+          location = super
+          current_extension = File.extname(location)
 
-          if File.extname(location).empty?
-            location += infer_extension(mime_type)
-          elsif self.class.opts[:extension_inferrer_force] && (inferred = infer_extension(mime_type))
-            location = location.chomp(File.extname(location)) << inferred
+          if current_extension.empty? || self.class.opts[:infer_extension_force]
+            inferred_extension = infer_extension(mime_type)
+            location = location.chomp(current_extension) << inferred_extension unless inferred_extension.empty?
           end
 
           location
