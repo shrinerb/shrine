@@ -8,8 +8,15 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
+        uploader.opts[:derivates_attribute] = opts.fetch(:data_attribute, :separate) # values are separate or original
         uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
         uploader.opts[:versions_fallback_to_original] = opts.fetch(:fallback_to_original, uploader.opts.fetch(:versions_fallback_to_original, true))
+
+        unless [:separate, :original].include? uploader.opts[:derivates_attribute]
+          raise Error, "`#{uploader.opts[:derivates_attribute] || "nil"}` is an invalid " \
+            "option for `data_attribute` in Derivates Plugin. Valid options are: " \
+            "[:separate, :original]"
+        end
       end
 
       module ClassMethods
@@ -48,13 +55,25 @@ class Shrine
 
         private
 
+        def derivates_attribute
+          shrine_class.opts[:derivates_attribute]
+        end
+
         def _set_derivates(uploaded_file)
           data = convert_to_data(uploaded_file) if uploaded_file
+          if data && derivates_attribute == :original
+            record_data = get.data
+            data = record_data.merge derivates: data
+          end
           write_derivates(data ? convert_before_write(data) : nil)
         end
 
         def derivates_data_attribute
-          :"#{name}_derivates_data"
+          if derivates_attribute == :separate
+            :"#{name}_derivates_data"
+          else
+            :"#{name}_data"
+          end
         end
 
         def read_derivates
