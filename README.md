@@ -352,8 +352,8 @@ photo.update(image: nil)      # removes the attachment and deletes previous
 
 In addition to assigning raw files, you can also assign a JSON representation
 of files that are already uploaded to the temporary storage. This allows Shrine
-to retain cached files in case of validation errors and handle [direct
-uploads] via the hidden form field.
+to retain cached files in case of validation errors and handle [direct uploads]
+via the hidden form field.
 
 ```rb
 photo.image = '{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{...}}'
