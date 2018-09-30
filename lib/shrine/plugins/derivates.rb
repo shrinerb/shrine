@@ -29,10 +29,14 @@ class Shrine
           update_derivates
         end
 
-        def add_derivate(key, io, store = nil, nested_list = nil)
+        def add_derivate(key, io, store = :store, nested_list = nil)
           @derivates_queue ||= {}
-
-          @derivates_queue.merge! key.to_sym => store!(io)
+          if store == :store
+            @derivates_queue.merge! key.to_sym => store!(io)
+          else
+            derivate_attacher = shrine_class::Attacher.new(context[:record], context[:name], cache: @cache.storage_key, store: store)
+            @derivates_queue.merge! key.to_sym => derivate_attacher.store!(io)
+          end
         end
 
         def update_derivates
