@@ -25,6 +25,17 @@ class Shrine
         end
       end
 
+      module AttachmentMethods
+        def initialize(name, **options)
+          super
+
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1
+            def #{name}_derivates
+              #{name}_attacher.get_derivates
+            end
+          RUBY
+        end
+      end
 
       module AttacherMethods
         def changed?
@@ -53,7 +64,38 @@ class Shrine
           end
         end
 
+        def get
+          data = read
+          if data
+            if derivates_attribute == :original
+              data = JSON.parse(data)
+              data.delete "derivates" if data.has_key? "derivates"
+            end
+            uploaded_file(data)
+          end
+        end
+
+        def get_derivates
+          data = read_derivates
+          data = JSON.parse(data) if data
+          convert_to_uploaded_file(data["derivates"])
+        end
+
         private
+
+        def convert_to_uploaded_file(object)
+          return nil if object.nil?
+
+          if object.is_a?(Hash) && object.values.none? { |value| value.is_a?(String) }
+            object.inject({}) do |result, (name, value)|
+              result.merge!(name.to_sym => convert_to_uploaded_file(value))
+            end
+          elsif object.is_a?(Array)
+            object.map { |value| convert_to_uploaded_file(value) }
+          else
+            uploaded_file(object)
+          end
+        end
 
         def derivates_attribute
           shrine_class.opts[:derivates_attribute]
