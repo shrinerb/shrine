@@ -24,6 +24,34 @@ class Shrine
     #
     #     plugin :pretty_location, namespace: "/"
     #     # "blog/user/.../493g82jf23.jpg"
+    #
+    # ## Performance on AWS S3
+    #
+    # AWS S3 has [guidelines] on folder structure to optimize storage performance
+    # for very high request rate applications by using a random prefix at the
+    # beginning of the folder structure. For example, if you wanted to use pretty
+    # location with a prefix, you can do that by overriding the
+    # `generate_location` method as shown in the [Readme] and return an
+    # appropriate file location. For example:
+    #
+    #     def generate_location
+    #       if context[:record]
+    #         type = class_location(context[:record].class) if context[:record].class.name
+    #         id   = context[:record].id if context[:record].respond_to?(:id)
+    #       end
+    #       name = context[:name]
+    #
+    #       dirname, slash, basename = super.rpartition("/")
+    #       basename = "#{context[:version]}-#{basename}" if context[:version]
+    #       original = dirname + slash + basename
+    #
+    #       [SecureRandom.hex(2), type, id, name, original].compact.join("/")
+    #     end
+    #     # "2af7/blog_user/.../493g82jf23.jpg"
+    #
+    # [guidelines]: https://docs.aws.amazon.com/AmazonS3/latest/dev/request-rate-perf-considerations.html
+    # [Readme]: https://github.com/shrinerb/shrine#location
+    #
     module PrettyLocation
       def self.configure(uploader, opts = {})
         uploader.opts[:pretty_location_namespace] = opts.fetch(:namespace, uploader.opts[:pretty_location_namespace])

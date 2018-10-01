@@ -201,6 +201,11 @@ class Shrine
     #     # deletes all objects that were uploaded more than 7 days ago
     #     s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 }
     #
+    # ## Performance Guidelines
+    #
+    # Refer to [Amazon S3 performance guidelines] to optimize for very high file
+    # requests rates.
+    #
     # [uploading]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [copying]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
     # [presigning]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
@@ -209,6 +214,7 @@ class Shrine
     # [object lifecycle]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [serve private content via CloudFront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html
     # [`Aws::CloudFront::UrlSigner`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html
+    # [Amazon S3 performance guidelines]: https://docs.aws.amazon.com/AmazonS3/latest/dev/request-rate-perf-considerations.html
     class S3
       MIN_PART_SIZE = 5 * 1024 * 1024 # 5MB
 
