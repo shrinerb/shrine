@@ -162,17 +162,31 @@ photo = Photo.new(image: file)
 photo.image_type #=> "image/jpeg"
 ```
 
-## Refreshing metadata
+## Direct uploads
 
-When uploading directly to the cloud, the metadata of the original file by
-default won't get extracted on the server side, because your application never
-received the file content.
+When attaching files that were uploaded directly to the cloud or a [tus
+server], Shrine won't automatically extract metadata from them, instead it will
+copy any existing metadata that was set on the client side. The reason why this
+is the default behaviour is because extracting the metadata would require (at
+least partially) retrieving file content from the storage, which could
+potentially be expensive depending on the storage and the type of metadata
+being extracted.
 
-To have Shrine extra metadata when a cached file is assigned to the attachment
-attribute, it's recommended to load the `restore_cached_data` plugin.
+If you're just attaching files uploaded directly to local disk, there wouldn't
+be any additional performance penalty for extracting metadata. However, if
+you're attaching files uploaded directly to a cloud service like S3, retrieving
+file content for metadata extraction would require an HTTP download. If you're
+using just the `determine_mime_type` plugin, only a small portion of the file
+will be downloaded, so the performance impact might not be so big. But in other
+cases you might have to download the whole file.
+
+There are two ways of extracting metadata from directly uploaded files. If you
+want metadata to be automatically extracted on assignment (which is useful if
+you want to validate the extracted metadata or have it immediately available),
+you can load the `restore_cached_data` plugin:
 
 ```rb
-Shrine.plugin :restore_cached_data # extract metadata from cached files on assingment
+Shrine.plugin :restore_cached_data # automatically extract metadata from cached files on assingment
 ```
 ```rb
 photo.image = '{"id":"ks9elsd.jpg","storage":"cache","metadata":{}}' # metadata is extracted
@@ -184,25 +198,56 @@ photo.image.metadata #=>
 # }
 ```
 
-Extracting metadata from a cached file requires retrieving file content from
-the storage, which might not be desirable depending on your case, that's why
-`restore_cached_data` plugin is not loaded by default. However, Shrine will not
-download the whole file from the storage, instead, it will open a connection to
-the storage, and the metadata analyzers will download how much of the file they
-need. Most MIME type analyzers and the FastImage dimensions analyzer need only
-the first few kilobytes.
-
-You can also extract metadata from an uploaded file explicitly using the
-`refresh_metadata` plugin (which the `restore_cached_data` plugin uses
-internally).
+On the other hand, if you're using backgrounding, you can extract metadata
+during background promotion using the `refresh_metadata` plugin (which the
+`restore_cached_data` plugin uses internally):
 
 ```rb
 Shrine.plugin :refresh_metadata
 ```
 ```rb
-uploaded_file.metadata #=> {}
-uploaded_file.refresh_metadata!
-uploaded_file.metadata #=> {"filename"=>"nature.jpg","size"=>532894,"mime_type"=>"image/jpeg"}
+class MyUploader < Shrine
+  plugin :processing
+
+  # this will be called in the background if using backgrounding plugin
+  process(:store) do |io, context|
+    io.refresh_metadata! # extracts metadata and updates `io.metadata`
+    io
+  end
+end
+```
+
+If you have metadata that is cheap to extract in the foreground, but also have
+additional metadata that can be extracted asynchronously, you can combine the
+two approaches. For example, if you're attaching video files, you might want to
+extract MIME type upfront and video-specific metadata in a background job, which
+can be done as follows (provided that `backgrounding` plugin is used):
+
+```rb
+Shrine.plugin :restore_cached_data
+```
+```rb
+class MyUploader < Shrine
+  plugin :determine_mime_type # this will be called in the foreground
+  plugin :processing
+
+  # this will be called in the background if using backgrounding plugin
+  process(:store) do |io, context|
+    additional_metadata = io.download do |file|
+      # example of metadata extraction
+      movie = FFMPEG::Movie.new(file.path) # uses the streamio-ffmpeg gem
+
+      { "duration"   => movie.duration,
+        "bitrate"    => movie.bitrate,
+        "resolution" => movie.resolution,
+        "frame_rate" => movie.frame_rate }
+    end
+
+    io.metadata.merge!(additional_metadata)
+
+    io
+  end
+end
 ```
 
 [`file`]: http://linux.die.net/man/1/file
@@ -211,3 +256,4 @@ uploaded_file.metadata #=> {"filename"=>"nature.jpg","size"=>532894,"mime_type"=
 [FastImage]: https://github.com/sdsykes/fastimage
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
+[tus server]: https://github.com/janko-m/tus-ruby-server
