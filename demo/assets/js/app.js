@@ -28,7 +28,8 @@ function fileUpload(fileInput) {
   if (fileInput.dataset.uploadServer == 's3') {
     uppy.use(Uppy.AwsS3, {
       getUploadParameters: function (file) {
-        return fetch('/presign?filename=' + file.name, { // Shrine's presign endpoint
+        // Shrine's presign endpoint
+        return fetch('/presign?filename=' + file.name + '&type=' + file.type, {
           credentials: 'same-origin', // send cookies
         }).then(function (response) { return response.json() })
       }
@@ -41,14 +42,14 @@ function fileUpload(fileInput) {
     })
   }
 
-  uppy.on('upload-success', function (file, data, uploadURL) {
+  uppy.on('upload-success', function (file, data) {
     // show image preview
     imagePreview.src = URL.createObjectURL(file.data)
 
     if (fileInput.dataset.uploadServer == 's3') {
       // construct uploaded file data in the format that Shrine expects
       var uploadedFileData = JSON.stringify({
-        id: uploadURL.match(/\/cache\/([^\?]+)/)[1], // extract key without prefix
+        id: data['key'].match(/^cache\/(.+)/)[1], // object key without prefix
         storage: 'cache',
         metadata: {
           size:      file.size,

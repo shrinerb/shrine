@@ -72,17 +72,16 @@ class Shrine
     # ## Options
     #
     # Some storages accept additional presign options, which you can pass in via
-    # `:presign_options`:
+    # `:presign_options`, here is an example for S3 storage:
     #
     #     plugin :presign_endpoint, presign_options: -> (request) do
     #       filename     = request.params["filename"]
-    #       extension    = File.extname(filename)
-    #       content_type = Rack::Mime.mime_type(extension)
+    #       type         = request.params["type"]
     #
     #       {
     #         content_length_range: 0..(10*1024*1024),                     # limit filesize to 10MB
     #         content_disposition: "attachment; filename=\"#{filename}\"", # download with original filename
-    #         content_type:        content_type,                           # set correct content type
+    #         content_type:        type,                                   # set correct content type
     #       }
     #     end
     #

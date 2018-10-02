@@ -660,11 +660,30 @@ responsive during upload, so the user can fill in other fields while the files
 are being uploaded, and if you display a progress bar they can see when the
 upload will finish.
 
-The asynchronous uploads will have to go to a separate endpoint than the one
-where the form is submitted. You can use Shrine's `upload_endpoint` plugin to
-create a Rack app that accepts file uploads and forwards them to the specified
-storage. We want to set it up to upload to *temporary* storage (`:cache`),
-because we're replacing the caching step from the default synchronous workflow.
+These asynchronous uploads will have to go to an endpoint separate from the one
+where the form is submitted. This can be an endpoint in your app, or an
+endpoint of a cloud service. In either case, the uploads should go to
+*temporary* storage (`:cache`), to ensure there won't be any orphan files in
+the primary storage (`:store`).
+
+Once files are uploaded on the client side, their data can be submitted to the
+server and attached to a record, just like with raw files. The only difference
+is that they won't be additionally uploaded to temporary storage on assignment,
+as they were already uploaded on the client side. **Note:** By default Shrine
+won't extract metadata from directly uploaded files, see [this
+section][metadata direct uploads] for the rationale and instructions on how to
+opt in.
+
+For handling client side uploads it's recommended to use **[Uppy]**. Uppy is a
+very flexible modern JavaScript file upload library, which happens to integrate
+nicely with Shrine.
+
+### Simple direct upload
+
+The simplest approach is creating an upload endpoint in your app that will
+receive uploads and forward them to the specified storage. You can use the
+`upload_endpoint` Shrine plugin to create a Rack app that handles uploads,
+and mount it inside your application.
 
 ```rb
 Shrine.plugin :upload_endpoint
@@ -683,41 +702,101 @@ Rails.application.routes.draw do
 end
 ```
 
-The above will add a `POST /images/upload` route to your app. You can now
-use the **[Uppy]** JavaScript library to upload files to this endpoint as soon
-they're selected, and write the result to the hidden field. The JavaScript code
-for this will depend on your application, see [this walkthrough][direct uploads
-walkthrough] that adds direct uploads from scratch.
+The above will add a `POST /images/upload` route to your app. You can now use
+Uppy's [XHR Upload][uppy xhr upload] plugin to upload selected files to this
+endpoint, and have the uploaded file data submitted to your app. The client
+side code for this will depend on your application, see [this
+walkthrough][direct uploads walkthrough] for an example of adding simple direct
+uploads from scratch.
 
-You can also upload files directly to the cloud (AWS S3, Google Cloud etc),
-using Shrine's `presign_endpoint` plugin. See [this walkthrough][direct S3
-uploads walkthrough] that adds direct S3 uploads from scratch using Uppy, as
-well as the [Direct Uploads to S3][direct S3 uploads guide] guide that provides
-some useful tips. Also check out the [Roda][roda demo] or [Rails][rails demo]
-demo app which implements multiple uploads directly to S3.
+If you wanted to implement this enpdoint yourself, this is how it could roughly
+look like in Sinatra:
 
-### Resumable uploads
+```rb
+Shrine.plugin :rack_file # only if not using Rails
+```
+```rb
+post "/images/upload" do
+  uploader = ImageUploader.new(:cache)
+  file     = Shrine.rack_file(params["file"]) # only `params[:file]` in Rails
 
-When your app is dealing with large uploads (e.g. videos), keep in mind that it
+  uploaded_file = uploader.upload(file)
+
+  json uploaded_file.data
+end
+```
+
+### Presigned direct upload
+
+If you want to free your app from receiving file uploads, you can also upload
+files directly to the cloud (AWS S3, Google Cloud etc). In this flow the client
+is required to first fetch upload parameters from the server, and then use these
+parameters to make the upload. The `presign_endpoint` Shrine plugin can be used
+to create a Rack app that generates these upload parameters (provided that the
+underlying storage implements `#presign`):
+
+```rb
+Shrine.plugin :presign_endpoint
+```
+```rb
+# config.ru (Rack)
+map "/presign" do
+  run Shrine.presign_endpoint(:cache)
+end
+
+# OR
+
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  mount Shrine.presign_endpoint(:cache) => "/presign"
+end
+```
+
+The above will add a `GET /presign` route to your app. You can now hook Uppy's
+[AWS S3][uppy aws s3] plugin to this endpoint and have it upload directly to
+S3. See [this walkthrough][direct S3 uploads walkthrough] that shows adding
+direct S3 uploads from scratch, as well as the [Direct Uploads to S3][direct S3
+uploads guide] guide that provides some useful tips. Also check out the
+[Roda][roda demo] / [Rails][rails demo] demo app which implements multiple
+uploads directly to S3.
+
+If you wanted to implement this enpdoint yourself, this is how it could roughly
+look like for S3 storage in Sinatra:
+
+```rb
+get "/presign" do
+  storage  = Shrine.storages[:cache]
+  location = SecureRandom.hex + File.extname(params["filename"].to_s)
+
+  presign_data = storage.presign(location, content_type: params["type"])
+
+  json uploaded_file.data
+end
+```
+
+### Resumable direct upload
+
+If your app is dealing with large uploads (e.g. videos), keep in mind that it
 can be challening for your users to upload these large files to your app. Many
 users might not have a great internet connection, and if it happens to break at
-any point during uploading, they would need to restart the upload from the
-beginning.
+any point during uploading, they need to retry the upload from the beginning.
 
-Luckily, there is a solution for this. **[Tus.io][tus]** is an open protocol
-for resumable file uploads, which enables the client and the server to achieve
+This problem has been solved by **[tus]**. tus is an open protocol for
+resumable file uploads, which enables the client and the server to achieve
 reliable file uploads even on unstable connections, by enabling the upload to
 be resumed in case of interruptions, even after the browser was closed or the
 device was shut down.
 
-On the client side you can use [Uppy][uppy tus] with [tus-js-client], have it
-upload files to a [tus-ruby-server], and finally attach the uploaded files with
-the help of [shrine-tus]. See [this walkthrough][resumable uploads walkthrough]
-that adds resumable uploads from scratch, as well as the [Roda demo][resumable
-demo] for a complete example.
+[tus-ruby-server] provides a Ruby server implemenation of the tus protocol.
+Uppy's [Tus][uppy tus] plugin can then be configured to do resumable uploads to
+a tus-ruby-server instance, and then the uploaded files can be attached to the
+record with the help of [shrine-tus]. See [this walkthrough][resumable uploads
+walkthrough] that adds resumable uploads from scratch, as well as the
+[demo][resumable demo] for a complete example.
 
-Alternatively, you can have resumable uploads directly to S3 using the
-[AwsS3Multipart] Uppy plugin, accompanied with the [uppy-s3_multipart] gem.
+Alternatively, you can have resumable uploads directly to S3 using Uppy's [AWS
+S3 Multipart][uppy aws s3 multipart] plugin, accompanied with the
+[uppy-s3_multipart] gem.
 
 ## Backgrounding
 
@@ -892,13 +971,17 @@ The gem is available as open source under the terms of the [MIT License].
 [Extracting Metadata]: https://shrinerb.com/rdoc/files/doc/metadata_md.html
 [File Processing]: https://shrinerb.com/rdoc/files/doc/processing_md.html
 [File Validation]: https://shrinerb.com/rdoc/files/doc/validation_md.html
+[metadata direct uploads]: https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads
+[uppy xhr upload]: https://uppy.io/docs/xhr-upload/
 [direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
+[uppy aws s3]: https://uppy.io/docs/aws-s3/
 [direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
 [direct S3 uploads guide]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
-[tus-js-client]: https://github.com/tus/tus-js-client
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
+[uppy aws s3 multipart]: https://uppy.io/docs/aws-s3-multipart/
+[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
 [resumable uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
@@ -908,5 +991,3 @@ The gem is available as open source under the terms of the [MIT License].
 [Refile]: https://github.com/refile/refile
 [CoC]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [MIT License]: http://opensource.org/licenses/MIT
-[AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
-[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
