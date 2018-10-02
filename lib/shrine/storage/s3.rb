@@ -203,8 +203,11 @@ class Shrine
     #
     # ## Performance Guidelines
     #
-    # Refer to [Amazon S3 performance guidelines] to optimize for very high file
-    # requests rates.
+    # Amazon S3 has a per-prefix request rate limit for a given bucket that's
+    # currently set at 3500-5500 requests per second. A prefix is the first
+    # characters up to the first delimiter - basically the first folder. They
+    # suggest using multiple prefixes if you need to scale up for higher request
+    # rates. Refer to [Amazon S3 performance guidelines] for further information.
     #
     # [uploading]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [copying]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
