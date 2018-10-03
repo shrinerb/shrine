@@ -770,7 +770,7 @@ get "/presign" do
 
   presign_data = storage.presign(location, content_type: params["type"])
 
-  json uploaded_file.data
+  json presign_data
 end
 ```
 
