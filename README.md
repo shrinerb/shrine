@@ -406,6 +406,14 @@ photo.image = file # uploads to :other_cache storage
 photo.save         # promotes to :other_store storage
 ```
 
+You can also skip the temporary storage altogether and upload files directly to
+the primary storage:
+
+```rb
+uploaded_file = attacher.store!(file) # upload file directly to permanent storage
+attacher.set(uploaded_file)           # attach the uploaded file
+```
+
 Whenever the attacher uploads or deletes files, it sends a `context` hash
 which includes `:record`, `:name`, and `:action` keys, so that you can perform
 processing or generate location differently depending on this information. See
