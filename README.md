@@ -669,10 +669,10 @@ the primary storage (`:store`).
 Once files are uploaded on the client side, their data can be submitted to the
 server and attached to a record, just like with raw files. The only difference
 is that they won't be additionally uploaded to temporary storage on assignment,
-as they were already uploaded on the client side. **Note:** By default Shrine
-won't extract metadata from directly uploaded files, see [this
-section][metadata direct uploads] for the rationale and instructions on how to
-opt in.
+as they were already uploaded on the client side. Note that by default **Shrine
+won't extract metadata from directly uploaded files**, instead it will just copy
+metadata that was extacted on the client side; see [this section][metadata direct uploads]
+for the rationale and instructions on how to opt in.
 
 For handling client side uploads it's recommended to use **[Uppy]**. Uppy is a
 very flexible modern JavaScript file upload library, which happens to integrate
