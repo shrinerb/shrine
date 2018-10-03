@@ -176,9 +176,20 @@ The `:action` parameter is optional; it can be used for triggering a certain
 processing block, and it is also automatically printed by the `logging` plugin
 to aid in debugging.
 
-Internally this calls `#swap`, which will update the record with any uploaded
-file, but will reload the record to check if the current attachment hasn't
-changed (if the `backgrounding` plugin is loaded).
+As a matter of fact, all additional options passed to `#promote` will be
+forwarded to `Shrine#upload`. So unless you're generating versions, you can do
+things like override metadata, set upload location, or pass upload options:
+
+```rb
+attacher.promote cached_file,
+  metadata:       { "filename" => "myfile.txt" },
+  location:       "custom/location",
+  upload_options: { acl: "public-read" }
+```
+
+Internally `#promote` calls `#swap`, which will update the record with any
+uploaded file, but will reload the record to check if the current attachment
+hasn't changed (if the `backgrounding` plugin is loaded).
 
 ```rb
 attacher.swap(uploaded_file)
