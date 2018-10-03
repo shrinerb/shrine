@@ -35,6 +35,12 @@ describe Shrine::Attacher do
       assert_equal cached_file, @attacher.get
     end
 
+    it "forwards options to the uploader" do
+      @attacher.assign(fakeio, metadata: { "foo" => "bar" }, location: "foo")
+      assert_equal "foo", @attacher.get.id
+      assert_equal "bar", @attacher.get.metadata["foo"]
+    end
+
     it "rejects stored files for security reasons" do
       stored_file = @attacher.store!(fakeio)
       @attacher.assign(stored_file.to_json)

@@ -531,12 +531,12 @@ class Shrine
         # already cached file as a JSON string, otherwise it assumes that it's
         # an IO object and uploads it to the temporary storage. The cached file
         # is then written to the attachment attribute in the JSON format.
-        def assign(value)
+        def assign(value, **options)
           if value.is_a?(String)
             return if value == "" || !cache.uploaded?(uploaded_file(value))
             assign_cached(uploaded_file(value))
           else
-            uploaded_file = cache!(value, action: :cache) if value
+            uploaded_file = cache!(value, action: :cache, **options) if value
             set(uploaded_file)
           end
         end

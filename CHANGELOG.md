@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow `Attacher#assign` to accept options for `Shrine#upload` (@janko-m)
+
 * Add `:metadata` option to `Shrine#upload` for manually overriding extracted metadata (@janko-m)
 
 * Add `:force` option to `infer_extension` plugin for always replacing the current extension (@jrochkind)

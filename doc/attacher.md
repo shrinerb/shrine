@@ -66,16 +66,32 @@ cached file in form of a JSON string, and assigns the cached result to record's
 attacher.assign(io)
 
 # writes the given cached file to the data column
-attacher.assign '{
-  "id": "9260ea09d8effd.jpg",
-  "storage": "cache",
-  "metadata": { ... }
-}'
+attacher.assign('{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{ ... }}')
+```
+
+When assigning an IO object, any additional options passed to `#assign` will be
+forwarded to `Shrine#upload`. This allows you to do things like overriding
+metadata, setting upload location, or passing upload options:
+
+```rb
+attacher.assign io,
+  metadata:       { "filename" => "myfile.txt" },
+  location:       "custom/location",
+  upload_options: { acl: "public-read" }
+```
+
+If you're attaching a cached file and want to override its metadata before
+assignment, you can do it like so:
+
+```rb
+cached_file = Shrine.uploaded_file('{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{ ... }}')
+cached_file.metadata["filename"] = "myfile.txt"
+
+attacher.assign(cached_file.to_json)
 ```
 
 For security reasons `#assign` doesn't accept files uploaded to permanent
-storage, but you can also use `#set` to attach any `Shrine::UploadedFile`
-object.
+storage, but you can use `#set` to attach any `Shrine::UploadedFile` object.
 
 ```rb
 uploaded_file #=> #<Shrine::UploadedFile>
