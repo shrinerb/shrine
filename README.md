@@ -203,6 +203,14 @@ Some of the tasks performed by `#upload` include:
 * uploading (this is where the storage is called)
 * closing the uploaded file
 
+Additional upload options can be passed via `:upload_options`, and they will be
+forwarded directly to `Storage#upload` (see the documentation of your storage
+for the list of available options):
+
+```rb
+uplaoder.upload(file, upload_options: { acl: "public-read" })
+```
+
 ### IO abstraction
 
 Shrine is able to upload any IO-like object that responds to `#read`,
@@ -559,8 +567,8 @@ processing, see the [File Processing] guide.
 ## Context
 
 The `#upload` (and `#delete`) methods accept a hash of options as the second
-argument, which is forwarded to all other tasks like processing, extracting
-metadata and generating location.
+argument, which is forwarded down the chain and be available for processing,
+extracting metadata and generating location.
 
 ```rb
 uploader.upload(file, { foo: "bar" }) # context hash is forwarded to all tasks around upload

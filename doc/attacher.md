@@ -218,19 +218,29 @@ Normally you can upload and delete directly by using the uploader.
 ```rb
 uploader = ImageUploader.new(:store)
 uploaded_file = uploader.upload(image) # uploads the file to `:store` storage
-uploader.delete(uploaded_file)         # deletes the file uploaded to `:store`
+uploader.delete(uploaded_file)         # deletes the uploaded file from `:store`
 ```
 
-The attacher has methods for "caching", "storing" and "deleting" files, which
-delegate to these uploader methods, but also pass in the `#context`:
+But the attacher also has wrapper methods for uploading and deleting, which
+also automatically pass in the attacher `#context` (which includes `:record`
+and `:name`):
 
 ```rb
-cached_file = attacher.cache!(image) # delegates to `Shrine#upload`
-stored_file = attacher.store!(image) # delegates to `Shrine#upload`
-attacher.delete!(stored_file)        # delegates to `Shrine#delete`
+attacher.cache!(file) # uploads file to temporary storage
+# => #<Shrine::UploadedFile: @data={"storage" => "cache", ...}>
+attacher.store!(file) # uploads file to permanent storage
+# => #<Shrine::UploadedFile: @data={"storage" => "store", ...}>
+attacher.delete!(uploaded_file) # deletes uploaded file from storage
 ```
 
-The `#cache!` and `#store!` only upload the file to the storage, they don't
-write to record's data column.
+These methods only upload/delete files, they don't write to record's data
+column. You can also pass additional options for `Shrine#upload` and
+`Shrine#delete`:
+
+```rb
+attacher.cache!(file, upload_options: { acl: "public-read" })
+attacher.store!(file, location: "custom/location")
+attacher.delete!(uploaded_file, foo: "bar")
+```
 
 [file migrations]: https://shrinerb.com/rdoc/files/doc/migrating_storage_md.html
