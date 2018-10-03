@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:metadata` option to `Shrine#upload` for manually overriding extracted metadata (@janko-m)
+
 * Add `:force` option to `infer_extension` plugin for always replacing the current extension (@jrochkind)
 
 * Add `:public` option to `S3#initialize` for enabling public uploads (@janko-m)

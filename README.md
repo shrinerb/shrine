@@ -480,12 +480,21 @@ By the default the UNIX [`file`] utility is used to determine the MIME type,
 but you can also choose a different analyzer – see the plugin documentation for
 more details.
 
-### Custom metadata
+### Other metadata
 
 In addition to `size`, `filename`, and `mime_type`, you can also extract image
 dimensions using the `store_dimensions` plugin, as well as any custom metadata
 using the `add_metadata` plugin. Check out the [Extracting Metadata] guide for
 more details.
+
+Note that you can also manually override extracted metadata by passing the
+`:metadata` option to `Shrine#upload`:
+
+```rb
+uploaded_file = uploader.upload(file, metadata: { "filename" => "Matrix[1999].mp4", "foo" => "bar" })
+uploaded_file.original_filename #=> "Matrix[1999].mp4"
+uploaded_file.metadata["foo"]   #=> "bar"
+```
 
 ## Processing
 
@@ -574,10 +583,10 @@ extracting metadata and generating location.
 uploader.upload(file, { foo: "bar" }) # context hash is forwarded to all tasks around upload
 ```
 
-Some options are actually recognized by Shrine, like `:location` and
-`:upload_options`, some are added by plugins, and the rest are there just to
-provide additional context, for more flexibility in performing tasks and more
-descriptive logging.
+Some options are actually recognized by Shrine (such as `:location`,
+`:upload_options`, and `:metadata`), some are added by plugins, and the rest are
+there just to provide additional context, for more flexibility in performing
+tasks and more descriptive logging.
 
 The attacher automatically includes additional `context` information for each
 upload and delete operation:

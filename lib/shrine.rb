@@ -312,7 +312,10 @@ class Shrine
         # file that was uploaded.
         def _store(io, context)
           _enforce_io(io)
+
           metadata = get_metadata(io, context)
+          metadata = metadata.merge(context[:metadata]) if context[:metadata]
+
           location = get_location(io, context.merge(metadata: metadata))
 
           put(io, context.merge(location: location, metadata: metadata))

@@ -241,6 +241,13 @@ describe Shrine do
       assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
     end
 
+    it "allows setting metadata manually" do
+      photo = fakeio("photo", filename: "random")
+      uploaded_file = @uploader.store(photo, metadata: { "filename" => "nature.jpg", "foo" => "bar" })
+      assert_equal "nature.jpg", uploaded_file.metadata["filename"]
+      assert_equal "bar",        uploaded_file.metadata["foo"]
+    end
+
     it "copies metadata from other UploadedFiles" do
       another_uploaded_file = @uploader.store(fakeio)
       another_uploaded_file.metadata["foo"] = "bar"

@@ -14,8 +14,8 @@ uploaded_file.metadata #=>
 # }
 ```
 
-You can also use `Shrine#extract_metadata` directly to extract metadata from
-any IO object.
+Under the hood `Shrine#extract_metadata` is called, which you can also use
+directly to extract metadata from any IO object.
 
 ```rb
 uploader.extract_metadata(io) #=>
@@ -24,6 +24,15 @@ uploader.extract_metadata(io) #=>
 #   "filename" => "matrix.mp4",
 #   "mime_type" => "video/mp4",
 # }
+```
+
+Note that you can also manually add or override metadata on upload by passing
+the `:metadata` option to `Shrine#upload`:
+
+```rb
+uploaded_file = uploader.upload(file, metadata: { "filename" => "Matrix[1999].mp4", "foo" => "bar" })
+uploaded_file.original_filename #=> "Matrix[1999].mp4"
+uploaded_file.metadata["foo"]   #=> "bar"
 ```
 
 ## MIME type
@@ -108,7 +117,7 @@ uploaded_file.metadata["exif"] #=> {...}
 uploaded_file.exif             #=> {...}
 ```
 
-Of, if you're uploading videos, you might want to extract some video-specific
+Or, if you're uploading videos, you might want to extract some video-specific
 meatadata:
 
 ```rb
