@@ -208,7 +208,7 @@ forwarded directly to `Storage#upload` (see the documentation of your storage
 for the list of available options):
 
 ```rb
-uplaoder.upload(file, upload_options: { acl: "public-read" })
+uploader.upload(file, upload_options: { acl: "public-read" })
 ```
 
 ### IO abstraction
