@@ -253,15 +253,6 @@ generic gem.
 To demonstrate, here is an example of transcoding videos using
 [streamio-ffmpeg]:
 
-```sh
-$ brew install ffmpeg
-```
-
-```rb
-# Gemfile
-gem "streamio-ffmpeg"
-```
-
 ```rb
 require "streamio-ffmpeg"
 
