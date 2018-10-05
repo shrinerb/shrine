@@ -353,6 +353,22 @@ end
 See [this walkthrough][checksum walkthrough] for a complete JavaScript
 implementation of checksums.
 
+Note that PUT presigns don't support the `:content_length_range` option, but
+they support `:content_length` instead. So, if you want to limit the upload
+size during direct uploads, you can pass an additional `size` query parameter
+to the presign request on the client side, and require it when generating
+presign options:
+
+```rb
+Shrine.plugin :presign_endpoint, presign_options: -> (request) do
+  {
+    method: :put,
+    content_length: request.params.fetch("size"),
+    content_md5: request.params["checksum"],
+  }
+end
+```
+
 ## Testing
 
 To avoid network requests in your test and development environment, you can use
