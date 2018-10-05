@@ -54,8 +54,8 @@ Shrine.storages = {
 }
 ```
 
-If you're using AWS S3 storage, in you can switch to using [Minio] (explained
-below), both in test and development environment. Alternatively, you can [stub
+If you're using AWS S3 storage, you can use [Minio] (explained below) instead
+of S3, both in test and development environment. Alternatively, you can [stub
 aws-sdk-s3 requests][aws-sdk-ruby stubs] in tests.
 
 ### Minio
