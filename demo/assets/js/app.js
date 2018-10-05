@@ -49,7 +49,7 @@ function fileUpload(fileInput) {
     if (fileInput.dataset.uploadServer == 's3') {
       // construct uploaded file data in the format that Shrine expects
       var uploadedFileData = JSON.stringify({
-        id: data['key'].match(/^cache\/(.+)/)[1], // object key without prefix
+        id: file.meta['key'].match(/^cache\/(.+)/)[1], // object key without prefix
         storage: 'cache',
         metadata: {
           size:      file.size,
