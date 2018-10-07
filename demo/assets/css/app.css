@@ -1,3 +1,6 @@
+@import url('~bootstrap/dist/css/bootstrap.css');
+@import url('~@uppy/core/dist/style.css');
+
 .container {
   width: 800px;
 }

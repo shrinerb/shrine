@@ -5,15 +5,13 @@ require "./routes/direct_upload"
 
 class ShrineDemo < Roda
   plugin :public
-  plugin :assets, css: "app.css", js: "app.js"
   plugin :run_handler
 
   use Rack::Session::Cookie, secret: "secret"
   plugin :route_csrf, check_header: true
 
   route do |r|
-    r.public # serve static assets
-    r.assets # serve dynamic assets
+    r.public # serve uploads
 
     check_csrf!
 

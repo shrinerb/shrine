@@ -1,3 +1,5 @@
 Gemfile.lock
 database.sqlite3
 public/uploads
+node_modules
+public/dist

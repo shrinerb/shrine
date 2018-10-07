@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>Shrine Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Shrine demo featuring multiple file uploads to S3 with Uppy" />
 
-    <script src="https://unpkg.com/babel-polyfill@6.26.0/dist/polyfill.min.js"></script>
-    <script src="https://unpkg.com/whatwg-fetch@2.0.3/fetch.js"></script>
-    <script src="https://transloadit.edgly.net/releases/uppy/v0.25.2/dist/uppy.min.js"></script>
-
-    <link href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" />
-    <link href="https://transloadit.edgly.net/releases/uppy/v0.25.2/dist/uppy.min.css" rel="stylesheet" />
-    <%= assets(:css) %>
+    <link href="/dist/bundle.css" rel="stylesheet" />
 
     <script type="text/template" id="template-photo">
       <% f = Forme::Form.new(Album.new, labeler: :explicit) %>
@@ -26,6 +21,6 @@
       <%= yield %>
     </div>
 
-    <%= assets(:js) %>
+    <script src="/dist/bundle.js"></script>
   </body>
 </html>
