@@ -1,5 +1,7 @@
 ## HEAD
 
+* In `upload_endpoint` error with "Upload Not Valid" when `file` parameter is present but not a file (@janko-m)
+
 * Allow `Attacher#assign` to accept options for `Shrine#upload` (@janko-m)
 
 * Add `:metadata` option to `Shrine#upload` for manually overriding extracted metadata (@janko-m)

@@ -45,7 +45,7 @@ describe Shrine::Plugins::UploadEndpoint do
     response = app.post "/", multipart: {file: "image"}
     assert_equal 400, response.status
     assert_equal "text/plain", response.headers["Content-Type"]
-    assert_equal "Upload Not Found", response.body_binary
+    assert_equal "Upload Not Valid", response.body_binary
   end
 
   it "validates that param is present" do

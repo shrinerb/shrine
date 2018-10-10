@@ -196,7 +196,8 @@ class Shrine
         def get_io(request)
           file = request.params["file"]
 
-          error!(400, "Upload Not Found") unless file.is_a?(Hash) && file[:tempfile]
+          error!(400, "Upload Not Found") if file.nil?
+          error!(400, "Upload Not Valid") unless file.is_a?(Hash) && file[:tempfile]
           error!(413, "Upload Too Large") if @max_size && file[:tempfile].size > @max_size
 
           verify_checksum!(file[:tempfile], request.env["HTTP_CONTENT_MD5"]) if request.env["HTTP_CONTENT_MD5"]
