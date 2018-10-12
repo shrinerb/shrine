@@ -29,7 +29,7 @@ function fileUpload(fileInput) {
     uppy.use(Uppy.AwsS3, {
       getUploadParameters: function (file) {
         // Shrine's presign endpoint
-        return fetch('/presign?filename=' + file.name + '&type=' + file.type, {
+        return fetch('/presign?filename=' + encodeURIComponent(file.name) + '&type=' + file.type, {
           credentials: 'same-origin', // send cookies
         }).then(function (response) { return response.json() })
       }
