@@ -11,6 +11,7 @@ function fileUpload(fileInput) {
 
   var uppy = Uppy.Core({
       id: fileInput.id,
+      autoProceed: true,
       restrictions: {
         allowedFileTypes: fileInput.accept.split(','),
       },
@@ -28,8 +29,10 @@ function fileUpload(fileInput) {
   if (fileInput.dataset.uploadServer == 's3') {
     uppy.use(Uppy.AwsS3, {
       getUploadParameters: function (file) {
-        // Shrine's presign endpoint
-        return fetch('/presign?filename=' + encodeURIComponent(file.name) + '&type=' + file.type, {
+        var filename = encodeURIComponent(file.name)
+        var type     = encodeURIComponent(file.type)
+
+        return fetch('/presign?filename=' + filename + '&type=' + type, { // Shrine's presign endpoint
           credentials: 'same-origin', // send cookies
         }).then(function (response) { return response.json() })
       }
