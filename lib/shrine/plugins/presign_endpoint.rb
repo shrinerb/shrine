@@ -79,9 +79,9 @@ class Shrine
     #       type         = request.params["type"]
     #
     #       {
-    #         content_length_range: 0..(10*1024*1024),                     # limit filesize to 10MB
-    #         content_disposition: "attachment; filename=\"#{filename}\"", # download with original filename
-    #         content_type:        type,                                   # set correct content type
+    #         content_length_range: 0..(10*1024*1024),                 # limit filesize to 10MB
+    #         content_disposition: "inline; filename=\"#{filename}\"", # download with original filename
+    #         content_type:        type,                               # set correct content type
     #       }
     #     end
     #
