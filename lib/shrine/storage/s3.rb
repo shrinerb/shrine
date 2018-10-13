@@ -115,18 +115,22 @@ class Shrine
     #
     # All other options are forwarded to the aws-sdk-s3 gem:
     #
-    #     s3.url(expires_in: 15)
-    #     s3.url(virtual_host: true)
+    #     s3.url(expires_in: 15, response_content_disposition: "...")
     #
-    # ## CDN
+    # ## URL Host
     #
-    # If you're using a CDN with S3 like Amazon CloudFront, you can specify
-    # the `:host` option to `#url`:
+    # If you want your S3 object URLs to be generated with a different URL host
+    # (e.g. a CDN), you can specify the `:host` option to `#url`:
     #
     #     s3.url("image.jpg", host: "http://abc123.cloudfront.net")
     #     #=> "http://abc123.cloudfront.net/image.jpg"
     #
-    # You have the `:host` option passed automatically for every URL with the
+    # The host URL can include a path prefix, but it needs to end with a slash:
+    #
+    #     s3.url("image.jpg", host: "https://your-s3-host.com/prefix/") # needs to end with a slash
+    #     #=> "http://your-s3-host.com/prefix/image.jpg"
+    #
+    # To have the `:host` option passed automatically for every URL, use the
     # `default_url_options` plugin.
     #
     #     plugin :default_url_options, store: { host: "http://abc123.cloudfront.net" }
@@ -369,7 +373,7 @@ class Shrine
         if host
           uri = URI.parse(url)
           uri.path = uri.path.match(/^\/#{bucket.name}/).post_match unless uri.host.include?(bucket.name)
-          url = URI.join(host, uri.request_uri).to_s
+          url = URI.join(host, uri.request_uri[1..-1]).to_s
         end
 
         if signer

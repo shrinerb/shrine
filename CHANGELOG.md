@@ -1,6 +1,8 @@
 ## HEAD
 
-* Revert adding bucket name to URL path when `:host` is used with `:force_path_style` (@janko-m)
+* Allow `:host` in `S3#url` to specify a host URL with an additional path prefix (@janko-m)
+
+* Revert adding bucket name to URL path in `S3#url` when `:host` is used with `:force_path_style` (@janko-m)
 
 * In `upload_endpoint` error with "Upload Not Valid" when `file` parameter is present but not a file (@janko-m)
 
