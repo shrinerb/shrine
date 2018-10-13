@@ -1,5 +1,7 @@
 ## HEAD
 
+* Revert adding bucket name to URL path when `:host` is used with `:force_path_style` (@janko-m)
+
 * In `upload_endpoint` error with "Upload Not Valid" when `file` parameter is present but not a file (@janko-m)
 
 * Allow `Attacher#assign` to accept options for `Shrine#upload` (@janko-m)

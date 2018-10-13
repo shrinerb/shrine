@@ -495,25 +495,23 @@ describe Shrine::Storage::S3 do
     it "accepts :host for specifying CDN links" do
       url = s3.url("foo/bar quux", host: "http://123.cloudfront.net")
       assert_match "http://123.cloudfront.net/foo/bar%20quux", url
-      refute_nil URI(url).query
+      refute_nil URI.parse(url).query
 
-      url = s3.url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", url
+      url = s3(bucket: "my.bucket").url("foo/bar quux", host: "http://123.cloudfront.net")
+      assert_match "http://123.cloudfront.net/foo/bar%20quux", url
+      refute_nil URI.parse(url).query
 
-      url = s3(bucket: "my.bucket").url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/foo/bar%20quux", url
+      url = s3(bucket: "my-bucket", force_path_style: true).url("foo/bar quux", host: "http://123.cloudfront.net")
+      assert_match "http://123.cloudfront.net/foo/bar%20quux", url
+      refute_nil URI.parse(url).query
 
-      url = s3(bucket: "my.bucket").url("my.bucket/foo/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/my.bucket/foo/bar%20quux", url
+      url = s3(bucket: "my.bucket").url("my.bucket/foo/bar quux", host: "http://123.cloudfront.net")
+      assert_match "http://123.cloudfront.net/my.bucket/foo/bar%20quux", url
+      refute_nil URI.parse(url).query
 
-      url = s3(bucket: "my-bucket").url("my-bucket/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/my-bucket/bar%20quux", url
-
-      url = s3(bucket: "my-bucket", force_path_style: true).url("foo/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/my-bucket/foo/bar%20quux", url
-
-      url = s3(bucket: "my-bucket", force_path_style: true).url("my-bucket/bar quux", host: "http://123.cloudfront.net", public: true)
-      assert_equal "http://123.cloudfront.net/my-bucket/my-bucket/bar%20quux", url
+      url = s3(bucket: "my-bucket").url("my-bucket/bar quux", host: "http://123.cloudfront.net")
+      assert_match "http://123.cloudfront.net/my-bucket/bar%20quux", url
+      refute_nil URI.parse(url).query
     end
 
     it "uses the custom signer" do
