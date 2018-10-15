@@ -12,6 +12,9 @@ class Shrine
     # from your storage isn't accessible over URL (e.g. database storages) or
     # if you want to authenticate your downloads. It requires the [Roda] gem.
     #
+    #     # Gemfile
+    #     gem 'roda' # for mounting Shrine's download endpoint
+    #
     # You can configure the plugin with the path prefix which the endpoint will
     # be mounted on.
     #
