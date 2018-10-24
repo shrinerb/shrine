@@ -179,9 +179,14 @@ class Shrine
 
             raise Error, "file command failed to spawn: #{stderr.read}" if status.nil?
             raise Error, "file command failed: #{stderr.read}" unless status.success?
+
             $stderr.print(stderr.read)
 
-            stdout.read.strip
+            output = stdout.read.strip
+
+            raise Error, "file command failed: #{output}" if output.include?("cannot open")
+
+            output
           end
         rescue Errno::ENOENT
           raise Error, "file command-line tool is not installed"
