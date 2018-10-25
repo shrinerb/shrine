@@ -49,6 +49,14 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_match "file command failed to spawn: ", exception.message
     end
 
+    it "raises error if file command couldn't open file" do
+      result = Open3.popen3("file", "--version")
+      result[1] = StringIO.new("cannot open: No such file or directory") # stdout
+      Open3.expects(:popen3).yields(result)
+      exception = assert_raises(Shrine::Error) { @shrine.determine_mime_type(fakeio("d")) }
+      assert_match "file command failed: cannot open: No such file or directory", exception.message
+    end
+
     it "fowards any warnings to stderr" do
       assert_output(nil, "") { @shrine.determine_mime_type(image) }
 
