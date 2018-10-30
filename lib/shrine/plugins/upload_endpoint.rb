@@ -94,7 +94,7 @@ class Shrine
     # You can also customize the upload itself via the `:upload` option:
     #
     #     plugin :upload_endpoint, upload: -> (io, context, request) do
-    #       # perform uploading and return the Shrine::UploadedFile
+    #       Shrine.new(:cache).upload(io, context)
     #     end
     #
     # ## Response
@@ -150,6 +150,9 @@ class Shrine
       # calls `#upload` with the uploaded file, and returns the uploaded file
       # information in JSON format.
       class App
+        CONTENT_TYPE_JSON = "application/json; charset=utf-8"
+        CONTENT_TYPE_TEXT = "text/plain"
+
         # Writes given options to instance variables.
         def initialize(options)
           options.each do |name, value|
@@ -233,7 +236,7 @@ class Shrine
           if @rack_response
             @rack_response.call(object, request)
           else
-            [200, {"Content-Type" => "application/json"}, [object.to_json]]
+            [200, {"Content-Type" => CONTENT_TYPE_JSON}, [object.to_json]]
           end
         end
 
@@ -247,7 +250,7 @@ class Shrine
 
         # Used for early returning an error response.
         def error!(status, message)
-          throw :halt, [status, {"Content-Type" => "text/plain"}, [message]]
+          throw :halt, [status, {"Content-Type" => CONTENT_TYPE_TEXT}, [message]]
         end
 
         # Returns the uploader around the specified storage.

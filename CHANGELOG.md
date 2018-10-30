@@ -1,5 +1,9 @@
 ## HEAD
 
+* Specify UTF-8 charset in `Content-Type` response header in `upload_endpoint` plugin (@janko-m)
+
+* Force UTF-8 encoding on filenames coming from Rack's multipart request params in `rack_file` plugin (@janko-m)
+
 * Allow `:host` in `S3#url` to specify a host URL with an additional path prefix (@janko-m)
 
 * Revert adding bucket name to URL path in `S3#url` when `:host` is used with `:force_path_style` (@janko-m)
