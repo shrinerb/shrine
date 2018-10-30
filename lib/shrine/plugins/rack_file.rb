@@ -47,6 +47,14 @@ class Shrine
       module ClassMethods
         # Accepts a Rack uploaded file hash and wraps it in an IO object.
         def rack_file(hash)
+          if hash[:filename]
+            # Rack can sometimes return the filename binary encoded, so we force
+            # the encoding to utf-8
+            hash = hash.merge(
+              filename: hash[:filename].dup.force_encoding(Encoding::UTF_8)
+            )
+          end
+
           UploadedFile.new(hash)
         end
       end

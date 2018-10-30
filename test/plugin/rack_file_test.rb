@@ -64,6 +64,15 @@ describe Shrine::Plugins::RackFile do
     assert_equal "image/jpeg", rack_file.content_type
   end
 
+  it "converts filename from binary encoding to utf-8" do
+    @rack_hash[:filename] = "über_pdf_with_1337%_leetness.pdf".b
+
+    rack_file = @shrine.rack_file(@rack_hash)
+
+    assert_equal Encoding::UTF_8, rack_file.original_filename.encoding
+    assert_equal Encoding::BINARY, @rack_hash[:filename].encoding
+  end
+
   it "supports attaching Rack files directly" do
     @attacher.assign(@rack_hash)
 

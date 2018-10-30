@@ -1,6 +1,7 @@
 require "test_helper"
 require "shrine/plugins/upload_endpoint"
 require "rack/test_app"
+require "http/form_data"
 require "json"
 
 describe Shrine::Plugins::UploadEndpoint do
@@ -9,18 +10,21 @@ describe Shrine::Plugins::UploadEndpoint do
   end
 
   def endpoint
-    @uploader.class.upload_endpoint(:cache)
+    @shrine.upload_endpoint(:cache)
   end
 
   before do
     @uploader = uploader { plugin :upload_endpoint }
+    @shrine = @uploader.class
   end
 
   it "returns a JSON response" do
     response = app.post "/", multipart: {file: image}
+
     assert_equal 200, response.status
-    assert_equal "application/json", response.headers["Content-Type"]
-    refute_empty               response.body_json["id"]
+    assert_equal "application/json; charset=utf-8", response.headers["Content-Type"]
+
+    assert_match /^\w+\.jpg$/, response.body_json["id"]
     assert_equal "cache",      response.body_json["storage"]
     assert_equal image.size,   response.body_json["metadata"]["size"]
     assert_equal "image.jpg",  response.body_json["metadata"]["filename"]
@@ -29,12 +33,12 @@ describe Shrine::Plugins::UploadEndpoint do
 
   it "uploads the file" do
     response = app.post "/", multipart: {file: image}
-    uploaded_file = @uploader.class.uploaded_file(response.body_json)
+    uploaded_file = @shrine.uploaded_file(response.body_json)
     assert_equal image.read, uploaded_file.read
   end
 
   it "validates maximum size" do
-    @uploader.class.plugin :upload_endpoint, max_size: 10
+    @shrine.plugin :upload_endpoint, max_size: 10
     response = app.post "/", multipart: {file: image}
     assert_equal 413, response.status
     assert_equal "text/plain", response.headers["Content-Type"]
@@ -55,31 +59,40 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal "Upload Not Found", response.body_binary
   end
 
+  it "handles filenames with UTF-8 characters" do
+    filename = "über_pdf_with_1337%_leetness.pdf"
+    form = HTTP::FormData.create(file: HTTP::FormData::Part.new("", filename: filename))
+    response = app.post "/", multipart: {input: form.to_s}, headers: {"Content-Type" => form.content_type}
+    assert_equal 200, response.status
+    uploaded_file = @shrine.uploaded_file(response.body_json)
+    assert_equal filename, uploaded_file.original_filename
+  end
+
   it "adds the :action parameter to context" do
-    @uploader.class.class_eval { def extract_metadata(io, context); {"action" => context[:action]}; end }
+    @shrine.class_eval { def extract_metadata(io, context); {"action" => context[:action]}; end }
     response = app.post "/", multipart: {file: image}
     assert_equal "upload", response.body_json["metadata"]["action"]
   end
 
   it "adds the :request parameter to context" do
-    @uploader.class.class_eval { def extract_metadata(io, context); {"query" => context[:request].query_string}; end }
+    @shrine.class_eval { def extract_metadata(io, context); {"query" => context[:request].query_string}; end }
     response = app.post "/?foo=bar", multipart: {file: image}
     assert_equal "foo=bar", response.body_json["metadata"]["query"]
   end
 
   it "accepts upload context" do
-    @uploader.class.plugin :upload_endpoint, upload_context: -> (r) { { location: "foo" } }
+    @shrine.plugin :upload_endpoint, upload_context: -> (r) { { location: "foo" } }
     response = app.post "/", multipart: {file: image}
     assert_equal "foo", response.body_json["id"]
-    uploaded_file = @uploader.class.uploaded_file(response.body_json)
+    uploaded_file = @shrine.uploaded_file(response.body_json)
     assert_equal image.read, uploaded_file.read
   end
 
   it "accepts upload proc" do
-    @uploader.class.plugin :upload_endpoint, upload: -> (i, c, r) { @uploader.upload(i, c.merge(location: "foo")) }
+    @shrine.plugin :upload_endpoint, upload: -> (i, c, r) { @uploader.upload(i, c.merge(location: "foo")) }
     response = app.post "/", multipart: {file: image}
     assert_equal "foo", response.body_json["id"]
-    uploaded_file = @uploader.class.uploaded_file(response.body_json)
+    uploaded_file = @shrine.uploaded_file(response.body_json)
     assert_equal image.read, uploaded_file.read
   end
 
@@ -97,7 +110,7 @@ describe Shrine::Plugins::UploadEndpoint do
   end
 
   it "accepts response proc" do
-    @uploader.class.plugin :upload_endpoint, rack_response: -> (o, r) do
+    @shrine.plugin :upload_endpoint, rack_response: -> (o, r) do
       [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
     response = app.post "/", multipart: {file: image}
@@ -106,7 +119,7 @@ describe Shrine::Plugins::UploadEndpoint do
   end
 
   it "allows overriding options when instantiating the endpoint" do
-    app = Rack::TestApp.wrap(@uploader.class.upload_endpoint(:cache, max_size: 10))
+    app = Rack::TestApp.wrap(@shrine.upload_endpoint(:cache, max_size: 10))
     response = app.post "/", multipart: {file: image}
     assert_equal 413, response.status
   end
