@@ -28,7 +28,7 @@ Shrine::Plugins::DownloadEndpoint::FileMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/download_endpoint.rb">lib/shrine/plugins/download_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/download_endpoint.rb">lib/shrine/plugins/download_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -62,7 +62,7 @@ Shrine::Plugins::DownloadEndpoint::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-download_url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-download_url-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 142</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_url</span>&#x000A;  [<span class="ruby-identifier">download_host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">download_prefix</span>, <span class="ruby-identifier">download_identifier</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-download_url-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 145</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_url</span>&#x000A;  [<span class="ruby-identifier">download_host</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">download_prefix</span>, <span class="ruby-identifier">download_identifier</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-url'>
@@ -83,7 +83,7 @@ storages it just returns their original URL.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 133</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">download_storages</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">download_storages</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The :storages option for download_endpoint plugin is deprecated and will be obsolete in Shrine 3. Use UploadedFile#download_url instead.&quot;</span>)&#x000A;    <span class="ruby-identifier">download_url</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-url-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 136</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">download_storages</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">download_storages</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">storage_key</span>.<span class="ruby-identifier">to_sym</span>)&#x000A;    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The :storages option for download_endpoint plugin is deprecated and will be obsolete in Shrine 3. Use UploadedFile#download_url instead.&quot;</span>)&#x000A;    <span class="ruby-identifier">download_url</span>&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

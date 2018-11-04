@@ -30,7 +30,7 @@ doc/metadata.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-04-28 23:08:47 +0200</span>
+<span class='datetime'>2018-10-25 17:47:40 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -45,10 +45,15 @@ automatically extracts metadata from it, and stores them in the
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;size&quot; =&gt; 345993,</span>&#x000A;<span class="ruby-comment">#   &quot;filename&quot; =&gt; &quot;matrix.mp4&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;video/mp4&quot;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
-<p>You can also use <code>Shrine#extract_metadata</code> directly to extract
-metadata from any IO object.</p>
+<p>Under the hood <code>Shrine#extract_metadata</code> is called, which you
+can also use directly to extract metadata from any IO object.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;size&quot; =&gt; 345993,</span>&#x000A;<span class="ruby-comment">#   &quot;filename&quot; =&gt; &quot;matrix.mp4&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;video/mp4&quot;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
+
+<p>Note that you can also manually add or override metadata on upload by
+passing the <code>:metadata</code> option to <code>Shrine#upload</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;filename&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;Matrix[1999].mp4&quot;</span>, <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;Matrix[1999].mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;foo&quot;</span>]   <span class="ruby-comment">#=&gt; &quot;bar&quot;</span></pre>
 
 <h2 id="label-MIME+type">MIME type<span><a href="#label-MIME+type">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -94,7 +99,7 @@ object. By default, the plugin uses <a
 href="https://github.com/sdsykes/fastimage">FastImage</a> to analyze
 dimensions, but you can also have it use <a
 href="https://github.com/minimagick/minimagick">MiniMagick</a> or <a
-href="https://github.com/jcupitt/ruby-vips">ruby-vips</a>:</p>
+href="https://github.com/libvips/ruby-vips">ruby-vips</a>:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:mini_magick</span></pre>
 
@@ -112,7 +117,7 @@ to extract EXIF data from images:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;exif&quot;</span>] <span class="ruby-comment">#=&gt; {...}</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exif</span>             <span class="ruby-comment">#=&gt; {...}</span></pre>
 
-<p>Of, if you&#39;re uploading videos, you might want to extract some
+<p>Or, if you&#39;re uploading videos, you might want to extract some
 video-specific meatadata:</p>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;streamio-ffmpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">VideoUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;  <span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">movie</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>) }&#x000A;&#x000A;    { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;      <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;      <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;      <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
@@ -142,36 +147,55 @@ plugin.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_type</span> <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
 
-<h2 id="label-Refreshing+metadata">Refreshing metadata<span><a href="#label-Refreshing+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>When uploading directly to the cloud, the metadata of the original file by
-default won&#39;t get extracted on the server side, because your
-application never received the file content.</p>
+<p>When attaching files that were uploaded directly to the cloud or a <a
+href="https://github.com/janko-m/tus-ruby-server">tus server</a>, <a
+href="../../classes/Shrine.html">Shrine</a> won&#39;t automatically extract
+metadata from them, instead it will copy any existing metadata that was set
+on the client side. The reason why this is the default behaviour is because
+extracting the metadata would require (at least partially) retrieving file
+content from the storage, which could potentially be expensive depending on
+the storage and the type of metadata being extracted.</p>
 
-<p>To have <a href="../../classes/Shrine.html">Shrine</a> extra metadata when
-a cached file is assigned to the attachment attribute, it&#39;s recommended
-to load the <code>restore_cached_data</code> plugin.</p>
+<p>If you&#39;re just attaching files uploaded directly to local disk, there
+wouldn&#39;t be any additional performance penalty for extracting metadata.
+However, if you&#39;re attaching files uploaded directly to a cloud service
+like S3, retrieving file content for metadata extraction would require an
+HTTP download. If you&#39;re using just the
+<code>determine_mime_type</code> plugin, only a small portion of the file
+will be downloaded, so the performance impact might not be so big. But in
+other cases you might have to download the whole file.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span> <span class="ruby-comment"># extract metadata from cached files on assingment</span></pre>
+<p>There are two ways of extracting metadata from directly uploaded files. If
+you want metadata to be automatically extracted on assignment (which is
+useful if you want to validate the extracted metadata or have it
+immediately available), you can load the <code>restore_cached_data</code>
+plugin:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span> <span class="ruby-comment"># automatically extract metadata from cached files on assingment</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;ks9elsd.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{}}&#39;</span> <span class="ruby-comment"># metadata is extracted</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;size&quot; =&gt; 4593484,</span>&#x000A;<span class="ruby-comment">#   &quot;filename&quot; =&gt; &quot;nature.jpg&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;image/jpeg&quot;</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
-<p>Extracting metadata from a cached file requires retrieving file content
-from the storage, which might not be desirable depending on your case,
-that&#39;s why <code>restore_cached_data</code> plugin is not loaded by
-default. However, <a href="../../classes/Shrine.html">Shrine</a> will not
-download the whole file from the storage, instead, it will open a
-connection to the storage, and the metadata analyzers will download how
-much of the file they need. Most MIME type analyzers and the FastImage
-dimensions analyzer need only the first few kilobytes.</p>
-
-<p>You can also extract metadata from an uploaded file explicitly using the
+<p>On the other hand, if you&#39;re using backgrounding, you can extract
+metadata during background promotion using the
 <code>refresh_metadata</code> plugin (which the
-<code>restore_cached_data</code> plugin uses internally).</p>
+<code>restore_cached_data</code> plugin uses internally):</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span></pre>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {}</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">refresh_metadata!</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {&quot;filename&quot;=&gt;&quot;nature.jpg&quot;,&quot;size&quot;=&gt;532894,&quot;mime_type&quot;=&gt;&quot;image/jpeg&quot;}</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;  <span class="ruby-comment"># this will be called in the background if using backgrounding plugin</span>&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">refresh_metadata!</span> <span class="ruby-comment"># extracts metadata and updates `io.metadata`</span>&#x000A;    <span class="ruby-identifier">io</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>If you have metadata that is cheap to extract in the foreground, but also
+have additional metadata that can be extracted asynchronously, you can
+combine the two approaches. For example, if you&#39;re attaching video
+files, you might want to extract MIME type upfront and video-specific
+metadata in a background job, which can be done as follows (provided that
+<code>backgrounding</code> plugin is used):</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span></pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span> <span class="ruby-comment"># this will be called in the foreground</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;  <span class="ruby-comment"># this will be called in the background if using backgrounding plugin</span>&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">additional_metadata</span> = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-comment"># example of metadata extraction</span>&#x000A;      <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>) <span class="ruby-comment"># uses the streamio-ffmpeg gem</span>&#x000A;&#x000A;      { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;        <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;        <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;        <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">additional_metadata</span>)&#x000A;&#x000A;    <span class="ruby-identifier">io</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

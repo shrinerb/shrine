@@ -30,7 +30,7 @@ doc/testing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-04-28 23:08:47 +0200</span>
+<span class='datetime'>2018-10-25 17:47:40 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -80,9 +80,9 @@ tests.</p>
 
 <pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
 
-<p>If you&#39;re using AWS S3 storage, in you can switch to using <a
-href="https://minio.io">Minio</a> (explained below), both in test and
-development environment. Alternatively, you can <a
+<p>If you&#39;re using AWS S3 storage, you can use <a
+href="https://minio.io">Minio</a> (explained below) instead of S3, both in
+test and development environment. Alternatively, you can <a
 href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub
 aws-sdk-s3 requests</a> in tests.</p>
 

@@ -28,7 +28,7 @@ Shrine::Plugins::ModuleInclude
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/module_include.rb">lib/shrine/plugins/module_include.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/module_include.rb">lib/shrine/plugins/module_include.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -46,7 +46,7 @@ core classes for the given uploader with modules/methods.</p>
 
 <p>Alternatively you can pass in a block (which internally creates a module):</p>
 
-<pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-identifier">module_eval</span> <span class="ruby-identifier">&lt;&lt;-RUBY</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-identifier">__LINE</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;<span class="ruby-value">      def #{@name}_size(version)&#x000A;        if #{@name}.is_a?(Hash)&#x000A;          #{@name}[version].size&#x000A;        else&#x000A;          #{@name}.size if #{@name}&#x000A;        end&#x000A;      end&#x000A;</span><span class="ruby-identifier">    RUBY</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-identifier">module_eval</span> <span class="ruby-identifier">&lt;&lt;-RUBY</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;<span class="ruby-value">      def #{@name}_size(version)&#x000A;        if #{@name}.is_a?(Hash)&#x000A;          #{@name}[version].size&#x000A;        else&#x000A;          #{@name}.size if #{@name}&#x000A;        end&#x000A;      end&#x000A;</span><span class="ruby-identifier">    RUBY</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The above defines an additional <code>#&lt;attachment&gt;_size</code>
 method on the attachment module, which is what is included in your model.</p>

@@ -28,7 +28,7 @@ Shrine::Plugins::UploadEndpoint
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/upload_endpoint.rb">lib/shrine/plugins/upload_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/upload_endpoint.rb">lib/shrine/plugins/upload_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -104,7 +104,7 @@ database record. The endpoint will send the following upload context:</p>
 <p>You can also customize the upload itself via the <code>:upload</code>
 option:</p>
 
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>, <span class="ruby-value">upload:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>, <span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># perform uploading and return the Shrine::UploadedFile</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span>, <span class="ruby-value">upload:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>, <span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:cache</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="module-Shrine::Plugins::UploadEndpoint-label-Response">Response<span><a href="#module-Shrine::Plugins::UploadEndpoint-label-Response">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

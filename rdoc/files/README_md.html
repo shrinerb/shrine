@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-08-21 20:45:00 +0200</span>
+<span class='datetime'>2018-10-25 17:47:40 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -66,7 +66,7 @@ href="https://shrinerb.com/rdoc/classes/Shrine/Plugins/Activerecord.html">Active
 </li><li>
 <p><strong>Flexible processing</strong> – generate thumbnails with <a
 href="https://www.imagemagick.org/script/index.php">ImageMagick</a> or <a
-href="http://jcupitt.github.io/libvips/">libvips</a> using the <a
+href="http://libvips.github.io/libvips/">libvips</a> using the <a
 href="https://github.com/janko-m/image_processing">ImageProcessing</a> gem</p>
 </li><li>
 <p><strong>Metadata validation</strong> – <a
@@ -108,6 +108,9 @@ href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a></p>
 </li><li>
 <p>Source: <a
 href="https://github.com/shrinerb/shrine">github.com/shrinerb/shrine</a></p>
+</li><li>
+<p>Wiki: <a
+href="https://github.com/shrinerb/shrine/wiki">github.com/shrinerb/shrine/wiki</a></p>
 </li><li>
 <p>Bugs: <a
 href="https://github.com/shrinerb/shrine/issues">github.com/shrinerb/shrine/issues</a></p>
@@ -230,6 +233,12 @@ file on the output.</p>
 <p>closing the uploaded file</p>
 </li></ul>
 
+<p>Additional upload options can be passed via <code>:upload_options</code>,
+and they will be forwarded directly to <code>Storage#upload</code> (see the
+documentation of your storage for the list of available options):</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">upload_options:</span> { <span class="ruby-value">acl:</span> <span class="ruby-string">&quot;public-read&quot;</span> })</pre>
+
 <h3 id="label-IO+abstraction">IO abstraction<span><a href="#label-IO+abstraction">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p><a href="../classes/Shrine.html">Shrine</a> is able to upload any IO-like
@@ -339,7 +348,7 @@ hidden form field.</p>
 <h2 id="label-Attacher">Attacher<span><a href="#label-Attacher">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>The model attachment attributes and callbacks just delegate the behaviour
-to ther underlying <code>Shrine::Attacher</code> object.</p>
+to their underlying <code>Shrine::Attacher</code> object.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span></pre>
 
@@ -360,6 +369,11 @@ temporary and <code>:store</code> for permanent storage, but you can
 specify a different storage:</p>
 
 <pre class="ruby"><span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>, <span class="ruby-value">cache:</span> <span class="ruby-value">:other_cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>(<span class="ruby-value">cache:</span> <span class="ruby-value">:other_cache</span>, <span class="ruby-value">store:</span> <span class="ruby-value">:other_store</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span> <span class="ruby-comment"># uploads to :other_cache storage</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>         <span class="ruby-comment"># promotes to :other_store storage</span></pre>
+
+<p>You can also skip the temporary storage altogether and upload files
+directly to the primary storage:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">file</span>) <span class="ruby-comment"># upload file directly to permanent storage</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)           <span class="ruby-comment"># attach the uploaded file</span></pre>
 
 <p>Whenever the attacher uploads or deletes files, it sends a
 <code>context</code> hash which includes <code>:record</code>,
@@ -426,7 +440,7 @@ MIME type from <em>file content</em>.</p>
 utility is used to determine the MIME type, but you can also choose a
 different analyzer – see the plugin documentation for more details.</p>
 
-<h3 id="label-Custom+metadata">Custom metadata<span><a href="#label-Custom+metadata">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<h3 id="label-Other+metadata">Other metadata<span><a href="#label-Other+metadata">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>In addition to <code>size</code>, <code>filename</code>, and
 <code>mime_type</code>, you can also extract image dimensions using the
@@ -434,6 +448,11 @@ different analyzer – see the plugin documentation for more details.</p>
 the <code>add_metadata</code> plugin. Check out the <a
 href="https://shrinerb.com/rdoc/files/doc/metadata_md.html">Extracting
 Metadata</a> guide for more details.</p>
+
+<p>Note that you can also manually override extracted metadata by passing the
+<code>:metadata</code> option to <code>Shrine#upload</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;filename&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;Matrix[1999].mp4&quot;</span>, <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;Matrix[1999].mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;foo&quot;</span>]   <span class="ruby-comment">#=&gt; &quot;bar&quot;</span></pre>
 
 <h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -446,7 +465,7 @@ thumbnails. It&#39;s recommended to use the <strong><a
 href="https://github.com/janko-m/image_processing">ImageProcessing</a></strong>
 gem for this, which provides a convenient API over <a
 href="https://www.imagemagick.org/script/index.php">ImageMagick</a> and <a
-href="http://jcupitt.github.io/libvips/">libvips</a>. You also need to load
+href="http://libvips.github.io/libvips/">libvips</a>. You also need to load
 the <code>versions</code> plugin to be able to save multiple files.</p>
 
 <pre>$ brew install imagemagick</pre>
@@ -466,23 +485,24 @@ then read them as a Hash of <code>Shrine::UploadedFile</code> objects.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>(<span class="ruby-value">:large</span>) <span class="ruby-comment">#=&gt; &quot;https://...&quot;</span></pre>
 
-<p>For more details, including examples of how to do custom processing, see
-the <a href="https://shrinerb.com/rdoc/files/doc/processing_md.html">File
+<p>For more details, including examples of how to do custom and on-the-fly
+processing, see the <a
+href="https://shrinerb.com/rdoc/files/doc/processing_md.html">File
 Processing</a> guide.</p>
 
 <h2 id="label-Context">Context<span><a href="#label-Context">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>The <code>#upload</code> (and <code>#delete</code>) methods accept a hash
-of options as the second argument, which is forwarded to all other tasks
-like processing, extracting metadata and generating location.</p>
+of options as the second argument, which is forwarded down the chain and be
+available for processing, extracting metadata and generating location.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, { <span class="ruby-value">foo:</span> <span class="ruby-string">&quot;bar&quot;</span> }) <span class="ruby-comment"># context hash is forwarded to all tasks around upload</span></pre>
 
 <p>Some options are actually recognized by <a
-href="../classes/Shrine.html">Shrine</a>, like <code>:location</code> and
-<code>:upload_options</code>, some are added by plugins, and the rest are
-there just to provide additional context, for more flexibility in
-performing tasks and more descriptive logging.</p>
+href="../classes/Shrine.html">Shrine</a> (such as <code>:location</code>,
+<code>:upload_options</code>, and <code>:metadata</code>), some are added
+by plugins, and the rest are there just to provide additional context, for
+more flexibility in performing tasks and more descriptive logging.</p>
 
 <p>The attacher automatically includes additional <code>context</code>
 information for each upload and delete operation:</p>
@@ -547,61 +567,118 @@ the UI is still responsive during upload, so the user can fill in other
 fields while the files are being uploaded, and if you display a progress
 bar they can see when the upload will finish.</p>
 
-<p>The asynchronous uploads will have to go to a separate endpoint than the
-one where the form is submitted. You can use Shrine&#39;s
-<code>upload_endpoint</code> plugin to create a Rack app that accepts file
-uploads and forwards them to the specified storage. We want to set it up to
-upload to <em>temporary</em> storage (<code>:cache</code>), because
-we&#39;re replacing the caching step from the default synchronous workflow.</p>
+<p>These asynchronous uploads will have to go to an endpoint separate from the
+one where the form is submitted. This can be an endpoint in your app, or an
+endpoint of a cloud service. In either case, the uploads should go to
+<em>temporary</em> storage (<code>:cache</code>), to ensure there won&#39;t
+be any orphan files in the primary storage (<code>:store</code>).</p>
+
+<p>Once files are uploaded on the client side, their data can be submitted to
+the server and attached to a record, just like with raw files. The only
+difference is that they won&#39;t be additionally uploaded to temporary
+storage on assignment, as they were already uploaded on the client side.
+Note that by default <strong>Shrine won&#39;t extract metadata from
+directly uploaded files</strong>, instead it will just copy metadata that
+was extacted on the client side; see <a
+href="https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads">this
+section</a> for the rationale and instructions on how to opt in.</p>
+
+<p>For handling client side uploads it&#39;s recommended to use <strong><a
+href="https://uppy.io">Uppy</a></strong>. Uppy is a very flexible modern
+JavaScript file upload library, which happens to integrate nicely with <a
+href="../classes/Shrine.html">Shrine</a>.</p>
+
+<h3 id="label-Simple+direct+upload">Simple direct upload<span><a href="#label-Simple+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The simplest approach is creating an upload endpoint in your app that will
+receive uploads and forward them to the specified storage. You can use the
+<code>upload_endpoint</code> <a href="../classes/Shrine.html">Shrine</a>
+plugin to create a Rack app that handles uploads, and mount it inside your
+application.</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span></pre>
 
 <pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The above will add a <code>POST /images/upload</code> route to your app.
-You can now use the <strong><a href="https://uppy.io">Uppy</a></strong>
-JavaScript library to upload files to this endpoint as soon they&#39;re
-selected, and write the result to the hidden field. The JavaScript code for
-this will depend on your application, see <a
+You can now use Uppy&#39;s <a href="https://uppy.io/docs/xhr-upload/">XHR
+Upload</a> plugin to upload selected files to this endpoint, and have the
+uploaded file data submitted to your app. The client side code for this
+will depend on your application, see <a
 href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads">this
-walkthrough</a> that adds direct uploads from scratch.</p>
+walkthrough</a> for an example of adding simple direct uploads from
+scratch.</p>
 
-<p>You can also upload files directly to the cloud (AWS S3, Google Cloud etc),
-using Shrine&#39;s <code>presign_endpoint</code> plugin. See <a
+<p>If you wanted to implement this enpdoint yourself, this is how it could
+roughly look like in Sinatra:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span> <span class="ruby-comment"># only if not using Rails</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">uploader</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:cache</span>)&#x000A;  <span class="ruby-identifier">file</span>     = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;file&quot;</span>]) <span class="ruby-comment"># only `params[:file]` in Rails</span>&#x000A;&#x000A;  <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;&#x000A;  <span class="ruby-identifier">json</span> <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">data</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-Presigned+direct+upload">Presigned direct upload<span><a href="#label-Presigned+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>If you want to free your app from receiving file uploads, you can also
+upload files directly to the cloud (AWS S3, Google Cloud etc). In this flow
+the client is required to first fetch upload parameters from the server,
+and then use these parameters to make the upload. The
+<code>presign_endpoint</code> <a href="../classes/Shrine.html">Shrine</a>
+plugin can be used to create a Rack app that generates these upload
+parameters (provided that the underlying storage implements
+<code>#presign</code>):</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span></pre>
+
+<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The above will add a <code>GET /presign</code> route to your app. You can
+now hook Uppy&#39;s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a>
+plugin to this endpoint and have it upload directly to S3. See <a
 href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>“>this
-walkthrough</a> that adds direct S3 uploads from scratch using Uppy, as
-well as the <a
+walkthrough</a> that shows adding direct S3 uploads from scratch, as well
+as the <a
 href="https://shrinerb.com/rdoc/files/doc/direct_s3_md.html">Direct Uploads
 to S3</a> guide that provides some useful tips. Also check out the <a
-href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> or <a
+href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a
 href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a>
 demo app which implements multiple uploads directly to S3.</p>
 
-<h3 id="label-Resumable+uploads">Resumable uploads<span><a href="#label-Resumable+uploads">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<p>If you wanted to implement this enpdoint yourself, this is how it could
+roughly look like for S3 storage in Sinatra:</p>
 
-<p>When your app is dealing with large uploads (e.g. videos), keep in mind
-that it can be challening for your users to upload these large files to
-your app. Many users might not have a great internet connection, and if it
-happens to break at any point during uploading, they would need to restart
-the upload from the beginning.</p>
+<pre class="ruby"><span class="ruby-identifier">get</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">storage</span>  = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>]&#x000A;  <span class="ruby-identifier">location</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span> <span class="ruby-operator">+</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>].<span class="ruby-identifier">to_s</span>)&#x000A;&#x000A;  <span class="ruby-identifier">presign_data</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">presign</span>(<span class="ruby-identifier">location</span>, <span class="ruby-value">content_type:</span> <span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;type&quot;</span>])&#x000A;&#x000A;  <span class="ruby-identifier">json</span> <span class="ruby-identifier">presign_data</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Luckily, there is a solution for this. <strong><a
-href="https://tus.io">Tus.io</a></strong> is an open protocol for resumable
-file uploads, which enables the client and the server to achieve reliable
-file uploads even on unstable connections, by enabling the upload to be
-resumed in case of interruptions, even after the browser was closed or the
-device was shut down.</p>
+<h3 id="label-Resumable+direct+upload">Resumable direct upload<span><a href="#label-Resumable+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>On the client side you can use <a href="https://uppy.io/docs/tus/">Uppy</a>
-with <a href="https://github.com/tus/tus-js-client">tus-js-client</a>, have
-it upload files to a <a
-href="https://github.com/janko-m/tus-ruby-server">tus-ruby-server</a>, and
-finally attach the uploaded files with the help of <a
+<p>If your app is dealing with large uploads (e.g. videos), keep in mind that
+it can be challening for your users to upload these large files to your
+app. Many users might not have a great internet connection, and if it
+happens to break at any point during uploading, they need to retry the
+upload from the beginning.</p>
+
+<p>This problem has been solved by <strong><a
+href="https://tus.io">tus</a></strong>. tus is an open protocol for
+resumable file uploads, which enables the client and the server to achieve
+reliable file uploads even on unstable connections, by enabling the upload
+to be resumed in case of interruptions, even after the browser was closed
+or the device was shut down.</p>
+
+<p><a href="https://github.com/janko-m/tus-ruby-server">tus-ruby-server</a>
+provides a Ruby server implemenation of the tus protocol. Uppy&#39;s <a
+href="https://uppy.io/docs/tus/">Tus</a> plugin can then be configured to
+do resumable uploads to a tus-ruby-server instance, and then the uploaded
+files can be attached to the record with the help of <a
 href="https://github.com/shrinerb/shrine-tus">shrine-tus</a>. See <a
 href="https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads">this
 walkthrough</a> that adds resumable uploads from scratch, as well as the <a
-href="https://github.com/shrinerb/shrine-tus-demo">Roda demo</a> for a
-complete example.</p>
+href="https://github.com/shrinerb/shrine-tus-demo">demo</a> for a complete
+example.</p>
+
+<p>Alternatively, you can have resumable uploads directly to S3 using
+Uppy&#39;s <a href="https://uppy.io/docs/aws-s3-multipart/">AWS S3
+Multipart</a> plugin, accompanied with the <a
+href="https://github.com/janko-m/uppy-s3_multipart">uppy-s3_multipart</a>
+gem.</p>
 
 <h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

@@ -28,7 +28,7 @@ Shrine::Plugins::InferExtension
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/9b957ffa09dd4956ef15b61f7e8bb513c52dd9c4/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/infer_extension.rb">lib/shrine/plugins/infer_extension.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -38,14 +38,21 @@ Shrine::Plugins::InferExtension
 <p>The <code>infer_extension</code> plugin allows deducing the appropriate
 file extension for the upload location based on the MIME type of the file.
 This is useful when using <code>data_uri</code> and <code>remote_url</code>
-plugins, where the file extension is not or might not be known.</p>
+plugins, where the file extension might not be known.</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span></pre>
 
-<p>The upload location will gain the inferred extension only if couldn&#39;t
-be determined from the filename. By default <code>MIME::Types</code> will
-be used for inferring the extension, but you can also choose a different
-inferrer:</p>
+<p>Ordinarily, the upload location will gain the inferred extension only if it
+couldn&#39;t be determined from the filename. However, you can pass
+<code>force: true</code> to force the inferred extension to be used rather
+than an extension from the original filename. This can be used to
+canonicalize extensions (jpg, jpeg =&gt; jpeg), or replace an incorrect
+original extension.</p>
+
+<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">force:</span> <span class="ruby-keyword">true</span></pre>
+
+<p>By default <code>MIME::Types</code> will be used for inferring the
+extension, but you can also choose a different inferrer:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:infer_extension</span>, <span class="ruby-value">inferrer:</span> <span class="ruby-value">:mini_mime</span></pre>
 
@@ -53,7 +60,7 @@ inferrer:</p>
 <table class="rdoc-list note-list"><tbody><tr><td class='label'>:mime_types</td><td>
 <p>(Default). Uses the <a
 href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem to
-infer the appropriate extension from MIME  type.</p>
+infer the appropriate extension  from MIME type.</p>
 </td></tr><tr><td class='label'>:mini_mime</td><td>
 <p>Uses the <a href="https://github.com/discourse/mini_mime">mini_mime</a> gem
 to infer the appropriate extension from MIME  type.</p>
@@ -102,7 +109,7 @@ built-in inferrers:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 47</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:extension_inferrer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:inferrer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_inferrer</span>, <span class="ruby-value">:mime_types</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension_inferrer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:inferrer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_inferrer</span>, <span class="ruby-value">:mime_types</span>))&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension_force</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:force</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_force</span>, <span class="ruby-keyword">false</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

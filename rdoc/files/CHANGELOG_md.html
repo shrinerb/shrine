@@ -30,12 +30,58 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-08-22 01:35:16 +0200</span>
+<span class='datetime'>2018-11-04 20:30:11 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.13.0+-282018-11-04-29">2.13.0 (2018-11-04)<span><a href="#label-2.13.0+-282018-11-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Specify UTF-8 charset in <code>Content-Type</code> response header in
+<code>presign_endpoint</code> plugin (@janko-m)</p>
+</li><li>
+<p>Specify UTF-8 charset in <code>Content-Type</code> response header in
+<code>upload_endpoint</code> plugin (@janko-m)</p>
+</li><li>
+<p>Force UTF-8 encoding on filenames coming from Rack&#39;s multipart request
+params in <code>rack_file</code> plugin (@janko-m)</p>
+</li><li>
+<p>Allow <code>:host</code> in <code>S3#url</code> to specify a host URL with
+an additional path prefix (@janko-m)</p>
+</li><li>
+<p>Revert adding bucket name to URL path in <code>S3#url</code> when
+<code>:host</code> is used with <code>:force_path_style</code> (@janko-m)</p>
+</li><li>
+<p>In <code>upload_endpoint</code> error with "Upload Not Valid" when
+<code>file</code> parameter is present but not a file (@janko-m)</p>
+</li><li>
+<p>Allow <code>Attacher#assign</code> to accept options for
+<code>Shrine#upload</code> (@janko-m)</p>
+</li><li>
+<p>Add <code>:metadata</code> option to <code>Shrine#upload</code> for
+manually overriding extracted metadata (@janko-m)</p>
+</li><li>
+<p>Add <code>:force</code> option to <code>infer_extension</code> plugin for
+always replacing the current extension (@jrochkind)</p>
+</li><li>
+<p>Add <code>:public</code> option to <code>S3#initialize</code> for enabling
+public uploads (@janko-m)</p>
+</li><li>
+<p>Add ability to specify a custom <code>:signer</code> for
+<code>Shrine::Storage::S3#url</code> (@janko-m)</p>
+</li><li>
+<p>In <code>S3#upload</code> do multipart upload for large non-file IO objects
+(@janko-m)</p>
+</li><li>
+<p>In <code>S3#upload</code> switch to
+<code>Aws::S3::Object#upload_stream</code> for multipart uploads of IO
+objects of unknown size (@janko-m)</p>
+</li><li>
+<p>In <code>S3#upload</code> deprecate using aws-sdk-s3 lower than 1.14 when
+uploading IO objects of unknown size (@janko-m)</p>
+</li></ul>
+
 <h2 id="label-2.12.0+-282018-08-22-29">2.12.0 (2018-08-22)<span><a href="#label-2.12.0+-282018-08-22-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Ignore nil values when assigning files from a remote URL (@janko-m)</p>

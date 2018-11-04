@@ -30,7 +30,7 @@ doc/direct_s3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-07-10 13:38:52 +0200</span>
+<span class='datetime'>2018-10-25 17:47:40 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -65,29 +65,29 @@ times out.</p>
 </li></ul>
 
 <p>To start, let&#39;s set both temporary and permanent storage to S3, with
-the temporary storage uploading to the <code>cache/</code> directory:</p>
+the temporary storage uploading to the <code>cache/</code> prefix:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.11&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.2&quot;</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {&#x000A;  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>, <span class="ruby-comment"># required</span>&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
 
-<h2 id="label-Enabling+CORS">Enabling CORS<span><a href="#label-Enabling+CORS">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Bucket+CORS+configuration">Bucket CORS configuration<span><a href="#label-Bucket+CORS+configuration">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>In order to be able upload files directly to your S3 bucket, you need
-enable CORS. You can do that from the AWS S3 Console by going to your
-bucket, clicking on the “Permissions” tab, then on “CORS Configuration”,
-and following the <a
-href="http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html">guide for
-configuring CORS</a>.</p>
+<p>In order to be able upload files directly to your S3 bucket, you&#39;ll
+need to update your bucket&#39;s CORS configuration, as public uploads are
+not allowed by default. You can do that from the AWS S3 Console by going to
+your bucket, clicking on the “Permissions” tab and then on “CORS
+Configuration”.</p>
 
-<p>Alternatively you can configure CORS via an <a
-href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method">API
-call</a>:</p>
+<p>If you&#39;re using <a href="https://uppy.io">Uppy</a>, this is the
+recommended CORS configuration for the [Aws S3 plugin] that should work for
+both POST and PUT uploads:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">client</span> = <span class="ruby-constant">Aws</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span><span class="ruby-operator">::</span><span class="ruby-constant">Client</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;)&#x000A;&#x000A;<span class="ruby-identifier">client</span>.<span class="ruby-identifier">put_bucket_cors</span>(&#x000A;  <span class="ruby-value">bucket:</span> <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>,&#x000A;  <span class="ruby-value">cors_configuration:</span> {&#x000A;    <span class="ruby-value">cors_rules:</span> [{&#x000A;      <span class="ruby-value">allowed_headers:</span> [<span class="ruby-string">&quot;Authorization&quot;</span>, <span class="ruby-string">&quot;Content-Type&quot;</span>, <span class="ruby-string">&quot;Origin&quot;</span>],&#x000A;      <span class="ruby-value">allowed_methods:</span> [<span class="ruby-string">&quot;GET&quot;</span>, <span class="ruby-string">&quot;POST&quot;</span>, <span class="ruby-string">&quot;PUT&quot;</span>],&#x000A;      <span class="ruby-value">allowed_origins:</span> [<span class="ruby-string">&quot;*&quot;</span>],&#x000A;      <span class="ruby-value">max_age_seconds:</span> <span class="ruby-value">3000</span>,&#x000A;    }]&#x000A;  }&#x000A;)</pre>
+<pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x000A;&lt;CORSConfiguration xmlns=&quot;http://s3.amazonaws.com/doc/2006-03-01/&quot;&gt;&#x000A;  &lt;CORSRule&gt;&#x000A;    &lt;AllowedOrigin&gt;https://my-app.com&lt;/AllowedOrigin&gt;&#x000A;    &lt;AllowedMethod&gt;GET&lt;/AllowedMethod&gt;&#x000A;    &lt;AllowedMethod&gt;POST&lt;/AllowedMethod&gt;&#x000A;    &lt;AllowedMethod&gt;PUT&lt;/AllowedMethod&gt;&#x000A;    &lt;MaxAgeSeconds&gt;3000&lt;/MaxAgeSeconds&gt;&#x000A;    &lt;AllowedHeader&gt;Authorization&lt;/AllowedHeader&gt;&#x000A;    &lt;AllowedHeader&gt;x-amz-date&lt;/AllowedHeader&gt;&#x000A;    &lt;AllowedHeader&gt;x-amz-content-sha256&lt;/AllowedHeader&gt;&#x000A;    &lt;AllowedHeader&gt;content-type&lt;/AllowedHeader&gt;&#x000A;  &lt;/CORSRule&gt;&#x000A;  &lt;CORSRule&gt;&#x000A;    &lt;AllowedOrigin&gt;*&lt;/AllowedOrigin&gt;&#x000A;    &lt;AllowedMethod&gt;GET&lt;/AllowedMethod&gt;&#x000A;    &lt;MaxAgeSeconds&gt;3000&lt;/MaxAgeSeconds&gt;&#x000A;  &lt;/CORSRule&gt;&#x000A;&lt;/CORSConfiguration&gt;</pre>
 
-<p>Note that due to DNS propagation it may take some time for the CORS update
-to be applied.</p>
+<p>Replace <code>https://my-app.com</code> with the URL to your app (in
+development you can set this to <code>*</code>). Once you&#39;ve hit
+“Save”, it may take some time for the new CORS settings to be applied.</p>
 
 <h2 id="label-Strategy+A+-28dynamic-29">Strategy A (dynamic)<span><a href="#label-Strategy+A+-28dynamic-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
@@ -98,33 +98,37 @@ to be applied.</p>
 <p>Some JavaScript needed</p>
 </li></ul>
 
-<p>When the user selects a file in the form, on the client-side we
-asynchronously fetch the presign information from the server, and use this
-information to upload the file to S3. The <code>presign_endpoint</code>
-plugin gives us this presign route, so we just need to mount it in our
-application:</p>
+<p>When the user selects a file in the form, on the client side we
+asynchronously fetch the upload parameters from the server, and use it to
+upload the file to S3. It&#39;s recommended to use <a
+href="https://uppy.io">Uppy</a> for client side uploads.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> { <span class="ruby-value">method:</span> <span class="ruby-value">:put</span> }</pre>
+<p>The <code>presign_endpoint</code> plugin provides a Rack application that
+generates these upload parameters, which we can just mount in our
+application. We&#39;ll make our presign endpoint also use the additional
+<code>type</code> and <code>filename</code> query parameters to set
+<code>Content-Type</code> and <code>Content-Disposition</code> for the
+uploaded file, as well as limit the upload size to 10 MB (see <a
+href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>
+for the list of available options).</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) {&#x000A;  <span class="ruby-identifier">filename</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>]&#x000A;  <span class="ruby-identifier">type</span>     = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;type&quot;</span>]&#x000A;&#x000A;  {&#x000A;    <span class="ruby-value">content_disposition:</span>    <span class="ruby-node">&quot;inline; filename=\&quot;#{filename}\&quot;&quot;</span>, <span class="ruby-comment"># set download filename</span>&#x000A;    <span class="ruby-value">content_type:</span>           <span class="ruby-identifier">type</span>,                               <span class="ruby-comment"># set content type (required if using DigitalOcean Spaces)</span>&#x000A;    <span class="ruby-value">content_length_range:</span>   <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>),                  <span class="ruby-comment"># limit upload size to 10 MB</span>&#x000A;  }&#x000A;}</pre>
 
 <pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The above will create a <code>GET /presign</code> route, which internally
 calls <a
-href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>,
-returning the HTTP verb (PUT) and the S3 URL to which the file should be
-uploaded, along with the required parameters (will only be present for POST
-presigns) and request headers.</p>
+href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>
+to return the HTTP verb (POST) and the S3 URL to which the file should be
+uploaded, along with the required POST parameters and request headers.</p>
 
-<pre class="ruby"><span class="ruby-comment"># GET /presign</span>&#x000A;{&#x000A;  <span class="ruby-value">&quot;method&quot;:</span> <span class="ruby-string">&quot;put&quot;</span>,&#x000A;  <span class="ruby-value">&quot;url&quot;:</span> <span class="ruby-string">&quot;https://my-bucket.s3.eu-central-1.amazonaws.com/cache/my-key?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAIMDH2HTSB3RKB4WQ%2F20180424%2Feu-central-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20180424T212022Z&amp;X-Amz-Expires=900&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=1036b9cefe52f0b46c1f257f6817fc3c55cd8d9004f87a38cf86177762359375&quot;</span>,&#x000A;  <span class="ruby-value">&quot;fields&quot;:</span> {},&#x000A;  <span class="ruby-value">&quot;headers&quot;:</span> {}&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-comment"># GET /presign</span>&#x000A;{&#x000A;  <span class="ruby-value">&quot;method&quot;:</span> <span class="ruby-string">&quot;post&quot;</span>,&#x000A;  <span class="ruby-value">&quot;url&quot;:</span> <span class="ruby-string">&quot;https://my-bucket.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-value">&quot;fields&quot;:</span> {&#x000A;    <span class="ruby-value">&quot;key&quot;:</span> <span class="ruby-string">&quot;b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-value">&quot;policy&quot;:</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ...&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-credential&quot;:</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-algorithm&quot;:</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-date&quot;:</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-signature&quot;:</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  },&#x000A;  <span class="ruby-value">&quot;headers&quot;:</span> {}&#x000A;}</pre>
 
-<p>On the client side you can make it so that, when the user selects a file,
-upload parameters are fetched from presign endpoint, and are used to upload
-the selected file directly to S3. It&#39;s recommended to use <a
-href="https://uppy.io">Uppy</a> for this.</p>
-
-<p>Once the file has been uploaded, you can generate a JSON representation of
-the uploaded file on the client-side, and write it to the hidden attachment
-field (or send it directly in an AJAX request).</p>
+<p>Uppy&#39;s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin would
+then make a request to this endpoint and use these parameters to upload the
+file directly to S3. Once the file has been uploaded, you can generate a
+JSON representation of the uploaded file on the client side, and write it
+to the hidden attachment field (or send it directly in an AJAX request).</p>
 
 <pre class="ruby">{&#x000A;  <span class="ruby-value">&quot;id&quot;:</span> <span class="ruby-string">&quot;302858ldg9agjad7f3ls.jpg&quot;</span>,&#x000A;  <span class="ruby-value">&quot;storage&quot;:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-value">&quot;metadata&quot;:</span> {&#x000A;    <span class="ruby-value">&quot;size&quot;:</span> <span class="ruby-value">943483</span>,&#x000A;    <span class="ruby-value">&quot;filename&quot;:</span> <span class="ruby-string">&quot;nature.jpg&quot;</span>,&#x000A;    <span class="ruby-value">&quot;mime_type&quot;:</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>,&#x000A;  }&#x000A;}</pre>
 <ul><li>
@@ -137,12 +141,12 @@ storage</p>
 <p><code>metadata</code> – hash of metadata extracted from the file</p>
 </li></ul>
 
-<p>Once submitted this JSON will then be assigned to the attachment attribute
-instead of the raw file. See <a
+<p>Once the form is submitted, this JSON data will then be assigned to the
+attachment attribute instead of the raw file. See <a
 href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this
-walkthrough</a> for adding dynamic direct S3 uploads from scratch using <a
-href="https://uppy.io">Uppy</a>, as well as the <a
-href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> or <a
+walkthrough</a> for adding dynamic direct S3 uploads from scratch, as well
+as the <a
+href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a
 href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a>
 demo app for a complete example of multiple direct S3 uploads.</p>
 
@@ -161,7 +165,7 @@ For generating the form can use <a
 href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>,
 which returns URL and form fields that should be used for the upload.</p>
 
-<pre class="ruby"><span class="ruby-identifier">presigned_data</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>].<span class="ruby-identifier">presign</span>(&#x000A;  <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span>,&#x000A;  <span class="ruby-value">success_action_redirect:</span> <span class="ruby-identifier">new_album_url</span>&#x000A;)&#x000A;&#x000A;<span class="ruby-identifier">form</span> <span class="ruby-value">action:</span> <span class="ruby-identifier">presigned_data</span>[<span class="ruby-value">:url</span>], <span class="ruby-value">method:</span> <span class="ruby-string">&quot;post&quot;</span>, <span class="ruby-value">enctype:</span> <span class="ruby-string">&quot;multipart/form-data&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">presigned_data</span>[<span class="ruby-value">:fields</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:hidden</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">value:</span> <span class="ruby-identifier">value</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:file</span>, <span class="ruby-value">name:</span> <span class="ruby-string">&quot;file&quot;</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">button</span> <span class="ruby-string">&quot;Submit&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">presign_data</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>].<span class="ruby-identifier">presign</span>(&#x000A;  <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span>,&#x000A;  <span class="ruby-value">success_action_redirect:</span> <span class="ruby-identifier">new_album_url</span>&#x000A;)&#x000A;&#x000A;<span class="ruby-identifier">form</span> <span class="ruby-value">action:</span> <span class="ruby-identifier">presign_data</span>[<span class="ruby-value">:url</span>], <span class="ruby-value">method:</span> <span class="ruby-string">&quot;post&quot;</span>, <span class="ruby-value">enctype:</span> <span class="ruby-string">&quot;multipart/form-data&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">presign_data</span>[<span class="ruby-value">:fields</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:hidden</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">value:</span> <span class="ruby-identifier">value</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:file</span>, <span class="ruby-value">name:</span> <span class="ruby-string">&quot;file&quot;</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">button</span> <span class="ruby-string">&quot;Submit&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>Note the additional <code>:success_action_redirect</code> option which
 tells S3 where to redirect to after the file has been uploaded. If
@@ -169,14 +173,27 @@ you&#39;re using the Rails form builder to generate this form, you might
 need to also tell S3 to ignore the additional <code>utf8</code> and
 <code>authenticity_token</code> fields that Rails generates:</p>
 
-<pre class="ruby"><span class="ruby-identifier">presigned_data</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>].<span class="ruby-identifier">presign</span>(&#x000A;  <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span>,&#x000A;  <span class="ruby-value">allow_any:</span> [<span class="ruby-string">&quot;utf8&quot;</span>, <span class="ruby-string">&quot;authenticity_token&quot;</span>],&#x000A;  <span class="ruby-value">success_action_redirect:</span> <span class="ruby-identifier">new_album_url</span>&#x000A;)&#x000A;&#x000A;<span class="ruby-comment"># ...</span></pre>
+<pre class="ruby"><span class="ruby-identifier">presign_data</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>].<span class="ruby-identifier">presign</span>(&#x000A;  <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span>,&#x000A;  <span class="ruby-value">allow_any:</span> [<span class="ruby-string">&quot;utf8&quot;</span>, <span class="ruby-string">&quot;authenticity_token&quot;</span>],&#x000A;  <span class="ruby-value">success_action_redirect:</span> <span class="ruby-identifier">new_album_url</span>&#x000A;)&#x000A;&#x000A;<span class="ruby-comment"># ...</span></pre>
 
 <p>Let&#39;s assume we specified the redirect URL to be a page which renders
 the form for a new record. S3 will include some information about the
 upload in form of GET parameters in the URL, out of which we only need the
 <code>key</code> parameter:</p>
 
-<pre class="ruby"><span class="ruby-identifier">cached_file</span> = {&#x000A;  <span class="ruby-value">storage:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-value">id:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-value">:key</span>][<span class="ruby-regexp">/cache\/(.+)/</span>, <span class="ruby-value">1</span>], <span class="ruby-comment"># we subtract the storage prefix</span>&#x000A;  <span class="ruby-value">metadata:</span> {},&#x000A;}&#x000A;&#x000A;<span class="ruby-identifier">form</span> <span class="ruby-ivar">@album</span>, <span class="ruby-value">action:</span> <span class="ruby-string">&quot;/albums&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:image</span>, <span class="ruby-value">type:</span> <span class="ruby-value">:hidden</span>, <span class="ruby-value">value:</span> <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">to_json</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">button</span> <span class="ruby-string">&quot;Save&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">cached_file</span> = {&#x000A;  <span class="ruby-value">storage:</span> <span class="ruby-string">&quot;cache&quot;</span>,&#x000A;  <span class="ruby-value">id:</span> <span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;key&quot;</span>][<span class="ruby-regexp">/^cache\/(.+)/</span>, <span class="ruby-value">1</span>], <span class="ruby-comment"># we subtract the storage prefix</span>&#x000A;  <span class="ruby-value">metadata:</span> {},&#x000A;}&#x000A;&#x000A;<span class="ruby-identifier">form</span> <span class="ruby-ivar">@album</span>, <span class="ruby-value">action:</span> <span class="ruby-string">&quot;/albums&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">input</span> <span class="ruby-value">:image</span>, <span class="ruby-value">type:</span> <span class="ruby-value">:hidden</span>, <span class="ruby-value">value:</span> <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">to_json</span>&#x000A;  <span class="ruby-identifier">f</span>.<span class="ruby-identifier">button</span> <span class="ruby-string">&quot;Save&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Shrine+metadata"><a href="../../classes/Shrine.html">Shrine</a> metadata<span><a href="#label-Shrine+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>When attaching a file that was uploaded directly to S3, by default <a
+href="../../classes/Shrine.html">Shrine</a> will not extract metadata from
+the file, instead it will simply copy over any metadata assigned on the
+client side. This is the default behaviour because extracting metadata
+requires retrieving file content, which in this case means additional HTTP
+requests.</p>
+
+<p>See <a
+href="https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads">this
+section</a> or the rationale and instructions on how to opt in.</p>
 
 <h2 id="label-Object+data">Object data<span><a href="#label-Object+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -199,44 +216,6 @@ of the source object data and will accept new data</p>
 <code>:metadata_directive</code> option when S3 objects are copied:</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-value">metadata_directive:</span> <span class="ruby-string">&quot;REPLACE&quot;</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<h2 id="label-Shrine+metadata"><a href="../../classes/Shrine.html">Shrine</a> metadata<span><a href="#label-Shrine+metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>With direct uploads any metadata has to be extracted on the client-side,
-since the file upload doesn&#39;t touch the application, so the <a
-href="../../classes/Shrine.html">Shrine</a> uploader doesn&#39;t get a
-chance to extract the metadata. When directly uploaded file is promoted to
-permanent storage, Shrine&#39;s default behaviour is to just copy the
-received metadata.</p>
-
-<p>If you want to re-extract metadata on the server before file validation,
-you can load the <code>restore_cached_data</code>. That will make <a
-href="../../classes/Shrine.html">Shrine</a> open the S3 file for reading,
-pass it for metadata extraction, and then override the metadata received
-from the client with the extracted ones.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span></pre>
-
-<p>Note that if you don&#39;t need this metadata before file validation, and
-you would like to have it extracted in a background job, you can do that
-with the following trick:</p>
-
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">refresh_metadata!</span>&#x000A;    <span class="ruby-identifier">io</span> <span class="ruby-comment"># return the same cached IO</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<h2 id="label-Checksum">Checksum<span><a href="#label-Checksum">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>To have AWS S3 verify the integrity of the uploaded data, you can use a
-checksum. For that you first need to tell AWS S3 that you&#39;re going to
-be including the <code>Content-MD5</code> request header in the upload
-request, by adding the <code>:content_md5</code> presign option.</p>
-
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {&#x000A;    <span class="ruby-value">content_md5:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;checksum&quot;</span>],&#x000A;    <span class="ruby-value">method:</span> <span class="ruby-value">:put</span>,&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>With the above setup, you can pass the MD5 hash of the file via the
-<code>checksum</code> query parameter in the request to the presign
-endpoint. See <a
-href="https://github.com/shrinerb/shrine/wiki/Using-Checksums-in-Direct-Uploads">this
-walkthrough</a> for a complete JavaScript solution.</p>
 
 <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -282,6 +261,30 @@ errors, and you&#39;re using <code>backgrounding</code> plugin, you can
 tell your backgrounding library to perform the job with a delay:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_in</span>(<span class="ruby-value">3</span>, <span class="ruby-identifier">data</span>) <span class="ruby-comment"># tells a Sidekiq worker to perform in 3 seconds</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h2 id="label-Checksums">Checksums<span><a href="#label-Checksums">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>You can have AWS S3 verify the integrity of the uploaded data by including
+a checksum generated on the client side in the upload request. For that
+we&#39;ll need to include the checksum in the presign request, which we can
+pass in via the <code>checksum</code> query parameter. The
+<code>:content_md5</code> parameter is not supported in POST presigns, so
+for this we&#39;ll need to switch to PUT.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {&#x000A;    <span class="ruby-value">method:</span> <span class="ruby-value">:put</span>,&#x000A;    <span class="ruby-value">content_md5:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;checksum&quot;</span>],&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>See <a
+href="https://github.com/shrinerb/shrine/wiki/Using-Checksums-in-Direct-Uploads">this
+walkthrough</a> for a complete JavaScript implementation of checksums.</p>
+
+<p>Note that PUT presigns don&#39;t support the
+<code>:content_length_range</code> option, but they support
+<code>:content_length</code> instead. So, if you want to limit the upload
+size during direct uploads, you can pass an additional <code>size</code>
+query parameter to the presign request on the client side, and require it
+when generating presign options:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) <span class="ruby-keyword">do</span>&#x000A;  {&#x000A;    <span class="ruby-value">method:</span> <span class="ruby-value">:put</span>,&#x000A;    <span class="ruby-value">content_length:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-string">&quot;size&quot;</span>),&#x000A;    <span class="ruby-value">content_md5:</span> <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;checksum&quot;</span>],&#x000A;  }&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Testing">Testing<span><a href="#label-Testing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

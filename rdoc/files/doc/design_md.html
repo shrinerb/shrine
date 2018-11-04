@@ -30,13 +30,18 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-04-28 23:08:47 +0200</span>
+<span class='datetime'>2018-10-25 17:47:40 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <h1 id="label-The+Design+of+Shrine">The Design of <a href="../../classes/Shrine.html">Shrine</a><span><a href="#label-The+Design+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p><em>If you want an in-depth walkthrough through the <a
+href="../../classes/Shrine.html">Shrine</a> codebase, see <a
+href="https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/">Notes
+on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
 
 <p>There are five main types of objects that you deal with in Shrine:</p>
 <ul><li>
@@ -68,8 +73,9 @@ namespaced under <code>Shrine::Storage</code>.</p>
 
 <h2 id="label-Shrine"><code>Shrine</code><span><a href="#label-Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>A <code>Shrine</code> object (also called an “uploader”) acts as a wrapper
-around a storage. First the storage needs to be registered under a name:</p>
+<p>A <code>Shrine</code> object (also called an “uploader”) is essentially a
+wrapper around the <code>#upload</code> storage method. First the storage
+needs to be registered under a name:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:file_system</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads&quot;</span>)</pre>
 
@@ -84,16 +90,24 @@ method does the following:</p>
 </li><li>
 <p>extracts metadata</p>
 </li><li>
-<p>uploads the file</p>
+<p>uploads the file (calls <code>Storage#upload</code>)</p>
 </li><li>
 <p>closes the file</p>
 </li><li>
 <p>creates a <code>Shrine::UploadedFile</code> from the data</p>
 </li></ul>
 
-<p>In applications it&#39;s common to create subclasses of
-<code>Shrine</code>, in order to allow having different uploading logic for
-different types of files.</p>
+<p><code>Shrine</code> class and subclasses are also used for loading plugins
+that extend all core classes. Each <code>Shrine</code> subclass has its own
+subclass of each of the core classes (<code>Shrine::UploadedFile</code>,
+<code>Shrine::Attacher</code>, and <code>Shrine::Attachment</code>), which
+makes it possible to have different <code>Shrine</code> subclasses with
+differently customized attachment logic. See <a
+href="https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html">Creating
+a New Plugin</a> guide and the <a
+href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin
+system of Sequel and Roda</a> article for more details on the design of
+Shrine&#39;s plugin system.</p>
 
 <h2 id="label-Shrine-3A-3AUploadedFile"><code>Shrine::UploadedFile</code><span><a href="#label-Shrine-3A-3AUploadedFile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
