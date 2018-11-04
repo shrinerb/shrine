@@ -1,4 +1,4 @@
-## HEAD
+## 2.13.0 (2018-11-04)
 
 * Specify UTF-8 charset in `Content-Type` response header in `presign_endpoint` plugin (@janko-m)
 
