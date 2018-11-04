@@ -148,6 +148,9 @@ class Shrine
       # `#presign` on the specified storage, and returns that information in
       # JSON format.
       class App
+        CONTENT_TYPE_JSON = "application/json; charset=utf-8"
+        CONTENT_TYPE_TEXT = "text/plain"
+
         # Writes given options to instance variables.
         def initialize(options)
           options.each do |name, value|
@@ -239,7 +242,7 @@ class Shrine
           if @rack_response
             response = @rack_response.call(object, request)
           else
-            response = [200, {"Content-Type" => "application/json"}, [object.to_json]]
+            response = [200, {"Content-Type" => CONTENT_TYPE_JSON}, [object.to_json]]
           end
 
           # prevent browsers from caching the response
@@ -250,7 +253,7 @@ class Shrine
 
         # Used for early returning an error response.
         def error!(status, message)
-          throw :halt, [status, {"Content-Type" => "text/plain"}, [message]]
+          throw :halt, [status, {"Content-Type" => CONTENT_TYPE_TEXT}, [message]]
         end
 
         # Returns the uploader around the specified storage.

@@ -23,7 +23,7 @@ describe Shrine::Plugins::PresignEndpoint do
 
     assert_equal 200, response.status
 
-    assert_equal "application/json",                 response.headers["Content-Type"]
+    assert_equal "application/json; charset=utf-8",  response.headers["Content-Type"]
     assert_equal response.body_binary.bytesize.to_s, response.headers["Content-Length"]
     assert_equal "no-store",                         response.headers["Cache-Control"]
 

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Specify UTF-8 charset in `Content-Type` response header in `presign_endpoint` plugin (@janko-m)
+
 * Specify UTF-8 charset in `Content-Type` response header in `upload_endpoint` plugin (@janko-m)
 
 * Force UTF-8 encoding on filenames coming from Rack's multipart request params in `rack_file` plugin (@janko-m)
