@@ -114,7 +114,7 @@ Shrine.plugin :presign_endpoint, presign_options: -> (request) {
 ```
 ```rb
 # config.ru (Rack)
-map "/presign" do
+map "/s3/params" do
   run Shrine.presign_endpoint(:cache)
 end
 
@@ -122,17 +122,17 @@ end
 
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount Shrine.presign_endpoint(:cache) => "/presign"
+  mount Shrine.presign_endpoint(:cache) => "/s3/params"
 end
 ```
 
-The above will create a `GET /presign` route, which internally calls
+The above will create a `GET /s3/params` route, which internally calls
 [`Shrine::Storage::S3#presign`] to return the HTTP verb (POST) and the S3 URL
 to which the file should be uploaded, along with the required POST parameters
 and request headers.
 
 ```rb
-# GET /presign
+# GET /s3/params
 {
   "method": "post",
   "url": "https://my-bucket.s3-eu-west-1.amazonaws.com",
@@ -148,11 +148,11 @@ and request headers.
 }
 ```
 
-Uppy's [AWS S3][uppy aws s3] plugin would then make a request to this endpoint and use these
-parameters to upload the file directly to S3. Once the file has been uploaded,
-you can generate a JSON representation of the uploaded file on the client side,
-and write it to the hidden attachment field (or send it directly in an AJAX
-request).
+Uppy's [AWS S3][uppy aws s3] plugin would then make a request to this endpoint
+and use these parameters to upload the file directly to S3. Once the file has
+been uploaded, you can generate a JSON representation of the uploaded file on
+the client side, and write it to the hidden attachment field (or send it
+directly in an AJAX request).
 
 ```rb
 {

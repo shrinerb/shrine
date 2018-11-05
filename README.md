@@ -765,7 +765,7 @@ Shrine.plugin :presign_endpoint
 ```
 ```rb
 # config.ru (Rack)
-map "/presign" do
+map "/s3/params" do
   run Shrine.presign_endpoint(:cache)
 end
 
@@ -773,11 +773,11 @@ end
 
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount Shrine.presign_endpoint(:cache) => "/presign"
+  mount Shrine.presign_endpoint(:cache) => "/s3/params"
 end
 ```
 
-The above will add a `GET /presign` route to your app. You can now hook Uppy's
+The above will add a `GET /s3/params` route to your app. You can now hook Uppy's
 [AWS S3][uppy aws s3] plugin to this endpoint and have it upload directly to
 S3. See [this walkthrough][direct S3 uploads walkthrough] that shows adding
 direct S3 uploads from scratch, as well as the [Direct Uploads to S3][direct S3
@@ -789,7 +789,7 @@ If you wanted to implement this enpdoint yourself, this is how it could roughly
 look like for S3 storage in Sinatra:
 
 ```rb
-get "/presign" do
+get "/s3/params" do
   storage  = Shrine.storages[:cache]
   location = SecureRandom.hex + File.extname(params["filename"].to_s)
 

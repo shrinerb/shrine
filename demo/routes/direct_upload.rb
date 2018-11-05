@@ -5,9 +5,9 @@ module Routes
   class DirectUpload < Base
     if production?
       route do |r|
-        # Only '/presign'
-        r.is "presign" do
-          # GET /presign
+        # Only '/s3/params'
+        r.is "s3/params" do
+          # GET /s3/params
           r.run Shrine.presign_endpoint(:cache)
         end
       end
