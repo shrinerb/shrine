@@ -195,7 +195,9 @@ you want to validate the extracted metadata or have it immediately available),
 you can load the `restore_cached_data` plugin:
 
 ```rb
-Shrine.plugin :restore_cached_data # automatically extract metadata from cached files on assingment
+class ImageUploader < Shrine
+  plugin :restore_cached_data # automatically extract metadata from cached files on assignment
+end
 ```
 ```rb
 photo.image = '{"id":"ks9elsd.jpg","storage":"cache","metadata":{}}' # metadata is extracted
@@ -212,10 +214,8 @@ during background promotion using the `refresh_metadata` plugin (which the
 `restore_cached_data` plugin uses internally):
 
 ```rb
-Shrine.plugin :refresh_metadata
-```
-```rb
-class MyUploader < Shrine
+class ImageUploader < Shrine
+  plugin :refresh_metadata
   plugin :processing
 
   # this will be called in the background if using backgrounding plugin
@@ -233,16 +233,23 @@ extract MIME type upfront and video-specific metadata in a background job, which
 can be done as follows (provided that `backgrounding` plugin is used):
 
 ```rb
-Shrine.plugin :restore_cached_data
-```
-```rb
 class MyUploader < Shrine
   plugin :determine_mime_type # this will be called in the foreground
+  plugin :restore_cached_data
+  plugin :refresh_metadata
+  plugin :add_metadata
   plugin :processing
 
   # this will be called in the background if using backgrounding plugin
   process(:store) do |io, context|
-    additional_metadata = io.download do |file|
+    io.refresh_metadata!(background: true)
+    io
+  end
+
+  add_metadata do |io, context|
+    next unless context[:background]
+
+    Shrine.with_file(io) do |file|
       # example of metadata extraction
       movie = FFMPEG::Movie.new(file.path) # uses the streamio-ffmpeg gem
 
@@ -251,10 +258,6 @@ class MyUploader < Shrine
         "resolution" => movie.resolution,
         "frame_rate" => movie.frame_rate }
     end
-
-    io.metadata.merge!(additional_metadata)
-
-    io
   end
 end
 ```
