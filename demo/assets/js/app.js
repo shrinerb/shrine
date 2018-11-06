@@ -28,7 +28,7 @@ function fileUpload(fileInput) {
 
   if (fileInput.dataset.uploadServer == 's3') {
     uppy.use(Uppy.AwsS3, {
-      serverUrl: "/", // will call Shrine's presign endpoint mounted on `/s3/params`
+      serverUrl: '/', // will call Shrine's presign endpoint mounted on `/s3/params`
     })
   } else {
     uppy.use(Uppy.XHRUpload, {
