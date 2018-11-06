@@ -220,7 +220,7 @@ class ImageUploader < Shrine
 
   # this will be called in the background if using backgrounding plugin
   process(:store) do |io, context|
-    io.refresh_metadata! # extracts metadata and updates `io.metadata`
+    io.refresh_metadata!(context) # extracts metadata and updates `io.metadata`
     io
   end
 end
