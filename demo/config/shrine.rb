@@ -43,6 +43,7 @@ Shrine.plugin :restore_cached_data
 
 if ENV["RACK_ENV"] == "production"
   Shrine.plugin :presign_endpoint, presign_options: -> (request) {
+    # Uppy will send the "filename" and "type" query parameters
     filename = request.params["filename"]
     type     = request.params["type"]
 

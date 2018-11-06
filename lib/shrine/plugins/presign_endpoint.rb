@@ -75,8 +75,9 @@ class Shrine
     # `:presign_options`, here is an example for S3 storage:
     #
     #     plugin :presign_endpoint, presign_options: -> (request) do
-    #       filename     = request.params["filename"]
-    #       type         = request.params["type"]
+    #       # Uppy will send the "filename" and "type" query parameters
+    #       filename = request.params["filename"]
+    #       type     = request.params["type"]
     #
     #       {
     #         content_length_range: 0..(10*1024*1024),                 # limit filesize to 10MB
