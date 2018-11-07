@@ -25,8 +25,9 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#initialize" do
-    it "raises an error when :bucket is nil" do
-      assert_raises(ArgumentError) { s3(bucket: nil) }
+    it "raises an appropriate error when :bucket is nil" do
+      error = assert_raises(ArgumentError) { s3(bucket: nil) }
+      assert_match "the :bucket option is nil", error.message
     end
 
     deprecated "accepts :multipart_threshold as an Integer" do
