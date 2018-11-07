@@ -94,6 +94,7 @@ class Shrine
       module InstanceMethods
         def extract_metadata(io, context)
           metadata = super
+          context = context.merge(metadata: metadata)
 
           opts[:metadata].each do |metadata_block|
             custom_metadata = instance_exec(io, context, &metadata_block) || {}
