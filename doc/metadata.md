@@ -242,7 +242,7 @@ class MyUploader < Shrine
 
   # this will be called in the background if using backgrounding plugin
   process(:store) do |io, context|
-    io.refresh_metadata!(background: true)
+    io.refresh_metadata!(context.merge(background: true))
     io
   end
 
