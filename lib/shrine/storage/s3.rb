@@ -250,6 +250,8 @@ class Shrine
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
       def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
+        raise ArgumentError, "the :bucket option is nil" unless bucket
+
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
         resource = Aws::S3::Resource.new(**s3_options)
 
@@ -259,7 +261,7 @@ class Shrine
         end
         multipart_threshold = { upload: 15*1024*1024, copy: 100*1024*1024 }.merge(multipart_threshold)
 
-        @bucket = resource.bucket(bucket) or fail(ArgumentError, "the :bucket option was nil")
+        @bucket = resource.bucket(bucket)
         @client = resource.client
         @prefix = prefix
         @host = host
