@@ -205,6 +205,14 @@ class Shrine
     #     # deletes all objects that were uploaded more than 7 days ago
     #     s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 }
     #
+    # ## Request Rate and Performance Guidelines
+    #
+    # Amazon S3 automatically scales to high request rates. For example, your
+    # application can achieve at least 3,500 PUT/POST/DELETE and 5,500 GET
+    # requests per second per prefix in a bucket (a prefix is a top-level
+    # "directory" in the bucket). If your app needs to support higher request
+    # rates to S3 than that, you can scale exponentially by using more prefixes.
+    #
     # [uploading]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [copying]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
     # [presigning]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
