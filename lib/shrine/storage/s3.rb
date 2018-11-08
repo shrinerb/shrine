@@ -201,13 +201,13 @@ class Shrine
     #     # deletes all objects that were uploaded more than 7 days ago
     #     s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 }
     #
-    # ## Performance Guidelines
+    # ## Request Rate and Performance Guidelines
     #
-    # Amazon S3 has a per-prefix request rate limit for a given bucket that's
-    # currently set at 3500-5500 requests per second. A prefix is the first
-    # characters up to the first delimiter - basically the first folder. They
-    # suggest using multiple prefixes if you need to scale up for higher request
-    # rates. Refer to [Amazon S3 performance guidelines] for further information.
+    # Amazon S3 automatically scales to high request rates. For example, your
+    # application can achieve at least 3,500 PUT/POST/DELETE and 5,500 GET
+    # requests per second per prefix in a bucket (a prefix is a top-level
+    # "directory" in the bucket). If your app needs to support higher request
+    # rates to S3 than that, you can scale exponentially by using more prefixes.
     #
     # [uploading]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [copying]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method
@@ -217,7 +217,6 @@ class Shrine
     # [object lifecycle]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method
     # [serve private content via CloudFront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html
     # [`Aws::CloudFront::UrlSigner`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html
-    # [Amazon S3 performance guidelines]: https://docs.aws.amazon.com/AmazonS3/latest/dev/request-rate-perf-considerations.html
     class S3
       MIN_PART_SIZE = 5 * 1024 * 1024 # 5MB
 
