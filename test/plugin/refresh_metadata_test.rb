@@ -33,8 +33,8 @@ describe Shrine::Plugins::RefreshMetadata do
   it "accepts additional context and forwards it" do
     uploaded_file = @uploader.upload(fakeio)
     @uploader.class.plugin :add_metadata
-    @uploader.class.add_metadata(:context) { |io, context| context.to_s }
+    @uploader.class.add_metadata(:context) { |io, context| context }
     uploaded_file.refresh_metadata!(foo: "bar")
-    assert_equal '{:foo=>"bar"}', uploaded_file.metadata["context"]
+    assert_equal "bar", uploaded_file.metadata["context"][:foo]
   end
 end

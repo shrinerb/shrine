@@ -40,6 +40,21 @@ describe Shrine::Plugins::AddMetadata do
         uploaded_file = @uploader.upload(fakeio)
         assert_equal "value", uploaded_file.custom
       end
+
+      it "includes existing metadata in context" do
+        @uploader.class.add_metadata(:extracted_size) { |io, context| context[:metadata]["size"] }
+        @uploader.class.add_metadata(:extracted_content_type) { |io, context| context[:metadata]["mime_type"] }
+        @uploader.class.add_metadata(:extracted_filename) { |io, context| context[:metadata]["filename"] }
+        @uploader.class.add_metadata(:we_added) { |io, context| "added" }
+        @uploader.class.add_metadata(:extracted_we_added) { |io, context| context[:metadata]["we_added"] }
+
+        uploaded_file = @uploader.upload(fakeio(filename: "supplied_filename.txt", content_type: "text/plain"))
+
+        assert_equal "added", uploaded_file.extracted_we_added
+        assert_equal "supplied_filename.txt", uploaded_file.metadata["extracted_filename"]
+        assert_equal "text/plain", uploaded_file.metadata["extracted_content_type"]
+        assert_equal uploaded_file.size, uploaded_file.metadata["extracted_size"]
+      end
     end
 
     describe "without argument" do
@@ -73,6 +88,21 @@ describe Shrine::Plugins::AddMetadata do
         @uploader.class.add_metadata { |io, context| io.read; nil }
         uploaded_file = @uploader.upload(fakeio("file"))
         assert_equal "file", uploaded_file.read
+      end
+
+      it "includes existing metadata in context" do
+        @uploader.class.add_metadata(:we_added) { |io, context| "added" }
+        @uploader.class.add_metadata do |io, context|
+          { extracted_existing_metadata: context[:metadata].dup }
+        end
+
+        uploaded_file = @uploader.upload(fakeio(filename: "supplied_filename.txt", content_type: "text/plain"))
+        extracted_existing_metadata = uploaded_file.metadata["extracted_existing_metadata"]
+
+        assert_equal "added", extracted_existing_metadata["we_added"]
+        assert_equal "supplied_filename.txt", extracted_existing_metadata["filename"]
+        assert_equal "text/plain", extracted_existing_metadata["mime_type"]
+        assert_equal uploaded_file.size, extracted_existing_metadata["size"]
       end
     end
   end

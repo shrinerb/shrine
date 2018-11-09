@@ -56,6 +56,32 @@ class Shrine
     #         "resolution" => movie.resolution,
     #         "frame_rate" => movie.frame_rate }
     #     end
+    #
+    # Any previously extracted metadata can be accessed via
+    # `context[:metadata]`:
+    #
+    #     add_metadata :foo do |io, context|
+    #       context[:metadata] #=>
+    #       # {
+    #       #   "size"      => 239823,
+    #       #   "filename"  => "nature.jpg",
+    #       #   "mime_type" => "image/jpeg"
+    #       # }
+    #
+    #       "foo"
+    #     end
+    #
+    #     add_metadata :bar do |io, context|
+    #       context[:metadata] #=>
+    #       # {
+    #       #   "size"      => 239823,
+    #       #   "filename"  => "nature.jpg",
+    #       #   "mime_type" => "image/jpeg",
+    #       #   "foo"       => "foo"
+    #       # }
+    #
+    #       "bar"
+    #     end
     module AddMetadata
       def self.configure(uploader)
         uploader.opts[:metadata] = []
@@ -94,6 +120,7 @@ class Shrine
       module InstanceMethods
         def extract_metadata(io, context)
           metadata = super
+          context = context.merge(metadata: metadata)
 
           opts[:metadata].each do |metadata_block|
             custom_metadata = instance_exec(io, context, &metadata_block) || {}
