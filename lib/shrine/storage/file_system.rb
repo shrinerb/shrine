@@ -8,6 +8,8 @@ class Shrine
     # The FileSystem storage handles uploads to the filesystem, and it is
     # most commonly initialized with a "base" folder and a "prefix":
     #
+    #     require "shrine/storage/file_system"
+    #
     #     storage = Shrine::Storage::FileSystem.new("public", prefix: "uploads")
     #     storage.url("image.jpg") #=> "/uploads/image.jpg"
     #

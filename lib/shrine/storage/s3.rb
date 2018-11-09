@@ -30,7 +30,7 @@ class Shrine
     #
     # It can be initialized by providing the bucket name and credentials:
     #
-    #     require 'shrine/storage/s3'
+    #     require "shrine/storage/s3"
     #
     #     s3 = Shrine::Storage::S3.new(
     #       bucket: "my-app", # required
