@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make previously extracted metadata available under `:metadata` in `add_metadata` plugin (@jrochkind)
+
 * Use a guard raise cause for `bucket` argument in S3 for an appropriate error message (@ardecvz)
 
 ## 2.13.0 (2018-11-04)
