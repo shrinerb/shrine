@@ -244,6 +244,10 @@ describe Shrine::Plugins::DetermineMimeType do
     mime_type = analyzers[:mime_types].call(io = fakeio("content", filename: "file.json"))
     assert_equal "application/json", mime_type
     assert_equal "content", io.read
+
+    mime_type = analyzers[:content_type].call(io = fakeio("content", content_type: "foo/bar"))
+    assert_equal "foo/bar", mime_type
+    assert_equal "content", io.read
   end
 
   it "returns Shrine::Error on unknown analyzer" do

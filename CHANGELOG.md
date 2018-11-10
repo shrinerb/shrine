@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:content_type` analyzer to `Shrine.mime_type_analyzers` in `determine_mime_type` plugin (@janko-m)
+
 * Rename `:default` analyzer to `:content_type` in `determine_mime_type` plugin (@janko-m)
 
 * Don't display a warning when `determine_mime_type` plugin is loaded with `:default` analyzer (@janko-m)

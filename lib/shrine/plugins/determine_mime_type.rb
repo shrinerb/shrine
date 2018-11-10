@@ -100,16 +100,12 @@ class Shrine
         # Determines the MIME type of the IO object by calling the specified
         # analyzer.
         def determine_mime_type(io)
-          if opts[:mime_type_analyzer] == :content_type
-            mime_type = io.content_type.to_s.split(";").first if io.respond_to?(:content_type)
-          else
-            analyzer = opts[:mime_type_analyzer]
-            analyzer = mime_type_analyzer(analyzer) if analyzer.is_a?(Symbol)
-            args     = [io, mime_type_analyzers].take(analyzer.arity.abs)
+          analyzer = opts[:mime_type_analyzer]
+          analyzer = mime_type_analyzer(analyzer) if analyzer.is_a?(Symbol)
+          args     = [io, mime_type_analyzers].take(analyzer.arity.abs)
 
-            mime_type = analyzer.call(*args)
-            io.rewind
-          end
+          mime_type = analyzer.call(*args)
+          io.rewind
 
           mime_type
         end
@@ -132,9 +128,7 @@ class Shrine
       module InstanceMethods
         private
 
-        # Calls default behaviour when :default analyzer was specified, which
-        # just reads the `#content_type` attribute, otherwise uses the specified
-        # MIME type analyzer.
+        # Calls the configured MIME type analyzer.
         def extract_mime_type(io)
           self.class.determine_mime_type(io)
         end
@@ -146,7 +140,7 @@ class Shrine
       end
 
       class MimeTypeAnalyzer
-        SUPPORTED_TOOLS = [:fastimage, :file, :filemagic, :mimemagic, :marcel, :mime_types, :mini_mime]
+        SUPPORTED_TOOLS = [:fastimage, :file, :filemagic, :mimemagic, :marcel, :mime_types, :mini_mime, :content_type]
         MAGIC_NUMBER    = 256 * 1024
 
         def initialize(tool)
@@ -240,6 +234,12 @@ class Shrine
           if filename = extract_filename(io)
             info = MiniMime.lookup_by_filename(filename)
             info.content_type if info
+          end
+        end
+
+        def extract_with_content_type(io)
+          if io.respond_to?(:content_type) && io.content_type
+            io.content_type.split(";").first
           end
         end
 
