@@ -118,14 +118,11 @@ class Shrine
           media_type = scanner.scan(MEDIA_TYPE_REGEXP)
           base64 = scanner.scan(BASE64_REGEXP)
           scanner.scan(CONTENT_SEPARATOR) or raise ParseError, "data URI has invalid format"
+          content = scanner.post_match
 
           content_type = media_type[/^[^;]+/] if media_type
 
-          {
-            content_type: content_type,
-            base64:       !!base64,
-            data:         scanner.post_match,
-          }
+          { content_type: content_type, base64: !!base64, data: content }
         end
       end
 
