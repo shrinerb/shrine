@@ -51,10 +51,10 @@ class Shrine
     #   extension. Note that unlike other solutions, this analyzer is not
     #   guaranteed to return the actual MIME type of the file.
     #
-    # :default
-    # : Uses the default way of extracting the MIME type, and that is reading
-    #   the `#content_type` attribute of the IO object, which might not hold
-    #   the actual MIME type of the file.
+    # :content_type
+    # : Retrieves the value of the `#content_type` attribute of the IO object.
+    #   Note that this value normally comes from the "Content-Type" request
+    #   header, so it's not guaranteed to hold the actual MIME type of the file.
     #
     # A single analyzer is not going to properly recognize all types of files,
     # so you can build your own custom analyzer for your requirements, where
@@ -88,6 +88,11 @@ class Shrine
     # [fastimage]: https://github.com/sdsykes/fastimage
     module DetermineMimeType
       def self.configure(uploader, opts = {})
+        if opts[:analyzer] == :default
+          Shrine.deprecation("The :default analyzer of the determine_mime_type plugin has been renamed to :content_type. The :default alias will not be supported in Shrine 3.")
+          opts = opts.merge(analyzer: :content_type)
+        end
+
         uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:mime_type_analyzer, :file))
       end
 
@@ -95,7 +100,7 @@ class Shrine
         # Determines the MIME type of the IO object by calling the specified
         # analyzer.
         def determine_mime_type(io)
-          if opts[:mime_type_analyzer] == :default
+          if opts[:mime_type_analyzer] == :content_type
             mime_type = io.content_type.to_s.split(";").first if io.respond_to?(:content_type)
           else
             analyzer = opts[:mime_type_analyzer]

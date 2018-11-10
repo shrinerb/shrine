@@ -184,9 +184,9 @@ describe Shrine::Plugins::DetermineMimeType do
     end
   end
 
-  describe ":default analyzer" do
+  describe ":content_type analyzer" do
     before do
-      @shrine.plugin :determine_mime_type, analyzer: :default
+      @shrine.plugin :determine_mime_type, analyzer: :content_type
     end
 
     it "extracts MIME type from #content_type" do
@@ -203,6 +203,11 @@ describe Shrine::Plugins::DetermineMimeType do
 
     it "returns nil when IO doesn't respond to #content_type" do
       assert_nil @shrine.determine_mime_type(image)
+    end
+
+    deprecated "works with the :default alias" do
+      @shrine.plugin :determine_mime_type, analyzer: :default
+      assert_equal "foo/bar", @shrine.determine_mime_type(fakeio(content_type: "foo/bar"))
     end
   end
 
