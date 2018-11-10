@@ -67,7 +67,7 @@ describe Shrine::Plugins::DataUri do
     assert_equal "application/vnd.api+json", io.content_type
 
     io = @attacher.shrine_class.data_uri("data:application/vnd.api+json;charset=utf-8,content")
-    assert_equal "application/vnd.api+json", io.content_type
+    assert_equal "application/vnd.api+json;charset=utf-8", io.content_type
 
     assert_raises(Shrine::Plugins::DataUri::ParseError) do
       @attacher.shrine_class.data_uri("data:application/vnd.api&json,content")
@@ -95,8 +95,8 @@ describe Shrine::Plugins::DataUri do
     assert_equal "content",   io.read
 
     io = @attacher.shrine_class.data_uri("data:image/png;param=value;base64,#{Base64.encode64("content")}")
-    assert_equal "image/png", io.content_type
-    assert_equal "content",   io.read
+    assert_equal "image/png;param=value", io.content_type
+    assert_equal "content",               io.read
 
     io = @attacher.shrine_class.data_uri("data:;base64,#{Base64.encode64("content")}")
     assert_equal "text/plain", io.content_type
