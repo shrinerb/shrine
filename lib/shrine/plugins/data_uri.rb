@@ -54,6 +54,7 @@ class Shrine
     #     io = Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
     #     io.content_type #=> "image/png"
     #     io.size         #=> 21
+    #     io.read         # decoded content
     #
     # When the content type is ommited, `text/plain` is assumed. The parser
     # also supports raw data URIs which aren't base64-encoded.
@@ -63,6 +64,11 @@ class Shrine
     #     io.content_type #=> "text/plain"
     #     io.size         #=> 11
     #     io.read         #=> "raw content"
+    #
+    # You can also assign a filename:
+    #
+    #     io = Shrine.data_uri("data:,content", filename: "foo.txt")
+    #     io.original_filename #=> "foo.txt"
     #
     # ## `UploadedFile#data_uri` and `UploadedFile#base64`
     #
@@ -94,15 +100,17 @@ class Shrine
       module ClassMethods
         # Parses the given data URI and creates an IO object from it.
         #
-        #     Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
-        #     #=> #<Shrine::Plugins::DataUri::DataFile>
-        def data_uri(uri)
+        #     io = Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
+        #     io #=> #<Shrine::Plugins::DataUri::DataFile>
+        #     io.content_type #=> "image/png"
+        #     io.size         #=> 21
+        #     io.read         # decoded content
+        def data_uri(uri, filename: nil)
           info = parse_data_uri(uri)
 
           content_type = info[:content_type] || DEFAULT_CONTENT_TYPE
           content      = info[:base64] ? Base64.decode64(info[:data]) : CGI.unescape(info[:data])
-          filename     = opts[:data_uri_filename]
-          filename     = filename.call(content_type) if filename
+          filename     = opts[:data_uri_filename].call(content_type) if opts[:data_uri_filename]
 
           data_file = DataFile.new(content, content_type: content_type, filename: filename)
           info[:data].clear

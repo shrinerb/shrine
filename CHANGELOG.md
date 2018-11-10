@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow assigning a filename to the `DataFile` object in `Shrine.data_uri` (@janko-m)
+
 * Don't strip media type parameters for the `DataFile` object in `data_uri` plugin (@janko-m)
 
 * Add `:content_type` analyzer to `Shrine.mime_type_analyzers` in `determine_mime_type` plugin (@janko-m)

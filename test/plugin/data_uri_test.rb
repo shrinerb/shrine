@@ -6,6 +6,7 @@ describe Shrine::Plugins::DataUri do
   before do
     @attacher = attacher { plugin :data_uri }
     @user = @attacher.record
+    @shrine = @attacher.shrine_class
   end
 
   it "enables caching with a data URI" do
@@ -48,7 +49,7 @@ describe Shrine::Plugins::DataUri do
   end
 
   it "can create an IO object from the data URI" do
-    io = @attacher.shrine_class.data_uri("data:image/png,content")
+    io = @shrine.data_uri("data:image/png,content")
     assert_instance_of StringIO, io.to_io
     assert_equal "image/png", io.content_type
     assert_equal "content", io.read
@@ -60,62 +61,67 @@ describe Shrine::Plugins::DataUri do
   end
 
   it "extracts valid content type" do
-    io = @attacher.shrine_class.data_uri("data:image/png,content")
+    io = @shrine.data_uri("data:image/png,content")
     assert_equal "image/png", io.content_type
 
-    io = @attacher.shrine_class.data_uri("data:application/vnd.api+json,content")
+    io = @shrine.data_uri("data:application/vnd.api+json,content")
     assert_equal "application/vnd.api+json", io.content_type
 
-    io = @attacher.shrine_class.data_uri("data:application/vnd.api+json;charset=utf-8,content")
+    io = @shrine.data_uri("data:application/vnd.api+json;charset=utf-8,content")
     assert_equal "application/vnd.api+json;charset=utf-8", io.content_type
 
     assert_raises(Shrine::Plugins::DataUri::ParseError) do
-      @attacher.shrine_class.data_uri("data:application/vnd.api&json,content")
+      @shrine.data_uri("data:application/vnd.api&json,content")
     end
 
-    io = @attacher.shrine_class.data_uri("data:,content")
+    io = @shrine.data_uri("data:,content")
     assert_equal "text/plain", io.content_type
 
     assert_raises(Shrine::Plugins::DataUri::ParseError) do
-      @attacher.shrine_class.data_uri("data:content")
+      @shrine.data_uri("data:content")
     end
   end
 
   it "URI-decodes raw content" do
-    io = @attacher.shrine_class.data_uri("data:,raw%20content")
+    io = @shrine.data_uri("data:,raw%20content")
     assert_equal "raw content", io.read
 
-    io = @attacher.shrine_class.data_uri("data:,raw content")
+    io = @shrine.data_uri("data:,raw content")
     assert_equal "raw content", io.read
   end
 
   it "handles base64 data URIs" do
-    io = @attacher.shrine_class.data_uri("data:image/png;base64,#{Base64.encode64("content")}")
+    io = @shrine.data_uri("data:image/png;base64,#{Base64.encode64("content")}")
     assert_equal "image/png", io.content_type
     assert_equal "content",   io.read
 
-    io = @attacher.shrine_class.data_uri("data:image/png;param=value;base64,#{Base64.encode64("content")}")
+    io = @shrine.data_uri("data:image/png;param=value;base64,#{Base64.encode64("content")}")
     assert_equal "image/png;param=value", io.content_type
     assert_equal "content",               io.read
 
-    io = @attacher.shrine_class.data_uri("data:;base64,#{Base64.encode64("content")}")
+    io = @shrine.data_uri("data:;base64,#{Base64.encode64("content")}")
     assert_equal "text/plain", io.content_type
     assert_equal "content",    io.read
 
     assert_raises(Shrine::Plugins::DataUri::ParseError) do
-      @attacher.shrine_class.data_uri("data:base64,#{Base64.encode64("content")}")
+      @shrine.data_uri("data:base64,#{Base64.encode64("content")}")
     end
   end
 
   it "accepts data URIs with blank content" do
-    io = @attacher.shrine_class.data_uri("data:,")
+    io = @shrine.data_uri("data:,")
     assert_equal "", io.read
     assert_equal 0,  io.size
   end
 
+  it "accepts :filename" do
+    io = @shrine.data_uri("data:,content", filename: "foo.txt")
+    assert_equal "foo.txt", io.original_filename
+  end
+
   deprecated "can generate filenames" do
-    @attacher.shrine_class.plugin :data_uri, filename: ->(c) { "data_uri.#{c.split("/").last}" }
-    io = @attacher.shrine_class.data_uri("data:image/png,content")
+    @shrine.plugin :data_uri, filename: ->(c) { "data_uri.#{c.split("/").last}" }
+    io = @shrine.data_uri("data:image/png,content")
     assert_equal "image/png",    io.content_type
     assert_equal "data_uri.png", io.original_filename
   end
