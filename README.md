@@ -465,6 +465,13 @@ uploaded_file.mime_type         #=> "video/mp4"
 uploaded_file.size              #=> 345993
 ```
 
+By default these values are determined from the following attributes on the IO
+object:
+
+* `filename` – `io.original_filename` or `io.path`
+* `mime_type` – `io.content_type`
+* `size` – `io.size`
+
 ### MIME type
 
 By default `mime_type` will be inherited from `#content_type` attribute of the

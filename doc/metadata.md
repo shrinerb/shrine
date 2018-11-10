@@ -26,6 +26,13 @@ uploader.extract_metadata(io) #=>
 # }
 ```
 
+By default these values are determined from the following attributes on the IO
+object:
+
+* `filename` – `io.original_filename` or `io.path`
+* `mime_type` – `io.content_type`
+* `size` – `io.size`
+
 Note that you can also manually add or override metadata on upload by passing
 the `:metadata` option to `Shrine#upload`:
 
