@@ -1,5 +1,9 @@
 ## HEAD
 
+* Remove superfluous `#head_object` S3 API call in `S3#download` (@janko-m)
+
+* Make `S3#download` and `S3#open` work with server side encryption options (@janko-m)
+
 * Make previously extracted metadata available under `:metadata` in `add_metadata` plugin (@jrochkind)
 
 * Use a guard raise cause for `bucket` argument in S3 for an appropriate error message (@ardecvz)

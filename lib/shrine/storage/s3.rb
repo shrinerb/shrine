@@ -322,9 +322,9 @@ class Shrine
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def download(id, **options)
         tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
-        (object = object(id)).get(response_target: tempfile, **options)
+        data = object(id).get(response_target: tempfile, **options)
         tempfile.singleton_class.instance_eval { attr_accessor :content_type }
-        tempfile.content_type = object.content_type
+        tempfile.content_type = data.content_type
         tempfile.tap(&:open)
       rescue
         tempfile.close! if tempfile
@@ -341,13 +341,15 @@ class Shrine
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def open(id, rewindable: true, **options)
         object = object(id)
-        io = Down::ChunkedIO.new(
+
+        load_data(object, **options)
+
+        Down::ChunkedIO.new(
           chunks:     object.enum_for(:get, **options),
           rewindable: rewindable,
+          size:       object.content_length,
           data:       { object: object },
         )
-        io.size = object.content_length
-        io
       end
 
       # Returns true file exists on S3.
@@ -511,6 +513,23 @@ class Shrine
         end
 
         bytes_uploaded
+      end
+
+      # Aws::S3::Object#load doesn't support passing options to #head_object,
+      # so we call #head_object ourselves and assign the response data
+      def load_data(object, **options)
+        # filter out #get_object options that are not valid #head_object options
+        options = options.select do |key, value|
+          client.config.api.operation(:head_object).input.shape.member?(key)
+        end
+
+        response = client.head_object(
+          bucket: bucket.name,
+          key: object.key,
+          **options
+        )
+
+        object.instance_variable_set(:@data, response.data)
       end
 
       def extract_path(io)

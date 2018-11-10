@@ -381,22 +381,24 @@ describe Shrine::Storage::S3 do
       assert tempfile.binmode?
     end
 
-    it "accepts additional options" do
-      @s3.client.stub_responses(:get_object, body: "content")
-      tempfile = @s3.download("foo", range: "bytes=0-100")
-      assert_equal "content", tempfile.read
+    it "makes a single #get_object API call" do
+      @s3.download("foo")
+      assert_equal 1, @s3.client.api_requests.count
+      assert_equal :get_object, @s3.client.api_requests[0][:operation_name]
+      assert_equal "foo",       @s3.client.api_requests[0][:params][:key]
+    end
+
+    it "forwards additional options to #get_object" do
+      @s3.download("foo", range: "bytes=0-100")
+      assert_equal :get_object,   @s3.client.api_requests[0][:operation_name]
       assert_equal "bytes=0-100", @s3.client.api_requests[0][:params][:range]
     end
 
     it "respects :prefix" do
       @s3 = s3(prefix: "prefix")
       @s3.download("foo")
-
       assert_equal :get_object,  @s3.client.api_requests[0][:operation_name]
       assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
-
-      assert_equal :head_object, @s3.client.api_requests[1][:operation_name]
-      assert_equal "prefix/foo", @s3.client.api_requests[1][:params][:key]
     end
 
     it "deletes the Tempfile if an error occurs while retrieving file contents" do
@@ -416,19 +418,33 @@ describe Shrine::Storage::S3 do
 
   describe "#open" do
     it "returns a Down::ChunkedIO which downloads the object" do
-      @s3.client.stub_responses(:head_object, { content_length: 7 })
       @s3.client.stub_responses(:get_object, body: "content")
       io = @s3.open("foo")
       assert_instance_of Down::ChunkedIO, io
       assert_equal "content", io.read
-      assert_equal 7, io.size
     end
 
-    it "adds the S3 object to data" do
+    it "retrieves the content length" do
+      @s3.client.stub_responses(:head_object, content_length: 44)
+      io = @s3.open("foo")
+      assert_equal 44, io.size
+    end
+
+    it "makes one #get_object and one #head_object request" do
+      @s3.open("foo")
+      assert_equal 2, @s3.client.api_requests.count
+      assert_equal :head_object, @s3.client.api_requests[0][:operation_name]
+      assert_equal "foo",        @s3.client.api_requests[0][:params][:key]
+      assert_equal :get_object,  @s3.client.api_requests[1][:operation_name]
+      assert_equal "foo",        @s3.client.api_requests[1][:params][:key]
+    end
+
+    it "returns the Aws::S3::Object in data" do
       @s3.client.stub_responses(:head_object, { content_type: "text/plain" })
       io = @s3.open("foo")
       assert_instance_of Aws::S3::Object, io.data[:object]
-      assert_equal      "text/plain",     io.data[:object].content_type
+      assert_equal "text/plain", io.data[:object].content_type
+      assert_equal 2, @s3.client.api_requests.count
     end
 
     it "accepts :rewindable option" do
@@ -437,21 +453,22 @@ describe Shrine::Storage::S3 do
       assert_raises(IOError) { io.rewind }
     end
 
-    it "accepts additional options" do
-      @s3.client.stub_responses(:get_object, body: "content")
-      io = @s3.open("foo", range: "bytes=0-100")
-      assert_equal "content", io.read
+    it "forwards additional options to both #get_object and #head_object" do
+      io = @s3.open("foo", range: "bytes=0-100", response_content_encoding: "gzip")
+      assert_equal :head_object,  @s3.client.api_requests[0][:operation_name]
       assert_equal "bytes=0-100", @s3.client.api_requests[0][:params][:range]
+      assert_nil                  @s3.client.api_requests[0][:params][:response_content_encoding]
+      assert_equal :get_object,   @s3.client.api_requests[1][:operation_name]
+      assert_equal "bytes=0-100", @s3.client.api_requests[1][:params][:range]
+      assert_equal "gzip",        @s3.client.api_requests[1][:params][:response_content_encoding]
     end
 
     it "respects :prefix" do
       @s3 = s3(prefix: "prefix")
       @s3.open("foo")
-
-      assert_equal :get_object,  @s3.client.api_requests[0][:operation_name]
+      assert_equal :head_object, @s3.client.api_requests[0][:operation_name]
       assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
-
-      assert_equal :head_object, @s3.client.api_requests[1][:operation_name]
+      assert_equal :get_object,  @s3.client.api_requests[1][:operation_name]
       assert_equal "prefix/foo", @s3.client.api_requests[1][:params][:key]
     end
   end
