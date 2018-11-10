@@ -131,11 +131,7 @@ class Shrine
         # just reads the `#content_type` attribute, otherwise uses the specified
         # MIME type analyzer.
         def extract_mime_type(io)
-          if opts[:mime_type_analyzer] == :default
-            super
-          else
-            self.class.determine_mime_type(io)
-          end
+          self.class.determine_mime_type(io)
         end
 
         # Returns a hash of built-in MIME type analyzers.

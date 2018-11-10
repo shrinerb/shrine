@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't display a warning when `determine_mime_type` plugin is loaded with `:default` analyzer (@janko-m)
+
 * Exclude media type parameters when copying `IO#content_type` into `mime_type` metadata (@janko-m)
 
 * Remove superfluous `#head_object` S3 API call in `S3#download` (@janko-m)
