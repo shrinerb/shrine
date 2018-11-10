@@ -1,5 +1,7 @@
 ## HEAD
 
+* Exclude media type parameters when copying `IO#content_type` into `mime_type` metadata (@janko-m)
+
 * Remove superfluous `#head_object` S3 API call in `S3#download` (@janko-m)
 
 * Make `S3#download` and `S3#open` work with server side encryption options (@janko-m)

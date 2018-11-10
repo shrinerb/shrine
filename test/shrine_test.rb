@@ -385,7 +385,13 @@ describe Shrine do
       metadata = @uploader.extract_metadata(fakeio(content_type: "image/jpeg"))
       assert_equal "image/jpeg", metadata["mime_type"]
 
+      metadata = @uploader.extract_metadata(fakeio(content_type: "text/plain;charset=utf-8"))
+      assert_equal "text/plain", metadata["mime_type"]
+
       metadata = @uploader.extract_metadata(fakeio)
+      assert_nil metadata["mime_type"]
+
+      metadata = @uploader.extract_metadata(image)
       assert_nil metadata["mime_type"]
     end
 

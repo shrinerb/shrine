@@ -96,7 +96,7 @@ class Shrine
         # analyzer.
         def determine_mime_type(io)
           if opts[:mime_type_analyzer] == :default
-            mime_type = io.content_type if io.respond_to?(:content_type)
+            mime_type = io.content_type.to_s.split(";").first if io.respond_to?(:content_type)
           else
             analyzer = opts[:mime_type_analyzer]
             analyzer = mime_type_analyzer(analyzer) if analyzer.is_a?(Symbol)
