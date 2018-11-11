@@ -88,6 +88,7 @@ describe Shrine::Plugins::RackResponse do
 
   it "closes the file when response is closed" do
     uploaded_file = @uploader.upload(fakeio)
+    uploaded_file.open
     response = uploaded_file.to_rack_response
     response[2].close
     assert uploaded_file.to_io.closed?

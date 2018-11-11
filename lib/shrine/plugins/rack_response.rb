@@ -29,11 +29,15 @@ class Shrine
     #     class FilesController < ActionController::Base
     #       def download
     #         # ...
-    #         file_status, file_headers, file_body = record.attachment.to_rack_response
+    #         set_rack_response record.attachment.to_rack_response
+    #       end
     #
-    #         response.status = file_status
-    #         response.headers.merge!(file_headers)
-    #         self.response_body = file_body
+    #       private
+    #
+    #       def set_rack_response((status, headers, body))
+    #         response.status = status
+    #         response.headers.merge!(headers)
+    #         self.response_body = body
     #       end
     #     end
     #
@@ -62,10 +66,23 @@ class Shrine
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.
-        def to_rack_response(disposition: "inline", range: false)
+        def to_rack_response(**options)
+          FileResponse.new(self).call(**options)
+        end
+      end
+
+      class FileResponse
+        attr_reader :file
+
+        def initialize(file)
+          @file = file
+        end
+
+        # Returns a Rack response triple for the uploaded file.
+        def call(disposition: "inline", range: false)
           range = parse_http_range(range) if range
 
-          status  = range ? 206 : 200
+          status  = rack_status(range: range)
           headers = rack_headers(disposition: disposition, range: range)
           body    = rack_body(range: range)
 
@@ -74,14 +91,20 @@ class Shrine
 
         private
 
+        # Returns "200 OK" on full request, and "206 Partial Content" on ranged
+        # request.
+        def rack_status(range:)
+          range ? 206 : 200
+        end
+
         # Returns a hash of "Content-Length", "Content-Type" and
         # "Content-Disposition" headers, whose values are extracted from
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
-        def rack_headers(disposition:, range: false)
-          length   = range ? range.size : size || io.size
-          type     = mime_type || Rack::Mime.mime_type(".#{extension}")
-          filename = original_filename || id.split("/").last
+        def rack_headers(disposition:, range:)
+          length   = range ? range.size : size
+          type     = file.mime_type || Rack::Mime.mime_type(".#{file.extension}")
+          filename = file.original_filename || file.id.split("/").last
 
           headers = {}
           headers["Content-Length"]      = length.to_s if length
@@ -102,7 +125,7 @@ class Shrine
             body = enum_for(:read_chunks)
           end
 
-          Rack::BodyProxy.new(body) { io.close }
+          Rack::BodyProxy.new(body) { file.close }
         end
 
         # Yields reasonably sized chunks of uploaded file's partial content
@@ -133,19 +156,27 @@ class Shrine
           if io.respond_to?(:each_chunk) # Down::ChunkedIO
             io.each_chunk { |chunk| yield chunk }
           else
-            yield io.read(16*1024) until io.eof?
+            yield file.read(16*1024) until file.eof?
           end
         end
 
         # Parses the value of a "Range" HTTP header.
         def parse_http_range(range_header)
           if Rack.release >= "2.0"
-            ranges = Rack::Utils.get_byte_ranges(range_header, size || io.size)
+            ranges = Rack::Utils.get_byte_ranges(range_header, size)
           else
-            ranges = Rack::Utils.byte_ranges({"HTTP_RANGE" => range_header}, size || io.size)
+            ranges = Rack::Utils.byte_ranges({"HTTP_RANGE" => range_header}, size)
           end
 
           ranges.first if ranges && ranges.one?
+        end
+
+        def size
+          file.size || io.size
+        end
+
+        def io
+          file.to_io
         end
       end
     end
