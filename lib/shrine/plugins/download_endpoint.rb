@@ -138,28 +138,43 @@ class Shrine
 
         # Returns file URL on the download endpoint.
         def download_url
-          [download_host, *download_prefix, download_identifier].join("/")
+          FileUrl.new(self).call
         end
 
         private
 
-        # Generates URL-safe identifier from data, filtering only a subset of
-        # metadata that the endpoint needs to prevent the URL from being too
-        # long.
-        def download_identifier
-          urlsafe_dump(metadata: %W[filename size mime_type])
+        def download_storages
+          shrine_class.opts[:download_endpoint_storages]
+        end
+      end
+
+      class FileUrl
+        attr_reader :file
+
+        def initialize(file)
+          @file = file
         end
 
-        def download_host
+        def call
+          [host, *prefix, path].join("/")
+        end
+
+        private
+
+        def path
+          file.urlsafe_dump(metadata: %w[filename size mime_type])
+        end
+
+        def host
           shrine_class.opts[:download_endpoint_host]
         end
 
-        def download_prefix
+        def prefix
           shrine_class.opts[:download_endpoint_prefix]
         end
 
-        def download_storages
-          shrine_class.opts[:download_endpoint_storages]
+        def shrine_class
+          file.shrine_class
         end
       end
 
