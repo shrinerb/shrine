@@ -2,9 +2,6 @@
 
 require "roda"
 
-require "base64"
-require "json"
-
 class Shrine
   module Plugins
     # The `download_endpoint` plugin provides a Rack endpoint for downloading
@@ -64,6 +61,7 @@ class Shrine
     module DownloadEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response
+        uploader.plugin :urlsafe_serialization
       end
 
       # Accepts the following options:
@@ -123,10 +121,6 @@ class Shrine
           const_set(:DownloadEndpoint, endpoint_class)
           deprecate_constant(:DownloadEndpoint) if RUBY_VERSION > "2.3"
         end
-
-        def download_endpoint_serializer
-          @download_endpoint_serializer ||= Serializer.new
-        end
       end
 
       module FileMethods
@@ -142,6 +136,7 @@ class Shrine
           end
         end
 
+        # Returns file URL on the download endpoint.
         def download_url
           [download_host, *download_prefix, download_identifier].join("/")
         end
@@ -152,12 +147,7 @@ class Shrine
         # metadata that the endpoint needs to prevent the URL from being too
         # long.
         def download_identifier
-          semantical_metadata = metadata.select { |name, _| %w[filename size mime_type].include?(name) }
-          download_serializer.dump(data.merge("metadata" => semantical_metadata.sort.to_h))
-        end
-
-        def download_serializer
-          shrine_class.download_endpoint_serializer
+          urlsafe_dump(metadata: %W[filename size mime_type])
         end
 
         def download_host
@@ -181,23 +171,25 @@ class Shrine
           # handle legacy ":storage/:id" URLs
           r.on storage_names do |storage_name|
             r.get /(.*)/ do |id|
-              data = { "id" => id, "storage" => storage_name, "metadata" => {} }
-              serve_file(data)
+              uploaded_file = shrine_class::UploadedFile.new(
+                "id"       => id,
+                "storage"  => storage_name,
+              )
+
+              serve_file(uploaded_file)
             end
           end
 
-          r.get /(.*)/ do |identifier|
-            data = serializer.load(identifier)
-            serve_file(data)
+          r.get /(.*)/ do |serialized|
+            uploaded_file = get_uploaded_file(serialized)
+            serve_file(uploaded_file)
           end
         end
 
         private
 
         # Streams or redirects to the uploaded file.
-        def serve_file(data)
-          uploaded_file = get_uploaded_file(data)
-
+        def serve_file(uploaded_file)
           if redirect
             redirect_to_file(uploaded_file)
           else
@@ -227,11 +219,11 @@ class Shrine
         end
 
         # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.
-        def get_uploaded_file(data)
-          uploaded_file = shrine_class.uploaded_file(data)
+        def get_uploaded_file(serialized)
+          uploaded_file = shrine_class::UploadedFile.urlsafe_load(serialized)
           not_found! unless uploaded_file.exists?
           uploaded_file
-        rescue Shrine::Error
+        rescue Shrine::Error # storage not found
           not_found!
         end
 
@@ -251,10 +243,6 @@ class Shrine
           shrine_class.storages.keys.map(&:to_s)
         end
 
-        def serializer
-          shrine_class.download_endpoint_serializer
-        end
-
         def redirect
           opts[:redirect]
         end
@@ -265,34 +253,6 @@ class Shrine
 
         def shrine_class
           opts[:shrine_class]
-        end
-      end
-
-      class Serializer
-        def dump(data)
-          base64_encode(json_encode(data))
-        end
-
-        def load(data)
-          json_decode(base64_decode(data))
-        end
-
-        private
-
-        def json_encode(data)
-          JSON.generate(data)
-        end
-
-        def base64_encode(data)
-          Base64.urlsafe_encode64(data)
-        end
-
-        def base64_decode(data)
-          Base64.urlsafe_decode64(data)
-        end
-
-        def json_decode(data)
-          JSON.parse(data)
         end
       end
     end
