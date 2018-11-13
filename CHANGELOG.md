@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't lookup attachment class on every attacher read (@printercu)
+
 * Allow assigning a filename to the `DataFile` object in `Shrine.data_uri` (@janko-m)
 
 * Don't strip media type parameters for the `DataFile` object in `data_uri` plugin (@janko-m)

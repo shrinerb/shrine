@@ -413,19 +413,18 @@ class Shrine
           @name    = name
           @options = options
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}_attacher(options = {})
-              @#{name}_attacher   = nil if options.any?
-              @#{name}_attacher ||= (
-                attachments    = self.class.ancestors.grep(Shrine::Attachment)
-                attachment     = attachments.find { |mod| mod.attachment_name == :#{name} }
-                attacher_class = attachment.shrine_class::Attacher
-                options        = attachment.options.merge(options)
+          attacher_ivar = :"@#{name}_attacher"
+          attachment = self
 
-                attacher_class.new(self, :#{name}, options)
-              )
+          define_method "#{name}_attacher" do |attacher_options = {}|
+            if attacher_options.empty?
+              cached = instance_variable_get(attacher_ivar)
+              return cached if cached
             end
+            instance_variable_set(attacher_ivar, attachment.build_attacher(self, attacher_options))
+          end
 
+          module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def #{name}=(value)
               #{name}_attacher.assign(value)
             end
@@ -443,6 +442,10 @@ class Shrine
         # Returns name of the attachment this module provides.
         def attachment_name
           @name
+        end
+
+        def build_attacher(object, options)
+          shrine_class::Attacher.new(object, @name, @options.merge(options))
         end
 
         # Returns options that are to be passed to the Attacher.
