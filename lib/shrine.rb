@@ -295,7 +295,9 @@ class Shrine
         # Attempts to extract the MIME type from the IO object.
         def extract_mime_type(io)
           if io.respond_to?(:content_type) && io.content_type
-            warn "The \"mime_type\" Shrine metadata field will be set from the \"Content-Type\" request header, which might not hold the actual MIME type of the file. It is recommended to load the determine_mime_type plugin which determines MIME type from file content."
+            if opts[:mime_type_security_warning] != :suppress
+              warn "The \"mime_type\" Shrine metadata field will be set from the \"Content-Type\" request header, which might not hold the actual MIME type of the file. It is recommended to load the determine_mime_type plugin which determines MIME type from file content."
+            end
             io.content_type.split(";").first # exclude media type parameters
           end
         end

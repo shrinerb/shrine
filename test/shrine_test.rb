@@ -172,7 +172,7 @@ describe Shrine do
   it "has #storage_key, #storage and #opts" do
     assert_equal :store, @uploader.storage_key
     assert_equal @shrine.storages[:store], @uploader.storage
-    assert_equal Hash.new, @uploader.opts
+    assert_kind_of Hash, @uploader.opts
   end
 
   describe "#upload" do

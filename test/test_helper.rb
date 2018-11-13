@@ -17,9 +17,8 @@ require "mocha/minitest"
 
 require "shrine"
 
-class Shrine
-  def warn(*); end # disable mime_type warnings
-end
+# disable mime_type warnings
+Shrine.opts[:mime_type_security_warning] = :suppress
 
 require "./test/support/generic_helper"
 require "./test/support/deprecated_helper"
