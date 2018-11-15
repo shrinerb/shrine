@@ -29,6 +29,12 @@ describe Shrine::Attachment do
       assert_equal :cache, @user.avatar_attacher.store.storage_key
     end
 
+    it "allows the user to reset the Attacher instance" do
+      previous_attacher = @user.avatar_attacher
+      @user.instance_variable_set(:@avatar_attacher, nil)
+      refute_equal previous_attacher, @user.avatar_attacher
+    end
+
     it "is owned by the Attachment instance" do
       assert_equal @attachment, @user.method(:avatar_attacher).owner
     end

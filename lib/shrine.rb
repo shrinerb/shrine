@@ -423,7 +423,7 @@ class Shrine
           attacher_ivar = :"@#{@name}_attacher"
 
           define_method :"#{@name}_attacher" do |options = {}|
-            if !instance_variable_defined?(attacher_ivar) || options.any?
+            if !instance_variable_get(attacher_ivar) || options.any?
               instance_variable_set(attacher_ivar, attachment.build_attacher(self, options))
             else
               instance_variable_get(attacher_ivar)
