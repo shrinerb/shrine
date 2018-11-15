@@ -533,7 +533,7 @@ class Shrine
         # is then written to the attachment attribute in the JSON format.
         def assign(value, **options)
           if value.is_a?(String)
-            return if value == "" || !cache.uploaded?(uploaded_file(value))
+            return if value == "" || !cached?(uploaded_file(value))
             assign_cached(uploaded_file(value))
           else
             uploaded_file = cache!(value, action: :cache, **options) if value
@@ -600,14 +600,14 @@ class Shrine
         # Deletes the previous attachment that was replaced, typically called
         # after the model instance is saved with the new attachment.
         def replace
-          _delete(@old, action: :replace) if @old && !cache.uploaded?(@old)
+          _delete(@old, action: :replace) if @old && !cached?(@old)
         end
 
         # Deletes the current attachment, typically called after destroying the
         # record.
         def destroy
           file = get
-          _delete(file, action: :destroy) if file && !cache.uploaded?(file)
+          _delete(file, action: :destroy) if file && !cached?(file)
         end
 
         # Delegates to #delete!, overriden for backgrounding.
@@ -622,8 +622,7 @@ class Shrine
         end
 
         # Returns true if attachment is present and cached.
-        def cached?
-          file = get
+        def cached?(file = get)
           file && cache.uploaded?(file)
         end
 
