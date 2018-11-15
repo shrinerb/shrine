@@ -155,24 +155,24 @@ class Shrine
     #     # or
     #     Shrine::Storage::S3.new(signer: -> (url, **options) { signer.signed_url(url, **options) })
     #
-    # ## Accelerate endpoint
-    #
-    # To use Amazon S3's [Transfer Acceleration] feature, you can change the
-    # `:endpoint` of the underlying client to the accelerate endpoint, and this
-    # will be applied both to regular and presigned uploads, as well as
-    # download URLs.
-    #
-    #     Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com")
-    #
     # ## Presigns
     #
-    # This storage can generate presigns for direct uploads to Amazon S3, and
-    # it accepts additional options which are passed to aws-sdk-s3. There are
-    # three places in which you can specify presign options:
+    # The `#presign` method can be used for generating paramters for direct
+    # uploads to Amazon S3:
     #
+    #     s3.presign("/path/to/file") #=>
+    #     # {
+    #     #   url: "https://my-bucket.s3.amazonaws.com/...",
+    #     #   fields: { ... },  # blank for PUT presigns
+    #     #   headers: { ... }, # blank for POST presigns
+    #     #   method: "post",
+    #     # }
+    #
+    # Additional presign options can be given in three places:
+    #
+    # * in `Storage::S3#presign` by forwarding options
     # * in `:upload_options` option on this storage
     # * in `presign_endpoint` plugin through `:presign_options`
-    # * in `Storage::S3#presign` by forwarding options
     #
     # ## Large files
     #
@@ -195,6 +195,15 @@ class Shrine
     #     plugin :upload_options, store: -> (io, context) do
     #       { thread_count: 5 }
     #     end
+    #
+    # ## Accelerate endpoint
+    #
+    # To use Amazon S3's [Transfer Acceleration] feature, you can change the
+    # `:endpoint` of the underlying client to the accelerate endpoint, and this
+    # will be applied both to regular and presigned uploads, as well as
+    # download URLs.
+    #
+    #     Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com")
     #
     # ## Clearing cache
     #
@@ -397,11 +406,24 @@ class Shrine
         url
       end
 
-      # Returns URL, params and headers for direct uploads. By default it
-      # generates data for a POST request, calling [`Aws::S3::Object#presigned_post`].
-      # You can also specify `method: :put` to generate data for a PUT request,
-      # using [`Aws::S3::Object#presigned_url`]. Any additional options are
-      # forwarded to the underlying AWS SDK method.
+      # Returns URL, params, headers, and verb for direct uploads.
+      #
+      #     s3.presign("key") #=>
+      #     # {
+      #     #   url: "https://my-bucket.s3.amazonaws.com/...",
+      #     #   fields: { ... },  # blank for PUT presigns
+      #     #   headers: { ... }, # blank for POST presigns
+      #     #   method: "post",
+      #     # }
+      #
+      # By default it calls [`Aws::S3::Object#presigned_post`] which generates
+      # data for a POST request, but you can also specify `method: :put` for
+      # PUT uploads which calls [`Aws::S3::Object#presigned_url`].
+      #
+      #     s3.presign("key", method: :post) # for POST upload (default)
+      #     s3.presign("key", method: :put)  # for PUT upload
+      #
+      # Any additional options are forwarded to the underlying AWS SDK method.
       #
       # [`Aws::S3::Object#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Object#presigned_url`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
