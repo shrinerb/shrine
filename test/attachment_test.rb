@@ -2,12 +2,18 @@ require "test_helper"
 
 describe Shrine::Attachment do
   before do
-    @user = attacher.record
+    @attacher   = attacher
+    @user       = @attacher.record
+    @attachment = @user.class.ancestors.grep(Shrine::Attachment).first
   end
 
   describe "<name>_attacher" do
     it "is instantiated with a correct attacher class" do
-      refute_equal Shrine, @user.avatar_attacher.shrine_class
+      assert_equal @attacher.shrine_class::Attacher, @user.avatar_attacher.class
+    end
+
+    it "returns the same attacher instance on subsequent calls" do
+      assert_equal @user.avatar_attacher, @user.avatar_attacher
     end
 
     it "forwards attachment options to the attacher" do
@@ -22,12 +28,20 @@ describe Shrine::Attachment do
       @user.avatar_attacher(store: :cache)
       assert_equal :cache, @user.avatar_attacher.store.storage_key
     end
+
+    it "is owned by the Attachment instance" do
+      assert_equal @attachment, @user.method(:avatar_attacher).owner
+    end
   end
 
   describe "<name>=" do
     it "sets the file" do
       @user.avatar = fakeio("image")
       assert_equal "image", @user.avatar.read
+    end
+
+    it "is owned by the Attachment instance" do
+      assert_equal @attachment, @user.method(:avatar=).owner
     end
   end
 
@@ -36,6 +50,10 @@ describe Shrine::Attachment do
       assert_nil @user.avatar
       @user.avatar = fakeio("image")
       assert_equal "image", @user.avatar.read
+    end
+
+    it "is owned by the Attachment instance" do
+      assert_equal @attachment, @user.method(:avatar).owner
     end
   end
 
@@ -50,6 +68,10 @@ describe Shrine::Attachment do
       @user.avatar_attacher.cache.storage.instance_eval { def url(id, **o); o.to_json; end }
       @user.avatar = fakeio
       assert_equal '{"foo":"bar"}', @user.avatar_url(foo: "bar")
+    end
+
+    it "is owned by the Attachment instance" do
+      assert_equal @attachment, @user.method(:avatar_url).owner
     end
   end
 

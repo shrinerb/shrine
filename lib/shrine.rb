@@ -413,39 +413,46 @@ class Shrine
           @name    = name
           @options = options
 
-          attacher_ivar = :"@#{name}_attacher"
-          attachment = self
+          define_attachment_methods!
+        end
 
-          define_method "#{name}_attacher" do |attacher_options = {}|
-            if attacher_options.empty?
-              cached = instance_variable_get(attacher_ivar)
-              return cached if cached
+        # Defines attachment methods for the specified attachment name. These
+        # methods will be added to any model that includes this module.
+        def define_attachment_methods!
+          attachment    = self
+          attacher_ivar = :"@#{@name}_attacher"
+
+          define_method :"#{@name}_attacher" do |options = {}|
+            if !instance_variable_defined?(attacher_ivar) || options.any?
+              instance_variable_set(attacher_ivar, attachment.build_attacher(self, options))
+            else
+              instance_variable_get(attacher_ivar)
             end
-            instance_variable_set(attacher_ivar, attachment.build_attacher(self, attacher_options))
           end
 
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}=(value)
-              #{name}_attacher.assign(value)
+            def #{@name}=(value)
+              #{@name}_attacher.assign(value)
             end
 
-            def #{name}
-              #{name}_attacher.get
+            def #{@name}
+              #{@name}_attacher.get
             end
 
-            def #{name}_url(*args)
-              #{name}_attacher.url(*args)
+            def #{@name}_url(*args)
+              #{@name}_attacher.url(*args)
             end
           RUBY
+        end
+
+        # Creates an instance of the corresponding Attacher subclass.
+        def build_attacher(object, options)
+          shrine_class::Attacher.new(object, @name, @options.merge(options))
         end
 
         # Returns name of the attachment this module provides.
         def attachment_name
           @name
-        end
-
-        def build_attacher(object, options)
-          shrine_class::Attacher.new(object, @name, @options.merge(options))
         end
 
         # Returns options that are to be passed to the Attacher.
