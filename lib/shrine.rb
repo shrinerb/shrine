@@ -413,31 +413,41 @@ class Shrine
           @name    = name
           @options = options
 
+          define_attachment_methods!
+        end
+
+        # Defines attachment methods for the specified attachment name. These
+        # methods will be added to any model that includes this module.
+        def define_attachment_methods!
+          attachment    = self
+          attacher_ivar = :"@#{@name}_attacher"
+
+          define_method :"#{@name}_attacher" do |options = {}|
+            if !instance_variable_defined?(attacher_ivar) || options.any?
+              instance_variable_set(attacher_ivar, attachment.build_attacher(self, options))
+            else
+              instance_variable_get(attacher_ivar)
+            end
+          end
+
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{name}_attacher(options = {})
-              @#{name}_attacher   = nil if options.any?
-              @#{name}_attacher ||= (
-                attachments    = self.class.ancestors.grep(Shrine::Attachment)
-                attachment     = attachments.find { |mod| mod.attachment_name == :#{name} }
-                attacher_class = attachment.shrine_class::Attacher
-                options        = attachment.options.merge(options)
-
-                attacher_class.new(self, :#{name}, options)
-              )
+            def #{@name}=(value)
+              #{@name}_attacher.assign(value)
             end
 
-            def #{name}=(value)
-              #{name}_attacher.assign(value)
+            def #{@name}
+              #{@name}_attacher.get
             end
 
-            def #{name}
-              #{name}_attacher.get
-            end
-
-            def #{name}_url(*args)
-              #{name}_attacher.url(*args)
+            def #{@name}_url(*args)
+              #{@name}_attacher.url(*args)
             end
           RUBY
+        end
+
+        # Creates an instance of the corresponding Attacher subclass.
+        def build_attacher(object, options)
+          shrine_class::Attacher.new(object, @name, @options.merge(options))
         end
 
         # Returns name of the attachment this module provides.

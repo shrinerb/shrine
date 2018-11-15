@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't look up the attachment class in each new model instance (@printercu)
+
 * Allow `Attacher#cached?` and `Attacher#stored?` to take an `UploadedFile` object (@jrochkind)
 
 * Allow assigning a filename to the `DataFile` object in `Shrine.data_uri` (@janko-m)
