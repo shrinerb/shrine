@@ -627,8 +627,7 @@ class Shrine
         end
 
         # Returns true if attachment is present and stored.
-        def stored?
-          file = get
+        def stored?(file = get)
           file && store.uploaded?(file)
         end
 

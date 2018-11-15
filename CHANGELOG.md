@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow `Attacher#cached?` and `Attacher#stored?` to take an `UploadedFile` object (@jrochkind)
+
 * Allow assigning a filename to the `DataFile` object in `Shrine.data_uri` (@janko-m)
 
 * Don't strip media type parameters for the `DataFile` object in `data_uri` plugin (@janko-m)

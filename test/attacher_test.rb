@@ -273,9 +273,10 @@ describe Shrine::Attacher do
       @attacher.set(nil)
       refute @attacher.cached?
     end
+
     it "can take an argument" do
       uploaded_file = @attacher.cache!(fakeio)
-      assert @attacher.cached?( uploaded_file )
+      assert @attacher.cached?(uploaded_file)
     end
   end
 
@@ -287,6 +288,11 @@ describe Shrine::Attacher do
       refute @attacher.stored?
       @attacher.set(nil)
       refute @attacher.stored?
+    end
+
+    it "can take an argument" do
+      uploaded_file = @attacher.store!(fakeio)
+      assert @attacher.stored?(uploaded_file)
     end
   end
 
