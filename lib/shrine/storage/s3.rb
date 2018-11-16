@@ -273,8 +273,6 @@ class Shrine
     # [serve private content via CloudFront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html
     # [`Aws::CloudFront::UrlSigner`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html
     class S3
-      MIN_PART_SIZE = 5 * 1024 * 1024 # 5MB
-
       attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer, :public
 
       # Initializes a storage for uploading to S3. All options are forwarded to
