@@ -33,8 +33,8 @@ task rdoc: "website:rdoc_github_links"
 
 namespace :website do
   task :build do
-    sh "cd www; bundle exec jekyll build; cd .."
-    sh "rake rdoc"
+    sh({"BUNDLE_GEMFILE" => nil}, "bundle install --quiet && bundle exec jekyll build", chdir: "www")
+    Rake::Task["rdoc"].invoke
   end
 
   task :rdoc_github_links do
