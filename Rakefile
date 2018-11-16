@@ -16,7 +16,7 @@ RDoc::Task.new do |t|
     "--line-numbers",
     "--title", "Shrine: Toolkit for file uploads",
     "--markup", "markdown",
-    "--format", "hanna", # requires the hanna-nouveau gem
+    "--format", "hanna",
     "--main", "README.md",
     "--visibility", "public",
   ]
