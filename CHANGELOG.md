@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:filename` and `:type` options to `rack_response` plugin (@janko-m)
+
 * Add `:host` option to `UploadedFile#download_url` in `download_endpoint` plugin (@janko-m)
 
 * Extract `urlsafe_serialization` plugin from `download_endpoint` plugin (@janko-m)

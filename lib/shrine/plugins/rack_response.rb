@@ -41,19 +41,36 @@ class Shrine
     #       end
     #     end
     #
+    # ## Type
+    #
+    # The response `Content-Type` header will default to the value of the
+    # `mime_type` metadata. A custom content type can be provided via the
+    # `:type` option:
+    #
+    #     _, headers, _ uploaded_file.to_rack_response(type: "text/plain; charset=utf-8")
+    #     headers["Content-Type"] #=> "text/plain; charset=utf-8"
+    #
+    # ## Filename
+    #
+    # The download filename in the `Content-Disposition` header will default to
+    # the value of the `filename` metadata. A custom download filename can be
+    # provided via the `:filename` option:
+    #
+    #     _, headers, _ uploaded_file.to_rack_response(filename: "my-filename.txt")
+    #     headers["Content-Disposition"] #=> "inline; filename=\"my-filename.txt\""
+    #
     # ## Disposition
     #
-    # By default the "Content-Disposition" header will use the `inline`
-    # disposition, but you can change it to `attachment` if you don't want the
-    # file to be rendered inside the browser:
+    # The default disposition in the "Content-Disposition" header is `inline`,
+    # but it can be changed via the `:disposition` option:
     #
-    #     status, headers, body = uploaded_file.to_rack_response(disposition: "attachment")
+    #     _, headers, _ = uploaded_file.to_rack_response(disposition: "attachment")
     #     headers["Content-Disposition"] #=> "attachment; filename=\"file.txt\""
     #
     # ## Range
     #
     # [Partial responses][range requests] are also supported via the `:range`
-    # parameter, which accepts a value of the `Range` request header.
+    # option, which accepts a value of the `Range` request header.
     #
     #     env["HTTP_RANGE"] #=> "bytes=100-200"
     #     status, headers, body = uploaded_file.to_rack_response(range: env["HTTP_RANGE"])
@@ -79,12 +96,12 @@ class Shrine
         end
 
         # Returns a Rack response triple for the uploaded file.
-        def call(disposition: "inline", range: false)
-          range = parse_http_range(range) if range
+        def call(**options)
+          options[:range] = parse_content_range(options[:range]) if options[:range]
 
-          status  = rack_status(range: range)
-          headers = rack_headers(disposition: disposition, range: range)
-          body    = rack_body(range: range)
+          status  = rack_status(**options)
+          headers = rack_headers(**options)
+          body    = rack_body(**options)
 
           [status, headers, body]
         end
@@ -93,7 +110,7 @@ class Shrine
 
         # Returns "200 OK" on full request, and "206 Partial Content" on ranged
         # request.
-        def rack_status(range:)
+        def rack_status(range: nil, **)
           range ? 206 : 200
         end
 
@@ -101,16 +118,16 @@ class Shrine
         # "Content-Disposition" headers, whose values are extracted from
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
-        def rack_headers(disposition:, range:)
-          length   = range ? range.size : size
-          type     = file.mime_type || Rack::Mime.mime_type(".#{file.extension}")
-          filename = file.original_filename || file.id.split("/").last
+        def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
+          length     = range ? range.size : size
+          type     ||= file.mime_type || Rack::Mime.mime_type(".#{file.extension}")
+          filename ||= file.original_filename || file.id.split("/").last
 
           headers = {}
           headers["Content-Length"]      = length.to_s if length
           headers["Content-Type"]        = type
           headers["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
-          headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{size||io.size}" if range
+          headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{size}" if range
           headers["Accept-Ranges"]       = "bytes" unless range == false
 
           headers
@@ -118,7 +135,7 @@ class Shrine
 
         # Returns an object that responds to #each and #close, which yields
         # contents of the file.
-        def rack_body(range: nil)
+        def rack_body(range: nil, **)
           if range
             body = enum_for(:read_partial_chunks, range)
           else
@@ -161,7 +178,7 @@ class Shrine
         end
 
         # Parses the value of a "Range" HTTP header.
-        def parse_http_range(range_header)
+        def parse_content_range(range_header)
           if Rack.release >= "2.0"
             ranges = Rack::Utils.get_byte_ranges(range_header, size)
           else
