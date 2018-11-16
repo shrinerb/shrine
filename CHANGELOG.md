@@ -1,5 +1,7 @@
 ## HEAD
 
+* Extract `urlsafe_serialization` plugin from `download_endpoint` plugin (@janko-m)
+
 * Add support for client-side encryption to S3 storage (@janko-m)
 
 * Don't look up the attachment class in each new model instance (@printercu)

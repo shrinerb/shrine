@@ -189,3 +189,7 @@ Other:
     name: upload_options
     path: UploadOptions.html
     description: Allows dynamically creating and forwarding storage-specific upload options.
+  -
+    name: urlsafe_serialization
+    path: UrlsafeSerialization.html
+    description: Allows serializing uploaded files suitable for including into a URL.

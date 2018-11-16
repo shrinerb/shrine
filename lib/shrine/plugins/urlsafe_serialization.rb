@@ -6,6 +6,65 @@ require "openssl"
 
 class Shrine
   module Plugins
+    # The `urlsafe_serialization` plugin provides the ability to serialize and
+    # deserialize a `Shrine::UploadedFile` in a way that's suitable for
+    # including in a URL.
+    #
+    #     plugin :urlsafe_serialization
+    #
+    # The plugin defines `urlsafe_dump` and `urlsafe_load` methods on
+    # `Shrine::UploadedFile`. The file is first serialized to JSON, then
+    # encoded with base64.
+    #
+    #     serialized = uploaded_file.urlsafe_dump
+    #     # or
+    #     serialized = MyUploader::UploadedFile.urlsafe_dump(uploaded_file)
+    #     serialized #=> "eyJpZCI6IjlhZGM0NmIzZjI..."
+    #
+    #     # ...
+    #
+    #     uploaded_file = MyUploader::UploadedFile.urlsafe_load(serialized)
+    #     uploaded_file #=> #<MyUploader::UploadedFile>
+    #
+    # ## Metadata
+    #
+    # By default no metadata is included in the serialization:
+    #
+    #     uploaded_file.metadata #=> { ... metadata ... }
+    #
+    #     serialized    = MyUploader::UploadedFile.urlsafe_dump(uploaded_file)
+    #     uploaded_file = MyUploader::UploadedFile.urlsafe_load(serialized)
+    #
+    #     uploaded_file.metadata #=> {}
+    #
+    # The `:metadata` option can be used to specify metadata you want to
+    # serialize:
+    #
+    #     serialized    = MyUploader::UploadedFile.urlsafe_dump(uploaded_file, metadata: %w[size mime_type])
+    #     uploaded_file = MyUploader::UploadedFile.urlsafe_load(serialized)
+    #
+    #     uploaded_file.metadata #=> { "size" => 4394, "mime_type" => "image/jpeg" }
+    #
+    # ## Signing
+    #
+    # By default the seralization is done with simple JSON + base64 encoding.
+    # If you want to ensure the serialized data hasn't been tampred with, you
+    # can have it signed with a secret key.
+    #
+    #     plugin :urlsafe_serialization, secret_key: "my secret key"
+    #
+    # Now the `urlsafe_dump` will automatically sign serialized data with your
+    # secret key, and `urlsafe_load` will automatically verify it.
+    #
+    #     serialized = MyUploader::UploadedFile.urlsafe_dump(uploaded_file)
+    #     serialized #=> "<signature>--<json-base64-encoded-data>"
+    #
+    #     uploaded_file = MyUploader::UploadedFile.urlsafe_load(serialized) # verifies the signature
+    #     uploaded_file #=> #<MyUploader::UploadedFile>
+    #
+    # If the signature is missing or invalid,
+    # `Shrine::Plugins::UrlsafeSerialization::InvalidSignature` exception is
+    # raised.
     module UrlsafeSerialization
       class InvalidSignature < Error; end
 
