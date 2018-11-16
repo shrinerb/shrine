@@ -196,6 +196,46 @@ class Shrine
     #       { thread_count: 5 }
     #     end
     #
+    # ## Encryption
+    #
+    # The easiest way to use server-side encryption for uploaded S3 objects is
+    # to configure default encryption for your S3 bucket. Alternatively, you
+    # can pass server-side encryption parameters to the API calls.
+    #
+    # The `#upload` method accepts `:sse_*` options:
+    #
+    #     s3.upload(io, "key", sse_customer_algorithm: "AES256",
+    #                          sse_customer_key:       "secret_key",
+    #                          sse_customer_key_md5:   "secret_key_md5",
+    #                          ssekms_key_id:          "key_id")
+    #
+    # The `#presign` method accepts `:server_side_encryption_*` options for
+    # POST presigns, and the same `:sse_*` options as above for PUT presigns.
+    #
+    #     s3.presign("key", server_side_encryption_customer_algorithm: "AES256",
+    #                       server_side_encryption_customer_key:       "secret_key",
+    #                       server_side_encryption_aws_kms_key_id:     "key_id")
+    #
+    # When downloading encrypted S3 objects, the same server-side encryption
+    # parameters need to be passed in.
+    #
+    #     s3.download("key", sse_customer_algorithm: "AES256",
+    #                        sse_customer_key:       "secret_key",
+    #                        sse_customer_key_md5:   "secret_key_md5")
+    #
+    #     s3.open("key", sse_customer_algorithm: "AES256",
+    #                    sse_customer_key:       "secret_key",
+    #                    sse_customer_key_md5:   "secret_key_md5")
+    #
+    # If you want to use client-side encryption instead, you can instantiate
+    # the storage with an `Aws::S3::Encryption::Client` instance.
+    #
+    #     client = Aws::S3::Encryption::Client.new(
+    #       kms_key_id: "alias/my-key"
+    #     )
+    #
+    #     Shrine::Storage::S3(client: client, bucket: "my-bucket")
+    #
     # ## Accelerate endpoint
     #
     # To use Amazon S3's [Transfer Acceleration] feature, you can change the
@@ -243,6 +283,12 @@ class Shrine
       # :bucket
       # : (Required). Name of the S3 bucket.
       #
+      # :client
+      # : By default an `Aws::S3::Client` instance is created internally from
+      #   additional options, but you can use this option to provide your own
+      #   client. This can be an `Aws::S3::Client` or an
+      #   `Aws::S3::Encryption::Client` object.
+      #
       # :prefix
       # : "Directory" inside the bucket to store files into.
       #
@@ -268,7 +314,7 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
+      def initialize(bucket:, client: nil, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
@@ -280,8 +326,8 @@ class Shrine
         end
         multipart_threshold = { upload: 15*1024*1024, copy: 100*1024*1024 }.merge(multipart_threshold)
 
-        @bucket = resource.bucket(bucket)
-        @client = resource.client
+        @client = client || Aws::S3::Client.new(**s3_options)
+        @bucket = Aws::S3::Bucket.new(name: bucket, client: @client)
         @prefix = prefix
         @host = host
         @upload_options = upload_options

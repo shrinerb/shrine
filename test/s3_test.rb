@@ -30,6 +30,13 @@ describe Shrine::Storage::S3 do
       assert_match "the :bucket option is nil", error.message
     end
 
+    it "accepts :client" do
+      client = Aws::S3::Encryption::Client.new(encryption_key: "a" * 16, stub_responses: true)
+      @s3 = s3(client: client)
+      assert_equal client, @s3.client
+      assert_equal client, @s3.bucket.client
+    end
+
     deprecated "accepts :multipart_threshold as an Integer" do
       @s3 = s3(multipart_threshold: 5*1024*1024)
       assert_equal 5*1024*1024, @s3.instance_variable_get(:@multipart_threshold).fetch(:upload)

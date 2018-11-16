@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add support for client-side encryption to S3 storage (@janko-m)
+
 * Don't look up the attachment class in each new model instance (@printercu)
 
 * Allow `Attacher#cached?` and `Attacher#stored?` to take an `UploadedFile` object (@jrochkind)
