@@ -440,11 +440,13 @@ describe Shrine do
     assert_equal TestPlugin::AttachmentMethods,      Shrine::Attachment.instance_method(:foo).owner
 
     Shrine::Plugins::Base.constants.each do |name|
-      Shrine::Plugins::Base.const_get(name).undef_method(:foo)
+      mod = Shrine::Plugins::Base.const_get(name)
+      mod.send(:undef_method, :foo)
     end
 
     TestPlugin.constants.each do |name|
-      TestPlugin.const_get(name).undef_method(:foo)
+      mod = TestPlugin.const_get(name)
+      mod.send(:undef_method, :foo)
     end
   end
 end
