@@ -428,16 +428,25 @@ describe Shrine do
       module AttachmentMethods;      def foo; :plugin_foo; end; end
     end
 
+    assert_equal :foo, Shrine.foo
+    assert_equal :foo, Shrine.allocate.foo
+    assert_equal :foo, Shrine::UploadedFile.foo
+    assert_equal :foo, Shrine::UploadedFile.allocate.foo
+    assert_equal :foo, Shrine::Attacher.foo
+    assert_equal :foo, Shrine::Attacher.allocate.foo
+    assert_equal :foo, Shrine::Attachment.foo
+    assert_equal :foo, Shrine::Attachment.allocate.foo
+
     Shrine.plugin TestPlugin
 
-    assert_equal TestPlugin::ClassMethods,           Shrine.method(:foo).owner
-    assert_equal TestPlugin::InstanceMethods,        Shrine.instance_method(:foo).owner
-    assert_equal TestPlugin::FileClassMethods,       Shrine::UploadedFile.method(:foo).owner
-    assert_equal TestPlugin::FileMethods,            Shrine::UploadedFile.instance_method(:foo).owner
-    assert_equal TestPlugin::AttacherClassMethods,   Shrine::Attacher.method(:foo).owner
-    assert_equal TestPlugin::AttacherMethods,        Shrine::Attacher.instance_method(:foo).owner
-    assert_equal TestPlugin::AttachmentClassMethods, Shrine::Attachment.method(:foo).owner
-    assert_equal TestPlugin::AttachmentMethods,      Shrine::Attachment.instance_method(:foo).owner
+    assert_equal :plugin_foo, Shrine.foo
+    assert_equal :plugin_foo, Shrine.allocate.foo
+    assert_equal :plugin_foo, Shrine::UploadedFile.foo
+    assert_equal :plugin_foo, Shrine::UploadedFile.allocate.foo
+    assert_equal :plugin_foo, Shrine::Attacher.foo
+    assert_equal :plugin_foo, Shrine::Attacher.allocate.foo
+    assert_equal :plugin_foo, Shrine::Attachment.foo
+    assert_equal :plugin_foo, Shrine::Attachment.allocate.foo
 
     Shrine::Plugins::Base.constants.each do |name|
       mod = Shrine::Plugins::Base.const_get(name)
