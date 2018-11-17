@@ -404,4 +404,47 @@ describe Shrine do
       assert_equal "image/jpeg", metadata["mime_type"]
     end
   end
+
+  it "allows plugins to override base methods of core classes" do
+    module Shrine::Plugins::Base
+      module ClassMethods;           def foo; :foo; end; end
+      module InstanceMethods;        def foo; :foo; end; end
+      module FileClassMethods;       def foo; :foo; end; end
+      module FileMethods;            def foo; :foo; end; end
+      module AttacherClassMethods;   def foo; :foo; end; end
+      module AttacherMethods;        def foo; :foo; end; end
+      module AttachmentClassMethods; def foo; :foo; end; end
+      module AttachmentMethods;      def foo; :foo; end; end
+    end
+
+    module TestPlugin
+      module ClassMethods;           def foo; :plugin_foo; end; end
+      module InstanceMethods;        def foo; :plugin_foo; end; end
+      module FileClassMethods;       def foo; :plugin_foo; end; end
+      module FileMethods;            def foo; :plugin_foo; end; end
+      module AttacherClassMethods;   def foo; :plugin_foo; end; end
+      module AttacherMethods;        def foo; :plugin_foo; end; end
+      module AttachmentClassMethods; def foo; :plugin_foo; end; end
+      module AttachmentMethods;      def foo; :plugin_foo; end; end
+    end
+
+    Shrine.plugin TestPlugin
+
+    assert_equal TestPlugin::ClassMethods,           Shrine.method(:foo).owner
+    assert_equal TestPlugin::InstanceMethods,        Shrine.instance_method(:foo).owner
+    assert_equal TestPlugin::FileClassMethods,       Shrine::UploadedFile.method(:foo).owner
+    assert_equal TestPlugin::FileMethods,            Shrine::UploadedFile.instance_method(:foo).owner
+    assert_equal TestPlugin::AttacherClassMethods,   Shrine::Attacher.method(:foo).owner
+    assert_equal TestPlugin::AttacherMethods,        Shrine::Attacher.instance_method(:foo).owner
+    assert_equal TestPlugin::AttachmentClassMethods, Shrine::Attachment.method(:foo).owner
+    assert_equal TestPlugin::AttachmentMethods,      Shrine::Attachment.instance_method(:foo).owner
+
+    Shrine::Plugins::Base.constants.each do |name|
+      Shrine::Plugins::Base.const_get(name).undef_method(:foo)
+    end
+
+    TestPlugin.constants.each do |name|
+      TestPlugin.const_get(name).undef_method(:foo)
+    end
+  end
 end
