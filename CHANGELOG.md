@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `rack_response` plugin work with `Rack::Sendfile` for `FileSystem` storage (@janko-m)
+
 * Add `:filename` and `:type` options to `rack_response` plugin (@janko-m)
 
 * Add `:host` option to `UploadedFile#download_url` in `download_endpoint` plugin (@janko-m)

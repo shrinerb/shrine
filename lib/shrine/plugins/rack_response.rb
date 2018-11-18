@@ -41,6 +41,10 @@ class Shrine
     #       end
     #     end
     #
+    # The `#each` method on the response body object will stream the uploaded
+    # file directly from the storage. It also works with [Rack::Sendfile] when
+    # using `FileSystem` storage.
+    #
     # ## Type
     #
     # The response `Content-Type` header will default to the value of the
@@ -80,6 +84,7 @@ class Shrine
     #     body                      # partial content
     #
     # [range requests]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
+    # [Rack::Sendfile]: https://www.rubydoc.info/github/rack/rack/Rack/Sendfile
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.
@@ -120,8 +125,8 @@ class Shrine
         # requests.
         def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
           length     = range ? range.size : size
-          type     ||= file.mime_type || Rack::Mime.mime_type(".#{file.extension}")
-          filename ||= file.original_filename || file.id.split("/").last
+          type     ||= @file.mime_type || Rack::Mime.mime_type(".#{@file.extension}")
+          filename ||= @file.original_filename || @file.id.split("/").last
 
           headers = {}
           headers["Content-Length"]      = length.to_s if length
@@ -136,45 +141,7 @@ class Shrine
         # Returns an object that responds to #each and #close, which yields
         # contents of the file.
         def rack_body(range: nil, **)
-          if range
-            body = enum_for(:read_partial_chunks, range)
-          else
-            body = enum_for(:read_chunks)
-          end
-
-          Rack::BodyProxy.new(body) { file.close }
-        end
-
-        # Yields reasonably sized chunks of uploaded file's partial content
-        # specified by the given index range.
-        def read_partial_chunks(range)
-          bytes_read = 0
-
-          read_chunks do |chunk|
-            chunk_range = bytes_read..(bytes_read + chunk.bytesize - 1)
-
-            if chunk_range.begin >= range.begin && chunk_range.end <= range.end
-              yield chunk
-            elsif chunk_range.end >= range.begin || chunk_range.end <= range.end
-              requested_range_begin = [chunk_range.begin, range.begin].max - bytes_read
-              requested_range_end   = [chunk_range.end, range.end].min - bytes_read
-
-              yield chunk.byteslice(requested_range_begin..requested_range_end)
-            else
-              # skip chunk
-            end
-
-            bytes_read += chunk.bytesize
-          end
-        end
-
-        # Yields reasonably sized chunks of uploaded file's content.
-        def read_chunks
-          if io.respond_to?(:each_chunk) # Down::ChunkedIO
-            io.each_chunk { |chunk| yield chunk }
-          else
-            yield file.read(16*1024) until file.eof?
-          end
+          FileBody.new(file, range: range)
         end
 
         # Parses the value of a "Range" HTTP header.
@@ -188,12 +155,82 @@ class Shrine
           ranges.first if ranges && ranges.one?
         end
 
+        # Read size from metadata, otherwise retrieve the size from the storage.
         def size
-          file.size || io.size
+          @file.size || @file.to_io.size
+        end
+      end
+
+      # Implements the interface of a Rack response body object.
+      class FileBody
+        def initialize(file, range: nil)
+          @file  = file
+          @range = range
         end
 
-        def io
-          file.to_io
+        # Streams the uploaded file directly from the storage.
+        def each(&block)
+          if @range
+            read_partial_chunks(&block)
+          else
+            read_chunks(&block)
+          end
+        end
+
+        # Closes the file when response body is closed by the web server.
+        def close
+          @file.close
+        end
+
+        # Rack::Sendfile is activated when response body responds to #to_path.
+        def respond_to_missing?(name, include_private = false)
+          name == :to_path && path
+        end
+
+        # Rack::Sendfile is activated when response body responds to #to_path.
+        def method_missing(name, *args, &block)
+          name == :to_path && path or super
+        end
+
+        private
+
+        # Yields reasonably sized chunks of uploaded file's partial content
+        # specified by the given index range.
+        def read_partial_chunks
+          bytes_read = 0
+
+          read_chunks do |chunk|
+            chunk_range = bytes_read..(bytes_read + chunk.bytesize - 1)
+
+            if chunk_range.begin >= @range.begin && chunk_range.end <= @range.end
+              yield chunk
+            elsif chunk_range.end >= @range.begin || chunk_range.end <= @range.end
+              requested_range_begin = [chunk_range.begin, @range.begin].max - bytes_read
+              requested_range_end   = [chunk_range.end, @range.end].min - bytes_read
+
+              yield chunk.byteslice(requested_range_begin..requested_range_end)
+            else
+              # skip chunk
+            end
+
+            bytes_read += chunk.bytesize
+          end
+        end
+
+        # Yields reasonably sized chunks of uploaded file's content.
+        def read_chunks
+          if @file.to_io.respond_to?(:each_chunk) # Down::ChunkedIO
+            @file.to_io.each_chunk { |chunk| yield chunk }
+          else
+            yield @file.read(16*1024) until @file.eof?
+          end
+        end
+
+        # Returns actual path on disk when FileSystem storage is used.
+        def path
+          if defined?(Storage::FileSystem) && @file.storage.is_a?(Storage::FileSystem)
+            @file.storage.path(@file.id)
+          end
         end
       end
     end

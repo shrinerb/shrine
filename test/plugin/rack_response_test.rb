@@ -1,10 +1,12 @@
 require "test_helper"
 require "shrine/plugins/rack_response"
+require "shrine/storage/file_system"
 require "rack/test_app"
 
 describe Shrine::Plugins::RackResponse do
   before do
     @uploader = uploader { plugin :rack_response }
+    @shrine = @uploader.class
   end
 
   it "returns 200 status" do
@@ -152,5 +154,19 @@ describe Shrine::Plugins::RackResponse do
     refute response[1].key?("Accept-Ranges")
     response = uploaded_file.to_rack_response(range: nil)
     assert_equal "bytes", response[1]["Accept-Ranges"]
+  end
+
+  it "implements #to_path on the body for filesystem storage" do
+    uploaded_file = @uploader.upload(fakeio)
+    status, headers, body = uploaded_file.to_rack_response
+    refute body.respond_to?(:to_path)
+    assert_raises(NoMethodError) { body.to_path }
+
+    @shrine.storages[:disk] = Shrine::Storage::FileSystem.new(Dir.tmpdir)
+    @uploader = @shrine.new(:disk)
+    uploaded_file = @uploader.upload(fakeio)
+    status, headers, body = uploaded_file.to_rack_response
+    assert body.respond_to?(:to_path)
+    assert_equal @uploader.storage.path(uploaded_file.id), body.to_path
   end
 end
