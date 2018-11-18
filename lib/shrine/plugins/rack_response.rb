@@ -35,8 +35,8 @@ class Shrine
     #       private
     #
     #       def set_rack_response((status, headers, body))
-    #         response.status = status
-    #         response.headers.merge!(headers)
+    #         self.status = status
+    #         self.headers.merge!(headers)
     #         self.response_body = body
     #       end
     #     end
