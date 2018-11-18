@@ -163,6 +163,8 @@ class Shrine
 
       # Implements the interface of a Rack response body object.
       class FileBody
+        attr_reader :file, :range
+
         def initialize(file, range: nil)
           @file  = file
           @range = range
@@ -170,7 +172,7 @@ class Shrine
 
         # Streams the uploaded file directly from the storage.
         def each(&block)
-          if @range
+          if range
             read_partial_chunks(&block)
           else
             read_chunks(&block)
@@ -179,7 +181,7 @@ class Shrine
 
         # Closes the file when response body is closed by the web server.
         def close
-          @file.close
+          file.close
         end
 
         # Rack::Sendfile is activated when response body responds to #to_path.
@@ -202,11 +204,11 @@ class Shrine
           read_chunks do |chunk|
             chunk_range = bytes_read..(bytes_read + chunk.bytesize - 1)
 
-            if chunk_range.begin >= @range.begin && chunk_range.end <= @range.end
+            if chunk_range.begin >= range.begin && chunk_range.end <= range.end
               yield chunk
-            elsif chunk_range.end >= @range.begin || chunk_range.end <= @range.end
-              requested_range_begin = [chunk_range.begin, @range.begin].max - bytes_read
-              requested_range_end   = [chunk_range.end, @range.end].min - bytes_read
+            elsif chunk_range.end >= range.begin || chunk_range.end <= range.end
+              requested_range_begin = [chunk_range.begin, range.begin].max - bytes_read
+              requested_range_end   = [chunk_range.end, range.end].min - bytes_read
 
               yield chunk.byteslice(requested_range_begin..requested_range_end)
             else
@@ -219,17 +221,17 @@ class Shrine
 
         # Yields reasonably sized chunks of uploaded file's content.
         def read_chunks
-          if @file.to_io.respond_to?(:each_chunk) # Down::ChunkedIO
-            @file.to_io.each_chunk { |chunk| yield chunk }
+          if file.to_io.respond_to?(:each_chunk) # Down::ChunkedIO
+            file.to_io.each_chunk { |chunk| yield chunk }
           else
-            yield @file.read(16*1024) until @file.eof?
+            yield file.read(16*1024) until file.eof?
           end
         end
 
         # Returns actual path on disk when FileSystem storage is used.
         def path
-          if defined?(Storage::FileSystem) && @file.storage.is_a?(Storage::FileSystem)
-            @file.storage.path(@file.id)
+          if defined?(Storage::FileSystem) && file.storage.is_a?(Storage::FileSystem)
+            file.storage.path(file.id)
           end
         end
       end
