@@ -1,21 +1,18 @@
 -
-  name: Shrine (ClassMethods)
-  path: Plugins/Base/ClassMethods.html
--
-  name: Shrine (InstanceMethods)
-  path: Plugins/Base/InstanceMethods.html
+  name: Shrine
+  path: Shrine.html
 -
   name: Shrine::UploadedFile
-  path: Plugins/Base/FileMethods.html
+  path: Shrine/UploadedFile/InstanceMethods.html
 -
   name: Shrine::Attacher
-  path: Plugins/Base/AttacherMethods.html
+  path: Shrine/Attacher/InstanceMethods.html
 -
   name: Shrine::Attachment
-  path: Plugins/Base/AttachmentMethods.html
+  path: Shrine/Attachment/InstanceMethods.html
 -
   name: Shrine::Storage::FileSystem
-  path: Storage/FileSystem.html
+  path: Shrine/Storage/FileSystem.html
 -
   name: Shrine::Storage::S3
-  path: Storage/S3.html
+  path: Shrine/Storage/S3.html

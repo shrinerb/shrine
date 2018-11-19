@@ -405,57 +405,61 @@ describe Shrine do
     end
   end
 
-  it "allows plugins to override base methods of core classes" do
-    module Shrine::Plugins::Base
-      module ClassMethods;           def foo; :foo; end; end
-      module InstanceMethods;        def foo; :foo; end; end
-      module FileClassMethods;       def foo; :foo; end; end
-      module FileMethods;            def foo; :foo; end; end
-      module AttacherClassMethods;   def foo; :foo; end; end
-      module AttacherMethods;        def foo; :foo; end; end
-      module AttachmentClassMethods; def foo; :foo; end; end
-      module AttachmentMethods;      def foo; :foo; end; end
-    end
+  describe ".plugin" do
+    describe "when called globally" do
+      before do
+        @components = [Shrine, Shrine::UploadedFile, Shrine::Attachment, Shrine::Attacher]
 
-    module TestPlugin
-      module ClassMethods;           def foo; :plugin_foo; end; end
-      module InstanceMethods;        def foo; :plugin_foo; end; end
-      module FileClassMethods;       def foo; :plugin_foo; end; end
-      module FileMethods;            def foo; :plugin_foo; end; end
-      module AttacherClassMethods;   def foo; :plugin_foo; end; end
-      module AttacherMethods;        def foo; :plugin_foo; end; end
-      module AttachmentClassMethods; def foo; :plugin_foo; end; end
-      module AttachmentMethods;      def foo; :plugin_foo; end; end
-    end
+        @components.each do |component|
+          component::InstanceMethods.send(:define_method, :foo) { :foo }
+          component::ClassMethods.send(:define_method, :foo) { :foo }
+        end
 
-    assert_equal :foo, Shrine.foo
-    assert_equal :foo, Shrine.allocate.foo
-    assert_equal :foo, Shrine::UploadedFile.foo
-    assert_equal :foo, Shrine::UploadedFile.allocate.foo
-    assert_equal :foo, Shrine::Attacher.foo
-    assert_equal :foo, Shrine::Attacher.allocate.foo
-    assert_equal :foo, Shrine::Attachment.foo
-    assert_equal :foo, Shrine::Attachment.allocate.foo
+        module TestPlugin
+          module ClassMethods;           def foo; :plugin_foo; end; end
+          module InstanceMethods;        def foo; :plugin_foo; end; end
+          module FileClassMethods;       def foo; :plugin_foo; end; end
+          module FileMethods;            def foo; :plugin_foo; end; end
+          module AttacherClassMethods;   def foo; :plugin_foo; end; end
+          module AttacherMethods;        def foo; :plugin_foo; end; end
+          module AttachmentClassMethods; def foo; :plugin_foo; end; end
+          module AttachmentMethods;      def foo; :plugin_foo; end; end
+        end
+      end
 
-    Shrine.plugin TestPlugin
+      after do
+        @components.each do |component|
+          component::InstanceMethods.send(:undef_method, :foo)
+          component::ClassMethods.send(:undef_method, :foo)
+        end
 
-    assert_equal :plugin_foo, Shrine.foo
-    assert_equal :plugin_foo, Shrine.allocate.foo
-    assert_equal :plugin_foo, Shrine::UploadedFile.foo
-    assert_equal :plugin_foo, Shrine::UploadedFile.allocate.foo
-    assert_equal :plugin_foo, Shrine::Attacher.foo
-    assert_equal :plugin_foo, Shrine::Attacher.allocate.foo
-    assert_equal :plugin_foo, Shrine::Attachment.foo
-    assert_equal :plugin_foo, Shrine::Attachment.allocate.foo
+        TestPlugin.constants.each do |name|
+          mod = TestPlugin.const_get(name)
+          mod.send(:undef_method, :foo)
+        end
+      end
 
-    Shrine::Plugins::Base.constants.each do |name|
-      mod = Shrine::Plugins::Base.const_get(name)
-      mod.send(:undef_method, :foo)
-    end
+      it "allows the plugin to override base methods of core classes" do
+        assert_equal :foo, Shrine.foo
+        assert_equal :foo, Shrine.allocate.foo
+        assert_equal :foo, Shrine::UploadedFile.foo
+        assert_equal :foo, Shrine::UploadedFile.allocate.foo
+        assert_equal :foo, Shrine::Attacher.foo
+        assert_equal :foo, Shrine::Attacher.allocate.foo
+        assert_equal :foo, Shrine::Attachment.foo
+        assert_equal :foo, Shrine::Attachment.allocate.foo
 
-    TestPlugin.constants.each do |name|
-      mod = TestPlugin.const_get(name)
-      mod.send(:undef_method, :foo)
+        Shrine.plugin TestPlugin
+
+        assert_equal :plugin_foo, Shrine.foo
+        assert_equal :plugin_foo, Shrine.allocate.foo
+        assert_equal :plugin_foo, Shrine::UploadedFile.foo
+        assert_equal :plugin_foo, Shrine::UploadedFile.allocate.foo
+        assert_equal :plugin_foo, Shrine::Attacher.foo
+        assert_equal :plugin_foo, Shrine::Attacher.allocate.foo
+        assert_equal :plugin_foo, Shrine::Attachment.foo
+        assert_equal :plugin_foo, Shrine::Attachment.allocate.foo
+      end
     end
   end
 end

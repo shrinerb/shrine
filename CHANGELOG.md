@@ -1,5 +1,7 @@
 ## HEAD
 
+* Inline Base plugin into core classes, extract them to separate files (@printercu)
+
 * Make `rack_response` plugin work with `Rack::Sendfile` for `FileSystem` storage (@janko-m)
 
 * Add `:filename` and `:type` options to `rack_response` plugin (@janko-m)
