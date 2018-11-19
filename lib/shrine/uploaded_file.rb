@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+require "json"
+require "tempfile"
+
 class Shrine
   # Core class that represents a file uploaded to a storage.
   # Base implementation is defined in InstanceMethods and ClassMethods.

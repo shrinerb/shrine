@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require "securerandom"
-require "json"
-require "tempfile"
-
 require "shrine/version"
-
+require "shrine/uploaded_file"
 require "shrine/attacher"
 require "shrine/attachment"
 require "shrine/plugins"
-require "shrine/uploaded_file"
+
+require "securerandom"
+require "json"
+require "tempfile"
 
 # Core class that represents uploader.
 # Base implementation is defined in InstanceMethods and ClassMethods.

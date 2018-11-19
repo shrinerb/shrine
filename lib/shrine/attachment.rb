@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   # Core class which creates attachment modules for specified attribute names
   # that are included into model classes.

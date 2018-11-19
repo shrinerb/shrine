@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Shrine
   # Core class which handles attaching files to model instances.
   # Base implementation is defined in InstanceMethods and ClassMethods.
