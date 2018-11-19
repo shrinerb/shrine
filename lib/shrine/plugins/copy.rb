@@ -24,8 +24,7 @@ class Shrine
           module_eval <<-RUBY, __FILE__, __LINE__ + 1
             def initialize_copy(record)
               super
-              @#{@name}_attacher = nil # reload the attacher
-              #{@name}_attacher.send(:write, nil) # remove original attachment
+              #{@name}_attacher(true).send(:write, nil) # reload the attacher & remove original attachment
               #{@name}_attacher.copy(record.#{@name}_attacher)
             end
           RUBY

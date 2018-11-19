@@ -37,8 +37,8 @@ class Shrine
         attachment    = self
         attacher_ivar = :"@#{@name}_attacher"
 
-        define_method :"#{@name}_attacher" do |options = {}|
-          if !instance_variable_get(attacher_ivar) || options.any?
+        define_method :"#{@name}_attacher" do |reload = false, **options|
+          if reload || options.any? || !instance_variable_get(attacher_ivar)
             instance_variable_set(attacher_ivar, attachment.build_attacher(self, options))
           else
             instance_variable_get(attacher_ivar)
