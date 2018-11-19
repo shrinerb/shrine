@@ -102,15 +102,15 @@ class Shrine
         def initialize(*)
           super
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{@name}_remote_url=(url)
-              #{@name}_attacher.remote_url = url
-            end
+          name = attachment_name
 
-            def #{@name}_remote_url
-              #{@name}_attacher.remote_url
-            end
-          RUBY
+          define_method "#{name}_remote_url=" do |url|
+            send("#{name}_attacher").remote_url = url
+          end
+
+          define_method "#{name}_remote_url" do
+            send("#{name}_attacher").remote_url
+          end
         end
       end
 

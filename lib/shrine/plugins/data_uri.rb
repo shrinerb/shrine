@@ -136,15 +136,15 @@ class Shrine
         def initialize(*)
           super
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def #{@name}_data_uri=(uri)
-              #{@name}_attacher.data_uri = uri
-            end
+          name = attachment_name
 
-            def #{@name}_data_uri
-              #{@name}_attacher.data_uri
-            end
-          RUBY
+          define_method "#{name}_data_uri=" do |uri|
+            send("#{name}_attacher").data_uri = uri
+          end
+
+          define_method "#{name}_data_uri" do
+            send("#{name}_attacher").data_uri
+          end
         end
       end
 

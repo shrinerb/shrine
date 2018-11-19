@@ -70,33 +70,36 @@ class Shrine
 
           return unless model < ::Sequel::Model
 
-          opts = shrine_class.opts
+          name = attachment_name
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:sequel_validations]
-            def validate
-              super
-              #{@name}_attacher.errors.each do |message|
-                errors.add(:#{@name}, *message)
+          if shrine_class.opts[:sequel_validations]
+            define_method :validate do
+              super()
+              send("#{name}_attacher").errors.each do |message|
+                errors.add(name, *message)
               end
             end
-          RUBY
+          end
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1 if opts[:sequel_callbacks]
-            def before_save
-              super
-              #{@name}_attacher.save if #{@name}_attacher.changed?
+          if shrine_class.opts[:sequel_callbacks]
+            define_method :before_save do
+              super()
+              attacher = send("#{name}_attacher")
+              attacher.save if attacher.changed?
             end
 
-            def after_save
-              super
-              db.after_commit{#{@name}_attacher.finalize} if #{@name}_attacher.changed?
+            define_method :after_save do
+              super()
+              attacher = send("#{name}_attacher")
+              db.after_commit { attacher.finalize } if attacher.changed?
             end
 
-            def after_destroy
-              super
-              db.after_commit{#{@name}_attacher.destroy} if #{@name}_attacher.read
+            define_method :after_destroy do
+              super()
+              attacher = send("#{name}_attacher")
+              db.after_commit { attacher.destroy } if attacher.read
             end
-          RUBY
+          end
         end
       end
 

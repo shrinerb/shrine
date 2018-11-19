@@ -25,7 +25,7 @@ class Shrine
       # can then be included to a model class. Second argument will be passed
       # to an attacher module.
       def initialize(name, **options)
-        @name    = name
+        @name    = name.to_sym
         @options = options
 
         define_attachment_methods!
@@ -34,30 +34,28 @@ class Shrine
       # Defines attachment methods for the specified attachment name. These
       # methods will be added to any model that includes this module.
       def define_attachment_methods!
-        attachment    = self
-        attacher_ivar = :"@#{@name}_attacher"
+        attachment = self
+        name = attachment_name
 
-        define_method :"#{@name}_attacher" do |options = {}|
-          if !instance_variable_get(attacher_ivar) || options.any?
-            instance_variable_set(attacher_ivar, attachment.build_attacher(self, options))
+        define_method "#{name}_attacher" do |**options|
+          if !instance_variable_get("@#{name}_attacher") || options.any?
+            instance_variable_set("@#{name}_attacher", attachment.build_attacher(self, options))
           else
-            instance_variable_get(attacher_ivar)
+            instance_variable_get("@#{name}_attacher")
           end
         end
 
-        module_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def #{@name}=(value)
-            #{@name}_attacher.assign(value)
-          end
+        define_method "#{name}=" do |value|
+          send("#{name}_attacher").assign(value)
+        end
 
-          def #{@name}
-            #{@name}_attacher.get
-          end
+        define_method name do
+          send("#{name}_attacher").get
+        end
 
-          def #{@name}_url(*args)
-            #{@name}_attacher.url(*args)
-          end
-        RUBY
+        define_method "#{name}_url" do |*args|
+          send("#{name}_attacher").url(*args)
+        end
       end
 
       # Creates an instance of the corresponding Attacher subclass.

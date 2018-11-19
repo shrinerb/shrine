@@ -19,15 +19,16 @@ class Shrine
     #       def included(model)
     #         super
     #
-    #         module_eval <<-RUBY, __FILE__, __LINE__ + 1
-    #           def #{@name}_size(version)
-    #             if #{@name}.is_a?(Hash)
-    #               #{@name}[version].size
-    #             else
-    #               #{@name}.size if #{@name}
-    #             end
+    #         name = attachment_name
+    #
+    #         define_method "#{name}_size" do |version|
+    #           attachment = send(name)
+    #           if attachment.is_a?(Hash)
+    #             attachment[version].size
+    #           elsif attachment
+    #             attachment.size
     #           end
-    #         RUBY
+    #         end
     #       end
     #     end
     #

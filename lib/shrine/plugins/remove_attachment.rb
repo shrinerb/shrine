@@ -17,15 +17,15 @@ class Shrine
         def initialize(*)
           super
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def remove_#{@name}=(value)
-              #{@name}_attacher.remove = value
-            end
+          name = attachment_name
 
-            def remove_#{@name}
-              #{@name}_attacher.remove
-            end
-          RUBY
+          define_method "remove_#{name}=" do |value|
+            send("#{name}_attacher").remove = value
+          end
+
+          define_method "remove_#{name}" do
+            send("#{name}_attacher").remove
+          end
         end
       end
 

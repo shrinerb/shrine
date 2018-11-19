@@ -21,14 +21,18 @@ class Shrine
         def initialize(*)
           super
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def initialize_copy(record)
-              super
-              @#{@name}_attacher = nil # reload the attacher
-              #{@name}_attacher.send(:write, nil) # remove original attachment
-              #{@name}_attacher.copy(record.#{@name}_attacher)
-            end
-          RUBY
+          name = attachment_name
+
+          define_method :initialize_copy do |record|
+            super(record)
+            instance_variable_set("@#{name}_attacher", nil) # reload the attacher
+            attacher = send("#{name}_attacher")
+            attacher.send(:write, nil) # remove original attachment
+            attacher.copy(record.public_send("#{name}_attacher"))
+          end
+
+          # Fix for JRuby
+          private :initialize_copy
         end
       end
 

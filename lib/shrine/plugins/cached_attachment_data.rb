@@ -22,16 +22,16 @@ class Shrine
         def initialize(*)
           super
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def cached_#{@name}_data
-              #{@name}_attacher.read_cached
-            end
+          name = attachment_name
 
-            def cached_#{@name}_data=(value)
-              Shrine.deprecation("Calling #cached_#{@name}_data= is deprecated and will be removed in Shrine 3. You should use the original field name: `f.hidden_field :#{@name}, value: record.cached_#{@name}_data`.")
-              #{@name}_attacher.assign(value)
-            end
-          RUBY
+          define_method "cached_#{name}_data" do
+            send("#{name}_attacher").read_cached
+          end
+
+          define_method "cached_#{name}_data=" do |value|
+            Shrine.deprecation("Calling #cached_#{name}_data= is deprecated and will be removed in Shrine 3. You should use the original field name: `f.hidden_field :#{name}, value: record.cached_#{name}_data`.")
+            send("#{name}_attacher").assign(value)
+          end
         end
       end
 
