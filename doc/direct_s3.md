@@ -177,6 +177,10 @@ upload walkthrough] for adding dynamic direct S3 uploads from scratch, as well
 as the [Roda][roda demo] / [Rails][rails demo] demo app for a complete example
 of multiple direct S3 uploads.
 
+Also, if you're dealing with larger files, you may want to make the uploads resumable
+by using the AwsS3Multipart Uppy plugin instead, with the [uppy-s3_multipart](https://github.com/janko-m/uppy-s3_multipart) gem on the backend. Your back-end implementation is similar, just using
+`Shrine.uppy_s3_multipart` in place of `Shrine.presign_endpoint`. Instructions can be found in uppy-s3_multipart README.
+
 ## Strategy B (static)
 
 * Basic user experience
