@@ -352,6 +352,17 @@ describe Shrine do
       assert_match /^[\w-]+$/, location
     end
 
+    it "gets extension from shrine-url-style id with query params" do
+      uploaded_file = @shrine.uploaded_file("id" => "http://example.com/path.html?key=value", "storage" => "cache")
+      location = @uploader.generate_location(uploaded_file)
+      assert_match /\.html$/, location
+
+      uploaded_file = @shrine.uploaded_file("id" => "http://example.com/path?key=value", "storage" => "cache")
+      location = @uploader.generate_location(uploaded_file)
+      refute_match /key=value/, location
+      assert_match /^[\w-]+$/, location
+    end
+
     it "can access extracted metadata" do
       @uploader.instance_eval do
         def generate_location(io, context)
