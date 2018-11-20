@@ -65,27 +65,27 @@ class Shrine
 
           return if shrine_class.opts[:migration_helpers_delegate] == false
 
-          module_eval <<-RUBY, __FILE__, __LINE__ + 1
-            def update_#{name}(&block)
-              #{name}_attacher.update_stored(&block)
-            end
+          name = attachment_name
 
-            def #{name}_cache
-              #{name}_attacher.cache
-            end
+          define_method "update_#{name}" do |&block|
+            send("#{name}_attacher").update_stored(&block)
+          end
 
-            def #{name}_store
-              #{name}_attacher.store
-            end
+          define_method "#{name}_cache" do
+            send("#{name}_attacher").cache
+          end
 
-            def #{name}_cached?
-              #{name}_attacher.cached?
-            end
+          define_method "#{name}_store" do
+            send("#{name}_attacher").store
+          end
 
-            def #{name}_stored?
-              #{name}_attacher.stored?
-            end
-          RUBY
+          define_method "#{name}_cached?" do
+            send("#{name}_attacher").cached?
+          end
+
+          define_method "#{name}_stored?" do
+            send("#{name}_attacher").stored?
+          end
         end
       end
 
