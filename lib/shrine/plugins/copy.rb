@@ -25,10 +25,10 @@ class Shrine
 
           define_method :initialize_copy do |record|
             super(record)
-            instance_variable_set("@#{name}_attacher", nil) # reload the attacher
-            attacher = send("#{name}_attacher")
+            instance_variable_set(:"@#{name}_attacher", nil) # reload the attacher
+            attacher = send(:"#{name}_attacher")
             attacher.send(:write, nil) # remove original attachment
-            attacher.copy(record.public_send("#{name}_attacher"))
+            attacher.copy(record.public_send(:"#{name}_attacher"))
           end
 
           # Fix for JRuby

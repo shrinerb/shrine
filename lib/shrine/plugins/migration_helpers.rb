@@ -67,24 +67,24 @@ class Shrine
 
           name = attachment_name
 
-          define_method "update_#{name}" do |&block|
-            send("#{name}_attacher").update_stored(&block)
+          define_method :"update_#{name}" do |&block|
+            send(:"#{name}_attacher").update_stored(&block)
           end
 
-          define_method "#{name}_cache" do
-            send("#{name}_attacher").cache
+          define_method :"#{name}_cache" do
+            send(:"#{name}_attacher").cache
           end
 
-          define_method "#{name}_store" do
-            send("#{name}_attacher").store
+          define_method :"#{name}_store" do
+            send(:"#{name}_attacher").store
           end
 
-          define_method "#{name}_cached?" do
-            send("#{name}_attacher").cached?
+          define_method :"#{name}_cached?" do
+            send(:"#{name}_attacher").cached?
           end
 
-          define_method "#{name}_stored?" do
-            send("#{name}_attacher").stored?
+          define_method :"#{name}_stored?" do
+            send(:"#{name}_attacher").stored?
           end
         end
       end

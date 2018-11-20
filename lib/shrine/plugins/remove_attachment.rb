@@ -19,12 +19,12 @@ class Shrine
 
           name = attachment_name
 
-          define_method "remove_#{name}=" do |value|
-            send("#{name}_attacher").remove = value
+          define_method :"remove_#{name}=" do |value|
+            send(:"#{name}_attacher").remove = value
           end
 
-          define_method "remove_#{name}" do
-            send("#{name}_attacher").remove
+          define_method :"remove_#{name}" do
+            send(:"#{name}_attacher").remove
           end
         end
       end

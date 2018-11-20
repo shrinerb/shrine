@@ -37,24 +37,24 @@ class Shrine
         attachment = self
         name = attachment_name
 
-        define_method "#{name}_attacher" do |**options|
-          if !instance_variable_get("@#{name}_attacher") || options.any?
-            instance_variable_set("@#{name}_attacher", attachment.build_attacher(self, options))
+        define_method :"#{name}_attacher" do |**options|
+          if !instance_variable_get(:"@#{name}_attacher") || options.any?
+            instance_variable_set(:"@#{name}_attacher", attachment.build_attacher(self, options))
           else
-            instance_variable_get("@#{name}_attacher")
+            instance_variable_get(:"@#{name}_attacher")
           end
         end
 
-        define_method "#{name}=" do |value|
-          send("#{name}_attacher").assign(value)
+        define_method :"#{name}=" do |value|
+          send(:"#{name}_attacher").assign(value)
         end
 
-        define_method name do
-          send("#{name}_attacher").get
+        define_method :"#{name}" do
+          send(:"#{name}_attacher").get
         end
 
-        define_method "#{name}_url" do |*args|
-          send("#{name}_attacher").url(*args)
+        define_method :"#{name}_url" do |*args|
+          send(:"#{name}_attacher").url(*args)
         end
       end
 

@@ -104,12 +104,12 @@ class Shrine
 
           name = attachment_name
 
-          define_method "#{name}_remote_url=" do |url|
-            send("#{name}_attacher").remote_url = url
+          define_method :"#{name}_remote_url=" do |url|
+            send(:"#{name}_attacher").remote_url = url
           end
 
-          define_method "#{name}_remote_url" do
-            send("#{name}_attacher").remote_url
+          define_method :"#{name}_remote_url" do
+            send(:"#{name}_attacher").remote_url
           end
         end
       end

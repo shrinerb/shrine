@@ -138,12 +138,12 @@ class Shrine
 
           name = attachment_name
 
-          define_method "#{name}_data_uri=" do |uri|
-            send("#{name}_attacher").data_uri = uri
+          define_method :"#{name}_data_uri=" do |uri|
+            send(:"#{name}_attacher").data_uri = uri
           end
 
-          define_method "#{name}_data_uri" do
-            send("#{name}_attacher").data_uri
+          define_method :"#{name}_data_uri" do
+            send(:"#{name}_attacher").data_uri
           end
         end
       end

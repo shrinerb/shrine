@@ -24,13 +24,13 @@ class Shrine
 
           name = attachment_name
 
-          define_method "cached_#{name}_data" do
-            send("#{name}_attacher").read_cached
+          define_method :"cached_#{name}_data" do
+            send(:"#{name}_attacher").read_cached
           end
 
-          define_method "cached_#{name}_data=" do |value|
+          define_method :"cached_#{name}_data=" do |value|
             Shrine.deprecation("Calling #cached_#{name}_data= is deprecated and will be removed in Shrine 3. You should use the original field name: `f.hidden_field :#{name}, value: record.cached_#{name}_data`.")
-            send("#{name}_attacher").assign(value)
+            send(:"#{name}_attacher").assign(value)
           end
         end
       end

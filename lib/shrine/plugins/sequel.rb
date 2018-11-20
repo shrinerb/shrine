@@ -75,7 +75,7 @@ class Shrine
           if shrine_class.opts[:sequel_validations]
             define_method :validate do
               super()
-              send("#{name}_attacher").errors.each do |message|
+              send(:"#{name}_attacher").errors.each do |message|
                 errors.add(name, *message)
               end
             end
@@ -84,19 +84,19 @@ class Shrine
           if shrine_class.opts[:sequel_callbacks]
             define_method :before_save do
               super()
-              attacher = send("#{name}_attacher")
+              attacher = send(:"#{name}_attacher")
               attacher.save if attacher.changed?
             end
 
             define_method :after_save do
               super()
-              attacher = send("#{name}_attacher")
+              attacher = send(:"#{name}_attacher")
               db.after_commit { attacher.finalize } if attacher.changed?
             end
 
             define_method :after_destroy do
               super()
-              attacher = send("#{name}_attacher")
+              attacher = send(:"#{name}_attacher")
               db.after_commit { attacher.destroy } if attacher.read
             end
           end

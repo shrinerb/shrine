@@ -21,7 +21,7 @@ class Shrine
     #
     #         name = attachment_name
     #
-    #         define_method "#{name}_size" do |version|
+    #         define_method :"#{name}_size" do |version|
     #           attachment = send(name)
     #           if attachment.is_a?(Hash)
     #             attachment[version].size
