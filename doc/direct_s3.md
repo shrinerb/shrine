@@ -177,9 +177,12 @@ upload walkthrough] for adding dynamic direct S3 uploads from scratch, as well
 as the [Roda][roda demo] / [Rails][rails demo] demo app for a complete example
 of multiple direct S3 uploads.
 
-Also, if you're dealing with larger files, you may want to make the uploads resumable
-by using the AwsS3Multipart Uppy plugin instead, with the [uppy-s3_multipart](https://github.com/janko-m/uppy-s3_multipart) gem on the backend. Your back-end implementation is similar, just using
-`Shrine.uppy_s3_multipart` in place of `Shrine.presign_endpoint`. Instructions can be found in uppy-s3_multipart README.
+Also, if you're dealing with larger files, you may want to make the uploads
+resumable by using the [Aws S3 Multipart][uppy aws s3 multipart] Uppy plugin
+instead, with the [uppy-s3_multipart] gem on the backend. Your back-end
+implementation is similar, just using `Shrine.uppy_s3_multipart` in place of
+`Shrine.presign_endpoint`. Instructions can be found in uppy-s3_multipart
+README.
 
 ## Strategy B (static)
 
@@ -390,6 +393,8 @@ setup] guide.
 [Uppy]: https://uppy.io
 [uppy aws s3]: https://uppy.io/docs/aws-s3/
 [uppy aws-s3 cors]: https://uppy.io/docs/aws-s3/#S3-Bucket-configuration
+[uppy aws s3 multipart]: https://uppy.io/docs/aws-s3/
+[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
 [CORS guide]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [CORS API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method
