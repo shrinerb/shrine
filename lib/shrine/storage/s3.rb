@@ -273,6 +273,11 @@ class Shrine
     # [serve private content via CloudFront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html
     # [`Aws::CloudFront::UrlSigner`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html
     class S3
+      # Tempfile with content_type accessor which represents downloaded files.
+      class Tempfile < ::Tempfile
+        attr_accessor :content_type
+      end
+
       attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer, :public
 
       # Initializes a storage for uploading to S3. All options are forwarded to
@@ -376,7 +381,6 @@ class Shrine
       def download(id, **options)
         tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
         data = object(id).get(response_target: tempfile, **options)
-        tempfile.singleton_class.instance_eval { attr_accessor :content_type }
         tempfile.content_type = data.content_type
         tempfile.tap(&:open)
       rescue
