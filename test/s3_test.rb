@@ -379,7 +379,7 @@ describe Shrine::Storage::S3 do
     it "downloads the object to a Tempfile" do
       @s3.client.stub_responses(:get_object, body: "content")
       tempfile = @s3.download("foo")
-      assert_instance_of Tempfile, tempfile
+      assert_kind_of Tempfile, tempfile
       assert_equal "content", tempfile.read
     end
 
