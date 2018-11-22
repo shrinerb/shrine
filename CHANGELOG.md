@@ -1,5 +1,7 @@
 ## HEAD
 
+* Strip query params in upload location when re-uploading from `shrine-url` storage (@jrochkind)
+
 * Inline Base plugin into core classes, extract them to separate files (@printercu)
 
 * Make `rack_response` plugin work with `Rack::Sendfile` for `FileSystem` storage (@janko-m)

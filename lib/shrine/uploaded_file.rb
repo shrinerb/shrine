@@ -59,10 +59,7 @@ class Shrine
       # from #original_filename.
       def extension
         result = File.extname(id)[1..-1] || File.extname(original_filename.to_s)[1..-1]
-        # for shrine-url use, id may be url with query params, strip em after ?
-        if result && result.index('?') && id =~ URI::regexp
-          result = result[0..result.index('?') - 1]
-        end
+        result.sub!(/\?.+$/, "") if result && id =~ URI::regexp # strip query params for shrine-url
         result.downcase if result
       end
 
