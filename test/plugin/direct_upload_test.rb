@@ -1,15 +1,16 @@
 require "test_helper"
-require "shrine/plugins/direct_upload"
 require "shrine/storage/s3"
 require "rack/test_app"
 
-describe Shrine::Plugins::DirectUpload do
+describe "Shrine::Plugins::DirectUpload" do
   def app
     Rack::TestApp.wrap(Rack::Lint.new(@uploader.class::UploadEndpoint))
   end
 
   before do
-    @uploader = uploader(:cache) { plugin :direct_upload }
+    deprecated do
+      @uploader = uploader(:cache) { plugin :direct_upload }
+    end
   end
 
   describe "POST /:storage/upload" do
