@@ -124,6 +124,26 @@ describe Shrine::UploadedFile do
       uploaded_file = uploaded_file("metadata" => {"filename" => "foo.JPG"})
       assert_equal "jpg", uploaded_file.extension
     end
+
+    it "does not include query params from shrine-url ids in extension" do
+      uploaded_file =uploaded_file("id" => "http://example.com/path.html?key=value", "storage" => "cache")
+      assert_equal "html", uploaded_file.extension
+
+      uploaded_file = uploaded_file("id" => "http://example.com/path?key=value", "storage" => "cache")
+      assert_nil uploaded_file.extension
+    end
+
+    it "can still handle non-url extensions with question marks" do
+      uploaded_file = uploaded_file("id" => "foo.?xx")
+      assert_equal "?xx", uploaded_file.extension
+
+      uploaded_file = uploaded_file("id" => "foo.x?x")
+      assert_equal "x?x", uploaded_file.extension
+
+      uploaded_file = uploaded_file("id" => "foo.xx?")
+      assert_equal "xx?", uploaded_file.extension
+    end
+
   end
 
   describe "#size" do
