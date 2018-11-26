@@ -265,7 +265,12 @@ class Shrine
         def swap(new_file)
           if self.class.respond_to?(:find_record)
             reloaded = self.class.find_record(record.class, record.id)
-            return if reloaded.nil? || self.class.new(reloaded, name).read != read
+            return if reloaded.nil?
+
+            attacher   = reloaded.send(:"#{name}_attacher") if reloaded.respond_to?(:"#{name}_attacher")
+            attacher ||= self.class.new(reloaded, name) # Shrine::Attachment is not used
+
+            return if attacher.read != self.read
           end
           super
         end
