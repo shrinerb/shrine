@@ -122,17 +122,36 @@ class Shrine
       #
       #     uploaded_file.download { |tempfile| tempfile.read } # tempfile is deleted
       def download(*args)
-        if storage.respond_to?(:download)
-          tempfile = storage.download(id, *args)
+        # This whole method probably needs to be in a mutex for concurrency safety?
+        # If an UploadedFile can be shared between threads?
+byebug
+        # load a ruby Tempfile into @cached_temp_download if we don't already have one
+        if @cached_temp_download
+          # already have it, don't need to load it.
+        elsif to_io.kind_of?(Down::ChunkedIO) && to_io.send(:chunks_depleted?)
+          # We already have a fully loaded Down::ChunkedIO? We can just use that,
+          # no need to stream from source again. This is a hacky way to see if
+          # that condition is met though. Does `down` need more reliable and public API?
+          @cached_temp_download = to_io.send(:cache)
+        elsif storage.respond_to?(:download)
+          @cached_temp_download = storage.download(id, *args)
         else
-          tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-          stream(tempfile, *args)
-          tempfile.open
+          @cached_temp_download = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
+          stream(@cached_temp_download, *args)
         end
+
+        # open it as a NEW file object at that path, so different callers don't
+        # end up sharing the same ruby File object.
+        tempfile = File.open(@cached_temp_download.path)
 
         block_given? ? yield(tempfile) : tempfile
       ensure
-        tempfile.close! if ($! || block_given?) && tempfile
+        # note we aren't actually unlinking the tempfile here -- intentionally,
+        # so it's still cached for another #download call. We're counting on
+        # ruby stdlib Tempfile to unlink when object gets GC'd, when UploadedFile
+        # goes out of scope. Is that good enough? It's the way Down's cache already
+        # ends up working, I think?
+        tempfile.close if ($! || block_given?) && tempfile
       end
 
       # Streams uploaded file content into the specified destination. The
