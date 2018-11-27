@@ -36,9 +36,9 @@ attributes:
 Album.create(
   title: "My Album",
   photos_attributes: [
-    { image: File.open("image1.jpg", "rb") },
-    { image: File.open("image2.jpg", "rb") },
-    { image: File.open("image3.jpg", "rb") },
+    { image: File.open("image1.jpg", binmode: true) },
+    { image: File.open("image2.jpg", binmode: true) },
+    { image: File.open("image3.jpg", binmode: true) },
   ]
 )
 ```

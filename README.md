@@ -226,12 +226,12 @@ plugin is loaded.
 Here are some examples of IO objects that can be uploaded:
 
 ```rb
-uploader.upload File.open("/path/to/file", "rb")             # upload from disk
-uploader.upload StringIO.new("file content")                 # upload from memory
-uploader.upload ActionDispatch::Http::UploadedFile.new       # upload from Rails controller
-uploader.upload Shrine.rack_file({ tempfile: Tempfile.new }) # upload from Rack controller
-uploader.upload Rack::Test::UploadedFile.new                 # upload from rack-test
-uploader.upload Down.open("https://example.org/file")        # upload from internet
+uploader.upload File.open("/path/to/file", binmode: true) # upload from disk
+uploader.upload StringIO.new("file content")              # upload from memory
+uploader.upload ActionDispatch::Http::UploadedFile.new    # upload from Rails controller
+uploader.upload Shrine.rack_file({ tempfile: tempfile })  # upload from Rack controller
+uploader.upload Rack::Test::UploadedFile.new              # upload from rack-test
+uploader.upload Down.open("https://example.org/file")     # upload from internet
 ```
 
 `Shrine::UploadedFile`, the object returned after upload, is itself an IO-like

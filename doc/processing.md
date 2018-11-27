@@ -71,7 +71,7 @@ class ImageUploader < Shrine
 
     original.close!
 
-    File.open(optimized_path, "rb")
+    File.open(optimized_path, binmode: true)
   end
 end
 ```

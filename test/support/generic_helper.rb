@@ -29,7 +29,7 @@ class Minitest::HooksSpec
   end
 
   def image
-    File.open("test/fixtures/image.jpg", "rb")
+    File.open("test/fixtures/image.jpg", binmode: true)
   end
 
   def io?(object)

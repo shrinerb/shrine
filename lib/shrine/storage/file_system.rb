@@ -155,8 +155,8 @@ class Shrine
 
       # Opens the file on the given location in read mode. Accepts additional
       # `File.open` arguments.
-      def open(id, *args, &block)
-        path(id).open("rb", *args, &block)
+      def open(id, **options, &block)
+        path(id).open(binmode: true, **options, &block)
       end
 
       # Returns true if the file exists on the filesystem.
