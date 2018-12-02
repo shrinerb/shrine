@@ -273,11 +273,6 @@ class Shrine
     # [serve private content via CloudFront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html
     # [`Aws::CloudFront::UrlSigner`]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html
     class S3
-      # Tempfile with content_type accessor which represents downloaded files.
-      class Tempfile < ::Tempfile
-        attr_accessor :content_type
-      end
-
       attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer, :public
 
       # Initializes a storage for uploading to S3. All options are forwarded to
@@ -371,21 +366,6 @@ class Shrine
           bytes_uploaded = put(io, id, **options)
           shrine_metadata["size"] ||= bytes_uploaded
         end
-      end
-
-      # Downloads the file from S3 and returns a `Tempfile`. The download will
-      # be automatically retried up to 3 times. Any additional options are
-      # forwarded to [`Aws::S3::Object#get`].
-      #
-      # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
-      def download(id, **options)
-        tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
-        data = object(id).get(response_target: tempfile, **options)
-        tempfile.content_type = data.content_type
-        tempfile.tap(&:open)
-      rescue
-        tempfile.close! if tempfile
-        raise
       end
 
       # Returns a `Down::ChunkedIO` object that downloads S3 object content
@@ -531,12 +511,11 @@ class Shrine
         bucket.object([*prefix, id].join("/"))
       end
 
-      # Catches the deprecated `#stream` method.
-      def method_missing(name, *args)
-        if name == :stream
-          Shrine.deprecation("Shrine::Storage::S3#stream is deprecated over calling #each_chunk on S3#open.")
-          object = object(*args)
-          object.get { |chunk| yield chunk, object.content_length }
+      # Catches the deprecated `#download` and `#stream` methods.
+      def method_missing(name, *args, &block)
+        case name
+        when :stream   then deprecated_stream(*args, &block)
+        when :download then deprecated_download(*args, &block)
         else
           super
         end
@@ -633,6 +612,29 @@ class Shrine
         content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
           CGI.escape(filename).gsub("+", " ")
         end
+      end
+
+      def deprecated_stream(id)
+        Shrine.deprecation("Shrine::Storage::S3#stream is deprecated over calling #each_chunk on S3#open.")
+        object = object(id)
+        object.get { |chunk| yield chunk, object.content_length }
+      end
+
+      def deprecated_download(id, **options)
+        Shrine.deprecation("Shrine::Storage::S3#download is deprecated over S3#open.")
+
+        tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
+        data = object(id).get(response_target: tempfile, **options)
+        tempfile.content_type = data.content_type
+        tempfile.tap(&:open)
+      rescue
+        tempfile.close! if tempfile
+        raise
+      end
+
+      # Tempfile with #content_type accessor which represents downloaded files.
+      class Tempfile < ::Tempfile
+        attr_accessor :content_type
       end
     end
   end

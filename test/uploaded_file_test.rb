@@ -340,115 +340,78 @@ describe Shrine::UploadedFile do
   end
 
   describe "#download" do
-    describe "when Storage#download is defined" do
-      before do
-        @tempfile = Tempfile.new("")
-        @uploader.storage.stubs(:download).returns(@tempfile)
-      end
-
-      it "delegates to Storage#download" do
-        uploaded_file = @uploader.upload(fakeio)
-        assert_equal @tempfile, uploaded_file.download
-      end
-
-      it "forwards any options to Storage#download" do
-        uploaded_file = @uploader.upload(fakeio)
-        @uploader.storage.expects(:download).with(uploaded_file.id, foo: "bar")
-        uploaded_file.download(foo: "bar")
-      end
-
-      it "yields the tempfile if block is given" do
-        uploaded_file.download { |tempfile| @block = tempfile }
-        assert_equal @tempfile, @block
-      end
-
-      it "returns the block return value" do
-        result = uploaded_file.download { |tempfile| "result" }
-        assert_equal "result", result
-      end
-
-      it "closes and deletes the tempfile after the block" do
-        uploaded_file.download { |tempfile| refute tempfile.closed? }
-        assert @tempfile.closed?
-        assert_nil @tempfile.path
-      end
-
-      it "propagates exceptions that occured in Storage#download" do
-        @uploader.storage.stubs(:download).raises(Errno::EMFILE) # too many open files
-        assert_raises(Errno::EMFILE) { uploaded_file.download }
-      end
+    it "downloads file content to a Tempfile in binary encoding" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      downloaded = uploaded_file.download
+      assert_instance_of Tempfile, downloaded
+      refute downloaded.closed?
+      assert_match "file", downloaded.read
+      assert downloaded.binmode?
     end
 
-    describe "when Storage#download is not defined" do
-      before do
-        @uploader.storage.instance_eval { undef download }
-        @uploaded_file = @uploader.upload(fakeio("file"))
-      end
+    it "reuses the internal IO object if opened" do
+      uploaded_file = @uploader.upload(fakeio("file"))
+      uploaded_file.open
+      uploaded_file.storage.expects(:open).never
+      downloaded = uploaded_file.download
+      assert_match "file", downloaded.read
+    end
 
-      it "downloads file content to a Tempfile in binary encoding" do
-        downloaded = @uploaded_file.download
-        assert_instance_of Tempfile, downloaded
-        refute downloaded.closed?
-        assert_match "file", downloaded.read
-        assert downloaded.binmode?
-      end
+    it "applies extension from #id" do
+      uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
+      assert_match /\.jpg$/, uploaded_file.download.path
+    end
 
-      it "applies extension from #id" do
-        uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-        assert_match /\.jpg$/, uploaded_file.download.path
-      end
+    it "applies extension from #original_filename" do
+      uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
+      assert_match /\.jpg$/, uploaded_file.download.path
+    end
 
-      it "applies extension from #original_filename" do
-        uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), location: "foo")
-        assert_match /\.jpg$/, uploaded_file.download.path
-      end
+    it "forwards any options to Storage#open" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.expects(:open).with(foo: "bar")
+      uploaded_file.download(foo: "bar")
+    end
 
-      it "forwards any options to Storage#open" do
-        uploaded_file = @uploader.upload(fakeio)
-        uploaded_file.expects(:open).with(foo: "bar")
-        uploaded_file.download(foo: "bar")
-      end
+    it "yields the tempfile if block is given" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.download { |tempfile| @block = tempfile }
+      assert_instance_of Tempfile, @block
+    end
 
-      it "yields the tempfile if block is given" do
-        uploaded_file = @uploader.upload(fakeio)
-        uploaded_file.download { |tempfile| @block = tempfile }
-        assert_instance_of Tempfile, @block
-      end
+    it "returns the block return value" do
+      uploaded_file = @uploader.upload(fakeio)
+      result = uploaded_file.download { |tempfile| "result" }
+      assert_equal "result", result
+    end
 
-      it "returns the block return value" do
-        uploaded_file = @uploader.upload(fakeio)
-        result = uploaded_file.download { |tempfile| "result" }
-        assert_equal "result", result
-      end
+    it "closes and deletes the tempfile after the block" do
+      uploaded_file = @uploader.upload(fakeio)
+      tempfile = uploaded_file.download { |tempfile| refute tempfile.closed?; tempfile }
+      assert tempfile.closed?
+      assert_nil tempfile.path
+    end
 
-      it "closes and deletes the tempfile after the block" do
-        uploaded_file = @uploader.upload(fakeio)
-        tempfile = uploaded_file.download { |tempfile| refute tempfile.closed?; tempfile }
-        assert tempfile.closed?
-        assert_nil tempfile.path
-      end
+    it "deletes the Tempfile in case of exceptions" do
+      tempfile = Tempfile.new("")
+      Tempfile.stubs(:new).returns(tempfile)
+      assert_raises(KeyError) { uploaded_file.download }
+      assert tempfile.closed?
+      assert_nil tempfile.path
+    end
 
-      it "deletes the Tempfile in case of exceptions" do
-        tempfile = Tempfile.new("")
-        Tempfile.stubs(:new).returns(tempfile)
-        assert_raises(KeyError) { uploaded_file.download }
-        assert tempfile.closed?
-        assert_nil tempfile.path
-      end
+    it "rewinds the uploaded file and keeps it open if it was already open" do
+      uploaded_file = @uploader.upload(fakeio("content"))
+      uploaded_file.open
+      uploaded_file.storage.expects(:open).never
+      tempfile = uploaded_file.download
+      assert_equal "content", tempfile.read
+      assert_equal "content", uploaded_file.read
+    end
 
-      it "rewinds the uploaded file and keeps it open if it was already open" do
-        uploaded_file = @uploader.upload(fakeio("content"))
-        uploaded_file.open
-        uploaded_file.storage.expects(:open).never
-        tempfile = uploaded_file.download
-        assert_equal "content", tempfile.read
-        assert_equal "content", uploaded_file.read
-      end
-
-      it "propagates exceptions that occured when creating the Tempfile" do
-        Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
-        assert_raises(Errno::EMFILE) { uploaded_file.download }
-      end
+    it "propagates exceptions that occured when creating the Tempfile" do
+      Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
+      assert_raises(Errno::EMFILE) { uploaded_file.download }
     end
   end
 

@@ -122,27 +122,6 @@ The storage can support additional options to customize how the file will be
 opened, `Shrine::UploadedFile#open` and `Shrine::UploadedFile#download` will
 forward any given options to `#open`.
 
-## Download
-
-`Shrine::UploadedFile#download` by default uses the `#open` storage method to
-stream file content to a Tempfile. However, if you would like to use your own
-custom way of downloading to a file, you can define `#download` on the storage
-and `Shrine::UploadedFile#download` will automatically call that instead.
-
-```rb
-class MyStorage
-  # ...
-  def download(id, **options)
-    # download the uploaded file to a Tempfile
-  end
-  # ...
-end
-```
-
-The storage can support additional options to customize how the file will be
-downloaded, `Shrine::UploadedFile#download` will forward any given options to
-`#download`.
-
 ## Url
 
 The `#url` storage method is called by `Shrine::UploadedFile#url`, it accepts a
