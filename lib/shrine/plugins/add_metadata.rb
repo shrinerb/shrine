@@ -88,13 +88,10 @@ class Shrine
       end
 
       module ClassMethods
-        def add_metadata(name = nil, &block)
-          if name
-            opts[:metadata] << _metadata_proc(name, &block)
-            metadata_method(name)
-          else
-            opts[:metadata] << block
-          end
+        def add_metadata(name = nil, **options, &block)
+          opts[:metadata] << [name, options, block]
+
+          metadata_method(name) if name
         end
 
         def metadata_method(*names)
@@ -108,31 +105,41 @@ class Shrine
             metadata[name.to_s]
           end
         end
-
-        def _metadata_proc(name, &block)
-          proc do |io, context|
-            value = instance_exec(io, context, &block)
-            {name.to_s => value} unless value.nil?
-          end
-        end
       end
 
       module InstanceMethods
-        def extract_metadata(io, context)
+        def extract_metadata(io, context = {})
           metadata = super
-          context = context.merge(metadata: metadata)
+          context  = context.merge(metadata: metadata)
 
-          opts[:metadata].each do |metadata_block|
-            custom_metadata = instance_exec(io, context, &metadata_block) || {}
-            io.rewind
-            # convert symbol keys to strings
-            custom_metadata.keys.each do |key|
-              custom_metadata[key.to_s] = custom_metadata.delete(key) if key.is_a?(Symbol)
-            end
-            metadata.merge!(custom_metadata)
-          end
+          extract_custom_metadata(io, context)
 
           metadata
+        end
+
+        private
+
+        def extract_custom_metadata(io, context)
+          opts[:metadata].each do |name, options, block|
+            result   = instance_exec(io, context, &block)
+            metadata = {}
+
+            if name
+              metadata[name.to_s] = result
+            else
+              metadata.merge!(result) if result
+            end
+
+            # convert symbol keys to strings
+            metadata.keys.each do |key|
+              metadata[key.to_s] = metadata.delete(key) if key.is_a?(Symbol)
+            end
+
+            context[:metadata].merge!(metadata)
+
+            # rewind between metadata blocks
+            io.rewind
+          end
         end
       end
     end

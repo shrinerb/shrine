@@ -1,5 +1,9 @@
 ## HEAD
 
+* Keep `context` argument in `#extract_metadata` optional after loading `add_metadata` plugin (@janko-m)
+
+* Include metadata key with `nil` value when `nil` is returned in `add_metadata` block (@janko-m)
+
 * Strip query params in upload location when re-uploading from `shrine-url` storage (@jrochkind)
 
 * Inline Base plugin into core classes, extract them to separate files (@printercu)
