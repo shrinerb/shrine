@@ -13,7 +13,7 @@ describe Shrine::Plugins::AddMetadata do
         @shrine.add_metadata(:custom) { |io, context| "value" }
         metadata = @uploader.extract_metadata(fakeio)
         assert_equal "value", metadata.fetch("custom")
-        assert_instance_of Integer, metadata["size"]
+        assert_kind_of Integer, metadata["size"]
       end
 
       it "allows returning nil" do
@@ -34,7 +34,7 @@ describe Shrine::Plugins::AddMetadata do
         @shrine.add_metadata { Hash["custom" => "value"] }
         metadata = @uploader.extract_metadata(fakeio)
         assert_equal "value", metadata.fetch("custom")
-        assert_instance_of Integer, metadata["size"]
+        assert_kind_of Integer, metadata["size"]
       end
 
       it "accepts symbol keys" do
