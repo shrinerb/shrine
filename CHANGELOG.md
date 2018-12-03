@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `file: true` option to `add_metadata` plugin for when a block requires a file object (@janko-m)
+
 * Keep `context` argument in `#extract_metadata` optional after loading `add_metadata` plugin (@janko-m)
 
 * Include metadata key with `nil` value when `nil` is returned in `add_metadata` block (@janko-m)

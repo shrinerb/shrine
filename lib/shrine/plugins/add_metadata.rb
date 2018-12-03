@@ -32,10 +32,10 @@ class Shrine
     #         next {}
     #       end
     #
-    #       { date_time:     data.date_time,
-    #         flash:         data.flash,
-    #         focal_length:  data.focal_length,
-    #         exposure_time: data.exposure_time }
+    #       { "date_time"     => data.date_time,
+    #         "flash"         => data.flash,
+    #         "focal_length"  => data.focal_length,
+    #         "exposure_time" => data.exposure_time }
     #     end
     #
     # In this case Shrine won't automatically create reader methods for the
@@ -44,12 +44,26 @@ class Shrine
     #
     #     metadata_method :date_time, :flash
     #
-    # The `io` might not always be a file object, so if you're using an
-    # analyzer which requires the source file to be on disk, you can use
-    # `Shrine.with_file` to ensure you have a file object.
+    # Note that `io` might not always be a file object, depending the plugins
+    # you're using and the kind of files you are uploading. If you're using an
+    # analyzer which requires the source file to be on disk, you can pass
+    # `file: true`, which will ensure the yielded object is a file object.
+    # Internally `Shrine.with_file` will be called to write the IO object to
+    # disk when needed.
     #
-    #     add_metadata do |io, context|
-    #       movie = Shrine.with_file(io) { |file| FFMPEG::Movie.new(file.path) }
+    #     add_metadata :magick, file: true do |file, context|
+    #       file # this will now always be a file object
+    #
+    #       image = MiniMagick::Image.new(file.path)
+    #       image.data
+    #     end
+    #
+    #     # or
+    #
+    #     add_metadata file: true do |file, context|
+    #       file # this will now always be a file object
+    #
+    #       movie = FFMPEG::Movie.new(file.path)
     #
     #       { "duration"   => movie.duration,
     #         "bitrate"    => movie.bitrate,
@@ -112,16 +126,27 @@ class Shrine
           metadata = super
           context  = context.merge(metadata: metadata)
 
-          extract_custom_metadata(io, context)
+          if opts[:metadata].any? { |_, options, _| options[:file] }
+            self.class.with_file(io) do |file|
+              extract_custom_metadata(io, file, context)
+            end
+          else
+            extract_custom_metadata(io, context)
+          end
 
           metadata
         end
 
         private
 
-        def extract_custom_metadata(io, context)
-          opts[:metadata].each do |name, options, block|
-            result   = instance_exec(io, context, &block)
+        def extract_custom_metadata(io, file = nil, context)
+          opts[:metadata].each do |name, options, metadata_block|
+            if options[:file]
+              result = instance_exec(file, context, &metadata_block)
+            else
+              result = instance_exec(io, context, &metadata_block)
+            end
+
             metadata = {}
 
             if name
@@ -139,6 +164,7 @@ class Shrine
 
             # rewind between metadata blocks
             io.rewind
+            file.rewind if file
           end
         end
       end

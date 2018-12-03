@@ -27,6 +27,22 @@ describe Shrine::Plugins::AddMetadata do
         uploaded_file = @uploader.upload(fakeio)
         assert_equal "value", uploaded_file.custom
       end
+
+      it "allows requesting a file object" do
+        minitest = self
+        @shrine.add_metadata(:custom, file: true) do |file, context|
+          minitest.assert_respond_to file, :path
+          minitest.assert_equal "content", File.read(file.path)
+          "value"
+        end
+
+        metadata = @uploader.extract_metadata(StringIO.new("content"))
+        assert_equal "value", metadata["custom"]
+
+        uploaded_file = @uploader.upload(fakeio("content"))
+        metadata = @uploader.extract_metadata(uploaded_file)
+        assert_equal "value", metadata["custom"]
+      end
     end
 
     describe "without argument" do
@@ -48,6 +64,22 @@ describe Shrine::Plugins::AddMetadata do
         metadata = @uploader.extract_metadata(fakeio)
         assert_equal %w[filename size mime_type], metadata.keys
       end
+
+      it "allows requesting a file object" do
+        minitest = self
+        @shrine.add_metadata(file: true) do |file, context|
+          minitest.assert_respond_to file, :path
+          minitest.assert_equal "content", File.read(file.path)
+          { "custom" => "value" }
+        end
+
+        metadata = @uploader.extract_metadata(StringIO.new("content"))
+        assert_equal "value", metadata["custom"]
+
+        uploaded_file = @uploader.upload(fakeio("content"))
+        metadata = @uploader.extract_metadata(uploaded_file)
+        assert_equal "value", metadata["custom"]
+      end
     end
 
     it "executes inside uploader and forwards correct arguments" do
@@ -66,6 +98,15 @@ describe Shrine::Plugins::AddMetadata do
     it "rewinds the IO between metadata blocks" do
       @shrine.add_metadata(:foo) { |io| io.read }
       @shrine.add_metadata(:bar) { |io| io.read }
+      metadata = @uploader.extract_metadata(input = fakeio("file"))
+      assert_equal "file", metadata["foo"]
+      assert_equal "file", metadata["bar"]
+      assert_equal "file", input.read
+    end
+
+    it "rewinds the file between metadata blocks" do
+      @shrine.add_metadata(:foo, file: true) { |file| file.read }
+      @shrine.add_metadata(:bar, file: true) { |file| file.read }
       metadata = @uploader.extract_metadata(input = fakeio("file"))
       assert_equal "file", metadata["foo"]
       assert_equal "file", metadata["bar"]
