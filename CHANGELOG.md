@@ -1,5 +1,11 @@
 ## HEAD
 
+* Deprecate `Storage::S3#download` (@janko-m)
+
+* Stop using `Storage#download` in `UploadedFile#download` for peformance (@janko-m)
+
+* Remove `#download` from the Shrine storage specification (@janko-m)
+
 * Keep `context` argument in `#extract_metadata` optional after loading `add_metadata` plugin (@janko-m)
 
 * Include metadata key with `nil` value when `nil` is returned in `add_metadata` block (@janko-m)

@@ -207,17 +207,9 @@ class Shrine
       end
 
       # Catches the deprecated `#download` method.
-      def method_missing(name, *args)
-        if name == :download
-          begin
-            Shrine.deprecation("Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.")
-            tempfile = Tempfile.new(["shrine-filesystem", File.extname(args[0])], binmode: true)
-            open(*args) { |file| IO.copy_stream(file, tempfile) }
-            tempfile.tap(&:open)
-          rescue
-            tempfile.close! if tempfile
-            raise
-          end
+      def method_missing(name, *args, &block)
+        case name
+        when :download then deprecated_download(*args, &block)
         else
           super
         end
@@ -255,6 +247,16 @@ class Shrine
 
       def relative(path)
         path.sub(%r{^/}, "")
+      end
+
+      def deprecated_download(id, **options)
+        Shrine.deprecation("Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.")
+        tempfile = Tempfile.new(["shrine-filesystem", File.extname(id)], binmode: true)
+        open(id, **options) { |file| IO.copy_stream(file, tempfile) }
+        tempfile.tap(&:open)
+      rescue
+        tempfile.close! if tempfile
+        raise
       end
     end
   end

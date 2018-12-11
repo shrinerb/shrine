@@ -23,31 +23,14 @@ describe Shrine::Storage::Linter do
     end
   end
 
-  describe "download" do
-    it "tests that returned object is a Tempfile" do
-      @storage.instance_eval { def download(id); File.open(__FILE__); end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "tests that returned IO is not empty" do
-      @storage.instance_eval { def download(id); Tempfile.new(""); end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "doesn't require #download to be defined" do
-      @storage.instance_eval { undef download }
-      @linter.call
-    end
-  end
-
   describe "open" do
     it "tests that returned object is an IO" do
-      @storage.instance_eval { def download(id); StringIO.new("foo").tap { |io| io.instance_eval{undef rewind} }; end }
+      @storage.instance_eval { def open(id); StringIO.new("foo").tap { |io| io.instance_eval{undef rewind} }; end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
 
     it "tests that returned IO is not empty" do
-      @storage.instance_eval { def download(id); StringIO.new; end }
+      @storage.instance_eval { def open(id); StringIO.new; end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
   end

@@ -105,8 +105,7 @@ class Shrine
         end
       end
 
-      # Calls `#download` on the storage if the storage implements it,
-      # otherwise streams content into a newly created Tempfile.
+      # Streams content into a newly created Tempfile and returns it.
       #
       # If a block is given, the opened Tempfile object is yielded to the
       # block, and at the end of the block it's automatically closed and
@@ -122,13 +121,9 @@ class Shrine
       #
       #     uploaded_file.download { |tempfile| tempfile.read } # tempfile is deleted
       def download(*args)
-        if storage.respond_to?(:download)
-          tempfile = storage.download(id, *args)
-        else
-          tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-          stream(tempfile, *args)
-          tempfile.open
-        end
+        tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
+        stream(tempfile, *args)
+        tempfile.open
 
         block_given? ? yield(tempfile) : tempfile
       ensure

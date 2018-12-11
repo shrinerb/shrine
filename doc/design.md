@@ -125,6 +125,7 @@ uploaded_file.size
 # storage methods
 uploaded_file.url
 uploaded_file.exists?
+uploaded_file.open
 uploaded_file.download
 uploaded_file.delete
 # ...

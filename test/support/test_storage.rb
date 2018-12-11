@@ -1,15 +1,8 @@
 require "shrine/storage/memory"
-require "tempfile"
 
 class Shrine
   module Storage
     class Test < Memory
-      def download(id)
-        tempfile = Tempfile.new(["shrine", File.extname(id)], binmode: true)
-        IO.copy_stream(open(id), tempfile)
-        tempfile.tap(&:open)
-      end
-
       def move(io, id, **options)
         store[id] = io.storage.delete(io.id)
       end

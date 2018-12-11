@@ -375,54 +375,6 @@ describe Shrine::Storage::S3 do
     end
   end
 
-  describe "#download" do
-    it "downloads the object to a Tempfile" do
-      @s3.client.stub_responses(:get_object, body: "content")
-      tempfile = @s3.download("foo")
-      assert_kind_of Tempfile, tempfile
-      assert_equal "content", tempfile.read
-    end
-
-    it "opens the Tempfile in binary mode" do
-      tempfile = @s3.download("foo")
-      assert tempfile.binmode?
-    end
-
-    it "makes a single #get_object API call" do
-      @s3.download("foo")
-      assert_equal 1, @s3.client.api_requests.count
-      assert_equal :get_object, @s3.client.api_requests[0][:operation_name]
-      assert_equal "foo",       @s3.client.api_requests[0][:params][:key]
-    end
-
-    it "forwards additional options to #get_object" do
-      @s3.download("foo", range: "bytes=0-100")
-      assert_equal :get_object,   @s3.client.api_requests[0][:operation_name]
-      assert_equal "bytes=0-100", @s3.client.api_requests[0][:params][:range]
-    end
-
-    it "respects :prefix" do
-      @s3 = s3(prefix: "prefix")
-      @s3.download("foo")
-      assert_equal :get_object,  @s3.client.api_requests[0][:operation_name]
-      assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
-    end
-
-    it "deletes the Tempfile if an error occurs while retrieving file contents" do
-      @s3.client.stub_responses(:get_object, "NetworkingError")
-      tempfile = Tempfile.new("")
-      Tempfile.stubs(:new).returns(tempfile)
-      assert_raises(Aws::S3::Errors::NetworkingError) { @s3.download("foo") }
-      assert tempfile.closed?
-      assert_nil tempfile.path
-    end
-
-    it "propagates failures in creating tempfiles" do
-      Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
-      assert_raises(Errno::EMFILE) { @s3.download("foo") }
-    end
-  end
-
   describe "#open" do
     it "returns a Down::ChunkedIO which downloads the object" do
       @s3.client.stub_responses(:get_object, body: "content")
@@ -697,10 +649,60 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#method_missing" do
-    deprecated "implements #stream" do
-      @s3.client.stub_responses(:head_object, content_length: 7)
-      @s3.client.stub_responses(:get_object, body: "content")
-      assert_equal [["content", 7]], @s3.enum_for(:stream, "foo").to_a
+    describe "#stream" do
+      deprecated "yields downloaded content" do
+        @s3.client.stub_responses(:head_object, content_length: 7)
+        @s3.client.stub_responses(:get_object, body: "content")
+        assert_equal [["content", 7]], @s3.enum_for(:stream, "foo").to_a
+      end
+    end
+
+    describe "#download" do
+      deprecated "downloads the object to a Tempfile" do
+        @s3.client.stub_responses(:get_object, body: "content")
+        tempfile = @s3.download("foo")
+        assert_kind_of Tempfile, tempfile
+        assert_equal "content", tempfile.read
+      end
+
+      deprecated "opens the Tempfile in binary mode" do
+        tempfile = @s3.download("foo")
+        assert tempfile.binmode?
+      end
+
+      deprecated "makes a single #get_object API call" do
+        @s3.download("foo")
+        assert_equal 1, @s3.client.api_requests.count
+        assert_equal :get_object, @s3.client.api_requests[0][:operation_name]
+        assert_equal "foo",       @s3.client.api_requests[0][:params][:key]
+      end
+
+      deprecated "forwards additional options to #get_object" do
+        @s3.download("foo", range: "bytes=0-100")
+        assert_equal :get_object,   @s3.client.api_requests[0][:operation_name]
+        assert_equal "bytes=0-100", @s3.client.api_requests[0][:params][:range]
+      end
+
+      deprecated "respects :prefix" do
+        @s3 = s3(prefix: "prefix")
+        @s3.download("foo")
+        assert_equal :get_object,  @s3.client.api_requests[0][:operation_name]
+        assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
+      end
+
+      deprecated "deletes the Tempfile if an error occurs while retrieving file contents" do
+        @s3.client.stub_responses(:get_object, "NetworkingError")
+        tempfile = Tempfile.new("")
+        Tempfile.stubs(:new).returns(tempfile)
+        assert_raises(Aws::S3::Errors::NetworkingError) { @s3.download("foo") }
+        assert tempfile.closed?
+        assert_nil tempfile.path
+      end
+
+      deprecated "propagates failures in creating tempfiles" do
+        Tempfile.stubs(:new).raises(Errno::EMFILE) # too many open files
+        assert_raises(Errno::EMFILE) { @s3.download("foo") }
+      end
     end
 
     it "calls super for other methods" do

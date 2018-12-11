@@ -38,7 +38,6 @@ class Shrine
       def call(io_factory = default_io_factory)
         storage.upload(io_factory.call, id = "foo".dup, {})
 
-        lint_download(id) if storage.respond_to?(:download)
         lint_open(id)
         lint_exists(id)
         lint_url(id)
@@ -57,12 +56,6 @@ class Shrine
         if storage.respond_to?(:presign)
           lint_presign(id)
         end
-      end
-
-      def lint_download(id)
-        downloaded = storage.download(id)
-        error :download, "doesn't return a Tempfile" if !downloaded.is_a?(Tempfile)
-        error :download, "returns an empty IO object" if downloaded.read.empty?
       end
 
       def lint_open(id)
