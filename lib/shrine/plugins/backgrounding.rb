@@ -265,7 +265,7 @@ class Shrine
         def swap(new_file)
           if self.class.respond_to?(:find_record)
             reloaded = self.class.find_record(record.class, record.id)
-            return if reloaded.nil? || self.class.new(reloaded, name).read != read
+            return if reloaded.nil? || self.class.new(reloaded, name).get != get
           end
           super
         end

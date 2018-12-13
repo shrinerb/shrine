@@ -73,11 +73,13 @@ describe Shrine::Plugins::Backgrounding do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @attacher.class.class_eval do
         def swap(*)
-          record.this.delete
+          Fiber.yield
           super
         end
       end
       @user.update(avatar: fakeio)
+      @attacher.instance_variable_get("@f").resume
+      @user.this.delete
       @attacher.instance_variable_get("@f").resume
     end
 
@@ -90,17 +92,39 @@ describe Shrine::Plugins::Backgrounding do
       assert @user.reload.avatar.nil?
     end
 
-    it "aborts promoting if attachment has changed during" do
+    it "aborts promoting if attachment has changed" do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @attacher.class.class_eval do
         def swap(*)
-          record.this.update(avatar_data: nil)
+          Fiber.yield
           super
         end
       end
       @user.update(avatar: fakeio)
+      @attacher.instance_variable_get("@f").resume
+      @user.this.update(avatar_data: nil)
       refute @attacher.instance_variable_get("@f").resume
       assert @user.reload.avatar.nil?
+    end
+
+    it "doesn't abort promoting if metadata has changed" do
+      # imitate how a JSON column would behave
+      @attacher.class.class_eval {
+        def write(value); super; @value = JSON.parse(value) rescue nil; end
+        def read; @value ||= JSON.parse(super) rescue nil; end
+      }
+      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
+      @attacher.class.class_eval do
+        def swap(*)
+          Fiber.yield(record)
+          super
+        end
+      end
+      @user.update(avatar: fakeio)
+      user = @attacher.instance_variable_get("@f").resume
+      user.avatar.metadata["foo"] = "bar"
+      assert @attacher.instance_variable_get("@f").resume
+      assert_equal "store", @user.class[@user.id].avatar.storage_key
     end
 
     it "doesn't return the record if promoting aborted" do

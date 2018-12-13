@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't abort promotion in `backgrounding` plugin when original metadata was updated (@janko-m)
+
 * Don't mutate the `UploadedFile` data hash in `refresh_metadata` plugin (@janko-m)
 
 * Deprecate `Storage::S3#download` (@janko-m)
