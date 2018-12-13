@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't mutate the `UploadedFile` data hash in `refresh_metadata` plugin (@janko-m)
+
 * Deprecate `Storage::S3#download` (@janko-m)
 
 * Stop using `Storage#download` in `UploadedFile#download` for peformance (@janko-m)

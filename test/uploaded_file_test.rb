@@ -5,11 +5,12 @@ require "set"
 describe Shrine::UploadedFile do
   before do
     @uploader = uploader(:store)
+    @shrine = @uploader.class
   end
 
   def uploaded_file(data = {})
     data = {"id" => "foo", "storage" => "store", "metadata" => {}}.merge(data)
-    @uploader.class::UploadedFile.new(data)
+    @shrine::UploadedFile.new(data)
   end
 
   it "is an IO" do

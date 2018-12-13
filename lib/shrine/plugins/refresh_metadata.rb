@@ -21,7 +21,8 @@ class Shrine
       module FileMethods
         def refresh_metadata!(context = {})
           refreshed_metadata = open { uploader.extract_metadata(self, context) }
-          metadata.merge!(refreshed_metadata)
+
+          @data = @data.merge("metadata" => metadata.merge(refreshed_metadata))
         end
       end
     end

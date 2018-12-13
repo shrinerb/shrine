@@ -4,6 +4,7 @@ require "shrine/plugins/refresh_metadata"
 describe Shrine::Plugins::RefreshMetadata do
   before do
     @uploader = uploader { plugin :refresh_metadata }
+    @shrine = @uploader.class
   end
 
   it "re-extracts metadata" do
@@ -24,17 +25,26 @@ describe Shrine::Plugins::RefreshMetadata do
 
   it "forwards a Shrine::UploadedFile" do
     uploaded_file = @uploader.upload(fakeio)
-    @uploader.class.plugin :add_metadata
-    @uploader.class.add_metadata(:uploaded_file) { |io| io.is_a?(Shrine::UploadedFile) }
+    @shrine.plugin :add_metadata
+    @shrine.add_metadata(:uploaded_file) { |io| io.is_a?(Shrine::UploadedFile) }
     uploaded_file.refresh_metadata!
     assert_equal true, uploaded_file.metadata["uploaded_file"]
   end
 
   it "accepts additional context and forwards it" do
     uploaded_file = @uploader.upload(fakeio)
-    @uploader.class.plugin :add_metadata
-    @uploader.class.add_metadata(:context) { |io, context| context }
+    @shrine.plugin :add_metadata
+    @shrine.add_metadata(:context) { |io, context| context }
     uploaded_file.refresh_metadata!(foo: "bar")
     assert_equal "bar", uploaded_file.metadata["context"][:foo]
+  end
+
+  it "doesn't mutate the data hash" do
+    uploaded_file = @uploader.upload(fakeio)
+    data = uploaded_file.data
+    data["metadata"] = {}
+    uploaded_file.refresh_metadata!
+    assert_empty data["metadata"]
+    refute_empty uploaded_file.data["metadata"]
   end
 end
