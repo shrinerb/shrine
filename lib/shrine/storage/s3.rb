@@ -316,7 +316,6 @@ class Shrine
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
         Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
-        resource = Aws::S3::Resource.new(**s3_options)
 
         if multipart_threshold.is_a?(Integer)
           Shrine.deprecation("Accepting the :multipart_threshold S3 option as an integer is deprecated, use a hash with :upload and :copy keys instead, e.g. {upload: 15*1024*1024, copy: 150*1024*1024}")
