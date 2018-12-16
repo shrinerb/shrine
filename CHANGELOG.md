@@ -1,5 +1,7 @@
 ## HEAD
 
+* Make `FileSystem#clear!` work correctly when the storage directory is a symlink (@janko-m)
+
 * Don't abort promotion in `backgrounding` plugin when original metadata was updated (@janko-m)
 
 * Don't mutate the `UploadedFile` data hash in `refresh_metadata` plugin (@janko-m)

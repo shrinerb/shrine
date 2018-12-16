@@ -188,16 +188,15 @@ class Shrine
       # time.
       def clear!(older_than: nil)
         if older_than
-          directory.find do |path|
+          # add trailing slash to make it work with symlinks
+          Pathname("#{directory}/").find do |path|
             if path.file? && path.mtime < older_than
               path.delete
               clean(path) if clean?
             end
           end
         else
-          directory.rmtree
-          directory.mkpath
-          directory.chmod(directory_permissions) if directory_permissions
+          directory.children.each(&:rmtree)
         end
       end
 

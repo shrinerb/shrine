@@ -15,6 +15,10 @@ describe Shrine::Storage::FileSystem do
     File.join(Dir.tmpdir, "shrine")
   end
 
+  def root_symlink
+    File.join(Dir.tmpdir, "shrine-symlink")
+  end
+
   before do
     @storage = file_system(root)
     @shrine = Class.new(Shrine)
@@ -22,10 +26,13 @@ describe Shrine::Storage::FileSystem do
       file_system: Shrine::Storage::FileSystem.new(root),
       memory:      Shrine::Storage::Memory.new,
     }
+
+    File.symlink(root, root_symlink)
   end
 
   after do
-    FileUtils.rm_rf(root)
+    Pathname(root).rmtree if Pathname(root).directory?
+    Pathname(root_symlink).delete if Pathname(root_symlink).symlink?
   end
 
   it "passes the linter" do
@@ -35,7 +42,7 @@ describe Shrine::Storage::FileSystem do
 
   describe "#initialize" do
     before do
-      FileUtils.rmdir(root)
+      Pathname(root).rmtree
     end
 
     it "expands the directory" do
@@ -229,37 +236,65 @@ describe Shrine::Storage::FileSystem do
   end
 
   describe "#clear!" do
-    it "can purge the whole directory" do
-      @storage = file_system(root)
-      @storage.clear!
-      assert File.directory?(root)
+    describe "without arguments" do
+      it "purges the whole directory" do
+        @storage.upload(fakeio, "foo")
+        @storage.upload(fakeio, "bar/baz")
+        @storage.clear!
+        refute @storage.directory.join("foo").exist?
+        refute @storage.directory.join("bar").exist?
+        assert @storage.directory.directory?
+      end
+
+      it "works with symlinks" do
+        @storage = file_system(root_symlink)
+        @storage.upload(StringIO.new, "foo")
+        @storage.upload(StringIO.new, "bar/baz")
+        @storage.clear!
+        refute @storage.directory.join("foo").exist?
+        refute @storage.directory.join("bar").exist?
+        assert @storage.directory.directory?
+        assert File.symlink?(root_symlink)
+      end
     end
 
-    it "reestablishes directory permissions" do
-      @storage = file_system(root, directory_permissions: 0777)
-      @storage.clear!
-      assert_permissions 0777, root
-    end
+    describe "with :older_than" do
+      it "deletes files and directories older than specified time" do
+        time = Time.utc(2017, 3, 29)
 
-    it "can delete files and directories older than some date" do
-      time = Time.utc(2017, 3, 29)
+        @storage.upload(fakeio, "foo")
+        @storage.upload(fakeio, "dir/bar")
+        @storage.upload(fakeio, "dir/baz")
+        @storage.upload(fakeio, "dir/dir/quux")
 
-      @storage.upload(fakeio, "foo")
-      @storage.upload(fakeio, "dir/bar")
-      @storage.upload(fakeio, "dir/baz")
-      @storage.upload(fakeio, "dir/dir/quux")
+        File.utime(time,     time,     @storage.directory.join("dir/bar"))
+        File.utime(time - 1, time - 1, @storage.directory.join("foo"))
+        File.utime(time - 1, time - 1, @storage.directory.join("dir/baz"))
+        File.utime(time - 2, time - 2, @storage.directory.join("dir/dir/quux"))
 
-      File.utime(time,     time,     @storage.directory.join("dir/bar"))
-      File.utime(time - 1, time - 1, @storage.directory.join("foo"))
-      File.utime(time - 1, time - 1, @storage.directory.join("dir/baz"))
-      File.utime(time - 2, time - 2, @storage.directory.join("dir/dir/quux"))
+        @storage.clear!(older_than: time)
 
-      @storage.clear!(older_than: time)
+        refute @storage.directory.join("foo").exist?
+        assert @storage.directory.join("dir/bar").exist?
+        refute @storage.directory.join("dir/baz").exist?
+        refute @storage.directory.join("dir/dir").exist?
+        assert @storage.directory.directory?
+      end
 
-      refute File.exist?(@storage.directory.join("foo"))
-      assert File.exist?(@storage.directory.join("dir/bar"))
-      refute File.exist?(@storage.directory.join("dir/baz"))
-      refute File.exist?(@storage.directory.join("dir/dir"))
+      it "works with symlinks" do
+        time = Time.utc(2017, 3, 29)
+
+        @storage = file_system(root_symlink)
+        @storage.upload(fakeio, "foo")
+
+        File.utime(time - 1, time - 1, @storage.directory.join("foo"))
+
+        @storage.clear!(older_than: time)
+
+        refute @storage.directory.join("foo").exist?
+        assert @storage.directory.directory?
+        assert File.symlink?(root_symlink)
+      end
     end
   end
 
