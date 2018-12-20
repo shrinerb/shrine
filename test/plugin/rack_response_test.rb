@@ -62,25 +62,25 @@ describe Shrine::Plugins::RackResponse do
   it "returns Content-Disposition filename from metadata" do
     uploaded_file = @uploader.upload(fakeio(filename: "plain.txt"))
     response = uploaded_file.to_rack_response
-    assert_equal "inline; filename=\"plain.txt\"", response[1]["Content-Disposition"]
+    assert_equal %(inline; filename="plain.txt"; filename*=UTF-8''plain.txt), response[1]["Content-Disposition"]
   end
 
   it "returns Content-Disposition filename from :filename" do
     uploaded_file = @uploader.upload(fakeio(filename: "plain.txt"))
-    response = uploaded_file.to_rack_response(filename: "custom-filename.txt")
-    assert_equal "inline; filename=\"custom-filename.txt\"", response[1]["Content-Disposition"]
+    response = uploaded_file.to_rack_response(filename: "custom.txt")
+    assert_equal %(inline; filename="custom.txt"; filename*=UTF-8''custom.txt), response[1]["Content-Disposition"]
   end
 
   it "returns Content-Disposition filename with id if metadata is missing" do
     uploaded_file = @uploader.upload(fakeio, location: "foo/bar/baz")
     response = uploaded_file.to_rack_response
-    assert_equal "inline; filename=\"baz\"", response[1]["Content-Disposition"]
+    assert_equal %(inline; filename="baz"; filename*=UTF-8''baz), response[1]["Content-Disposition"]
   end
 
   it "returns Content-Disposition disposition from :disposition" do
     uploaded_file = @uploader.upload(fakeio)
     response = uploaded_file.to_rack_response(disposition: "attachment")
-    assert_equal "attachment; filename=\"#{uploaded_file.id}\"", response[1]["Content-Disposition"]
+    assert_equal %(attachment; filename="#{uploaded_file.id}"; filename*=UTF-8''#{uploaded_file.id}), response[1]["Content-Disposition"]
   end
 
   it "returns body which yields contents of the file" do

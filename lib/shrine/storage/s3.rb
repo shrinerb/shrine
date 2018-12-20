@@ -17,6 +17,8 @@ rescue LoadError => exception
 end
 
 require "down/chunked_io"
+require "content_disposition"
+
 require "uri"
 require "cgi"
 require "tempfile"
@@ -351,7 +353,7 @@ class Shrine
 
         options = {}
         options[:content_type] = content_type if content_type
-        options[:content_disposition] = "inline; filename=\"#{filename}\"" if filename
+        options[:content_disposition] = ContentDisposition.inline(filename) if filename
         options[:acl] = "public-read" if public
 
         options.merge!(@upload_options)
@@ -609,7 +611,12 @@ class Shrine
       # should automatically URI-decode filenames when downloading.
       def encode_content_disposition(content_disposition)
         content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
-          CGI.escape(filename).gsub("+", " ")
+          if filename =~ /[^[:ascii:]]/
+            Shrine.deprecation("Shrine::Storage::S3 will not escape characters in the filename for Content-Disposition header in Shrine 3. Use the content_disposition gem, for example `ContentDisposition.format(disposition: 'inline', filename: '...')`.")
+            CGI.escape(filename).gsub("+", " ")
+          else
+            filename
+          end
         end
       end
 

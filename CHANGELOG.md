@@ -1,5 +1,9 @@
 ## HEAD
 
+* Deprecate automatic escaping of `:content_disposition` in `Shrine::Storage::S3` (@janko-m)
+
+* Use `content_disposition` gem in `Shrine::Storage::S3` and `rack_response` plugin (@janko-m)
+
 * Make `FileSystem#clear!` work correctly when the storage directory is a symlink (@janko-m)
 
 * Don't abort promotion in `backgrounding` plugin when original metadata was updated (@janko-m)

@@ -80,11 +80,14 @@ class Shrine
     #       type     = request.params["type"]
     #
     #       {
-    #         content_length_range: 0..(10*1024*1024),                 # limit filesize to 10MB
-    #         content_disposition: "inline; filename=\"#{filename}\"", # download with original filename
-    #         content_type:        type,                               # set correct content type
+    #         content_length_range: 0..(10*1024*1024),                  # limit filesize to 10MB
+    #         content_disposition: ContentDisposition.inline(filename), # download with original filename
+    #         content_type:        type,                                # set correct content type
     #       }
     #     end
+    #
+    # The example above uses the [content_disposition] gem to correctly format
+    # the `Content-Disposition` header value.
     #
     # The `:presign_options` can be a Proc or a Hash.
     #
@@ -117,6 +120,7 @@ class Shrine
     # [Amazon S3]: https://aws.amazon.com/s3/
     # [Google Cloud Storage]: https://cloud.google.com/storage/
     # [Microsoft Azure Storage]: https://azure.microsoft.com/en-us/services/storage/
+    # [content_disposition]: https://github.com/shrinerb/content_disposition
     module PresignEndpoint
       def self.configure(uploader, opts = {})
         uploader.opts[:presign_endpoint_presign_location] = opts.fetch(:presign_location, uploader.opts[:presign_endpoint_presign_location])

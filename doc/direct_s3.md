@@ -96,9 +96,9 @@ S3. It's recommended to use [Uppy] for client side uploads.
 The `presign_endpoint` plugin provides a Rack application that generates these
 upload parameters, which we can just mount in our application. We'll make our
 presign endpoint also use the additional `type` and `filename` query parameters
-to set `Content-Type` and `Content-Disposition` for the uploaded file, as well
-as limit the upload size to 10 MB (see [`Shrine::Storage::S3#presign`] for the
-list of available options).
+to set `Content-Type` header, `Content-Disposition` header (using the
+[content_disposition] gem), as well as limit the upload size to 10 MB (see
+[`Shrine::Storage::S3#presign`] for the list of available options).
 
 ```rb
 Shrine.plugin :presign_endpoint, presign_options: -> (request) {
@@ -107,9 +107,9 @@ Shrine.plugin :presign_endpoint, presign_options: -> (request) {
   type     = request.params["type"]
 
   {
-    content_disposition:    "inline; filename=\"#{filename}\"", # set download filename
-    content_type:           type,                               # set content type (required if using DigitalOcean Spaces)
-    content_length_range:   0..(10*1024*1024),                  # limit upload size to 10 MB
+    content_disposition:    ContentDisposition.inline(filename), # set download filename
+    content_type:           type,                                # set content type (required if using DigitalOcean Spaces)
+    content_length_range:   0..(10*1024*1024),                   # limit upload size to 10 MB
   }
 }
 ```
@@ -403,3 +403,4 @@ setup] guide.
 [Minio]: https://minio.io
 [minio setup]: https://shrinerb.com/rdoc/files/doc/testing_md.html#label-Minio
 [metadata direct uploads]: https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads
+[content_disposition]: https://github.com/shrinerb/content_disposition

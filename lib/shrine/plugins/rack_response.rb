@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rack"
+require "content_disposition"
 
 class Shrine
   module Plugins
@@ -131,7 +132,7 @@ class Shrine
           headers = {}
           headers["Content-Length"]      = length.to_s if length
           headers["Content-Type"]        = type
-          headers["Content-Disposition"] = "#{disposition}; filename=\"#{filename}\""
+          headers["Content-Disposition"] = ContentDisposition.format(disposition: disposition, filename: filename)
           headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{size}" if range
           headers["Accept-Ranges"]       = "bytes" unless range == false
 
