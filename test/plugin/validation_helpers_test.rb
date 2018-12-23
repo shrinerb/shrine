@@ -598,7 +598,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
   end
 
-  describe "#PRETTY_FILESIZE" do
+  describe "PRETTY_FILESIZE" do
     it "returns 0.0 B if size = 0" do
       assert_equal "0.0 B", Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE.call(0)
     end
@@ -620,5 +620,29 @@ describe Shrine::Plugins::ValidationHelpers do
         assert_equal "1023.0 #{unit}", Shrine::Plugins::ValidationHelpers::PRETTY_FILESIZE.call(size)
       end
     end
+  end
+
+  it "accepts :default_messages" do
+    @attacher.shrine_class.plugin :validation_helpers, default_messages: {
+      max_size: -> (max) { "is too big" }
+    }
+    @attacher.class.validate { validate_max_size 1 }
+    @attacher.assign(fakeio("file"))
+    assert_equal ["is too big"], @attacher.errors
+  end
+
+  it "merges default messages when loading the plugin again" do
+    @attacher.shrine_class.plugin :validation_helpers, default_messages: {
+      max_size: -> (max) { "is too big" }
+    }
+    @attacher.shrine_class.plugin :validation_helpers, default_messages: {
+      mime_type_inclusion: -> (list) { "is forbidden" }
+    }
+    @attacher.class.validate do
+      validate_max_size 1
+      validate_mime_type_inclusion %w[image/jpeg]
+    end
+    @attacher.assign(fakeio("file", content_type: "image/gif"))
+    assert_equal ["is too big", "is forbidden"], @attacher.errors
   end
 end

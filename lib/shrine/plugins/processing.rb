@@ -59,7 +59,7 @@ class Shrine
     # [image_processing]: https://github.com/janko-m/image_processing
     module Processing
       def self.configure(uploader)
-        uploader.opts[:processing] = {}
+        uploader.opts[:processing] ||= {}
       end
 
       module ClassMethods

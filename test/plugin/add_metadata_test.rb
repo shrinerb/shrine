@@ -102,4 +102,11 @@ describe Shrine::Plugins::AddMetadata do
       assert_nil uploaded_file.custom
     end
   end
+
+  it "doesn't overwrite existing definitions when loading the plugin" do
+    @shrine.add_metadata(:foo) { |io, context| "bar" }
+    @shrine.plugin :add_metadata
+    metadata = @uploader.extract_metadata(fakeio)
+    assert_equal "bar", metadata["foo"]
+  end
 end

@@ -1,5 +1,9 @@
 ## HEAD
 
+* Don't clear existing metadata definitions when loading `add_metadata` plugin (@janko-m)
+
+* Don't clear existing processing blocks when loading `processing` plugin (@janko-m)
+
 * Deprecate automatic escaping of `:content_disposition` in `Shrine::Storage::S3` (@janko-m)
 
 * Use `content_disposition` gem in `Shrine::Storage::S3` and `rack_response` plugin (@janko-m)

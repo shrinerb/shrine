@@ -46,4 +46,13 @@ describe Shrine::Plugins::MetadataAttributes do
     @attacher.assign(fakeio("file", content_type: "text/plain"))
     assert_equal 4, @attacher.record.avatar_size
   end
+
+  it "doesn't overwrite existing mappings when loading the plugin" do
+    @attacher.record.singleton_class.instance_eval { attr_accessor :avatar_size, :avatar_type }
+    @attacher.class.metadata_attributes size: :size
+    @attacher.shrine_class.plugin :metadata_attributes, mime_type: :type
+    @attacher.assign(fakeio("file", content_type: "text/plain"))
+    assert_equal 4,            @attacher.record.avatar_size
+    assert_equal "text/plain", @attacher.record.avatar_type
+  end
 end

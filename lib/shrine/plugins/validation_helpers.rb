@@ -40,7 +40,8 @@ class Shrine
     # For a complete list of all validation helpers, see AttacherMethods.
     module ValidationHelpers
       def self.configure(uploader, opts = {})
-        uploader.opts[:validation_default_messages] = (uploader.opts[:validation_default_messages] || {}).merge(opts[:default_messages] || {})
+        uploader.opts[:validation_default_messages] ||= {}
+        uploader.opts[:validation_default_messages].merge!(opts[:default_messages] || {})
       end
 
       DEFAULT_MESSAGES = {

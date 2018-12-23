@@ -84,7 +84,7 @@ class Shrine
     #     end
     module AddMetadata
       def self.configure(uploader)
-        uploader.opts[:metadata] = []
+        uploader.opts[:metadata] ||= []
       end
 
       module ClassMethods
