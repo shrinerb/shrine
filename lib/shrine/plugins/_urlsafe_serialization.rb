@@ -183,6 +183,6 @@ class Shrine
       end
     end
 
-    register_plugin(:urlsafe_serialization, UrlsafeSerialization)
+    register_plugin(:_urlsafe_serialization, UrlsafeSerialization)
   end
 end

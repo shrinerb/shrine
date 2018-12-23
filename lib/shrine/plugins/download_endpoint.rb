@@ -74,7 +74,7 @@ class Shrine
     module DownloadEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response
-        uploader.plugin :urlsafe_serialization
+        uploader.plugin :_urlsafe_serialization
       end
 
       # Accepts the following options:

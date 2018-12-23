@@ -1,9 +1,9 @@
 require "test_helper"
-require "shrine/plugins/urlsafe_serialization"
+require "shrine/plugins/_urlsafe_serialization"
 
 describe Shrine::Plugins::UrlsafeSerialization do
   before do
-    @uploader = uploader { plugin :urlsafe_serialization }
+    @uploader = uploader { plugin :_urlsafe_serialization }
     @uploaded_file = @uploader.upload(fakeio)
   end
 
@@ -106,7 +106,7 @@ describe Shrine::Plugins::UrlsafeSerialization do
 
   describe "with secret key" do
     before do
-      @uploader = uploader { plugin :urlsafe_serialization, secret_key: "secret_key" }
+      @uploader = uploader { plugin :_urlsafe_serialization, secret_key: "secret_key" }
       @shrine = @uploader.class
       @uploaded_file = @uploader.upload(fakeio)
     end
@@ -134,7 +134,7 @@ describe Shrine::Plugins::UrlsafeSerialization do
 
     it "generates different identifier for different secret key" do
       serialized_file1 = @uploaded_file.class.urlsafe_dump(@uploaded_file)
-      @shrine.plugin :urlsafe_serialization, secret_key: "different_key"
+      @shrine.plugin :_urlsafe_serialization, secret_key: "different_key"
       serialized_file2 = @uploaded_file.class.urlsafe_dump(@uploaded_file)
 
       refute_equal serialized_file1, serialized_file2
