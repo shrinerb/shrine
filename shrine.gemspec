@@ -27,7 +27,7 @@ direct uploads for fully asynchronous user experience.
   gem.require_path = "lib"
 
   gem.add_dependency "down", "~> 4.1"
-  gem.add_dependency "content_disposition", "~> 1.0"
+  gem.add_dependency "content_disposition", "~> 1.0" if RUBY_VERSION >= "2.3.0"
 
   gem.add_development_dependency "rake", ">= 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"

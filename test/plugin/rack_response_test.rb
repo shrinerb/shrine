@@ -9,6 +9,16 @@ describe Shrine::Plugins::RackResponse do
     @shrine = @uploader.class
   end
 
+  if RUBY_VERSION >= "2.3.0"
+    def content_disposition(disposition, filename)
+      ContentDisposition.format(disposition: disposition, filename: filename)
+    end
+  else
+    def content_disposition(disposition, filename)
+      "#{disposition}; \"#{filename}\""
+    end
+  end
+
   it "returns 200 status" do
     uploaded_file = @uploader.upload(fakeio("content"))
     response = uploaded_file.to_rack_response
@@ -62,25 +72,25 @@ describe Shrine::Plugins::RackResponse do
   it "returns Content-Disposition filename from metadata" do
     uploaded_file = @uploader.upload(fakeio(filename: "plain.txt"))
     response = uploaded_file.to_rack_response
-    assert_equal %(inline; filename="plain.txt"; filename*=UTF-8''plain.txt), response[1]["Content-Disposition"]
+    assert_equal content_disposition(:inline, "plain.txt"), response[1]["Content-Disposition"]
   end
 
   it "returns Content-Disposition filename from :filename" do
     uploaded_file = @uploader.upload(fakeio(filename: "plain.txt"))
     response = uploaded_file.to_rack_response(filename: "custom.txt")
-    assert_equal %(inline; filename="custom.txt"; filename*=UTF-8''custom.txt), response[1]["Content-Disposition"]
+    assert_equal content_disposition(:inline, "custom.txt"), response[1]["Content-Disposition"]
   end
 
   it "returns Content-Disposition filename with id if metadata is missing" do
     uploaded_file = @uploader.upload(fakeio, location: "foo/bar/baz")
     response = uploaded_file.to_rack_response
-    assert_equal %(inline; filename="baz"; filename*=UTF-8''baz), response[1]["Content-Disposition"]
+    assert_equal content_disposition(:inline, "baz"), response[1]["Content-Disposition"]
   end
 
   it "returns Content-Disposition disposition from :disposition" do
     uploaded_file = @uploader.upload(fakeio)
     response = uploaded_file.to_rack_response(disposition: "attachment")
-    assert_equal %(attachment; filename="#{uploaded_file.id}"; filename*=UTF-8''#{uploaded_file.id}), response[1]["Content-Disposition"]
+    assert_equal content_disposition(:attachment, uploaded_file.id), response[1]["Content-Disposition"]
   end
 
   it "returns body which yields contents of the file" do

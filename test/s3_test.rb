@@ -24,6 +24,16 @@ describe Shrine::Storage::S3 do
     @uploader = @shrine.new(:s3)
   end
 
+  if RUBY_VERSION >= "2.3.0"
+    def content_disposition(disposition, filename)
+      ContentDisposition.format(disposition: disposition, filename: filename)
+    end
+  else
+    def content_disposition(disposition, filename)
+      "#{disposition}; \"#{filename}\""
+    end
+  end
+
   describe "#initialize" do
     it "raises an appropriate error when :bucket is nil" do
       error = assert_raises(ArgumentError) { s3(bucket: nil) }
@@ -355,7 +365,7 @@ describe Shrine::Storage::S3 do
 
     it "forwards filename metadata" do
       @s3.upload(fakeio, "foo", shrine_metadata: { "filename" => "file.txt" })
-      assert_equal %(inline; filename="file.txt"; filename*=UTF-8''file.txt), @s3.client.api_requests[0][:params][:content_disposition]
+      assert_equal content_disposition(:inline, "file.txt"), @s3.client.api_requests[0][:params][:content_disposition]
     end
 
     deprecated "accepts :content_disposition with non-ASCII characters, quotes, and spaces" do

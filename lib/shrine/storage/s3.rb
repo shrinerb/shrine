@@ -17,7 +17,7 @@ rescue LoadError => exception
 end
 
 require "down/chunked_io"
-require "content_disposition"
+require "content_disposition" if RUBY_VERSION >= "2.3.0"
 
 require "uri"
 require "cgi"
@@ -353,7 +353,7 @@ class Shrine
 
         options = {}
         options[:content_type] = content_type if content_type
-        options[:content_disposition] = ContentDisposition.inline(filename) if filename
+        options[:content_disposition] = content_disposition(:inline, filename) if filename
         options[:acl] = "public-read" if public
 
         options.merge!(@upload_options)
@@ -603,6 +603,16 @@ class Shrine
         objects.each_slice(1000) do |objects_batch|
           delete_params = { objects: objects_batch.map { |object| { key: object.key } } }
           bucket.delete_objects(delete: delete_params)
+        end
+      end
+
+      if RUBY_VERSION >= "2.3.0"
+        def content_disposition(disposition, filename)
+          ContentDisposition.format(disposition: disposition, filename: filename)
+        end
+      else
+        def content_disposition(disposition, filename)
+          "inline; filename=\"#{filename}\""
         end
       end
 
