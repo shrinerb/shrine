@@ -1,5 +1,7 @@
 ## HEAD
 
+* Fix `backgrounding` not working when default storage was changed with `Attachment.new` (@janko-m)
+
 * Don't clear existing metadata definitions when loading `add_metadata` plugin (@janko-m)
 
 * Don't clear existing processing blocks when loading `processing` plugin (@janko-m)
