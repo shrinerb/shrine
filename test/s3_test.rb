@@ -30,7 +30,7 @@ describe Shrine::Storage::S3 do
     end
   else
     def content_disposition(disposition, filename)
-      "#{disposition}; \"#{filename}\""
+      "#{disposition}; filename=\"#{filename}\""
     end
   end
 
