@@ -33,7 +33,7 @@ class Shrine
     size:   [],
     close:  [],
   }
-  deprecate_constant(:IO_METHODS) if RUBY_VERSION > "2.3"
+  deprecate_constant(:IO_METHODS)
 
   @opts = {}
   @storages = {}

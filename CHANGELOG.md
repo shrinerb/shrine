@@ -1,5 +1,7 @@
 ## HEAD
 
+* Drop support for MRI 2.1 and 2.2 (@janko-m)
+
 * Fix `backgrounding` not working when default storage was changed with `Attachment.new` (@janko-m)
 
 * Don't clear existing metadata definitions when loading `add_metadata` plugin (@janko-m)

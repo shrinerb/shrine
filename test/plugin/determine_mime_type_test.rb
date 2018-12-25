@@ -136,7 +136,7 @@ describe Shrine::Plugins::DetermineMimeType do
     it "returns nil for empty IOs" do
       assert_nil @shrine.determine_mime_type(fakeio(""))
     end
-  end if RUBY_VERSION >= "2.2.0"
+  end
 
   describe ":mime_types analyzer" do
     before do

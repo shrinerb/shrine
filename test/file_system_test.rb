@@ -124,7 +124,7 @@ describe Shrine::Storage::FileSystem do
 
   describe "#movable?" do
     it "returns true for files and UploadedFiles from FileSystem" do
-      file                      = Tempfile.new("")
+      file                      = Tempfile.new
       file_system_uploaded_file = @shrine.new(:file_system).upload(fakeio)
       memory_uploaded_file      = @shrine.new(:memory).upload(fakeio)
       assert @storage.movable?(file, nil)
@@ -135,7 +135,7 @@ describe Shrine::Storage::FileSystem do
 
   describe "#move" do
     it "moves files and UploadedFiles" do
-      file          = Tempfile.new("")
+      file          = Tempfile.new
       uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
       @storage.move(file, "foo")
@@ -148,7 +148,7 @@ describe Shrine::Storage::FileSystem do
     end
 
     it "creates subdirectories" do
-      file          = Tempfile.new("")
+      file          = Tempfile.new
       uploaded_file = @shrine.new(:file_system).upload(fakeio)
 
       @storage.move(file, "a/a/a.jpg")
@@ -166,18 +166,18 @@ describe Shrine::Storage::FileSystem do
 
     it "sets file permissions" do
       @storage = file_system(root, permissions: 0600)
-      @storage.move(Tempfile.new(""), "bar.jpg")
+      @storage.move(Tempfile.new, "bar.jpg")
       assert_permissions 0600, @storage.open("bar.jpg").path
     end
 
     it "handles file permissions being nil" do
       @storage = file_system(root, permissions: nil)
-      @storage.move(Tempfile.new(""), "bar.jpg")
+      @storage.move(Tempfile.new, "bar.jpg")
     end
 
     it "sets directory permissions on intermediary directories" do
       @storage = file_system(root, directory_permissions: 0777)
-      @storage.move(Tempfile.new(""), "a/b/c/file.jpg")
+      @storage.move(Tempfile.new, "a/b/c/file.jpg")
       assert_permissions 0777, "#{root}/a"
       assert_permissions 0777, "#{root}/a/b"
       assert_permissions 0777, "#{root}/a/b/c"
@@ -185,7 +185,7 @@ describe Shrine::Storage::FileSystem do
 
     it "handles directory permissions being nil" do
       @storage = file_system(root, directory_permissions: nil)
-      @storage.move(Tempfile.new(""), "a/b/c/file.jpg")
+      @storage.move(Tempfile.new, "a/b/c/file.jpg")
     end
   end
 
@@ -336,7 +336,7 @@ describe Shrine::Storage::FileSystem do
     end
 
     deprecated "#download deletes the Tempfile if an error occurs while retrieving file contents" do
-      tempfile = Tempfile.new("")
+      tempfile = Tempfile.new
       Tempfile.stubs(:new).returns(tempfile)
       assert_raises(Errno::ENOENT) { @storage.download("foo") }
       assert tempfile.closed?

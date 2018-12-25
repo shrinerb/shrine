@@ -132,7 +132,7 @@ class Shrine
           @download_endpoint = endpoint_class
 
           const_set(:DownloadEndpoint, endpoint_class)
-          deprecate_constant(:DownloadEndpoint) if RUBY_VERSION > "2.3"
+          deprecate_constant(:DownloadEndpoint)
         end
       end
 

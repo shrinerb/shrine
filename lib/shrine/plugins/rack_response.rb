@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "rack"
-require "content_disposition" if RUBY_VERSION >= "2.3.0"
+require "content_disposition"
 
 class Shrine
   module Plugins
@@ -156,14 +156,8 @@ class Shrine
           ranges.first if ranges && ranges.one?
         end
 
-        if RUBY_VERSION >= "2.3.0"
-          def content_disposition(disposition:, filename:)
-            ContentDisposition.format(disposition: disposition, filename: filename)
-          end
-        else
-          def content_disposition(disposition:, filename:)
-            "#{disposition}; filename=\"#{filename}\""
-          end
+        def content_disposition(disposition:, filename:)
+          ContentDisposition.format(disposition: disposition, filename: filename)
         end
 
         # Read size from metadata, otherwise retrieve the size from the storage.

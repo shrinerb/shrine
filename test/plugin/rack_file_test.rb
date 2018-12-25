@@ -8,7 +8,7 @@ describe Shrine::Plugins::RackFile do
     @shrine    = @attacher.shrine_class
     @rack_hash = {
       name: "file",
-      tempfile: Tempfile.new(""),
+      tempfile: Tempfile.new,
       filename: "image.jpg",
       type: "image/jpeg",
       head: "...",

@@ -4,7 +4,7 @@ Gem::Specification.new do |gem|
   gem.name         = "shrine"
   gem.version      = Shrine.version
 
-  gem.required_ruby_version = ">= 2.1"
+  gem.required_ruby_version = ">= 2.3"
 
   gem.summary      = "Toolkit for file attachments in Ruby applications"
   gem.description  = <<-END
@@ -27,7 +27,7 @@ direct uploads for fully asynchronous user experience.
   gem.require_path = "lib"
 
   gem.add_dependency "down", "~> 4.1"
-  gem.add_dependency "content_disposition", "~> 1.0" if RUBY_VERSION >= "2.3.0"
+  gem.add_dependency "content_disposition", "~> 1.0"
 
   gem.add_development_dependency "rake", ">= 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"
@@ -37,11 +37,12 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "shrine-memory", ">= 0.2.2"
 
   gem.add_development_dependency "roda"
-  gem.add_development_dependency "rack", (RUBY_VERSION >= "2.2.2" ? "~> 2.0" : "~> 1.6")
+  gem.add_development_dependency "rack", "~> 2.0"
   gem.add_development_dependency "mimemagic", ">= 0.3.2"
-  gem.add_development_dependency "marcel" if RUBY_VERSION >= "2.2.0"
+  gem.add_development_dependency "marcel"
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "mini_mime", "~> 1.0"
+  gem.add_development_dependency "ruby-filemagic", "~> 0.7" unless RUBY_ENGINE == "jruby" || ENV["CI"]
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "mini_magick", "~> 4.0" unless ENV["CI"]
   gem.add_development_dependency "ruby-vips", "~> 2.0" unless ENV["CI"]
@@ -49,20 +50,10 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "aws-sdk-core", "~> 3.23"
   gem.add_development_dependency "http-form_data", "~> 2.0"
 
-  unless RUBY_ENGINE == "jruby" || ENV["CI"]
-    gem.add_development_dependency "ruby-filemagic", "~> 0.7"
-  end
-
   gem.add_development_dependency "sequel"
-
-  if RUBY_VERSION >= "2.2.2"
-    gem.add_development_dependency "activerecord", "~> 5.0"
-  else
-    gem.add_development_dependency "activerecord", "~> 4.2"
-  end
-
+  gem.add_development_dependency "activerecord", "~> 5.2.0"
   if RUBY_ENGINE == "jruby"
-    gem.add_development_dependency "activerecord-jdbcsqlite3-adapter", "51"
+    gem.add_development_dependency "activerecord-jdbcsqlite3-adapter", "~> 52.0"
   else
     gem.add_development_dependency "sqlite3"
   end

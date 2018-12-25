@@ -11,10 +11,7 @@ require "uri"
 
 describe Shrine::Storage::S3 do
   def s3(**options)
-    Shrine::Storage::S3.new({
-      bucket: "my-bucket",
-      stub_responses: true,
-    }.merge(options))
+    Shrine::Storage::S3.new(bucket: "my-bucket", stub_responses: true, **options)
   end
 
   before do
@@ -22,16 +19,6 @@ describe Shrine::Storage::S3 do
     @shrine = Class.new(Shrine)
     @shrine.storages = { s3: @s3 }
     @uploader = @shrine.new(:s3)
-  end
-
-  if RUBY_VERSION >= "2.3.0"
-    def content_disposition(disposition, filename)
-      ContentDisposition.format(disposition: disposition, filename: filename)
-    end
-  else
-    def content_disposition(disposition, filename)
-      "#{disposition}; filename=\"#{filename}\""
-    end
   end
 
   describe "#initialize" do
@@ -365,7 +352,7 @@ describe Shrine::Storage::S3 do
 
     it "forwards filename metadata" do
       @s3.upload(fakeio, "foo", shrine_metadata: { "filename" => "file.txt" })
-      assert_equal content_disposition(:inline, "file.txt"), @s3.client.api_requests[0][:params][:content_disposition]
+      assert_equal ContentDisposition.inline("file.txt"), @s3.client.api_requests[0][:params][:content_disposition]
     end
 
     deprecated "accepts :content_disposition with non-ASCII characters, quotes, and spaces" do
@@ -702,7 +689,7 @@ describe Shrine::Storage::S3 do
 
       deprecated "deletes the Tempfile if an error occurs while retrieving file contents" do
         @s3.client.stub_responses(:get_object, "NetworkingError")
-        tempfile = Tempfile.new("")
+        tempfile = Tempfile.new
         Tempfile.stubs(:new).returns(tempfile)
         assert_raises(Aws::S3::Errors::NetworkingError) { @s3.download("foo") }
         assert tempfile.closed?

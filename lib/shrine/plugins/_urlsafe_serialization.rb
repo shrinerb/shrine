@@ -121,14 +121,8 @@ class Shrine
           JSON.generate(data)
         end
 
-        if RUBY_VERSION >= "2.3"
-          def base64_encode(data)
-            Base64.urlsafe_encode64(data, padding: false)
-          end
-        else
-          def base64_encode(data)
-            Base64.urlsafe_encode64(data)
-          end
+        def base64_encode(data)
+          Base64.urlsafe_encode64(data, padding: false)
         end
 
         def base64_decode(data)

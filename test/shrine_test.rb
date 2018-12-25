@@ -126,7 +126,7 @@ describe Shrine do
     end
 
     it "yields Tempfile objects unchanged" do
-      tempfile = Tempfile.new("")
+      tempfile = Tempfile.new
       @shrine.with_file(tempfile) do |object|
         assert_equal tempfile, object
       end

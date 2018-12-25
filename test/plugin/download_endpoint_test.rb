@@ -7,16 +7,6 @@ describe Shrine::Plugins::DownloadEndpoint do
     Rack::TestApp.wrap(Rack::Lint.new(@uploader.class.download_endpoint))
   end
 
-  if RUBY_VERSION >= "2.3.0"
-    def content_disposition(disposition, filename)
-      ContentDisposition.format(disposition: disposition, filename: filename)
-    end
-  else
-    def content_disposition(disposition, filename)
-      "#{disposition}; filename=\"#{filename}\""
-    end
-  end
-
   before do
     @uploader = uploader { plugin :download_endpoint }
     @shrine = @uploader.class
@@ -31,14 +21,14 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal @uploaded_file.read, response.body_binary
     assert_equal @uploaded_file.size.to_s, response.headers["Content-Length"]
     assert_equal @uploaded_file.mime_type, response.headers["Content-Type"]
-    assert_equal content_disposition(:inline, @uploaded_file.original_filename), response.headers["Content-Disposition"]
+    assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
   end
 
   it "applies :disposition to response" do
     @uploader = uploader { plugin :download_endpoint, disposition: "attachment" }
     @uploaded_file = @uploader.upload(fakeio)
     response = app.get(@uploaded_file.download_url)
-    assert_equal content_disposition(:attachment, @uploaded_file.id), response.headers["Content-Disposition"]
+    assert_equal ContentDisposition.attachment(@uploaded_file.id), response.headers["Content-Disposition"]
   end
 
   it "returns Cache-Control" do
