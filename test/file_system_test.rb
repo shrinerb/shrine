@@ -31,8 +31,8 @@ describe Shrine::Storage::FileSystem do
   end
 
   after do
-    Pathname(root).rmtree if Pathname(root).directory?
-    Pathname(root_symlink).delete if Pathname(root_symlink).symlink?
+    File.delete(root_symlink) if File.symlink?(root_symlink)
+    FileUtils.rm_r(root) if File.directory?(root)
   end
 
   it "passes the linter" do
