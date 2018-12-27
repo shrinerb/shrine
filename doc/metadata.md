@@ -188,18 +188,10 @@ least partially) retrieving file content from the storage, which could
 potentially be expensive depending on the storage and the type of metadata
 being extracted.
 
-If you're just attaching files uploaded directly to local disk, there wouldn't
-be any additional performance penalty for extracting metadata. However, if
-you're attaching files uploaded directly to a cloud service like S3, retrieving
-file content for metadata extraction would require an HTTP download. If you're
-using just the `determine_mime_type` plugin, only a small portion of the file
-will be downloaded, so the performance impact might not be so big. But in other
-cases you might have to download the whole file.
-
 There are two ways of extracting metadata from directly uploaded files. If you
 want metadata to be automatically extracted on assignment (which is useful if
-you want to validate the extracted metadata or have it immediately available),
-you can load the `restore_cached_data` plugin:
+you want to validate the extracted metadata or have it immediately available
+for any other reason), you can load the `restore_cached_data` plugin:
 
 ```rb
 class ImageUploader < Shrine
@@ -249,12 +241,12 @@ class MyUploader < Shrine
 
   # this will be called in the background if using backgrounding plugin
   process(:store) do |io, context|
-    io.refresh_metadata!(context.merge(background: true))
+    io.refresh_metadata!(context)
     io
   end
 
   add_metadata do |io, context|
-    next unless context[:background]
+    next unless context[:action] == :store # this will be the case during promotion
 
     Shrine.with_file(io) do |file|
       # example of metadata extraction
