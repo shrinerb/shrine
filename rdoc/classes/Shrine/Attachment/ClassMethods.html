@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
 <head>
-<title>Shrine::Plugins::Base::FileClassMethods</title>
+<title>Shrine::Attachment::ClassMethods</title>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
-<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
   function popupCode(url) {
     window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
@@ -24,11 +24,11 @@
 <div class='class' id='wrapper'>
 <div class='header'>
 <h1 class='name'><span class='type'>module</span>
-Shrine::Plugins::Base::FileClassMethods
+Shrine::Attachment::ClassMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/attachment.rb">lib/shrine/attachment.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -56,8 +56,8 @@ Shrine::Plugins::Base::FileClassMethods
 </td>
 <td class='context-item-value'>[RW]</td>
 <td class='context-item-desc'>
-<p>Returns the <a href="../../../Shrine.html">Shrine</a> class that this file
-class is namespaced under.</p>
+<p>Returns the <a href="../../Shrine.html">Shrine</a> class that this
+attachment class is namespaced under.</p>
 </td>
 </tr>
 </table>
@@ -74,18 +74,17 @@ class is namespaced under.</p>
 </div>
 <div class='description'>
 
-<p>Since <a href="../../UploadedFile.html">UploadedFile</a> is anonymously
-subclassed when <a href="../../../Shrine.html">Shrine</a> is subclassed,
-and then assigned to a constant of the <a
-href="../../../Shrine.html">Shrine</a> subclass, make inspect reflect the
-likely name for the class.</p>
+<p>Since <a href="../Attachment.html">Attachment</a> is anonymously subclassed
+when <a href="../../Shrine.html">Shrine</a> is subclassed, and then
+assigned to a constant of the <a href="../../Shrine.html">Shrine</a>
+subclass, make inspect reflect the likely name for the class.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inspect-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inspect-source'><span class="ruby-comment"># File lib/shrine.rb, line 745</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>&#x000A;  <span class="ruby-node">&quot;#{shrine_class.inspect}::UploadedFile&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inspect-source'><span class="ruby-comment"># File lib/shrine/attachment.rb, line 18</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>&#x000A;  <span class="ruby-node">&quot;#{shrine_class.inspect}::Attachment&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

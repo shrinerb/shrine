@@ -30,7 +30,7 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-10-25 17:47:40 +0200</span>
+<span class='datetime'>2018-12-11 10:13:25 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -123,7 +123,7 @@ and some metadata: original filename, MIME type and filesize. The
 <code>Shrine::UploadedFile</code> object has handy methods which use this
 data:</p>
 
-<pre class="ruby"><span class="ruby-comment"># metadata methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">size</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-comment"># storage methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-comment"># ...</span></pre>
+<pre class="ruby"><span class="ruby-comment"># metadata methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">size</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-comment"># storage methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-comment"># ...</span></pre>
 
 <p>A <code>Shrine::UploadedFile</code> is itself an IO-like object
 (representing the remote file), so it can be passed to

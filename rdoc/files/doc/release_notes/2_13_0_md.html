@@ -30,7 +30,7 @@ doc/release_notes/2.13.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-04 20:58:39 +0100</span>
+<span class='datetime'>2018-12-02 16:15:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -116,6 +116,10 @@ multipart upload. This can make such uploads finish up to 2x  faster.</p>
 <p><code>Shrine::Storage::S3</code> now uses
 <code>Aws::S3::Object#upload_stream</code> if available  when uploading
 files of unknown size.</p>
+</li><li>
+<p>The <code>file</code> command could sometimes exit successfully, but return
+a <code>cannot   open: No such file or directory</code> on stdout. This is
+now detected and a  <code>Shrine::Error</code> is raised.</p>
 </li><li>
 <p>The <code>upload_endpoint</code> now returns <code>Upload Not Valid</code>
 error message when file  parameter was present but not in correct format

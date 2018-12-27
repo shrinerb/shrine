@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
 <head>
-<title>Shrine::Plugins::DownloadEndpoint::Serializer</title>
+<title>Shrine::Plugins::UrlsafeSerialization::Serializer</title>
 <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
 <link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
 <script type='text/javascript'>
@@ -24,11 +24,11 @@
 <div class='class' id='wrapper'>
 <div class='header'>
 <h1 class='name'><span class='type'>class</span>
-Shrine::Plugins::DownloadEndpoint::Serializer
+Shrine::Plugins::UrlsafeSerialization::Serializer
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/download_endpoint.rb">lib/shrine/plugins/download_endpoint.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/_urlsafe_serialization.rb">lib/shrine/plugins/_urlsafe_serialization.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 <div class='parent'>
@@ -66,7 +66,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dump-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-dump-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 272</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dump</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">base64_encode</span>(<span class="ruby-identifier">json_encode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-dump-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 110</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dump</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">base64_encode</span>(<span class="ruby-identifier">json_encode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-load'>
@@ -83,7 +83,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load-source'><span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb, line 276</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">json_decode</span>(<span class="ruby-identifier">base64_decode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 114</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">json_decode</span>(<span class="ruby-identifier">base64_decode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

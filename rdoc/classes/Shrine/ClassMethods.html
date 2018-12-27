@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::ClassMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::ClassMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-attachment">attachment</a></li>
+<li><a href="#method-i-deprecation">deprecation</a></li>
+<li><a href="#method-i-find_storage">find_storage</a></li>
+<li><a href="#method-i-inherited">inherited</a></li>
+<li><a href="#attribute-i-opts">opts</a></li>
+<li><a href="#method-i-plugin">plugin</a></li>
+<li><a href="#attribute-i-storages">storages</a></li>
+<li><a href="#method-i-uploaded_file">uploaded_file</a></li>
+<li><a href="#method-i-with_file">with_file</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='aliases-list'>
+<h2>Public Instance Aliases</h2>
+<div class='name-list'>
+<table summary='Public Instance Aliases'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>[]</td>
+<td>-&gt;</td>
+<td class='context-item-value'><a href="#method-i-attachment">attachment</a></td>
+</tr>
+</table>
+</div>
+</div>
+<div id='attribute-list'>
+<h2 class='section-bar'>Attributes</h2>
+<div class='name-list'>
+<table>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-opts'>opts</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'>
+<p>Generic options for this class, plugins store their options here.</p>
+</td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-storages'>storages</a>
+</td>
+<td class='context-item-value'>[RW]</td>
+<td class='context-item-desc'>
+<p>A hash of storages with their symbol identifiers.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-attachment'>
+<a name='method-i-attachment'></a>
+<div class='synopsis'>
+<span class='name'>attachment</span>
+<span class='arguments'>(name, *args)</span>
+
+</div>
+<div class='description'>
+
+<p>Generates an instance of <a href="Attachment.html">Shrine::Attachment</a>
+to be included in the model class. Example:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">attachment</span>(<span class="ruby-value">:image</span>) <span class="ruby-comment"># creates a Shrine::Attachment object</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attachment-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-attachment-source'><span class="ruby-comment"># File lib/shrine.rb, line 106</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attachment</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-deprecation'>
+<a name='method-i-deprecation'></a>
+<div class='synopsis'>
+<span class='name'>deprecation</span>
+<span class='arguments'>(message)</span>
+
+</div>
+<div class='description'>
+
+<p>Prints a deprecation warning to standard error.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-deprecation-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-deprecation-source'><span class="ruby-comment"># File lib/shrine.rb, line 151</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">deprecation</span>(<span class="ruby-identifier">message</span>)&#x000A;  <span class="ruby-identifier">warn</span> <span class="ruby-node">&quot;SHRINE DEPRECATION WARNING: #{message}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-find_storage'>
+<a name='method-i-find_storage'></a>
+<div class='synopsis'>
+<span class='name'>find_storage</span>
+<span class='arguments'>(name)</span>
+
+</div>
+<div class='description'>
+
+<p>Retrieves the storage under the given identifier (can be a Symbol or a
+String), and raises <a href="Error.html">Shrine::Error</a> if the storage
+is missing.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-find_storage-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-find_storage-source'><span class="ruby-comment"># File lib/shrine.rb, line 95</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">find_storage</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-identifier">storages</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-keyword">return</span> <span class="ruby-identifier">value</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">key</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_s</span> }&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;storage #{name.inspect} isn&#39;t registered on #{self}&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-inherited'>
+<a name='method-i-inherited'></a>
+<div class='synopsis'>
+<span class='name'>inherited</span>
+<span class='arguments'>(subclass)</span>
+
+</div>
+<div class='description'>
+
+<p>When inheriting <a href="../Shrine.html">Shrine</a>, copy the instance
+variables into the subclass, and create subclasses of core classes.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inherited-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-inherited-source'><span class="ruby-comment"># File lib/shrine.rb, line 50</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value">:@opts</span>, <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">dup</span>)&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Enumerable</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">value</span>.<span class="ruby-identifier">frozen?</span>&#x000A;      <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">dup</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value">:@storages</span>, <span class="ruby-identifier">storages</span>.<span class="ruby-identifier">dup</span>)&#x000A;&#x000A;  <span class="ruby-identifier">file_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;  <span class="ruby-identifier">file_class</span>.<span class="ruby-identifier">shrine_class</span> = <span class="ruby-identifier">subclass</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">const_set</span>(<span class="ruby-value">:UploadedFile</span>, <span class="ruby-identifier">file_class</span>)&#x000A;&#x000A;  <span class="ruby-identifier">attachment_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>)&#x000A;  <span class="ruby-identifier">attachment_class</span>.<span class="ruby-identifier">shrine_class</span> = <span class="ruby-identifier">subclass</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">const_set</span>(<span class="ruby-value">:Attachment</span>, <span class="ruby-identifier">attachment_class</span>)&#x000A;&#x000A;  <span class="ruby-identifier">attacher_class</span> = <span class="ruby-constant">Class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>)&#x000A;  <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">shrine_class</span> = <span class="ruby-identifier">subclass</span>&#x000A;  <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">const_set</span>(<span class="ruby-value">:Attacher</span>, <span class="ruby-identifier">attacher_class</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-plugin'>
+<a name='method-i-plugin'></a>
+<div class='synopsis'>
+<span class='name'>plugin</span>
+<span class='arguments'>(plugin, *args, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Load a new plugin into the current class. A plugin can be a module which is
+used directly, or a symbol representing a registered plugin which will be
+required and then loaded.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-constant">MyPlugin</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:my_plugin</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-plugin-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 78</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">plugin</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-identifier">plugin</span> = <span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">load_plugin</span>(<span class="ruby-identifier">plugin</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)&#x000A;  <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-keyword">self</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:load_dependencies</span>)&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">InstanceMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">InstanceMethods</span>)&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">ClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">ClassMethods</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">FileMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">FileMethods</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">FileClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">FileClassMethods</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentMethods</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentClassMethods</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">include</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherMethods</span>)&#x000A;  <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">extend</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherClassMethods</span>) <span class="ruby-keyword">if</span> <span class="ruby-keyword">defined?</span>(<span class="ruby-identifier">plugin</span><span class="ruby-operator">::</span><span class="ruby-constant">AttacherClassMethods</span>)&#x000A;  <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-keyword">self</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:configure</span>)&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-uploaded_file'>
+<a name='method-i-uploaded_file'></a>
+<div class='synopsis'>
+<span class='name'>uploaded_file</span>
+<span class='arguments'>(object, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Instantiates a <a href="UploadedFile.html">Shrine::UploadedFile</a> from a
+hash, and optionally yields the returned object.</p>
+
+<pre class="ruby"><span class="ruby-identifier">data</span> = {<span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-string">&quot;id&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;abc123.jpg&quot;</span>, <span class="ruby-string">&quot;metadata&quot;</span> <span class="ruby-operator">=&gt;</span> {}}&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">data</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-uploaded_file-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-uploaded_file-source'><span class="ruby-comment"># File lib/shrine.rb, line 116</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_file</span>(<span class="ruby-identifier">object</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">case</span> <span class="ruby-identifier">object</span>&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-constant">String</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">object</span>), <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-constant">Hash</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">object</span>), <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">when</span> <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>&#x000A;    <span class="ruby-identifier">object</span>.<span class="ruby-identifier">tap</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-keyword">yield</span>(<span class="ruby-identifier">f</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span> }&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;cannot convert #{object.inspect} to a #{self}::UploadedFile&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-with_file'>
+<a name='method-i-with_file'></a>
+<div class='synopsis'>
+<span class='name'>with_file</span>
+<span class='arguments'>(io)</span>
+
+</div>
+<div class='description'>
+
+<p>Temporarily converts an IO-like object into a file. If the input IO object
+is already a file, it simply yields it to the block, otherwise it copies IO
+content into a Tempfile object which is then yielded and afterwards
+deleted.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span> }</pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-with_file-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-with_file-source'><span class="ruby-comment"># File lib/shrine.rb, line 135</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">with_file</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:path</span>)&#x000A;    <span class="ruby-keyword">yield</span> <span class="ruby-identifier">io</span>&#x000A;  <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>)&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">tempfile</span><span class="ruby-operator">|</span> <span class="ruby-keyword">yield</span> <span class="ruby-identifier">tempfile</span> }&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">create</span>(<span class="ruby-string">&quot;shrine-file&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>)&#x000A;      <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;      <span class="ruby-keyword">yield</span> <span class="ruby-identifier">file</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

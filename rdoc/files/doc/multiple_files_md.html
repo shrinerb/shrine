@@ -30,7 +30,7 @@ doc/multiple_files.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-10-25 17:47:40 +0200</span>
+<span class='datetime'>2018-12-02 16:15:42 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -55,7 +55,7 @@ have multiple attachments through the associated records.</p>
 <p>To illustrate, this code will create an album with three photos using
 nested attributes:</p>
 
-<pre class="ruby"><span class="ruby-constant">Album</span>.<span class="ruby-identifier">create</span>(&#x000A;  <span class="ruby-value">title:</span> <span class="ruby-string">&quot;My Album&quot;</span>,&#x000A;  <span class="ruby-value">photos_attributes:</span> [&#x000A;    { <span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image1.jpg&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>) },&#x000A;    { <span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image2.jpg&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>) },&#x000A;    { <span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image3.jpg&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>) },&#x000A;  ]&#x000A;)</pre>
+<pre class="ruby"><span class="ruby-constant">Album</span>.<span class="ruby-identifier">create</span>(&#x000A;  <span class="ruby-value">title:</span> <span class="ruby-string">&quot;My Album&quot;</span>,&#x000A;  <span class="ruby-value">photos_attributes:</span> [&#x000A;    { <span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image1.jpg&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) },&#x000A;    { <span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image2.jpg&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) },&#x000A;    { <span class="ruby-value">image:</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;image3.jpg&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) },&#x000A;  ]&#x000A;)</pre>
 
 <p>This design gives you the greatest flexibility, allowing you to support:</p>
 <ul><li>

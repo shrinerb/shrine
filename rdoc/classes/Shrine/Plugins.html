@@ -28,7 +28,10 @@ Shrine::Plugins
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins.rb">lib/shrine/plugins.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+</li>
+<li class='other'>
+<a href="../../files/lib/shrine/plugins/_urlsafe_serialization_rb.html">lib/shrine/plugins/_urlsafe_serialization.rb</a>
 </li>
 <li class='other'>
 <a href="../../files/lib/shrine/plugins/activerecord_rb.html">lib/shrine/plugins/activerecord.rb</a>
@@ -160,6 +163,9 @@ Shrine::Plugins
 <a href="../../files/lib/shrine/plugins/store_dimensions_rb.html">lib/shrine/plugins/store_dimensions.rb</a>
 </li>
 <li class='other'>
+<a href="../../files/lib/shrine/plugins/tempfile_rb.html">lib/shrine/plugins/tempfile.rb</a>
+</li>
+<li class='other'>
 <a href="../../files/lib/shrine/plugins/upload_endpoint_rb.html">lib/shrine/plugins/upload_endpoint.rb</a>
 </li>
 <li class='other'>
@@ -199,7 +205,6 @@ stored. Also contains logic for registering and loading plugins.</p>
 <li><a href="Plugins/AddMetadata.html">Shrine::Plugins::AddMetadata</a></li>
 <li><a href="Plugins/Backgrounding.html">Shrine::Plugins::Backgrounding</a></li>
 <li><a href="Plugins/Backup.html">Shrine::Plugins::Backup</a></li>
-<li><a href="Plugins/Base.html">Shrine::Plugins::Base</a></li>
 <li><a href="Plugins/CachedAttachmentData.html">Shrine::Plugins::CachedAttachmentData</a></li>
 <li><a href="Plugins/Copy.html">Shrine::Plugins::Copy</a></li>
 <li><a href="Plugins/DataUri.html">Shrine::Plugins::DataUri</a></li>
@@ -238,8 +243,10 @@ stored. Also contains logic for registering and loading plugins.</p>
 <li><a href="Plugins/Sequel.html">Shrine::Plugins::Sequel</a></li>
 <li><a href="Plugins/Signature.html">Shrine::Plugins::Signature</a></li>
 <li><a href="Plugins/StoreDimensions.html">Shrine::Plugins::StoreDimensions</a></li>
+<li><a href="Plugins/Tempfile.html">Shrine::Plugins::Tempfile</a></li>
 <li><a href="Plugins/UploadEndpoint.html">Shrine::Plugins::UploadEndpoint</a></li>
 <li><a href="Plugins/UploadOptions.html">Shrine::Plugins::UploadOptions</a></li>
+<li><a href="Plugins/UrlsafeSerialization.html">Shrine::Plugins::UrlsafeSerialization</a></li>
 <li><a href="Plugins/ValidationHelpers.html">Shrine::Plugins::ValidationHelpers</a></li>
 <li><a href="Plugins/Versions.html">Shrine::Plugins::Versions</a></li>
 </ol>
@@ -266,7 +273,7 @@ register itself correctly.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 66</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine/plugins.rb, line 13</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-register_plugin'>
@@ -289,7 +296,7 @@ used by plugin files. Example:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-register_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine.rb, line 78</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine/plugins.rb, line 25</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -28,7 +28,7 @@ Shrine::Plugins::RefreshMetadata
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/refresh_metadata.rb">lib/shrine/plugins/refresh_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/refresh_metadata.rb">lib/shrine/plugins/refresh_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -40,15 +40,21 @@ from an uploaded file.</p>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span></pre>
 
-<p>It provides <code>UploadedFile#refresh_metadata!</code> method, which calls
-<code>Shrine#extract_metadata</code> with the uploaded file opened for
-reading, and updates the existing metadata hash with the results.</p>
+<p>It provides <code>UploadedFile#refresh_metadata!</code> method, which
+triggers metadata extraction (calls <code>Shrine#extract_metadata</code>)
+with the uploaded file opened for reading, and updates the existing
+metadata hash with the results.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">refresh_metadata!</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment"># re-extracted metadata</span></pre>
 
 <p>For remote storages this will make an HTTP request to open the file for
 reading, but only the portion of the file needed for extracting each
 metadata value will be downloaded.</p>
+
+<p>If the uploaded file is already open, it is passed to metadata extraction
+as is.</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">refresh_metadata!</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

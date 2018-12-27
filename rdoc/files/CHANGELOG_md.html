@@ -30,12 +30,116 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-04 20:30:11 +0100</span>
+<span class='datetime'>2018-12-27 17:34:20 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.14.0+-282018-12-27-29">2.14.0 (2018-12-27)<span><a href="#label-2.14.0+-282018-12-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>Add <code>tempfile</code> plugin for easier reusing of the same uploaded
+file copy on disk (@janko-m)</p>
+</li><li>
+<p>Don&#39;t re-open the uploaded file if it&#39;s already open in
+<code>refresh_metadata</code> plugin (@janko-m)</p>
+</li><li>
+<p>Drop support for MRI 2.1 and 2.2 (@janko-m)</p>
+</li><li>
+<p>Fix <code>backgrounding</code> not working when default storage was changed
+with <code>Attachment.new</code> (@janko-m)</p>
+</li><li>
+<p>Don&#39;t clear existing metadata definitions when loading
+<code>add_metadata</code> plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t clear existing processing blocks when loading
+<code>processing</code> plugin (@janko-m)</p>
+</li><li>
+<p>Deprecate automatic escaping of <code>:content_disposition</code> in
+<code>Shrine::Storage::S3</code> (@janko-m)</p>
+</li><li>
+<p>Use <code>content_disposition</code> gem in
+<code>Shrine::Storage::S3</code> and <code>rack_response</code> plugin
+(@janko-m)</p>
+</li><li>
+<p>Make <code>FileSystem#clear!</code> work correctly when the storage
+directory is a symlink (@janko-m)</p>
+</li><li>
+<p>Don&#39;t abort promotion in <code>backgrounding</code> plugin when
+original metadata was updated (@janko-m)</p>
+</li><li>
+<p>Don&#39;t mutate the <code>UploadedFile</code> data hash in
+<code>refresh_metadata</code> plugin (@janko-m)</p>
+</li><li>
+<p>Deprecate <code>Storage::S3#download</code> (@janko-m)</p>
+</li><li>
+<p>Stop using <code>Storage#download</code> in
+<code>UploadedFile#download</code> for peformance (@janko-m)</p>
+</li><li>
+<p>Remove <code>#download</code> from the <a
+href="../classes/Shrine.html">Shrine</a> storage specification (@janko-m)</p>
+</li><li>
+<p>Keep <code>context</code> argument in <code>#extract_metadata</code>
+optional after loading <code>add_metadata</code> plugin (@janko-m)</p>
+</li><li>
+<p>Include metadata key with <code>nil</code> value when <code>nil</code> is
+returned in <code>add_metadata</code> block (@janko-m)</p>
+</li><li>
+<p>Strip query params in upload location when re-uploading from
+<code>shrine-url</code> storage (@jrochkind)</p>
+</li><li>
+<p>Inline Base plugin into core classes, extract them to separate files
+(@printercu)</p>
+</li><li>
+<p>Make <code>rack_response</code> plugin work with
+<code>Rack::Sendfile</code> for <code>FileSystem</code> storage (@janko-m)</p>
+</li><li>
+<p>Add <code>:filename</code> and <code>:type</code> options to
+<code>rack_response</code> plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>:host</code> option to <code>UploadedFile#download_url</code> in
+<code>download_endpoint</code> plugin (@janko-m)</p>
+</li><li>
+<p>Add support for client-side encryption to S3 storage (@janko-m)</p>
+</li><li>
+<p>Don&#39;t look up the attachment class in each new model instance
+(@printercu)</p>
+</li><li>
+<p>Allow <code>Attacher#cached?</code> and <code>Attacher#stored?</code> to
+take an <code>UploadedFile</code> object (@jrochkind)</p>
+</li><li>
+<p>Allow assigning a filename to the <code>DataFile</code> object in
+<code>Shrine.data_uri</code> (@janko-m)</p>
+</li><li>
+<p>Don&#39;t strip media type parameters for the <code>DataFile</code> object
+in <code>data_uri</code> plugin (@janko-m)</p>
+</li><li>
+<p>Add <code>:content_type</code> analyzer to
+<code>Shrine.mime_type_analyzers</code> in <code>determine_mime_type</code>
+plugin (@janko-m)</p>
+</li><li>
+<p>Rename <code>:default</code> analyzer to <code>:content_type</code> in
+<code>determine_mime_type</code> plugin (@janko-m)</p>
+</li><li>
+<p>Don&#39;t display a warning when <code>determine_mime_type</code> plugin is
+loaded with <code>:default</code> analyzer (@janko-m)</p>
+</li><li>
+<p>Exclude media type parameters when copying <code>IO#content_type</code>
+into <code>mime_type</code> metadata (@janko-m)</p>
+</li><li>
+<p>Remove superfluous <code>#head_object</code> S3 API call in
+<code>S3#download</code> (@janko-m)</p>
+</li><li>
+<p>Make <code>S3#download</code> and <code>S3#open</code> work with server
+side encryption options (@janko-m)</p>
+</li><li>
+<p>Make previously extracted metadata available under <code>:metadata</code>
+in <code>add_metadata</code> plugin (@jrochkind)</p>
+</li><li>
+<p>Use a guard raise cause for <code>bucket</code> argument in S3 for an
+appropriate error message (@ardecvz)</p>
+</li></ul>
+
 <h2 id="label-2.13.0+-282018-11-04-29">2.13.0 (2018-11-04)<span><a href="#label-2.13.0+-282018-11-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Specify UTF-8 charset in <code>Content-Type</code> response header in
@@ -46,6 +150,9 @@ Last Update:
 </li><li>
 <p>Force UTF-8 encoding on filenames coming from Rack&#39;s multipart request
 params in <code>rack_file</code> plugin (@janko-m)</p>
+</li><li>
+<p>Raise <code>Shrine::Error</code> if <code>file</code> command returns error
+in stdout in <code>determine_mime_type</code> plugin (@janko-m)</p>
 </li><li>
 <p>Allow <code>:host</code> in <code>S3#url</code> to specify a host URL with
 an additional path prefix (@janko-m)</p>

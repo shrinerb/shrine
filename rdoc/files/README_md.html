@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-10-25 17:47:40 +0200</span>
+<span class='datetime'>2018-12-27 17:32:51 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -254,7 +254,7 @@ but it can still be attached when <code>rack_file</code> plugin is loaded.</p>
 
 <p>Here are some examples of IO objects that can be uploaded:</p>
 
-<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;/path/to/file&quot;</span>, <span class="ruby-string">&quot;rb&quot;</span>)             <span class="ruby-comment"># upload from disk</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;file content&quot;</span>)                 <span class="ruby-comment"># upload from memory</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">ActionDispatch</span><span class="ruby-operator">::</span><span class="ruby-constant">Http</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>       <span class="ruby-comment"># upload from Rails controller</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>({ <span class="ruby-value">tempfile:</span> <span class="ruby-constant">Tempfile</span>.<span class="ruby-identifier">new</span> }) <span class="ruby-comment"># upload from Rack controller</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>                 <span class="ruby-comment"># upload from rack-test</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;https://example.org/file&quot;</span>)        <span class="ruby-comment"># upload from internet</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;/path/to/file&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>) <span class="ruby-comment"># upload from disk</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;file content&quot;</span>)              <span class="ruby-comment"># upload from memory</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">ActionDispatch</span><span class="ruby-operator">::</span><span class="ruby-constant">Http</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>    <span class="ruby-comment"># upload from Rails controller</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>({ <span class="ruby-value">tempfile:</span> <span class="ruby-identifier">tempfile</span> })  <span class="ruby-comment"># upload from Rack controller</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>              <span class="ruby-comment"># upload from rack-test</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;https://example.org/file&quot;</span>)     <span class="ruby-comment"># upload from internet</span></pre>
 
 <p><code>Shrine::UploadedFile</code>, the object returned after upload, is
 itself an IO-like object as well. This makes it trivial to reupload a file
@@ -286,10 +286,10 @@ abstraction, which allows it to be uploaded again to other storages.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>   <span class="ruby-comment"># returns content of the uploaded file</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># returns true if the whole IO was read</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-comment"># rewinds the IO</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span>  <span class="ruby-comment"># closes the IO</span></pre>
 
-<p>If you want to retrieve the content of the uploaded file, you can use a
-combination of <code>#open</code> and <code>#read</code>:</p>
-
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:read</span>) <span class="ruby-comment">#=&gt; &quot;...&quot; (binary content of the uploaded file)</span></pre>
+<p>For more details on these <code>Shrine::UploadedFile</code> methods, see
+the <a
+href="https://shrinerb.com/rdoc/files/doc/retrieving_uploads_md.html">Retrieving
+Uploads</a> guide.</p>
 
 <h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -418,6 +418,17 @@ basic file metadata and saves them to the
 <code>#metadata</code> hash or via metadata methods:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;filename&quot; =&gt; &quot;matrix.mp4&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;video/mp4&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;size&quot; =&gt; 345993,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;matrix.mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">extension</span>         <span class="ruby-comment">#=&gt; &quot;mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;video/mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 345993</span></pre>
+
+<p>By default these values are determined from the following attributes on the
+IO object:</p>
+<ul><li>
+<p><code>filename</code> – <code>io.original_filename</code> or
+<code>io.path</code></p>
+</li><li>
+<p><code>mime_type</code> – <code>io.content_type</code></p>
+</li><li>
+<p><code>size</code> – <code>io.size</code></p>
+</li></ul>
 
 <h3 id="label-MIME+type">MIME type<span><a href="#label-MIME+type">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -629,9 +640,9 @@ parameters (provided that the underlying storage implements
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span></pre>
 
-<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/s3/params&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/s3/params&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>The above will add a <code>GET /presign</code> route to your app. You can
+<p>The above will add a <code>GET /s3/params</code> route to your app. You can
 now hook Uppy&#39;s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a>
 plugin to this endpoint and have it upload directly to S3. See <a
 href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>“>this
@@ -646,7 +657,7 @@ demo app which implements multiple uploads directly to S3.</p>
 <p>If you wanted to implement this enpdoint yourself, this is how it could
 roughly look like for S3 storage in Sinatra:</p>
 
-<pre class="ruby"><span class="ruby-identifier">get</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">storage</span>  = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>]&#x000A;  <span class="ruby-identifier">location</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span> <span class="ruby-operator">+</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>].<span class="ruby-identifier">to_s</span>)&#x000A;&#x000A;  <span class="ruby-identifier">presign_data</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">presign</span>(<span class="ruby-identifier">location</span>, <span class="ruby-value">content_type:</span> <span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;type&quot;</span>])&#x000A;&#x000A;  <span class="ruby-identifier">json</span> <span class="ruby-identifier">presign_data</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">get</span> <span class="ruby-string">&quot;/s3/params&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">storage</span>  = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>]&#x000A;  <span class="ruby-identifier">location</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">hex</span> <span class="ruby-operator">+</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>].<span class="ruby-identifier">to_s</span>)&#x000A;&#x000A;  <span class="ruby-identifier">presign_data</span> = <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">presign</span>(<span class="ruby-identifier">location</span>, <span class="ruby-value">content_type:</span> <span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;type&quot;</span>])&#x000A;&#x000A;  <span class="ruby-identifier">json</span> <span class="ruby-identifier">presign_data</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Resumable+direct+upload">Resumable direct upload<span><a href="#label-Resumable+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
 

@@ -28,7 +28,7 @@ Shrine::Plugins::RemoveAttachment::AttachmentMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/remove_attachment.rb">lib/shrine/plugins/remove_attachment.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/remove_attachment.rb">lib/shrine/plugins/remove_attachment.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -61,7 +61,7 @@ Shrine::Plugins::RemoveAttachment::AttachmentMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/remove_attachment.rb, line 17</span>&#x000A;        <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-operator">*</span>)&#x000A;          <span class="ruby-keyword">super</span>&#x000A;&#x000A;          <span class="ruby-identifier">module_eval</span> <span class="ruby-identifier">&lt;&lt;-RUBY</span>, <span class="ruby-keyword">__FILE__</span>, <span class="ruby-keyword">__LINE__</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>&#x000A;<span class="ruby-value">            def remove_#{@name}=(value)&#x000A;              #{@name}_attacher.remove = value&#x000A;            end&#x000A;&#x000A;            def remove_#{@name}&#x000A;              #{@name}_attacher.remove&#x000A;            end&#x000A;</span><span class="ruby-identifier">          RUBY</span>&#x000A;        <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/remove_attachment.rb, line 17</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-keyword">super</span>&#x000A;&#x000A;  <span class="ruby-identifier">name</span> = <span class="ruby-identifier">attachment_name</span>&#x000A;&#x000A;  <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;remove_#{name}=&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">remove</span> = <span class="ruby-identifier">value</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;remove_#{name}&quot;</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">remove</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -30,7 +30,7 @@ doc/direct_s3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-10-25 17:47:40 +0200</span>
+<span class='datetime'>2018-12-20 09:17:59 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -107,22 +107,24 @@ href="https://uppy.io">Uppy</a> for client side uploads.</p>
 generates these upload parameters, which we can just mount in our
 application. We&#39;ll make our presign endpoint also use the additional
 <code>type</code> and <code>filename</code> query parameters to set
-<code>Content-Type</code> and <code>Content-Disposition</code> for the
-uploaded file, as well as limit the upload size to 10 MB (see <a
+<code>Content-Type</code> header, <code>Content-Disposition</code> header
+(using the <a
+href="https://github.com/shrinerb/content_disposition">content_disposition</a>
+gem), as well as limit the upload size to 10 MB (see <a
 href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>
 for the list of available options).</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) {&#x000A;  <span class="ruby-identifier">filename</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>]&#x000A;  <span class="ruby-identifier">type</span>     = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;type&quot;</span>]&#x000A;&#x000A;  {&#x000A;    <span class="ruby-value">content_disposition:</span>    <span class="ruby-node">&quot;inline; filename=\&quot;#{filename}\&quot;&quot;</span>, <span class="ruby-comment"># set download filename</span>&#x000A;    <span class="ruby-value">content_type:</span>           <span class="ruby-identifier">type</span>,                               <span class="ruby-comment"># set content type (required if using DigitalOcean Spaces)</span>&#x000A;    <span class="ruby-value">content_length_range:</span>   <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>),                  <span class="ruby-comment"># limit upload size to 10 MB</span>&#x000A;  }&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span>, <span class="ruby-value">presign_options:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">request</span>) {&#x000A;  <span class="ruby-comment"># Uppy will send the &quot;filename&quot; and &quot;type&quot; query parameters</span>&#x000A;  <span class="ruby-identifier">filename</span> = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;filename&quot;</span>]&#x000A;  <span class="ruby-identifier">type</span>     = <span class="ruby-identifier">request</span>.<span class="ruby-identifier">params</span>[<span class="ruby-string">&quot;type&quot;</span>]&#x000A;&#x000A;  {&#x000A;    <span class="ruby-value">content_disposition:</span>    <span class="ruby-constant">ContentDisposition</span>.<span class="ruby-identifier">inline</span>(<span class="ruby-identifier">filename</span>), <span class="ruby-comment"># set download filename</span>&#x000A;    <span class="ruby-value">content_type:</span>           <span class="ruby-identifier">type</span>,                                <span class="ruby-comment"># set content type (required if using DigitalOcean Spaces)</span>&#x000A;    <span class="ruby-value">content_length_range:</span>   <span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-value">10</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>),                   <span class="ruby-comment"># limit upload size to 10 MB</span>&#x000A;  }&#x000A;}</pre>
 
-<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/presign&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/presign&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-comment"># config.ru (Rack)</span>&#x000A;<span class="ruby-identifier">map</span> <span class="ruby-string">&quot;/s3/params&quot;</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">run</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/s3/params&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>The above will create a <code>GET /presign</code> route, which internally
+<p>The above will create a <code>GET /s3/params</code> route, which internally
 calls <a
 href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign">Shrine::Storage::S3#presign</a>
 to return the HTTP verb (POST) and the S3 URL to which the file should be
 uploaded, along with the required POST parameters and request headers.</p>
 
-<pre class="ruby"><span class="ruby-comment"># GET /presign</span>&#x000A;{&#x000A;  <span class="ruby-value">&quot;method&quot;:</span> <span class="ruby-string">&quot;post&quot;</span>,&#x000A;  <span class="ruby-value">&quot;url&quot;:</span> <span class="ruby-string">&quot;https://my-bucket.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-value">&quot;fields&quot;:</span> {&#x000A;    <span class="ruby-value">&quot;key&quot;:</span> <span class="ruby-string">&quot;b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-value">&quot;policy&quot;:</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ...&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-credential&quot;:</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-algorithm&quot;:</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-date&quot;:</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-signature&quot;:</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  },&#x000A;  <span class="ruby-value">&quot;headers&quot;:</span> {}&#x000A;}</pre>
+<pre class="ruby"><span class="ruby-comment"># GET /s3/params</span>&#x000A;{&#x000A;  <span class="ruby-value">&quot;method&quot;:</span> <span class="ruby-string">&quot;post&quot;</span>,&#x000A;  <span class="ruby-value">&quot;url&quot;:</span> <span class="ruby-string">&quot;https://my-bucket.s3-eu-west-1.amazonaws.com&quot;</span>,&#x000A;  <span class="ruby-value">&quot;fields&quot;:</span> {&#x000A;    <span class="ruby-value">&quot;key&quot;:</span> <span class="ruby-string">&quot;b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8&quot;</span>,&#x000A;    <span class="ruby-value">&quot;policy&quot;:</span> <span class="ruby-string">&quot;eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ...&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-credential&quot;:</span> <span class="ruby-string">&quot;AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-algorithm&quot;:</span> <span class="ruby-string">&quot;AWS4-HMAC-SHA256&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-date&quot;:</span> <span class="ruby-string">&quot;20151024T001129Z&quot;</span>,&#x000A;    <span class="ruby-value">&quot;x-amz-signature&quot;:</span> <span class="ruby-string">&quot;c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4&quot;</span>&#x000A;  },&#x000A;  <span class="ruby-value">&quot;headers&quot;:</span> {}&#x000A;}</pre>
 
 <p>Uppy&#39;s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin would
 then make a request to this endpoint and use these parameters to upload the
@@ -149,6 +151,15 @@ as the <a
 href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a
 href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a>
 demo app for a complete example of multiple direct S3 uploads.</p>
+
+<p>Also, if you&#39;re dealing with larger files, you may want to make the
+uploads resumable by using the <a href="https://uppy.io/docs/aws-s3/">Aws
+S3 Multipart</a> Uppy plugin instead, with the <a
+href="https://github.com/janko-m/uppy-s3_multipart">uppy-s3_multipart</a>
+gem on the backend. Your back-end implementation is similar, just using
+<code>Shrine.uppy_s3_multipart</code> in place of
+<code>Shrine.presign_endpoint</code>. Instructions can be found in
+uppy-s3_multipart <a href="../README_md.html">README</a>.</p>
 
 <h2 id="label-Strategy+B+-28static-29">Strategy B (static)<span><a href="#label-Strategy+B+-28static-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>

@@ -28,7 +28,7 @@ Shrine::Plugins::AddMetadata
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/7fda88aed2b356ed78a7190bd9bcff8f951b238a/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/add_metadata.rb">lib/shrine/plugins/add_metadata.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
 </li>
 </ol>
 </div>
@@ -64,6 +64,11 @@ using an analyzer which requires the source file to be on disk, you can use
 <code>Shrine.with_file</code> to ensure you have a file object.</p>
 
 <pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">with_file</span>(<span class="ruby-identifier">io</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span> <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>.<span class="ruby-identifier">path</span>) }&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>Any previously extracted metadata can be accessed via
+<code>context[:metadata]</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:foo</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">context</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-comment">#=&gt;</span>&#x000A;  <span class="ruby-comment"># {</span>&#x000A;  <span class="ruby-comment">#   &quot;size&quot;      =&gt; 239823,</span>&#x000A;  <span class="ruby-comment">#   &quot;filename&quot;  =&gt; &quot;nature.jpg&quot;,</span>&#x000A;  <span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;image/jpeg&quot;</span>&#x000A;  <span class="ruby-comment"># }</span>&#x000A;&#x000A;  <span class="ruby-string">&quot;foo&quot;</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:bar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">context</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-comment">#=&gt;</span>&#x000A;  <span class="ruby-comment"># {</span>&#x000A;  <span class="ruby-comment">#   &quot;size&quot;      =&gt; 239823,</span>&#x000A;  <span class="ruby-comment">#   &quot;filename&quot;  =&gt; &quot;nature.jpg&quot;,</span>&#x000A;  <span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;image/jpeg&quot;,</span>&#x000A;  <span class="ruby-comment">#   &quot;foo&quot;       =&gt; &quot;foo&quot;</span>&#x000A;  <span class="ruby-comment"># }</span>&#x000A;&#x000A;  <span class="ruby-string">&quot;bar&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -98,7 +103,7 @@ using an analyzer which requires the source file to be on disk, you can use
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 60</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] = []&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb, line 86</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-operator">||=</span> []&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -30,7 +30,7 @@ doc/creating_storages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-10-25 17:47:40 +0200</span>
+<span class='datetime'>2018-12-11 10:13:25 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -113,21 +113,6 @@ order of magnitude less memory when reading the response body compared to
 be opened, <code>Shrine::UploadedFile#open</code> and
 <code>Shrine::UploadedFile#download</code> will forward any given options
 to <code>#open</code>.</p>
-
-<h2 id="label-Download">Download<span><a href="#label-Download">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p><code>Shrine::UploadedFile#download</code> by default uses the
-<code>#open</code> storage method to stream file content to a Tempfile.
-However, if you would like to use your own custom way of downloading to a
-file, you can define <code>#download</code> on the storage and
-<code>Shrine::UploadedFile#download</code> will automatically call that
-instead.</p>
-
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-comment"># download the uploaded file to a Tempfile</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The storage can support additional options to customize how the file will
-be downloaded, <code>Shrine::UploadedFile#download</code> will forward any
-given options to <code>#download</code>.</p>
 
 <h2 id="label-Url">Url<span><a href="#label-Url">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
