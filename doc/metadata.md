@@ -269,6 +269,26 @@ class MyUploader < Shrine
 end
 ```
 
+If you want to do both metadata extraction and file processing during
+promotion, you can wrap both in an `UploadedFile#open` block to make
+sure the file content is retrieved from the storage only once.
+
+```rb
+class MyUploader < Shrine
+  plugin :refresh_metadata
+  plugin :processing
+
+  process(:store) do |io, context|
+    io.open do |io, context|
+      io.refresh_metadata!(context)
+
+      original = io.download # reuses already open uploaded file
+      # ... processing ...
+    end
+  end
+end
+```
+
 [`file`]: http://linux.die.net/man/1/file
 [MimeMagic]: https://github.com/minad/mimemagic
 [Marcel]: https://github.com/basecamp/marcel

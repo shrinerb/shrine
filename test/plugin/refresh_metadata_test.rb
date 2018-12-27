@@ -39,6 +39,16 @@ describe Shrine::Plugins::RefreshMetadata do
     assert_equal "bar", uploaded_file.metadata["context"][:foo]
   end
 
+  it "doesn't re-open an already open uploaded file" do
+    uploaded_file = @uploader.upload(fakeio("content"))
+    uploaded_file.metadata.delete("size")
+    uploaded_file.open do
+      uploaded_file.storage.expects(:open).never
+      uploaded_file.refresh_metadata!
+    end
+    assert_equal 7, uploaded_file.metadata["size"]
+  end
+
   it "doesn't mutate the data hash" do
     uploaded_file = @uploader.upload(fakeio)
     data = uploaded_file.data

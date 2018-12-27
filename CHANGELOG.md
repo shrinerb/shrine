@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't re-open the uploaded file if it's already open in `refresh_metadata` plugin (@janko-m)
+
 * Drop support for MRI 2.1 and 2.2 (@janko-m)
 
 * Fix `backgrounding` not working when default storage was changed with `Attachment.new` (@janko-m)
