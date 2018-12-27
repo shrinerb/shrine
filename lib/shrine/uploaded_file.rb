@@ -164,14 +164,14 @@ class Shrine
 
       # Part of complying to the IO interface. It delegates to the internally
       # opened IO object.
-      def close
-        io.close if @io
+      def rewind
+        io.rewind
       end
 
       # Part of complying to the IO interface. It delegates to the internally
       # opened IO object.
-      def rewind
-        io.rewind
+      def close
+        @io.close if @io
       end
 
       # Calls `#url` on the storage, forwarding any given URL options.

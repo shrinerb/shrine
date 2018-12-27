@@ -205,12 +205,22 @@ describe Shrine::UploadedFile do
     end
   end
 
-  describe "#close" do
+  describe "#rewind" do
     it "delegates to underlying IO" do
       uploaded_file = @uploader.upload(fakeio("file"))
+      assert_equal "file", uploaded_file.read
+      uploaded_file.rewind
+      assert_equal "file", uploaded_file.read
+    end
+  end
+
+  describe "#close" do
+    it "closes the underlying IO object" do
+      uploaded_file = @uploader.upload(fakeio)
+      io = uploaded_file.to_io
       uploaded_file.read
       uploaded_file.close
-      assert_raises(IOError) { uploaded_file.read }
+      assert io.closed?
     end
 
     # Sometimes an uploaded file will be copied over instead of reuploaded (S3),
@@ -220,15 +230,6 @@ describe Shrine::UploadedFile do
       uploaded_file = @uploader.upload(fakeio)
       uploaded_file.storage.expects(:open).never
       uploaded_file.close
-    end
-  end
-
-  describe "#rewind" do
-    it "delegates to underlying IO" do
-      uploaded_file = @uploader.upload(fakeio("file"))
-      assert_equal "file", uploaded_file.read
-      uploaded_file.rewind
-      assert_equal "file", uploaded_file.read
     end
   end
 
