@@ -100,7 +100,7 @@ class Shrine
         begin
           yield @io
         ensure
-          @io.close
+          close
           @io = nil
         end
       end
@@ -142,7 +142,7 @@ class Shrine
       #     # or
       #     uploaded_file.stream("/path/to/destination")
       def stream(destination, *args)
-        if @io
+        if opened?
           IO.copy_stream(io, destination)
           io.rewind
         else
@@ -171,7 +171,12 @@ class Shrine
       # Part of complying to the IO interface. It delegates to the internally
       # opened IO object.
       def close
-        @io.close if @io
+        io.close if opened?
+      end
+
+      # Returns whether the file has already been opened.
+      def opened?
+        !!@io
       end
 
       # Calls `#url` on the storage, forwarding any given URL options.

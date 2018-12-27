@@ -281,6 +281,29 @@ class MyUploader < Shrine
 end
 ```
 
+If you're dealing with large files, it's recommended to also use the `tempfile`
+plugin to make sure the same copy of the uploaded file is used for metadata
+extraction (`Shrine.with_file`) and processing (`UploadedFile#tempfile`).
+
+```rb
+Shrine.plugin :tempfile # load it globally so that it overrides `Shrine.with_file`
+```
+```rb
+class MyUploader < Shrine
+  plugin :refresh_metadata
+  plugin :processing
+
+  process(:store) do |io, context|
+    io.open do |io, context|
+      io.refresh_metadata!(context)
+
+      original = io.tempfile # used the cached tempfile
+      # ... processing ...
+    end
+  end
+end
+```
+
 [`file`]: http://linux.die.net/man/1/file
 [MimeMagic]: https://github.com/minad/mimemagic
 [Marcel]: https://github.com/basecamp/marcel

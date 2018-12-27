@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `tempfile` plugin for easier reusing of the same uploaded file copy on disk (@janko-m)
+
 * Don't re-open the uploaded file if it's already open in `refresh_metadata` plugin (@janko-m)
 
 * Drop support for MRI 2.1 and 2.2 (@janko-m)

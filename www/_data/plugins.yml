@@ -186,6 +186,10 @@ Other:
     path: ModuleInclude.html
     description: Allows easy extending of core classes for a given uploader.
   -
+    name: tempfile
+    path: Tempfile.html
+    description: Makes it easier to reuse a single copy of an uploaded file on disk.
+  -
     name: upload_options
     path: UploadOptions.html
     description: Allows dynamically creating and forwarding storage-specific upload options.
