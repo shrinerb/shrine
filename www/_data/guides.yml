@@ -35,6 +35,9 @@
   name: Reprocessing Versions
   path: regenerating_versions_md.html
 -
+  name: Retrieving Uploads
+  path: retrieving_uploads_md.html
+-
   name: Securing Uploads
   path: securing_uploads_md.html
 -

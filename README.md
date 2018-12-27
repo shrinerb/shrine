@@ -285,12 +285,8 @@ uploaded_file.rewind # rewinds the IO
 uploaded_file.close  # closes the IO
 ```
 
-If you want to retrieve the content of the uploaded file, you can use a
-combination of `#open` and `#read`:
-
-```rb
-uploaded_file.open(&:read) #=> "..." (binary content of the uploaded file)
-```
+For more details on these `Shrine::UploadedFile` methods, see the [Retrieving
+Uploads] guide.
 
 ## Attachment
 
@@ -997,6 +993,7 @@ The gem is available as open source under the terms of the [MIT License].
 [external storages]: https://shrinerb.com/#external
 [creating storage]: https://shrinerb.com/rdoc/files/doc/creating_storages_md.html
 [creating plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
+[Retrieving Uploads]: https://shrinerb.com/rdoc/files/doc/retrieving_uploads_md.html
 [Using Attacher]: https://shrinerb.com/rdoc/files/doc/attacher_md.html
 [plugins]: https://shrinerb.com/#plugins
 [`file`]: http://linux.die.net/man/1/file
