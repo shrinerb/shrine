@@ -89,6 +89,9 @@
       -
         name: "Notes on study of shrine implementation"
         url: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
+      -
+        name: "GraphQL file upload with Shrine"
+        url: https://blog.stanko.io/graphql-file-upload-with-shrine-45fa26463c68
   -
     title: Videos
     items:
