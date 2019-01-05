@@ -38,7 +38,10 @@ class Shrine
       module ClassMethods
         def with_file(io)
           if io.is_a?(UploadedFile) && io.opened?
-            yield io.tempfile
+            # open a new file descriptor for thread safety
+            File.open(io.tempfile.path, binmode: true) do |file|
+              yield file
+            end
           else
             super
           end

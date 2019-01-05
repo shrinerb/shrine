@@ -62,19 +62,23 @@ describe Shrine::Plugins::Tempfile do
     end
   end
 
-  it "yields the tempfile in Shrine.with_file" do
+  it "yields an open tempfile reference in Shrine.with_file" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.open do
-      tempfile1 = nil
-      tempfile2 = nil
-      @shrine.with_file(uploaded_file) { |file| tempfile1 = file }
-      @shrine.with_file(uploaded_file) { |file| tempfile2 = file }
-      assert_equal tempfile1, tempfile2
+      file = @shrine.with_file(uploaded_file) do |file|
+        assert_equal uploaded_file.tempfile.path, file.path
+        refute_equal uploaded_file.tempfile.fileno, file.fileno
+        assert file.binmode?
+        refute file.closed?
+        file
+      end
+      assert file.closed?
     end
 
     # calls #download when uploaded file is not opened
-    tempfile1 = @shrine.with_file(uploaded_file) { |file| file }
-    tempfile2 = @shrine.with_file(uploaded_file) { |file| file }
-    refute_equal tempfile1, tempfile2
+    path1, path2 = nil
+    @shrine.with_file(uploaded_file) { |file| path1 = file.path }
+    @shrine.with_file(uploaded_file) { |file| path2 = file.path }
+    refute_equal path1, path2
   end
 end

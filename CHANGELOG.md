@@ -1,3 +1,7 @@
+## HEAD
+
+* Yield a new File object on `Shrine.with_file` when `tempfile` plugin is loaded (@janko-m)
+
 ## 2.14.0 (2018-12-27)
 
 * Add `tempfile` plugin for easier reusing of the same uploaded file copy on disk (@janko-m)
