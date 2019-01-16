@@ -216,7 +216,7 @@ class Shrine
 
           return nil if io.eof? # marcel returns "application/octet-stream" for empty files
 
-          Marcel::MimeType.for(io)
+          Marcel::MimeType.for(io, name: extract_filename(io))
         end
 
         def extract_with_mime_types(io)
