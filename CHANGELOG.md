@@ -1,5 +1,7 @@
 ## HEAD
 
+* Allow Marcel to fall back to the file extension in `determine_mime_type` plugin (@skarlcf)
+
 * Don't return cached app instance in `Shrine.download_endpoint` in `download_endpoint` plugin (@janko-m)
 
 * Yield a new File object on `Shrine.with_file` when `tempfile` plugin is loaded (@janko-m)
