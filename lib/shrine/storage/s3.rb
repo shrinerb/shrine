@@ -92,11 +92,11 @@ class Shrine
     # plugin
     #
     #     class MyUploader < Shrine
-    #       plugin :upload_options, store: ->(io, context) do
+    #       plugin :upload_options, store: -> (io, context) do
     #         if context[:version] == :thumb
-    #           {acl: "public-read"}
+    #           { acl: "public-read" }
     #         else
-    #           {acl: "private"}
+    #           { acl: "private" }
     #         end
     #       end
     #     end

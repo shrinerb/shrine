@@ -237,7 +237,7 @@ class Shrine
           if @rack_response
             @rack_response.call(object, request)
           else
-            [200, {"Content-Type" => CONTENT_TYPE_JSON}, [object.to_json]]
+            [200, { "Content-Type" => CONTENT_TYPE_JSON }, [object.to_json]]
           end
         end
 
@@ -251,7 +251,7 @@ class Shrine
 
         # Used for early returning an error response.
         def error!(status, message)
-          throw :halt, [status, {"Content-Type" => CONTENT_TYPE_TEXT}, [message]]
+          throw :halt, [status, { "Content-Type" => CONTENT_TYPE_TEXT }, [message]]
         end
 
         # Returns the uploader around the specified storage.
