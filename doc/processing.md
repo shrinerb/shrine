@@ -64,14 +64,18 @@ class ImageUploader < Shrine
   plugin :delete_raw
 
   process(:store) do |io, context|
-    original = io.download
+    optimized = Tempfile.new(["optimized", "#{io.extension}"], binmode: true)
 
-    image_optim    = ImageOptim.new
-    optimized_path = image_optim.optimize_image(original.path)
+    io.download do |original|
+      IO.copy_stream(original, optimized.path)
+      original.rewind
 
-    original.close!
+      image_optim = ImageOptim.new
+      image_optim.optimize_image!(optimized.path)
+      optimized.open # refresh file descriptor
+    end
 
-    File.open(optimized_path, binmode: true)
+    optimized
   end
 end
 ```
