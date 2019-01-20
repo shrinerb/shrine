@@ -4,7 +4,7 @@ require "roda"
 
 class Shrine
   module Plugins
-    # The `download_endpoint` plugin provides a Rack endpoint for downloading
+    # The `download_endpoint` plugin provides a Rack app for downloading
     # uploaded files from specified storages. This can be useful when files
     # from your storage isn't accessible over URL (e.g. database storages) or
     # if you want to authenticate your downloads. It requires the [Roda] gem.

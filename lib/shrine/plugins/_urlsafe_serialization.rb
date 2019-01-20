@@ -2,15 +2,15 @@
 
 require "base64"
 require "json"
-require "openssl"
 
 class Shrine
   module Plugins
     # The `urlsafe_serialization` plugin provides the ability to serialize and
     # deserialize a `Shrine::UploadedFile` in a way that's suitable for
-    # including in a URL.
+    # including in a URL. This is a private plugin used by the
+    # `download_endpoint` plugin.
     #
-    #     plugin :urlsafe_serialization
+    #     plugin :_urlsafe_serialization
     #
     # The plugin defines `urlsafe_dump` and `urlsafe_load` methods on
     # `Shrine::UploadedFile`. The file is first serialized to JSON, then
@@ -44,74 +44,63 @@ class Shrine
     #     uploaded_file = MyUploader::UploadedFile.urlsafe_load(serialized)
     #
     #     uploaded_file.metadata #=> { "size" => 4394, "mime_type" => "image/jpeg" }
-    #
-    # ## Signing
-    #
-    # By default the seralization is done with simple JSON + base64 encoding.
-    # If you want to ensure the serialized data hasn't been tampred with, you
-    # can have it signed with a secret key.
-    #
-    #     plugin :urlsafe_serialization, secret_key: "my secret key"
-    #
-    # Now the `urlsafe_dump` will automatically sign serialized data with your
-    # secret key, and `urlsafe_load` will automatically verify it.
-    #
-    #     serialized = MyUploader::UploadedFile.urlsafe_dump(uploaded_file)
-    #     serialized #=> "<signature>--<json-base64-encoded-data>"
-    #
-    #     uploaded_file = MyUploader::UploadedFile.urlsafe_load(serialized) # verifies the signature
-    #     uploaded_file #=> #<MyUploader::UploadedFile>
-    #
-    # If the signature is missing or invalid,
-    # `Shrine::Plugins::UrlsafeSerialization::InvalidSignature` exception is
-    # raised.
     module UrlsafeSerialization
-      class InvalidSignature < Error; end
+      module ClassMethods
+        def urlsafe_serialize(hash)
+          urlsafe_serializer.encode(hash)
+        end
 
-      def self.configure(uploader, opts = {})
-        uploader.opts[:urlsafe_serialization] ||= {}
-        uploader.opts[:urlsafe_serialization].merge!(opts)
+        def urlsafe_deserialize(string)
+          urlsafe_serializer.decode(string)
+        end
+
+        def urlsafe_serializer
+          Serializer.new
+        end
       end
 
       module FileMethods
         def urlsafe_dump(**options)
           self.class.urlsafe_dump(self, **options)
         end
+
+        def urlsafe_data(metadata: [])
+          data = self.data.dup
+
+          if metadata.any?
+            # order metadata in the specified order
+            data["metadata"] = metadata
+              .map { |name| [name, self.metadata[name]] }
+              .to_h
+          else
+            # save precious characters
+            data.delete("metadata")
+          end
+
+          data
+        end
       end
 
       module FileClassMethods
-        def urlsafe_dump(file, metadata: [])
-          data = file.data.dup
-          data["metadata"] = metadata
-            .map { |name| [name, file.metadata[name]] }
-            .to_h
+        def urlsafe_dump(file, **options)
+          data = file.urlsafe_data(**options)
 
-          urlsafe_serializer.dump(data)
+          shrine_class.urlsafe_serialize(data)
         end
 
         def urlsafe_load(string)
-          data = urlsafe_serializer.load(string)
+          data = shrine_class.urlsafe_deserialize(string)
 
           new(data)
-        end
-
-        def urlsafe_serializer
-          secret_key = shrine_class.opts[:urlsafe_serialization][:secret_key]
-
-          if secret_key
-            SecureSerializer.new(secret_key: secret_key)
-          else
-            Serializer.new
-          end
         end
       end
 
       class Serializer
-        def dump(data)
+        def encode(data)
           base64_encode(json_encode(data))
         end
 
-        def load(data)
+        def decode(data)
           json_decode(base64_decode(data))
         end
 
@@ -131,48 +120,6 @@ class Shrine
 
         def json_decode(data)
           JSON.parse(data)
-        end
-      end
-
-      class SecureSerializer < Serializer
-        attr_reader :secret_key
-
-        def initialize(secret_key:)
-          @secret_key = secret_key
-        end
-
-        def dump(data)
-          hmac_encode(super)
-        end
-
-        def load(data)
-          super(hmac_decode(data))
-        end
-
-        def hmac_encode(data)
-          "#{generate_hmac(data)}--#{data}"
-        end
-
-        def hmac_decode(data)
-          data, hmac = data.split("--", 2).reverse
-          verify_hmac(hmac, data)
-          data
-        end
-
-        def verify_hmac(provided_hmac, data)
-          if provided_hmac.nil?
-            raise InvalidSignature, "signature is missing"
-          end
-
-          expected_hmac = generate_hmac(data)
-
-          if provided_hmac != expected_hmac
-            raise InvalidSignature, "provided signature doesn't match the expected"
-          end
-        end
-
-        def generate_hmac(data)
-          OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, secret_key, data)
         end
       end
     end
