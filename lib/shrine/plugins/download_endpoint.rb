@@ -119,20 +119,25 @@ class Shrine
 
         # Returns the Rack application that retrieves requested files.
         def download_endpoint
-          @download_endpoint
+          new_download_endpoint(App)
         end
 
         # Assigns the subclassed endpoint as the `DownloadEndpoint` constant.
         def assign_download_endpoint(klass)
+          @download_endpoint = new_download_endpoint(klass)
+
+          const_set(:DownloadEndpoint, @download_endpoint)
+          deprecate_constant(:DownloadEndpoint)
+        end
+
+        private
+
+        def new_download_endpoint(klass)
           endpoint_class = Class.new(klass)
           endpoint_class.opts[:shrine_class] = self
           endpoint_class.opts[:disposition]  = opts[:download_endpoint_disposition]
           endpoint_class.opts[:redirect]     = opts[:download_endpoint_redirect]
-
-          @download_endpoint = endpoint_class
-
-          const_set(:DownloadEndpoint, endpoint_class)
-          deprecate_constant(:DownloadEndpoint)
+          endpoint_class
         end
       end
 

@@ -4,7 +4,7 @@ require "rack/test_app"
 
 describe Shrine::Plugins::DownloadEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(@uploader.class.download_endpoint))
+    Rack::TestApp.wrap(Rack::Lint.new(@shrine.download_endpoint))
   end
 
   before do
@@ -25,8 +25,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "applies :disposition to response" do
-    @uploader = uploader { plugin :download_endpoint, disposition: "attachment" }
-    @uploaded_file = @uploader.upload(fakeio)
+    @shrine.plugin :download_endpoint, disposition: "attachment"
     response = app.get(@uploaded_file.download_url)
     assert_equal ContentDisposition.attachment(@uploaded_file.id), response.headers["Content-Disposition"]
   end
@@ -37,16 +36,14 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "accepts :redirect with true" do
-    @uploader = uploader { plugin :download_endpoint, redirect: true }
-    @uploaded_file = @uploader.upload(fakeio)
+    @shrine.plugin :download_endpoint, redirect: true
     response = app.get(@uploaded_file.download_url)
     assert_equal 302, response.status
     assert_match %r{^memory://\w+$}, response.headers["Location"]
   end
 
   it "accepts :redirect with proc" do
-    @uploader = uploader { plugin :download_endpoint, redirect: -> (uploaded_file, request) { "/foo" } }
-    @uploaded_file = @uploader.upload(fakeio)
+    @shrine.plugin :download_endpoint, redirect: -> (uploaded_file, request) { "/foo" }
     response = app.get(@uploaded_file.download_url)
     assert_equal 302, response.status
     assert_equal "/foo", response.headers["Location"]
@@ -75,9 +72,8 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "returns 404 for nonexisting storage" do
-    uploaded_file = @uploader.upload(fakeio)
-    @uploader.class.storages.delete(uploaded_file.storage_key.to_sym)
-    response = app.get(uploaded_file.download_url)
+    @uploaded_file.delete
+    response = app.get(@uploaded_file.download_url)
     assert_equal 404,              response.status
     assert_equal "File Not Found", response.body_binary
     assert_equal "text/plain",     response.content_type
@@ -100,8 +96,7 @@ describe Shrine::Plugins::DownloadEndpoint do
 
   it "allows specifying :host per URL" do
     @shrine.plugin :download_endpoint, host: "http://foo.com"
-    url = @uploaded_file.download_url(host: "http://bar.com")
-    assert_match %r{http://bar\.com/\S+}, url
+    assert_match %r{http://bar\.com/\S+}, @uploaded_file.download_url(host: "http://bar.com")
   end
 
   it "returns same URL regardless of metadata order" do
@@ -117,21 +112,15 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal @uploaded_file.read, response.body_binary
   end
 
-  it "makes the endpoint inheritable" do
-    endpoint1 = Class.new(@shrine).download_endpoint
-    endpoint2 = Class.new(@shrine).download_endpoint
-    refute_equal endpoint1, endpoint2
-  end
-
   deprecated "supports :storages option" do
-    @uploader = uploader { plugin :download_endpoint, storages: [:cache] }
-    cached_file = @uploader.class.new(:cache).upload(fakeio)
-    stored_file = @uploader.class.new(:store).upload(fakeio)
+    @shrine.plugin :download_endpoint, storages: [:cache]
+    cached_file = @shrine.new(:cache).upload(fakeio)
+    stored_file = @shrine.new(:store).upload(fakeio)
     assert_match %r{^/\w+$},         cached_file.url
     assert_match %r{^memory://\w+$}, stored_file.url
   end
 
   deprecated "adds DownloadEndpoint constant" do
-    assert_equal @shrine.download_endpoint, @shrine::DownloadEndpoint
+    assert_respond_to @shrine::DownloadEndpoint, :call
   end
 end

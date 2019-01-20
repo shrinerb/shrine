@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't return cached app instance in `Shrine.download_endpoint` in `download_endpoint` plugin (@janko-m)
+
 * Yield a new File object on `Shrine.with_file` when `tempfile` plugin is loaded (@janko-m)
 
 ## 2.14.0 (2018-12-27)
