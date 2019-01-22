@@ -973,7 +973,7 @@ class Shrine
           end
 
           unless derivative.respond_to?(:path)
-            fail Error, "expected derivation to be a file object, but was #{derivative.inspect}"
+            fail Error, "expected derivative to be a file object, but was #{derivative.inspect}"
           end
 
           derivative
