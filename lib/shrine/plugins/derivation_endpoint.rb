@@ -827,7 +827,11 @@ class Shrine
           end
 
           if status == 200 || status == 206
-            headers["Cache-Control"] = "public, max-age=#{365*24*60*60}" # cache for a year
+            if request.params["expires_at"]
+              headers["Cache-Control"] = "public, max-age=#{expires_in(request)}" # cache until the URL expires
+            else
+              headers["Cache-Control"] = "public, max-age=#{365*24*60*60}" # cache for a year
+            end
           end
 
           [status, headers, body]
@@ -843,11 +847,15 @@ class Shrine
         end
 
         def check_expiry!(request)
-          return if request.params["expires_at"].nil?
+          if request.params["expires_at"]
+            error!(403, "Request has expired") if expires_in(request) <= 0
+          end
+        end
 
+        def expires_in(request)
           expires_at = Integer(request.params["expires_at"])
 
-          error!(403, "Request has expired") if Time.now > Time.at(expires_at)
+          (Time.at(expires_at) - Time.now).to_i
         end
 
         # Halts the request with the error message.

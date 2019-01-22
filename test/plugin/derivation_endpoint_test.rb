@@ -304,6 +304,10 @@ describe Shrine::Plugins::DerivationEndpoint do
       response = app.get(derivation_url)
       assert_equal 200,  response.status
       assert_equal "12", response.headers["Content-Length"]
+
+      max_age = Integer(response.headers["Cache-Control"][/max-age=(\d+)/, 1])
+      assert_operator max_age, :<=, 100
+      assert_operator 0,       :<, max_age
     end
 
     it "returns 403 when link has expired" do
