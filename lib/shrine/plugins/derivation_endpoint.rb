@@ -715,7 +715,7 @@ class Shrine
         private
 
         def resolve_option(name)
-          value = options[name] || shrine_class.derivation_options[name]
+          value = options.fetch(name) { shrine_class.derivation_options[name] }
           value = value.call(name: name, args: args, uploaded_file: source) if value.respond_to?(:call)
           value
         end
