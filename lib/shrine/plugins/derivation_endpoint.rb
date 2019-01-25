@@ -552,7 +552,7 @@ class Shrine
       class SourceNotFound < Error; end
 
       def self.load_dependencies(uploader, opts = {})
-        uploader.plugin :rack_response if opts[:upload] && opts[:upload_redirect] != true
+        uploader.plugin :rack_response
         uploader.plugin :_urlsafe_serialization
       end
 
