@@ -275,7 +275,9 @@ class Shrine
     #     uploaded_file.derivation_url(:thumbnail, expires_in: 90)
     #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?expires_at=1547843568&signature=..."
     #
-    # ## Content Type
+    # ## Response headers
+    #
+    # ### Content Type
     #
     # By default in the derivation response, the [`Content-Type`] header is
     # inferred from the file extension of the derivative (using `Rack::Mime`).
@@ -291,7 +293,7 @@ class Shrine
     #     uploaded_file.derivation_url(:webp, type: "image/webp")
     #     #=> "/webp/eyJpZCI6ImZvbyIsInN?type=image%2Fwebp&signature=..."
     #
-    # ## Content Disposition
+    # ### Content Disposition
     #
     # By default in the derivation response, the [`Content-Disposition`] header
     # sets the disposition to `inline`, while the download filename is generated
@@ -469,6 +471,8 @@ class Shrine
     #       # ...
     #     end
     #
+    # ## Derivation API
+    #
     # ## Plugin Options
     #
     # :disposition
@@ -618,8 +622,6 @@ class Shrine
           derivation(name, *args, **options).response(env)
         end
 
-        private
-
         def derivation(name, *args, **options)
           Derivation.new(
             name:    name,
@@ -631,15 +633,6 @@ class Shrine
       end
 
       class Derivation
-        def self.option(name, default: nil)
-          define_method(name) do
-            value = resolve_option(name)
-            value = instance_exec(&default) if value.nil? && default
-            value
-          end
-          private(name)
-        end
-
         attr_reader :name, :args, :source, :options
 
         def initialize(name:, args:, source:, options:)
@@ -647,6 +640,45 @@ class Shrine
           @args    = args
           @source  = source
           @options = options
+        end
+
+        def url(**options)
+          Derivation::Url.new(self).call(
+            host:       option(:host),
+            prefix:     option(:prefix),
+            expires_in: option(:expires_in),
+            version:    option(:version),
+            metadata:   option(:metadata),
+            **options,
+          )
+        end
+
+        def response(env)
+          Derivation::Response.new(self).call(env)
+        end
+
+        def processed
+          Derivation::Processed.new(self).call
+        end
+
+        def call(file = nil)
+          Derivation::Call.new(self).call(file)
+        end
+
+        def upload(file = nil)
+          Derivation::Upload.new(self).call(file)
+        end
+
+        def retrieve
+          Derivation::Retrieve.new(self).call
+        end
+
+        def self.options
+          @options ||= {}
+        end
+
+        def self.option(name, default: nil, result: nil)
+          options[name] = { default: default, result: result }
         end
 
         option :disposition,                 default: -> { "inline" }
@@ -662,62 +694,39 @@ class Shrine
         option :secret_key
         option :type
         option :upload,                      default: -> { false }
-        option :upload_location,             default: -> { default_upload_location }
+        option :upload_location,             default: -> { default_upload_location }, result: -> (l) { upload_location(l) }
         option :upload_options,              default: -> { {} }
         option :upload_redirect,             default: -> { false }
         option :upload_redirect_url_options, default: -> { {} }
         option :upload_storage,              default: -> { source.storage_key.to_sym }
         option :version
 
-        def url(**options)
-          derivation_url = Derivation::Url.new(
-            name:       name,
-            args:       args,
-            file:       source,
-            secret_key: secret_key,
-          )
+        def option(name)
+          option_definition = self.class.options.fetch(name)
 
-          derivation_url.call(
-            host:       host,
-            prefix:     prefix,
-            expires_in: expires_in,
-            version:    version,
-            metadata:   metadata,
-            **options,
-          )
+          value = options.fetch(name) { shrine_class.derivation_options[name] }
+          value = value.call(name: name, args: args, uploaded_file: source) if value.respond_to?(:call)
+
+          if value.nil?
+            default = option_definition[:default]
+            value   = instance_exec(&default) if default
+          end
+
+          result = option_definition[:result]
+          value  = instance_exec(value, &result) if result
+
+          value
         end
 
-        def response(env)
-          derivation_response = Derivation::Response.new(
-            name:                        name,
-            args:                        args,
-            source:                      source,
-            env:                         env,
-            type:                        type,
-            disposition:                 disposition,
-            filename:                    filename,
-            download:                    download,
-            download_errors:             download_errors,
-            download_options:            download_options,
-            include_uploaded_file:       include_uploaded_file,
-            upload:                      upload,
-            upload_storage:              upload_storage,
-            upload_location:             upload_location,
-            upload_options:              upload_options,
-            upload_redirect:             upload_redirect,
-            upload_redirect_url_options: upload_redirect_url_options,
-            version:                     version,
-          )
-
-          derivation_response.call
+        def shrine_class
+          source.shrine_class
         end
 
         private
 
-        def resolve_option(name)
-          value = options.fetch(name) { shrine_class.derivation_options[name] }
-          value = value.call(name: name, args: args, uploaded_file: source) if value.respond_to?(:call)
-          value
+        # append version to upload location
+        def upload_location(location)
+          option(:version) ? location.sub(/(?=(\.\w+)?$)/, "-#{option(:version)}") : location
         end
 
         def default_filename
@@ -731,20 +740,35 @@ class Shrine
           [directory, filename].join("/")
         end
 
-        def shrine_class
-          source.shrine_class
+        class Command
+          attr_reader :derivation
+
+          def initialize(derivation)
+            @derivation = derivation
+          end
+
+          def self.delegate(*names)
+            names.each do |name|
+              protected define_method(name) {
+                if [:name, :args, :source].include?(name)
+                  derivation.public_send(name)
+                else
+                  derivation.option(name)
+                end
+              }
+            end
+          end
+
+          private
+
+          def shrine_class
+            derivation.shrine_class
+          end
         end
       end
 
-      class Derivation::Url
-        attr_reader :name, :args, :file, :secret_key
-
-        def initialize(name:, args:, file:, secret_key:)
-          @name       = name
-          @args       = args
-          @file       = file
-          @secret_key = secret_key
-        end
+      class Derivation::Url < Derivation::Command
+        delegate :name, :args, :source, :secret_key
 
         def call(host: nil, prefix: nil, **options)
           [host, *prefix, identifier(**options)].join("/")
@@ -766,9 +790,9 @@ class Shrine
           params[:filename]    = filename if filename
           params[:disposition] = disposition if disposition
 
-          file_component = file.urlsafe_dump(metadata: metadata)
+          source_component = source.urlsafe_dump(metadata: metadata)
 
-          signed_url(name, *args, file_component, params)
+          signed_url(name, *args, source_component, params)
         end
 
         def signed_url(*components)
@@ -868,39 +892,29 @@ class Shrine
         end
       end
 
-      class Derivation::Response
-        DEFAULT_MIME_TYPE = "application/octet-stream"
+      class Derivation::Response < Derivation::Command
+        delegate :type, :disposition, :filename,
+                 :upload, :upload_redirect, :upload_redirect_url_options
 
-        attr_reader :name, :args, :source, :env, :type, :disposition,
-          :filename, :download, :download_errors, :download_options, :upload,
-          :upload_storage, :upload_options, :upload_redirect,
-          :upload_redirect_url_options, :include_uploaded_file, :version
-
-        def initialize(**options)
-          options.each do |name, value|
-            instance_variable_set(:"@#{name}", value)
-          end
-        end
-
-        def call
+        def call(env)
           if upload
-            upload_response
+            upload_response(env)
           else
-            local_response
+            local_response(env)
           end
         end
 
         private
 
-        def local_response
-          derivative = call_derivation
+        def local_response(env)
+          derivative = derivation.call
 
-          file_response(derivative)
+          file_response(derivative, env)
         end
 
-        def file_response(file)
+        def file_response(file, env)
           file.close
-          response = rack_file_response(file.path)
+          response = rack_file_response(file.path, env)
 
           status = response[0]
 
@@ -919,21 +933,12 @@ class Shrine
           [status, headers, body]
         end
 
-        def upload_response
-          storage = shrine_class.find_storage(upload_storage)
+        def upload_response(env)
+          uploaded_file = derivation.retrieve
 
-          if storage.exists?(upload_location)
-            uploaded_file = shrine_class::UploadedFile.new(
-              "storage" => upload_storage,
-              "id"      => upload_location,
-            )
-          else
-            derivative = call_derivation
-
-            uploader      = shrine_class.new(upload_storage)
-            uploaded_file = uploader.upload derivative,
-              location:       upload_location,
-              upload_options: upload_options
+          unless uploaded_file
+            derivative    = derivation.call
+            uploaded_file = derivation.upload(derivative)
           end
 
           if upload_redirect
@@ -944,7 +949,7 @@ class Shrine
             [302, { "Location" => redirect_url }, []]
           else
             if derivative
-              file_response(derivative)
+              file_response(derivative, env)
             else
               uploaded_file.to_rack_response(
                 type:        type,
@@ -956,45 +961,8 @@ class Shrine
           end
         end
 
-        def call_derivation
-          derivation_block = shrine_class.find_derivation(name)
-          uploader         = source.uploader
-
-          derivative = if download
-            download_source do |file|
-              if include_uploaded_file
-                uploader.instance_exec(file, source, *args, &derivation_block)
-              else
-                uploader.instance_exec(file, *args, &derivation_block)
-              end
-            end
-          else
-            uploader.instance_exec(source, *args, &derivation_block)
-          end
-
-          unless derivative.respond_to?(:path)
-            fail Error, "expected derivative to be a file object, but was #{derivative.inspect}"
-          end
-
-          derivative
-        end
-
-        def download_source
-          download_args = [download_options].reject(&:empty?)
-
-          begin
-            file = source.download(*download_args)
-          rescue *download_errors
-            raise SourceNotFound, "source uploaded file \"#{source.id}\" was not found on storage :#{source.storage_key}"
-          end
-
-          yield file
-        ensure
-          file.close! if file
-        end
-
-        def rack_file_response(path)
-          server = Rack::File.new("", {}, DEFAULT_MIME_TYPE)
+        def rack_file_response(path, env)
+          server = Rack::File.new("", {}, "application/octet-stream")
 
           if Rack.release > "2"
             server.serving(Rack::Request.new(env), path)
@@ -1008,17 +976,134 @@ class Shrine
         def content_disposition(filename)
           ContentDisposition.format(disposition: disposition, filename: filename)
         end
+      end
 
-        def upload_location
-          if version
-            @upload_location.sub(/(?=(\.\w+)?$)/, "-#{version}")
+      class Derivation::Processed < Derivation::Command
+        delegate :upload
+
+        def call
+          if upload
+            upload_result
           else
-            @upload_location
+            local_result
           end
         end
 
-        def shrine_class
-          source.shrine_class
+        private
+
+        def local_result
+          derivation.call
+        end
+
+        def upload_result
+          uploaded_file = derivation.retrieve
+
+          unless uploaded_file
+            derivative    = derivation.call
+            uploaded_file = derivation.upload(derivative)
+
+            derivative.unlink
+          end
+
+          uploaded_file
+        end
+      end
+
+      class Derivation::Call < Derivation::Command
+        delegate :name, :args, :source,
+                 :download, :download_errors, :download_options,
+                 :include_uploaded_file
+
+        def call(file = nil)
+          derivative = generate(file)
+
+          unless derivative.respond_to?(:path)
+            fail Error, "expected derivative to be a file object, but was #{derivative.inspect}"
+          end
+
+          derivative
+        end
+
+        private
+
+        def generate(file)
+          if download
+            with_downloaded(file) do |file|
+              if include_uploaded_file
+                uploader.instance_exec(file, source, *args, &derivation_block)
+              else
+                uploader.instance_exec(file, *args, &derivation_block)
+              end
+            end
+          else
+            uploader.instance_exec(source, *args, &derivation_block)
+          end
+        end
+
+        def with_downloaded(file, &block)
+          if file
+            yield file
+          else
+            download_source(&block)
+          end
+        end
+
+        def download_source
+          download_args = download_options.any? ? [download_options] : []
+          downloaded    = false
+
+          source.download(*download_args) do |file|
+            downloaded = true
+            yield file
+          end
+        rescue *download_errors
+          raise if downloaded # re-raise if the error didn't happen on download
+          raise SourceNotFound, "source uploaded file \"#{source.id}\" was not found on storage :#{source.storage_key}"
+        end
+
+        def derivation_block
+          shrine_class.find_derivation(name)
+        end
+
+        def uploader
+          source.uploader
+        end
+      end
+
+      class Derivation::Upload < Derivation::Command
+        delegate :upload_location, :upload_storage, :upload_options, :version
+
+        def call(derivative = nil)
+          derivative ||= derivation.call
+
+          uploader.upload derivative,
+            location:       upload_location,
+            upload_options: upload_options
+        end
+
+        private
+
+        def uploader
+          shrine_class.new(upload_storage)
+        end
+      end
+
+      class Derivation::Retrieve < Derivation::Command
+        delegate :upload_location, :upload_storage, :version
+
+        def call
+          if storage.exists?(upload_location)
+            shrine_class::UploadedFile.new(
+              "storage" => upload_storage.to_s,
+              "id"      => upload_location,
+            )
+          end
+        end
+
+        private
+
+        def storage
+          shrine_class.find_storage(upload_storage)
         end
       end
 

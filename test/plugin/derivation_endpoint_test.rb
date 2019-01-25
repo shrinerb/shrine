@@ -153,7 +153,7 @@ describe Shrine::Plugins::DerivationEndpoint do
 
     it "escapes path and query params" do
       derivation_url = @uploaded_file.derivation_url(:gray, "foo bar", filename: "foo bar")
-      assert_match /gray\/foo%20bar/,    URI(derivation_url).path
+      assert_match /gray\/foo%20bar/,   URI(derivation_url).path
       assert_match /filename=foo\+bar/, URI(derivation_url).query
     end
 
@@ -205,7 +205,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_match "application/octet-stream", response.headers["Content-Type"]
     end
 
-    it "handles ranged requests" do
+    it "handles Range requests" do
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url, headers: { "Range" => "bytes=0-3" })
       assert_equal 206,                        response.status
@@ -265,9 +265,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_equal 206,                        response.status
       assert_equal "public, max-age=31536000", response.headers["Cache-Control"]
 
-      @shrine.plugin :derivation_endpoint, upload: true, upload_redirect: true
       derivation_url = @uploaded_file.derivation_url(:gray)
-      response = app.get(derivation_url)
+      response = app(upload: true, upload_redirect: true).get(derivation_url)
       assert_equal 302, response.status
       assert_nil response.headers["Cache-Control"]
     end
@@ -550,22 +549,6 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "bytes",        response[1]["Accept-Ranges"]
         assert_equal "gray",         response[2].enum_for(:each).to_a.join
       end
-
-      it "raises SourceNotFound on error from :download_errors raised on downloading" do
-        @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
-        @uploaded_file.delete
-        assert_raises(Shrine::Plugins::DerivationEndpoint::SourceNotFound) do
-          @uploaded_file.derivation_response(:gray, env: {})
-        end
-      end
-
-      it "propagates errors from :download_errors raises in derivation block" do
-        @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
-        @shrine.derivation(:gray) { raise KeyError }
-        assert_raises(KeyError) do
-          @uploaded_file.derivation_response(:gray, env: {})
-        end
-      end
     end
 
     describe "with upload" do
@@ -626,14 +609,6 @@ describe Shrine::Plugins::DerivationEndpoint do
         @uploaded_file.derivation_response(:gray, "dark", env: {}, upload: false)
       end
 
-      it "excludes original extension from default upload location" do
-        @uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
-        @uploaded_file.derivation_response(:gray, "dark", env: {})
-
-        assert @storage.exists?("foo/gray-dark")
-        assert_equal "gray dark content", @storage.open("foo/gray-dark").read
-      end
-
       it "handles Range requests" do
         @uploaded_file.derivation_response(:gray, env: {})
         response = @uploaded_file.derivation_response(:gray, env: {
@@ -646,57 +621,14 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "gray",         response[2].enum_for(:each).to_a.join
       end
 
-      it "applies :upload_options" do
-        @shrine.plugin :derivation_endpoint, upload_options: { foo: "foo" }
-        @storage.expects(:upload).with { |*, **options| options[:foo] == "foo" }
-        @uploaded_file.derivation_response(:gray, env: {})
-
-        @storage.expects(:upload).with { |*, **options| options[:bar] == "bar" }
-        @uploaded_file.derivation_response(:gray, env: {}, upload_options: { bar: "bar" })
-      end
-
-      it "applies :upload_location" do
-        @shrine.plugin :derivation_endpoint, upload_location: -> (context) { "foo" }
-        @uploaded_file.derivation_response(:gray, env: {})
-        assert @storage.exists?("foo")
-        assert_equal "gray content", @storage.open("foo").read
-
-        @uploaded_file.derivation_response(:gray, env: {}, upload_location: -> (context) { "bar" })
-        assert @storage.exists?("bar")
-        assert_equal "gray content", @storage.open("bar").read
-      end
-
-      it "appends :version to :upload_location" do
-        @shrine.plugin :derivation_endpoint, version: 1
-        @uploaded_file.derivation_response(:gray, env: {})
-        assert @storage.exists?("#{@uploaded_file.id}/gray-1")
-        assert_equal "gray content", @storage.open("#{@uploaded_file.id}/gray-1").read
-
-        @shrine.plugin :derivation_endpoint, version: 1, upload_location: -> (context) { "foo.txt" }
-        @uploaded_file.derivation_response(:gray, env: {})
-        assert @storage.exists?("foo-1.txt")
-        assert_equal "gray content", @storage.open("foo-1.txt").read
-      end
-
-      it "applies :upload_storage" do
-        @shrine.plugin :derivation_endpoint, upload_storage: :cache
-        @uploaded_file.derivation_response(:gray, env: {})
-        assert @shrine.storages[:cache].exists?("#{@uploaded_file.id}/gray")
-        assert_equal "gray content", @shrine.storages[:cache].open("#{@uploaded_file.id}/gray").read
-        @shrine.storages[:cache].expects(:upload).never
-        response = @uploaded_file.derivation_response(:gray, env: {})
-        assert_equal "gray content", response[2].enum_for(:each).to_a.join
-
-        @uploaded_file.derivation_response(:gray, env: {}, upload_storage: :store)
-        assert @shrine.storages[:store].exists?("#{@uploaded_file.id}/gray")
-        assert_equal "gray content", @shrine.storages[:store].open("#{@uploaded_file.id}/gray").read
-        @shrine.storages[:store].expects(:upload).never
-        response = @uploaded_file.derivation_response(:gray, env: {}, upload_storage: :store)
-        assert_equal "gray content", response[2].enum_for(:each).to_a.join
-      end
-
       it "applies :upload_redirect" do
         @shrine.plugin :derivation_endpoint, upload_redirect: true
+        response = @uploaded_file.derivation_response(:gray, env: {})
+        assert_equal 302,                                       response[0]
+        assert_equal @storage.url("#{@uploaded_file.id}/gray"), response[1]["Location"]
+        assert_equal "",                                        response[2].enum_for(:each).to_a.join
+
+        # when derivative is already uploaded
         response = @uploaded_file.derivation_response(:gray, env: {})
         assert_equal 302,                                       response[0]
         assert_equal @storage.url("#{@uploaded_file.id}/gray"), response[1]["Location"]
@@ -705,6 +637,14 @@ describe Shrine::Plugins::DerivationEndpoint do
         response = @uploaded_file.derivation_response(:gray, env: {}, upload_redirect: false)
         assert_equal 200,            response[0]
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
+      end
+
+      it "deletes derivation result on :upload_redirect" do
+        @shrine.plugin :derivation_endpoint, upload_redirect: true
+        result = nil
+        @shrine.derivation(:gray) { result = Tempfile.new }
+        @uploaded_file.derivation_response(:gray, env: {})
+        assert_nil result.path
       end
 
       it "applies :upload_redirect_url_options" do
@@ -721,6 +661,201 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
     end
 
+    it "doesn't include Cache-Control header" do
+      response = @uploaded_file.derivation_response(:gray, env: {})
+      assert_nil response[1]["Cache-Control"]
+    end
+
+    it "succeeds when derivative is a File object" do
+      @shrine.derivation(:gray) do |file|
+        tempfile = Tempfile.new
+        tempfile << "file content"
+        tempfile.flush
+
+        File.open(tempfile.path)
+      end
+
+      response = @uploaded_file.derivation_response(:gray, env: {})
+
+      assert_equal "file content", response[2].enum_for(:each).to_a.join
+    end
+  end
+
+  describe "Derivation#processed" do
+    describe "without upload" do
+      it "returns derivation result" do
+        tempfile = @uploaded_file.derivation(:gray).processed
+        assert_instance_of Tempfile, tempfile
+        assert_equal "gray content", tempfile.read
+      end
+    end
+
+    describe "with upload" do
+      before do
+        @shrine.plugin :derivation_endpoint, upload: true
+      end
+
+      it "uploads derivation result" do
+        uploaded_file = @uploaded_file.derivation(:gray).processed
+        assert_instance_of @shrine::UploadedFile, uploaded_file
+        assert_equal "gray content", uploaded_file.read
+      end
+
+      it "deletes derivation result after uploading" do
+        result = nil
+        @shrine.derivation(:gray) { result = Tempfile.new }
+        @uploaded_file.derivation(:gray).processed
+        assert_nil result.path
+      end
+
+      it "retrieves already uploaded derivation" do
+        @uploaded_file.derivation(:gray).upload
+        @shrine.derivation(:gray) { fail "this should not be called" }
+        @storage.expects(:upload).never
+        uploaded_file = @uploaded_file.derivation(:gray).processed
+        assert_instance_of @shrine::UploadedFile, uploaded_file
+        assert_equal "gray content", uploaded_file.read
+      end
+    end
+  end
+
+  describe "Derivation#upload" do
+    it "uploads and returns uploaded file" do
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      assert_instance_of @shrine::UploadedFile, uploaded_file
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "allows passing already generated derivative" do
+      @shrine.derivation(:gray) { fail "this should not be called" }
+      uploaded_file = @uploaded_file.derivation(:gray).upload(fakeio("content"))
+      assert_equal "content", uploaded_file.read
+    end
+
+    it "applies :upload_options" do
+      @shrine.plugin :derivation_endpoint, upload_options: { foo: "foo" }
+      @storage.expects(:upload).with { |*, **options| options[:foo] == "foo" }
+      @uploaded_file.derivation(:gray).upload
+
+      @storage.expects(:upload).with { |*, **options| options[:bar] == "bar" }
+      @uploaded_file.derivation(:gray, upload_options: { bar: "bar" }).upload
+    end
+
+    it "applies :upload_location" do
+      @shrine.plugin :derivation_endpoint, upload_location: -> (context) { "foo" }
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      assert_equal "foo",          uploaded_file.id
+      assert_equal "gray content", uploaded_file.read
+
+      uploaded_file = @uploaded_file.derivation(:gray, upload_location: "bar").upload
+      assert_equal "bar",          uploaded_file.id
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "appends :version to :upload_location" do
+      @shrine.plugin :derivation_endpoint, version: 1
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      assert_equal "#{@uploaded_file.id}/gray-1", uploaded_file.id
+      assert_equal "gray content",                uploaded_file.read
+
+      @shrine.plugin :derivation_endpoint, version: 1, upload_location: -> (context) { "foo.txt" }
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      assert_equal "foo-1.txt",    uploaded_file.id
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "applies :upload_storage" do
+      @shrine.plugin :derivation_endpoint, upload_storage: :cache
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      assert_equal "cache",        uploaded_file.storage_key
+      assert_equal "gray content", uploaded_file.read
+
+      uploaded_file = @uploaded_file.derivation(:gray, upload_storage: :store).upload
+      assert_equal "store",        uploaded_file.storage_key
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "excludes original extension from default upload location" do
+      @uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
+      uploaded_file = @uploaded_file.derivation(:gray, "dark").upload
+      assert_equal "foo/gray-dark", uploaded_file.id
+      assert_equal "gray dark content",  uploaded_file.read
+    end
+  end
+
+  describe "Derivation#retrieve" do
+    it "returns uploaded file if found" do
+      assert_nil @uploaded_file.derivation(:gray).retrieve
+
+      @uploaded_file.derivation(:gray).upload
+      uploaded_file = @uploaded_file.derivation(:gray).retrieve
+      assert_instance_of @shrine::UploadedFile, uploaded_file
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "applies :upload_location" do
+      @shrine.plugin :derivation_endpoint, upload_location: -> (context) { "foo" }
+      @uploaded_file.derivation(:gray).upload
+      uploaded_file = @uploaded_file.derivation(:gray).retrieve
+      assert_equal "foo",          uploaded_file.id
+      assert_equal "gray content", uploaded_file.read
+
+      @uploaded_file.derivation(:gray, upload_location: "bar").upload
+      uploaded_file = @uploaded_file.derivation(:gray, upload_location: "bar").retrieve
+      assert_equal "bar",          uploaded_file.id
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "appends :version to :upload_location" do
+      @shrine.plugin :derivation_endpoint, version: 1
+      @uploaded_file.derivation(:gray).upload
+      uploaded_file = @uploaded_file.derivation(:gray).retrieve
+      assert_equal "#{@uploaded_file.id}/gray-1", uploaded_file.id
+      assert_equal "gray content",                uploaded_file.read
+
+      @shrine.plugin :derivation_endpoint, version: 1, upload_location: -> (context) { "foo.txt" }
+      @uploaded_file.derivation(:gray).upload
+      uploaded_file = @uploaded_file.derivation(:gray).retrieve
+      assert_equal "foo-1.txt",    uploaded_file.id
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "applies :upload_storage" do
+      @shrine.plugin :derivation_endpoint, upload_storage: :cache
+      @uploaded_file.derivation(:gray).upload
+      uploaded_file = @uploaded_file.derivation(:gray).retrieve
+      assert_equal "cache",        uploaded_file.storage_key
+      assert_equal "gray content", uploaded_file.read
+
+      @uploaded_file.derivation(:gray, upload_storage: :store).upload
+      uploaded_file = @uploaded_file.derivation(:gray, upload_storage: :store).retrieve
+      assert_equal "store",        uploaded_file.storage_key
+      assert_equal "gray content", uploaded_file.read
+    end
+
+    it "excludes original extension from default upload location" do
+      @uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
+      @uploaded_file.derivation(:gray, "dark").upload
+      uploaded_file = @uploaded_file.derivation(:gray, "dark").retrieve
+      assert_equal "foo/gray-dark", uploaded_file.id
+      assert_equal "gray dark content",  uploaded_file.read
+    end
+  end
+
+  describe "Derivation#call" do
+    it "returns the derivative" do
+      tempfile = @uploaded_file.derivation(:gray).call
+      assert_instance_of Tempfile, tempfile
+      assert_equal "gray content", tempfile.read
+    end
+
+    it "allows passing already downloaded file" do
+      @shrine.derivation(:gray) { |file| file }
+      @uploaded_file.expects(:download).never
+      result = @uploaded_file.derivation(:gray).call(file = Tempfile.new)
+      assert_equal file, result
+    end
+
     it "passes downloaded file and derivation arguments for processing" do
       minitest = self
 
@@ -733,16 +868,16 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       @uploaded_file = @uploader.upload(fakeio("original"))
-      @uploaded_file.derivation_response(:gray, "dark", "sepia", env: {})
+      @uploaded_file.derivation(:gray, "dark", "sepia").call
     end
 
     it "applies :download_options" do
       @shrine.plugin :derivation_endpoint, download_options: { foo: "foo" }
       @uploaded_file.expects(:download).with(foo: "foo").returns(Tempfile.new)
-      @uploaded_file.derivation_response(:gray, env: {})
+      @uploaded_file.derivation(:gray).call
 
       @uploaded_file.expects(:download).with(bar: "bar").returns(Tempfile.new)
-      @uploaded_file.derivation_response(:gray, env: {}, download_options: { bar: "bar" })
+      @uploaded_file.derivation(:gray, download_options: { bar: "bar" }).call
     end
 
     it "applies :include_uploaded_file" do
@@ -757,7 +892,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       @shrine.plugin :derivation_endpoint, include_uploaded_file: true
-      @uploaded_file.derivation_response(:gray, "dark", env: {})
+      @uploaded_file.derivation(:gray, "dark").call
 
       @shrine.derivation(:gray) do |file, *args|
         minitest.assert_instance_of Tempfile, file
@@ -766,7 +901,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         Tempfile.new
       end
 
-      @uploaded_file.derivation_response(:gray, "dark", env: {}, include_uploaded_file: false)
+      @uploaded_file.derivation(:gray, "dark", include_uploaded_file: false).call
     end
 
     it "applies :download" do
@@ -782,7 +917,7 @@ describe Shrine::Plugins::DerivationEndpoint do
 
       @shrine.plugin :derivation_endpoint, download: false
       @storage.expects(:open).never
-      @uploaded_file.derivation_response(:gray, "dark", env: {})
+      @uploaded_file.derivation(:gray, "dark").call
 
       @shrine.derivation(:gray) do |file, *args|
         minitest.assert_instance_of Tempfile, file
@@ -792,19 +927,30 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       @storage.expects(:open).returns(StringIO.new)
-      @uploaded_file.derivation_response(:gray, "dark", env: {}, download: true)
+      @uploaded_file.derivation(:gray, "dark", download: true).call
     end
 
-    it "doesn't include Cache-Control header" do
-      response = @uploaded_file.derivation_response(:gray, env: {})
-      assert_nil response[1]["Cache-Control"]
+    it "raises SourceNotFound on error from :download_errors raised on downloading" do
+      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
+      @uploaded_file.delete
+      assert_raises(Shrine::Plugins::DerivationEndpoint::SourceNotFound) do
+        @uploaded_file.derivation(:gray).call
+      end
     end
 
-    it "fails when derivation isn't a File object" do
+    it "propagates errors from :download_errors raises in derivation block" do
+      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
+      @shrine.derivation(:gray) { raise KeyError }
+      assert_raises(KeyError) do
+        @uploaded_file.derivation(:gray).call
+      end
+    end
+
+    it "fails when derivative isn't a File object" do
       @shrine.derivation(:gray) { |file| StringIO.new }
 
       assert_raises(Shrine::Error) do
-        @uploaded_file.derivation_response(:gray, "dark", env: {})
+        @uploaded_file.derivation(:gray, "dark").call
       end
     end
   end
