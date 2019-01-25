@@ -294,22 +294,22 @@ class Shrine
     # ## Content Disposition
     #
     # By default in the derivation response, the [`Content-Disposition`] header
-    # sets the disposition to `inline`, while the download filename is
-    # generated from derivation name, arguments and source file id. You can
-    # override this header with the `:disposition` and `:filename` options:
+    # sets the disposition to `inline`, while the download filename is generated
+    # from derivation name, arguments and source file id. You can override that
+    # with the `:disposition` and `:filename` options:
     #
     #     plugin :derivation_endpoint,
-    #       disposition: -> (context) {
-    #         context[:name] == :thumbnail ? "inline" : "attachment"
-    #       },
-    #       filename: -> (context) {
-    #         [context[:name], *context[:args]].join("-")
-    #       }
+    #       disposition: -> (context) { context[:name] == :thumbnail ? "inline" : "attachment" },
+    #       filename:    -> (context) { [context[:name], *context[:args]].join("-") }
+    #
+    # When the user opens the link in the browser, an `inline` disposition will
+    # tell the browser to render the file if possible, while `attachment`
+    # disposition will force download.
     #
     # The `:filename` and `:disposition` options can also be set per URL:
     #
-    #     uploaded_file.derivation_url(:thumbnail, disposition: "inline", filename: "custom-filename")
-    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?disposition=inline&filename=custom-filename&signature=..."
+    #     uploaded_file.derivation_url(:pdf, disposition: "attachment", filename: "custom-filename")
+    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?disposition=attachment&filename=custom-filename&signature=..."
     #
     # ## Uploading
     #
