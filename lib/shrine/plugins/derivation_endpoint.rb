@@ -323,12 +323,6 @@ class Shrine
     #
     #     plugin :derivation_endpoint, upload: true
     #
-    # The target storage used is the same as for the source uploaded file, but
-    # it can be changed via `:upload_storage`:
-    #
-    #     plugin :derivation_endpoint, upload: true,
-    #                                  upload_storage: :thumbnail_storage
-    #
     # The derivative will be uploaded to `<source id>/<name>-<args>` by default,
     # and can be changed via `:upload_location`:
     #
@@ -340,6 +334,17 @@ class Shrine
     #         [context[:name], *context[:args]].join("-")
     #       ].join("/")
     #     end
+    #
+    # Since the default upload location won't have any file extension, the
+    # derivation response won't know the appropriate `Content-Type` header
+    # value, so it will be set to `application/octet-stream`. It's recommended
+    # to use the `:type` option to set the appropriate `Content-Type` value.
+    #
+    # The target storage used is the same as for the source uploaded file, but
+    # it can be changed via `:upload_storage`:
+    #
+    #     plugin :derivation_endpoint, upload: true,
+    #                                  upload_storage: :thumbnail_storage
     #
     # Additional storage-specific upload options can be passed via
     # `:upload_options`:
@@ -472,6 +477,103 @@ class Shrine
     #     end
     #
     # ## Derivation API
+    #
+    # In addition to generating derivation responses, it's also possible to
+    # operate with derivations on a lower level. You can access that API by
+    # calling `UploadedFile#derivation`, which returns a `Derivation` object.
+    #
+    #     derivation = uploaded_file.derivation(:thumbnail, 500, 500)
+    #     derivation #=> #<Shrine::Derivation: @name=:thumbnail, @args=[500, 500] ...>
+    #
+    # When initializing the `Derivation` object you can override any plugin
+    # options:
+    #
+    #     uploaded_file.derivation(:grayscale, upload_storage: :other_storage)
+    #
+    # ### `#url`
+    #
+    # `Derivation#url` method (called by `UploadedFile#derivation_url`)
+    # generates the URL to the derivation.
+    #
+    #     derivation.url #=> "/thumbnail/500/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+    #
+    # ### `#response`
+    #
+    # `Derivation#response` method (called by
+    # `UploadedFile#derivation_response`) generates appropriate status, headers,
+    # and body for the derivative to be returned as an HTTP response.
+    #
+    #     status, headers, body = derivation.response
+    #     status  #=> 200
+    #     headers #=>
+    #     # {
+    #     #   "Content-Type" => "image/jpeg",
+    #     #   "Content-Length" => "12424",
+    #     #   "Content-Disposition" => "inline; filename=\"thumbnail-500-500-k9f8sdksdfk2414\"",
+    #     #   "Accept_Ranges" => "bytes"
+    #     # }
+    #     body    #=> #each object that yields derivative content
+    #
+    # ### `#processed`
+    #
+    # `Derivation#processed` method returns the processed derivative. If
+    # `:upload` is enabled, it returns an `UploadedFile` object pointing to the
+    # derivative, processing and uploading the derivative if it hasn't been
+    # already.
+    #
+    #     uploaded_file = derivation.processed
+    #     uploaded_file    #=> #<Shrine::UploadedFile>
+    #     uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
+    #
+    # ### `#call`
+    #
+    # `Derivation#call` method calls the derivation block and returns the
+    # result.
+    #
+    #     result = derivation.call
+    #     result #=> #<Tempfile:...>
+    #
+    # Internally it will download the source uploaded file to disk and pass it
+    # to the derivation block (unless `:download` was disabled). You can
+    # also pass in an already downloaded source file:
+    #
+    #     derivation.call(source_file)
+    #
+    # ### `#upload`
+    #
+    # `Derivation#upload` method uploads the given file to the configured
+    # derivation location.
+    #
+    #     uploaded_file = derivation.upload(file)
+    #     uploaded_file    #=> #<Shrine::UploadedFile>
+    #     uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
+    #
+    # If not given any arguments, it generates the derivative before uploading
+    # it.
+    #
+    # ### `#retrieve`
+    #
+    # `Derivation#retrieve` method returns the uploaded derivative file. If the
+    # file exists on the storage, it returns an `UploadedFile` object,
+    # otherwise `nil` is returned.
+    #
+    #     uploaded_file = derivation.retrieve
+    #     uploaded_file    #=> #<Shrine::UploadedFile>
+    #     uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
+    #
+    # ### `#delete`
+    #
+    # `Derivation#delete` method deletes the uploaded derivative file from the
+    # storage.
+    #
+    #     derivation.delete
+    #
+    # ### `#option`
+    #
+    # `Derivation#option` returns the value of the specified plugin option.
+    #
+    #     derivation.option(:upload_location)
+    #     #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
     #
     # ## Plugin Options
     #
@@ -732,9 +834,10 @@ class Shrine
 
     private
 
-    # append version to upload location
+    # append version and extension to upload location if specified
     def upload_location(location)
-      option(:version) ? location.sub(/(?=(\.\w+)?$)/, "-#{option(:version)}") : location
+      location = location.sub(/(?=(\.\w+)?$)/, "-#{option(:version)}") if option(:version)
+      location
     end
 
     def default_filename

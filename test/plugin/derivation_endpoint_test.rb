@@ -989,6 +989,20 @@ describe Shrine::Plugins::DerivationEndpoint do
     end
   end
 
+  describe "Derivation#option" do
+    it "returns value of the specified plugin option" do
+      upload_location = @uploaded_file.derivation(:gray).option(:upload_location)
+      assert_equal "#{@uploaded_file.id}/gray", upload_location
+
+      @shrine.plugin :derivation_endpoint, version: 1
+      upload_location = @uploaded_file.derivation(:gray).option(:upload_location)
+      assert_equal "#{@uploaded_file.id}/gray-1", upload_location
+
+      upload_location = @uploaded_file.derivation(:gray, upload_location: "foo").option(:upload_location)
+      assert_equal "foo-1", upload_location
+    end
+  end
+
   it "merges new settings with previous" do
     @shrine.plugin :derivation_endpoint, type: "text/plain"
     @shrine.derivation(:gray) { "gray" }
