@@ -719,6 +719,119 @@ describe Shrine::Plugins::DerivationEndpoint do
     end
   end
 
+  describe "Derivation#call" do
+    it "returns the derivative" do
+      tempfile = @uploaded_file.derivation(:gray).call
+      assert_instance_of Tempfile, tempfile
+      assert_equal "gray content", tempfile.read
+    end
+
+    it "allows passing already downloaded file" do
+      @shrine.derivation(:gray) { |file| file }
+      @uploaded_file.expects(:download).never
+      result = @uploaded_file.derivation(:gray).call(file = Tempfile.new)
+      assert_equal file, result
+    end
+
+    it "passes downloaded file and derivation arguments for processing" do
+      minitest = self
+
+      @shrine.derivation(:gray) do |file, *args|
+        minitest.assert_instance_of Tempfile, file
+        minitest.assert_equal "original", file.read
+        minitest.assert_equal ["dark", "sepia"], args
+
+        Tempfile.new
+      end
+
+      @uploaded_file = @uploader.upload(fakeio("original"))
+      @uploaded_file.derivation(:gray, "dark", "sepia").call
+    end
+
+    it "applies :download_options" do
+      @shrine.plugin :derivation_endpoint, download_options: { foo: "foo" }
+      @uploaded_file.expects(:download).with(foo: "foo").returns(Tempfile.new)
+      @uploaded_file.derivation(:gray).call
+
+      @uploaded_file.expects(:download).with(bar: "bar").returns(Tempfile.new)
+      @uploaded_file.derivation(:gray, download_options: { bar: "bar" }).call
+    end
+
+    it "applies :include_uploaded_file" do
+      minitest = self
+
+      @shrine.derivation(:gray) do |file, uploaded_file, *args|
+        minitest.assert_instance_of Tempfile, file
+        minitest.assert_instance_of self.class::UploadedFile, uploaded_file
+        minitest.assert_equal ["dark"], args
+
+        Tempfile.new
+      end
+
+      @shrine.plugin :derivation_endpoint, include_uploaded_file: true
+      @uploaded_file.derivation(:gray, "dark").call
+
+      @shrine.derivation(:gray) do |file, *args|
+        minitest.assert_instance_of Tempfile, file
+        minitest.assert_equal ["dark"], args
+
+        Tempfile.new
+      end
+
+      @uploaded_file.derivation(:gray, "dark", include_uploaded_file: false).call
+    end
+
+    it "applies :download" do
+      minitest = self
+
+      @shrine.derivation(:gray) do |uploaded_file, *args|
+        minitest.assert_instance_of self.class::UploadedFile, uploaded_file
+        minitest.refute uploaded_file.opened?
+        minitest.assert_equal ["dark"], args
+
+        Tempfile.new
+      end
+
+      @shrine.plugin :derivation_endpoint, download: false
+      @storage.expects(:open).never
+      @uploaded_file.derivation(:gray, "dark").call
+
+      @shrine.derivation(:gray) do |file, *args|
+        minitest.assert_instance_of Tempfile, file
+        minitest.assert_equal ["dark"], args
+
+        Tempfile.new
+      end
+
+      @storage.expects(:open).returns(StringIO.new)
+      @uploaded_file.derivation(:gray, "dark", download: true).call
+    end
+
+    it "raises SourceNotFound on error from :download_errors raised on downloading" do
+      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
+      @uploaded_file.delete
+      assert_raises(Shrine::Derivation::SourceNotFound) do
+        @uploaded_file.derivation(:gray).call
+      end
+    end
+
+    it "propagates errors from :download_errors raises in derivation block" do
+      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
+      @shrine.derivation(:gray) { raise KeyError }
+      assert_raises(KeyError) do
+        @uploaded_file.derivation(:gray).call
+      end
+    end
+
+    it "fails when derivative isn't a File object" do
+      @shrine.derivation(:gray) { |file| StringIO.new }
+
+      assert_raises(Shrine::Error) do
+        @uploaded_file.derivation(:gray, "dark").call
+      end
+    end
+  end
+
   describe "Derivation#upload" do
     it "uploads and returns uploaded file" do
       uploaded_file = @uploaded_file.derivation(:gray).upload
@@ -842,116 +955,37 @@ describe Shrine::Plugins::DerivationEndpoint do
     end
   end
 
-  describe "Derivation#call" do
-    it "returns the derivative" do
-      tempfile = @uploaded_file.derivation(:gray).call
-      assert_instance_of Tempfile, tempfile
-      assert_equal "gray content", tempfile.read
+  describe "Derivation#delete" do
+    it "deletes the derivative from the storage" do
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      @uploaded_file.derivation(:gray).delete
+      refute uploaded_file.exists?
     end
 
-    it "allows passing already downloaded file" do
-      @shrine.derivation(:gray) { |file| file }
-      @uploaded_file.expects(:download).never
-      result = @uploaded_file.derivation(:gray).call(file = Tempfile.new)
-      assert_equal file, result
+    it "applies :upload_location" do
+      @shrine.plugin :derivation_endpoint, upload_location: -> (context) { "foo" }
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      @uploaded_file.derivation(:gray).delete
+      assert_equal "foo", uploaded_file.id
+      refute uploaded_file.exists?
+
+      uploaded_file = @uploaded_file.derivation(:gray, upload_location: "bar").upload
+      @uploaded_file.derivation(:gray, upload_location: "bar").delete
+      assert_equal "bar", uploaded_file.id
+      refute uploaded_file.exists?
     end
 
-    it "passes downloaded file and derivation arguments for processing" do
-      minitest = self
+    it "applies :upload_storage" do
+      @shrine.plugin :derivation_endpoint, upload_storage: :cache
+      uploaded_file = @uploaded_file.derivation(:gray).upload
+      @uploaded_file.derivation(:gray).delete
+      assert_equal "cache", uploaded_file.storage_key
+      refute uploaded_file.exists?
 
-      @shrine.derivation(:gray) do |file, *args|
-        minitest.assert_instance_of Tempfile, file
-        minitest.assert_equal "original", file.read
-        minitest.assert_equal ["dark", "sepia"], args
-
-        Tempfile.new
-      end
-
-      @uploaded_file = @uploader.upload(fakeio("original"))
-      @uploaded_file.derivation(:gray, "dark", "sepia").call
-    end
-
-    it "applies :download_options" do
-      @shrine.plugin :derivation_endpoint, download_options: { foo: "foo" }
-      @uploaded_file.expects(:download).with(foo: "foo").returns(Tempfile.new)
-      @uploaded_file.derivation(:gray).call
-
-      @uploaded_file.expects(:download).with(bar: "bar").returns(Tempfile.new)
-      @uploaded_file.derivation(:gray, download_options: { bar: "bar" }).call
-    end
-
-    it "applies :include_uploaded_file" do
-      minitest = self
-
-      @shrine.derivation(:gray) do |file, uploaded_file, *args|
-        minitest.assert_instance_of Tempfile, file
-        minitest.assert_instance_of self.class::UploadedFile, uploaded_file
-        minitest.assert_equal ["dark"], args
-
-        Tempfile.new
-      end
-
-      @shrine.plugin :derivation_endpoint, include_uploaded_file: true
-      @uploaded_file.derivation(:gray, "dark").call
-
-      @shrine.derivation(:gray) do |file, *args|
-        minitest.assert_instance_of Tempfile, file
-        minitest.assert_equal ["dark"], args
-
-        Tempfile.new
-      end
-
-      @uploaded_file.derivation(:gray, "dark", include_uploaded_file: false).call
-    end
-
-    it "applies :download" do
-      minitest = self
-
-      @shrine.derivation(:gray) do |uploaded_file, *args|
-        minitest.assert_instance_of self.class::UploadedFile, uploaded_file
-        minitest.refute uploaded_file.opened?
-        minitest.assert_equal ["dark"], args
-
-        Tempfile.new
-      end
-
-      @shrine.plugin :derivation_endpoint, download: false
-      @storage.expects(:open).never
-      @uploaded_file.derivation(:gray, "dark").call
-
-      @shrine.derivation(:gray) do |file, *args|
-        minitest.assert_instance_of Tempfile, file
-        minitest.assert_equal ["dark"], args
-
-        Tempfile.new
-      end
-
-      @storage.expects(:open).returns(StringIO.new)
-      @uploaded_file.derivation(:gray, "dark", download: true).call
-    end
-
-    it "raises SourceNotFound on error from :download_errors raised on downloading" do
-      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
-      @uploaded_file.delete
-      assert_raises(Shrine::Derivation::SourceNotFound) do
-        @uploaded_file.derivation(:gray).call
-      end
-    end
-
-    it "propagates errors from :download_errors raises in derivation block" do
-      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
-      @shrine.derivation(:gray) { raise KeyError }
-      assert_raises(KeyError) do
-        @uploaded_file.derivation(:gray).call
-      end
-    end
-
-    it "fails when derivative isn't a File object" do
-      @shrine.derivation(:gray) { |file| StringIO.new }
-
-      assert_raises(Shrine::Error) do
-        @uploaded_file.derivation(:gray, "dark").call
-      end
+      uploaded_file = @uploaded_file.derivation(:gray, upload_storage: :store).upload
+      @uploaded_file.derivation(:gray, upload_storage: :store).delete
+      assert_equal "store", uploaded_file.storage_key
+      refute uploaded_file.exists?
     end
   end
 

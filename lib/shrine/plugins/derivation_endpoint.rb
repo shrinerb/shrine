@@ -677,6 +677,10 @@ class Shrine
       Derivation::Retrieve.new(self).call
     end
 
+    def delete
+      Derivation::Delete.new(self).call
+    end
+
     def self.options
       @options ||= {}
     end
@@ -1075,7 +1079,7 @@ class Shrine
   end
 
   class Derivation::Upload < Derivation::Command
-    delegate :upload_location, :upload_storage, :upload_options, :version
+    delegate :upload_location, :upload_storage, :upload_options
 
     def call(derivative = nil)
       derivative ||= derivation.call
@@ -1093,7 +1097,7 @@ class Shrine
   end
 
   class Derivation::Retrieve < Derivation::Command
-    delegate :upload_location, :upload_storage, :version
+    delegate :upload_location, :upload_storage
 
     def call
       if storage.exists?(upload_location)
@@ -1102,6 +1106,20 @@ class Shrine
           "id"      => upload_location,
         )
       end
+    end
+
+    private
+
+    def storage
+      shrine_class.find_storage(upload_storage)
+    end
+  end
+
+  class Derivation::Delete < Derivation::Command
+    delegate :upload_location, :upload_storage
+
+    def call
+      storage.delete(upload_location)
     end
 
     private
