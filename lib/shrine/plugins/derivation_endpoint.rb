@@ -553,8 +553,6 @@ class Shrine
     # [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
     # [`Content-Disposition`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
     module DerivationEndpoint
-      class SourceNotFound < Error; end
-
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response
         uploader.plugin :_urlsafe_serialization
@@ -573,7 +571,7 @@ class Shrine
 
       module ClassMethods
         def derivation_endpoint(**options)
-          App.new(shrine_class: self, options: options)
+          Shrine::DerivationEndpoint.new(shrine_class: self, options: options)
         end
 
         def derivation_response(env, **options)
@@ -623,7 +621,7 @@ class Shrine
         end
 
         def derivation(name, *args, **options)
-          Derivation.new(
+          Shrine::Derivation.new(
             name:    name,
             args:    args,
             source:  self,
@@ -631,526 +629,528 @@ class Shrine
           )
         end
       end
+    end
 
-      class Derivation
-        attr_reader :name, :args, :source, :options
+    register_plugin(:derivation_endpoint, DerivationEndpoint)
+  end
 
-        def initialize(name:, args:, source:, options:)
-          @name    = name
-          @args    = args
-          @source  = source
-          @options = options
-        end
+  class Derivation
+    class SourceNotFound < Shrine::Error; end
 
-        def url(**options)
-          Derivation::Url.new(self).call(
-            host:       option(:host),
-            prefix:     option(:prefix),
-            expires_in: option(:expires_in),
-            version:    option(:version),
-            metadata:   option(:metadata),
-            **options,
-          )
-        end
+    attr_reader :name, :args, :source, :options
 
-        def response(env)
-          Derivation::Response.new(self).call(env)
-        end
+    def initialize(name:, args:, source:, options:)
+      @name    = name
+      @args    = args
+      @source  = source
+      @options = options
+    end
 
-        def processed
-          Derivation::Processed.new(self).call
-        end
+    def url(**options)
+      Derivation::Url.new(self).call(
+        host:       option(:host),
+        prefix:     option(:prefix),
+        expires_in: option(:expires_in),
+        version:    option(:version),
+        metadata:   option(:metadata),
+        **options,
+      )
+    end
 
-        def call(file = nil)
-          Derivation::Call.new(self).call(file)
-        end
+    def response(env)
+      Derivation::Response.new(self).call(env)
+    end
 
-        def upload(file = nil)
-          Derivation::Upload.new(self).call(file)
-        end
+    def processed
+      Derivation::Processed.new(self).call
+    end
 
-        def retrieve
-          Derivation::Retrieve.new(self).call
-        end
+    def call(file = nil)
+      Derivation::Call.new(self).call(file)
+    end
 
-        def self.options
-          @options ||= {}
-        end
+    def upload(file = nil)
+      Derivation::Upload.new(self).call(file)
+    end
 
-        def self.option(name, default: nil, result: nil)
-          options[name] = { default: default, result: result }
-        end
+    def retrieve
+      Derivation::Retrieve.new(self).call
+    end
 
-        option :disposition,                 default: -> { "inline" }
-        option :download,                    default: -> { true }
-        option :download_errors,             default: -> { [] }
-        option :download_options,            default: -> { {} }
-        option :expires_in
-        option :filename,                    default: -> { default_filename }
-        option :host
-        option :include_uploaded_file,       default: -> { false }
-        option :metadata,                    default: -> { [] }
-        option :prefix
-        option :secret_key
-        option :type
-        option :upload,                      default: -> { false }
-        option :upload_location,             default: -> { default_upload_location }, result: -> (l) { upload_location(l) }
-        option :upload_options,              default: -> { {} }
-        option :upload_redirect,             default: -> { false }
-        option :upload_redirect_url_options, default: -> { {} }
-        option :upload_storage,              default: -> { source.storage_key.to_sym }
-        option :version
+    def self.options
+      @options ||= {}
+    end
 
-        def option(name)
-          option_definition = self.class.options.fetch(name)
+    def self.option(name, default: nil, result: nil)
+      options[name] = { default: default, result: result }
+    end
 
-          value = options.fetch(name) { shrine_class.derivation_options[name] }
-          value = value.call(name: name, args: args, uploaded_file: source) if value.respond_to?(:call)
+    option :disposition,                 default: -> { "inline" }
+    option :download,                    default: -> { true }
+    option :download_errors,             default: -> { [] }
+    option :download_options,            default: -> { {} }
+    option :expires_in
+    option :filename,                    default: -> { default_filename }
+    option :host
+    option :include_uploaded_file,       default: -> { false }
+    option :metadata,                    default: -> { [] }
+    option :prefix
+    option :secret_key
+    option :type
+    option :upload,                      default: -> { false }
+    option :upload_location,             default: -> { default_upload_location }, result: -> (l) { upload_location(l) }
+    option :upload_options,              default: -> { {} }
+    option :upload_redirect,             default: -> { false }
+    option :upload_redirect_url_options, default: -> { {} }
+    option :upload_storage,              default: -> { source.storage_key.to_sym }
+    option :version
 
-          if value.nil?
-            default = option_definition[:default]
-            value   = instance_exec(&default) if default
-          end
+    def option(name)
+      option_definition = self.class.options.fetch(name)
 
-          result = option_definition[:result]
-          value  = instance_exec(value, &result) if result
+      value = options.fetch(name) { shrine_class.derivation_options[name] }
+      value = value.call(name: name, args: args, uploaded_file: source) if value.respond_to?(:call)
 
-          value
-        end
-
-        def shrine_class
-          source.shrine_class
-        end
-
-        private
-
-        # append version to upload location
-        def upload_location(location)
-          option(:version) ? location.sub(/(?=(\.\w+)?$)/, "-#{option(:version)}") : location
-        end
-
-        def default_filename
-          [name, *args, File.basename(source.id, ".*")].join("-")
-        end
-
-        def default_upload_location
-          directory = source.id.sub(/\.[^\/]+/, "")
-          filename  = [name, *args].join("-")
-
-          [directory, filename].join("/")
-        end
-
-        class Command
-          attr_reader :derivation
-
-          def initialize(derivation)
-            @derivation = derivation
-          end
-
-          def self.delegate(*names)
-            names.each do |name|
-              protected define_method(name) {
-                if [:name, :args, :source].include?(name)
-                  derivation.public_send(name)
-                else
-                  derivation.option(name)
-                end
-              }
-            end
-          end
-
-          private
-
-          def shrine_class
-            derivation.shrine_class
-          end
-        end
+      if value.nil?
+        default = option_definition[:default]
+        value   = instance_exec(&default) if default
       end
 
-      class Derivation::Url < Derivation::Command
-        delegate :name, :args, :source, :secret_key
+      result = option_definition[:result]
+      value  = instance_exec(value, &result) if result
 
-        def call(host: nil, prefix: nil, **options)
-          [host, *prefix, identifier(**options)].join("/")
-        end
+      value
+    end
 
-        private
+    def shrine_class
+      source.shrine_class
+    end
 
-        def identifier(expires_in: nil,
-                       version: nil,
-                       type: nil,
-                       filename: nil,
-                       disposition: nil,
-                       metadata: [])
+    private
 
-          params = {}
-          params[:expires_at]  = (Time.now.utc + expires_in).to_i if expires_in
-          params[:version]     = version if version
-          params[:type]        = type if type
-          params[:filename]    = filename if filename
-          params[:disposition] = disposition if disposition
+    # append version to upload location
+    def upload_location(location)
+      option(:version) ? location.sub(/(?=(\.\w+)?$)/, "-#{option(:version)}") : location
+    end
 
-          source_component = source.urlsafe_dump(metadata: metadata)
+    def default_filename
+      [name, *args, File.basename(source.id, ".*")].join("-")
+    end
 
-          signed_url(name, *args, source_component, params)
-        end
+    def default_upload_location
+      directory = source.id.sub(/\.[^\/]+/, "")
+      filename  = [name, *args].join("-")
 
-        def signed_url(*components)
-          signer = Signer.new(secret_key)
-          signer.signed_url(*components)
-        end
+      [directory, filename].join("/")
+    end
+
+    class Command
+      attr_reader :derivation
+
+      def initialize(derivation)
+        @derivation = derivation
       end
 
-      class App
-        attr_reader :shrine_class, :options
-
-        def initialize(shrine_class:, options: {})
-          @shrine_class = shrine_class
-          @options      = options
-        end
-
-        def call(env)
-          request = Rack::Request.new(env)
-
-          status, headers, body = catch(:halt) do
-            error!(405, "Method not allowed") unless request.get? || request.head?
-
-            handle_request(request)
-          end
-
-          headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
-
-          [status, headers, body]
-        end
-
-        def handle_request(request)
-          verify_signature!(request)
-          check_expiry!(request)
-
-          name, *args, serialized_file = request.path_info.split("/")[1..-1]
-
-          name          = name.to_sym
-          uploaded_file = shrine_class::UploadedFile.urlsafe_load(serialized_file)
-
-          unless shrine_class.derivations.key?(name)
-            error!(404, "Unknown derivation \"#{name}\"")
-          end
-
-          # request params override statically configured options
-          options = self.options.dup
-          options[:type]        = request.params["type"]        if request.params["type"]
-          options[:disposition] = request.params["disposition"] if request.params["disposition"]
-          options[:filename]    = request.params["filename"]    if request.params["filename"]
-
-          begin
-            status, headers, body = uploaded_file.derivation_response(
-              name, *args, env: request.env, **options,
-            )
-          rescue SourceNotFound
-            error!(404, "Source file not found")
-          end
-
-          if status == 200 || status == 206
-            if request.params["expires_at"]
-              headers["Cache-Control"] = "public, max-age=#{expires_in(request)}" # cache until the URL expires
+      def self.delegate(*names)
+        names.each do |name|
+          protected define_method(name) {
+            if [:name, :args, :source].include?(name)
+              derivation.public_send(name)
             else
-              headers["Cache-Control"] = "public, max-age=#{365*24*60*60}" # cache for a year
+              derivation.option(name)
             end
-          end
-
-          [status, headers, body]
-        end
-
-        private
-
-        def verify_signature!(request)
-          signer = Signer.new(secret_key)
-          signer.verify_url("#{request.path_info[1..-1]}?#{request.query_string}")
-        rescue Signer::InvalidSignature => error
-          error!(403, error.message.capitalize)
-        end
-
-        def check_expiry!(request)
-          if request.params["expires_at"]
-            error!(403, "Request has expired") if expires_in(request) <= 0
-          end
-        end
-
-        def expires_in(request)
-          expires_at = Integer(request.params["expires_at"])
-
-          (Time.at(expires_at) - Time.now).to_i
-        end
-
-        # Halts the request with the error message.
-        def error!(status, message)
-          throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
-        end
-
-        def secret_key
-          shrine_class.derivation_options[:secret_key]
+          }
         end
       end
 
-      class Derivation::Response < Derivation::Command
-        delegate :type, :disposition, :filename,
-                 :upload, :upload_redirect, :upload_redirect_url_options
+      private
 
-        def call(env)
-          if upload
-            upload_response(env)
-          else
-            local_response(env)
-          end
+      def shrine_class
+        derivation.shrine_class
+      end
+    end
+  end
+
+  class Derivation::Url < Derivation::Command
+    delegate :name, :args, :source, :secret_key
+
+    def call(host: nil, prefix: nil, **options)
+      [host, *prefix, identifier(**options)].join("/")
+    end
+
+    private
+
+    def identifier(expires_in: nil,
+                   version: nil,
+                   type: nil,
+                   filename: nil,
+                   disposition: nil,
+                   metadata: [])
+
+      params = {}
+      params[:expires_at]  = (Time.now.utc + expires_in).to_i if expires_in
+      params[:version]     = version if version
+      params[:type]        = type if type
+      params[:filename]    = filename if filename
+      params[:disposition] = disposition if disposition
+
+      source_component = source.urlsafe_dump(metadata: metadata)
+
+      signed_url(name, *args, source_component, params)
+    end
+
+    def signed_url(*components)
+      signer = UrlSigner.new(secret_key)
+      signer.signed_url(*components)
+    end
+  end
+
+  class DerivationEndpoint
+    attr_reader :shrine_class, :options
+
+    def initialize(shrine_class:, options: {})
+      @shrine_class = shrine_class
+      @options      = options
+    end
+
+    def call(env)
+      request = Rack::Request.new(env)
+
+      status, headers, body = catch(:halt) do
+        error!(405, "Method not allowed") unless request.get? || request.head?
+
+        handle_request(request)
+      end
+
+      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
+
+      [status, headers, body]
+    end
+
+    def handle_request(request)
+      verify_signature!(request)
+      check_expiry!(request)
+
+      name, *args, serialized_file = request.path_info.split("/")[1..-1]
+
+      name          = name.to_sym
+      uploaded_file = shrine_class::UploadedFile.urlsafe_load(serialized_file)
+
+      unless shrine_class.derivations.key?(name)
+        error!(404, "Unknown derivation \"#{name}\"")
+      end
+
+      # request params override statically configured options
+      options = self.options.dup
+      options[:type]        = request.params["type"]        if request.params["type"]
+      options[:disposition] = request.params["disposition"] if request.params["disposition"]
+      options[:filename]    = request.params["filename"]    if request.params["filename"]
+
+      begin
+        status, headers, body = uploaded_file.derivation_response(
+          name, *args, env: request.env, **options,
+        )
+      rescue Derivation::SourceNotFound
+        error!(404, "Source file not found")
+      end
+
+      if status == 200 || status == 206
+        if request.params["expires_at"]
+          headers["Cache-Control"] = "public, max-age=#{expires_in(request)}" # cache until the URL expires
+        else
+          headers["Cache-Control"] = "public, max-age=#{365*24*60*60}" # cache for a year
         end
+      end
 
-        private
+      [status, headers, body]
+    end
 
-        def local_response(env)
-          derivative = derivation.call
+    private
 
+    def verify_signature!(request)
+      signer = UrlSigner.new(secret_key)
+      signer.verify_url("#{request.path_info[1..-1]}?#{request.query_string}")
+    rescue UrlSigner::InvalidSignature => error
+      error!(403, error.message.capitalize)
+    end
+
+    def check_expiry!(request)
+      if request.params["expires_at"]
+        error!(403, "Request has expired") if expires_in(request) <= 0
+      end
+    end
+
+    def expires_in(request)
+      expires_at = Integer(request.params["expires_at"])
+
+      (Time.at(expires_at) - Time.now).to_i
+    end
+
+    # Halts the request with the error message.
+    def error!(status, message)
+      throw :halt, [status, { "Content-Type" => "text/plain" }, [message]]
+    end
+
+    def secret_key
+      shrine_class.derivation_options[:secret_key]
+    end
+  end
+
+  class Derivation::Response < Derivation::Command
+    delegate :type, :disposition, :filename,
+             :upload, :upload_redirect, :upload_redirect_url_options
+
+    def call(env)
+      if upload
+        upload_response(env)
+      else
+        local_response(env)
+      end
+    end
+
+    private
+
+    def local_response(env)
+      derivative = derivation.call
+
+      file_response(derivative, env)
+    end
+
+    def file_response(file, env)
+      file.close
+      response = rack_file_response(file.path, env)
+
+      status = response[0]
+
+      filename  = self.filename
+      filename += File.extname(file.path) if File.extname(filename).empty?
+
+      headers = {}
+      headers["Content-Type"]        = type || response[1]["Content-Type"]
+      headers["Content-Disposition"] = content_disposition(filename)
+      headers["Content-Length"]      = response[1]["Content-Length"]
+      headers["Content-Range"]       = response[1]["Content-Range"] if response[1]["Content-Range"]
+      headers["Accept-Ranges"]       = "bytes"
+
+      body = Rack::BodyProxy.new(response[2]) { file.delete }
+
+      [status, headers, body]
+    end
+
+    def upload_response(env)
+      uploaded_file = derivation.retrieve
+
+      unless uploaded_file
+        derivative    = derivation.call
+        uploaded_file = derivation.upload(derivative)
+      end
+
+      if upload_redirect
+        derivative.unlink if derivative
+
+        redirect_url = uploaded_file.url(upload_redirect_url_options)
+
+        [302, { "Location" => redirect_url }, []]
+      else
+        if derivative
           file_response(derivative, env)
-        end
-
-        def file_response(file, env)
-          file.close
-          response = rack_file_response(file.path, env)
-
-          status = response[0]
-
-          filename  = self.filename
-          filename += File.extname(file.path) if File.extname(filename).empty?
-
-          headers = {}
-          headers["Content-Type"]        = type || response[1]["Content-Type"]
-          headers["Content-Disposition"] = content_disposition(filename)
-          headers["Content-Length"]      = response[1]["Content-Length"]
-          headers["Content-Range"]       = response[1]["Content-Range"] if response[1]["Content-Range"]
-          headers["Accept-Ranges"]       = "bytes"
-
-          body = Rack::BodyProxy.new(response[2]) { file.delete }
-
-          [status, headers, body]
-        end
-
-        def upload_response(env)
-          uploaded_file = derivation.retrieve
-
-          unless uploaded_file
-            derivative    = derivation.call
-            uploaded_file = derivation.upload(derivative)
-          end
-
-          if upload_redirect
-            derivative.unlink if derivative
-
-            redirect_url = uploaded_file.url(upload_redirect_url_options)
-
-            [302, { "Location" => redirect_url }, []]
-          else
-            if derivative
-              file_response(derivative, env)
-            else
-              uploaded_file.to_rack_response(
-                type:        type,
-                disposition: disposition,
-                filename:    filename,
-                range:       env["HTTP_RANGE"],
-              )
-            end
-          end
-        end
-
-        def rack_file_response(path, env)
-          server = Rack::File.new("", {}, "application/octet-stream")
-
-          if Rack.release > "2"
-            server.serving(Rack::Request.new(env), path)
-          else
-            server = server.dup
-            server.path = path
-            server.serving(env)
-          end
-        end
-
-        def content_disposition(filename)
-          ContentDisposition.format(disposition: disposition, filename: filename)
-        end
-      end
-
-      class Derivation::Processed < Derivation::Command
-        delegate :upload
-
-        def call
-          if upload
-            upload_result
-          else
-            local_result
-          end
-        end
-
-        private
-
-        def local_result
-          derivation.call
-        end
-
-        def upload_result
-          uploaded_file = derivation.retrieve
-
-          unless uploaded_file
-            derivative    = derivation.call
-            uploaded_file = derivation.upload(derivative)
-
-            derivative.unlink
-          end
-
-          uploaded_file
-        end
-      end
-
-      class Derivation::Call < Derivation::Command
-        delegate :name, :args, :source,
-                 :download, :download_errors, :download_options,
-                 :include_uploaded_file
-
-        def call(file = nil)
-          derivative = generate(file)
-
-          unless derivative.respond_to?(:path)
-            fail Error, "expected derivative to be a file object, but was #{derivative.inspect}"
-          end
-
-          derivative
-        end
-
-        private
-
-        def generate(file)
-          if download
-            with_downloaded(file) do |file|
-              if include_uploaded_file
-                uploader.instance_exec(file, source, *args, &derivation_block)
-              else
-                uploader.instance_exec(file, *args, &derivation_block)
-              end
-            end
-          else
-            uploader.instance_exec(source, *args, &derivation_block)
-          end
-        end
-
-        def with_downloaded(file, &block)
-          if file
-            yield file
-          else
-            download_source(&block)
-          end
-        end
-
-        def download_source
-          download_args = download_options.any? ? [download_options] : []
-          downloaded    = false
-
-          source.download(*download_args) do |file|
-            downloaded = true
-            yield file
-          end
-        rescue *download_errors
-          raise if downloaded # re-raise if the error didn't happen on download
-          raise SourceNotFound, "source uploaded file \"#{source.id}\" was not found on storage :#{source.storage_key}"
-        end
-
-        def derivation_block
-          shrine_class.find_derivation(name)
-        end
-
-        def uploader
-          source.uploader
-        end
-      end
-
-      class Derivation::Upload < Derivation::Command
-        delegate :upload_location, :upload_storage, :upload_options, :version
-
-        def call(derivative = nil)
-          derivative ||= derivation.call
-
-          uploader.upload derivative,
-            location:       upload_location,
-            upload_options: upload_options
-        end
-
-        private
-
-        def uploader
-          shrine_class.new(upload_storage)
-        end
-      end
-
-      class Derivation::Retrieve < Derivation::Command
-        delegate :upload_location, :upload_storage, :version
-
-        def call
-          if storage.exists?(upload_location)
-            shrine_class::UploadedFile.new(
-              "storage" => upload_storage.to_s,
-              "id"      => upload_location,
-            )
-          end
-        end
-
-        private
-
-        def storage
-          shrine_class.find_storage(upload_storage)
-        end
-      end
-
-      class Signer
-        InvalidSignature = Class.new(StandardError)
-
-        attr_reader :secret_key
-
-        def initialize(secret_key)
-          @secret_key = secret_key
-        end
-
-        def signed_url(*components, params)
-          path  = Rack::Utils.escape_path(components.join("/"))
-          query = Rack::Utils.build_query(params)
-
-          signature = generate_signature("#{path}?#{query}")
-
-          query = Rack::Utils.build_query(params.merge(signature: signature))
-
-          "#{path}?#{query}"
-        end
-
-        def verify_url(path_with_query)
-          path, query = path_with_query.split("?")
-
-          params    = Rack::Utils.parse_query(query.to_s)
-          signature = params.delete("signature")
-          query     = Rack::Utils.build_query(params)
-
-          verify_signature("#{path}?#{query}", signature)
-        end
-
-        def verify_signature(string, signature)
-          if signature.nil?
-            fail InvalidSignature, "signature is missing"
-          elsif signature != generate_signature(string)
-            fail InvalidSignature, "provided signature doesn't match the expected"
-          end
-        end
-
-        def generate_signature(string)
-          OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, secret_key, string)
+        else
+          uploaded_file.to_rack_response(
+            type:        type,
+            disposition: disposition,
+            filename:    filename,
+            range:       env["HTTP_RANGE"],
+          )
         end
       end
     end
 
-    register_plugin(:derivation_endpoint, DerivationEndpoint)
+    def rack_file_response(path, env)
+      server = Rack::File.new("", {}, "application/octet-stream")
+
+      if Rack.release > "2"
+        server.serving(Rack::Request.new(env), path)
+      else
+        server = server.dup
+        server.path = path
+        server.serving(env)
+      end
+    end
+
+    def content_disposition(filename)
+      ContentDisposition.format(disposition: disposition, filename: filename)
+    end
+  end
+
+  class Derivation::Processed < Derivation::Command
+    delegate :upload
+
+    def call
+      if upload
+        upload_result
+      else
+        local_result
+      end
+    end
+
+    private
+
+    def local_result
+      derivation.call
+    end
+
+    def upload_result
+      uploaded_file = derivation.retrieve
+
+      unless uploaded_file
+        derivative    = derivation.call
+        uploaded_file = derivation.upload(derivative)
+
+        derivative.unlink
+      end
+
+      uploaded_file
+    end
+  end
+
+  class Derivation::Call < Derivation::Command
+    delegate :name, :args, :source,
+             :download, :download_errors, :download_options,
+             :include_uploaded_file
+
+    def call(file = nil)
+      derivative = generate(file)
+
+      unless derivative.respond_to?(:path)
+        fail Error, "expected derivative to be a file object, but was #{derivative.inspect}"
+      end
+
+      derivative
+    end
+
+    private
+
+    def generate(file)
+      if download
+        with_downloaded(file) do |file|
+          if include_uploaded_file
+            uploader.instance_exec(file, source, *args, &derivation_block)
+          else
+            uploader.instance_exec(file, *args, &derivation_block)
+          end
+        end
+      else
+        uploader.instance_exec(source, *args, &derivation_block)
+      end
+    end
+
+    def with_downloaded(file, &block)
+      if file
+        yield file
+      else
+        download_source(&block)
+      end
+    end
+
+    def download_source
+      download_args = download_options.any? ? [download_options] : []
+      downloaded    = false
+
+      source.download(*download_args) do |file|
+        downloaded = true
+        yield file
+      end
+    rescue *download_errors
+      raise if downloaded # re-raise if the error didn't happen on download
+      raise Derivation::SourceNotFound, "source uploaded file \"#{source.id}\" was not found on storage :#{source.storage_key}"
+    end
+
+    def derivation_block
+      shrine_class.find_derivation(name)
+    end
+
+    def uploader
+      source.uploader
+    end
+  end
+
+  class Derivation::Upload < Derivation::Command
+    delegate :upload_location, :upload_storage, :upload_options, :version
+
+    def call(derivative = nil)
+      derivative ||= derivation.call
+
+      uploader.upload derivative,
+        location:       upload_location,
+        upload_options: upload_options
+    end
+
+    private
+
+    def uploader
+      shrine_class.new(upload_storage)
+    end
+  end
+
+  class Derivation::Retrieve < Derivation::Command
+    delegate :upload_location, :upload_storage, :version
+
+    def call
+      if storage.exists?(upload_location)
+        shrine_class::UploadedFile.new(
+          "storage" => upload_storage.to_s,
+          "id"      => upload_location,
+        )
+      end
+    end
+
+    private
+
+    def storage
+      shrine_class.find_storage(upload_storage)
+    end
+  end
+
+  class UrlSigner
+    InvalidSignature = Class.new(StandardError)
+
+    attr_reader :secret_key
+
+    def initialize(secret_key)
+      @secret_key = secret_key
+    end
+
+    def signed_url(*components, params)
+      path  = Rack::Utils.escape_path(components.join("/"))
+      query = Rack::Utils.build_query(params)
+
+      signature = generate_signature("#{path}?#{query}")
+
+      query = Rack::Utils.build_query(params.merge(signature: signature))
+
+      "#{path}?#{query}"
+    end
+
+    def verify_url(path_with_query)
+      path, query = path_with_query.split("?")
+
+      params    = Rack::Utils.parse_query(query.to_s)
+      signature = params.delete("signature")
+      query     = Rack::Utils.build_query(params)
+
+      verify_signature("#{path}?#{query}", signature)
+    end
+
+    def verify_signature(string, signature)
+      if signature.nil?
+        fail InvalidSignature, "signature is missing"
+      elsif signature != generate_signature(string)
+        fail InvalidSignature, "provided signature doesn't match the expected"
+      end
+    end
+
+    def generate_signature(string)
+      OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, secret_key, string)
+    end
   end
 end

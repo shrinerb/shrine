@@ -933,7 +933,7 @@ describe Shrine::Plugins::DerivationEndpoint do
     it "raises SourceNotFound on error from :download_errors raised on downloading" do
       @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
       @uploaded_file.delete
-      assert_raises(Shrine::Plugins::DerivationEndpoint::SourceNotFound) do
+      assert_raises(Shrine::Derivation::SourceNotFound) do
         @uploaded_file.derivation(:gray).call
       end
     end
