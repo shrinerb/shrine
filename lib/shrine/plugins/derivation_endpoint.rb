@@ -4,13 +4,20 @@ require "rack"
 require "content_disposition"
 
 require "openssl"
+require "tempfile"
 
 class Shrine
   module Plugins
     # The `derivation_endpoint` plugin provides a Rack app for dynamically
     # processing uploaded files on request. This allows you to create URLs to
-    # files that haven't been processed yet, and have the endpoint process them
-    # on-the-fly.
+    # files that might not have been processed yet, and have the endpoint
+    # process them on-the-fly.
+    #
+    # By default the endpoint will perform the processing ("derivation") and
+    # serve the processed files ("derivatives"). This strategy assumes you will
+    # have a CDN or some other HTTP cache in front of your app. The endpoint
+    # can additionally be configured to cache processed files to a storage, and
+    # even to redirect to the uploaded processed files on the storage service.
     #
     # ## Usage
     #
@@ -56,10 +63,21 @@ class Shrine
     # generating URLs. The block is called whenever the derivation endpoint
     # receives a request for that derivation. The first argument is the
     # original uploaded file downloaded to disk, and the rest are the arguments
-    # for the derivation provided when generating the URL. The block *must*
-    # return a file object, and that will be returned in the response.
+    # for the derivation provided when generating the URL.
     #
-    # Let's use the [ImageProcessing] gem to generate some thumbnails:
+    # The block must return the processed file in form of a File/Tempfile
+    # object, or a String/Pathname path on disk.
+    #
+    #     class ImageUploader < Shrine
+    #       derivation :thumbnail do |file, *args|
+    #         tempfile = Tempfile.new(binmode: true)
+    #         tempfile.write "<processed file data>"
+    #         tempfile
+    #       end
+    #     end
+    #
+    # To show a real example, let's use the [ImageProcessing] gem to generate
+    # an image thumbnail:
     #
     #     require "image_processing/mini_magick"
     #
@@ -73,7 +91,7 @@ class Shrine
     #
     # ### Generating URLs
     #
-    # Now we can call `#derivation_url` on an uploaded file to generate a URL
+    # We can now call `#derivation_url` on an uploaded file to generate a URL
     # for a specific thumbnail:
     #
     #     photo.image.derivation_url(:thumbnail, "500", "400")
@@ -101,13 +119,12 @@ class Shrine
     #     plugin :derivation_endpoint, host: "https://your-dist-url.cloudfront.net"
     #
     # You can also set `:upload`, which will make the derivation endpoint cache
-    # processed derivatives on the storage, so that processing happens only on
-    # initial request. If you also set `:upload_redirect`, the endpoint will
-    # redirect to the cached derivative on the storage instead of serving it.
+    # processed derivatives on the storage, so that a specific derivative is
+    # generated only once on initial request. If you also set
+    # `:upload_redirect`, the endpoint will redirect to the cached derivative
+    # on the storage instead of serving it.
     #
     #     plugin :derivation_endpoint, upload: true
-    #
-    # These two strategies are not mutually exclusive, you can use both.
     #
     # ## Derivation response
     #
@@ -147,8 +164,8 @@ class Shrine
     #     end
     #
     # This approach gives greater flexibility as it allows executing additional
-    # code on the controller level before and after generating a derivation
-    # response. This might make operations like authentication easier.
+    # code (e.g. authentication) on the controller level before and after
+    # generating a derivation response.
     #
     # The third way allows you to use custom URLs for derivations. In the
     # controller you can call `#derivation_response` directly on the
@@ -182,10 +199,6 @@ class Shrine
     #       end
     #     end
     #
-    # This approach for example allows authorizing access to derivatives, as we
-    # can access the database record to which the uploaded file belongs to
-    # prior to generating a derivation response.
-    #
     # The `Shrine.derivation_endpoint`, `Shrine.derivation_response`, and
     # `UploadedFile#derivation_response` all accept additional options, which
     # override any options set on the plugin level.
@@ -212,8 +225,8 @@ class Shrine
     #       # ...
     #     end
     #
-    # For example, we can use it to specify that thumbnails should be rendered
-    # inline by the browser, while other derivatives should be downloaded.
+    # For example, we can use it to specify thumbnail URLs to be rendered
+    # inline in the browser, while other derivatives will be force downloaded.
     #
     #     plugin :derivation_endpoint, disposition: -> (context) do
     #       if context[:name] == :thumbnail
@@ -1039,7 +1052,7 @@ class Shrine
       headers["Content-Range"]       = response[1]["Content-Range"] if response[1]["Content-Range"]
       headers["Accept-Ranges"]       = "bytes"
 
-      body = Rack::BodyProxy.new(response[2]) { file.delete }
+      body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
 
       [status, headers, body]
     end
@@ -1053,7 +1066,7 @@ class Shrine
       end
 
       if upload_redirect
-        derivative.unlink if derivative
+        File.delete(derivative.path) if derivative
 
         redirect_url = uploaded_file.url(upload_redirect_url_options)
 
@@ -1127,11 +1140,7 @@ class Shrine
 
     def call(file = nil)
       derivative = generate(file)
-
-      unless derivative.respond_to?(:path)
-        fail Error, "expected derivative to be a file object, but was #{derivative.inspect}"
-      end
-
+      derivative = normalize(derivative)
       derivative
     end
 
@@ -1149,6 +1158,24 @@ class Shrine
       else
         uploader.instance_exec(source, *args, &derivation_block)
       end
+    end
+
+    def normalize(derivative)
+      if derivative.is_a?(Tempfile)
+        derivative.open
+      elsif derivative.is_a?(File)
+        derivative.close
+        derivative = File.open(derivative.path)
+      elsif derivative.is_a?(String)
+        derivative = File.open(derivative)
+      elsif defined?(Pathname) && derivative.is_a?(Pathname)
+        derivative = derivative.open
+      else
+        fail Error, "unexpected derivation result: #{derivation.inspect} (expected File, Tempfile, String, or Pathname object)"
+      end
+
+      derivative.binmode
+      derivative
     end
 
     def with_downloaded(file, &block)
