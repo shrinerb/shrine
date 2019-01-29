@@ -532,19 +532,19 @@ class Shrine
     #     uploaded_file    #=> #<Shrine::UploadedFile>
     #     uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
     #
-    # ### `#call`
+    # ### `#generate`
     #
     # `Derivation#call` method calls the derivation block and returns the
     # result.
     #
-    #     result = derivation.call
+    #     result = derivation.generate
     #     result #=> #<Tempfile:...>
     #
     # Internally it will download the source uploaded file to disk and pass it
     # to the derivation block (unless `:download` was disabled). You can
     # also pass in an already downloaded source file:
     #
-    #     derivation.call(source_file)
+    #     derivation.generate(source_file)
     #
     # ### `#upload`
     #
@@ -774,8 +774,8 @@ class Shrine
       Derivation::Processed.new(self).call
     end
 
-    def call(file = nil)
-      Derivation::Call.new(self).call(file)
+    def generate(file = nil)
+      Derivation::Generate.new(self).call(file)
     end
 
     def upload(file = nil)
@@ -1025,7 +1025,7 @@ class Shrine
     private
 
     def local_response(env)
-      derivative = derivation.call
+      derivative = derivation.generate
 
       file_response(derivative, env)
     end
@@ -1055,7 +1055,7 @@ class Shrine
       uploaded_file = derivation.retrieve
 
       unless uploaded_file
-        derivative    = derivation.call
+        derivative    = derivation.generate
         uploaded_file = derivation.upload(derivative)
       end
 
@@ -1110,14 +1110,14 @@ class Shrine
     private
 
     def local_result
-      derivation.call
+      derivation.generate
     end
 
     def upload_result
       uploaded_file = derivation.retrieve
 
       unless uploaded_file
-        derivative    = derivation.call
+        derivative    = derivation.generate
         uploaded_file = derivation.upload(derivative)
 
         derivative.unlink
@@ -1127,7 +1127,7 @@ class Shrine
     end
   end
 
-  class Derivation::Call < Derivation::Command
+  class Derivation::Generate < Derivation::Command
     delegate :name, :args, :source,
              :download, :download_errors, :download_options,
              :include_uploaded_file
@@ -1206,7 +1206,7 @@ class Shrine
     delegate :upload_location, :upload_storage, :upload_options
 
     def call(derivative = nil)
-      derivative ||= derivation.call
+      derivative ||= derivation.generate
 
       uploader.upload derivative,
         location:       upload_location,

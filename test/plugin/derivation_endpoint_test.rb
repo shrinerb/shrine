@@ -726,9 +726,9 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
     end
 
-    describe "#call" do
+    describe "#generate" do
       it "returns the derivative" do
-        tempfile = @uploaded_file.derivation(:gray).call
+        tempfile = @uploaded_file.derivation(:gray).generate
         assert_instance_of Tempfile, tempfile
         assert_equal "gray content", tempfile.read
       end
@@ -736,7 +736,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       it "allows passing already downloaded file" do
         @shrine.derivation(:gray) { |file| file }
         @uploaded_file.expects(:download).never
-        result = @uploaded_file.derivation(:gray).call(file = Tempfile.new)
+        result = @uploaded_file.derivation(:gray).generate(file = Tempfile.new)
         assert_equal file, result
       end
 
@@ -752,16 +752,16 @@ describe Shrine::Plugins::DerivationEndpoint do
         end
 
         @uploaded_file = @uploader.upload(fakeio("original"))
-        @uploaded_file.derivation(:gray, "dark", "sepia").call
+        @uploaded_file.derivation(:gray, "dark", "sepia").generate
       end
 
       it "applies :download_options" do
         @shrine.plugin :derivation_endpoint, download_options: { foo: "foo" }
         @uploaded_file.expects(:download).with(foo: "foo").returns(Tempfile.new)
-        @uploaded_file.derivation(:gray).call
+        @uploaded_file.derivation(:gray).generate
 
         @uploaded_file.expects(:download).with(bar: "bar").returns(Tempfile.new)
-        @uploaded_file.derivation(:gray, download_options: { bar: "bar" }).call
+        @uploaded_file.derivation(:gray, download_options: { bar: "bar" }).generate
       end
 
       it "applies :include_uploaded_file" do
@@ -776,7 +776,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         end
 
         @shrine.plugin :derivation_endpoint, include_uploaded_file: true
-        @uploaded_file.derivation(:gray, "dark").call
+        @uploaded_file.derivation(:gray, "dark").generate
 
         @shrine.derivation(:gray) do |file, *args|
           minitest.assert_instance_of Tempfile, file
@@ -785,7 +785,7 @@ describe Shrine::Plugins::DerivationEndpoint do
           Tempfile.new
         end
 
-        @uploaded_file.derivation(:gray, "dark", include_uploaded_file: false).call
+        @uploaded_file.derivation(:gray, "dark", include_uploaded_file: false).generate
       end
 
       it "applies :download" do
@@ -801,7 +801,7 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.plugin :derivation_endpoint, download: false
         @storage.expects(:open).never
-        @uploaded_file.derivation(:gray, "dark").call
+        @uploaded_file.derivation(:gray, "dark").generate
 
         @shrine.derivation(:gray) do |file, *args|
           minitest.assert_instance_of Tempfile, file
@@ -811,14 +811,14 @@ describe Shrine::Plugins::DerivationEndpoint do
         end
 
         @storage.expects(:open).returns(StringIO.new)
-        @uploaded_file.derivation(:gray, "dark", download: true).call
+        @uploaded_file.derivation(:gray, "dark", download: true).generate
       end
 
       it "raises SourceNotFound on error from :download_errors raised on downloading" do
         @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
         @uploaded_file.delete
         assert_raises(Shrine::Derivation::SourceNotFound) do
-          @uploaded_file.derivation(:gray).call
+          @uploaded_file.derivation(:gray).generate
         end
       end
 
@@ -826,7 +826,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
         @shrine.derivation(:gray) { raise KeyError }
         assert_raises(KeyError) do
-          @uploaded_file.derivation(:gray).call
+          @uploaded_file.derivation(:gray).generate
         end
       end
 
@@ -836,7 +836,7 @@ describe Shrine::Plugins::DerivationEndpoint do
           tempfile << "gray content"
           tempfile
         end
-        tempfile = @uploaded_file.derivation(:gray).call
+        tempfile = @uploaded_file.derivation(:gray).generate
         assert_instance_of Tempfile, tempfile
         assert_equal "gray content", tempfile.read
         assert_equal "gray content", File.read(tempfile.path)
@@ -851,7 +851,7 @@ describe Shrine::Plugins::DerivationEndpoint do
           file << "gray content"
           file
         end
-        file = @uploaded_file.derivation(:gray).call
+        file = @uploaded_file.derivation(:gray).generate
         assert_instance_of File, file
         assert_equal "gray content", file.read
         assert_equal "gray content", File.read(file.path)
@@ -866,7 +866,7 @@ describe Shrine::Plugins::DerivationEndpoint do
           File.write(path, "gray content")
           path
         end
-        file = @uploaded_file.derivation(:gray).call
+        file = @uploaded_file.derivation(:gray).generate
         assert_instance_of File, file
         assert_equal "gray content", file.read
         assert_equal "gray content", File.read(file.path)
@@ -882,7 +882,7 @@ describe Shrine::Plugins::DerivationEndpoint do
           pathname.write("gray content")
           pathname
         end
-        file = @uploaded_file.derivation(:gray).call
+        file = @uploaded_file.derivation(:gray).generate
         assert_instance_of File, file
         assert_equal "gray content", file.read
         assert_equal "gray content", File.read(file.path)
@@ -895,7 +895,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         @shrine.derivation(:gray) { |file| StringIO.new }
 
         assert_raises(Shrine::Error) do
-          @uploaded_file.derivation(:gray, "dark").call
+          @uploaded_file.derivation(:gray, "dark").generate
         end
       end
     end
