@@ -219,6 +219,8 @@ class Shrine
     # access information about the current derivation:
     #
     #     plugin :derivation_endpoint, disposition: -> {
+    #       self   #=> #<Shrine::Derivation>
+    #
     #       name   #=> :thumbnail
     #       args   #=> ["500", "400"]
     #       source #=> #<Shrine::UploadedFile>
@@ -671,7 +673,7 @@ class Shrine
         uploader.opts[:derivation_endpoint_options] ||= {}
         uploader.opts[:derivation_endpoint_options].merge!(opts)
 
-        uploader.opts[:derivation_endpoint_definitions] ||= {}
+        uploader.opts[:derivation_endpoint_derivations] ||= {}
 
         unless uploader.opts[:derivation_endpoint_options][:secret_key]
           fail Error, ":secret_key option is required for derivation_endpoint plugin"
@@ -708,7 +710,7 @@ class Shrine
         end
 
         def derivations
-          opts[:derivation_endpoint_definitions]
+          opts[:derivation_endpoint_derivations]
         end
 
         def derivation_options
