@@ -214,27 +214,24 @@ class Shrine
     # When passing options to the plugin, to `Shrine.derivation_endpoint`,
     # `Shrine.derivation_response`, or to
     # `Shrine::UploadedFile#derivation_response`, for most options the value
-    # can be a block that returns a dynamic result. The block will be called
-    # with a context hash containing `:name`, `:args`, and `:uploaded_file`.
+    # can be a block that returns a dynamic result. The block will be evaluated
+    # within the context of a `Shrine::Derivation` instance, allowing you to
+    # access information about the current derivation:
     #
-    #     plugin :derivation_endpoint, disposition: -> (context) do
-    #       context[:name]          #=> :thumbnail
-    #       context[:args]          #=> ["500", "400"]
-    #       context[:uploaded_file] #=> #<Shrine::UploadedFile>
+    #     plugin :derivation_endpoint, disposition: -> {
+    #       name   #=> :thumbnail
+    #       args   #=> ["500", "400"]
+    #       source #=> #<Shrine::UploadedFile>
     #
     #       # ...
-    #     end
+    #     }
     #
     # For example, we can use it to specify thumbnail URLs to be rendered
     # inline in the browser, while other derivatives will be force downloaded.
     #
-    #     plugin :derivation_endpoint, disposition: -> (context) do
-    #       if context[:name] == :thumbnail
-    #         "inline"
-    #       else
-    #         "attachment"
-    #       end
-    #     end
+    #     plugin :derivation_endpoint, disposition: -> {
+    #       name == :thumbnail ? "inline" : "attachment"
+    #     }
     #
     # ## Host
     #
@@ -296,9 +293,9 @@ class Shrine
     # inferred from the file extension of the derivative (using `Rack::Mime`).
     # You can override that with the `:type` option:
     #
-    #     plugin :derivation_endpoint, type: -> (context) do
-    #       "image/webp" if context[:name] == :webp
-    #     end
+    #     plugin :derivation_endpoint, type: -> {
+    #       "image/webp" if name == :webp
+    #     }
     #
     # If the block returns `nil`, then the default type will be set. You can
     # also set `:type` per URL:
@@ -314,8 +311,8 @@ class Shrine
     # with the `:disposition` and `:filename` options:
     #
     #     plugin :derivation_endpoint,
-    #       disposition: -> (context) { context[:name] == :thumbnail ? "inline" : "attachment" },
-    #       filename:    -> (context) { [context[:name], *context[:args]].join("-") }
+    #       disposition: -> { name == :thumbnail ? "inline" : "attachment" },
+    #       filename:    -> { [name, *args].join("-") }
     #
     # When the user opens the link in the browser, an `inline` disposition will
     # tell the browser to render the file if possible, while `attachment`
@@ -339,14 +336,10 @@ class Shrine
     # The derivative will be uploaded to `<source id>/<name>-<args>` by default,
     # and can be changed via `:upload_location`:
     #
-    #     plugin :derivation_endpoint, upload: true, upload_location: -> (context) do
+    #     plugin :derivation_endpoint, upload: true, upload_location: -> {
     #       # e.g. "derivatives/9a7d1bfdad24a76f9cfaff137fe1b5c7/thumbnail-1000-800"
-    #       [
-    #         "derivatives",
-    #         File.basename(context[:uploaded_file].id, ".*"),
-    #         [context[:name], *context[:args]].join("-")
-    #       ].join("/")
-    #     end
+    #       ["derivatives", File.basename(source.id, ".*"), [name, *args].join("-")].join("/")
+    #     }
     #
     # Since the default upload location won't have any file extension, the
     # derivation response won't know the appropriate `Content-Type` header
@@ -394,9 +387,7 @@ class Shrine
     # probably want to bump the version only of the derivations that you've
     # changed.
     #
-    #     plugin :derivation_endpoint, version: -> (context) do
-    #       context[:name] == :thumbnail ? 1 : nil
-    #     end
+    #     plugin :derivation_endpoint, version: -> { 1 if name == :thumbnail }
     #
     # Now all `:thumbnail` derivation URLs will include `version` in the query
     # string:
@@ -497,6 +488,9 @@ class Shrine
     #
     #     derivation = uploaded_file.derivation(:thumbnail, 500, 500)
     #     derivation #=> #<Shrine::Derivation: @name=:thumbnail, @args=[500, 500] ...>
+    #     derivation.name   #=> :thumbnail
+    #     derivation.args   #=> [500, 500]
+    #     derivation.source #=> #<Shrine::UploadedFile>
     #
     # When initializing the `Derivation` object you can override any plugin
     # options:
@@ -828,7 +822,7 @@ class Shrine
       option_definition = self.class.options.fetch(name)
 
       value = options.fetch(name) { shrine_class.derivation_options[name] }
-      value = value.call(name: name, args: args, uploaded_file: source) if value.respond_to?(:call)
+      value = instance_exec(&value) if value.is_a?(Proc)
 
       if value.nil?
         default = option_definition[:default]
