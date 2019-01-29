@@ -707,10 +707,6 @@ class Shrine
           derivations[name] = block
         end
 
-        def find_derivation(name)
-          derivations[name] or fail Error, "derivation #{name.inspect} is not defined"
-        end
-
         def derivations
           opts[:derivation_endpoint_definitions]
         end
@@ -744,7 +740,8 @@ class Shrine
   end
 
   class Derivation
-    class SourceNotFound < Shrine::Error; end
+    class NotFound       < Error; end
+    class SourceNotFound < Error; end
 
     attr_reader :name, :args, :source, :options
 
@@ -950,10 +947,6 @@ class Shrine
       name          = name.to_sym
       uploaded_file = shrine_class::UploadedFile.urlsafe_load(serialized_file)
 
-      unless shrine_class.derivations.key?(name)
-        error!(404, "Unknown derivation \"#{name}\"")
-      end
-
       # request params override statically configured options
       options = self.options.dup
       options[:type]        = request.params["type"]        if request.params["type"]
@@ -964,6 +957,8 @@ class Shrine
         status, headers, body = uploaded_file.derivation_response(
           name, *args, env: request.env, **options,
         )
+      rescue Derivation::NotFound
+        error!(404, "Unknown derivation \"#{name}\"")
       rescue Derivation::SourceNotFound
         error!(404, "Source file not found")
       end
@@ -1194,7 +1189,7 @@ class Shrine
     end
 
     def derivation_block
-      shrine_class.find_derivation(name)
+      shrine_class.derivations[name] or fail Derivation::NotFound, "derivation #{name.inspect} is not defined"
     end
 
     def uploader

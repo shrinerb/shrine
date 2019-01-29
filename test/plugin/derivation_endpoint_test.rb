@@ -893,9 +893,15 @@ describe Shrine::Plugins::DerivationEndpoint do
 
       it "fails when derivative isn't a File object" do
         @shrine.derivation(:gray) { |file| StringIO.new }
-
         assert_raises(Shrine::Error) do
           @uploaded_file.derivation(:gray, "dark").generate
+        end
+      end
+
+      it "raises NotFound when derivation was not found" do
+        derivation = @uploaded_file.derivation(:unknown)
+        assert_raises(Shrine::Derivation::NotFound) do
+          derivation.generate
         end
       end
     end
