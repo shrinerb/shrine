@@ -10,74 +10,31 @@ class Shrine
   module Plugins
     # The `derivation_endpoint` plugin provides a Rack app for dynamically
     # processing uploaded files on request. This allows you to create URLs to
-    # files that might not have been processed yet, and have the endpoint
+    # files that might not have been generated yet, and have the endpoint
     # process them on-the-fly.
     #
-    # By default the endpoint will perform the processing ("derivation") and
-    # serve the processed files ("derivatives"). This strategy assumes you will
-    # have a CDN or some other HTTP cache in front of your app. The endpoint
-    # can additionally be configured to cache processed files to a storage, and
-    # even to redirect to the uploaded processed files on the storage service.
+    # ## Quick start
     #
-    # ## Usage
-    #
-    # When loading the plugin, you need to provide a secret key, which will be
-    # used to sign URLs. We also need to provide a path prefix where the
-    # endpoint will be mounted, which will be added to generated URLs.
+    # We first load the plugin, providing a secret key and a path prefix to
+    # where the endpoint will be mounted:
     #
     #     class ImageUploader < Shrine
     #       plugin :derivation_endpoint,
     #         secret_key: "<your-secret-key>",
-    #         prefix:     "deriatives/image"
+    #         prefix:     "derivations/image"
     #     end
     #
-    # ### Mounting endpoint
-    #
-    # We can then mount an endpoint for a specific uploader into our app's
-    # router on the specified path prefix:
-    #
-    #     # config.ru (Rack)
-    #     map "/derivations/image" do
-    #       run ImageUploader.derivation_endpoint
-    #     end
-    #
-    #     # OR
+    # We can then mount the derivation endpoint for our uploader into our app's
+    # router on the path prefix we specified:
     #
     #     # config/routes.rb (Rails)
     #     Rails.application.routes.draw do
-    #       mount ImageUploader.derivation_endpoint => "/derivations/image"
+    #       mount ImageUploader.derivation_endpoint => "derivations/image"
     #     end
     #
-    # ### Defining derivations
-    #
-    # Now that the endpoint is set up, we can define derivations on our
-    # uploader. Derivations are defined with a name and a block:
-    #
-    #     class ImageUploader < Shrine
-    #       derivation :thumbnail do |file, *args|
-    #         # ...
-    #       end
-    #     end
-    #
-    # The name uniquely identifies the derivation, and will be used when
-    # generating URLs. The block is called whenever the derivation endpoint
-    # receives a request for that derivation. The first argument is the
-    # original uploaded file downloaded to disk, and the rest are the arguments
-    # for the derivation provided when generating the URL.
-    #
-    # The block must return the processed file in form of a File/Tempfile
-    # object, or a String/Pathname path on disk.
-    #
-    #     class ImageUploader < Shrine
-    #       derivation :thumbnail do |file, *args|
-    #         tempfile = Tempfile.new(binmode: true)
-    #         tempfile.write "<processed file data>"
-    #         tempfile
-    #       end
-    #     end
-    #
-    # To show a real example, let's use the [ImageProcessing] gem to generate
-    # an image thumbnail:
+    # Next we can define a derivation for type of processing we want to apply
+    # to attached files. For example, we can generate image thumbnails using
+    # the [ImageProcessing] gem:
     #
     #     require "image_processing/mini_magick"
     #
@@ -89,18 +46,13 @@ class Shrine
     #       end
     #     end
     #
-    # ### Generating URLs
+    # Now that we have our derivation defined and the endpoint mounted, we can
+    # generate the an URL . If we have an instance
+    # of a `Photo` model with an `image` attachment, we would call
+    # `#derivation_url` on the attached file:
     #
-    # We can now call `#derivation_url` on an uploaded file to generate a URL
-    # for a specific thumbnail:
-    #
-    #     photo.image.derivation_url(:thumbnail, "500", "400")
-    #     #=> "/derivations/image/thumbnail/500/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
-    #
-    # The first argument is the derivation name, while the rest are arguments
-    # that will be passed to the derivation block. They are included in the URL
-    # path, along will the serialized uploaded file that will be used as the
-    # source file. The URL is signed with the secret key to prevent tampering.
+    #     photo.image.derivation_url(:thumbnail, "400", "600")
+    #     #=> "/derivations/image/thumbnail/400/600/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
     #
     # The example above assumes that `photo` is an instance of a `Photo` model
     # which defines an `image` attachment. Calling `photo.image` returns an
