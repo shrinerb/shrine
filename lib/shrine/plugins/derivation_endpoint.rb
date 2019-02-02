@@ -277,6 +277,20 @@ class Shrine
     #     uploaded_file.derivation_url(:pdf, disposition: "attachment", filename: "custom-filename")
     #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?disposition=attachment&filename=custom-filename&signature=..."
     #
+    # ### Cache Control
+    #
+    # The endpoint uses the [`Cache-Control`] response header to tell clients
+    # that they can cache derivation responses, for 1 year by default. You can
+    # change the caching duration via the `:cache_control` option:
+    #
+    #     plugin :derivation_endpoint, cache_control: { max_age: 7*24*60*60 } # 7 weeks
+    #     # Cache-Control: public, max-age=604800
+    #
+    # You can use this option to modify any other `Cache-Control` directives:
+    #
+    #     plugin :derivation_endpoint, cache_control: { public: false, private: true }
+    #     # Cache-Control: private, max-age=31536000
+    #
     # ## Uploading
     #
     # By default the derivation from a source file will be called each time
@@ -918,11 +932,7 @@ class Shrine
       end
 
       if status == 200 || status == 206
-        if request.params["expires_at"]
-          headers["Cache-Control"] = "public, max-age=#{expires_in(request)}" # cache until the URL expires
-        else
-          headers["Cache-Control"] = "public, max-age=#{365*24*60*60}" # cache for a year
-        end
+        headers["Cache-Control"] = cache_control(request)
       end
 
       [status, headers, body]
@@ -955,7 +965,23 @@ class Shrine
     end
 
     def secret_key
-      shrine_class.derivation_options[:secret_key]
+      derivation_options[:secret_key]
+    end
+
+    def cache_control(request)
+      directives = { public: true, max_age: 365*24*60*60 }
+      directives[:max_age] = expires_in(request) if request.params["expires_at"]
+      directives.merge!(derivation_options[:cache_control]) if derivation_options[:cache_control]
+
+      directives
+        .reject { |key, value| value == nil || value == false }
+        .map    { |key, value| [key.to_s.tr("_", "-"), value] }
+        .map    { |key, value| value == true ? key : "#{key}=#{value}" }
+        .join(", ")
+    end
+
+    def derivation_options
+      shrine_class.derivation_options.merge(self.options)
     end
   end
 
