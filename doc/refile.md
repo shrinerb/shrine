@@ -484,7 +484,7 @@ end
 [shrine-imgix]: https://github.com/shrinerb/shrine-imgix
 [shrine-uploadcare]: https://github.com/shrinerb/shrine-uploadcare
 [Attache]: https://github.com/choonkeat/attache
-[image_processing]: https://github.com/janko-m/image_processing
+[image_processing]: https://github.com/janko/image_processing
 [Uppy]: https://uppy.io
 [Direct Uploads to S3]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo

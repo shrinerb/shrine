@@ -224,7 +224,7 @@
         url: https://github.com/iquest/rails_admin_shrine
       -
         name: uppy-s3_multipart
-        url: https://github.com/janko-m/uppy-s3_multipart
+        url: https://github.com/janko/uppy-s3_multipart
 -
   -
     title: Demos

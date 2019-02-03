@@ -292,5 +292,5 @@ tested by the linter.
 
 [HTTP.rb]: https://github.com/httprb/http
 [fake IO]: https://github.com/shrinerb/shrine/blob/master/test/support/fakeio.rb
-[Down]: https://github.com/janko-m/down
-[`Down::Http`]: https://github.com/janko-m/down#httprb
+[Down]: https://github.com/janko/down
+[`Down::Http`]: https://github.com/janko/down#httprb

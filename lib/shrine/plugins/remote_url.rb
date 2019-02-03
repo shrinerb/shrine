@@ -87,7 +87,7 @@ class Shrine
     #
     #     plugin :infer_extension
     #
-    # [Down]: https://github.com/janko-m/down
+    # [Down]: https://github.com/janko/down
     # [shrine-url]: https://github.com/shrinerb/shrine-url
     module RemoteUrl
       def self.configure(uploader, opts = {})

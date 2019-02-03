@@ -56,7 +56,7 @@ class Shrine
     # If you want the result of processing to be multiple files, use the
     # `versions` plugin.
     #
-    # [image_processing]: https://github.com/janko-m/image_processing
+    # [image_processing]: https://github.com/janko/image_processing
     module Processing
       def self.configure(uploader)
         uploader.opts[:processing] ||= {}

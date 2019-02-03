@@ -707,7 +707,7 @@ class Shrine
     # :version
     # :  Version number to append to the URL for cache busting (default: `nil`)
     #
-    # [ImageProcessing]: https://github.com/janko-m/image_processing
+    # [ImageProcessing]: https://github.com/janko/image_processing
     # [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
     # [`Content-Disposition`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
     # [`Cache-Control`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Disposition

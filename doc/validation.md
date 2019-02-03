@@ -145,4 +145,4 @@ class ImageUploader < ApplicationUploader
 end
 ```
 
-[ImageProcessing]: https://github.com/janko-m/image_processing
+[ImageProcessing]: https://github.com/janko/image_processing

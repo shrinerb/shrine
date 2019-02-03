@@ -395,14 +395,14 @@ photo.image.url(width: 100, height: 100, crop: :fit)
 
 [`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html
 [image_optim]: https://github.com/toy/image_optim
-[ImageProcessing]: https://github.com/janko-m/image_processing
-[`ImageProcessing::MiniMagick`]: https://github.com/janko-m/image_processing/blob/master/doc/minimagick.md
+[ImageProcessing]: https://github.com/janko/image_processing
+[`ImageProcessing::MiniMagick`]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md
 [ImageMagick]: https://www.imagemagick.org
 [GraphicsMagick]: http://www.graphicsmagick.org
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
 [ImageOptim.com]: https://imageoptim.com/api
-[Down]: https://github.com/janko-m/down
+[Down]: https://github.com/janko/down
 [HTTP.rb]: https://github.com/httprb/http
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [reprocessing versions]:http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html

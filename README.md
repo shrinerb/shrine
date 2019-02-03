@@ -978,7 +978,7 @@ The gem is available as open source under the terms of the [MIT License].
 [sequel plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
-[image_processing]: https://github.com/janko-m/image_processing
+[image_processing]: https://github.com/janko/image_processing
 [ImageMagick]: https://www.imagemagick.org/script/index.php
 [libvips]: http://libvips.github.io/libvips/
 [validation_helpers plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html
@@ -987,7 +987,7 @@ The gem is available as open source under the terms of the [MIT License].
 [Uppy]: https://uppy.io
 [tus]: https://tus.io
 [uppy tus]: https://uppy.io/docs/tus/
-[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [backgrounding plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [Advantages of Shrine]: https://shrinerb.com/rdoc/files/doc/advantages_md.html
 [external storages]: https://shrinerb.com/#external
@@ -1010,7 +1010,7 @@ The gem is available as open source under the terms of the [MIT License].
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [uppy aws s3 multipart]: https://uppy.io/docs/aws-s3-multipart/
-[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
+[uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [resumable uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries

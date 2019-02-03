@@ -181,4 +181,4 @@ of the uploaded file content. If you plan to retrieve uploaded file content
 multiple times for the same `Shrine::UploadedFile` instance, consider using the
 `tempfile` plugin.
 
-[`Down::ChunkedIO`]: https://github.com/janko-m/down#streaming
+[`Down::ChunkedIO`]: https://github.com/janko/down#streaming

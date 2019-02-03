@@ -712,7 +712,7 @@ Shrine allows you to override the S3 endpoint:
 Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com", **options)
 ```
 
-[image_processing]: https://github.com/janko-m/image_processing
+[image_processing]: https://github.com/janko/image_processing
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
 [Reprocessing versions]: https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
 [shrine-fog]: https://github.com/shrinerb/shrine-fog

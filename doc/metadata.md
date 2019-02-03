@@ -310,4 +310,4 @@ end
 [FastImage]: https://github.com/sdsykes/fastimage
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
-[tus server]: https://github.com/janko-m/tus-ruby-server
+[tus server]: https://github.com/janko/tus-ruby-server

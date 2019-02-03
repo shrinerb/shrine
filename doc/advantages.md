@@ -303,7 +303,7 @@ limit.
 [ROM]: http://rom-rb.org
 [Hanami::Model]: https://github.com/hanami/model
 [plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
-[Down]: https://github.com/janko-m/down
+[Down]: https://github.com/janko/down
 [`file`]: http://linux.die.net/man/1/file
 [FileMagic]: https://github.com/blackwinter/ruby-filemagic
 [FastImage]: https://github.com/sdsykes/fastimage
@@ -316,7 +316,7 @@ limit.
 [God objects]: https://en.wikipedia.org/wiki/God_object
 [ImageMagick]: https://www.imagemagick.org
 [refile-mini_magick]: https://github.com/refile/refile-mini_magick
-[ImageProcessing]: https://github.com/janko-m/image_processing
+[ImageProcessing]: https://github.com/janko/image_processing
 [auto orienting]: https://www.imagemagick.org/script/command-line-options.php#auto-orient
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
 [libvips]: http://libvips.github.io/libvips/
@@ -335,14 +335,14 @@ limit.
 [Dashboard]: https://uppy.io/examples/dashboard/
 [background job]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
-[Down streaming]: https://github.com/janko-m/down#streaming
+[Down streaming]: https://github.com/janko/down#streaming
 [Transloadit]: https://transloadit.com
 [tus]: https://tus.io
 [tus implementations]: https://tus.io/implementations.html
 [tus-js-client]: https://github.com/tus/tus-js-client
 [uppy tus]: https://uppy.io/docs/tus/
-[tus-ruby-server]: https://github.com/janko-m/tus-ruby-server
+[tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [ImageTragick]: https://imagetragick.com
-[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
+[uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [OWASP]: https://www.owasp.org/index.php/Unrestricted_File_Upload

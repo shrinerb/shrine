@@ -394,7 +394,7 @@ setup] guide.
 [uppy aws s3]: https://uppy.io/docs/aws-s3/
 [uppy aws-s3 cors]: https://uppy.io/docs/aws-s3/#S3-Bucket-configuration
 [uppy aws s3 multipart]: https://uppy.io/docs/aws-s3/
-[uppy-s3_multipart]: https://github.com/janko-m/uppy-s3_multipart
+[uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [Amazon S3 Data Consistency Model]: http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode
 [CORS guide]: http://docs.aws.amazon.com/AmazonS3/latest/dev/cors.html
 [CORS API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_cors-instance_method
