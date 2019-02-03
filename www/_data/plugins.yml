@@ -52,6 +52,10 @@ Model:
 
 Rack:
   -
+    name: derivation_endpoint
+    path: DerivationEndpoint.html
+    description: Provides a Rack application for processing uploaded files on-the-fly.
+  -
     name: direct_upload
     path: DirectUpload.html
     description: "[OBSOLETE] Use upload_endpoint and presign_endpoint plugins instead."

@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `derivation_endpoint` plugin for processing uploaded files on-the-fly (@janko-m)
+
 * Allow Marcel to fall back to the file extension in `determine_mime_type` plugin (@skarlcf)
 
 * Don't return cached app instance in `Shrine.download_endpoint` in `download_endpoint` plugin (@janko-m)
