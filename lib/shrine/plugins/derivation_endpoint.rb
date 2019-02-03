@@ -32,13 +32,14 @@ class Shrine
     #       mount ImageUploader.derivation_endpoint => "derivations/image"
     #     end
     #
-    # Next we can define a derivation for type of processing we want to apply
-    # to attached files. For example, we can generate image thumbnails using
-    # the [ImageProcessing] gem:
+    # Next we can define a "derivation" block for the type of processing we
+    # want to apply to an attached file. For example, we can generate image
+    # thumbnails using the [ImageProcessing] gem:
     #
     #     require "image_processing/mini_magick"
     #
     #     class ImageUploader < Shrine
+    #       # ...
     #       derivation :thumbnail do |file, width, height|
     #         ImageProcessing::MiniMagick
     #           .source(file)
@@ -46,54 +47,100 @@ class Shrine
     #       end
     #     end
     #
-    # Now that we have our derivation defined and the endpoint mounted, we can
-    # generate the an URL . If we have an instance
-    # of a `Photo` model with an `image` attachment, we would call
-    # `#derivation_url` on the attached file:
+    # Now we can generate "derivation" URLs from attached files, which on
+    # request will call the derivation block we defined.
     #
-    #     photo.image.derivation_url(:thumbnail, "400", "600")
-    #     #=> "/derivations/image/thumbnail/400/600/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+    #     photo.image.derivation_url(:thumbnail, "600", "400")
+    #     #=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
     #
-    # The example above assumes that `photo` is an instance of a `Photo` model
-    # which defines an `image` attachment. Calling `photo.image` returns an
-    # instance of `Shrine::UploadedFile` given that a file has been attached.
+    # In this example, `photo` is an instance of a `Photo` model which has an
+    # `image` attachment. The URL will render a `600x400` thumbnail of the
+    # original image.
     #
-    # ### Performance considerations
+    # ## How it works
     #
-    # Unless you've enabled `:upload` and `:upload_redirect` options, the
-    # derivation endpoint will generate and serve derivatives on each request.
-    # This can take a lot of resources, so you want it to happen rarely.
+    # The `#derivation_url` method is defined on `Shrine::UploadedFile`
+    # objects. It generates an URL consisting of the configured path prefix,
+    # derivation name and arguments, serialized uploaded file, and an URL
+    # signature generated using the configured secret key:
     #
-    # Therefore, it's highly recommended to put a **CDN or other HTTP cache**
-    # in front of your application. Once you have that, you can have derivation
-    # URLs point to the CDN by setting the `:host` option:
+    #     /  derivations/image  /  thumbnail  /  600/400  /  eyJmZvbyIb3JhZ2UiOiJzdG9yZSJ9  ?  signature=...
+    #       └──── prefix ─────┘  └── name ──┘  └─ args ─┘  └─── serialized source file ───┘
+    #
+    # When the derivation URL is requested, the derivation endpoint will first
+    # verify the signature included in query params, and proceed only if it
+    # matches the calculated signature. This ensures that only the server can
+    # generate valid derivation URLs, preventing potential DoS attacks.
+    #
+    # The derivation endpoint then extracts the source file data, derivation
+    # name and arguments from the request URL, and calls the corresponding
+    # derivation block, passing the downloaded source file and derivation
+    # arguments.
+    #
+    #     derivation :thumbnail do |file, arg1, arg2, ...|
+    #       file #=> #<Tempfile:...> (source file downloaded to disk)
+    #       arg1 #=> "600" (first derivation argument in #derivation_url)
+    #       arg2 #=> "400" (second derivation argument in #derivation_url)
+    #
+    #       # ... do processing ...
+    #
+    #       # return result as a File/Tempfile object or String/Pathname path
+    #     end
+    #
+    # The derivation block is expected to return the processed file is a
+    # `File`/`Tempfile` object or a `String`/`Pathname` path. The resulting
+    # file is then rendered in the HTTP response.
+    #
+    # ### Performance
+    #
+    # By default, the processed file returned by the derivation block is not
+    # cached anywhere. This means that repeated requests to the same derivation
+    # URL will execute the derivation block each time, which can put a lot of
+    # load on your application.
+    #
+    # For this reason it's highly recommended to put a **CDN or other HTTP
+    # cache** in front of your application. If you've configured a CDN, you can
+    # set the CDN host at the plugin level, and it will be used for all
+    # derivation URLs:
     #
     #     plugin :derivation_endpoint, host: "https://your-dist-url.cloudfront.net"
     #
-    # You can also set `:upload`, which will make the derivation endpoint cache
-    # processed derivatives on the storage, so that a specific derivative is
-    # generated only once on initial request. If you also set
-    # `:upload_redirect`, the endpoint will redirect to the cached derivative
-    # on the storage instead of serving it.
+    # Additionally, you can have the endpoint cache derivatives to a storage.
+    # With this setup, the generated derivative will be uploaded to the storage
+    # on initial request, and then on subsequent requests the derivative will
+    # be served directly from the storage.
     #
     #     plugin :derivation_endpoint, upload: true
     #
+    # If you want to avoid having the endpoint directly serve the generated
+    # derivatives, you can have the derivation response redirect to the
+    # uploaded derivative on the storage service.
+    #
+    #     plugin :derivation_endpoint, upload: true, upload_redirect: true
+    #
+    # For more details, see the "Uploading" section.
+    #
     # ## Derivation response
     #
-    # There are three ways to generate derivation responses. First is the one
-    # we've already seen, which is to plug the Rack app into our router.
+    # Mounting the derivation endpoint into the app's router is the easiest way
+    # to handle derivation requests, as routing and setting the response is
+    # done automatically.
     #
     #     # config/routes.rb
     #     Rails.application.routes.draw do
-    #       mount ImageUploader.derivation_endpoint => "/derivations/image"
+    #       mount ImageUploader.derivation_endpoint => "derivations/image"
     #     end
     #
-    # Second way keeps the URL format, but allows you to route the request to
-    # a custom controller. Inside the controller you can call
-    # `Shrine.derivation_response` with the Rack env hash to handle the
-    # request. The target derivation name and arguments are inferred from
-    # the request information. The return value is an array of the status,
-    # headers, and body that should be set for the top-level response.
+    # However, this approach can also be limiting if one wants to perform
+    # additional operations around derivation requests, such as authentication
+    # and authorization.
+    #
+    # Instead of mounting the endpoint into the router, you can also call the
+    # derivation endpoint from a controller. In this case the endpoint needs to
+    # receive the Rack env hash, so that it can infer derivation parameters
+    # from the request URL. The return value is a 3-element array, containing
+    # the status, headers, and body that should be returned in the HTTP
+    # response:
     #
     #     # config/routes.rb
     #     Rails.application.routes.draw do
@@ -103,6 +150,7 @@ class Shrine
     #     # app/controllers/derivations_controller.rb
     #     class DerivationsController < ApplicationController
     #       def image
+    #         # we can perform authentication here
     #         set_rack_response ImageUploader.derivation_response(request.env)
     #       end
     #
@@ -115,14 +163,10 @@ class Shrine
     #       end
     #     end
     #
-    # This approach gives greater flexibility as it allows executing additional
-    # code (e.g. authentication) on the controller level before and after
-    # generating a derivation response.
-    #
-    # The third way allows you to use custom URLs for derivations. In the
-    # controller you can call `#derivation_response` directly on the
-    # `UploadedFile`, passing the derivation name, arguments, and the Rack env
-    # hash.
+    # For even more control, you can generate derivation responses in custom
+    # routes. Once you retrieve the `Shrine::UploadedFile` object, you can call
+    # `#derivation_response` directly on it, passing the derivation name and
+    # arguments, as well as the Rack env hash.
     #
     #     # config/routes.rb
     #     Rails.application.routes.draw do
@@ -135,8 +179,9 @@ class Shrine
     #
     #     # app/controllers/photos_controller.rb
     #     class PhotosController < ApplicationController
-    #       def thubmnail
-    #         photo = Photos.find(params[:id])
+    #       def thumbnail
+    #         # we can perform authorization here
+    #         photo = Photo.find(params[:id])
     #         image = photo.image
     #
     #         set_rack_response image.derivation_response(:thumbnail, 300, 300, env: request.env)
@@ -151,9 +196,9 @@ class Shrine
     #       end
     #     end
     #
-    # The `Shrine.derivation_endpoint`, `Shrine.derivation_response`, and
-    # `UploadedFile#derivation_response` all accept additional options, which
-    # override any options set on the plugin level.
+    # `Shrine.derivation_endpoint`, `Shrine.derivation_response`, and
+    # `UploadedFile#derivation_response` methods all accept additional options,
+    # which will override options set on the plugin level.
     #
     #     ImageUploader.derivation_endpoint(disposition: "attachment")
     #     # or
@@ -161,14 +206,14 @@ class Shrine
     #     # or
     #     uploaded_file.derivation_response(:thumbnail, env: env, disposition: "attachment")
     #
-    # ## Dynamic options
+    # ## Dynamic settings
     #
-    # When passing options to the plugin, to `Shrine.derivation_endpoint`,
-    # `Shrine.derivation_response`, or to
-    # `Shrine::UploadedFile#derivation_response`, for most options the value
-    # can be a block that returns a dynamic result. The block will be evaluated
-    # within the context of a `Shrine::Derivation` instance, allowing you to
-    # access information about the current derivation:
+    # For most options passed to `plugin :derivation_endpoint`,
+    # `Shrine.derivation_endpoint`, `Shrine.derivation_response`, or
+    # `Shrine::UploadedFile#derivation_response`, the value to be a block that
+    # returns a dynamic result. The block will be evaluated within the context
+    # of a `Shrine::Derivation` instance, allowing you to access information
+    # about the current derivation:
     #
     #     plugin :derivation_endpoint, disposition: -> {
     #       self   #=> #<Shrine::Derivation>
@@ -180,7 +225,7 @@ class Shrine
     #       # ...
     #     }
     #
-    # For example, we can use it to specify thumbnail URLs to be rendered
+    # For example, we can use it to specify that thumbnails should be rendered
     # inline in the browser, while other derivatives will be force downloaded.
     #
     #     plugin :derivation_endpoint, disposition: -> {
@@ -189,7 +234,7 @@ class Shrine
     #
     # ## Host
     #
-    # By default generated URLs are relative. To generate absolute URLs, you
+    # Derivation URLs are relative by default. To generate absolute URLs, you
     # can pass the `:host` option:
     #
     #     plugin :derivation_endpoint, host: "https://example.com"
@@ -197,33 +242,34 @@ class Shrine
     # Now the generated URLs will include the specified URL host:
     #
     #     uploaded_file.derivation_url(:thumbnail)
-    #     #=> "https://example.com/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
+    #     #=> "https://example.com/.../thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
     #
     # You can also pass `:host` per URL:
     #
     #     uploaded_file.derivation_url(:thumbnail, host: "https://example.com")
-    #     #=> "https://example.com/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
+    #     #=> "https://example.com/.../thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
     #
     # ## Prefix
     #
     # If you're mounting the derivation endpoint under a path prefix, the
-    # `:prefix` option needs to match in order for correct URLs to be generated:
+    # derivation URLs will need to include that path prefix. This can be
+    # configured with the `:prefix` option:
     #
-    #     plugin :derivation_endpoint, prefix: "derivations/image"
+    #     plugin :derivation_endpoint, prefix: "transformations/image"
     #
     # Now generated URLs will include the specified path prefix:
     #
     #     uploaded_file.derivation_url(:thumbnail)
-    #     #=> "/derivations/image/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
+    #     #=> ".../transformations/image/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
     #
     # You can also pass `:prefix` per URL:
     #
-    #     uploaded_file.derivation_url(:thumbnail, prefix: "derivations/image")
-    #     #=> "/derivations/image/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
+    #     uploaded_file.derivation_url(:thumbnail, prefix: "transformations/image")
+    #     #=> ".../transformations/image/thumbnail/eyJpZCI6ImZvbyIsInN?signature=..."
     #
     # ## Expiration
     #
-    # By default generated URLs are valid indefinitely. If you want URLs to
+    # By default derivation URLs are valid indefinitely. If you want URLs to
     # expire after a certain amount of time, you can set the `:expires_in`
     # option:
     #
@@ -232,77 +278,93 @@ class Shrine
     # Now any URL will stop being valid 90 seconds after it was generated:
     #
     #     uploaded_file.derivation_url(:thumbnail)
-    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?expires_at=1547843568&signature=..."
+    #     #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN?expires_at=1547843568&signature=..."
     #
     # You can also pass `:expires_in` per URL:
     #
     #     uploaded_file.derivation_url(:thumbnail, expires_in: 90)
-    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?expires_at=1547843568&signature=..."
+    #     #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN?expires_at=1547843568&signature=..."
     #
     # ## Response headers
     #
     # ### Content Type
     #
-    # By default in the derivation response, the [`Content-Type`] header is
-    # inferred from the file extension of the derivative (using `Rack::Mime`).
-    # You can override that with the `:type` option:
+    # The derivation response includes the [`Content-Type`] header. By default
+    # default its value will be inferred from the file extension of the
+    # derivative (using `Rack::Mime`). This can be overriden with the `:type`
+    # option:
     #
     #     plugin :derivation_endpoint, type: -> {
     #       "image/webp" if name == :webp
     #     }
     #
-    # If the block returns `nil`, then the default type will be set. You can
-    # also set `:type` per URL:
+    # The above will set `Content-Type` response header value to `image/webp`
+    # for `:webp` derivatives, while for others it will be inferred from the
+    # file extension.
+    #
+    # You can also set `:type` per URL:
     #
     #     uploaded_file.derivation_url(:webp, type: "image/webp")
-    #     #=> "/webp/eyJpZCI6ImZvbyIsInN?type=image%2Fwebp&signature=..."
+    #     #=> ".../webp/eyJpZCI6ImZvbyIsInN?type=image%2Fwebp&signature=..."
     #
     # ### Content Disposition
     #
-    # By default in the derivation response, the [`Content-Disposition`] header
-    # sets the disposition to `inline`, while the download filename is generated
-    # from derivation name, arguments and source file id. You can override that
-    # with the `:disposition` and `:filename` options:
+    # The derivation response includes the [`Content-Disposition`] header. By
+    # default the disposition is set to `inline`, while the download filename
+    # is generated from derivation name, arguments and source file id. These
+    # values can be changed with the `:disposition` and `:filename` options:
     #
     #     plugin :derivation_endpoint,
     #       disposition: -> { name == :thumbnail ? "inline" : "attachment" },
     #       filename:    -> { [name, *args].join("-") }
     #
-    # When the user opens the link in the browser, an `inline` disposition will
-    # tell the browser to render the file if possible, while `attachment`
-    # disposition will force download.
+    # With the above settings, visiting a thumbnail URL will render the image
+    # in the browser, while other derivatives will be treated as an attachment
+    # and be downloaded.
     #
     # The `:filename` and `:disposition` options can also be set per URL:
     #
     #     uploaded_file.derivation_url(:pdf, disposition: "attachment", filename: "custom-filename")
-    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?disposition=attachment&filename=custom-filename&signature=..."
+    #     #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN?disposition=attachment&filename=custom-filename&signature=..."
     #
     # ### Cache Control
     #
     # The endpoint uses the [`Cache-Control`] response header to tell clients
-    # that they can cache derivation responses, for 1 year by default. You can
-    # change the caching duration via the `:cache_control` option:
+    # (browsers, CDNs, HTTP caches) how long they can cache derivation
+    # responses. The default cache duration is 1 year since the initial
+    # request. This can be changed with the `:cache_control` option:
     #
     #     plugin :derivation_endpoint, cache_control: { max_age: 7*24*60*60 } # 7 weeks
     #     # Cache-Control: public, max-age=604800
     #
-    # You can use this option to modify any other `Cache-Control` directives:
+    # It's also possible to modify any other `Cache-Control` directives:
     #
     #     plugin :derivation_endpoint, cache_control: { public: false, private: true }
     #     # Cache-Control: private, max-age=31536000
     #
+    # Note that `Cache-Control` is added to response headers only when using
+    # `Shrine.derivation_endpoint` or `Shrine.derivation_response`, it's not
+    # added when using `Shrine::UploadedFile#derivation_response`.
+    #
     # ## Uploading
     #
-    # By default the derivation from a source file will be called each time
-    # it's requested. However, you can cache the derivatives to a storage by
-    # setting `:upload` to `true`. On first request the generated derivative
-    # will be uploaded to storage, and then on subsequent requests the already
-    # uploaded derivative will be served from the storage.
+    # By default the generated derivatives aren't saved anywhere, which means
+    # that repeated requests to the same derivation URL will call the
+    # derivation block each time. If you don't want to rely on solely on your
+    # HTTP cache, you can enable the `:upload` option, which will make
+    # derivatives automatically cached on the Shrine storage:
     #
     #     plugin :derivation_endpoint, upload: true
     #
-    # The derivative will be uploaded to `<source id>/<name>-<args>` by default,
-    # and can be changed via `:upload_location`:
+    # Now whenever a derivation is requested, the endpoint will first check
+    # whether the derivative already exists on the storage. If it doesn't
+    # exist, it will fetch the original uploaded file, call the derivation
+    # block, upload the derivative to the storage, and serve the derivative. If
+    # the derivative does exist on checking, the endpoint will download the
+    # derivative and serve it.
+    #
+    # The default upload location for derivatives is `<source id>/<name>-<args>`.
+    # This can be changed with the `:upload_location` option:
     #
     #     plugin :derivation_endpoint, upload: true, upload_location: -> {
     #       # e.g. "derivatives/9a7d1bfdad24a76f9cfaff137fe1b5c7/thumbnail-1000-800"
@@ -311,11 +373,13 @@ class Shrine
     #
     # Since the default upload location won't have any file extension, the
     # derivation response won't know the appropriate `Content-Type` header
-    # value, so it will be set to `application/octet-stream`. It's recommended
-    # to use the `:type` option to set the appropriate `Content-Type` value.
+    # value to set, and the generic `application/octet-stream` will be used.
+    # It's recommended to use the `:type` option to set the appropriate
+    # `Content-Type` value.
     #
-    # The target storage used is the same as for the source uploaded file, but
-    # it can be changed via `:upload_storage`:
+    # The target storage used is the same as for the source uploaded file. The
+    # `:upload_storage` option can be used to specify a different Shrine
+    # storage:
     #
     #     plugin :derivation_endpoint, upload: true,
     #                                  upload_storage: :thumbnail_storage
@@ -328,14 +392,16 @@ class Shrine
     #
     # ### Redirecting
     #
-    # The derivative content will be served through the endpoint by default.
-    # However, you can configure the endpoint to redirect to the uploaded
-    # derivative on the storage:
+    # You can configure the endpoint to redirect to the uploaded derivative on
+    # the storage instead of serving it through the endpoint (which is the
+    # default behaviour) by setting both `:upload` and `:upload_redirect` to
+    # `true`:
     #
     #     plugin :derivation_endpoint, upload: true,
     #                                  upload_redirect: true
     #
-    # In that case additional storage-specific URL options can also be passed in:
+    # In that case additional storage-specific URL options can be passed in for
+    # the redirect URL:
     #
     #     plugin :derivation_endpoint, upload: true,
     #                                  upload_redirect: true,
@@ -343,32 +409,31 @@ class Shrine
     #
     # ## Cache busting
     #
-    # The derivation endpoint returns `Cache-Control` header in the derivation
-    # response telling HTTP caches like CDNs to cache the response for a year.
-    # So if you change how a derivation is being performed, users might still
-    # see the previous version of the derivative if it was already generated
-    # and cached.
+    # The derivation endpoint response instructs browsers, CDNs and other
+    # clients to cache the response for a long time. This saves server
+    # resources and improves response times. However, if the derivation block
+    # is modified, the derivation URLs will remain unchanged, which means that
+    # old cached derivatives might still be served.
     #
-    # If you want the already cached derivatives to be re-generated, you can
-    # add a "version" parameter to the URL, which will make HTTP caches treat
-    # is as a new URL. You can do this by via the `:version` option. You
-    # probably want to bump the version only of the derivations that you've
-    # changed.
+    # If you want to ensure derivation URLs don't point to old cached
+    # derivatives, you can add a "version" query parameter to the URL, which
+    # will make HTTP caches treat it as a new URL. You can do this via the
+    # `:version` option:
     #
     #     plugin :derivation_endpoint, version: -> { 1 if name == :thumbnail }
     #
-    # Now all `:thumbnail` derivation URLs will include `version` in the query
-    # string:
+    # With the above settings, all `:thumbnail` derivation URLs will include
+    # `version` in the query string:
     #
     #     uploaded_file.derivation_url(:thumbnail)
-    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?version=1&signature=..."
+    #     #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN?version=1&signature=..."
     #
     # You can also bump the `:version` per URL:
     #
     #     uploaded_file.derivation_url(:thumbnail, version: 1)
-    #     #=> "/thumbnail/eyJpZCI6ImZvbyIsInN?version=1&signature=..."
+    #     #=> ".../thumbnail/eyJpZCI6ImZvbyIsInN?version=1&signature=..."
     #
-    # ## Accessing uploaded file
+    # ## Accessing source file
     #
     # If you want to access the source `UploadedFile` object when deriving, you
     # can set `:include_uploaded_file` to `true`.
@@ -387,10 +452,11 @@ class Shrine
     #       # ...
     #     end
     #
-    # By default original metadata that was extracted during attachment isn't
-    # available, to keep the derivation URL as short as possible. However, if
-    # you want to have original metadata available when deriving, you can set
-    # the `:metadata` option to the list of needed metadata values:
+    # By default original metadata that were extracted on attachment won't
+    # be available in the derivation block. This is because metadata we want to
+    # have available would need to be serialized into the derivation URL, which
+    # would make it longer. However, you can opt in for the metadata you need
+    # with the `:metadata` option:
     #
     #     plugin :derivation_endpoint, metadata: ["filename", "mime_type"]
     #
@@ -423,19 +489,21 @@ class Shrine
     #       sse_customer_key_md5:   "secret_key_md5",
     #     }
     #
-    # When using `Shrine.derivation_endpoint` or `Shrine.derivation_response`,
-    # if the original uploaded file has been deleted, the error the storage
-    # raises when attempting to download it will be propagated by default. You
-    # can choose to have the endpoint convert these errors to 404 responses by
-    # adding them to `:download_errors`:
+    # If the source file has been deleted, the error the storage raises when
+    # attempting to download it will be propagated by default. For
+    # `Shrine.derivation_endpoint` and `Shrine.derivation_response` you can
+    # have these errors converted to 404 responses by adding them to
+    # `:download_errors`:
     #
     #     plugin :derivation_endpoint, download_errors: [
     #       Errno::ENOENT,              # raised by Shrine::Storage::FileSystem
     #       Aws::S3::Errors::NoSuchKey, # raised by Shrine::Storage::S3
     #     ]
     #
-    # If you don't want the uploaded file to be downloaded to disk for you, set
-    # `:download` to `false`.
+    # ### Skipping download
+    #
+    # If you for whatever reason you don't want the uploaded file to be
+    # downloaded to disk for you, you can set `:download` to `false`.
     #
     #     plugin :derivation_endpoint, download: false
     #
@@ -446,6 +514,15 @@ class Shrine
     #       uploaded_file #=> #<Shrine::UploadedFile>
     #
     #       # ...
+    #     end
+    #
+    # One use case for this is delegating processing to a 3rd-party service:
+    #
+    #     require "down/http"
+    #
+    #     derivation :thumbnail do |uploaded_file, width, height|
+    #       # generate the thumbnail using ImageOptim.com
+    #       Down::Http.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{uploaded_file.url}")
     #     end
     #
     # ## Derivation API
@@ -474,9 +551,9 @@ class Shrine
     #
     # ### `#response`
     #
-    # `Derivation#response` method (called by
-    # `UploadedFile#derivation_response`) generates appropriate status, headers,
-    # and body for the derivative to be returned as an HTTP response.
+    # `Derivation#response` method (called by `UploadedFile#derivation_response`)
+    # generates appropriate status, headers, and body for the derivative to be
+    # returned as an HTTP response.
     #
     #     status, headers, body = derivation.response
     #     status  #=> 200
@@ -502,7 +579,7 @@ class Shrine
     #
     # ### `#generate`
     #
-    # `Derivation#call` method calls the derivation block and returns the
+    # `Derivation#generate` method calls the derivation block and returns the
     # result.
     #
     #     result = derivation.generate
@@ -552,6 +629,10 @@ class Shrine
     #
     # ## Plugin Options
     #
+    # :cache_control
+    # :  Hash of directives for the `Cache-Control` response header (default:
+    #    `{ public: true, max_age: 365*24*60*60 }`)
+    #
     # :disposition
     # :  Whether the browser should attempt to render the derivative (`inline`)
     #    or prompt the user to download the file to disk (`attachment`)
@@ -559,7 +640,7 @@ class Shrine
     #
     # :download
     # :  Whether the source uploaded file should be downloaded to disk when the
-    #    derivation block is called (default: `true`).
+    #    derivation block is called (default: `true`)
     #
     # :download_errors
     # :  List of error classes that will be converted to a `404 Not Found`
@@ -592,7 +673,7 @@ class Shrine
     # :  Path prefix added to the URLs (default: `nil`)
     #
     # :secret_key
-    # :  Key that's used to sign derivation URLs in order to prevent tampering
+    # :  Key used to sign derivation URLs in order to prevent tampering
     #    (required)
     #
     # :type
@@ -629,6 +710,7 @@ class Shrine
     # [ImageProcessing]: https://github.com/janko-m/image_processing
     # [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
     # [`Content-Disposition`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
+    # [`Cache-Control`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Disposition
     module DerivationEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response
@@ -642,7 +724,7 @@ class Shrine
         uploader.opts[:derivation_endpoint_derivations] ||= {}
 
         unless uploader.opts[:derivation_endpoint_options][:secret_key]
-          fail Error, ":secret_key option is required for derivation_endpoint plugin"
+          fail Error, "must provide :secret_key option to derivation_endpoint plugin"
         end
       end
 
@@ -658,7 +740,7 @@ class Shrine
           prefix = derivation_options[:prefix]
           match  = path_info.match(/^\/#{prefix}/)
 
-          fail Error, "expected request path \"#{path_info}\" to start with \"/#{prefix}\"" unless match
+          fail Error, "request path must start with \"/#{prefix}\", but is \"#{path_info}\"" unless match
 
           begin
             env["SCRIPT_NAME"] += match.to_s
@@ -1165,7 +1247,7 @@ class Shrine
       end
     rescue *download_errors
       raise if downloaded # re-raise if the error didn't happen on download
-      raise Derivation::SourceNotFound, "source uploaded file \"#{source.id}\" was not found on storage :#{source.storage_key}"
+      raise Derivation::SourceNotFound, "source file \"#{source.id}\" was not found on storage :#{source.storage_key}"
     end
 
     def derivation_block
@@ -1229,7 +1311,7 @@ class Shrine
   end
 
   class UrlSigner
-    InvalidSignature = Class.new(StandardError)
+    class InvalidSignature < Error; end
 
     attr_reader :secret_key
 
@@ -1260,9 +1342,9 @@ class Shrine
 
     def verify_signature(string, signature)
       if signature.nil?
-        fail InvalidSignature, "signature is missing"
+        fail InvalidSignature, "missing \"signature\" param"
       elsif signature != generate_signature(string)
-        fail InvalidSignature, "provided signature doesn't match the expected"
+        fail InvalidSignature, "provided signature does not match the calculated signature"
       end
     end
 

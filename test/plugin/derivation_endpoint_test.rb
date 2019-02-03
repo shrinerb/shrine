@@ -186,6 +186,13 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_equal signatures, signatures.uniq
     end
 
+    it "doesn't change the existing signature" do
+      @uploaded_file = @uploader.upload(fakeio, location: "consistent-location")
+      derivation_url = @uploaded_file.derivation_url(:foo)
+      signature      = derivation_url[/signature=(\w+)/, 1]
+      assert_equal "9599ad1f343bd125cbf5bda3eb91c89165f00c8127b03ffc168f2a914a4267e2", signature
+    end
+
     it "doesn't require the derivation to exist" do
       derivation_url = @uploaded_file.derivation_url(:other)
       assert_match %r{/other/\w+\?}, derivation_url
@@ -348,7 +355,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       @shrine.derivation(:gray) { fail "this should not be called" }
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
-      assert_match "signature doesn't match",        response.body_binary
+      assert_match "signature does not match",       response.body_binary
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
       assert_nil response.headers["Cache-Control"]
     end
@@ -358,7 +365,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       @shrine.derivation(:gray) { fail "this should not be called" }
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
-      assert_match "Signature is missing",           response.body_binary
+      assert_match "Missing \"signature\" param",    response.body_binary
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
       assert_nil response.headers["Cache-Control"]
     end
@@ -367,7 +374,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       derivation_url = @uploaded_file.derivation_url(:gray) + "&foo=bar"
       response = app.get(derivation_url)
       assert_equal 403,                              response.status
-      assert_match "signature doesn't match",        response.body_binary
+      assert_match "signature does not match",       response.body_binary
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
     end
 
@@ -608,6 +615,8 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "bytes",                    response[1]["Accept-Ranges"]
 
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
+
+        refute_instance_of Shrine::Plugins::RackResponse::FileBody, response[2]
       end
 
       it "returns uploaded file response the second time" do
