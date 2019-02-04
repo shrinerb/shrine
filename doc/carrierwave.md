@@ -714,9 +714,9 @@ Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com", **optio
 
 [image_processing]: https://github.com/janko/image_processing
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
-[Reprocessing versions]: https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[Reprocessing versions]: doc/regenerating_versions.md
 [shrine-fog]: https://github.com/shrinerb/shrine-fog
-[direct uploads]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
-[`Shrine::Storage::S3`]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[direct uploads]: doc/direct_s3.md
+[`Shrine::Storage::S3`]: doc/storage/s3.md
 [`Shrine::Storage::GoogleCloudStorage`]: https://github.com/renchap/shrine-google_cloud_storage
 [`Shrine::Storage::Fog`]: https://github.com/shrinerb/shrine-fog

@@ -486,6 +486,6 @@ end
 [Attache]: https://github.com/choonkeat/attache
 [image_processing]: https://github.com/janko/image_processing
 [Uppy]: https://uppy.io
-[Direct Uploads to S3]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[Direct Uploads to S3]: doc/direct_s3.md
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
-[Multiple Files]: https://shrinerb.com/rdoc/files/doc/multiple_files_md.html
+[Multiple Files]: doc/multiple_files.md

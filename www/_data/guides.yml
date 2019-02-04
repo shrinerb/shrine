@@ -1,57 +1,57 @@
 -
   name: Advantages of Shrine
-  path: advantages_md.html
+  path: advantages.md
 -
   name: Creating a New Plugin
-  path: creating_plugins_md.html
+  path: creating_plugins.md
 -
   name: Creating a New Storage
-  path: creating_storages_md.html
+  path: creating_storages.md
 -
   name: Design of Shrine
-  path: design_md.html
+  path: design.md
 -
   name: Direct Uploads to S3
-  path: direct_s3_md.html
+  path: direct_s3.md
 -
   name: Extracting Metadata
-  path: metadata_md.html
+  path: metadata.md
 -
   name: File Processing
-  path: processing_md.html
+  path: processing.md
 -
   name: File Validation
-  path: validation_md.html
+  path: validation.md
 -
   name: Migrating to Different Location
-  path: changing_location_md.html
+  path: changing_location.md
 -
   name: Migrating to Different Storage
-  path: migrating_storage_md.html
+  path: migrating_storage.md
 -
   name: Multiple Files
-  path: multiple_files_md.html
+  path: multiple_files.md
 -
   name: Reprocessing Versions
-  path: regenerating_versions_md.html
+  path: regenerating_versions.md
 -
   name: Retrieving Uploads
-  path: retrieving_uploads_md.html
+  path: retrieving_uploads.md
 -
   name: Securing Uploads
-  path: securing_uploads_md.html
+  path: securing_uploads.md
 -
   name: Shrine for CarrierWave Users
-  path: carrierwave_md.html
+  path: carrierwave.md
 -
   name: Shrine for Paperclip Users
-  path: paperclip_md.html
+  path: paperclip.md
 -
   name: Shrine for Refile Users
-  path: refile_md.html
+  path: refile.md
 -
   name: Testing with Shrine
-  path: testing_md.html
+  path: testing.md
 -
   name: Using Attacher
-  path: attacher_md.html
+  path: attacher.md

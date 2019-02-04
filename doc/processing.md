@@ -405,7 +405,7 @@ photo.image.url(width: 100, height: 100, crop: :fit)
 [Down]: https://github.com/janko/down
 [HTTP.rb]: https://github.com/httprb/http
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[reprocessing versions]:http://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html
+[reprocessing versions]: doc/regenerating_versions.md
 [Dragonfly]: http://markevans.github.io/dragonfly/
 [imgproxy]: https://github.com/DarthSim/imgproxy
 [imaginary]: https://github.com/h2non/imaginary

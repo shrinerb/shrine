@@ -29,35 +29,9 @@ RDoc::Task.new do |t|
   ]
 end
 
-task rdoc: "website:rdoc_github_links"
-
 namespace :website do
   task :build do
     sh({"BUNDLE_GEMFILE" => nil}, "bundle install --quiet && bundle exec jekyll build", chdir: "www")
     Rake::Task["rdoc"].invoke
-  end
-
-  task :rdoc_github_links do
-    begin
-      require "oga"
-
-      revision = `git rev-parse HEAD`.chomp
-      github_icon = '<img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">'
-
-      Dir["www/build/rdoc/classes/**/*.html"].each do |class_file|
-        html = File.read(class_file)
-        document = Oga.parse_html(html)
-
-        file_link = document.css(".header .paths li a").first
-        file_link_html = file_link.to_xml
-
-        file_link["href"] = "https://github.com/shrinerb/shrine/blob/#{revision}/#{file_link.text}"
-
-        new_html = html.sub(file_link_html, "#{file_link.to_xml} #{github_icon}")
-
-        File.write(class_file, new_html)
-      end
-    rescue LoadError
-    end
   end
 end

@@ -1,0 +1,9 @@
+-
+  name: Shrine::Storage::FileSystem
+  guide: storage/file_system.md
+  rdoc: Shrine/Storage/FileSystem.html
+-
+  name: Shrine::Storage::S3
+  guide: storage/s3.md
+  rdoc: Shrine/Storage/S3.html
+

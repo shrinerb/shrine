@@ -16,12 +16,14 @@ If you're curious how it compares to other file attachment libraries, see the [A
 
 ## Resources
 
-- Documentation: [shrinerb.com](https://shrinerb.com)
-- Demo code: [Roda][roda demo] / [Rails][rails demo]
-- Source: [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)
-- Wiki: [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)
-- Bugs: [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues)
-- Help & Discussion: [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine)
+| Resource          | URL                                                                                        |
+| :-------          | :---                                                                                       |
+| Documentation     | [shrinerb.com](https://shrinerb.com)                                                       |
+| Demo code         | [Roda][roda demo] / [Rails][rails demo]                                                    |
+| Source            | [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)                           |
+| Wiki              | [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)                 |
+| Bugs              | [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues)             |
+| Help & Discussion | [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine) |
 
 ## Quick start
 
@@ -969,43 +971,43 @@ The gem is available as open source under the terms of the [MIT License].
 
 [Shrine]: https://shrinerb.com
 [plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
-[FileSystem]: https://shrinerb.com/rdoc/classes/Shrine/Storage/FileSystem.html
-[S3]: https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html
+[FileSystem]: doc/storage/file_system.md
+[S3]: doc/storage/s3.md
 [GCS]: https://github.com/renchap/shrine-google_cloud_storage
 [Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
 [Transloadit]: https://github.com/shrinerb/shrine-transloadit
-[activerecord plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Activerecord.html
-[sequel plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Sequel.html
+[activerecord plugin]: doc/plugins/activerecord.md
+[sequel plugin]: doc/plugins/sequel.md
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [image_processing]: https://github.com/janko/image_processing
 [ImageMagick]: https://www.imagemagick.org/script/index.php
 [libvips]: http://libvips.github.io/libvips/
-[validation_helpers plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/ValidationHelpers.html
-[upload_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
-[presign_endpoint plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
+[validation_helpers plugin]: doc/plugins/validation_helpers.md
+[upload_endpoint plugin]: doc/plugins/upload_endpoint.md
+[presign_endpoint plugin]: doc/plugins/presign_endpoint.md
 [Uppy]: https://uppy.io
 [tus]: https://tus.io
 [uppy tus]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
-[backgrounding plugin]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
-[Advantages of Shrine]: https://shrinerb.com/rdoc/files/doc/advantages_md.html
+[backgrounding plugin]: doc/plugins/backgrounding.md
+[Advantages of Shrine]: doc/advantages.md
 [external storages]: https://shrinerb.com/#external
-[creating storage]: https://shrinerb.com/rdoc/files/doc/creating_storages_md.html
-[creating plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
-[Retrieving Uploads]: https://shrinerb.com/rdoc/files/doc/retrieving_uploads_md.html
-[Using Attacher]: https://shrinerb.com/rdoc/files/doc/attacher_md.html
+[creating storage]: doc/creating_storages.md
+[creating plugin]: doc/creating_plugins.md
+[Retrieving Uploads]: doc/retrieving_uploads.md
+[Using Attacher]: doc/attacher.md
 [plugins]: https://shrinerb.com/#plugins
 [`file`]: http://linux.die.net/man/1/file
-[Extracting Metadata]: https://shrinerb.com/rdoc/files/doc/metadata_md.html
-[File Processing]: https://shrinerb.com/rdoc/files/doc/processing_md.html
-[File Validation]: https://shrinerb.com/rdoc/files/doc/validation_md.html
+[Extracting Metadata]: doc/metadata.md
+[File Processing]: doc/processing.md
+[File Validation]: doc/validation.md
 [metadata direct uploads]: https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads
 [uppy xhr upload]: https://uppy.io/docs/xhr-upload/
 [direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [uppy aws s3]: https://uppy.io/docs/aws-s3/
 [direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
-[direct S3 uploads guide]: https://shrinerb.com/rdoc/files/doc/direct_s3_md.html
+[direct S3 uploads guide]: doc/direct_s3.md
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
@@ -1018,5 +1020,5 @@ The gem is available as open source under the terms of the [MIT License].
 [S3 lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [Roda]: https://github.com/jeremyevans/roda
 [Refile]: https://github.com/refile/refile
-[CoC]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
+[CoC]: CODE_OF_CONDUCT.md
 [MIT License]: http://opensource.org/licenses/MIT

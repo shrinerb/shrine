@@ -10,9 +10,3 @@
 -
   name: Shrine::Attachment
   path: Shrine/Attachment/InstanceMethods.html
--
-  name: Shrine::Storage::FileSystem
-  path: Shrine/Storage/FileSystem.html
--
-  name: Shrine::Storage::S3
-  path: Shrine/Storage/S3.html

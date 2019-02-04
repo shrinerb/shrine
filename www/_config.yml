@@ -4,7 +4,7 @@ baseurl: ""
 url: shrinerb.com
 markdown: kramdown
 destination: build
-gems:
+plugins:
   - jemoji
 exclude:
   - Gemfile

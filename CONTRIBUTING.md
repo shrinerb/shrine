@@ -131,7 +131,7 @@ post = Post.create(image: Down.download("https://example.com/image-from-internet
 [Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
 [SQLite]: https://www.sqlite.org
-[Design of Shrine]: https://shrinerb.com/rdoc/files/doc/design_md.html
-[Creating a New Plugin]: https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html
+[Design of Shrine]: doc/design_md.html
+[Creating a New Plugin]: doc/creating_plugins_md.html
 [Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/

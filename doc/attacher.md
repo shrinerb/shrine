@@ -270,4 +270,4 @@ attacher.store!(file, location: "custom/location")
 attacher.delete!(uploaded_file, foo: "bar")
 ```
 
-[file migrations]: https://shrinerb.com/rdoc/files/doc/migrating_storage_md.html
+[file migrations]: doc/migrating_storage.md

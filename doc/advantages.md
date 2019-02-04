@@ -321,19 +321,19 @@ limit.
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
-[metadata]: https://shrinerb.com/rdoc/files/doc/metadata_md.html
-[store_dimensions]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/StoreDimensions.html
-[add_metadata]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/AddMetadata.html
-[validation]: https://shrinerb.com/rdoc/files/doc/validation_md.html
-[upload_endpoint]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
-[presign_endpoint]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
+[metadata]: doc/metadata.md
+[store_dimensions]: doc/plugins/store_dimensions.md
+[add_metadata]: doc/plugins/add_metadata.md
+[validation]: doc/validation.md
+[upload_endpoint]: doc/plugins/upload_endpoint.md
+[presign_endpoint]: doc/plugins/presign_endpoint.md
 [Uppy]: https://uppy.io
 [XHRUpload]: https://uppy.io/docs/xhrupload/
 [AwsS3]: https://uppy.io/docs/aws-s3/
 [Tus]: https://uppy.io/docs/tus/
 [StatusBar]: https://uppy.io/examples/statusbar/
 [Dashboard]: https://uppy.io/examples/dashboard/
-[background job]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Backgrounding.html
+[background job]: doc/plugins/backgrounding.md
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
 [Down streaming]: https://github.com/janko/down#streaming
 [Transloadit]: https://transloadit.com

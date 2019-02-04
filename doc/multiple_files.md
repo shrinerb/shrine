@@ -294,8 +294,8 @@ attributes feature gives you for free.
 [`Sequel::Model.nested_attributes`]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html
 [`ActiveRecord::Base.accepts_nested_attributes_for`]: http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
 [`Mongoid::Document.accepts_nested_attributes_for`]: https://docs.mongodb.com/mongoid/master/tutorials/mongoid-nested-attributes/
-[`upload_endpoint`]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/UploadEndpoint.html
-[`presign_endpoint`]: https://shrinerb.com/rdoc/classes/Shrine/Plugins/PresignEndpoint.html
+[`upload_endpoint`]: doc/plugins/upload_endpoint.md
+[`presign_endpoint`]: doc/plugins/presign_endpoint.md
 [Uppy]: https://uppy.io
 [direct app uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [direct S3 uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads
