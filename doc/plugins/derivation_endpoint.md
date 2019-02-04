@@ -12,7 +12,7 @@ endpoint will be mounted:
 ```rb
 class ImageUploader < Shrine
   plugin :derivation_endpoint,
-    secret_key: "<your-secret-key>",
+    secret_key: "<YOUR SECRET KEY>",
     prefix:     "derivations/image"
 end
 ```
@@ -31,6 +31,9 @@ Next we can define a "derivation" block for the type of processing we want to
 apply to an attached file. For example, we can generate image thumbnails using
 the [ImageProcessing] gem:
 
+```rb
+gem "image_processing", "~> 1.2"
+```
 ```rb
 require "image_processing/mini_magick"
 
@@ -58,9 +61,9 @@ attachment. The URL will render a `600x400` thumbnail of the original image.
 ## How it works
 
 The `#derivation_url` method is defined on `Shrine::UploadedFile` objects. It
-generates an URL consisting of the configured path prefix, derivation name and
-arguments, serialized uploaded file, and an URL signature generated using the
-configured secret key:
+generates an URL consisting of the configured [path prefix](#prefix),
+derivation name and arguments, serialized uploaded file, and an URL signature
+generated using the configured secret key:
 
 ```
 /  derivations/image  /  thumbnail  /  600/400  /  eyJmZvbyIb3JhZ2UiOiJzdG9yZSJ9  ?  signature=...
@@ -124,7 +127,7 @@ derivative on the storage service.
 plugin :derivation_endpoint, upload: true, upload_redirect: true
 ```
 
-For more details, see the "Uploading" section.
+For more details, see the [Uploading](#uploading) section.
 
 ## Derivation response
 
@@ -154,7 +157,8 @@ headers, and body that should be returned in the HTTP response:
 Rails.application.routes.draw do
   get "/derivations/image/*rest" => "derivations#image"
 end
-
+```
+```rb
 # app/controllers/derivations_controller.rb
 class DerivationsController < ApplicationController
   def image
@@ -223,10 +227,10 @@ uploaded_file.derivation_response(:thumbnail, env: env, disposition: "attachment
 
 For most options passed to `plugin :derivation_endpoint`,
 `Shrine.derivation_endpoint`, `Shrine.derivation_response`, or
-`Shrine::UploadedFile#derivation_response`, the value to be a block that
+`Shrine::UploadedFile#derivation_response`, the value can also be a block that
 returns a dynamic result. The block will be evaluated within the context of a
-`Shrine::Derivation` instance, allowing you to access information about the
-current derivation:
+[`Shrine::Derivation`](#derivation-api) instance, allowing you to access
+information about the current derivation:
 
 ```rb
 plugin :derivation_endpoint, disposition: -> {
@@ -324,8 +328,8 @@ uploaded_file.derivation_url(:thumbnail, expires_in: 90)
 ### Content Type
 
 The derivation response includes the [`Content-Type`] header. By default
-default its value will be inferred from the file extension of the derivative
-(using `Rack::Mime`). This can be overriden with the `:type` option:
+default its value will be inferred from the file extension of the generated
+derivative (using `Rack::Mime`). This can be overriden with the `:type` option:
 
 ```rb
 plugin :derivation_endpoint, type: -> { "image/webp" if name == :webp }
@@ -333,7 +337,7 @@ plugin :derivation_endpoint, type: -> { "image/webp" if name == :webp }
 
 The above will set `Content-Type` response header value to `image/webp` for
 `:webp` derivatives, while for others it will be inferred from the file
-extension.
+extension if possible.
 
 You can also set `:type` per URL:
 
@@ -420,7 +424,7 @@ plugin :derivation_endpoint, upload: true, upload_location: -> {
 Since the default upload location won't have any file extension, the derivation
 response won't know the appropriate `Content-Type` header value to set, and the
 generic `application/octet-stream` will be used. It's recommended to use the
-`:type` option to set the appropriate `Content-Type` value.
+[`:type`](#content-type) option to set the appropriate `Content-Type` value.
 
 The target storage used is the same as for the source uploaded file. The
 `:upload_storage` option can be used to specify a different Shrine storage:
@@ -568,7 +572,7 @@ plugin :derivation_endpoint, download_errors: [
 
 ### Skipping download
 
-If you for whatever reason you don't want the uploaded file to be downloaded to
+If for whatever reason you don't want the uploaded file to be downloaded to
 disk for you, you can set `:download` to `false`.
 
 ```rb
@@ -647,9 +651,10 @@ body    #=> #each object that yields derivative content
 
 ### `#processed`
 
-`Derivation#processed` method returns the processed derivative. If `:upload` is
-enabled, it returns an `UploadedFile` object pointing to the derivative,
-processing and uploading the derivative if it hasn't been already.
+`Derivation#processed` method returns the processed derivative. If
+[`:upload`](#uploading) is enabled, it returns a `Shrine::UploadedFile` object
+pointing to the derivative, processing and uploading the derivative if it
+hasn't been already.
 
 ```rb
 uploaded_file = derivation.processed
@@ -719,28 +724,28 @@ derivation.option(:upload_location)
 
 ## Plugin Options
 
-| Name                           | Description                                                                                                                                               |
-| :----------------------------- | :----------                                                                                                                                               |
-| `:cache_control`               | Hash of directives for the `Cache-Control` response header (default: `{ public: true, max_age: 365*24*60*60 }`)                                           |
-| `:disposition`                 | Whether the browser should attempt to render the derivative (`inline`) or prompt the user to download the file to disk (`attachment`) (default: `inline`) |
-| `:download`                    | Whether the source uploaded file should be downloaded to disk when the derivation block is called (default: `true`)                                       |
-| `:download_errors`             | List of error classes that will be converted to a `404 Not Found` response by the derivation endpoint (default: `[]`)                                     |
-| `:download_options`            | Additional options to pass when downloading the source uploaded file (default: `{}`)                                                                      |
-| `:expires_in`                  | Number of seconds after which the URL will not be available anymore (default: `nil`)                                                                      |
-| `:filename`                    | Filename the browser will assume when the derivative is downloaded to disk (default: `<name>-<args>-<source id basename>`)                                |
-| `:host`                        | URL host to use when generated URLs (default: `nil`)                                                                                                      |
-| `:include_uploaded_file`       | Whether to include the source uploaded file in the derivation block arguments (default: `false`)                                                          |
-| `:metadata`                    | List of metadata keys the source uploaded file should include in the derivation block (default: `[]`)                                                     |
-| `:prefix`                      | Path prefix added to the URLs (default: `nil`)                                                                                                            |
-| `:secret_key`                  | Key used to sign derivation URLs in order to prevent tampering (required)                                                                                 |
-| `:type`                        | Media type returned in the `Content-Type` response header in the derivation response (default: determined from derivative's extension)                    |
-| `:upload`                      | Whether the generated derivatives will be cached on the storage (default: `false`)                                                                        |
-| `:upload_location`             | Location to which the derivatives will be uploaded on the storage (default: `<source id>/<name>-<args>`)                                                  |
-| `:upload_options`              | Additional options to be passed when uploading derivatives (default: `{}`)                                                                                |
-| `:upload_redirect`             | Whether the derivation response should redirect to the uploaded derivative (default: `false`)                                                             |
-| `:upload_redirect_url_options` | Additional options to be passed when generating the URL for the uploaded derivative (default: `{}`)                                                       |
-| `:upload_storage`              | Storage to which the derivations will be uploaded (default: same storage as the source file)                                                              |
-| `:version`                     | Version number to append to the URL for cache busting (default: `nil`)                                                                                    |
+| Name                           | Description                                                                                                                           | Default                                              |
+| :----------------------------- | :----------                                                                                                                           | :--------                                            |
+| `:cache_control`               | Hash of directives for the `Cache-Control` response header                                                                            | `{ public: true, max_age: 365*24*60*60 }`            |
+| `:disposition`                 | Whether the browser should attempt to render the derivative (`inline`) or prompt the user to download the file to disk (`attachment`) | `inline`                                             |
+| `:download`                    | Whether the source uploaded file should be downloaded to disk when the derivation block is called                                     | `true`                                               |
+| `:download_errors`             | List of error classes that will be converted to a `404 Not Found` response by the derivation endpoint                                 | `[]`                                                 |
+| `:download_options`            | Additional options to pass when downloading the source uploaded file                                                                  | `{}`                                                 |
+| `:expires_in`                  | Number of seconds after which the URL will not be available anymore                                                                   | `nil`                                                |
+| `:filename`                    | Filename the browser will assume when the derivative is downloaded to disk                                                            | `<name>-<args>-<source id basename>`                 |
+| `:host`                        | URL host to use when generated URLs                                                                                                   | `nil`                                                |
+| `:include_uploaded_file`       | Whether to include the source uploaded file in the derivation block arguments                                                         | `false`                                              |
+| `:metadata`                    | List of metadata keys the source uploaded file should include in the derivation block                                                 | `[]`                                                 |
+| `:prefix`                      | Path prefix added to the URLs                                                                                                         | `nil`                                                |
+| `:secret_key`                  | Key used to sign derivation URLs in order to prevent tampering                                                                        | required                                             |
+| `:type`                        | Media type returned in the `Content-Type` response header in the derivation response                                                  | determined from derivative's extension when possible |
+| `:upload`                      | Whether the generated derivatives will be cached on the storage                                                                       | `false`                                              |
+| `:upload_location`             | Location to which the derivatives will be uploaded on the storage                                                                     | `<source id>/<name>-<args>`                          |
+| `:upload_options`              | Additional options to be passed when uploading derivatives                                                                            | `{}`                                                 |
+| `:upload_redirect`             | Whether the derivation response should redirect to the uploaded derivative                                                            | `false`                                              |
+| `:upload_redirect_url_options` | Additional options to be passed when generating the URL for the uploaded derivative                                                   | `{}`                                                 |
+| `:upload_storage`              | Storage to which the derivations will be uploaded                                                                                     | same storage as the source file                      |
+| `:version`                     | Version number to append to the URL for cache busting                                                                                 | `nil`                                                |
 
 [ImageProcessing]: https://github.com/janko/image_processing
 [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
