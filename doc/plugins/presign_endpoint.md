@@ -1,4 +1,4 @@
-# presign_endpoint
+# Presign Endpoint
 
 The `presign_endpoint` plugin provides a Rack endpoint which generates the URL,
 fields, and headers that can be used to upload files directly to a storage

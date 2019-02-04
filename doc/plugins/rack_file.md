@@ -1,4 +1,4 @@
-# rack_file
+# Rack File
 
 The `rack_file` plugin enables uploaders to accept Rack uploaded file hashes
 for uploading.

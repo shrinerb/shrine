@@ -1,4 +1,4 @@
-# logging
+# Logging
 
 The `logging` plugin logs any storing/processing/deleting that is performed.
 

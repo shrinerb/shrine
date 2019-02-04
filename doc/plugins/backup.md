@@ -1,4 +1,4 @@
-# backup
+# Backup
 
 The `backup` plugin allows you to automatically back up stored files to an
 additional storage.

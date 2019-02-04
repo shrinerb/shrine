@@ -1,4 +1,4 @@
-# tempfile
+# Tempfile
 
 The `tempfile` plugin makes it easier to reuse a single copy of an uploaded
 file on disk.

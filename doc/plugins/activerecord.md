@@ -1,4 +1,4 @@
-# activerecord
+# Active Record
 
 The `activerecord` plugin extends the "attachment" interface with support for
 ActiveRecord.

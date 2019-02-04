@@ -1,4 +1,4 @@
-# delete_promoted
+# Delete Promoted
 
 The `delete_promoted` plugin deletes files that have been promoted, after the
 record is saved. This means that cached files handled by the attacher will

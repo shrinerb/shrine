@@ -1,4 +1,4 @@
-# versions
+# Versions
 
 The `versions` plugin enables your uploader to deal with versions, by allowing
 you to return a Hash of files when processing.

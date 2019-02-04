@@ -1,4 +1,4 @@
-# pretty_location
+# Pretty Location
 
 The `pretty_location` plugin attempts to generate a nicer folder structure for
 uploaded files.

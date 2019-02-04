@@ -1,4 +1,4 @@
-# infer_extension
+# Infer Extension
 
 The `infer_extension` plugin allows deducing the appropriate file extension for
 the upload location based on the MIME type of the file. This is useful when

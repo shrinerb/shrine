@@ -1,4 +1,4 @@
-# moving
+# Moving
 
 The `moving` plugin will *move* files to storages instead of copying them, when
 the storage supports it. For FileSystem this will issue a `mv` command, which

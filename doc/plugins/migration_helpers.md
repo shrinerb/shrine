@@ -1,4 +1,4 @@
-# migration_helpers
+# Migration Helpers
 
 The migration_helpers plugin gives the attacher additional helper methods which
 are convenient when doing file migrations.

@@ -1,4 +1,4 @@
-# rack_response
+# Rack Response
 
 The `rack_response` plugin allows you to convert an `UploadedFile` object into
 a triple consisting of status, headers, and body, suitable for returning as a

@@ -1,4 +1,4 @@
-# copy
+# Copy
 
 The `copy` plugin allows copying attachment from one record to another.
 

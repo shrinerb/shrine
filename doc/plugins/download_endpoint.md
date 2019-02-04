@@ -1,4 +1,4 @@
-# download_endpoint
+# Download Endpoint
 
 The `download_endpoint` plugin provides a Rack app for downloading uploaded
 files from specified storages. This can be useful when files from your storage

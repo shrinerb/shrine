@@ -1,4 +1,4 @@
-# remote_url
+# Remote URL
 
 The `remote_url` plugin allows you to attach files from a remote location.
 

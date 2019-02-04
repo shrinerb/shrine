@@ -1,4 +1,4 @@
-# multi_delete
+# Multi Delete
 
 The `multi_delete` plugins allows you to leverage your storage's multi delete
 capabilities.

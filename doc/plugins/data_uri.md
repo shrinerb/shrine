@@ -1,4 +1,4 @@
-# data_uri
+# Data URI
 
 The `data_uri` plugin enables you to upload files as [data URIs]. This plugin
 is useful for example when using [HTML5 Canvas].

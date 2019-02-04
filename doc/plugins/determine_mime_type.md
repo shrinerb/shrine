@@ -1,4 +1,4 @@
-# determine_mime_type
+# Determine MIME Type
 
 The `determine_mime_type` plugin allows you to determine and store the actual
 MIME type of the file analyzed from file content.

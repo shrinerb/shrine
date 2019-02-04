@@ -1,4 +1,4 @@
-# processing
+# Processing
 
 Shrine uploaders can define the `#process` method, which will get called
 whenever a file is uploaded. It is given the original file, and is expected to

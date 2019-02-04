@@ -1,4 +1,4 @@
-# refresh_metadata
+# Refresh Metadata
 
 The `refresh_metadata` plugin allows you to re-extract metadata from an
 uploaded file.

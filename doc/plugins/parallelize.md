@@ -1,4 +1,4 @@
-# parallelize
+# Parallelize
 
 The `parallelize` plugin parallelizes uploads and deletes of multiple versions
 using threads.

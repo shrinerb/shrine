@@ -1,4 +1,4 @@
-# direct_upload
+# Direct Upload
 
 *[OBSOLETE] This plugin is obsolete, you should use `upload_endpoint` or
 `presign_endpoint` plugins instead.*

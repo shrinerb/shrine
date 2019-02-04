@@ -1,4 +1,4 @@
-# upload_endpoint
+# Upload Endpoint
 
 The `upload_endpoint` plugin provides a Rack endpoint which accepts file
 uploads and forwards them to specified storage. On the client side it's

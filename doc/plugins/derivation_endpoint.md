@@ -1,4 +1,4 @@
-# derivation_endpoint
+# Derivation Endpoint
 
 The `derivation_endpoint` plugin provides a Rack app for dynamically processing
 uploaded files on request. This allows you to create URLs to files that might

@@ -1,4 +1,4 @@
-# hooks
+# Hooks
 
 The `hooks` plugin allows you to trigger some code around
 processing/storing/deleting of each file.

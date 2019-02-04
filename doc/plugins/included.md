@@ -1,4 +1,4 @@
-# included
+# Included
 
 The `included` plugin allows you to hook up to the `.included` hook of the
 attachment module, and call additional methods on the model which includes it.

@@ -1,4 +1,4 @@
-# remove_attachment
+# Remove Attachment
 
 The `remove_attachment` plugin allows you to delete attachments through
 checkboxes on the web form.

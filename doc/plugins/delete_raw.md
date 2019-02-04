@@ -1,4 +1,4 @@
-# delete_raw
+# Delete Raw
 
 The `delete_raw` plugin will automatically delete raw files that have been
 uploaded. This is especially useful when doing processing, to ensure that

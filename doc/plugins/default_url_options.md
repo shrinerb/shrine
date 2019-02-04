@@ -1,4 +1,4 @@
-# default_url_options
+# Default URL Options
 
 The `default_url_options` plugin allows you to specify URL options that will be
 applied by default for uploaded files of specified storages.

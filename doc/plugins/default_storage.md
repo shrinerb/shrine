@@ -1,4 +1,4 @@
-# default_storage
+# Default Storage
 
 The `default_storage` plugin enables you to change which storages are going to
 be used for this uploader's attacher (the default is `:cache` and `:store`).

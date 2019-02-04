@@ -1,4 +1,4 @@
-# cached_attachment_data
+# Cached Attachment Data
 
 The `cached_attachment_data` plugin adds the ability to retain the cached file
 across form redisplays, which means the file doesn't have to be reuploaded in

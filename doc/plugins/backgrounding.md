@@ -1,4 +1,4 @@
-# backgrounding
+# Backgrounding
 
 The `backgrounding` plugin enables you to move promoting and deleting of files
 from record's lifecycle into background jobs. This is especially useful if

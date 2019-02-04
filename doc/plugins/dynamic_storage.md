@@ -1,4 +1,4 @@
-# dynamic_storage
+# Dynamic Storage
 
 The `dynamic_storage` plugin allows you to register a storage using a regex,
 and evaluate the storage class dynamically depending on the regex.

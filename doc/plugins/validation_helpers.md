@@ -1,4 +1,4 @@
-# validation_helpers
+# Validation Helpers
 
 The `validation_helpers` plugin provides helper methods for validating attached
 files based on extracted metadata.
@@ -12,7 +12,7 @@ Attacher.validate do
 end
 ```
 
-## Validation methods
+## Validators
 
 ### File size
 

@@ -1,4 +1,4 @@
-# signature
+# Signature
 
 The `signature` plugin provides the ability to calculate a hash from file
 content. This hash can be used as a checksum or just as a unique signature for

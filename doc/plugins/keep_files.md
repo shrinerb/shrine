@@ -1,4 +1,4 @@
-# keep_files
+# Keep Files
 
 The `keep_files` plugin gives you the ability to prevent files from being
 deleted. This functionality is useful when implementing soft deletes, or when

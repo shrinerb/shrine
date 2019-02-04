@@ -1,4 +1,4 @@
-# store_dimensions
+# Store Dimensions
 
 The `store_dimensions` plugin extracts dimensions of uploaded images and stores
 them into the metadata hash (by default it uses the [fastimage] gem).

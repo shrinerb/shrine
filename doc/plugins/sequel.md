@@ -1,4 +1,4 @@
-# sequel
+# Sequel
 
 The `sequel` plugin extends the "attachment" interface with support for Sequel.
 

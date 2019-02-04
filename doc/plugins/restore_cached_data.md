@@ -1,4 +1,4 @@
-# restore_cached_data
+# Restore Cached Data
 
 The `restore_cached_data` plugin re-extracts metadata when assigning already
 cached files, i.e. when the attachment has been retained on validation errors

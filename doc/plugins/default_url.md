@@ -1,4 +1,4 @@
-# default_url
+# Default URL
 
 The `default_url` plugin allows setting the URL which will be returned when the
 attachment is missing.

@@ -1,4 +1,4 @@
-# metadata_attributes
+# Metadata Attributes
 
 The `metadata_attributes` plugin allows you to sync attachment metadata to
 additional record attributes. You can provide a hash of mappings to the plugin
