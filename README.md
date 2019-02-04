@@ -971,43 +971,43 @@ The gem is available as open source under the terms of the [MIT License].
 
 [Shrine]: https://shrinerb.com
 [plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
-[FileSystem]: doc/storage/file_system.md
-[S3]: doc/storage/s3.md
+[FileSystem]: doc/storage/file_system.md#readme
+[S3]: doc/storage/s3.md#readme
 [GCS]: https://github.com/renchap/shrine-google_cloud_storage
 [Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
 [Transloadit]: https://github.com/shrinerb/shrine-transloadit
-[activerecord plugin]: doc/plugins/activerecord.md
-[sequel plugin]: doc/plugins/sequel.md
+[activerecord plugin]: doc/plugins/activerecord.md#readme
+[sequel plugin]: doc/plugins/sequel.md#readme
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [image_processing]: https://github.com/janko/image_processing
 [ImageMagick]: https://www.imagemagick.org/script/index.php
 [libvips]: http://libvips.github.io/libvips/
-[validation_helpers plugin]: doc/plugins/validation_helpers.md
-[upload_endpoint plugin]: doc/plugins/upload_endpoint.md
-[presign_endpoint plugin]: doc/plugins/presign_endpoint.md
+[validation_helpers plugin]: doc/plugins/validation_helpers.md#readme
+[upload_endpoint plugin]: doc/plugins/upload_endpoint.md#readme
+[presign_endpoint plugin]: doc/plugins/presign_endpoint.md#readme
 [Uppy]: https://uppy.io
 [tus]: https://tus.io
 [uppy tus]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
-[backgrounding plugin]: doc/plugins/backgrounding.md
-[Advantages of Shrine]: doc/advantages.md
+[backgrounding plugin]: doc/plugins/backgrounding.md#readme
+[Advantages of Shrine]: doc/advantages.md#readme
 [external storages]: https://shrinerb.com/#external
-[creating storage]: doc/creating_storages.md
-[creating plugin]: doc/creating_plugins.md
-[Retrieving Uploads]: doc/retrieving_uploads.md
-[Using Attacher]: doc/attacher.md
+[creating storage]: doc/creating_storages.md#readme
+[creating plugin]: doc/creating_plugins.md#readme
+[Retrieving Uploads]: doc/retrieving_uploads.md#readme
+[Using Attacher]: doc/attacher.md#readme
 [plugins]: https://shrinerb.com/#plugins
 [`file`]: http://linux.die.net/man/1/file
-[Extracting Metadata]: doc/metadata.md
-[File Processing]: doc/processing.md
-[File Validation]: doc/validation.md
+[Extracting Metadata]: doc/metadata.md#readme
+[File Processing]: doc/processing.md#readme
+[File Validation]: doc/validation.md#readme
 [metadata direct uploads]: https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads
 [uppy xhr upload]: https://uppy.io/docs/xhr-upload/
 [direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [uppy aws s3]: https://uppy.io/docs/aws-s3/
 [direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
-[direct S3 uploads guide]: doc/direct_s3.md
+[direct S3 uploads guide]: doc/direct_s3.md#readme
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [shrine-tus]: https://github.com/shrinerb/shrine-tus

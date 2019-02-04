@@ -175,5 +175,5 @@ end
 If you want to re-create a single or all versions, refer to the [reprocessing
 versions] guide for details.
 
-[reprocessing versions]: doc/regenerating_versions.md
+[reprocessing versions]: doc/regenerating_versions.md#readme
 [image_processing]: https://github.com/janko/image_processing

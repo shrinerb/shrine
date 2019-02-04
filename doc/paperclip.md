@@ -581,6 +581,6 @@ The Shrine storage has no replacement for the `:url` Paperclip option, and it
 isn't needed.
 
 [file]: http://linux.die.net/man/1/file
-[Reprocessing versions]: doc/regenerating_versions.md
-[direct S3 uploads]: doc/direct_s3.md
-[`Shrine::Storage::S3`]:  doc/storage/s3.md
+[Reprocessing versions]: doc/regenerating_versions.md#readme
+[direct S3 uploads]: doc/direct_s3.md#readme
+[`Shrine::Storage::S3`]: doc/storage/s3.md#readme

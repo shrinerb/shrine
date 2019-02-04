@@ -321,19 +321,19 @@ limit.
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
-[metadata]: doc/metadata.md
-[store_dimensions]: doc/plugins/store_dimensions.md
-[add_metadata]: doc/plugins/add_metadata.md
-[validation]: doc/validation.md
-[upload_endpoint]: doc/plugins/upload_endpoint.md
-[presign_endpoint]: doc/plugins/presign_endpoint.md
+[metadata]: doc/metadata.md#readme
+[store_dimensions]: doc/plugins/store_dimensions.md#readme
+[add_metadata]: doc/plugins/add_metadata.md#readme
+[validation]: doc/validation.md#readme
+[upload_endpoint]: doc/plugins/upload_endpoint.md#readme
+[presign_endpoint]: doc/plugins/presign_endpoint.md#readme
 [Uppy]: https://uppy.io
 [XHRUpload]: https://uppy.io/docs/xhrupload/
 [AwsS3]: https://uppy.io/docs/aws-s3/
 [Tus]: https://uppy.io/docs/tus/
 [StatusBar]: https://uppy.io/examples/statusbar/
 [Dashboard]: https://uppy.io/examples/dashboard/
-[background job]: doc/plugins/backgrounding.md
+[background job]: doc/plugins/backgrounding.md#readme
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
 [Down streaming]: https://github.com/janko/down#streaming
 [Transloadit]: https://transloadit.com
