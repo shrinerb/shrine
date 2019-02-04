@@ -2,42 +2,6 @@
 
 class Shrine
   module Plugins
-    # The `validation_helpers` plugin provides helper methods for validating
-    # attached files.
-    #
-    #     plugin :validation_helpers
-    #
-    #     Attacher.validate do
-    #       validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
-    #       validate_max_size 5*1024*1024 if record.guest?
-    #     end
-    #
-    # The validation methods are instance-level, the `Attacher.validate` block
-    # is evaluated in context of an instance of `Shrine::Attacher`, so you can
-    # easily do conditional validation.
-    #
-    # The validation methods return whether the validation succeeded, allowing
-    # you to do conditional validation.
-    #
-    #     if validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
-    #       validate_max_width 2000
-    #       validate_max_height 2000
-    #     end
-    #
-    # If you would like to change default validation error messages, you can
-    # pass in the `:default_messages` option to the plugin:
-    #
-    #     plugin :validation_helpers, default_messages: {
-    #       max_size: ->(max) { I18n.t("errors.file.max_size", max: max) },
-    #       mime_type_inclusion: ->(whitelist) { I18n.t("errors.file.mime_type_inclusion", whitelist: whitelist) },
-    #     }
-    #
-    # If you would like to change the error message inline, you can pass the
-    # `:message` option to any validation method:
-    #
-    #     validate_mime_type_inclusion %w[image/jpeg image/png image/gif], message: "must be JPEG, PNG or GIF"
-    #
-    # For a complete list of all validation helpers, see AttacherMethods.
     module ValidationHelpers
       def self.configure(uploader, opts = {})
         uploader.opts[:validation_default_messages] ||= {}

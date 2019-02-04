@@ -2,11 +2,6 @@
 
 class Shrine
   module Plugins
-    # The `parsed_json` plugin is suitable for the case when your framework is
-    # automatically parsing JSON query parameters, allowing you to assign
-    # cached files with hashes/arrays.
-    #
-    #     plugin :parsed_json
     module ParsedJson
       module AttacherMethods
         def assign(value)

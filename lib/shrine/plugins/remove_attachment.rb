@@ -2,16 +2,6 @@
 
 class Shrine
   module Plugins
-    # The `remove_attachment` plugin allows you to delete attachments through
-    # checkboxes on the web form.
-    #
-    #     plugin :remove_attachment
-    #
-    # If for example your attachment is called "avatar", this plugin will add
-    # `#remove_avatar` and `#remove_avatar=` methods to your model. This allows
-    # you to add a form field for removing attachments:
-    #
-    #     form.check_box :remove_avatar
     module RemoveAttachment
       module AttachmentMethods
         def initialize(*)
