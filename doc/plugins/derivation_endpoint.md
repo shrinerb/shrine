@@ -590,7 +590,8 @@ require "down/http"
 
 derivation :thumbnail do |uploaded_file, width, height|
   # generate the thumbnail using ImageOptim.com
-  Down::Http.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{uploaded_file.url}")
+  down = Down::Http.new(method: :post)
+  down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{uploaded_file.url}")
 end
 ```
 

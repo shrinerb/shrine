@@ -26,6 +26,7 @@ provided as plugins.
 Shrine.plugin :upload_endpoint
 Shrine.plugin :presign_endpoint
 Shrine.plugin :download_endpoint
+Shrine.plugin :derivation_endpoint
 Shrine.plugin :rack_response
 Shrine.plugin :rack_file
 
@@ -64,31 +65,53 @@ minimal amount of code.
 ## Modularity
 
 Shrine uses a [plugin system] that allows you to pick and choose the features
-that you want, which makes it very flexible. Moreover, you're only loading the
-code for features that you use, which means that Shrine will generally load
-very fast.
+that you want. Moreover, you're only loading the code for features that you
+use, which means that Shrine will generally load very fast.
 
 ```rb
-Shrine.plugin :logging # loads the logging feature
+Shrine.plugin :logging
+
+# translates to
+
+require "shrine/plugins/logging"
+Shrine.plugin Shrine::Plugins::Logging
 ```
 
 Shrine comes with a complete attachment functionality, but it also exposes many
 low level APIs that can be used for building your own customized attachment
-flow.
+flow. For example, if you prefer the `Attachment`/`Blob` architecture Active
+Storage provides, you can ditch the Shrine's attachment implementation and use
+uploaders and uploaded files that are decoupled from attachment:
+
+```rb
+uploader      = ImageUploader.new(:store)
+uploaded_file = uploader.upload(image) # metadata extraction, upload location generation
+
+uploaded_file.id       #=> "44ccafc10ce6a4ff22829e8f579ee6b9.jpg"
+uplaoded_file.metadata #=> { ... extracted metadata ... }
+
+data = uploaded_file.to_json # serialization
+# ...
+uploaded_file = ImageUploader.uploaded_file(data) # deserialization
+
+uploaded_file.url #=> "https://..."
+uploaded_file.download { |tempfile| ... } # streaming download
+uploaded_file.delete
+```
 
 ### Dependencies
 
-Shrine is very diligent when it comes to dependencies. It has only one
-mandatory dependency - [Down], a gem for streaming downloads from a URL. Some
-Shrine plugins require additional dependencies, but you only need to load them
-if you're using those plugins.
+Shrine is very diligent when it comes to dependencies. It has two mandatory
+dependencies – [Down] and [ContentDisposition] – which are loaded only by
+components that need them. Some Shrine plugins require additional dependencies,
+but you only need to load them if you're using those plugins.
 
-Moreover, Shrine often let you choose between multiple alternative dependencies
-for doing the same task. For example, the `determine_mime_type` plugin allows
-you to choose between the [`file`] command, [FileMagic], [FastImage],
-[MimeMagic], or [Marcel] gem for determining the MIME type, while the
-`store_dimensions` plugin can extract dimensions using [FastImage],
-[MiniMagick], or [ruby-vips] gem.
+Moreover, Shrine often gives you the ability choose between multiple
+alternative dependencies for doing the same task. For example, the
+`determine_mime_type` plugin allows you to choose between the [`file`] command,
+[FileMagic], [FastImage], [MimeMagic], or [Marcel] gem for determining the MIME
+type, while the `store_dimensions` plugin can extract dimensions using
+[FastImage], [MiniMagick], or [ruby-vips] gem.
 
 ```rb
 Shrine.plugin :determine_mime_type, analyzer: :marcel
@@ -104,9 +127,9 @@ Shrine is designed to handle any types of files. If you're accepting uploads of
 multiple types of files, such as videos and images, chances are that the logic
 for handling them will be very different:
 
-* images can be processed on-the-fly, while videos should be transcoded on upload
-* you might want to store images on one service and videos on another
-* tools for extracting image metadata are different than ones for video metadata
+* small images can be processed on-the-fly, but large files should be processed in a background job
+* which storage service is most suitable might depend on the filetype (images, documents, audios, videos)
+* different filetypes have different metadata to extract which require different tools
 
 With Shrine you can create isolated uploaders for each type of file. Plugins
 that you want to be applied to both uploaders can be applied globally, while
@@ -129,12 +152,63 @@ end
 
 ## Processing
 
-Instead of having yet another vendored solution for generating image
-thumbnails, Shrine chose to adopt a generic **[ImageProcessing]** gem. The
-ImageProcessing gem was created for Shrine, but it can be used in any other
-file upload library. It has a very flexible API and takes care of many details
-for you, such as [auto orienting] the input image and [sharpening] the
-thumbnails after they are resized.
+Most file attachment libraries give you the ability to process files either "on
+upload" (Paperclip, CarrierWave) or "on-the-fly" (Dragonfly, Refile, Active
+Storage). Having only one option is not ideal, because some type of files
+it's more suitable to process on-the-fly (image thumbnails, document previews),
+while other types of files should be processed in a background job (video
+transcoding, raw images)
+
+Shrine is the first file attachment library that has support for both
+processing on upload and on-the-fly. So, if you're handling image uploads, you
+can choose to either generate a set of pre-defined image thumbnails in a
+background job:
+
+```rb
+class ImageUploader < Shrine
+  process(:store) do |io|
+    versions = { original: io }
+
+    io.download do |original|
+      pipeline = ImageProcessing::MiniMagick.source(original)
+
+      versions[:large]  = pipeline.resize_to_limit!(800, 800)
+      versions[:medium] = pipeline.resize_to_limit!(500, 500)
+      versions[:small]  = pipeline.resize_to_limit!(300, 300)
+    end
+
+    versions
+  end
+end
+```
+
+or generate thumbnails on-demand:
+
+```rb
+class ImageUploader < Shrine
+  derivation :thumbnail do |file, width, height|
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  end
+end
+```
+```rb
+photo.image.derivation_url(:thumbnail, "600", "400")
+#=> ".../thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+```
+
+### Image processing
+
+Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and
+Refile, implement their own image processing macros. Instead of creating
+yet another in-house implementation, the **[ImageProcessing]** gem was created.
+
+Even though the ImageProcessing gem was created for Shrine, it's completely
+generic and can be used standalone, or in any other file upload library (e.g.
+Active Storage uses it now as well). It takes care of many details for you,
+such as [auto orienting] the input image and [sharpening] the thumbnails after
+they are resized.
 
 ```rb
 require "image_processing"
@@ -147,14 +221,15 @@ thumbnail = ImageProcessing::MiniMagick
 thumbnail #=> #<Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6.png>
 ```
 
-### libvips
+#### libvips
 
 Probably the biggest ImageProcessing feature is the support for **[libvips]**.
-libvips is also a full-featured image processing library, which can process
-images very rapidly – often multiple times faster than ImageMagick – with low
-memory usage (see [Why is libvips quick]). The `ImageProcessing::Vips` backend
-implements the same API as `ImageProcessing::MiniMagick`, so you can easily
-swap one for the other.
+libvips is a full-featured image processing library like ImageMagick, with
+impressive performance characteristics – it's often multiple times faster than
+ImageMagick and has low memory usage (see [Why is libvips quick]).
+
+The `ImageProcessing::Vips` backend implements the same API as
+`ImageProcessing::MiniMagick`, so you can easily swap one for the other.
 
 ```rb
 require "image_processing/mini_magick"
@@ -172,28 +247,35 @@ ImageProcessing::Vips.resize_to_fit(800, 800).call(original)
 
 ### Other processors
 
-Shrine's processing block simply executes the Ruby code inside it, so you can
-call there any other processor your want. The only thing that Shrine requires
-is that processed files are returned as the block result.
+Both processing "on upload" and "on-the-fly" work in a way that you define a
+Ruby block, which accepts a source file and is expected to return a processed
+file. How you're going to do the processing is entirely up to you.
+
+This allows you to use any tool you want. For example, you could use the
+[image_optim] gem to perform additional image optimizations:
 
 ```rb
 class VideoUploader < Shrine
-  plugin :processing
+  derivation :thumbnail do |file, width, height|
+    thumbnail = ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width, height)
 
-  process(:store) do |io, context|
-    # define your processing
+    image_optim = ImageOptim.new
+    image_optim.optimize_image!(thumbnail.path)
+
+    thumbnail
   end
 end
 ```
 
-## Metadata
+## Metadata & Validation
 
 Shrine automatically [extracts metadata][metadata] from each uploaded file,
-including derivates like image thumbnails, and saves them into the database
+including derivatives like image thumbnails, and saves them into the database
 column. In addition to filename, filesize, and MIME type that are extracted by
 default, you can also extract [image dimensions][store_dimensions], or your own
-[custom metadata][add_metadata]. This metadata can additionally be
-[validated][validation].
+[custom metadata][add_metadata].
 
 ```rb
 photo.image.metadata #=>
@@ -207,61 +289,61 @@ photo.image.metadata #=>
 # }
 ```
 
-## Direct Uploads
+For common metadata there are already [validation macros][validation_helpers],
+but you can also [validate any custom metadata][custom validations].
 
-Instead of submitting selected files synchronously via the form, it's generally
-better to start uploading files asynchronously as soon as they're selected.
-Shrine streamlines this workflow, allowing you to upload directly [to your
-app][upload_endpoint] or [to the cloud][presign_endpoint].
+```rb
+class DocumentUploader < Shrine
+  Attacher.validate do
+    # validation macros
+    validate_max_size 10*1024*1024
+    validate_mime_type_inclusion %W[application/pdf]
 
-[Refile] and [Active Storage] provide this functionality as well, and they also
-ship with a custom plug-and-play JavaScript solution for integrating these
-endpoints. In contrast, Shrine doesn't ship with any custom JavaScript, but
-instead recommends using **[Uppy]**. Uppy is a flexible JavaScript file upload
-library that allows uploading to a [custom endpoint][XHRUpload], to [AWS
-S3][AwsS3], or even to a [resumable endpoint][Tus]. It comes with a set of UI
-components, ranging from a simple [status bar][StatusBar] to a full-featured
-[dashboard][Dashboard]. Since Uppy is maintained by the whole JavaScript
-community, it will generally be better than any homegrown solution.
+    # custom validations
+    if get.metadata["page_count"] > 30
+      errors << "has too many pages (max is 30)"
+    end
+  end
+end
+```
 
 ## Backgrounding
 
 In most file upload solutions background processing was an afterthought, which
 resulted in complex implementations. Shrine was designed with backgrounding
-feature in mind from day one. It is supported via the `backgrounding` plugin
-and can be used with [any backgrounding library][backgrounding libraries].
+feature in mind from day one. It is supported via the
+[`backgrounding`][backgrounding] plugin and can be used with [any backgrounding
+library][backgrounding libraries].
 
-## Large Files
+## Direct Uploads
 
-If your application needs to handle large files (such as videos), Shrine will
-go out of the way to make this as resilient and performant as possible.
+Shrine doesn't come with a plug-and-play JavaScript solution for client-side
+uploads like Refile and Active Storage, but instead it adopts **[Uppy]**. Uppy
+is a modern JavaScript file upload library, which offers support for uploading
+to [AWS S3][AwsS3], to a [custom endpoint][XHRUpload], or even to a [resumable
+endpoint][Tus]. It comes with a set of UI components, ranging from a simple
+[status bar][StatusBar] to a full-featured [dashboard][Dashboard]. Since Uppy
+is maintained by the wide JavaScript community, it's generally a better choice
+than any homegrown solution.
 
-### Streaming
-
-Shrine uses and encourages streaming uploads and downloads, where only a small
-part of the file is loaded into memory at any given time. This means that
-Shrine will use very little memory regardless of the size of the files.
-
-Shrine storages also automatically support [partial downloads][Down streaming]
-(provided by the [Down] gem), which allows you to read only a portion of the
-file. This can be useful for extracting metadata, because common information such
-as MIME type or image dimensions are typically written in the beginning of the
-file, so it's enough to download just the first few kilobytes of the file.
+Shrine provides Rack components for uploads that integrate nicely with Uppy.
+So, whether you want Uppy to upload directly [to your app][upload_endpoint], or
+you want to authorize direct uploads [to the cloud][presign_endpoint], Shrine
+has it streamlined.
 
 ### Resumable uploads
 
-Another challenge with large files is that it can be difficult for your users
-to upload them to your app, especially on flaky internet connections. Since by
-default an upload is made in a single long HTTP request, any connection
-failures will cause the upload to fail and have to be restarted from the
-beginning.
+If your users are uploading large files, flaky internet connections can cause
+uploads to fail halfway, which can be a frustrating user experience. To fix
+this problem, [Transloadit] company has created an open HTTP-based protocol for
+resumable uploads – **[tus]**. There are already countless client and server
+[implementations][tus implementations] of the protocol in various languages.
 
-To fix this problem, [Transloadit] company has created an open HTTP-based
-protocol for resumable uploads – **[tus]**. To use it, you can choose from
-numerous client and server [implementations][tus implementations] of the
-protocol. In a typical app you would have a [JavaScript client][tus-js-client]
-(via [Uppy][uppy tus]) upload to a [Ruby server][tus-ruby-server], and then
-attach uploaded files using the handy [Shrine integration][shrine-tus].
+So, if you're expecting large file uploads, you can use Uppy as a [JavaScript
+client][Tus] and have it upload to [Ruby server][tus-ruby-server], then attach
+uploaded files using the handy [Shrine integration][shrine-tus]. Shrine handles
+uploads and downloads in a streaming fashion, so you can expect low memory
+usage.
 
 Alternatively, you can have [resumable multipart uploads directly to
 S3][uppy-s3_multipart].
@@ -282,11 +364,8 @@ than relying on the `Content-Type` request header), preventing exploits like
 
 The `remote_url` plugin requires specifying a `:max_size` option, which limits
 the maximum allowed size of the remote file. The [Down] gem which the
-`remote_url` plugin uses will immediately terminate the download if it reads
-from the `Content-Length` response header that the file will be too large. For
-chunked responses (where `Content-Length` header is absent) the download will
-will be terminated as soon as the received content surpasses the specified
-limit.
+`remote_url` plugin uses will [terminate the download early][Down max size]
+when it realizes it's too large.
 
 [Paperclip]: https://github.com/thoughtbot/paperclip
 [CarrierWave]: https://github.com/carrierwaveuploader/carrierwave
@@ -304,6 +383,7 @@ limit.
 [Hanami::Model]: https://github.com/hanami/model
 [plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
 [Down]: https://github.com/janko/down
+[ContentDisposition]: https://github.com/shrinerb/content_disposition
 [`file`]: http://linux.die.net/man/1/file
 [FileMagic]: https://github.com/blackwinter/ruby-filemagic
 [FastImage]: https://github.com/sdsykes/fastimage
@@ -333,16 +413,18 @@ limit.
 [Tus]: https://uppy.io/docs/tus/
 [StatusBar]: https://uppy.io/examples/statusbar/
 [Dashboard]: https://uppy.io/examples/dashboard/
-[background job]: doc/plugins/backgrounding.md#readme
-[backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
+[backgrounding]: doc/plugins/backgrounding.md#readme
+[backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
 [Down streaming]: https://github.com/janko/down#streaming
 [Transloadit]: https://transloadit.com
 [tus]: https://tus.io
 [tus implementations]: https://tus.io/implementations.html
-[tus-js-client]: https://github.com/tus/tus-js-client
-[uppy tus]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [ImageTragick]: https://imagetragick.com
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [OWASP]: https://www.owasp.org/index.php/Unrestricted_File_Upload
+[image_optim]: https://github.com/toy/image_optim
+[validation_helpers]: doc/plugins/validation_helpers.md$readme
+[custom validations]: doc/validation.md#custom-validations
+[Down max size]: https://github.com/janko/down#maximum-size

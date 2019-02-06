@@ -6,7 +6,7 @@ Shrine is a toolkit for file attachments in Ruby applications. Some highlights:
 * **Memory friendly** – streaming uploads and downloads make it work great with large files
 * **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and others
 * **ORM integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [Hanami::Model][hanami plugin] and [Mongoid][mongoid plugin]
-* **Flexible processing** – generate thumbnails with [ImageMagick] or [libvips] using the [ImageProcessing][image_processing] gem
+* **Flexible processing** – generate thumbnails [on upload] or [on-the-fly] using [ImageMagick][ImageProcessing::MiniMagick] or [libvips][ImageProcessing::Vips]
 * **Metadata validation** – [validate files][validation_helpers plugin] based on [extracted metadata][Extracting Metadata]
 * **Direct uploads** – upload asynchronously [to your app][upload_endpoint plugin] or [to the cloud][presign_endpoint plugin] using [Uppy]
 * **Resumable uploads** – make large file uploads [resumable][tus] by pointing [Uppy][uppy tus] to a [resumable endpoint][tus-ruby-server]
@@ -511,13 +511,16 @@ uploaded_file.metadata["foo"]   #=> "bar"
 
 ## Processing
 
-Shrine's `processing` plugin allows you to intercept when the cached file is
-being uploaded to permanent storage, and do any file processing your might want.
+Shrine allows you to processing attached files either "[on upload](#on-upload)"
+or "[on-the-fly](#on-the-fly)". For example, if your app is accepting image
+uploads, you can generate a pre-defined set of of thumbnails as soon as the
+image is attached to a record ("on upload"), or you can generate necessary
+thumbnails dynamically as they're needed ("on-the-fly").
 
-If you're uploading images, it's common to want to generate various thumbnails.
-It's recommended to use the **[ImageProcessing][image_processing]** gem for
-this, which provides a convenient API over [ImageMagick] and [libvips]. You
-also need to load the `versions` plugin to be able to save multiple files.
+In both cases, for image processing you can use the **[ImageProcessing]** gem.
+It provides a convenient unified API for processing with [ImageMagick] or
+[libvips]. Here is an example of generating a 600x400 thumbnail with
+ImageProcessing:
 
 ```sh
 $ brew install imagemagick
@@ -526,6 +529,28 @@ $ brew install imagemagick
 # Gemfile
 gem "image_processing", "~> 1.0"
 ```
+```rb
+require "image/mini_magick"
+
+thumbnail = ImageProcessing::MiniMagick
+  .source(original_image)
+  .resize_to_limit!(600, 400)
+
+thumbnail #=> #<Tempfile:...> (thumbnail limited to 600x400)
+```
+
+### On upload
+
+Shrine allows you intercept when a cached file is being uploaded to permanent
+storage, and perform any file processing you might want. The result of
+processing can also be multiple files, such as thumbnails of various
+dimensions. This processing can additionaly be delayed into a [background
+job](#backgrounding).
+
+The promotion hook is provided by the `processing` plugin, while the ability
+to save multiple files is provided by the `versions` plugin. Let's set up our
+uploader to generate some thumbnails from the attached image:
+
 ```rb
 require "image_processing/mini_magick"
 
@@ -555,6 +580,8 @@ After these files have been uploaded, their data will all be saved to the
 of `Shrine::UploadedFile` objects.
 
 ```rb
+photo = Photo.create(image: image)
+
 photo.image_data #=>
 # '{
 #   "original": {"id":"9sd84.jpg", "storage":"store", "metadata":{...}},
@@ -583,8 +610,53 @@ The `versions` plugin also expands `#<attachment>_url` to accept version names:
 photo.image_url(:large) #=> "https://..."
 ```
 
-For more details, including examples of how to do custom and on-the-fly
-processing, see the [File Processing] guide.
+For more details see the [File Processing] guide.
+
+### On-the-fly
+
+On-the-fly processing is provided by the
+[`derivation_endpoint`][derivation_endpoint plugin] plugin. It provides a
+mountable Rack app, which on request will call the processing we defined.
+
+We start by loading the plugin with a secret key and a path prefix to where
+we'll mount the Rack app, and defining a "derivation" we want the app to call:
+
+```rb
+require "image_processing/mini_magick"
+
+class ImageUploader < Shrine
+  plugin :derivation_endpoint,
+    secret_key: "<YOUR SECRET KEY>",
+    prefix:     "derivations/image"
+
+  derivation :thumbnail do |file, width, height|
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  end
+end
+```
+
+Then we can mount the Rack app into our router (for web frameworks other than
+Rails see [Mounting Endpoints] wiki):
+
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  mount ImageUploader.derivation_endpoint => "derivations/image"
+end
+```
+
+Now we can generate URLs from attached files that on request will call the
+processing we defined:
+
+```rb
+photo.image.derivation_url(:thumbnail, "600", "400")
+#=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+```
+
+The `derivation_endpoint` plugin is highly customizable, for more details see
+its [documentation][derivation_endpoint plugin].
 
 ## Context
 
@@ -640,8 +712,8 @@ user.valid? #=> false
 user.errors.to_hash #=> {:cv=>["is too large (max is 5 MB)"]}
 ```
 
-See the [File Validation] guide and `validation_helpers` plugin documentation
-for more details.
+See the [File Validation] guide and [`validation_helpers`][validation_helpers
+plugin] plugin documentation for more details.
 
 ## Location
 
@@ -701,8 +773,8 @@ server and attached to a record, just like with raw files. The only difference
 is that they won't be additionally uploaded to temporary storage on assignment,
 as they were already uploaded on the client side. Note that by default **Shrine
 won't extract metadata from directly uploaded files**, instead it will just copy
-metadata that was extacted on the client side; see [this section][metadata direct uploads]
-for the rationale and instructions on how to opt in.
+metadata that was extacted on the client side; see [this section][metadata
+direct uploads] for the rationale and instructions on how to opt in.
 
 For handling client side uploads it's recommended to use **[Uppy]**. Uppy is a
 very flexible modern JavaScript file upload library, which happens to integrate
@@ -713,22 +785,16 @@ nicely with Shrine.
 The simplest approach is creating an upload endpoint in your app that will
 receive uploads and forward them to the specified storage. You can use the
 `upload_endpoint` Shrine plugin to create a Rack app that handles uploads,
-and mount it inside your application.
+and mount it inside your application (for web frameworks other than Rails
+see [Mounting Endpoints] wiki).
 
 ```rb
 Shrine.plugin :upload_endpoint
 ```
 ```rb
-# config.ru (Rack)
-map "/images/upload" do
-  run ImageUploader.upload_endpoint(:cache)
-end
-
-# OR
-
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
+  mount ImageUploader.upload_endpoint(:cache) => "images/upload"
 end
 ```
 
@@ -761,24 +827,20 @@ end
 If you want to free your app from receiving file uploads, you can also upload
 files directly to the cloud (AWS S3, Google Cloud etc). In this flow the client
 is required to first fetch upload parameters from the server, and then use these
-parameters to make the upload. The `presign_endpoint` Shrine plugin can be used
-to create a Rack app that generates these upload parameters (provided that the
-underlying storage implements `#presign`):
+parameters to make the upload.
+
+You can use the `presign_endpoint` Shrine plugin to create a Rack app that
+generates these upload parameters (provided that the underlying storage
+implements `#presign`), and mount it inside your application (for web
+frameworks other than Rails see [Mounting Endpoints] wiki):
 
 ```rb
 Shrine.plugin :presign_endpoint
 ```
 ```rb
-# config.ru (Rack)
-map "/s3/params" do
-  run Shrine.presign_endpoint(:cache)
-end
-
-# OR
-
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount Shrine.presign_endpoint(:cache) => "/s3/params"
+  mount Shrine.presign_endpoint(:cache) => "s3/params"
 end
 ```
 
@@ -980,9 +1042,14 @@ The gem is available as open source under the terms of the [MIT License].
 [sequel plugin]: doc/plugins/sequel.md#readme
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
-[image_processing]: https://github.com/janko/image_processing
-[ImageMagick]: https://www.imagemagick.org/script/index.php
+[ImageProcessing]: https://github.com/janko/image_processing
+[on upload]: #on-upload
+[on-the-fly]: #on-the-fly
+[ImageProcessing::MiniMagick]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme
+[ImageProcessing::Vips]: https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
+[ImageMagick]: https://imagemagick.org/
 [libvips]: http://libvips.github.io/libvips/
+[derivation_endpoint plugin]: doc/plugins/derivation_endpoint.md#readme
 [validation_helpers plugin]: doc/plugins/validation_helpers.md#readme
 [upload_endpoint plugin]: doc/plugins/upload_endpoint.md#readme
 [presign_endpoint plugin]: doc/plugins/presign_endpoint.md#readme
@@ -1015,7 +1082,8 @@ The gem is available as open source under the terms of the [MIT License].
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [resumable uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
-[backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-libraries
+[backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
+[Mounting Endpoints]: https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints
 [S3 lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [S3 lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [Roda]: https://github.com/jeremyevans/roda

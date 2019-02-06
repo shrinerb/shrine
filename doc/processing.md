@@ -1,10 +1,53 @@
 # File Processing
 
+Shrine allows you to process files in two ways. One is processing [on
+upload](#processing-on-upload), where the processing gets triggered when the file is
+attached to a record. The other is [on-the-fly](#on-the-fly-processing)
+processing, where the processing is performed lazily at the moment the file is
+requested.
+
+With both ways you need to define some kind of processing block, which accepts
+a source file and is expected to return the processed result file.
+
+```rb
+some_process_block do |source_file|
+ # process source file and return the result
+end
+```
+
+How you're going to implement processing is entirely up to you. For images it's
+recommended to use the **[ImageProcessing]** gem, which provides wrappers for
+processing with [ImageMagick]/[GraphicsMagick] (using the [MiniMagick] gem) or
+[libvips] (using the [ruby-vips] gem) (see the [libvips section](#libvips)).
+Here is an example of generating a 600x400 thumbnail with ImageProcessing:
+
+```sh
+$ brew install imagemagick
+```
+
+```rb
+# Gemfile
+gem "image_processing", "~> 1.0"
+```
+
+```rb
+require "image_processing/mini_magick"
+
+thumbnail = ImageProcessing::MiniMagick
+  .source(image)
+  .resize_to_limit!(600, 400)
+
+thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
+```
+
+## Processing on upload
+
 Shrine allows you to process files before they're uploaded to a storage. It's
 generally best to process cached files when they're being promoted to permanent
 storage, because (a) at that point the file has already been successfully
-validated, (b) the parent record has been saved and the database transaction
-has been committed, and (c) this can be delayed into a background job.
+[validated][validation], (b) the parent record has been saved and the database
+transaction has been committed, and (c) this can be delayed into a [background
+job][backgrounding].
 
 You can define processing using the `processing` plugin, which we'll use to
 hook into the `:store` phase (when cached file is uploaded to permanent
@@ -17,105 +60,37 @@ class ImageUploader < Shrine
   process(:store) do |io, context|
     io      #=> #<Shrine::UploadedFile ...>
     context #=> {:record=>#<Photo...>,:name=>:image,...}
+
+    # ...
   end
 end
 ```
 
-The processing block yields two arguments: `io`, a [`Shrine::UploadedFile`]
-object that's uploaded to temporary storage, and `context`, a Hash that
-contains additional data such as the model instance and attachment name. The
-block result should be file(s) that will be uploaded to permanent storage.
+The processing block yields two arguments: a [`Shrine::UploadedFile`] object
+representing the file uploaded to temporary storage, and a Hash containing
+additional data such as the model instance and attachment name. The block
+result should be file(s) that will be uploaded to permanent storage.
 
-Shrine treats processing as a functional transformation; you are given the
-original file, and how you're going to perform processing is entirely up to
-you, you only need to return the processed files at the end of the block that
-you want to save. Then Shrine will continue to upload those files to the
-storage. Note that **it's recommended to always keep the original file**, just
-in case you'll ever need to reprocess it.
+### Versions
 
-It's a good idea to also load the `delete_raw` plugin to automatically delete
-processed files after they're uploaded.
-
-```rb
-class ImageUploader < Shrine
-  plugin :processing
-  plugin :delete_raw # automatically delete processed files after uploading
-
-  # ...
-end
-```
-
-## Single file
-
-Let's say that you have an image that you want to optimize before it's saved
-to permanent storage. This is how you might do it with the [image_optim] gem:
-
-```rb
-# Gemfile
-gem "image_optim"
-gem "image_optim_pack" # precompiled binaries
-```
-
-```rb
-require "image_optim"
-
-class ImageUploader < Shrine
-  plugin :processing
-  plugin :delete_raw
-
-  process(:store) do |io, context|
-    optimized = Tempfile.new(["optimized", "#{io.extension}"], binmode: true)
-
-    io.download do |original|
-      IO.copy_stream(original, optimized.path)
-      original.rewind
-
-      image_optim = ImageOptim.new
-      image_optim.optimize_image!(optimized.path)
-      optimized.open # refresh file descriptor
-    end
-
-    optimized
-  end
-end
-```
-
-Notice that, because the image_optim gem works with files on disk, we had to
-download the cached file from temporary storage before optimizing it.
-Afterwards we also close and delete it using `Tempfile#close!`.
-
-## Versions
-
-When you're handling images, it's very common to want to generate various
-thumbnails from the original image, and display them on your site. It's
-recommended to use the **[ImageProcessing]** gem for generating image
-thumbnails, as it has a convenient and flexible API, and comes with good
-defaults for the web.
-
-Since we'll be storing multiple derivates of the original file, we'll need to
-also load the `versions` plugin, which allows us to return a Hash of processed
-files. For processing we'll be using the `ImageProcessing::MiniMagick` backend,
-which performs processing with [ImageMagick] or [GraphicsMagick].
-
-```sh
-$ brew install imagemagick
-```
-```rb
-# Gemfile
-gem "image_processing", "~> 1.0"
-```
+Let's say we're handling images, and want to generate thumbnails of various
+dimensions. In this case we can use the ImageProcessing gem to generate the
+thumbnails, and return a hash of processed files at the end of the block. We'll
+need to load the `versions` plugin which extends Shrine with the ability to
+handle collections of files inside the same attachment.
 
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
-  plugin :delete_raw
+  plugin :processing # allows hooking into promoting
+  plugin :versions   # enable Shrine to handle a hash of files
+  plugin :delete_raw # delete processed files after uploading
 
   process(:store) do |io, context|
     versions = { original: io } # retain original
 
+    # download the uploaded file from the temporary storage
     io.download do |original|
       pipeline = ImageProcessing::MiniMagick.source(original)
 
@@ -129,124 +104,43 @@ class ImageUploader < Shrine
 end
 ```
 
-### libvips
+**NOTE: It's recommended to always keep the original file, just in case you'll
+ever need to reprocess it.**
 
-Alternatively, you can also process files with **[libvips]**, which has shown
-to be multiple times faster than ImageMagick, with lower memory usage on top of
-that (see [Why is libvips quick]). Using libvips is as easy as installing libvips
-and switching to the `ImageProcessing::Vips` backend.
+### Conditional processing
 
-```sh
-$ brew install vips
-```
-
-```rb
-require "image_processing/vips"
-
-class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
-  plugin :delete_raw
-
-  process(:store) do |io, context|
-    versions = { original: io } # retain original
-
-    io.download do |original|
-      pipeline = ImageProcessing::Vips.source(original) # instead of ImageProcessing::MiniMagick
-
-      versions[:large]  = pipeline.resize_to_limit!(800, 800)
-      versions[:medium] = pipeline.resize_to_limit!(500, 500)
-      versions[:small]  = pipeline.resize_to_limit!(300, 300)
-    end
-
-    versions # return the hash of processed files
-  end
-end
-```
-
-### External
-
-Since processing is so dynamic, you're not limited to using the ImageProcessing
-gem, you can also use a 3rd-party service to generate thumbnails for you. Here
-is the same example as above, but this time using [ImageOptim.com] to do the
-processing (not to be confused with the [image_optim] gem):
-
-```rb
-# Gemfile
-gem "down", "~> 4.4"
-gem "http", "~> 3.2"
-```
-
-```rb
-require "down/http"
-
-class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
-  plugin :delete_raw
-
-  IMAGE_OPTIM_URL = "https://im2.io/<USERNAME>"
-
-  process(:store) do |io, context|
-    down = Down::Http.new(method: :post)
-
-    size_800 = down.download("#{IMAGE_OPTIM_URL}/800x800/#{io.url}")
-    size_500 = down.download("#{IMAGE_OPTIM_URL}/500x500/#{io.url}")
-    size_300 = down.download("#{IMAGE_OPTIM_URL}/300x300/#{io.url}")
-
-    { original: io, large: size_800, medium: size_500, small: size_300 }
-  end
-end
-```
-
-We used the [Down] gem to download response bodies into tempfiles, specifically
-its [HTTP.rb] backend, as it supports changing the request method and uses an
-order of magnitude less memory than the default backend. Notice that we didn't
-have to download the original file from temporary storage as ImageOptim.com
-allows us to provide a URL.
-
-## Conditional processing
-
-As we've seen, Shrine's processing API allows us to process files with regular
-Ruby code. This means that we can make processing dynamic by using regular Ruby
-conditionals.
+The process block yields the attached file uploaded to temporary storage, so we
+have information like file extension and MIME type available. Together with
+ImageProcessing's chainable API, it's easy to do conditional proccessing.
 
 For example, let's say we want our thumbnails to be either JPEGs or PNGs, and
 we also want to save JPEGs as progressive (interlaced). Here's how the code for
 this might look like:
 
 ```rb
-require "image_processing/vips"
+process(:store) do |io, context|
+  versions = { original: io }
 
-class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
-  plugin :delete_raw
+  io.download do |original|
+    pipeline = ImageProcessing::Vips.source(original)
 
-  process(:store) do |io, context|
-    versions = { original: io } # retain original
-
-    io.download do |original|
-      pipeline = ImageProcessing::Vips.source(original)
-
-      # Shrine::UploadedFile object contains information about the MIME type
-      unless %w[image/png].include?(io.mime_type)
-        pipeline = pipeline
-          .convert("jpeg")
-          .saver(interlace: true)
-      end
-
-      versions[:large]  = pipeline.resize_to_limit!(800, 800)
-      versions[:medium] = pipeline.resize_to_limit!(500, 500)
-      versions[:small]  = pipeline.resize_to_limit!(300, 300)
+    # Shrine::UploadedFile object contains information about the MIME type
+    unless io.mime_type == "image/png"
+      pipeline = pipeline
+        .convert("jpeg")
+        .saver(interlace: true)
     end
 
-    versions # return the hash of processed files
+    versions[:large]  = pipeline.resize_to_limit!(800, 800)
+    versions[:medium] = pipeline.resize_to_limit!(500, 500)
+    versions[:small]  = pipeline.resize_to_limit!(300, 300)
   end
+
+  versions
 end
 ```
 
-## Processing other file types
+### Processing other file types
 
 So far we've only been talking about processing images. However, there is
 nothing image-specific in Shrine's processing API, you can just as well process
@@ -259,6 +153,7 @@ To demonstrate, here is an example of transcoding videos using
 
 ```rb
 require "streamio-ffmpeg"
+require "tempfile"
 
 class VideoUploader < Shrine
   plugin :processing
@@ -266,18 +161,22 @@ class VideoUploader < Shrine
   plugin :delete_raw
 
   process(:store) do |io, context|
-    original   = io.download
-    transcoded = Tempfile.new(["transcoded", ".mp4"], binmode: true)
-    screenshot = Tempfile.new(["screenshot", ".jpg"], binmode: true)
+    versions = { original: io }
 
-    movie = FFMPEG::Movie.new(mov.path)
-    movie.transcode(transcoded.path)
-    movie.screenshot(screenshot.path)
+    io.download do |original|
+      transcoded = Tempfile.new(["transcoded", ".mp4"], binmode: true)
+      screenshot = Tempfile.new(["screenshot", ".jpg"], binmode: true)
 
-    [transcoded, screenshot].each(&:open) # refresh file descriptors
-    original.close!
+      movie = FFMPEG::Movie.new(original.path)
+      movie.transcode(transcoded.path)
+      movie.screenshot(screenshot.path)
 
-    { original: io, transcoded: transcoded, screenshot: screenshot }
+      [transcoded, screenshot].each(&:open) # refresh file descriptors
+
+      versions.merge!(transcoded: transcoded, screenshot: screenshot)
+    end
+
+    versions
   end
 end
 ```
@@ -286,81 +185,152 @@ end
 
 Generating image thumbnails on upload can be a pain to maintain, because
 whenever you need to add a new version or change an existing one, you need to
-perform this change for all existing uploads. [This guide][reprocessing
-versions] explains the process in more detail.
+retroactively apply it to all existing uploads (see the [Reprocessing Versions]
+guide for more details).
 
-As an alternative, it's very common to generate thumbnails dynamically, when
-their URL is first requested, and then cache the processing result for future
-requests. This strategy is known as "on-the-fly processing", and it's suitable
-for smaller files such as images.
+As an alternative, it's very common to instead generate thumbnails dynamically
+as they're requested, and then cache them for future requests. This strategy is
+known as "on-the-fly processing", and it's suitable for generating thumbnails
+or document previews.
 
-Shrine doesn't ship with on-the-fly processing functionality, as that's a
-separate responsibility that belongs in its own project. There are various
-open source solutions that provide this functionality:
+Shrine provides on-the-fly processing functionality via the
+[`derivation_endpoint`][derivation_endpoint] plugin. The basic setup is the
+following:
 
-* [Dragonfly]
-* [imgproxy]
-* [imaginary]
-* [thumbor]
-* [flyimg]
-* ...
+1. load the plugin with a secret key and a path prefix for the endpoint
+2. mount the endpoint into your main app's router
+3. define a processing block for the type files you want to generate
 
-as well as many commercial solutions. To prove that you can really use them,
-let's see how we can hook up [Dragonfly] with Shrine. We'll also see how we
-can use [Cloudinary], as an example of a commercial solution.
-
-### Dragonfly
-
-Dragonfly is a mature file attachment library that comes with functionality for
-on-the-fly processing. At first it might appear that Dragonfly can only be used
-as an alternative to Shrine, but Dragonfly's app that performs on-the-fly
-processing can actually be used standalone.
-
-To set up Dragonfly, we'll insert its middleware that serves files and add
-basic [configuration][Dragonfly configuration]:
+Together it might look something like this:
 
 ```rb
-Dragonfly.app.configure do
-  url_format "/attachments/:job"
-  secret "my secure secret" # used to generate the protective SHA
-  plugin :imagemagick
-end
+require "image_processing/mini_magick"
 
-use Dragonfly::Middleware
-```
+class ImageUploader < Shrine
+  plugin :derivation_endpoint,
+    secret_key: "<YOUR SECRET KEY>",
+    prefix:     "derivations/image"
 
-If you're storing files in a cloud service like AWS S3, you should give them
-public access so that you can generate non-expiring URLs. This way Dragonfly
-URLs will not change and thus be cacheable, without having to use Dragonfly's
-own S3 data store which requires pulling in [fog-aws].
-
-To give new S3 objects public access, add `{ acl: "public-read" }` to upload
-options (note that any existing S3 objects' ACLs will have to be manually
-updated):
-
-```rb
-Shrine::Storage::S3.new(upload_options: { acl: "public-read" }, **other_options)
-# ...
-Shrine.plugin :default_url_options, cache: { public: true }, store: { public: true }
-```
-
-Now you can generate Dragonfly URLs from `Shrine::UploadedFile` objects:
-
-```rb
-def thumbnail_url(uploaded_file, dimensions)
-  Dragonfly.app
-    .fetch(uploaded_file.url)
-    .thumb(dimensions)
-    .url
+  derivation :thumbnail do |file, width, height|
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  end
 end
 ```
+
 ```rb
-thumbnail_url(photo.image, "500x400") #=> "/attachments/W1siZnUiLCJodHRwOi8vd3d3LnB1YmxpY2RvbWFpbn..."
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  mount ImageUploader.derivation_endpoint => "derivations/image"
+end
+```
+
+Now you can generate thumbnail URLs from attached files, and the actual
+thumbnail will be generated when the URL is requested:
+
+```rb
+photo.image.derivation_url(:thumbnail, "600", "400")
+#=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+```
+
+The plugin is highly customizable, be sure to check out the
+[documnetation][derivation_endpoint], especially the [performance
+section][derivation_endpoint performance].
+
+## Extras
+
+### libvips
+
+As mentioned, ImageProcessing gem also has an alternative backend for
+processing images with **[libvips]**. libvips is a full-featured image
+processing library like ImageMagick, with impressive performance
+characteristics – it's often multiple times faster than ImageMagick and has low
+memory usage (see [Why is libvips quick]).
+
+Using libvips is as easy as installing it and switching to the
+`ImageProcessing::Vips` backend:
+
+```sh
+$ brew install vips
+```
+
+```rb
+# Gemfile
+gem "image_processing", "~> 1.0"
+```
+
+```rb
+require "image_processing/vips"
+
+# all we did was replace `ImageProcessing::MiniMagick` with `ImageProcessing::Vips`
+thumbnail = ImageProcessing::Vips
+  .source(image)
+  .resize_to_limit!(600, 400)
+
+thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
+```
+
+### Optimizing thumbnails
+
+If you're generating image thumbnails, you can additionally use the
+[image_optim] gem to further reduce their filesize:
+
+```rb
+# Gemfile
+gem "image_processing", "~> 1.0"
+gem "image_optim"
+gem "image_optim_pack" # precompiled binaries
+```
+
+```rb
+require "image_processing/mini_magick"
+
+thumbnail = ImageProcessing::MiniMagick
+  .source(image)
+  .resize_to_limit!(600, 400)
+
+image_optim = ImageOptim.new
+image_optim.optimize_image!(thumbnail.path)
+
+thumbnail.open # refresh file descriptor
+thumbnail
+```
+
+### External processing
+
+Since processing is so dynamic, you're not limited to using the ImageProcessing
+gem, you can also use a 3rd-party service to generate thumbnails for you. Here
+is an example of generating thumbnails on-the-fly using [ImageOptim.com] (not
+to be confused with the [image_optim] gem):
+
+```rb
+# Gemfile
+gem "down", "~> 4.4"
+gem "http", "~> 4.0"
+```
+
+```rb
+require "down/http"
+
+class ImageUploader < Shrine
+  plugin :derivation_endpoint,
+    secret_key: "secret",
+    prefix:     "derivations/image",
+    download:   false
+
+  derivation :thumbnail do |source, width, height|
+    # generate thumbnails using ImageOptim.com
+    down = Down::Http.new(method: :post)
+    down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{source.url}")
+  end
+end
 ```
 
 ### Cloudinary
 
-[Cloudinary] is a nice service for on-the-fly image processing. The
+[Cloudinary] is a popular commercial service for on-the-fly image processing,
+so it's a good alternative to the `derivation_endpoint` plugin. The
 [shrine-cloudinary] gem provides a Shrine storage that we can set for our
 temporary and permanent storage:
 
@@ -393,25 +363,21 @@ photo.image.url(width: 100, height: 100, crop: :fit)
 #=> "http://res.cloudinary.com/myapp/image/upload/w_100,h_100,c_fit/nature.jpg"
 ```
 
-[`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/Plugins/Base/FileMethods.html
-[image_optim]: https://github.com/toy/image_optim
+[`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
 [ImageProcessing]: https://github.com/janko/image_processing
-[`ImageProcessing::MiniMagick`]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md
 [ImageMagick]: https://www.imagemagick.org
 [GraphicsMagick]: http://www.graphicsmagick.org
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
+[image_optim]: https://github.com/toy/image_optim
 [ImageOptim.com]: https://imageoptim.com/api
-[Down]: https://github.com/janko/down
-[HTTP.rb]: https://github.com/httprb/http
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[reprocessing versions]: doc/regenerating_versions.md#readme
-[Dragonfly]: http://markevans.github.io/dragonfly/
-[imgproxy]: https://github.com/DarthSim/imgproxy
-[imaginary]: https://github.com/h2non/imaginary
-[thumbor]: http://thumbor.org
-[flyimg]: http://flyimg.io
+[Reprocessing Versions]: doc/regenerating_versions.md#readme
 [Cloudinary]: https://cloudinary.com
-[Dragonfly configuration]: http://markevans.github.io/dragonfly/configuration
-[fog-aws]: https://github.com/fog/fog-aws
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[backgrounding]: doc/plugins/backgrounding.md#readme
+[validation]: doc/validation.md#readme
+[ruby-vips]: https://github.com/libvips/ruby-vips
+[MiniMagick]: https://github.com/minimagick/minimagick
+[derivation_endpoint]: doc/plugins/derivation_endpoint.md#readme
+[derivation_endpoint performance]: doc/plugins/derivation_endpoint.md#performance
