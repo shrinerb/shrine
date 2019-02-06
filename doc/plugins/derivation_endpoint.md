@@ -374,19 +374,12 @@ uploaded_file.derivation_url(:pdf, disposition: "attachment", filename: "custom-
 
 The endpoint uses the [`Cache-Control`] response header to tell clients
 (browsers, CDNs, HTTP caches) how long they can cache derivation responses. The
-default cache duration is 1 year since the initial request. This can be changed
-with the `:cache_control` option:
+default cache duration is 1 year from the initial request, or if
+[`:expires_in`](#expiration) is used it's the time until the URL expires. The
+header value can be changed with the `:cache_control` option:
 
 ```rb
-plugin :derivation_endpoint, cache_control: { max_age: 7*24*60*60 } # 7 weeks
-# Cache-Control: public, max-age=604800
-```
-
-It's also possible to modify any other `Cache-Control` directives:
-
-```rb
-plugin :derivation_endpoint, cache_control: { public: false, private: true }
-# Cache-Control: private, max-age=31536000
+plugin :derivation_endpoint, cache_control: "public, max-age=#{7*24*60*60}" # 7 weeks
 ```
 
 Note that `Cache-Control` is added to response headers only when using

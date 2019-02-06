@@ -280,22 +280,16 @@ describe Shrine::Plugins::DerivationEndpoint do
     end
 
     it "applies :cache_control" do
-      @shrine.plugin :derivation_endpoint, cache_control: { max_age: 10 }
+      @shrine.plugin :derivation_endpoint, cache_control: "public, max-age=10"
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url)
       assert_equal "public, max-age=10", response.headers["Cache-Control"]
 
-      response = app(cache_control: { max_age: 20 }).get(derivation_url)
+      response = app(cache_control: "public, max-age=20").get(derivation_url)
       assert_equal "public, max-age=20", response.headers["Cache-Control"]
 
-      response = app(cache_control: { public: nil }).get(derivation_url)
-      assert_equal "max-age=#{365*24*60*60}", response.headers["Cache-Control"]
-
-      response = app(cache_control: { public: false }).get(derivation_url)
-      assert_equal "max-age=#{365*24*60*60}", response.headers["Cache-Control"]
-
-      response = app(cache_control: { public: false, private: true }).get(derivation_url)
-      assert_equal "max-age=#{365*24*60*60}, private", response.headers["Cache-Control"]
+      response = app(cache_control: -> { "public, max-age=20" }).get(derivation_url)
+      assert_equal "public, max-age=20", response.headers["Cache-Control"]
 
       derivation_url = @uploaded_file.derivation_url(:gray, expires_in: 100)
       response = app.get(derivation_url)

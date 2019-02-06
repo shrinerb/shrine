@@ -142,6 +142,7 @@ class Shrine
       options[name] = { default: default, result: result }
     end
 
+    option :cache_control,               default: -> { default_cache_control }
     option :disposition,                 default: -> { "inline" }
     option :download,                    default: -> { true }
     option :download_errors,             default: -> { [] }
@@ -155,7 +156,7 @@ class Shrine
     option :secret_key
     option :type
     option :upload,                      default: -> { false }
-    option :upload_location,             default: -> { default_upload_location }, result: -> (l) { upload_location(l) }
+    option :upload_location,             default: -> { default_upload_location }, result: -> (o) { upload_location(o) }
     option :upload_options,              default: -> { {} }
     option :upload_redirect,             default: -> { false }
     option :upload_redirect_url_options, default: -> { {} }
@@ -200,6 +201,14 @@ class Shrine
       filename  = [name, *args].join("-")
 
       [directory, filename].join("/")
+    end
+
+    def default_cache_control
+      if option(:expires_in)
+        "public, max-age=#{option(:expires_in)}"
+      else
+        "public, max-age=#{365*24*60*60}"
+      end
     end
 
     class Command
@@ -296,14 +305,17 @@ class Shrine
 
       # request params override statically configured options
       options = self.options.dup
+
       options[:type]        = request.params["type"]        if request.params["type"]
       options[:disposition] = request.params["disposition"] if request.params["disposition"]
       options[:filename]    = request.params["filename"]    if request.params["filename"]
 
+      options[:expires_in]  = expires_in(request) if request.params["expires_at"]
+
+      derivation = uploaded_file.derivation(name, *args, **options)
+
       begin
-        status, headers, body = uploaded_file.derivation_response(
-          name, *args, env: request.env, **options,
-        )
+        status, headers, body = derivation.response(request.env)
       rescue Derivation::NotFound
         error!(404, "Unknown derivation \"#{name}\"")
       rescue Derivation::SourceNotFound
@@ -311,7 +323,7 @@ class Shrine
       end
 
       if status == 200 || status == 206
-        headers["Cache-Control"] = cache_control(request)
+        headers["Cache-Control"] = derivation.option(:cache_control)
       end
 
       [status, headers, body]
@@ -345,18 +357,6 @@ class Shrine
 
     def secret_key
       derivation_options[:secret_key]
-    end
-
-    def cache_control(request)
-      directives = { public: true, max_age: 365*24*60*60 }
-      directives[:max_age] = expires_in(request) if request.params["expires_at"]
-      directives.merge!(derivation_options[:cache_control]) if derivation_options[:cache_control]
-
-      directives
-        .reject { |key, value| value == nil || value == false }
-        .map    { |key, value| [key.to_s.tr("_", "-"), value] }
-        .map    { |key, value| value == true ? key : "#{key}=#{value}" }
-        .join(", ")
     end
 
     def derivation_options
