@@ -294,7 +294,7 @@ describe Shrine::Storage::FileSystem do
         refute @storage.directory.join("foo").exist?
         assert @storage.directory.directory?
         assert File.symlink?(root_symlink)
-      end
+      end unless RUBY_ENGINE == "jruby" # https://github.com/jruby/jruby/issues/5539
     end
   end
 
