@@ -225,8 +225,8 @@ thumbnail #=> #<Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6
 
 Probably the biggest ImageProcessing feature is the support for **[libvips]**.
 libvips is a full-featured image processing library like ImageMagick, with
-impressive performance characteristics – it's often multiple times faster than
-ImageMagick and has low memory usage (see [Why is libvips quick]).
+impressive performance characteristics – it's often **multiple times faster**
+than ImageMagick and has low memory usage (see [Why is libvips quick]).
 
 The `ImageProcessing::Vips` backend implements the same API as
 `ImageProcessing::MiniMagick`, so you can easily swap one for the other.
@@ -320,11 +320,11 @@ library][backgrounding libraries].
 Shrine doesn't come with a plug-and-play JavaScript solution for client-side
 uploads like Refile and Active Storage, but instead it adopts **[Uppy]**. Uppy
 is a modern JavaScript file upload library, which offers support for uploading
-to [AWS S3][AwsS3], to a [custom endpoint][XHRUpload], or even to a [resumable
-endpoint][Tus]. It comes with a set of UI components, ranging from a simple
-[status bar][StatusBar] to a full-featured [dashboard][Dashboard]. Since Uppy
-is maintained by the wide JavaScript community, it's generally a better choice
-than any homegrown solution.
+to [AWS S3][Uppy AwsS3], to a [custom endpoint][Uppy XHRUpload], or even to a
+[resumable endpoint][Uppy Tus]. It comes with a set of UI components, ranging
+from a simple [status bar][Uppy StatusBar] to a full-featured [dashboard][Uppy
+Dashboard]. Since Uppy is maintained by the wide JavaScript community, it's
+generally a better choice than any homegrown solution.
 
 Shrine provides Rack components for uploads that integrate nicely with Uppy.
 So, whether you want Uppy to upload directly [to your app][upload_endpoint], or
@@ -340,10 +340,10 @@ resumable uploads – **[tus]**. There are already countless client and server
 [implementations][tus implementations] of the protocol in various languages.
 
 So, if you're expecting large file uploads, you can use Uppy as a [JavaScript
-client][Tus] and have it upload to [Ruby server][tus-ruby-server], then attach
-uploaded files using the handy [Shrine integration][shrine-tus]. Shrine handles
-uploads and downloads in a streaming fashion, so you can expect low memory
-usage.
+client][Uppy Tus] and have it upload to [Ruby server][tus-ruby-server], then
+attach uploaded files using the handy [Shrine integration][shrine-tus]. Shrine
+handles uploads and downloads in a streaming fashion, so you can expect low
+memory usage.
 
 Alternatively, you can have [resumable multipart uploads directly to
 S3][uppy-s3_multipart].
@@ -408,11 +408,11 @@ when it realizes it's too large.
 [upload_endpoint]: /doc/plugins/upload_endpoint.md#readme
 [presign_endpoint]: /doc/plugins/presign_endpoint.md#readme
 [Uppy]: https://uppy.io
-[XHRUpload]: https://uppy.io/docs/xhrupload/
-[AwsS3]: https://uppy.io/docs/aws-s3/
-[Tus]: https://uppy.io/docs/tus/
-[StatusBar]: https://uppy.io/examples/statusbar/
-[Dashboard]: https://uppy.io/examples/dashboard/
+[Uppy XHRUpload]: https://uppy.io/docs/xhrupload/
+[Uppy AwsS3]: https://uppy.io/docs/aws-s3/
+[Uppy Tus]: https://uppy.io/docs/tus/
+[Uppy StatusBar]: https://uppy.io/examples/statusbar/
+[Uppy Dashboard]: https://uppy.io/examples/dashboard/
 [backgrounding]: /doc/plugins/backgrounding.md#readme
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
 [Down streaming]: https://github.com/janko/down#streaming

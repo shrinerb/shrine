@@ -1,8 +1,8 @@
 # File Processing
 
-Shrine allows you to process files in two ways. One is processing [on
-upload](#processing-on-upload), where the processing gets triggered when the file is
-attached to a record. The other is [on-the-fly](#on-the-fly-processing)
+Shrine allows you to process files in two ways. One is processing "[on
+upload](#processing-on-upload)", where the processing gets triggered when the file is
+attached to a record. The other is "[on-the-fly](#on-the-fly-processing)"
 processing, where the processing is performed lazily at the moment the file is
 requested.
 
@@ -18,7 +18,7 @@ end
 How you're going to implement processing is entirely up to you. For images it's
 recommended to use the **[ImageProcessing]** gem, which provides wrappers for
 processing with [ImageMagick]/[GraphicsMagick] (using the [MiniMagick] gem) or
-[libvips] (using the [ruby-vips] gem) (see the [libvips section](#libvips)).
+[libvips] (using the [ruby-vips] gem; see the [libvips section](#libvips)).
 Here is an example of generating a thumbnail with ImageProcessing:
 
 ```sh
@@ -235,7 +235,7 @@ photo.image.derivation_url(:thumbnail, "600", "400")
 ```
 
 The plugin is highly customizable, be sure to check out the
-[documnetation][derivation_endpoint], especially the [performance
+[documentation][derivation_endpoint], especially the [performance
 section][derivation_endpoint performance].
 
 ## Extras
@@ -245,8 +245,8 @@ section][derivation_endpoint performance].
 As mentioned, ImageProcessing gem also has an alternative backend for
 processing images with **[libvips]**. libvips is a full-featured image
 processing library like ImageMagick, with impressive performance
-characteristics – it's often multiple times faster than ImageMagick and has low
-memory usage (see [Why is libvips quick]).
+characteristics – it's often **multiple times faster** than ImageMagick and has
+low memory usage (see [Why is libvips quick]).
 
 Using libvips is as easy as installing it and switching to the
 `ImageProcessing::Vips` backend:
