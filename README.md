@@ -18,7 +18,7 @@ If you're curious how it compares to other file attachment libraries, see the [A
 
 | Resource          | URL                                                                                        |
 | :-------          | :---                                                                                       |
-| Documentation     | [shrinerb.com](https://shrinerb.com)                                                       |
+| Website           | [shrinerb.com](https://shrinerb.com)                                                       |
 | Demo code         | [Roda][roda demo] / [Rails][rails demo]                                                    |
 | Source            | [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)                           |
 | Wiki              | [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)                 |
@@ -511,16 +511,15 @@ uploaded_file.metadata["foo"]   #=> "bar"
 
 ## Processing
 
-Shrine allows you to processing attached files either "[on upload](#on-upload)"
-or "[on-the-fly](#on-the-fly)". For example, if your app is accepting image
-uploads, you can generate a pre-defined set of of thumbnails as soon as the
-image is attached to a record ("on upload"), or you can generate necessary
-thumbnails dynamically as they're needed ("on-the-fly").
+Shrine allows you to processing attached files either "on upload" or
+"on-the-fly". For example, if your app is accepting image uploads, you can
+generate a pre-defined set of of thumbnails as soon as the image is attached to
+a record ("on upload"), or you can generate necessary thumbnails dynamically as
+they're needed ("on-the-fly").
 
 In both cases, for image processing you can use the **[ImageProcessing]** gem.
 It provides a convenient unified API for processing with [ImageMagick] or
-[libvips]. Here is an example of generating a 600x400 thumbnail with
-ImageProcessing:
+[libvips]. Here is an example of generating a thumbnail with ImageProcessing:
 
 ```sh
 $ brew install imagemagick
@@ -1033,13 +1032,13 @@ The gem is available as open source under the terms of the [MIT License].
 
 [Shrine]: https://shrinerb.com
 [plugin system]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
-[FileSystem]: doc/storage/file_system.md#readme
-[S3]: doc/storage/s3.md#readme
+[FileSystem]: /doc/storage/file_system.md#readme
+[S3]: /doc/storage/s3.md#readme
 [GCS]: https://github.com/renchap/shrine-google_cloud_storage
 [Cloudinary]: https://github.com/shrinerb/shrine-cloudinary
 [Transloadit]: https://github.com/shrinerb/shrine-transloadit
-[activerecord plugin]: doc/plugins/activerecord.md#readme
-[sequel plugin]: doc/plugins/sequel.md#readme
+[activerecord plugin]: /doc/plugins/activerecord.md#readme
+[sequel plugin]: /doc/plugins/sequel.md#readme
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [ImageProcessing]: https://github.com/janko/image_processing
@@ -1049,32 +1048,32 @@ The gem is available as open source under the terms of the [MIT License].
 [ImageProcessing::Vips]: https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 [ImageMagick]: https://imagemagick.org/
 [libvips]: http://libvips.github.io/libvips/
-[derivation_endpoint plugin]: doc/plugins/derivation_endpoint.md#readme
-[validation_helpers plugin]: doc/plugins/validation_helpers.md#readme
-[upload_endpoint plugin]: doc/plugins/upload_endpoint.md#readme
-[presign_endpoint plugin]: doc/plugins/presign_endpoint.md#readme
+[derivation_endpoint plugin]: /doc/plugins/derivation_endpoint.md#readme
+[validation_helpers plugin]: /doc/plugins/validation_helpers.md#readme
+[upload_endpoint plugin]: /doc/plugins/upload_endpoint.md#readme
+[presign_endpoint plugin]: /doc/plugins/presign_endpoint.md#readme
 [Uppy]: https://uppy.io
 [tus]: https://tus.io
 [uppy tus]: https://uppy.io/docs/tus/
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
-[backgrounding plugin]: doc/plugins/backgrounding.md#readme
-[Advantages of Shrine]: doc/advantages.md#readme
+[backgrounding plugin]: /doc/plugins/backgrounding.md#readme
+[Advantages of Shrine]: /doc/advantages.md#readme
 [external storages]: https://shrinerb.com/#external
-[creating storage]: doc/creating_storages.md#readme
-[creating plugin]: doc/creating_plugins.md#readme
-[Retrieving Uploads]: doc/retrieving_uploads.md#readme
-[Using Attacher]: doc/attacher.md#readme
+[creating storage]: /doc/creating_storages.md#readme
+[creating plugin]: /doc/creating_plugins.md#readme
+[Retrieving Uploads]: /doc/retrieving_uploads.md#readme
+[Using Attacher]: /doc/attacher.md#readme
 [plugins]: https://shrinerb.com/#plugins
 [`file`]: http://linux.die.net/man/1/file
-[Extracting Metadata]: doc/metadata.md#readme
-[File Processing]: doc/processing.md#readme
-[File Validation]: doc/validation.md#readme
-[metadata direct uploads]: https://github.com/shrinerb/shrine/blob/master/doc/metadata.md#direct-uploads
+[Extracting Metadata]: /doc/metadata.md#readme
+[File Processing]: /doc/processing.md#readme
+[File Validation]: /doc/validation.md#readme
+[metadata direct uploads]: /doc/metadata.md#direct-uploads
 [uppy xhr upload]: https://uppy.io/docs/xhr-upload/
 [direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [uppy aws s3]: https://uppy.io/docs/aws-s3/
 [direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
-[direct S3 uploads guide]: doc/direct_s3.md#readme
+[direct S3 uploads guide]: /doc/direct_s3.md#readme
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [shrine-tus]: https://github.com/shrinerb/shrine-tus

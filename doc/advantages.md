@@ -43,7 +43,7 @@ Shrine was designed with simplicity in mind. Where other solutions favour
 complex class-level DSLs, Shrine chooses simple instance-level interfaces where
 you can write regular Ruby code.
 
-There are no `CarrierWave::Uploader::Base` and `Paperclip::Attachment` [God
+There are no `CarrierWave::Uploader::Base` and `Paperclip::Attachment` [god
 objects], Shrine has several core classes each with clear responsibilities:
 
 * Storage classes encapsulate file operations for the underlying service
@@ -393,7 +393,7 @@ when it realizes it's too large.
 [mini_mime]: https://github.com/discourse/mini_mime
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
-[God objects]: https://en.wikipedia.org/wiki/God_object
+[god objects]: https://en.wikipedia.org/wiki/God_object
 [ImageMagick]: https://www.imagemagick.org
 [refile-mini_magick]: https://github.com/refile/refile-mini_magick
 [ImageProcessing]: https://github.com/janko/image_processing
@@ -401,19 +401,19 @@ when it realizes it's too large.
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
-[metadata]: doc/metadata.md#readme
-[store_dimensions]: doc/plugins/store_dimensions.md#readme
-[add_metadata]: doc/plugins/add_metadata.md#readme
-[validation]: doc/validation.md#readme
-[upload_endpoint]: doc/plugins/upload_endpoint.md#readme
-[presign_endpoint]: doc/plugins/presign_endpoint.md#readme
+[metadata]: /doc/metadata.md#readme
+[store_dimensions]: /doc/plugins/store_dimensions.md#readme
+[add_metadata]: /doc/plugins/add_metadata.md#readme
+[validation]: /doc/validation.md#readme
+[upload_endpoint]: /doc/plugins/upload_endpoint.md#readme
+[presign_endpoint]: /doc/plugins/presign_endpoint.md#readme
 [Uppy]: https://uppy.io
 [XHRUpload]: https://uppy.io/docs/xhrupload/
 [AwsS3]: https://uppy.io/docs/aws-s3/
 [Tus]: https://uppy.io/docs/tus/
 [StatusBar]: https://uppy.io/examples/statusbar/
 [Dashboard]: https://uppy.io/examples/dashboard/
-[backgrounding]: doc/plugins/backgrounding.md#readme
+[backgrounding]: /doc/plugins/backgrounding.md#readme
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
 [Down streaming]: https://github.com/janko/down#streaming
 [Transloadit]: https://transloadit.com
@@ -425,6 +425,6 @@ when it realizes it's too large.
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [OWASP]: https://www.owasp.org/index.php/Unrestricted_File_Upload
 [image_optim]: https://github.com/toy/image_optim
-[validation_helpers]: doc/plugins/validation_helpers.md$readme
-[custom validations]: doc/validation.md#custom-validations
+[validation_helpers]: /doc/plugins/validation_helpers.md#readme
+[custom validations]: /doc/validation.md#custom-validations
 [Down max size]: https://github.com/janko/down#maximum-size

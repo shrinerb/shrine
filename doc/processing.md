@@ -19,7 +19,7 @@ How you're going to implement processing is entirely up to you. For images it's
 recommended to use the **[ImageProcessing]** gem, which provides wrappers for
 processing with [ImageMagick]/[GraphicsMagick] (using the [MiniMagick] gem) or
 [libvips] (using the [ruby-vips] gem) (see the [libvips section](#libvips)).
-Here is an example of generating a 600x400 thumbnail with ImageProcessing:
+Here is an example of generating a thumbnail with ImageProcessing:
 
 ```sh
 $ brew install imagemagick
@@ -372,12 +372,12 @@ photo.image.url(width: 100, height: 100, crop: :fit)
 [image_optim]: https://github.com/toy/image_optim
 [ImageOptim.com]: https://imageoptim.com/api
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[Reprocessing Versions]: doc/regenerating_versions.md#readme
+[Reprocessing Versions]: /doc/regenerating_versions.md#readme
 [Cloudinary]: https://cloudinary.com
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
-[backgrounding]: doc/plugins/backgrounding.md#readme
-[validation]: doc/validation.md#readme
+[backgrounding]: /doc/plugins/backgrounding.md#readme
+[validation]: /doc/validation.md#readme
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [MiniMagick]: https://github.com/minimagick/minimagick
-[derivation_endpoint]: doc/plugins/derivation_endpoint.md#readme
-[derivation_endpoint performance]: doc/plugins/derivation_endpoint.md#performance
+[derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
+[derivation_endpoint performance]: /doc/plugins/derivation_endpoint.md#performance

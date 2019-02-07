@@ -167,4 +167,4 @@ call the plugin again in an uploader subclass to change its configuration.
 [Roda]: https://github.com/jeremyevans/roda
 [Uppy]: https://uppy.io
 [Roda request]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html
-[Direct Uploads to S3]: doc/direct_s3.md#readme
+[Direct Uploads to S3]: /doc/direct_s3.md#readme

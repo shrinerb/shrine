@@ -401,6 +401,6 @@ setup] guide.
 [lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [Minio]: https://minio.io
-[minio setup]: doc/testing.md#minio
-[metadata direct uploads]: doc/metadata.md#direct-uploads
+[minio setup]: /doc/testing.md#minio
+[metadata direct uploads]: /doc/metadata.md#direct-uploads
 [content_disposition]: https://github.com/shrinerb/content_disposition
