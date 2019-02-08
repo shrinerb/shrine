@@ -294,7 +294,7 @@ describe Shrine::Storage::S3 do
           assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
           assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
         end
-      end
+      end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
 
       it "aborts multipart upload on exceptions" do
         @s3.client.stub_responses(:create_multipart_upload, { upload_id: "upload_id" })
