@@ -26,10 +26,17 @@ class Shrine
       end
 
       module ClassMethods
+        # Returns a mountable Rack app that handles derivation requests.
         def derivation_endpoint(**options)
           Shrine::DerivationEndpoint.new(shrine_class: self, options: options)
         end
 
+        # Calls the derivation endpoint passing the request information, and
+        # returns the Rack response triple.
+        #
+        # It uses a trick where it removes the derivation path prefix from the
+        # path info before calling the Rack app, which is what web framework
+        # routers do before they're calling a mounted Rack app.
         def derivation_response(env, **options)
           script_name = env["SCRIPT_NAME"]
           path_info   = env["PATH_INFO"]
@@ -50,6 +57,8 @@ class Shrine
           end
         end
 
+        # Registers a derivation block, which is called when the corresponding
+        # derivation URL is requested.
         def derivation(name, &block)
           derivations[name] = block
         end
@@ -64,14 +73,23 @@ class Shrine
       end
 
       module FileMethods
+        # Generates a URL to a derivation with the receiver as the source file.
+        # Any arguments provided will be included in the URL and passed to the
+        # derivation block. Accepts additional URL options.
         def derivation_url(name, *args, **options)
           derivation(name, *args).url(**options)
         end
 
+        # Calls the specified derivation with the receiver as the source file,
+        # returning a Rack response triple. The derivation endpoint ultimately
+        # calls this method.
         def derivation_response(name, *args, env:, **options)
           derivation(name, *args, **options).response(env)
         end
 
+        # Returns a Shrine::Derivation object created from the provided
+        # arguments. This object offers additional methods for operating with
+        # derivatives on a lower level.
         def derivation(name, *args, **options)
           Shrine::Derivation.new(
             name:    name,
@@ -99,6 +117,7 @@ class Shrine
       @options = options
     end
 
+    # Returns an URL to the derivation.
     def url(**options)
       Derivation::Url.new(self).call(
         host:       option(:host),
@@ -110,26 +129,35 @@ class Shrine
       )
     end
 
+    # Returns the derivation result in form of a Rack response triple.
     def response(env)
       Derivation::Response.new(self).call(env)
     end
 
+    # Returns the derivation result as a File/Tempfile or a
+    # Shrine::UploadedFile object.
     def processed
       Derivation::Processed.new(self).call
     end
 
+    # Calls the derivation block and returns the direct result.
     def generate(file = nil)
       Derivation::Generate.new(self).call(file)
     end
 
+    # Uploads the derivation result to a dedicated destination on the specified
+    # Shrine storage.
     def upload(file = nil)
       Derivation::Upload.new(self).call(file)
     end
 
+    # Returns a Shrine::UploadedFile object pointing to the uploaded derivation
+    # result.
     def retrieve
       Derivation::Retrieve.new(self).call
     end
 
+    # Deletes the derivation result from the storage.
     def delete
       Derivation::Delete.new(self).call
     end
@@ -163,6 +191,11 @@ class Shrine
     option :upload_storage,              default: -> { source.storage_key.to_sym }
     option :version
 
+    # Retrieves the value of a derivation option.
+    #
+    # * If specified as a raw value, returns that value
+    # * If specified as a block, evaluates that it and returns the result
+    # * If unspecified, returns the default value
     def option(name)
       option_definition = self.class.options.fetch(name)
 
@@ -186,16 +219,21 @@ class Shrine
 
     private
 
-    # append version and extension to upload location if specified
+    # When bumping the version, we also append it to the upload location to
+    # ensure we're not retrieving old derivatives.
     def upload_location(location)
       location = location.sub(/(?=(\.\w+)?$)/, "-#{option(:version)}") if option(:version)
       location
     end
 
+    # For derivation "thumbnail" with arguments "600/400" and source id of
+    # "1f6375ad.ext", returns "thumbnail-600-400-1f6375ad".
     def default_filename
       [name, *args, File.basename(source.id, ".*")].join("-")
     end
 
+    # For derivation "thumbnail" with arguments "600/400" and source id of
+    # "1f6375ad.ext", returns "1f6375ad/thumbnail-600-400".
     def default_upload_location
       directory = source.id.sub(/\.[^\/]+/, "")
       filename  = [name, *args].join("-")
@@ -203,6 +241,7 @@ class Shrine
       [directory, filename].join("/")
     end
 
+    # Allows caching for 1 year or until the URL expires.
     def default_cache_control
       if option(:expires_in)
         "public, max-age=#{option(:expires_in)}"
@@ -218,6 +257,7 @@ class Shrine
         @derivation = derivation
       end
 
+      # Creates methods that delegate to derivation parameters.
       def self.delegate(*names)
         names.each do |name|
           protected define_method(name) {
@@ -255,14 +295,16 @@ class Shrine
                    metadata: [])
 
       params = {}
-      params[:expires_at]  = (Time.now.utc + expires_in).to_i if expires_in
+      params[:expires_at]  = (Time.now + expires_in).to_i if expires_in
       params[:version]     = version if version
       params[:type]        = type if type
       params[:filename]    = filename if filename
       params[:disposition] = disposition if disposition
 
+      # serializes the source uploaded file into an URL-safe format
       source_component = source.urlsafe_dump(metadata: metadata)
 
+      # generate signed URL
       signed_url(name, *args, source_component, params)
     end
 
@@ -294,6 +336,15 @@ class Shrine
       [status, headers, body]
     end
 
+    # Verifies validity of the URL, then extracts parameters from it (such as
+    # derivation name, arguments and source file), and generates a derivation
+    # response.
+    #
+    # Returns "403 Forbidden" if signature is invalid, or if the URL has
+    # expired.
+    #
+    # Returns "404 Not Found" if derivation block is not defined, or if source
+    # file was not found on the storage.
     def handle_request(request)
       verify_signature!(request)
       check_expiry!(request)
@@ -305,12 +356,10 @@ class Shrine
 
       # request params override statically configured options
       options = self.options.dup
-
       options[:type]        = request.params["type"]        if request.params["type"]
       options[:disposition] = request.params["disposition"] if request.params["disposition"]
       options[:filename]    = request.params["filename"]    if request.params["filename"]
-
-      options[:expires_in]  = expires_in(request) if request.params["expires_at"]
+      options[:expires_in]  = expires_in(request)           if request.params["expires_at"]
 
       derivation = uploaded_file.derivation(name, *args, **options)
 
@@ -322,6 +371,7 @@ class Shrine
         error!(404, "Source file not found")
       end
 
+      # tell clients to cache the derivation result if it was successful
       if status == 200 || status == 206
         headers["Cache-Control"] = derivation.option(:cache_control)
       end
@@ -331,6 +381,7 @@ class Shrine
 
     private
 
+    # Return an error response if the signature is invalid.
     def verify_signature!(request)
       signer = UrlSigner.new(secret_key)
       signer.verify_url("#{request.path_info[1..-1]}?#{request.query_string}")
@@ -338,6 +389,7 @@ class Shrine
       error!(403, error.message.capitalize)
     end
 
+    # Return an error response if URL has expired.
     def check_expiry!(request)
       if request.params["expires_at"]
         error!(403, "Request has expired") if expires_in(request) <= 0
@@ -384,6 +436,9 @@ class Shrine
       file_response(derivative, env)
     end
 
+    # Generates a Rack response triple from a local file using `Rack::File`.
+    # Fills in `Content-Type` and `Content-Disposition` response headers from
+    # derivation options and file extension of the derivation result.
     def file_response(file, env)
       file.close
       response = rack_file_response(file.path, env)
@@ -405,6 +460,10 @@ class Shrine
       [status, headers, body]
     end
 
+    # This is called when `:upload` is enabled. Checks the storage for already
+    # uploaded derivation result, otherwise calls the derivation block and
+    # uploads the result. If the derivation result is already uploaded, uses
+    # the `rack_response` plugin to generate a Rack response triple.
     def upload_response(env)
       uploaded_file = derivation.retrieve
 
@@ -433,6 +492,9 @@ class Shrine
       end
     end
 
+    # We call `Rack::File` with default `Content-Type` of
+    # "application/octet-stream", and make sure we stay compatible with both
+    # Rack 2.x and 1.6.x.
     def rack_file_response(path, env)
       server = Rack::File.new("", {}, "application/octet-stream")
 
@@ -445,6 +507,8 @@ class Shrine
       end
     end
 
+    # Returns disposition and filename formatted for the `Content-Disposition`
+    # header.
     def content_disposition(filename)
       ContentDisposition.format(disposition: disposition, filename: filename)
     end
@@ -467,6 +531,9 @@ class Shrine
       derivation.generate
     end
 
+    # If derivation already exists on the storage, returns the uploaded file.
+    # If it doesn't, calls the derivation, uploads the result and returns the
+    # uploaded file.
     def upload_result
       uploaded_file = derivation.retrieve
 
@@ -494,6 +561,9 @@ class Shrine
 
     private
 
+    # Calls the derivation block with the source file and derivation arguments.
+    # If a file object is given, passes that as the source file, otherwise
+    # downloads the source uploaded file.
     def generate(file)
       if download
         with_downloaded(file) do |file|
@@ -508,6 +578,8 @@ class Shrine
       end
     end
 
+    # Massages the derivation result, ensuring it's opened in binary mode,
+    # rewinded and flushed to disk.
     def normalize(derivative)
       if derivative.is_a?(Tempfile)
         derivative.open
@@ -534,6 +606,7 @@ class Shrine
       end
     end
 
+    # Downloads the source uploaded file from the storage.
     def download_source
       download_args = download_options.any? ? [download_options] : []
       downloaded    = false
@@ -559,6 +632,9 @@ class Shrine
   class Derivation::Upload < Derivation::Command
     delegate :upload_location, :upload_storage, :upload_options
 
+    # Uploads the derivation result to the dedicated location on the storage.
+    # If a file object is given, uploads that to the storage, otherwise calls
+    # the derivation block and uploads the result.
     def call(derivative = nil)
       derivative ||= derivation.generate
 
@@ -577,6 +653,8 @@ class Shrine
   class Derivation::Retrieve < Derivation::Command
     delegate :upload_location, :upload_storage
 
+    # Returns a Shrine::UploadedFile object pointing to the uploaded derivation
+    # result it exists on the storage.
     def call
       if storage.exists?(upload_location)
         shrine_class::UploadedFile.new(
@@ -596,6 +674,7 @@ class Shrine
   class Derivation::Delete < Derivation::Command
     delegate :upload_location, :upload_storage
 
+    # Deletes the uploaded derivation result from the storage.
     def call
       storage.delete(upload_location)
     end
@@ -616,6 +695,8 @@ class Shrine
       @secret_key = secret_key
     end
 
+    # Returns a URL with the `signature` query parameter generated from the
+    # given path components and query parameters.
     def signed_url(*components, params)
       path  = Rack::Utils.escape_path(components.join("/"))
       query = Rack::Utils.build_query(params)
@@ -627,6 +708,10 @@ class Shrine
       "#{path}?#{query}"
     end
 
+    # Calculcates the signature from the URL and checks whether it matches the
+    # value in the `signature` query parameter. Raises `InvalidSignature` if
+    # the `signature` parameter is missing or its value doesn't match the
+    # calculated signature.
     def verify_url(path_with_query)
       path, query = path_with_query.split("?")
 
@@ -645,6 +730,8 @@ class Shrine
       end
     end
 
+    # Uses HMAC-SHA-256 algorithm to generate a signature from the given string
+    # using the secret key.
     def generate_signature(string)
       OpenSSL::HMAC.hexdigest(OpenSSL::Digest::SHA256.new, secret_key, string)
     end
