@@ -28,29 +28,13 @@ Shrine::Plugins::DefaultUrl
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/default_url.rb">lib/shrine/plugins/default_url.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/default_url_rb.html">lib/shrine/plugins/default_url.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>default_url</code> plugin allows setting the URL which will be
-returned when the attachment is missing.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/#{name}/missing.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p><code>Attacher#url</code> returns the default URL when attachment is
-missing. Any passed in URL options will be present in the
-<code>options</code> hash.</p>
-
-<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;/avatar/missing.jpg&quot;</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span> <span class="ruby-comment">#=&gt; &quot;/avatar/missing.jpg&quot;</span></pre>
-
-<p>The default URL block is evaluated in the context of an instance of
-<code>Shrine::Attacher</code>.</p>
-
-<pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">self</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>&#x000A;&#x000A;  <span class="ruby-identifier">name</span>   <span class="ruby-comment">#=&gt; :avatar</span>&#x000A;  <span class="ruby-identifier">record</span> <span class="ruby-comment">#=&gt; #&lt;User&gt;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -84,7 +68,7 @@ missing. Any passed in URL options will be present in the
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/default_url.rb, line 31</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">block</span>&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url</span>] = <span class="ruby-identifier">block</span>&#x000A;    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;Passing a block to default_url plugin is deprecated and will probably be removed in future versions of Shrine. Use `Attacher.default_url { ... }` instead.&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/default_url.rb</span>&#x000A;<span class="line-num"> 6</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num"> 7</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">block</span>&#x000A;<span class="line-num"> 8</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="line-num"> 9</span>     <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;Passing a block to default_url plugin is deprecated and will probably be removed in future versions of Shrine. Use `Attacher.default_url { ... }` instead.&quot;</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

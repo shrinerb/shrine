@@ -30,7 +30,7 @@ doc/release_notes/1.3.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-05 15:57:31 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,79 +38,53 @@ Last Update:
 <div id='description'>
 <h1 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>Added <code>:namespace</code> option to pretty_location plugin for
-including the model  namespace into the location.</p>
+<p>Added <code>:namespace</code> option to pretty_location plugin for including the model  namespace into the location.</p>
 </li><li>
-<p>Addded <code>:include_error</code> option to remote_url plugin which gives
-you access to  the download error instance when generating the error
-message.</p>
+<p>Addded <code>:include_error</code> option to remote_url plugin which gives you access to  the download error instance when generating the error message.</p>
 </li><li>
-<p>Added <code>&lt;attachment&gt;_cached?</code> and
-<code>&lt;attachment&gt;_stored?</code> to migration_helpers  for easier
-handling of uploading logic in ORM hooks:</p>
+<p>Added <code>&lt;attachment&gt;_cached?</code> and <code>&lt;attachment&gt;_stored?</code> to migration_helpers  for easier handling of uploading logic in ORM hooks:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">before_save</span>&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">column_changed?</span>(<span class="ruby-value">:image</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">image_stored?</span> <span class="ruby-comment"># promote</span>&#x000A;      <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h1 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>Fixed uploading an S3 file making an additional unneeded GET request in 
-addition to the S3 COPY request.</p>
+<p>Fixed uploading an S3 file making an additional unneeded GET request in  addition to the S3 COPY request.</p>
 </li><li>
-<p>When the model with an attachment is namespaced, the namespace isn&#39;t
-included  in the location anymore when using the pretty_location plugin.</p>
+<p>When the model with an attachment is namespaced, the namespace isn&#39;t included  in the location anymore when using the pretty_location plugin.</p>
 </li><li>
-<p>Dumped Down version to 2.0.0 to fix downloading files from URLs which have 
-"[]" characters in them.</p>
+<p>Dumped Down version to 2.0.0 to fix downloading files from URLs which have  "[]" characters in them.</p>
 </li><li>
-<p>The IO is now rewinded even if FastImage fails to extract dimensions from
-the  IO</p>
+<p>The IO is now rewinded even if FastImage fails to extract dimensions from the  IO</p>
 </li><li>
 <p>The IO is now rewinded when using MimeMagic to extract the MIME type.</p>
 </li><li>
-<p>When uploading a <code>Shrine::UploadedFile</code>, the default location
-generator will  first look for the extension in <code>#id</code> before
-looking at <code>#original_filename</code>.</p>
+<p>When uploading a <code>Shrine::UploadedFile</code>, the default location generator will  first look for the extension in <code>#id</code> before looking at <code>#original_filename</code>.</p>
 </li><li>
-<p>The remote_url plugin now returns separate error messsages when file
-wasn&#39;t  found and when the file was too large.</p>
+<p>The remote_url plugin now returns separate error messsages when file wasn&#39;t  found and when the file was too large.</p>
 </li><li>
-<p>Fixed promoting raising an error if the record got deleted before 
-promoting finished</p>
+<p>Fixed promoting raising an error if the record got deleted before  promoting finished</p>
 </li><li>
-<p><code>UploadedFile#original_filename</code>, <code>#size</code> and
-<code>#content_type</code> now return <code>nil</code>  when corresponding
-metadata keys are missing instead of raising a <code>KeyError</code>.</p>
+<p><code>UploadedFile#original_filename</code>, <code>#size</code> and <code>#content_type</code> now return <code>nil</code>  when corresponding metadata keys are missing instead of raising a <code>KeyError</code>.</p>
 </li><li>
-<p>Fixed errors being able to accumulate on the record object when errors
-occur  in data_uri and remote_url plugins.</p>
+<p>Fixed errors being able to accumulate on the record object when errors occur  in data_uri and remote_url plugins.</p>
 </li><li>
-<p>The "metadata" key isn&#39;t required anymore when instantiating a 
-<code>Shrine::UploadedFile</code>.</p>
+<p>The "metadata" key isn&#39;t required anymore when instantiating a  <code>Shrine::UploadedFile</code>.</p>
 </li><li>
-<p>The top-level key-values aren&#39;t cached anymore when instantiating a 
-<code>Shrine::UploadedFile</code>, which means that <code>#id</code>,
-<code>#storage_key</code> and  <code>#metadata</code> will now pick up any
-mutations on the data hash.</p>
+<p>The top-level key-values aren&#39;t cached anymore when instantiating a  <code>Shrine::UploadedFile</code>, which means that <code>#id</code>, <code>#storage_key</code> and  <code>#metadata</code> will now pick up any mutations on the data hash.</p>
 </li><li>
-<p>Removed a deprecation warning in the S3 storage which occurs when AWS 
-credentials are inferred implicitly.</p>
+<p>Removed a deprecation warning in the S3 storage which occurs when AWS  credentials are inferred implicitly.</p>
 </li><li>
-<p>The extracted metadata is now accessible inside
-<code>Shrine#generate_location</code>  via the <code>:metadata</code> key
-in the <code>context</code> hash.</p>
+<p>The extracted metadata is now accessible inside <code>Shrine#generate_location</code>  via the <code>:metadata</code> key in the <code>context</code> hash.</p>
 </li><li>
-<p><code>Shrine#upload</code> doesn&#39;t mutate the given context hash
-anymore.</p>
+<p><code>Shrine#upload</code> doesn&#39;t mutate the given context hash anymore.</p>
 </li><li>
-<p><code>Shrine::Attacher#backup_file</code> from the backup plugin
-doesn&#39;t modify the  input <code>UploadedFile</code> anymore.</p>
+<p><code>Shrine::Attacher#backup_file</code> from the backup plugin doesn&#39;t modify the  input <code>UploadedFile</code> anymore.</p>
 </li></ul>
 
 <h1 id="label-Deprecations">Deprecations<span><a href="#label-Deprecations">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>The keep_location plugin is deprecated, as the same behaviour can easily be
-achieved by overriding <code>Shrine#generate_location</code>:</p>
+<p>The keep_location plugin is deprecated, as the same behaviour can easily be  achieved by overriding <code>Shrine#generate_location</code>:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">UploadedFile</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:phase</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:store</span>&#x000A;      <span class="ruby-identifier">io</span>.<span class="ruby-identifier">id</span>&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>

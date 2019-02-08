@@ -28,47 +28,13 @@ Shrine::Plugins::MigrationHelpers
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/migration_helpers.rb">lib/shrine/plugins/migration_helpers.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/migration_helpers_rb.html">lib/shrine/plugins/migration_helpers.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The migration_helpers plugin gives the attacher additional helper methods
-which are convenient when doing file migrations.</p>
-
-<p>The plugin also allows convenient delegating to these methods through the
-model, by setting <code>:delegate</code>:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:migration_helpers</span>, <span class="ruby-value">delegate:</span> <span class="ruby-keyword">true</span></pre>
-
-<h2 id="module-Shrine::Plugins::MigrationHelpers-label-update_stored"><code>update_stored</code><span><a href="#module-Shrine::Plugins::MigrationHelpers-label-update_stored">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>This method updates the record&#39;s attachment with the result of the
-given block.</p>
-
-<pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">update_stored</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">avatar</span>) <span class="ruby-comment"># saved to the record</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># with model delegation</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_avatar</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">avatar</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">avatar</span>) <span class="ruby-comment"># saved to the record</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The block will get triggered <em>only</em> if the attachment is present and
-not cached, <em>and</em> will save the record only if the record&#39;s
-attachment hasn&#39;t changed in the time it took to execute the block.
-This method is most useful for adding/removing versions and changing
-locations of files.</p>
-
-<h2 id="module-Shrine::Plugins::MigrationHelpers-label-cached-3F+and+stored-3F"><code>cached?</code> and <code>stored?</code><span><a href="#module-Shrine::Plugins::MigrationHelpers-label-cached-3F+and+stored-3F">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>These methods return true if attachment exists and is cached/stored:</p>
-
-<pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cached?</span> <span class="ruby-comment"># user.avatar &amp;&amp; user.avatar_attacher.cache.uploaded?(user.avatar)</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-comment"># user.avatar &amp;&amp; user.avatar_attacher.store.uploaded?(user.avatar)</span>&#x000A;&#x000A;<span class="ruby-comment"># with model delegation</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_cached?</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_stored?</span></pre>
-
-<h2 id="module-Shrine::Plugins::MigrationHelpers-label-attachment_cache+and+attachment_store"><code>attachment_cache</code> and <code>attachment_store</code><span><a href="#module-Shrine::Plugins::MigrationHelpers-label-attachment_cache+and+attachment_store">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>These methods return cache and store uploaders used by the underlying
-attacher:</p>
-
-<pre class="ruby"><span class="ruby-comment"># these methods already exist without migration_helpers</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">cache</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:cache @storage=#&lt;Shrine::Storage::FileSystem @directory=public/uploads&gt;&gt;</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">store</span> <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:store @storage=#&lt;Shrine::Storage::S3:0x007fb8343397c8 @bucket=#&lt;Aws::S3::Bucket name=&quot;foo&quot;&gt;&gt;&gt;</span>&#x000A;&#x000A;<span class="ruby-comment"># with model delegation</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_cache</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_store</span></pre>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -102,7 +68,7 @@ attacher:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb, line 58</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">delegate:</span> <span class="ruby-keyword">false</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:migration_helpers_delegate</span>] = <span class="ruby-identifier">delegate</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/migration_helpers.rb</span>&#x000A;<span class="line-num"> 8</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">delegate:</span> <span class="ruby-keyword">false</span>)&#x000A;<span class="line-num"> 9</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:migration_helpers_delegate</span>] = <span class="ruby-identifier">delegate</span>&#x000A;<span class="line-num">10</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

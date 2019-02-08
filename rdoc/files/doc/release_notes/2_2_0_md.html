@@ -30,7 +30,7 @@ doc/release_notes/2.2.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-05 15:57:31 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,15 +38,12 @@ Last Update:
 <div id='description'>
 <h2 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The processing plugin has been added for declaratively defining processing 
-for a specific action, and is now the idiomatic way to define processing in
-Shrine:</p>
+<p>The processing plugin has been added for declaratively defining processing  for a specific action, and is now the idiomatic way to define processing in  Shrine:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
-<p>The add_metadata plugin has been added for simpler extraction and addition
-of  new metadata:</p>
+<p>The add_metadata plugin has been added for simpler extraction and addition of  new metadata:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;  <span class="ruby-identifier">add_metadata</span> <span class="ruby-value">:exif</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">MiniMagick</span><span class="ruby-operator">::</span><span class="ruby-constant">Image</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>).<span class="ruby-identifier">exif</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
@@ -55,74 +52,47 @@ of  new metadata:</p>
 
 <h2 id="label-Other+features">Other features<span><a href="#label-Other+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>UploadedFile#open</code> method has been added to mimic
-<code>File.open</code>, which  opens the underlying IO only for the
-duration of the block:</p>
+<p>The <code>UploadedFile#open</code> method has been added to mimic <code>File.open</code>, which  opens the underlying IO only for the duration of the block:</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># closes the IO</span></pre>
 <ul><li>
-<p>Add <code>:multipart_threshold</code> to <code>Storage::S3</code> for
-specifying the filesize in  bytes for when the storage should use
-aws-sdk&#39;s parallelized multipart  upload/copy. Defaults to 15MB.</p>
+<p>Add <code>:multipart_threshold</code> to <code>Storage::S3</code> for specifying the filesize in  bytes for when the storage should use aws-sdk&#39;s parallelized multipart  upload/copy. Defaults to 15MB.</p>
 </li></ul>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Aws-sdk&#39;s parallelized multipart S3 upload/copy is now automatically
-used for  files larger than 15MB. Previously multipart upload was never
-used, while  multipart copy would only be used for files larger than 5GB.</p>
+<p>Aws-sdk&#39;s parallelized multipart S3 upload/copy is now automatically used for  files larger than 15MB. Previously multipart upload was never used, while  multipart copy would only be used for files larger than 5GB.</p>
 </li><li>
-<p>In <code>Storage::S3#download</code> aws-sdk&#39;s downloading is now used,
-which retries on  failed downloads.</p>
+<p>In <code>Storage::S3#download</code> aws-sdk&#39;s downloading is now used, which retries on  failed downloads.</p>
 </li><li>
-<p>A <code>:content_length</code> option is now passed to multipart S3 copy
-request, which  avoids an additional HEAD request.</p>
+<p>A <code>:content_length</code> option is now passed to multipart S3 copy request, which  avoids an additional HEAD request.</p>
 </li><li>
-<p>The backgrounding plugin doesn&#39;t require anymore that the model has the
-attachment module included. Previously it relied on the 
-<code>&lt;attachment&gt;_attacher</code> method.</p>
+<p>The backgrounding plugin doesn&#39;t require anymore that the model has the  attachment module included. Previously it relied on the  <code>&lt;attachment&gt;_attacher</code> method.</p>
 </li><li>
-<p>The restore_cached_data plugin previously still downloaded the whole file, 
-once the opened IO was closed. This has been fixed in the Down gem.</p>
+<p>The restore_cached_data plugin previously still downloaded the whole file,  once the opened IO was closed. This has been fixed in the Down gem.</p>
 </li><li>
-<p>The determine_mime_type plugin now raises an error if the <code>file</code>
-command  is not installed or failed.</p>
+<p>The determine_mime_type plugin now raises an error if the <code>file</code> command  is not installed or failed.</p>
 </li><li>
-<p>If delete_raw plugin was loaded after moving plugin, it could cause 
-<code>Errno::ENOENT</code> errors. This is now fixed.</p>
+<p>If delete_raw plugin was loaded after moving plugin, it could cause  <code>Errno::ENOENT</code> errors. This is now fixed.</p>
 </li><li>
-<p>The direct_upload endpoint now always includes both <code>POST&#x000A;/:storage/upload</code>  and <code>GET /:storage/presign</code> routes, and
-<code>:presign</code> option is now obsolete.</p>
+<p>The direct_upload endpoint now always includes both <code>POST /:storage/upload</code>  and <code>GET /:storage/presign</code> routes, and <code>:presign</code> option is now obsolete.</p>
 </li><li>
-<p>Add <code>:callbacks</code> and <code>:validations</code> options to sequel
-and activerecord  plugins for disabling callbacks and validations.</p>
+<p>Add <code>:callbacks</code> and <code>:validations</code> options to sequel and activerecord  plugins for disabling callbacks and validations.</p>
 </li></ul>
 
 <h2 id="label-Storage+changes">Storage changes<span><a href="#label-Storage+changes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>UploadedFile#download</code> will now use <code>#open</code> in
-case <code>Storage#download</code>  isn&#39;t implemented, which means that
-storage implementers don&#39;t need to  implement this method anymore.</p>
+<p>The <code>UploadedFile#download</code> will now use <code>#open</code> in case <code>Storage#download</code>  isn&#39;t implemented, which means that storage implementers don&#39;t need to  implement this method anymore.</p>
 </li><li>
-<p>The <code>Storage#read</code> method isn&#39;t used in the data_uri plugin
-anymore, which  means storage implementers don&#39;t need to implement this
-method anymore.</p>
+<p>The <code>Storage#read</code> method isn&#39;t used in the data_uri plugin anymore, which  means storage implementers don&#39;t need to implement this method anymore.</p>
 </li><li>
-<p>The <code>Storage#clear!</code> method has been made optional in the
-storage linter,  since it was just a convention and isn&#39;t actually used
-by <a href="../../../classes/Shrine.html">Shrine</a>.</p>
+<p>The <code>Storage#clear!</code> method has been made optional in the storage linter,  since it was just a convention and isn&#39;t actually used by <a href="../../../classes/Shrine.html"><code>Shrine</code></a>.</p>
 </li></ul>
 
 <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>:phase</code> context variable has been softly renamed to
-<code>:action</code>. At the  moment both variables are passed to
-<code>context</code>, so referencing <code>:phase</code> will  still
-continue to work normally, but in <a
-href="../../../classes/Shrine.html">Shrine</a> 3 accessing
-<code>:phase</code> will  trigger a deprecation warning, and in <a
-href="../../../classes/Shrine.html">Shrine</a> 4 it will no longer work.</p>
+<p>The <code>:phase</code> context variable has been softly renamed to <code>:action</code>. At the  moment both variables are passed to <code>context</code>, so referencing <code>:phase</code> will  still continue to work normally, but in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3 accessing <code>:phase</code> will  trigger a deprecation warning, and in <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 4 it will no longer work.</p>
 </li></ul>
 </div>
 <div id='context'>

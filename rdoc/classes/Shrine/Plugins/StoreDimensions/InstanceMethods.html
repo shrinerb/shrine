@@ -28,7 +28,7 @@ Shrine::Plugins::StoreDimensions::InstanceMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/store_dimensions_rb.html">lib/shrine/plugins/store_dimensions.rb</a>
 </li>
 </ol>
 </div>
@@ -63,7 +63,7 @@ Shrine::Plugins::StoreDimensions::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-extract_metadata-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-extract_metadata-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 104</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span> = <span class="ruby-identifier">extract_dimensions</span>(<span class="ruby-identifier">io</span>)&#x000A;&#x000A;  <span class="ruby-keyword">super</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-string">&quot;width&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">width</span>, <span class="ruby-string">&quot;height&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">height</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-extract_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_metadata</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span> = <span class="ruby-identifier">extract_dimensions</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="line-num">43</span> &#x000A;<span class="line-num">44</span>   <span class="ruby-keyword">super</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-string">&quot;width&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">width</span>, <span class="ruby-string">&quot;height&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">height</span>)&#x000A;<span class="line-num">45</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

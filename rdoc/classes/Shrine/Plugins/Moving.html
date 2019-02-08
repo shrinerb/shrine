@@ -28,27 +28,13 @@ Shrine::Plugins::Moving
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/moving.rb">lib/shrine/plugins/moving.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/moving_rb.html">lib/shrine/plugins/moving.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>moving</code> plugin will <em>move</em> files to storages instead
-of copying them, when the storage supports it. For FileSystem this will
-issue a <code>mv</code> command, which is instantaneous regardless of the
-filesize, so in that case loading this plugin can significantly speed up
-the attachment process.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:moving</span></pre>
-
-<p>By default files will be moved whenever the storage supports it. If you
-want moving to happen only for certain storages, you can set
-<code>:storages</code>:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:moving</span>, <span class="ruby-value">storages:</span> [<span class="ruby-value">:cache</span>]</pre>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -81,7 +67,7 @@ want moving to happen only for certain storages, you can set
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/moving.rb, line 18</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:storages</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>  <span class="ruby-comment"># File lib/shrine/plugins/moving.rb</span>&#x000A;<span class="line-num">6</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">7</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:storages</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:moving_storages</span>])&#x000A;<span class="line-num">8</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

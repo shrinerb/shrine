@@ -30,7 +30,7 @@ doc/regenerating_versions.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-08 20:50:03 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,75 +38,51 @@ Last Update:
 <div id='description'>
 <h1 id="label-Reprocessing+Versions">Reprocessing Versions<span><a href="#label-Reprocessing+Versions">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<p>While your app is serving uploads in production, you may realize that you
-want to change how your attachment&#39;s versions are generated. This means
-that, in addition to changing your processing code, you also need to
-reprocess the existing attachments. This guide is aimed to help doing this
-migration with zero downtime and no unused files left in the main storage.</p>
+<p>While your app is serving uploads in production, you may realize that you want to change how your attachment&#39;s versions are generated. This means that, in addition to changing your processing code, you also need to reprocess the existing attachments. This guide is aimed to help doing this migration with zero downtime and no unused files left in the main storage.</p>
 
 <h2 id="label-Adding+versions">Adding versions<span><a href="#label-Adding+versions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Most common scenario is when initially you&#39;re not doing any processing,
-but later decide that you want to generate versions. First you need to
-update your code to generate versions, and you also need to change your
-views to use those versions:</p>
+<p>Most common scenario is when initially you&#39;re not doing any processing, but later decide that you want to generate versions. First you need to update your code to generate versions, and you also need to change your views to use those versions:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">thumbnail</span> = <span class="ruby-identifier">process_thumbnail</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>)&#x000A;    {<span class="ruby-value">original:</span> <span class="ruby-identifier">io</span>, <span class="ruby-value">thumbnail:</span> <span class="ruby-identifier">thumbnail</span>}&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-comment"># In your views add the version name to all &lt;attachment&gt;_url calls.</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(<span class="ruby-value">:thumb</span>)</pre>
 
-<p>Note that you should deploy both of these changes at once, because the
-<code>&lt;attachment&gt;_url</code> method will fail if there are versions
-generated but no version name was passed in. If a version name was passed
-in but versions aren&#39;t generated yet (which will be the case here), it
-will just return the unprocessed file URL.</p>
+<p>Note that you should deploy both of these changes at once, because the <code>&lt;attachment&gt;_url</code> method will fail if there are versions generated but no version name was passed in. If a version name was passed in but versions aren&#39;t generated yet (which will be the case here), it will just return the unprocessed file URL.</p>
 
-<p>Afterwards you should run a script which reprocesses the versions for
-existing files:</p>
+<p>Afterwards you should run a script which reprocesses the versions for existing files:</p>
 
 <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;    <span class="ruby-identifier">file</span> = <span class="ruby-identifier">some_processing</span>(<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">download</span>)&#x000A;    <span class="ruby-identifier">thumb</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">version:</span> <span class="ruby-value">:thumb</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>({<span class="ruby-value">original:</span> <span class="ruby-identifier">attachment</span>, <span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span>})&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Reprocessing+a+single+version">Reprocessing a single version<span><a href="#label-Reprocessing+a+single+version">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The simplest scenario is where you need to regenerate an existing version.
-First you need to change and deploy your updated processing code, and
-afterwards you can run a script like this on your production database:</p>
+<p>The simplest scenario is where you need to regenerate an existing version. First you need to change and deploy your updated processing code, and afterwards you can run a script like this on your production database:</p>
 
 <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;    <span class="ruby-identifier">file</span> = <span class="ruby-identifier">some_processing</span>(<span class="ruby-identifier">attachment</span>[<span class="ruby-value">:original</span>].<span class="ruby-identifier">download</span>)&#x000A;    <span class="ruby-identifier">thumb</span> = <span class="ruby-identifier">attachment</span>[<span class="ruby-value">:thumb</span>].<span class="ruby-identifier">replace</span>(<span class="ruby-identifier">thumb</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-value">thumb:</span> <span class="ruby-identifier">thumb</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Adding+a+new+version">Adding a new version<span><a href="#label-Adding+a+new+version">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>When adding a new version to a production app, first add it to the list and
-update your processing code to generate it, and deploy it:</p>
+<p>When adding a new version to a production app, first add it to the list and update your processing code to generate it, and deploy it:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">new</span> = <span class="ruby-identifier">some_processing</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;    {<span class="ruby-value">small:</span> <span class="ruby-identifier">small</span>, <span class="ruby-value">medium:</span> <span class="ruby-identifier">medium</span>, <span class="ruby-value">new:</span> <span class="ruby-identifier">new</span>} <span class="ruby-comment"># we generate the &quot;:new&quot; version</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>After you&#39;ve deployed this change, you should run a script that will
-generate the new version for all existing records:</p>
+<p>After you&#39;ve deployed this change, you should run a script that will generate the new version for all existing records:</p>
 
 <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">attachment</span>[<span class="ruby-value">:new</span>]&#x000A;    <span class="ruby-identifier">file</span> = <span class="ruby-identifier">some_processing</span>(<span class="ruby-identifier">attachment</span>[<span class="ruby-value">:original</span>].<span class="ruby-identifier">download</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;    <span class="ruby-identifier">new</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">store!</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">version:</span> <span class="ruby-value">:new</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-value">new:</span> <span class="ruby-identifier">new</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>After you&#39;ve run this script on your production database, all records
-should have the new version, and now you should be able to safely update
-your app to use it.</p>
+<p>After you&#39;ve run this script on your production database, all records should have the new version, and now you should be able to safely update your app to use it.</p>
 
 <h3 id="label-Removing+a+version">Removing a version<span><a href="#label-Removing+a+version">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Before removing a version, you first need to update your processing to not
-generate it (but keep the version name in the list), as well as update your
-app not to use the new version, and deploy that code. After you&#39;ve done
-that, you can run a script which removes that version:</p>
+<p>Before removing a version, you first need to update your processing to not generate it (but keep the version name in the list), as well as update your app not to use the new version, and deploy that code. After you&#39;ve done that, you can run a script which removes that version:</p>
 
 <pre class="ruby"><span class="ruby-identifier">old_versions</span> = []&#x000A;&#x000A;<span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">stored?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">attachment</span>[<span class="ruby-value">:old_version</span>]&#x000A;    <span class="ruby-identifier">old_versions</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-value">:old_version</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">swap</span>(<span class="ruby-identifier">attachment</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">old_versions</span>.<span class="ruby-identifier">any?</span>&#x000A;  <span class="ruby-identifier">uploader</span> = <span class="ruby-identifier">old_versions</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">uploader</span>&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">old_versions</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>After the script has finished, you should be able to safely remove the
-version name from the list.</p>
+<p>After the script has finished, you should be able to safely remove the version name from the list.</p>
 
 <h2 id="label-Reprocessing+all+versions">Reprocessing all versions<span><a href="#label-Reprocessing+all+versions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If you made a lot of changes to versions, it might make sense to simply
-regenerate all versions. After you&#39;ve deployed the change in
-processing, you can run a script which updates existing records:</p>
+<p>If you made a lot of changes to versions, it might make sense to simply regenerate all versions. After you&#39;ve deployed the change in processing, you can run a script which updates existing records:</p>
 
 <pre class="ruby"><span class="ruby-constant">User</span>.<span class="ruby-identifier">paged_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">user</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_attacher</span>.<span class="ruby-identifier">stored?</span>&#x000A;    <span class="ruby-comment"># assuming your largest version is named &quot;:original&quot;</span>&#x000A;    <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">avatar:</span> <span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>[<span class="ruby-value">:original</span>])&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>

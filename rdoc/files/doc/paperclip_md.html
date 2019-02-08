@@ -30,26 +30,21 @@ doc/paperclip.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-15 23:06:27 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Shrine+for+Paperclip+Users"><a href="../../classes/Shrine.html">Shrine</a> for Paperclip Users<span><a href="#label-Shrine+for+Paperclip+Users">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<h1 id="label-Shrine+for+Paperclip+Users"><a href="../../classes/Shrine.html"><code>Shrine</code></a> for Paperclip Users<span><a href="#label-Shrine+for+Paperclip+Users">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<p>This guide is aimed at helping Paperclip users transition to <a
-href="../../classes/Shrine.html">Shrine</a>, and it consists of three
-parts:</p>
+<p>This guide is aimed at helping Paperclip users transition to <a href="../../classes/Shrine.html"><code>Shrine</code></a>, and it consists of three parts:</p>
 <ol><li>
-<p>Explanation of the key differences in design between Paperclip and <a
-href="../../classes/Shrine.html">Shrine</a></p>
+<p>Explanation of the key differences in design between Paperclip and <a href="../../classes/Shrine.html"><code>Shrine</code></a></p>
 </li><li>
-<p>Instructions how to migrate and existing app that uses Paperclip to <a
-href="../../classes/Shrine.html">Shrine</a></p>
+<p>Instructions how to migrate and existing app that uses Paperclip to <a href="../../classes/Shrine.html"><code>Shrine</code></a></p>
 </li><li>
-<p>Extensive reference of Paperclip&#39;s interface with <a
-href="../../classes/Shrine.html">Shrine</a> equivalents</p>
+<p>Extensive reference of Paperclip&#39;s interface with <a href="../../classes/Shrine.html"><code>Shrine</code></a> equivalents</p>
 </li></ol>
 
 <h2 id="label-Storages">Storages<span><a href="#label-Storages">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -58,63 +53,43 @@ href="../../classes/Shrine.html">Shrine</a> equivalents</p>
 
 <pre>class Photo &lt; ActiveRecord::Base&#x000A;  has_attached_file :image,&#x000A;    storage: :s3,&#x000A;    s3_credentials: {&#x000A;      bucket:            &quot;my-bucket&quot;,&#x000A;      access_key_id:     &quot;abc&quot;,&#x000A;      secret_access_key: &quot;xyz&quot;,&#x000A;    },&#x000A;    s3_region: &quot;eu-west-1&quot;,&#x000A;end</pre>
 
-<p>In contrast, a <a href="../../classes/Shrine.html">Shrine</a> storage is
-just a class which you configure individually:</p>
+<p>In contrast, a <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage is just a class which you configure individually:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:store</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;my-bucket&quot;</span>,&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;abc&quot;</span>,&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;xyz&quot;</span>,&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;eu-west-1&quot;</span>,&#x000A;)</pre>
 
-<p>Paperclip doesn&#39;t have a concept of “temporary” storage, so it cannot
-retain uploaded files in case of validation errors, and <a
-href="https://shrinerb.com/rdoc/files/doc/direct_s3_md.html">direct S3
-uploads</a> cannot be implemented in a safe way. <a
-href="../../classes/Shrine.html">Shrine</a> uses separate “temporary” and
-“permanent” storage for attaching files:</p>
+<p>Paperclip doesn&#39;t have a concept of “temporary” storage, so it cannot retain uploaded files in case of validation errors, and <a href="/doc/direct_s3.md#readme">direct S3 uploads</a> cannot be implemented in a safe way. <a href="../../classes/Shrine.html"><code>Shrine</code></a> uses separate “temporary” and “permanent” storage for attaching files:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">bucket:</span> <span class="ruby-string">&quot;my-bucket&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
 
 <h2 id="label-Uploaders">Uploaders<span><a href="#label-Uploaders">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>While in Paperclip you define all your uploading logic inside your models,
-<a href="../../classes/Shrine.html">Shrine</a> takes a more object-oriented
-approach and lets you define uploading logic inside “uploader” classes:</p>
+<p>While in Paperclip you define all your uploading logic inside your models, <a href="../../classes/Shrine.html"><code>Shrine</code></a> takes a more object-oriented approach and lets you define uploading logic inside “uploader” classes:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">has_attached_file</span> <span class="ruby-value">:image</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Among other things, this allows you to use uploader classes standalone,
-which gives you more power:</p>
+<p>Among other things, this allows you to use uploader classes standalone, which gives you more power:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;nature.jpg&quot;</span>))&#x000A;<span class="ruby-identifier">uploaded_file</span>     <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg&quot;</span></pre>
 
 <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>In contrast to Paperclip&#39;s static options, in <a
-href="../../classes/Shrine.html">Shrine</a> you define and perform
-processing on instance-level. The result of processing can be a single file
-or a hash of versions:</p>
+<p>In contrast to Paperclip&#39;s static options, in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you define and perform processing on instance-level. The result of processing can be a single file or a hash of versions:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">has_attached_file</span> <span class="ruby-value">:image</span>,&#x000A;    <span class="ruby-value">styles:</span> {&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-string">&quot;800x800&gt;&quot;</span>,&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-string">&quot;500x500&gt;&quot;</span>,&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-string">&quot;300x300&gt;&quot;</span>,&#x000A;    }&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">versions</span> = { <span class="ruby-value">original:</span> <span class="ruby-identifier">io</span> } <span class="ruby-comment"># retain original</span>&#x000A;&#x000A;    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">pipeline</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:large</span>]  = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:medium</span>] = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:small</span>]  = <span class="ruby-identifier">pipeline</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">versions</span> <span class="ruby-comment"># return the hash of processed files</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>This allows you to fully optimize processing, because you can easily
-specify which files are processed from which, and even add parallelization.</p>
+<p>This allows you to fully optimize processing, because you can easily specify which files are processed from which, and even add parallelization.</p>
 
 <h4 id="label-Reprocessing+versions">Reprocessing versions<span><a href="#label-Reprocessing+versions">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t have a built-in
-way of regenerating versions, because that has to be written and optimized
-differently depending on whether you&#39;re adding or removing a version,
-what ORM are you using, how many records there are in the database etc. The
-<a
-href="https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
-versions</a> guide provides some useful tips on this task.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t have a built-in way of regenerating versions, because that has to be written and optimized differently depending on whether you&#39;re adding or removing a version, what ORM are you using, how many records there are in the database etc. The <a href="/doc/regenerating_versions.md#readme">Reprocessing versions</a> guide provides some useful tips on this task.</p>
 
 <h3 id="label-Validations">Validations<span><a href="#label-Validations">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Validations are also defined inside the uploader on the instance-level,
-which allows you to do conditional validations:</p>
+<p>Validations are also defined inside the uploader on the instance-level, which allows you to do conditional validations:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">has_attached_file</span> <span class="ruby-value">:image</span>&#x000A;  <span class="ruby-identifier">validates_attachment</span> <span class="ruby-value">:image</span>,&#x000A;    <span class="ruby-value">content_type:</span> {<span class="ruby-value">content_type:</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>},&#x000A;    <span class="ruby-value">size:</span> {<span class="ruby-value">in:</span> <span class="ruby-value">0</span><span class="ruby-operator">..</span><span class="ruby-value">10</span>.<span class="ruby-identifier">megabytes</span>}&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -122,35 +97,19 @@ which allows you to do conditional validations:</p>
 
 <h4 id="label-MIME+type+spoofing">MIME type spoofing<span><a href="#label-MIME+type+spoofing">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>Paperclip detects MIME type spoofing, in the way that it extracts the MIME
-type from file contents using the <code>file</code> command and MimeMagic,
-compares it to the value that the <code>mime-types</code> gem determined
-from file extension, and raises a validation error if these two values
-mismatch.</p>
+<p>Paperclip detects MIME type spoofing, in the way that it extracts the MIME type from file contents using the <code>file</code> command and MimeMagic, compares it to the value that the <code>mime-types</code> gem determined from file extension, and raises a validation error if these two values mismatch.</p>
 
-<p>However, this turned out to be very problematic, leading to a lot of valid
-files being classified as “spoofed”, because of the differences of MIME
-type databases between the <code>mime-types</code> gem, <code>file</code>
-command, and MimeMagic.</p>
+<p>However, this turned out to be very problematic, leading to a lot of valid files being classified as “spoofed”, because of the differences of MIME type databases between the <code>mime-types</code> gem, <code>file</code> command, and MimeMagic.</p>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> takes a different approach
-here. By default it will extract MIME type from file extension, but it has
-a plugin for determining MIME type from file contents, which by default
-uses the <code>file</code> command:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> takes a different approach here. By default it will extract MIME type from file extension, but it has a plugin for determining MIME type from file contents, which by default uses the <code>file</code> command:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span></pre>
 
-<p>However, it doesn&#39;t try to compare this value with the one from file
-extension, it just means that now this value will be used for your MIME
-type validations. With this approach you can still prevent malicious files
-from being attached, but without the possibility of false negatives.</p>
+<p>However, it doesn&#39;t try to compare this value with the one from file extension, it just means that now this value will be used for your MIME type validations. With this approach you can still prevent malicious files from being attached, but without the possibility of false negatives.</p>
 
 <h3 id="label-Logging">Logging<span><a href="#label-Logging">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>In Paperclip you enable logging by setting <code>Paperclip.options[:log] =&#x000A;true</code>, however, this only logs ImageMagick commands. <a
-href="../../classes/Shrine.html">Shrine</a> has full logging support, which
-measures processing, uploading and deleting individually, along with
-context for debugging:</p>
+<p>In Paperclip you enable logging by setting <code>Paperclip.options[:log] = true</code>, however, this only logs ImageMagick commands. <a href="../../classes/Shrine.html"><code>Shrine</code></a> has full logging support, which measures processing, uploading and deleting individually, along with context for debugging:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:logging</span></pre>
 
@@ -158,117 +117,75 @@ context for debugging:</p>
 
 <h2 id="label-Attachments">Attachments<span><a href="#label-Attachments">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>While Paperclip is designed to only integrate with ActiveRecord, <a
-href="../../classes/Shrine.html">Shrine</a> is designed to be completely
-generic and integrate with any ORM. It ships with plugins for ActiveRecord
-and Sequel:</p>
+<p>While Paperclip is designed to only integrate with ActiveRecord, <a href="../../classes/Shrine.html"><code>Shrine</code></a> is designed to be completely generic and integrate with any ORM. It ships with plugins for ActiveRecord and Sequel:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span> <span class="ruby-comment"># if you&#39;re using ActiveRecord</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:sequel</span>       <span class="ruby-comment"># if you&#39;re using Sequel</span></pre>
 
-<p>Instead of giving you class methods for defining attachments, in <a
-href="../../classes/Shrine.html">Shrine</a> you generate attachment modules
-which you simply include in your models, which gives your models similar
-set of methods that Paperclip gives:</p>
+<p>Instead of giving you class methods for defining attachments, in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you generate attachment modules which you simply include in your models, which gives your models similar set of methods that Paperclip gives:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Attachment+column">Attachment column<span><a href="#label-Attachment+column">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Unlike in Paperclip which requires you to have 4
-<code>&lt;attachment&gt;_*</code> columns, in <a
-href="../../classes/Shrine.html">Shrine</a> you only need to have a single
-<code>&lt;attachment&gt;_data</code> text column (in the above case
-<code>image_data</code>), and all information will be stored there.</p>
+<p>Unlike in Paperclip which requires you to have 4 <code>&lt;attachment&gt;_*</code> columns, in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you only need to have a single <code>&lt;attachment&gt;_data</code> text column (in the above case <code>image_data</code>), and all information will be stored there.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;storage&quot; =&gt; &quot;store&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;id&quot; =&gt; &quot;photo/1/image/0d9o8dk42.png&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;metadata&quot; =&gt; {</span>&#x000A;<span class="ruby-comment">#     &quot;filename&quot;  =&gt; &quot;nature.png&quot;,</span>&#x000A;<span class="ruby-comment">#     &quot;size&quot;      =&gt; 49349138,</span>&#x000A;<span class="ruby-comment">#     &quot;mime_type&quot; =&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-comment">#   }</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;nature.png&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 49349138</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span>         <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span></pre>
 
-<p>Unlike Paperclip, <a href="../../classes/Shrine.html">Shrine</a> will store
-this information for each processed version, making them first-class
-citizens:</p>
+<p>Unlike Paperclip, <a href="../../classes/Shrine.html"><code>Shrine</code></a> will store this information for each processed version, making them first-class citizens:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[<span class="ruby-value">:original</span>]       <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[<span class="ruby-value">:original</span>].<span class="ruby-identifier">width</span> <span class="ruby-comment">#=&gt; 800</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[<span class="ruby-value">:thumb</span>]          <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[<span class="ruby-value">:thumb</span>].<span class="ruby-identifier">width</span>    <span class="ruby-comment">#=&gt; 300</span></pre>
 
-<p>Also, since Paperclip stores only the filename, it has to recalculate the
-full location each time it wants to generate the URL. That makes it really
-difficult to move files to a new location, because changing how the
-location is generated will now cause incorrect URLs to be generated for all
-existing files. <a href="../../classes/Shrine.html">Shrine</a> calculates
-the whole location only once and saves it to the column.</p>
+<p>Also, since Paperclip stores only the filename, it has to recalculate the full location each time it wants to generate the URL. That makes it really difficult to move files to a new location, because changing how the location is generated will now cause incorrect URLs to be generated for all existing files. <a href="../../classes/Shrine.html"><code>Shrine</code></a> calculates the whole location only once and saves it to the column.</p>
 
 <h3 id="label-Hooks-2FCallbacks">Hooks/Callbacks<span><a href="#label-Hooks-2FCallbacks">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Shrine&#39;s <code>hooks</code> plugin provides callbacks for <a
-href="../../classes/Shrine.html">Shrine</a>, so to get Paperclip&#39;s
-<code>(before|after)_post_process</code>, you can override
-<code>#before_process</code> and <code>#after_process</code> methods:</p>
+<p>Shrine&#39;s <code>hooks</code> plugin provides callbacks for <a href="../../classes/Shrine.html"><code>Shrine</code></a>, so to get Paperclip&#39;s <code>(before|after)_post_process</code>, you can override <code>#before_process</code> and <code>#after_process</code> methods:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:hooks</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">before_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">after_process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Migrating+from+Paperclip">Migrating from Paperclip<span><a href="#label-Migrating+from+Paperclip">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>You have an existing app using Paperclip and you want to transfer it to <a
-href="../../classes/Shrine.html">Shrine</a>. First we need to make new
-uploads write to the <code>&lt;attachment&gt;_data</code> column. Let&#39;s
-assume we have a <code>Photo</code> model with the “image” attachment:</p>
+<p>You have an existing app using Paperclip and you want to transfer it to <a href="../../classes/Shrine.html"><code>Shrine</code></a>. First we need to make new uploads write to the <code>&lt;attachment&gt;_data</code> column. Let&#39;s assume we have a <code>Photo</code> model with the “image” attachment:</p>
 
 <pre class="ruby"><span class="ruby-identifier">add_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_data</span>, <span class="ruby-value">:text</span></pre>
 
-<p>Afterwards we need to make new uploads write to the <code>image_data</code>
-column. This can be done by including the below module to all models that
-have Paperclip attachments:</p>
+<p>Afterwards we need to make new uploads write to the <code>image_data</code> column. This can be done by including the below module to all models that have Paperclip attachments:</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">PaperclipShrineSynchronization</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-identifier">model</span>.<span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;      <span class="ruby-constant">Paperclip</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentRegistry</span>.<span class="ruby-identifier">each_definition</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">klass</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;        <span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">changes</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-value">:&quot;#{name}_file_name&quot;</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">klass</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write_shrine_data</span>(<span class="ruby-identifier">name</span>)&#x000A;    <span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">size</span>.<span class="ruby-identifier">present?</span>&#x000A;      <span class="ruby-identifier">data</span> = <span class="ruby-identifier">attachment_to_shrine_data</span>(<span class="ruby-identifier">attachment</span>)&#x000A;&#x000A;      <span class="ruby-keyword">if</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">styles</span>.<span class="ruby-identifier">any?</span>&#x000A;        <span class="ruby-identifier">data</span> = {<span class="ruby-value">original:</span> <span class="ruby-identifier">data</span>}&#x000A;        <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">styles</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">style</span><span class="ruby-operator">|</span>&#x000A;          <span class="ruby-identifier">data</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">style_to_shrine_data</span>(<span class="ruby-identifier">style</span>)&#x000A;        <span class="ruby-keyword">end</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;&#x000A;      <span class="ruby-identifier">write_attribute</span>(<span class="ruby-value">:&quot;#{name}_data&quot;</span>, <span class="ruby-identifier">data</span>.<span class="ruby-identifier">to_json</span>)&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-identifier">write_attribute</span>(<span class="ruby-value">:&quot;#{name}_data&quot;</span>, <span class="ruby-keyword">nil</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">private</span>&#x000A;&#x000A;  <span class="ruby-comment"># If you&#39;ll be using a `:prefix` on your Shrine storage, or you&#39;re storing</span>&#x000A;  <span class="ruby-comment"># files on the filesystem, make sure to subtract the appropriate part</span>&#x000A;  <span class="ruby-comment"># from the path assigned to `:id`.</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attachment_to_shrine_data</span>(<span class="ruby-identifier">attachment</span>)&#x000A;    {&#x000A;      <span class="ruby-value">storage:</span> <span class="ruby-value">:store</span>,&#x000A;      <span class="ruby-value">id:</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">path</span>,&#x000A;      <span class="ruby-value">metadata:</span> {&#x000A;        <span class="ruby-value">size:</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">size</span>,&#x000A;        <span class="ruby-value">filename:</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">original_filename</span>,&#x000A;        <span class="ruby-value">mime_type:</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">content_type</span>,&#x000A;      }&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-comment"># If you&#39;ll be using a `:prefix` on your Shrine storage, or you&#39;re storing</span>&#x000A;  <span class="ruby-comment"># files on the filesystem, make sure to subtract the appropriate part</span>&#x000A;  <span class="ruby-comment"># from the path assigned to `:id`.</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">style_to_shrine_data</span>(<span class="ruby-identifier">style</span>)&#x000A;    {&#x000A;      <span class="ruby-value">storage:</span> <span class="ruby-value">:store</span>,&#x000A;      <span class="ruby-value">id:</span> <span class="ruby-identifier">style</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">path</span>(<span class="ruby-identifier">style</span>.<span class="ruby-identifier">name</span>),&#x000A;      <span class="ruby-value">metadata:</span> {}&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">has_attached_file</span> <span class="ruby-value">:image</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">PaperclipShrineSynchronization</span> <span class="ruby-comment"># needs to be after `has_attached_file`</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>After you deploy this code, the <code>image_data</code> column should now
-be successfully synchronized with new attachments. Next step is to run a
-script which writes all existing Paperclip attachments to
-<code>image_data</code>:</p>
+<p>After you deploy this code, the <code>image_data</code> column should now be successfully synchronized with new attachments. Next step is to run a script which writes all existing Paperclip attachments to <code>image_data</code>:</p>
 
 <pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">Paperclip</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentRegistry</span>.<span class="ruby-identifier">each_definition</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">klass</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">klass</span> <span class="ruby-operator">==</span> <span class="ruby-constant">Photo</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save!</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Now you should be able to rewrite your application so that it uses <a
-href="../../classes/Shrine.html">Shrine</a> instead of Paperclip, using
-equivalent <a href="../../classes/Shrine.html">Shrine</a> storages. For
-help with translating the code from Paperclip to <a
-href="../../classes/Shrine.html">Shrine</a>, you can consult the reference
-below.</p>
+<p>Now you should be able to rewrite your application so that it uses <a href="../../classes/Shrine.html"><code>Shrine</code></a> instead of Paperclip, using equivalent <a href="../../classes/Shrine.html"><code>Shrine</code></a> storages. For help with translating the code from Paperclip to <a href="../../classes/Shrine.html"><code>Shrine</code></a>, you can consult the reference below.</p>
 
-<p>You&#39;ll notice that <a href="../../classes/Shrine.html">Shrine</a>
-metadata will be absent from the migrated files&#39; data (specifically
-versions). You can run a script that will fill in any missing metadata
-defined in your <a href="../../classes/Shrine.html">Shrine</a> uploader:</p>
+<p>You&#39;ll notice that <a href="../../classes/Shrine.html"><code>Shrine</code></a> metadata will be absent from the migrated files&#39; data (specifically versions). You can run a script that will fill in any missing metadata defined in your <a href="../../classes/Shrine.html"><code>Shrine</code></a> uploader:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span>&#x000A;&#x000A;<span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">attachment</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>, <span class="ruby-operator">&amp;</span><span class="ruby-value">:refresh_metadata!</span>)&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">update</span>(<span class="ruby-value">image_data:</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_json</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<h2 id="label-Paperclip+to+Shrine+direct+mapping">Paperclip to <a href="../../classes/Shrine.html">Shrine</a> direct mapping<span><a href="#label-Paperclip+to+Shrine+direct+mapping">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Paperclip+to+Shrine+direct+mapping">Paperclip to <a href="../../classes/Shrine.html"><code>Shrine</code></a> direct mapping<span><a href="#label-Paperclip+to+Shrine+direct+mapping">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <h3 id="label-has_attached_file"><code>has_attached_file</code><span><a href="#label-has_attached_file">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>As mentioned above, Shrine&#39;s equivalent of
-<code>has_attached_file</code> is including an attachment module:</p>
+<p>As mentioned above, Shrine&#39;s equivalent of <code>has_attached_file</code> is including an attachment module:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">User</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:avatar</span>) <span class="ruby-comment"># adds `avatar`, `avatar=` and `avatar_url` methods</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Now we&#39;ll list all options that <code>has_attached_file</code> accepts,
-and explain Shrine&#39;s equivalents:</p>
+<p>Now we&#39;ll list all options that <code>has_attached_file</code> accepts, and explain Shrine&#39;s equivalents:</p>
 
 <h4 id="label-3Astorage"><code>:storage</code><span><a href="#label-3Astorage">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>In <a href="../../classes/Shrine.html">Shrine</a> attachments will
-automatically use <code>:cache</code> and <code>:store</code> storages
-which you have to register:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> attachments will automatically use <code>:cache</code> and <code>:store</code> storages which you have to register:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads&quot;</span>),&#x000A;}</pre>
 
-<p>You can change that for a specific uploader with the
-<code>default_storage</code> plugin.</p>
+<p>You can change that for a specific uploader with the <code>default_storage</code> plugin.</p>
 
 <h4 id="label-3Astyles-2C+-3Aprocessors-2C+-3Aconvert_options"><code>:styles</code>, <code>:processors</code>, <code>:convert_options</code><span><a href="#label-3Astyles-2C+-3Aprocessors-2C+-3Aconvert_options">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>As explained in the “Processing” section, processing is done by overriding
-the <code>Shrine#process</code> method.</p>
+<p>As explained in the “Processing” section, processing is done by overriding the <code>Shrine#process</code> method.</p>
 
 <h4 id="label-3Adefault_url"><code>:default_url</code><span><a href="#label-3Adefault_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -278,123 +195,93 @@ the <code>Shrine#process</code> method.</p>
 
 <h4 id="label-3Apreserve_files"><code>:preserve_files</code><span><a href="#label-3Apreserve_files">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> provides a
-<code>keep_files</code> plugin which allows you to keep files that would
-otherwise be deleted:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides a <code>keep_files</code> plugin which allows you to keep files that would otherwise be deleted:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:keep_files</span>, <span class="ruby-value">destroyed:</span> <span class="ruby-keyword">true</span></pre>
 
 <h4 id="label-3Apath-2C+-3Aurl-2C+-3Ainterpolator-2C+-3Aurl_generator"><code>:path</code>, <code>:url</code>, <code>:interpolator</code>, <code>:url_generator</code><span><a href="#label-3Apath-2C+-3Aurl-2C+-3Ainterpolator-2C+-3Aurl_generator">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> by default stores your files
-in the same directory, but you can also load the
-<code>pretty_location</code> plugin for nice folder structure:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> by default stores your files in the same directory, but you can also load the <code>pretty_location</code> plugin for nice folder structure:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span></pre>
 
-<p>Alternatively, if you want to generate locations yourself you can override
-the <code>#generate_location</code> method:</p>
+<p>Alternatively, if you want to generate locations yourself you can override the <code>#generate_location</code> method:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h4 id="label-3Avalidate_media_type"><code>:validate_media_type</code><span><a href="#label-3Avalidate_media_type">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> has this functionality in
-the <code>determine_mime_type</code> plugin.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has this functionality in the <code>determine_mime_type</code> plugin.</p>
 
 <h3 id="label-Paperclip-3A-3AAttachment"><code>Paperclip::Attachment</code><span><a href="#label-Paperclip-3A-3AAttachment">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>This section explains the equivalent of Paperclip attachment&#39;s methods,
-in <a href="../../classes/Shrine.html">Shrine</a> this is an instance of
-<code>Shrine::UploadedFile</code>.</p>
+<p>This section explains the equivalent of Paperclip attachment&#39;s methods, in <a href="../../classes/Shrine.html"><code>Shrine</code></a> this is an instance of <code>Shrine::UploadedFile</code>.</p>
 
 <h4 id="label-23url-2C+-23styles"><code>#url</code>, <code>#styles</code><span><a href="#label-23url-2C+-23styles">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>If you&#39;re generating versions in <a
-href="../../classes/Shrine.html">Shrine</a>, the attachment will be a hash
-of uploaded files:</p>
+<p>If you&#39;re generating versions in <a href="../../classes/Shrine.html"><code>Shrine</code></a>, the attachment will be a hash of uploaded files:</p>
 
 <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">class</span> <span class="ruby-comment">#=&gt; Hash</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   small:  #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment">#   medium: #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment">#   large:  #&lt;Shrine::UploadedFile&gt;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>[<span class="ruby-value">:small</span>].<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar_url</span>(<span class="ruby-value">:small</span>) <span class="ruby-comment">#=&gt; &quot;...&quot;</span></pre>
 
 <h4 id="label-23path"><code>#path</code><span><a href="#label-23path">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t have this
-because storages are abstract and this would be specific to the filesystem,
-but the closest is probably <code>#id</code>:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t have this because storages are abstract and this would be specific to the filesystem, but the closest is probably <code>#id</code>:</p>
 
 <pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span>.<span class="ruby-identifier">id</span> <span class="ruby-comment">#=&gt; &quot;users/342/avatar/398543qjfdsf.jpg&quot;</span></pre>
 
 <h4 id="label-23reprocess-21"><code>#reprocess!</code><span><a href="#label-23reprocess-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html">Shrine</a> doesn&#39;t have an
-equivalent to this, but the <a
-href="https://shrinerb.com/rdoc/files/doc/regenerating_versions_md.html">Reprocessing
-versions</a> guide provides some useful tips on how to do this.</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t have an equivalent to this, but the <a href="/doc/regenerating_versions.md#readme">Reprocessing versions</a> guide provides some useful tips on how to do this.</p>
 
 <h3 id="label-Paperclip-3A-3AStorage-3A-3AS3"><code>Paperclip::Storage::S3</code><span><a href="#label-Paperclip-3A-3AStorage-3A-3AS3">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The built-in <a
-href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html">Shrine::Storage::S3</a>
-storage is a direct replacement for <code>Paperclip::Storage::S3</code>.</p>
+<p>The built-in <a href="/doc/storage/s3.md#readme">Shrine::Storage::S3</a> storage is a direct replacement for <code>Paperclip::Storage::S3</code>.</p>
 
 <h4 id="label-3As3_credentials-2C+-3As3_region-2C+-3Abucket"><code>:s3_credentials</code>, <code>:s3_region</code>, <code>:bucket</code><span><a href="#label-3As3_credentials-2C+-3As3_region-2C+-3Abucket">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The <a href="../../classes/Shrine.html">Shrine</a> storage accepts
-<code>:access_key_id</code>, <code>:secret_access_key</code>,
-<code>:region</code>, and <code>:bucket</code> options in the initializer:</p>
+<p>The <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage accepts <code>:access_key_id</code>, <code>:secret_access_key</code>, <code>:region</code>, and <code>:bucket</code> options in the initializer:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;...&quot;</span>,&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;...&quot;</span>,&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;...&quot;</span>,&#x000A;  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;...&quot;</span>,&#x000A;)</pre>
 
 <h4 id="label-3As3_headers"><code>:s3_headers</code><span><a href="#label-3As3_headers">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The object data can be configured via the <code>:upload_options</code>
-hash:</p>
+<p>The object data can be configured via the <code>:upload_options</code> hash:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> {<span class="ruby-value">content_disposition:</span> <span class="ruby-string">&quot;attachment&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)</pre>
 
-<p>You can use the <code>upload_options</code> plugin to set upload options
-dynamically.</p>
+<p>You can use the <code>upload_options</code> plugin to set upload options dynamically.</p>
 
 <h4 id="label-3As3_permissions"><code>:s3_permissions</code><span><a href="#label-3As3_permissions">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The object permissions can be configured with the <code>:acl</code> upload
-option:</p>
+<p>The object permissions can be configured with the <code>:acl</code> upload option:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> {<span class="ruby-value">acl:</span> <span class="ruby-string">&quot;private&quot;</span>}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)</pre>
 
-<p>You can use the <code>upload_options</code> plugin to set upload options
-dynamically.</p>
+<p>You can use the <code>upload_options</code> plugin to set upload options dynamically.</p>
 
 <h4 id="label-3As3_metadata"><code>:s3_metadata</code><span><a href="#label-3As3_metadata">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The object metadata can be configured with the <code>:metadata</code>
-upload option:</p>
+<p>The object metadata can be configured with the <code>:metadata</code> upload option:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">upload_options:</span> {<span class="ruby-value">metadata:</span> {<span class="ruby-string">&quot;key&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;value&quot;</span>}}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)</pre>
 
-<p>You can use the <code>upload_options</code> plugin to set upload options
-dynamically.</p>
+<p>You can use the <code>upload_options</code> plugin to set upload options dynamically.</p>
 
 <h4 id="label-3As3_protocol-2C+-3As3_host_alias-2C+-3As3_host_name"><code>:s3_protocol</code>, <code>:s3_host_alias</code>, <code>:s3_host_name</code><span><a href="#label-3As3_protocol-2C+-3As3_host_alias-2C+-3As3_host_name">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The <code>#url</code> method accepts a <code>:host</code> option for
-specifying a CDN host. You can use the <code>default_url_options</code>
-plugin to set it by default:</p>
+<p>The <code>#url</code> method accepts a <code>:host</code> option for specifying a CDN host. You can use the <code>default_url_options</code> plugin to set it by default:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url_options</span>, <span class="ruby-value">store:</span> {<span class="ruby-value">host:</span> <span class="ruby-string">&quot;http://abc123.cloudfront.net&quot;</span>}</pre>
 
 <h4 id="label-3Apath"><code>:path</code><span><a href="#label-3Apath">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The <code>#upload</code> method accepts the destination location as the
-second argument.</p>
+<p>The <code>#upload</code> method accepts the destination location as the second argument.</p>
 
 <pre class="ruby"><span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-string">&quot;object/destination/path&quot;</span>)</pre>
 
 <h4 id="label-3Aurl"><code>:url</code><span><a href="#label-3Aurl">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The <a href="../../classes/Shrine.html">Shrine</a> storage has no
-replacement for the <code>:url</code> Paperclip option, and it isn&#39;t
-needed.</p>
+<p>The <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage has no replacement for the <code>:url</code> Paperclip option, and it isn&#39;t needed.</p>
 </div>
 <div id='context'>
 </div>

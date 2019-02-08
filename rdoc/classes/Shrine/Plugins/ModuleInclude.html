@@ -28,29 +28,13 @@ Shrine::Plugins::ModuleInclude
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/module_include.rb">lib/shrine/plugins/module_include.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/module_include_rb.html">lib/shrine/plugins/module_include.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>module_include</code> plugin allows you to extend Shrine&#39;s
-core classes for the given uploader with modules/methods.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:module_include</span></pre>
-
-<p>To add a module to a core class, call the appropriate method:</p>
-
-<pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-constant">CustomAttachmentMethods</span>&#x000A;<span class="ruby-identifier">attacher_module</span> <span class="ruby-constant">CustomAttacherMethods</span>&#x000A;<span class="ruby-identifier">file_module</span> <span class="ruby-constant">CustomFileMethods</span></pre>
-
-<p>Alternatively you can pass in a block (which internally creates a module):</p>
-
-<pre class="ruby"><span class="ruby-identifier">attachment_module</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">model</span>)&#x000A;    <span class="ruby-keyword">super</span>&#x000A;&#x000A;    <span class="ruby-identifier">name</span> = <span class="ruby-identifier">attachment_name</span>&#x000A;&#x000A;    <span class="ruby-identifier">define_method</span> <span class="ruby-value">:&quot;#{name}_size&quot;</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">version</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">attachment</span> = <span class="ruby-identifier">send</span>(<span class="ruby-identifier">name</span>)&#x000A;      <span class="ruby-keyword">if</span> <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;        <span class="ruby-identifier">attachment</span>[<span class="ruby-identifier">version</span>].<span class="ruby-identifier">size</span>&#x000A;      <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">attachment</span>&#x000A;        <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">size</span>&#x000A;      <span class="ruby-keyword">end</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The above defines an additional <code>#&lt;attachment&gt;_size</code>
-method on the attachment module, which is what is included in your model.</p>
-</div>
+<div id='description'></div>
 <div id='context'>
 </div>
 <div id='class-list'>

@@ -28,52 +28,13 @@ Shrine::Plugins::Processing
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/processing.rb">lib/shrine/plugins/processing.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/processing_rb.html">lib/shrine/plugins/processing.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p><a href="../../Shrine.html">Shrine</a> uploaders can define the
-<code>#process</code> method, which will get called whenever a file is
-uploaded. It is given the original file, and is expected to return the
-processed files.</p>
-
-<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-comment"># you can process the original file `io` and return processed file(s)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>However, when handling files as attachments, the same file is uploaded to
-temporary and permanent storage. Since we only want to apply the same
-processing once, we need to branch based on the context.</p>
-
-<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">process</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">context</span>[<span class="ruby-value">:action</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:store</span> <span class="ruby-comment"># promote phase</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The <code>processing</code> plugin simplifies this by allowing us to
-declaratively define file processing for specified actions.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>An example of resizing an image using the <a
-href="https://github.com/janko-m/image_processing">image_processing</a>
-library:</p>
-
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The declarations are additive and inheritable, so for the same action you
-can declare multiple blocks, and they will be performed in the same order,
-with output from previous block being the input to next.</p>
-
-<h2 id="module-Shrine::Plugins::Processing-label-Manually+Run+Processing">Manually Run <a href="Processing.html">Processing</a><span><a href="#module-Shrine::Plugins::Processing-label-Manually+Run+Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>You can manually trigger the defined processing via the uploader by calling
-<code>#upload</code> or <code>#process</code> and setting
-<code>:action</code> to the name of your processing block:</p>
-
-<pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>)  <span class="ruby-comment"># process and upload</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">process</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:store</span>) <span class="ruby-comment"># only process</span></pre>
-
-<p>If you want the result of processing to be multiple files, use the
-<code>versions</code> plugin.</p>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -107,7 +68,7 @@ with output from previous block being the input to next.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/processing.rb, line 61</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>  <span class="ruby-comment"># File lib/shrine/plugins/processing.rb</span>&#x000A;<span class="line-num">6</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;<span class="line-num">7</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:processing</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num">8</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

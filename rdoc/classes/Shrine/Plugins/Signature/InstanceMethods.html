@@ -28,7 +28,7 @@ Shrine::Plugins::Signature::InstanceMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/signature.rb">lib/shrine/plugins/signature.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/signature_rb.html">lib/shrine/plugins/signature.rb</a>
 </li>
 </ol>
 </div>
@@ -56,15 +56,14 @@ Shrine::Plugins::Signature::InstanceMethods
 </div>
 <div class='description'>
 
-<p>Calculates <code>algorithm</code> hash of the contents of the IO object,
-and encodes it into <code>format</code>.</p>
+<p>Calculates <code>algorithm</code> hash of the contents of the IO object, and encodes it into <code>format</code>.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-calculate_signature-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-calculate_signature-source'><span class="ruby-comment"># File lib/shrine/plugins/signature.rb, line 55</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-value">format:</span> <span class="ruby-value">:hex</span>)&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-value">format:</span> <span class="ruby-identifier">format</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-calculate_signature-source'>   <span class="ruby-comment"># File lib/shrine/plugins/signature.rb</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-value">format:</span> <span class="ruby-value">:hex</span>)&#x000A;<span class="line-num">19</span>   <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">calculate_signature</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">algorithm</span>, <span class="ruby-value">format:</span> <span class="ruby-identifier">format</span>)&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

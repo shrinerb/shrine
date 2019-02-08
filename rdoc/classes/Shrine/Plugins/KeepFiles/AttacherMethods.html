@@ -28,7 +28,7 @@ Shrine::Plugins::KeepFiles::AttacherMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/keep_files.rb">lib/shrine/plugins/keep_files.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/keep_files_rb.html">lib/shrine/plugins/keep_files.rb</a>
 </li>
 </ol>
 </div>
@@ -62,7 +62,7 @@ Shrine::Plugins::KeepFiles::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 36</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:destroyed</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-destroy-source'>   <span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>&#x000A;<span class="line-num">18</span>   <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:destroyed</span>)&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-replace'>
@@ -79,7 +79,7 @@ Shrine::Plugins::KeepFiles::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-replace-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb, line 32</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>&#x000A;  <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:replaced</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-replace-source'>   <span class="ruby-comment"># File lib/shrine/plugins/keep_files.rb</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>&#x000A;<span class="line-num">14</span>   <span class="ruby-keyword">super</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:keep_files</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-value">:replaced</span>)&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

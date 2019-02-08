@@ -28,7 +28,7 @@ Shrine::Plugins::RackFile::InstanceMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/rack_file_rb.html">lib/shrine/plugins/rack_file.rb</a>
 </li>
 </ol>
 </div>
@@ -57,15 +57,14 @@ Shrine::Plugins::RackFile::InstanceMethods
 </div>
 <div class='description'>
 
-<p>If <code>io</code> is a Rack uploaded file hash, converts it to an IO-like
-object and calls <code>super</code>.</p>
+<p>If <code>io</code> is a Rack uploaded file hash, converts it to an IO-like object and calls <code>super</code>.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-store-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-store-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">convert_rack_file</span>(<span class="ruby-identifier">io</span>), <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-store-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">32</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;<span class="line-num">33</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">convert_rack_file</span>(<span class="ruby-identifier">io</span>), <span class="ruby-identifier">context</span>)&#x000A;<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-upload'>
@@ -77,15 +76,14 @@ object and calls <code>super</code>.</p>
 </div>
 <div class='description'>
 
-<p>If <code>io</code> is a Rack uploaded file hash, converts it to an IO-like
-object and calls <code>super</code>.</p>
+<p>If <code>io</code> is a Rack uploaded file hash, converts it to an IO-like object and calls <code>super</code>.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-upload-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 65</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;  <span class="ruby-keyword">super</span>(<span class="ruby-identifier">convert_rack_file</span>(<span class="ruby-identifier">io</span>), <span class="ruby-identifier">context</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">26</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;<span class="line-num">27</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">convert_rack_file</span>(<span class="ruby-identifier">io</span>), <span class="ruby-identifier">context</span>)&#x000A;<span class="line-num">28</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

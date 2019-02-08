@@ -28,27 +28,13 @@ Shrine::Plugins::Copy
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/copy.rb">lib/shrine/plugins/copy.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/copy_rb.html">lib/shrine/plugins/copy.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>copy</code> plugin allows copying attachment from one record to
-another.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:copy</span></pre>
-
-<p>It adds a <code>Attacher#copy</code> method, which accepts another
-attacher, and copies the attachment from it:</p>
-
-<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>.<span class="ruby-identifier">copy</span>(<span class="ruby-identifier">other_photo</span>.<span class="ruby-identifier">image_attacher</span>)</pre>
-
-<p>This method will automatically be called when the record is duplicated:</p>
-
-<pre class="ruby"><span class="ruby-identifier">duplicated_photo</span> = <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">dup</span>&#x000A;<span class="ruby-identifier">duplicated_photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">duplicated_photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span></pre>
-</div>
+<div id='description'></div>
 <div id='context'>
 </div>
 <div id='class-list'>

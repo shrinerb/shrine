@@ -30,7 +30,7 @@ doc/release_notes/2.6.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-08 20:50:03 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,19 +38,10 @@ Last Update:
 <div id='description'>
 <h2 id="label-Bug+fixes">Bug fixes<span><a href="#label-Bug+fixes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>When <code>download_endpoint</code> streams file content into the response
-body, with  certain storages (FileSystem, SQL) it will use a buffer object
-when reading  each chunk, which will make that, instead of each read chunk
-allocating a new  string object, ever new chunk is read into the same
-buffer string object,  replacing the content from the previous chunk.</p>
+<p>When <code>download_endpoint</code> streams file content into the response body, with  certain storages (FileSystem, SQL) it will use a buffer object when reading  each chunk, which will make that, instead of each read chunk allocating a new  string object, ever new chunk is read into the same buffer string object,  replacing the content from the previous chunk.</p>
 </li></ul>
 
-<p>Unfortunately, there are some parts of the Rack/Rails stack which rely on
-all  chunks co-existing in the memory at the same time (for example the 
-<code>Rack::ContentLenth</code> middleware). For that reason, and to be
-consistent in  behaviour and memory usage when used with other storages
-(S3), we modify  <code>download_endpoint</code> not to use the buffer
-object, and have each read chunk be  a new string object.</p>
+<p>Unfortunately, there are some parts of the Rack/Rails stack which rely on all  chunks co-existing in the memory at the same time (for example the  <code>Rack::ContentLenth</code> middleware). For that reason, and to be consistent in  behaviour and memory usage when used with other storages (S3), we modify  <code>download_endpoint</code> not to use the buffer object, and have each read chunk be  a new string object.</p>
 </div>
 <div id='context'>
 </div>

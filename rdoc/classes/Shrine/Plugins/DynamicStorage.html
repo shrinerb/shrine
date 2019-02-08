@@ -28,29 +28,13 @@ Shrine::Plugins::DynamicStorage
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/dynamic_storage.rb">lib/shrine/plugins/dynamic_storage.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/dynamic_storage_rb.html">lib/shrine/plugins/dynamic_storage.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>dynamic_storage</code> plugin allows you to register a storage
-using a regex, and evaluate the storage class dynamically depending on the
-regex.</p>
-
-<p>Example:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:dynamic_storage</span>&#x000A;&#x000A;<span class="ruby-identifier">storage</span> <span class="ruby-regexp">/store_(\w+)/</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">match</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storages</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">bucket:</span> <span class="ruby-identifier">match</span>[<span class="ruby-value">1</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The above example uses S3 storage where the bucket name depends on the
-storage name suffix. For example, <code>:store_foo</code> will use S3
-storage which saves files to the bucket “foo”. The block is yielded an
-instance of <code>MatchData</code>.</p>
-
-<p>This can be useful in combination with the <code>default_storage</code>
-plugin.</p>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -83,7 +67,7 @@ plugin.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb, line 23</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storages</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>  <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">6</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;<span class="line-num">7</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storages</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num">8</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -28,32 +28,13 @@ Shrine::Plugins::PrettyLocation
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/pretty_location.rb">lib/shrine/plugins/pretty_location.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/pretty_location_rb.html">lib/shrine/plugins/pretty_location.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>pretty_location</code> plugin attempts to generate a nicer folder
-structure for uploaded files.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span></pre>
-
-<p>This plugin uses the context information from the <a
-href="../Attacher.html">Attacher</a> to try to generate a nested folder
-structure which separates files for each record. The newly generated
-locations will typically look like this:</p>
-
-<pre class="ruby"><span class="ruby-string">&quot;user/564/avatar/thumb-493g82jf23.jpg&quot;</span>&#x000A;<span class="ruby-comment"># :model/:id/:attachment/:version-:uid.:extension</span></pre>
-
-<p>By default if a record class is inside a namespace, only the “inner” class
-name is used in the location. If you want to include the namespace, you can
-pass in the <code>:namespace</code> option with the desired separator as
-the value:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span>, <span class="ruby-value">namespace:</span> <span class="ruby-string">&quot;_&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog_user/.../493g82jf23.jpg&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:pretty_location</span>, <span class="ruby-value">namespace:</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="ruby-comment"># &quot;blog/user/.../493g82jf23.jpg&quot;</span></pre>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -86,7 +67,7 @@ the value:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/pretty_location.rb, line 28</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:namespace</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>])&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>  <span class="ruby-comment"># File lib/shrine/plugins/pretty_location.rb</span>&#x000A;<span class="line-num">6</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">7</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:namespace</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:pretty_location_namespace</span>])&#x000A;<span class="line-num">8</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

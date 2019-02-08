@@ -28,7 +28,7 @@ Shrine::Plugins
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins.rb">lib/shrine/plugins.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../files/lib/shrine/plugins_rb.html">lib/shrine/plugins.rb</a>
 </li>
 <li class='other'>
 <a href="../../files/lib/shrine/plugins/_urlsafe_serialization_rb.html">lib/shrine/plugins/_urlsafe_serialization.rb</a>
@@ -71,6 +71,9 @@ Shrine::Plugins
 </li>
 <li class='other'>
 <a href="../../files/lib/shrine/plugins/delete_raw_rb.html">lib/shrine/plugins/delete_raw.rb</a>
+</li>
+<li class='other'>
+<a href="../../files/lib/shrine/plugins/derivation_endpoint_rb.html">lib/shrine/plugins/derivation_endpoint.rb</a>
 </li>
 <li class='other'>
 <a href="../../files/lib/shrine/plugins/determine_mime_type_rb.html">lib/shrine/plugins/determine_mime_type.rb</a>
@@ -185,8 +188,7 @@ Shrine::Plugins
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Module in which all <a href="../Shrine.html">Shrine</a> plugins should be
-stored. Also contains logic for registering and loading plugins.</p>
+<p>Module in which all <a href="../Shrine.html"><code>Shrine</code></a> plugins should be stored. Also contains logic for registering and loading plugins.</p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -213,6 +215,7 @@ stored. Also contains logic for registering and loading plugins.</p>
 <li><a href="Plugins/DefaultUrlOptions.html">Shrine::Plugins::DefaultUrlOptions</a></li>
 <li><a href="Plugins/DeletePromoted.html">Shrine::Plugins::DeletePromoted</a></li>
 <li><a href="Plugins/DeleteRaw.html">Shrine::Plugins::DeleteRaw</a></li>
+<li><a href="Plugins/DerivationEndpoint.html">Shrine::Plugins::DerivationEndpoint</a></li>
 <li><a href="Plugins/DetermineMimeType.html">Shrine::Plugins::DetermineMimeType</a></li>
 <li><a href="Plugins/DirectUpload.html">Shrine::Plugins::DirectUpload</a></li>
 <li><a href="Plugins/DownloadEndpoint.html">Shrine::Plugins::DownloadEndpoint</a></li>
@@ -263,17 +266,14 @@ stored. Also contains logic for registering and loading plugins.</p>
 </div>
 <div class='description'>
 
-<p>If the registered plugin already exists, use it. Otherwise, require it and
-return it. This raises a LoadError if such a plugin doesn&#39;t exist, or a
-<a href="Error.html">Shrine::Error</a> if it exists but it does not
-register itself correctly.</p>
+<p>If the registered plugin already exists, use it. Otherwise, require it and return it. This raises a LoadError if such a plugin doesn&#39;t exist, or a <a href="Error.html"><code>Shrine::Error</code></a> if it exists but it does not register itself correctly.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_plugin-source'><span class="ruby-comment"># File lib/shrine/plugins.rb, line 13</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;    <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;    <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-identifier">plugin</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_plugin-source'>   <span class="ruby-comment"># File lib/shrine/plugins.rb</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_plugin</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">14</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;<span class="line-num">15</span>     <span class="ruby-identifier">require</span> <span class="ruby-node">&quot;shrine/plugins/#{name}&quot;</span>&#x000A;<span class="line-num">16</span>     <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;plugin #{name} did not register itself correctly in Shrine::Plugins&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span> = <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>]&#x000A;<span class="line-num">17</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">18</span>   <span class="ruby-identifier">plugin</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-register_plugin'>
@@ -285,9 +285,7 @@ register itself correctly.</p>
 </div>
 <div class='description'>
 
-<p>Register the given plugin with <a href="../Shrine.html">Shrine</a>, so that
-it can be loaded using <code>Shrine.plugin</code> with a symbol. Should be
-used by plugin files. Example:</p>
+<p>Register the given plugin with <a href="../Shrine.html"><code>Shrine</code></a>, so that it can be loaded using <code>Shrine.plugin</code> with a symbol. Should be used by plugin files. Example:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span>.<span class="ruby-identifier">register_plugin</span>(<span class="ruby-value">:plugin_name</span>, <span class="ruby-constant">PluginModule</span>)</pre>
 
@@ -296,7 +294,7 @@ used by plugin files. Example:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-register_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-register_plugin-source'><span class="ruby-comment"># File lib/shrine/plugins.rb, line 25</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;  <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-register_plugin-source'>   <span class="ruby-comment"># File lib/shrine/plugins.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

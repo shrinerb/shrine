@@ -30,7 +30,7 @@ doc/release_notes/2.5.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-08 20:50:03 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,32 +38,24 @@ Last Update:
 <div id='description'>
 <h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>add_metadata</code> plugin has been extended to enable extracting
-and saving  multiple metadata values at once. This is useful when you have
-tools which  extract various metadata in a single command.</p>
+<p>The <code>add_metadata</code> plugin has been extended to enable extracting and saving  multiple metadata values at once. This is useful when you have tools which  extract various metadata in a single command.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:add_metadata</span>&#x000A;&#x000A;<span class="ruby-identifier">add_metadata</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">movie</span> = <span class="ruby-constant">FFMPEG</span><span class="ruby-operator">::</span><span class="ruby-constant">Movie</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">path</span>)&#x000A;&#x000A;  { <span class="ruby-string">&quot;duration&quot;</span>   <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">duration</span>,&#x000A;    <span class="ruby-string">&quot;bitrate&quot;</span>    <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">bitrate</span>,&#x000A;    <span class="ruby-string">&quot;resolution&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">resolution</span>,&#x000A;    <span class="ruby-string">&quot;frame_rate&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">movie</span>.<span class="ruby-identifier">frame_rate</span> }&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-comment"># You can also optionally add metadata reader methods to the UploadedFile</span>&#x000A;<span class="ruby-identifier">metadata_method</span> <span class="ruby-value">:duration</span>, <span class="ruby-value">:bitrate</span>, <span class="ruby-value">:resolution</span>, <span class="ruby-value">:frame_rate</span></pre>
 <ul><li>
-<p>The <code>UploadedFile#dimensions</code> method will now be added when
-loading the  <code>store_dimensions</code> plugin, which returns a
-two-element array of width and  height.</p>
+<p>The <code>UploadedFile#dimensions</code> method will now be added when loading the  <code>store_dimensions</code> plugin, which returns a two-element array of width and  height.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">width</span>      <span class="ruby-comment">#=&gt; 500</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">height</span>     <span class="ruby-comment">#=&gt; 400</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">dimensions</span> <span class="ruby-comment">#=&gt; [500, 400] (new)</span></pre>
 <ul><li>
-<p>The <code>:fallback_original_option</code> has been added to
-<code>versions</code> plugin, allowing  you to disable automatic fallback
-to the cached file when using backgrounding,  so that you can use a default
-URL instead.</p>
+<p>The <code>:fallback_original_option</code> has been added to <code>versions</code> plugin, allowing  you to disable automatic fallback to the cached file when using backgrounding,  so that you can use a default URL instead.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>, <span class="ruby-value">fallback_to_original:</span> <span class="ruby-keyword">false</span></pre>
 <ul><li>
-<p>The <code>rack_file</code> plugin now enables the uploaders themselves to
-accept Rack  uploaded file hashes for upload, in addition to attachers.</p>
+<p>The <code>rack_file</code> plugin now enables the uploaders themselves to accept Rack  uploaded file hashes for upload, in addition to attachers.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span></pre>
@@ -72,60 +64,39 @@ accept Rack  uploaded file hashes for upload, in addition to attachers.</p>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The validation helper methods now also return whether the validation 
-suceeded, which makes it much easier to do conditional validation.</p>
+<p>The validation helper methods now also return whether the validation  suceeded, which makes it much easier to do conditional validation.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">validate_extension_inclusion</span> <span class="ruby-node">%w[jpg jpeg png gif]</span>&#x000A;    <span class="ruby-identifier">validate_mime_type_inclusion</span> <span class="ruby-node">%w[image/jpeg image/png image/gif]</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
-<p>A <code>Attacher.default_url</code> method has been added to
-<code>default_url</code> plugin, as a  new idiomatic way of declaring the
-default URL. This API better communicates  that the default URL
-functionality is tied only to the attacher. This block  is now also
-evaluated in the context of a <code>Shrine::Attacher</code> instance.</p>
+<p>A <code>Attacher.default_url</code> method has been added to <code>default_url</code> plugin, as a  new idiomatic way of declaring the default URL. This API better communicates  that the default URL functionality is tied only to the attacher. This block  is now also evaluated in the context of a <code>Shrine::Attacher</code> instance.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;&#x000A;<span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-keyword">self</span>   <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>&#x000A;  <span class="ruby-identifier">name</span>   <span class="ruby-comment">#=&gt; :image</span>&#x000A;  <span class="ruby-identifier">record</span> <span class="ruby-comment">#=&gt; #&lt;Photo&gt;</span>&#x000A;&#x000A;  <span class="ruby-node">&quot;/images/missing/#{name}.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 <ul><li>
-<p>The <code>validation_helpers</code> plugin will now match the file
-extension in a case  insensitive way, so if you do
-<code>validate_extension_inclusion [&quot;jpg&quot;]</code>, that  will now
-also pass for a file named <code>nature.JPG</code>.</p>
+<p>The <code>validation_helpers</code> plugin will now match the file extension in a case  insensitive way, so if you do <code>validate_extension_inclusion [&quot;jpg&quot;]</code>, that  will now also pass for a file named <code>nature.JPG</code>.</p>
 </li><li>
-<p>The <code>backgrounding</code> plugin now also works for plain models,
-without an ORM.  Specifically, it doesn&#39;t depend on
-<code>Attacher.find_record</code> being defined  anymore.</p>
+<p>The <code>backgrounding</code> plugin now also works for plain models, without an ORM.  Specifically, it doesn&#39;t depend on <code>Attacher.find_record</code> being defined  anymore.</p>
 </li><li>
-<p>The presign endpoint in the <code>direct_upload</code> plugin now allows
-the <code>extension</code>  query parameter to be passed without a dot.</p>
+<p>The presign endpoint in the <code>direct_upload</code> plugin now allows the <code>extension</code>  query parameter to be passed without a dot.</p>
 </li><li>
-<p>If the data hash used for instantiating a <code>Shrine::UploadedFile</code>
-is not  valid, an explanatory <code>Shrine::Error</code> will now be
-raised. Previously <a href="../../../classes/Shrine.html">Shrine</a>  would
-raise a <code>KeyError</code> for a key that was missing.</p>
+<p>If the data hash used for instantiating a <code>Shrine::UploadedFile</code> is not  valid, an explanatory <code>Shrine::Error</code> will now be raised. Previously <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  would raise a <code>KeyError</code> for a key that was missing.</p>
 </li><li>
-<p><a href="../../../classes/Shrine.html">Shrine</a> now detects whether two
-versions point to the same IO object, and  raises a
-<code>Shrine::Error</code>. Previously the upload would fail with an
-<code>IOError</code>  when the same IO object would attempt to be uploaded
-the second time, which  wasn&#39;t very descriptive.</p>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now detects whether two versions point to the same IO object, and  raises a <code>Shrine::Error</code>. Previously the upload would fail with an <code>IOError</code>  when the same IO object would attempt to be uploaded the second time, which  wasn&#39;t very descriptive.</p>
 </li><li>
-<p>When <code>remove_invalid</code> plugin removes an invalid cached file, it
-now also  removes the dirty state from the attacher.</p>
+<p>When <code>remove_invalid</code> plugin removes an invalid cached file, it now also  removes the dirty state from the attacher.</p>
 </li></ul>
 
 <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Passing a block when loading the <code>default_url</code> plugin is now
-deprecated over  the new <code>Attacher.default_url</code>.</p>
+<p>Passing a block when loading the <code>default_url</code> plugin is now deprecated over  the new <code>Attacher.default_url</code>.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-comment"># deprecated</span>&#x000A;<span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;/images/missing/#{context[:name]}.jpg&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Documentation">Documentation<span><a href="#label-Documentation">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Added the “Multiple Files” guide describing how to set up multiple file 
-uploads using nested association attributes.</p>
+<p>Added the “Multiple Files” guide describing how to set up multiple file  uploads using nested association attributes.</p>
 </li></ul>
 </div>
 <div id='context'>

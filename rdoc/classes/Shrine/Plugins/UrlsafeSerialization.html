@@ -28,94 +28,25 @@ Shrine::Plugins::UrlsafeSerialization
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/_urlsafe_serialization.rb">lib/shrine/plugins/_urlsafe_serialization.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/_urlsafe_serialization_rb.html">lib/shrine/plugins/_urlsafe_serialization.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>urlsafe_serialization</code> plugin provides the ability to
-serialize and deserialize a <code>Shrine::UploadedFile</code> in a way
-that&#39;s suitable for including in a URL.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:urlsafe_serialization</span></pre>
-
-<p>The plugin defines <code>urlsafe_dump</code> and <code>urlsafe_load</code>
-methods on <code>Shrine::UploadedFile</code>. The file is first serialized
-to JSON, then encoded with base64.</p>
-
-<pre class="ruby"><span class="ruby-identifier">serialized</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">urlsafe_dump</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">serialized</span> = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_dump</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">serialized</span> <span class="ruby-comment">#=&gt; &quot;eyJpZCI6IjlhZGM0NmIzZjI...&quot;</span>&#x000A;&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_load</span>(<span class="ruby-identifier">serialized</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;MyUploader::UploadedFile&gt;</span></pre>
-
-<h2 id="module-Shrine::Plugins::UrlsafeSerialization-label-Metadata">Metadata<span><a href="#module-Shrine::Plugins::UrlsafeSerialization-label-Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>By default no metadata is included in the serialization:</p>
-
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; { ... metadata ... }</span>&#x000A;&#x000A;<span class="ruby-identifier">serialized</span>    = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_dump</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_load</span>(<span class="ruby-identifier">serialized</span>)&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {}</span></pre>
-
-<p>The <code>:metadata</code> option can be used to specify metadata you want
-to serialize:</p>
-
-<pre class="ruby"><span class="ruby-identifier">serialized</span>    = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_dump</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-value">metadata:</span> <span class="ruby-node">%w[size mime_type]</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_load</span>(<span class="ruby-identifier">serialized</span>)&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; { &quot;size&quot; =&gt; 4394, &quot;mime_type&quot; =&gt; &quot;image/jpeg&quot; }</span></pre>
-
-<h2 id="module-Shrine::Plugins::UrlsafeSerialization-label-Signing">Signing<span><a href="#module-Shrine::Plugins::UrlsafeSerialization-label-Signing">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>By default the seralization is done with simple JSON + base64 encoding. If
-you want to ensure the serialized data hasn&#39;t been tampred with, you
-can have it signed with a secret key.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:urlsafe_serialization</span>, <span class="ruby-value">secret_key:</span> <span class="ruby-string">&quot;my secret key&quot;</span></pre>
-
-<p>Now the <code>urlsafe_dump</code> will automatically sign serialized data
-with your secret key, and <code>urlsafe_load</code> will automatically
-verify it.</p>
-
-<pre class="ruby"><span class="ruby-identifier">serialized</span> = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_dump</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="ruby-identifier">serialized</span> <span class="ruby-comment">#=&gt; &quot;&lt;signature&gt;--&lt;json-base64-encoded-data&gt;&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">MyUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">urlsafe_load</span>(<span class="ruby-identifier">serialized</span>) <span class="ruby-comment"># verifies the signature</span>&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;MyUploader::UploadedFile&gt;</span></pre>
-
-<p>If the signature is missing or invalid,
-<code>Shrine::Plugins::UrlsafeSerialization::InvalidSignature</code>
-exception is raised.</p>
-</div>
-<div id='method-list'>
-<h2>Methods</h2>
-<h3>Public Class</h3>
-<ol>
-<li><a href="#method-c-configure">configure</a></li>
-</ol>
-</div>
+<div id='description'></div>
 <div id='context'>
 </div>
 <div id='class-list'>
 <h2>Classes and Modules</h2>
 <ol>
+<li><a href="UrlsafeSerialization/ClassMethods.html">Shrine::Plugins::UrlsafeSerialization::ClassMethods</a></li>
 <li><a href="UrlsafeSerialization/FileClassMethods.html">Shrine::Plugins::UrlsafeSerialization::FileClassMethods</a></li>
 <li><a href="UrlsafeSerialization/FileMethods.html">Shrine::Plugins::UrlsafeSerialization::FileMethods</a></li>
-<li><a href="UrlsafeSerialization/InvalidSignature.html">Shrine::Plugins::UrlsafeSerialization::InvalidSignature</a></li>
-<li><a href="UrlsafeSerialization/SecureSerializer.html">Shrine::Plugins::UrlsafeSerialization::SecureSerializer</a></li>
 <li><a href="UrlsafeSerialization/Serializer.html">Shrine::Plugins::UrlsafeSerialization::Serializer</a></li>
 </ol>
 </div>
 <div id='section'>
-<div id='methods'>
-<h2>Public Class methods</h2>
-<div class='method public-class' id='method-method-c-configure'>
-<a name='method-c-configure'></a>
-<div class='synopsis'>
-<span class='name'>configure</span>
-<span class='arguments'>(uploader, opts = {})</span>
-
-</div>
-<div class='description'>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 71</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:urlsafe_serialization</span>] <span class="ruby-operator">||=</span> {}&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:urlsafe_serialization</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-</div>
 </div>
 
 </div>

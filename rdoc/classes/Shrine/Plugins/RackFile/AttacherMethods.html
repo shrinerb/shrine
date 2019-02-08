@@ -28,7 +28,7 @@ Shrine::Plugins::RackFile::AttacherMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/rack_file_rb.html">lib/shrine/plugins/rack_file.rb</a>
 </li>
 </ol>
 </div>
@@ -56,15 +56,14 @@ Shrine::Plugins::RackFile::AttacherMethods
 </div>
 <div class='description'>
 
-<p>Checks whether a file is a Rack file hash, and in that case wraps the hash
-in an IO-like object.</p>
+<p>Checks whether a file is a Rack file hash, and in that case wraps the hash in an IO-like object.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 99</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">rack_file?</span>(<span class="ruby-identifier">value</span>)&#x000A;    <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">value</span>))&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">60</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">61</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">rack_file?</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">62</span>     <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">value</span>))&#x000A;<span class="line-num">63</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">64</span>     <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">65</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">66</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

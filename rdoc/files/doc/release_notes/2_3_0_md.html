@@ -30,7 +30,7 @@ doc/release_notes/2.3.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-05 15:57:31 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,9 +38,7 @@ Last Update:
 <div id='description'>
 <h2 id="label-New+plugins">New plugins<span><a href="#label-New+plugins">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>copy</code> plugin has been added for copying files from one
-record to  another. Duplicating the model instance will automatically
-create a copy  of the attachment.</p>
+<p>The <code>copy</code> plugin has been added for copying files from one record to  another. Duplicating the model instance will automatically create a copy  of the attachment.</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:copy</span></pre>
@@ -51,40 +49,28 @@ create a copy  of the attachment.</p>
 
 <h2 id="label-New+Features">New Features<span><a href="#label-New+Features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>:directory_permissions</code> option has been added to
-<code>Storage::FileSystem</code>  for specifying UNIX permissions of all
-directories inside the main directory.</p>
+<p>The <code>:directory_permissions</code> option has been added to <code>Storage::FileSystem</code>  for specifying UNIX permissions of all directories inside the main directory.</p>
 </li></ul>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Directory permissions are now applied to aoll subdirectories inside the
-main  directory</p>
+<p>Directory permissions are now applied to aoll subdirectories inside the main  directory</p>
 </li><li>
-<p>The default UNIX permissions are now 0644 for files and 0755 for
-directories.  Previously it relied on defaults of the operating system.</p>
+<p>The default UNIX permissions are now 0644 for files and 0755 for directories.  Previously it relied on defaults of the operating system.</p>
 </li><li>
-<p>The <code>backgrounding</code> plugin doesn&#39;t require the model
-instance to have the  <code>#id=</code> writer method anymore.</p>
+<p>The <code>backgrounding</code> plugin doesn&#39;t require the model instance to have the  <code>#id=</code> writer method anymore.</p>
 </li><li>
-<p>The <code>Attacher#read</code> method for returning the value of the
-underlying column  is now public.</p>
+<p>The <code>Attacher#read</code> method for returning the value of the underlying column  is now public.</p>
 </li><li>
-<p>The <code>Attacher#context</code> can now be mutated for an instantiated
-Attacher object.</p>
+<p>The <code>Attacher#context</code> can now be mutated for an instantiated Attacher object.</p>
 </li><li>
-<p>Fixed <code>Attacher#swap</code> method being private after loading
-<code>sequel</code> or  <code>activerecord</code> plugin.</p>
+<p>Fixed <code>Attacher#swap</code> method being private after loading <code>sequel</code> or  <code>activerecord</code> plugin.</p>
 </li><li>
-<p>The <code>recache</code> plugin behaviour has been extracted into
-<code>Attacher#recache</code>, so  that it can be used standalone.</p>
+<p>The <code>recache</code> plugin behaviour has been extracted into <code>Attacher#recache</code>, so  that it can be used standalone.</p>
 </li><li>
-<p>The <code>moving</code> plugin now works correctly with <code>backup</code>
-plugin.</p>
+<p>The <code>moving</code> plugin now works correctly with <code>backup</code> plugin.</p>
 </li><li>
-<p>The <code>direct_upload</code> plugin now prevents the client from caching
-the presign  response, by returning <code>Cache-Control: no-store</code>
-header.</p>
+<p>The <code>direct_upload</code> plugin now prevents the client from caching the presign  response, by returning <code>Cache-Control: no-store</code> header.</p>
 </li></ul>
 </div>
 <div id='context'>

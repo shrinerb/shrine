@@ -28,84 +28,13 @@ Shrine::Plugins::DetermineMimeType
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/determine_mime_type.rb">lib/shrine/plugins/determine_mime_type.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/determine_mime_type_rb.html">lib/shrine/plugins/determine_mime_type.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>determine_mime_type</code> plugin allows you to determine and
-store the actual MIME type of the file analyzed from file content.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span></pre>
-
-<p>By default the UNIX <a target="_top" href="http://linux.die.net/man/1/file">file</a>
-utility is used to determine the MIME type, and the result is automatically
-written to the <code>mime_type</code> metadata field. You can choose a
-different built-in MIME type analyzer:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span></pre>
-
-<p>The following analyzers are accepted:</p>
-<table class="rdoc-list note-list"><tbody><tr><td class='label'>:file</td><td>
-<p>(Default). Uses the <a target="_top" href="http://linux.die.net/man/1/file">file</a>
-utility to determine the MIME type from file  contents. It is installed by
-default on most operating systems, but the  <a
-href="http://gnuwin32.sourceforge.net/packages/file.htm">Windows
-equivalent</a> needs to be installed separately.</p>
-</td></tr><tr><td class='label'>:fastimage</td><td>
-<p>Uses the <a href="https://github.com/sdsykes/fastimage">fastimage</a> gem
-to determine the MIME type from file contents.  Fastimage is optimized for
-speed over accuracy. Best used for image content.</p>
-</td></tr><tr><td class='label'>:filemagic</td><td>
-<p>Uses the <a
-href="https://github.com/blackwinter/ruby-filemagic">ruby-filemagic</a> gem
-to determine the MIME type from file  contents, using a similar MIME
-database as the <code>file</code> utility. Unlike  the <code>file</code>
-utility, ruby-filemagic works on Windows without any setup.</p>
-</td></tr><tr><td class='label'>:mimemagic</td><td>
-<p>Uses the <a href="https://github.com/minad/mimemagic">mimemagic</a> gem to
-determine the MIME type from file contents.  Unlike ruby-filemagic,
-mimemagic is a pure-ruby solution, so it will  work across all Ruby
-implementations.</p>
-</td></tr><tr><td class='label'>:marcel</td><td>
-<p>Uses the <a href="https://github.com/basecamp/marcel">marcel</a> gem to
-determine the MIME type from file contents.  Marcel is Basecamp&#39;s
-wrapper around mimemagic, it adds priority logic  (preferring magic over
-name when given both), some extra type  definitions, and common type
-subclasses (including Keynote, Pages,  etc).</p>
-</td></tr><tr><td class='label'>:mime_types</td><td>
-<p>Uses the <a
-href="https://github.com/mime-types/ruby-mime-types">mime-types</a> gem to
-determine the MIME type from the file  extension. Note that unlike other
-solutions, this analyzer is not  guaranteed to return the actual MIME type
-of the file.</p>
-</td></tr><tr><td class='label'>:mini_mime</td><td>
-<p>Uses the <a href="https://github.com/discourse/mini_mime">mini_mime</a> gem
-to determine the MIME type from the file  extension. Note that unlike other
-solutions, this analyzer is not  guaranteed to return the actual MIME type
-of the file.</p>
-</td></tr><tr><td class='label'>:content_type</td><td>
-<p>Retrieves the value of the <code>#content_type</code> attribute of the IO
-object.  Note that this value normally comes from the “Content-Type”
-request  header, so it&#39;s not guaranteed to hold the actual MIME type of
-the file.</p>
-</td></tr></tbody></table>
-
-<p>A single analyzer is not going to properly recognize all types of files, so
-you can build your own custom analyzer for your requirements, where you can
-combine the built-in analyzers. For example, if you want to correctly
-determine MIME type of .css, .js, .json, .csv, .xml, or similar text-based
-files, you can combine <code>file</code> and <code>mime_types</code>
-analyzers:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">analyzers</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">analyzers</span>[<span class="ruby-value">:file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">mime_type</span> = <span class="ruby-identifier">analyzers</span>[<span class="ruby-value">:mime_types</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">mime_type</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text/plain&quot;</span>&#x000A;  <span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>You can also use methods for determining the MIME type directly:</p>
-
-<pre class="ruby"><span class="ruby-comment"># or YourUploader.determine_mime_type(io)</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">determine_mime_type</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls the defined analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span>&#x000A;&#x000A;<span class="ruby-comment"># or YourUploader.mime_type_analyzers</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">mime_type_analyzers</span>[<span class="ruby-value">:file</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment"># calls a built-in analyzer</span>&#x000A;<span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
-</div>
+<div id='description'></div>
 <div id='method-list'>
 <h2>Methods</h2>
 <h3>Public Class</h3>
@@ -140,7 +69,7 @@ analyzers:</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'><span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb, line 90</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:analyzer</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:default</span>&#x000A;    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The :default analyzer of the determine_mime_type plugin has been renamed to :content_type. The :default alias will not be supported in Shrine 3.&quot;</span>)&#x000A;    <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-value">analyzer:</span> <span class="ruby-value">:content_type</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:mime_type_analyzer</span>, <span class="ruby-value">:file</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/determine_mime_type.rb</span>&#x000A;<span class="line-num"> 6</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num"> 7</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:analyzer</span>] <span class="ruby-operator">==</span> <span class="ruby-value">:default</span>&#x000A;<span class="line-num"> 8</span>     <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">deprecation</span>(<span class="ruby-string">&quot;The :default analyzer of the determine_mime_type plugin has been renamed to :content_type. The :default alias will not be supported in Shrine 3.&quot;</span>)&#x000A;<span class="line-num"> 9</span>     <span class="ruby-identifier">opts</span> = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-value">analyzer:</span> <span class="ruby-value">:content_type</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">11</span> &#x000A;<span class="line-num">12</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:mime_type_analyzer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:analyzer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:mime_type_analyzer</span>, <span class="ruby-value">:file</span>))&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

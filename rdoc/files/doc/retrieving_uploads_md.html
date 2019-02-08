@@ -30,7 +30,7 @@ doc/retrieving_uploads.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-12-27 17:29:27 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,134 +38,79 @@ Last Update:
 <div id='description'>
 <h1 id="label-Retrieving+Uploads">Retrieving Uploads<span><a href="#label-Retrieving+Uploads">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<p>Uploaded file content is typically retrieved from the storage using a
-<code>Shrine::UploadedFile</code> object. This guide explains the various
-methods of retrieving file content and how do they work.</p>
+<p>Uploaded file content is typically retrieved from the storage using a <code>Shrine::UploadedFile</code> object. This guide explains the various methods of retrieving file content and how do they work.</p>
 
-<p>For context, <code>Shrine::UploadedFile</code> object is what is returned
-by the attachment reader method on the model instance (e.g.
-<code>photo.image</code>), <code>Shrine::Attacher#get</code> if you&#39;re
-using the attacher directly, or <code>Shrine#upload</code> if you&#39;re
-using the uploader directly.</p>
+<p>For context, <code>Shrine::UploadedFile</code> object is what is returned by the attachment reader method on the model instance (e.g. <code>photo.image</code>), <code>Shrine::Attacher#get</code> if you&#39;re using the attacher directly, or <code>Shrine#upload</code> if you&#39;re using the uploader directly.</p>
 
 <h2 id="label-IO-like+interface">IO-like interface<span><a href="#label-IO-like+interface">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>In order for <code>Shrine::UploadedFile</code> objects to be uploadable to
-a storage, they too conform to Shrine&#39;s IO-like interface, meaning they
-implement <code>#read</code>, <code>#rewind</code>, <code>#eof?</code>, and
-<code>#close</code> matching the behaviour of the same methods on
-Ruby&#39;s IO class.</p>
+<p>In order for <code>Shrine::UploadedFile</code> objects to be uploadable to a storage, they too conform to Shrine&#39;s IO-like interface, meaning they implement <code>#read</code>, <code>#rewind</code>, <code>#eof?</code>, and <code>#close</code> matching the behaviour of the same methods on Ruby&#39;s IO class.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># =&gt; false</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>   <span class="ruby-comment"># =&gt; &quot;...&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># =&gt; true</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-comment"># rewinds the underlying IO object</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># =&gt; false</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span>  <span class="ruby-comment"># closes the underlying IO object (this should be called when you&#39;re done)</span></pre>
 
-<p>In reality these methods are simply delegated on the IO object returned by
-the <code>Storage#open</code> method of the underlying <a
-href="../../classes/Shrine.html">Shrine</a> storage. For
-<code>Shrine::Storage::FileSystem</code> this IO object will be a
-<code>File</code> object, while for <code>Shrine::Storage::S3</code> (and
-most other remote storages) it will be a <a
-href="https://github.com/janko-m/down#streaming">Down::ChunkedIO</a>
-object. <code>Storage#open</code> is implicitly called when any of these IO
-methods are called for the first time.</p>
+<p>In reality these methods are simply delegated on the IO object returned by the <code>Storage#open</code> method of the underlying <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage. For <code>Shrine::Storage::FileSystem</code> this IO object will be a <code>File</code> object, while for <code>Shrine::Storage::S3</code> (and most other remote storages) it will be a <a href="https://github.com/janko/down#streaming">Down::ChunkedIO</a> object. <code>Storage#open</code> is implicitly called when any of these IO methods are called for the first time.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">10</span>) <span class="ruby-comment"># calls `Storage#open` and assigns result to an instance variable</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">10</span>)&#x000A;<span class="ruby-comment"># ...</span></pre>
 
-<p>You can retrieve the underlying IO object returned by
-<code>Storage#open</code> with <code>#to_io</code>:</p>
+<p>You can retrieve the underlying IO object returned by <code>Storage#open</code> with <code>#to_io</code>:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_io</span> <span class="ruby-comment"># the underlying IO object returned by `Storage#open`</span></pre>
 
 <h2 id="label-Opening">Opening<span><a href="#label-Opening">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The <code>Shrine::UploadedFile#open</code> method can be used to open the
-uploaded file explicitly:</p>
+<p>The <code>Shrine::UploadedFile#open</code> method can be used to open the uploaded file explicitly:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-comment"># calls `Storage#open` and assigns result to an instance variable</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span></pre>
 
-<p>This is useful if you want to control where <code>Storage#open</code> will
-be called. It&#39;s also useful if you want to pass additional parameters
-to <code>Storage#open</code>, which will depend on the storage. For
-example, if you&#39;re using S3 storage and server-side encryption, you can
-pass the necessary server-side-encryption parameters to
-<code>Shrine::Storage::S3#open</code>:</p>
+<p>This is useful if you want to control where <code>Storage#open</code> will be called. It&#39;s also useful if you want to pass additional parameters to <code>Storage#open</code>, which will depend on the storage. For example, if you&#39;re using S3 storage and server-side encryption, you can pass the necessary server-side-encryption parameters to <code>Shrine::Storage::S3#open</code>:</p>
 
 <pre class="ruby"><span class="ruby-comment"># server-side encryption parameters for S3 storage</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(&#x000A; <span class="ruby-value">sse_customer_algorithm:</span> <span class="ruby-string">&quot;AES256&quot;</span>,&#x000A; <span class="ruby-value">sse_customer_key:</span>       <span class="ruby-string">&quot;secret_key&quot;</span>,&#x000A; <span class="ruby-value">sse_customer_key_md5:</span>   <span class="ruby-string">&quot;secret_key_md5&quot;</span>,&#x000A;)</pre>
 
-<p><code>Shrine::UploadedFile#open</code> also accepts a block, which will
-ensure that the underlying IO object is closed at the end of the block.</p>
+<p><code>Shrine::UploadedFile#open</code> also accepts a block, which will ensure that the underlying IO object is closed at the end of the block.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">1000</span>)&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># underlying IO object is closed</span></pre>
 
-<p><code>Shrine::UploadedFile#open</code> will return the result of a given
-block. block. We can use that to safely retrieve the whole content of a
-file, without leaving any temporary files lying around.</p>
+<p><code>Shrine::UploadedFile#open</code> will return the result of a given block. block. We can use that to safely retrieve the whole content of a file, without leaving any temporary files lying around.</p>
 
 <pre class="ruby"><span class="ruby-identifier">content</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:read</span>) <span class="ruby-comment"># open, read, and close</span>&#x000A;<span class="ruby-identifier">content</span> <span class="ruby-comment"># uploaded file content</span></pre>
 
 <h2 id="label-Streaming">Streaming<span><a href="#label-Streaming">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The <code>Shrine::UploadedFile#stream</code> method can be used to stream
-uploaded file content to a writable destination object.</p>
+<p>The <code>Shrine::UploadedFile#stream</code> method can be used to stream uploaded file content to a writable destination object.</p>
 
 <pre class="ruby"><span class="ruby-identifier">destination</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span> <span class="ruby-comment"># from the &quot;stringio&quot; standard library</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">stream</span>(<span class="ruby-identifier">destination</span>)&#x000A;<span class="ruby-identifier">destination</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;<span class="ruby-identifier">destination</span> <span class="ruby-comment"># holds the file content</span></pre>
 
-<p>The destination object can be any object that responds to
-<code>#write</code> and returns number of bytes written, or a path string.</p>
+<p>The destination object can be any object that responds to <code>#write</code> and returns number of bytes written, or a path string.</p>
 
-<p><code>Shrine::UploadedFile#stream</code> will play nicely with
-<code>Shrine::UploadedFile#open</code>, meaning it will not re-open the
-uploaded file if it&#39;s already opened.</p>
+<p><code>Shrine::UploadedFile#stream</code> will play nicely with <code>Shrine::UploadedFile#open</code>, meaning it will not re-open the uploaded file if it&#39;s already opened.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">stream</span>(<span class="ruby-identifier">destination</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Any additional parameters to <code>Shrine::UploadeFile#stream</code> are
-forwarded to <code>Storage#open</code>. For example, if you&#39;re using S3
-storage, you can tell AWS S3 to use HTTP compression for the download
-request:</p>
+<p>Any additional parameters to <code>Shrine::UploadeFile#stream</code> are forwarded to <code>Storage#open</code>. For example, if you&#39;re using S3 storage, you can tell AWS S3 to use HTTP compression for the download request:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">stream</span>(<span class="ruby-identifier">destination</span>, <span class="ruby-value">response_content_encoding:</span> <span class="ruby-string">&quot;gzip&quot;</span>)</pre>
 
-<p>If you want to stream uploaded file content to the response body in a Rack
-application (Rails, Sinatra, Roda etc), see the <code>rack_response</code>
-plugin.</p>
+<p>If you want to stream uploaded file content to the response body in a Rack application (Rails, Sinatra, Roda etc), see the <code>rack_response</code> plugin.</p>
 
 <h2 id="label-Downloading">Downloading<span><a href="#label-Downloading">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The <code>Shrine::UploadedFile#download</code> method can be used to
-download uploaded file content do disk. Internally a temporary file will be
-created (using the <code>tempfile</code> standard library) and passed to
-<code>Shrine::UploadedFile#stream</code>. The return value is an open
-<code>Tempfile</code> object (a delegate of the <code>File</code> class).</p>
+<p>The <code>Shrine::UploadedFile#download</code> method can be used to download uploaded file content do disk. Internally a temporary file will be created (using the <code>tempfile</code> standard library) and passed to <code>Shrine::UploadedFile#stream</code>. The return value is an open <code>Tempfile</code> object (a delegate of the <code>File</code> class).</p>
 
 <pre class="ruby"><span class="ruby-identifier">tempfile</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>&#x000A;<span class="ruby-identifier">tempfile</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:...&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">path</span>   <span class="ruby-comment">#=&gt; &quot;/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20181227-2915-m2l6c1&quot;</span>&#x000A;<span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">read</span>   <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;<span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">close!</span> <span class="ruby-comment"># close and unlink</span></pre>
 
-<p>Like <code>Shrine::UploadedFile#open</code>,
-<code>Shrine::UploadedFile#download</code> accepts a block as well. The
-<code>Tempfile</code> object is yielded to the block, and after the block
-finishes it&#39;s automatically closed and deleted.</p>
+<p>Like <code>Shrine::UploadedFile#open</code>, <code>Shrine::UploadedFile#download</code> accepts a block as well. The <code>Tempfile</code> object is yielded to the block, and after the block finishes it&#39;s automatically closed and deleted.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">tempfile</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">path</span>   <span class="ruby-comment">#=&gt; &quot;/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/20181227-2915-m2l6c1&quot;</span>&#x000A;  <span class="ruby-identifier">tempfile</span>.<span class="ruby-identifier">read</span>   <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># tempfile is closed and deleted</span></pre>
 
-<p>Since <code>Shrine::UploadedFile#download</code> internally uses
-<code>Shrine::UploadedFile#stream</code>, it plays nicely with
-<code>Shrine::UploadedFile#open</code> as well, meaning it will only open
-the uploaded file if it&#39;s not already opened.</p>
+<p>Since <code>Shrine::UploadedFile#download</code> internally uses <code>Shrine::UploadedFile#stream</code>, it plays nicely with <code>Shrine::UploadedFile#open</code> as well, meaning it will only open the uploaded file if it&#39;s not already opened.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">tempfile</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Any options passed to <code>Shrine::UploadedFile#download</code> are
-forwarded to <code>Storage#open</code> (unless the uploaded file was
-already opened, in which case <code>Storage#open</code> was already
-called). For example, if you&#39;re using S3 storage, you can tell AWS S3
-to use HTTP compression for the download request:</p>
+<p>Any options passed to <code>Shrine::UploadedFile#download</code> are forwarded to <code>Storage#open</code> (unless the uploaded file was already opened, in which case <code>Storage#open</code> was already called). For example, if you&#39;re using S3 storage, you can tell AWS S3 to use HTTP compression for the download request:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>(<span class="ruby-value">response_content_encoding:</span> <span class="ruby-string">&quot;gzip&quot;</span>)</pre>
 
-<p>Every time <code>Shrine::UploadedFile#download</code> is called, it will
-make a new copy of the uploaded file content. If you plan to retrieve
-uploaded file content multiple times for the same
-<code>Shrine::UploadedFile</code> instance, consider using the
-<code>tempfile</code> plugin.</p>
+<p>Every time <code>Shrine::UploadedFile#download</code> is called, it will make a new copy of the uploaded file content. If you plan to retrieve uploaded file content multiple times for the same <code>Shrine::UploadedFile</code> instance, consider using the <code>tempfile</code> plugin.</p>
 </div>
 <div id='context'>
 </div>

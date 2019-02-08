@@ -30,7 +30,7 @@ doc/release_notes/2.0.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-05 15:57:31 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,8 +38,7 @@ Last Update:
 <div id='description'>
 <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
-<p>Fixed versions plugin removing what was set by default_url plugin, if 
-default_url plugin was loaded before versions</p>
+<p>Fixed versions plugin removing what was set by default_url plugin, if  default_url plugin was loaded before versions</p>
 </li></ul>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span> &#x000A;  <span class="ruby-identifier">plugin</span>(<span class="ruby-value">:default_url</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">context</span><span class="ruby-operator">|</span> }&#x000A;  <span class="ruby-identifier">plugin</span>(<span class="ruby-value">:versions</span>) <span class="ruby-comment"># doesn&#39;t remove default_url anymore</span>&#x000A;<span class="ruby-keyword">end</span></pre>

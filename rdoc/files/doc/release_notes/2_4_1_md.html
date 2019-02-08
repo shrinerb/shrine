@@ -30,7 +30,7 @@ doc/release_notes/2.4.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-11-05 15:57:31 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,38 +38,19 @@ Last Update:
 <div id='description'>
 <h2 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>Prior to version 2.4.0, the conversion of uploaded file data to JSON was 
-happening in <code>Attacher#_set</code>, and <code>Attacher#write</code>
-simply assigned the value  that it received to the data attribute of the
-model instance. During  refactoring for 2.4.0, the JSON conversion was
-accidentally moved to  <code>Attacher#write</code>, which affects anyone
-who was using <code>Attacher#write</code>  directly and passing it a JSON
-string, by resulting in a double-encoded  string being assigned to the data
-attribute. This has now been reverted.</p>
+<p>Prior to version 2.4.0, the conversion of uploaded file data to JSON was  happening in <code>Attacher#_set</code>, and <code>Attacher#write</code> simply assigned the value  that it received to the data attribute of the model instance. During  refactoring for 2.4.0, the JSON conversion was accidentally moved to  <code>Attacher#write</code>, which affects anyone who was using <code>Attacher#write</code>  directly and passing it a JSON string, by resulting in a double-encoded  string being assigned to the data attribute. This has now been reverted.</p>
 </li></ul>
 
 <h2 id="label-Improvements">Improvements<span><a href="#label-Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>remove_invalid</code> plugin will now assign back a previous
-attachment if it  was there, in case the assigned cached file was invalid.
-Before <code>nil</code> was  always assigned. This enables you to display
-the previous attachment to the  user in case of file validation errors.</p>
+<p>The <code>remove_invalid</code> plugin will now assign back a previous attachment if it  was there, in case the assigned cached file was invalid. Before <code>nil</code> was  always assigned. This enables you to display the previous attachment to the  user in case of file validation errors.</p>
 </li><li>
-<p><code>UploadedFile#download</code> will now create the Tempfile using 
-<code>UploadedFile#extension</code>, which handles the case when
-<code>#id</code> doesn&#39;t have  extension, but
-<code>#original_filename</code> has (which could be the behaviour of  some
-custom storages)</p>
+<p><code>UploadedFile#download</code> will now create the Tempfile using  <code>UploadedFile#extension</code>, which handles the case when <code>#id</code> doesn&#39;t have  extension, but <code>#original_filename</code> has (which could be the behaviour of  some custom storages)</p>
 </li></ul>
 
 <h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <code>FileSystem#download</code> method has been deprecated, and will
-be removed in  <a href="../../../classes/Shrine.html">Shrine</a> 3. The
-replacement is to simply use <code>UploadedFile#download</code>, which will
-use <code>FileSystem#open</code> to create a Tempfile in the same way 
-<code>FileSystem#download</code> did previously. This shouldn&#39;t affect
-you unless you  were using <code>FileSystem#download</code> directly.</p>
+<p>The <code>FileSystem#download</code> method has been deprecated, and will be removed in  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3. The replacement is to simply use <code>UploadedFile#download</code>, which will  use <code>FileSystem#open</code> to create a Tempfile in the same way  <code>FileSystem#download</code> did previously. This shouldn&#39;t affect you unless you  were using <code>FileSystem#download</code> directly.</p>
 </li></ul>
 </div>
 <div id='context'>

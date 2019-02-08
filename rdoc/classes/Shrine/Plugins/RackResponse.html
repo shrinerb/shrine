@@ -28,67 +28,13 @@ Shrine::Plugins::RackResponse
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/rack_response.rb">lib/shrine/plugins/rack_response.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/rack_response_rb.html">lib/shrine/plugins/rack_response.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>rack_response</code> plugin allows you to convert an
-<code>UploadedFile</code> object into a triple consisting of status,
-headers, and body, suitable for returning as a response in a Rack-based
-application.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_response</span></pre>
-
-<p>To convert a <code>Shrine::UploadedFile</code> into a Rack response, simply
-call <code>#to_rack_response</code>:</p>
-
-<pre class="ruby"><span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;<span class="ruby-identifier">status</span>  <span class="ruby-comment">#=&gt; 200</span>&#x000A;<span class="ruby-identifier">headers</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;Content-Length&quot;      =&gt; &quot;100&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;Content-Type&quot;        =&gt; &quot;text/plain&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;Content-Disposition&quot; =&gt; &quot;inline; filename=\&quot;file.txt\&quot;&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;Accept-Ranges&quot;       =&gt; &quot;bytes&quot;</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">body</span>    <span class="ruby-comment"># object that responds to #each and #close</span></pre>
-
-<p>An example how this can be used in a Rails controller:</p>
-
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">FilesController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActionController</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;    <span class="ruby-identifier">set_rack_response</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">to_rack_response</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">private</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_rack_response</span>((<span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span>))&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">status</span>&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">headers</span>)&#x000A;    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">body</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>The <code>#each</code> method on the response body object will stream the
-uploaded file directly from the storage. It also works with <a
-href="https://www.rubydoc.info/github/rack/rack/Rack/Sendfile">Rack::Sendfile</a>
-when using <code>FileSystem</code> storage.</p>
-
-<h2 id="module-Shrine::Plugins::RackResponse-label-Type">Type<span><a href="#module-Shrine::Plugins::RackResponse-label-Type">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>The response <code>Content-Type</code> header will default to the value of
-the <code>mime_type</code> metadata. A custom content type can be provided
-via the <code>:type</code> option:</p>
-
-<pre>_, headers, _ uploaded_file.to_rack_response(type: &quot;text/plain; charset=utf-8&quot;)&#x000A;headers[&quot;Content-Type&quot;] #=&gt; &quot;text/plain; charset=utf-8&quot;</pre>
-
-<h2 id="module-Shrine::Plugins::RackResponse-label-Filename">Filename<span><a href="#module-Shrine::Plugins::RackResponse-label-Filename">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>The download filename in the <code>Content-Disposition</code> header will
-default to the value of the <code>filename</code> metadata. A custom
-download filename can be provided via the <code>:filename</code> option:</p>
-
-<pre>_, headers, _ uploaded_file.to_rack_response(filename: &quot;my-filename.txt&quot;)&#x000A;headers[&quot;Content-Disposition&quot;] #=&gt; &quot;inline; filename=\&quot;my-filename.txt\&quot;&quot;</pre>
-
-<h2 id="module-Shrine::Plugins::RackResponse-label-Disposition">Disposition<span><a href="#module-Shrine::Plugins::RackResponse-label-Disposition">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>The default disposition in the “Content-Disposition” header is
-<code>inline</code>, but it can be changed via the
-<code>:disposition</code> option:</p>
-
-<pre class="ruby"><span class="ruby-identifier">_</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">_</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;attachment&quot;</span>)&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Disposition&quot;</span>] <span class="ruby-comment">#=&gt; &quot;attachment; filename=\&quot;file.txt\&quot;&quot;</span></pre>
-
-<h2 id="module-Shrine::Plugins::RackResponse-label-Range">Range<span><a href="#module-Shrine::Plugins::RackResponse-label-Range">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p><a
-href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests">Partial
-responses</a> are also supported via the <code>:range</code> option, which
-accepts a value of the <code>Range</code> request header.</p>
-
-<pre class="ruby"><span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;HTTP_RANGE&quot;</span>] <span class="ruby-comment">#=&gt; &quot;bytes=100-200&quot;</span>&#x000A;<span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span> = <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_rack_response</span>(<span class="ruby-value">range:</span> <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;HTTP_RANGE&quot;</span>])&#x000A;<span class="ruby-identifier">status</span>                    <span class="ruby-comment">#=&gt; 206</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Length&quot;</span>] <span class="ruby-comment">#=&gt; &quot;101&quot;</span>&#x000A;<span class="ruby-identifier">headers</span>[<span class="ruby-string">&quot;Content-Range&quot;</span>]  <span class="ruby-comment">#=&gt; &quot;bytes 100-200/1000&quot;</span>&#x000A;<span class="ruby-identifier">body</span>                      <span class="ruby-comment"># partial content</span></pre>
-</div>
+<div id='description'></div>
 <div id='context'>
 </div>
 <div id='class-list'>

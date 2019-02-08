@@ -28,33 +28,13 @@ Shrine::Plugins::Tempfile
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/tempfile.rb">lib/shrine/plugins/tempfile.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/tempfile_rb.html">lib/shrine/plugins/tempfile.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>tempfile</code> plugin makes it easier to reuse a single copy of
-an uploaded file on disk.</p>
-
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:tempfile</span></pre>
-
-<p>The plugin provides the <code>UploadedFile#tempfile</code> method, which
-when called on an open uploaded file will return a copy of its content on
-disk. The first time the method is called the file content will cached into
-a temporary file and returned. On any subsequent method calls the cached
-temporary file will be returned directly. The temporary file is deleted
-when the uploaded file is closed.</p>
-
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">tempfile</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:...&gt; (file is cached)</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">tempfile</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:...&gt; (cache is returned)</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span> <span class="ruby-comment"># tempfile is deleted</span>&#x000A;&#x000A;<span class="ruby-comment"># OR</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">tempfile</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:...&gt; (file is cached)</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">tempfile</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:...&gt; (cache is returned)</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span> <span class="ruby-comment"># tempfile is deleted</span></pre>
-
-<p>This plugin also modifies <code>Shrine.with_file</code> to call
-<code>UploadedFile#tempfile</code> when the given IO object is an open
-<code>UploadedFile</code>. Since <code>Shrine.with_file</code> is typically
-called on the <code>Shrine</code> class directly, it&#39;s recommended to
-load this plugin globally.</p>
-</div>
+<div id='description'></div>
 <div id='context'>
 </div>
 <div id='class-list'>

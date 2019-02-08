@@ -28,40 +28,13 @@ Shrine::Plugins::RackFile
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../files/lib/shrine/plugins/rack_file_rb.html">lib/shrine/plugins/rack_file.rb</a>
 </li>
 </ol>
 </div>
 <div id='content'>
 <div id='text'>
-<div id='description'>
-<p>The <code>rack_file</code> plugin enables uploaders to accept Rack uploaded
-file hashes for uploading.</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_file</span></pre>
-
-<p>When a file is uploaded to your Rack application using the
-<code>multipart/form-data</code> parameter encoding, Rack converts the
-uploaded file to a hash.</p>
-
-<pre class="ruby"><span class="ruby-identifier">file_hash</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   :name =&gt; &quot;file&quot;,</span>&#x000A;<span class="ruby-comment">#   :filename =&gt; &quot;cats.png&quot;,</span>&#x000A;<span class="ruby-comment">#   :type =&gt; &quot;image/png&quot;,</span>&#x000A;<span class="ruby-comment">#   :tempfile =&gt; #&lt;Tempfile:/var/folders/3n/3asd/-Tmp-/RackMultipart201-1476-nfw2-0&gt;,</span>&#x000A;<span class="ruby-comment">#   :head =&gt; &quot;Content-Disposition: form-data; ...&quot;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
-
-<p>Since <a href="../../Shrine.html">Shrine</a> only accepts IO objects, you
-would normally need to fetch the <code>:tempfile</code> object and pass it
-directly. This plugin enables the attacher to accept the Rack uploaded file
-hash directly, which is convenient when doing mass attribute assignment.</p>
-
-<pre class="ruby"><span class="ruby-identifier">user</span>.<span class="ruby-identifier">avatar</span> = <span class="ruby-identifier">file_hash</span>&#x000A;<span class="ruby-comment"># or</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file_hash</span>)</pre>
-
-<p>Internally the Rack uploaded file hash will be converted into an IO object
-using <code>Shrine.rack_file</code>, which you can also use directly:</p>
-
-<pre class="ruby"><span class="ruby-comment"># or YourUploader.rack_file(file_hash)</span>&#x000A;<span class="ruby-identifier">io</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">file_hash</span>)&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;cats.png&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">content_type</span>      <span class="ruby-comment">#=&gt; &quot;image/png&quot;</span>&#x000A;<span class="ruby-identifier">io</span>.<span class="ruby-identifier">size</span>              <span class="ruby-comment">#=&gt; 58342</span></pre>
-
-<p>Note that this plugin is not needed in Rails applications, as Rails already
-wraps the Rack uploaded file hash into an
-<code>ActionDispatch::Http::UploadedFile</code> object.</p>
-</div>
+<div id='description'></div>
 <div id='context'>
 </div>
 <div id='class-list'>

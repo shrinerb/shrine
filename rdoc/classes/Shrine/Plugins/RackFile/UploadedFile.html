@@ -28,7 +28,7 @@ Shrine::Plugins::RackFile::UploadedFile
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/rack_file.rb">lib/shrine/plugins/rack_file.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/rack_file_rb.html">lib/shrine/plugins/rack_file.rb</a>
 </li>
 </ol>
 <div class='parent'>
@@ -39,8 +39,7 @@ Superclass:
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>This is used to wrap the Rack hash into an IO-like object which <a
-href="../../../Shrine.html">Shrine</a> can upload.</p>
+<p>This is used to wrap the Rack hash into an IO-like object which <a href="../../../Shrine.html"><code>Shrine</code></a> can upload.</p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -110,7 +109,7 @@ href="../../../Shrine.html">Shrine</a> can upload.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 122</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">hash</span>)&#x000A;  <span class="ruby-ivar">@tempfile</span>          = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:tempfile</span>]&#x000A;  <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>]&#x000A;  <span class="ruby-ivar">@content_type</span>      = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:type</span>]&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">83</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">hash</span>)&#x000A;<span class="line-num">84</span>   <span class="ruby-ivar">@tempfile</span>          = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:tempfile</span>]&#x000A;<span class="line-num">85</span>   <span class="ruby-ivar">@original_filename</span> = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:filename</span>]&#x000A;<span class="line-num">86</span>   <span class="ruby-ivar">@content_type</span>      = <span class="ruby-identifier">hash</span>[<span class="ruby-value">:type</span>]&#x000A;<span class="line-num">87</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -128,7 +127,7 @@ href="../../../Shrine.html">Shrine</a> can upload.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-path-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-path-source'><span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb, line 128</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">path</span>&#x000A;  <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">path</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-path-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">89</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">path</span>&#x000A;<span class="line-num">90</span>   <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">path</span>&#x000A;<span class="line-num">91</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

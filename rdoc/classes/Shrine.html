@@ -28,7 +28,7 @@ Shrine
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine.rb">lib/shrine.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../files/lib/shrine_rb.html">lib/shrine.rb</a>
 </li>
 <li class='other'>
 <a href="../files/lib/shrine/attacher_rb.html">lib/shrine/attacher.rb</a>
@@ -80,6 +80,9 @@ Shrine
 </li>
 <li class='other'>
 <a href="../files/lib/shrine/plugins/delete_raw_rb.html">lib/shrine/plugins/delete_raw.rb</a>
+</li>
+<li class='other'>
+<a href="../files/lib/shrine/plugins/derivation_endpoint_rb.html">lib/shrine/plugins/derivation_endpoint.rb</a>
 </li>
 <li class='other'>
 <a href="../files/lib/shrine/plugins/determine_mime_type_rb.html">lib/shrine/plugins/determine_mime_type.rb</a>
@@ -213,9 +216,7 @@ Superclass:
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Core class that represents uploader. Base implementation is defined in <a
-href="Shrine/InstanceMethods.html">InstanceMethods</a> and <a
-href="Shrine/ClassMethods.html">ClassMethods</a>.</p>
+<p>Core class that represents uploader. Base implementation is defined in <a href="Shrine/InstanceMethods.html"><code>InstanceMethods</code></a> and <a href="Shrine/ClassMethods.html"><code>ClassMethods</code></a>.</p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -236,10 +237,13 @@ href="Shrine/ClassMethods.html">ClassMethods</a>.</p>
 <li><a href="Shrine/VERSION.html">Shrine::VERSION</a></li>
 <li><a href="Shrine/Attacher.html">Shrine::Attacher</a></li>
 <li><a href="Shrine/Attachment.html">Shrine::Attachment</a></li>
+<li><a href="Shrine/Derivation.html">Shrine::Derivation</a></li>
+<li><a href="Shrine/DerivationEndpoint.html">Shrine::DerivationEndpoint</a></li>
 <li><a href="Shrine/Error.html">Shrine::Error</a></li>
 <li><a href="Shrine/InvalidFile.html">Shrine::InvalidFile</a></li>
 <li><a href="Shrine/LintError.html">Shrine::LintError</a></li>
 <li><a href="Shrine/UploadedFile.html">Shrine::UploadedFile</a></li>
+<li><a href="Shrine/UrlSigner.html">Shrine::UrlSigner</a></li>
 </ol>
 </div>
 <div id='section'>
@@ -259,8 +263,7 @@ close:  [],
 }</td>
 <td>&nbsp;</td>
 <td class='context-item-desc'>
-<p>Methods which an object has to respond to in order to be considered an IO
-object, along with their arguments.</p>
+<p>Methods which an object has to respond to in order to be considered an IO object, along with their arguments.</p>
 </td>
 </tr>
 </table>
@@ -282,7 +285,7 @@ object, along with their arguments.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-version-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-version-source'><span class="ruby-comment"># File lib/shrine/version.rb, line 4</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">version</span>&#x000A;  <span class="ruby-constant">Gem</span><span class="ruby-operator">::</span><span class="ruby-constant">Version</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">VERSION</span><span class="ruby-operator">::</span><span class="ruby-constant">STRING</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-c-version-source'>  <span class="ruby-comment"># File lib/shrine/version.rb</span>&#x000A;<span class="line-num">4</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">version</span>&#x000A;<span class="line-num">5</span>   <span class="ruby-constant">Gem</span><span class="ruby-operator">::</span><span class="ruby-constant">Version</span>.<span class="ruby-identifier">new</span> <span class="ruby-constant">VERSION</span><span class="ruby-operator">::</span><span class="ruby-constant">STRING</span>&#x000A;<span class="line-num">6</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

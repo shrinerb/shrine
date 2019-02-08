@@ -28,7 +28,7 @@ Shrine::Plugins::StoreDimensions::ClassMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/store_dimensions.rb">lib/shrine/plugins/store_dimensions.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/store_dimensions_rb.html">lib/shrine/plugins/store_dimensions.rb</a>
 </li>
 </ol>
 </div>
@@ -65,7 +65,7 @@ Shrine::Plugins::StoreDimensions::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dimensions_analyzer-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-dimensions_analyzer-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 97</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dimensions_analyzer</span>(<span class="ruby-identifier">name</span>)&#x000A;  <span class="ruby-constant">DimensionsAnalyzer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">method</span>(<span class="ruby-value">:call</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-dimensions_analyzer-source'>   <span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb</span>&#x000A;<span class="line-num">34</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dimensions_analyzer</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">35</span>   <span class="ruby-constant">DimensionsAnalyzer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>).<span class="ruby-identifier">method</span>(<span class="ruby-value">:call</span>)&#x000A;<span class="line-num">36</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-dimensions_analyzers'>
@@ -77,16 +77,14 @@ Shrine::Plugins::StoreDimensions::ClassMethods
 </div>
 <div class='description'>
 
-<p>Returns a hash of built-in dimensions analyzers, where keys are analyzer
-names and values are <code>#call</code>-able objects which accepts the IO
-object.</p>
+<p>Returns a hash of built-in dimensions analyzers, where keys are analyzer names and values are <code>#call</code>-able objects which accepts the IO object.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dimensions_analyzers-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-dimensions_analyzers-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 90</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dimensions_analyzers</span>&#x000A;  <span class="ruby-ivar">@dimensions_analyzers</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">DimensionsAnalyzer</span><span class="ruby-operator">::</span><span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, <span class="ruby-identifier">tool</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">tool</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">dimensions_analyzer</span>(<span class="ruby-identifier">tool</span>))&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-dimensions_analyzers-source'>   <span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dimensions_analyzers</span>&#x000A;<span class="line-num">28</span>   <span class="ruby-ivar">@dimensions_analyzers</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">DimensionsAnalyzer</span><span class="ruby-operator">::</span><span class="ruby-constant">SUPPORTED_TOOLS</span>.<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, <span class="ruby-identifier">tool</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">29</span>     <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">tool</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">dimensions_analyzer</span>(<span class="ruby-identifier">tool</span>))&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-extract_dimensions'>
@@ -98,15 +96,14 @@ object.</p>
 </div>
 <div class='description'>
 
-<p>Determines the dimensions of the IO object by calling the specified
-analyzer.</p>
+<p>Determines the dimensions of the IO object by calling the specified analyzer.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-extract_dimensions-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-extract_dimensions-source'><span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb, line 76</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_dimensions</span>(<span class="ruby-identifier">io</span>)&#x000A;  <span class="ruby-identifier">analyzer</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>]&#x000A;  <span class="ruby-identifier">analyzer</span> = <span class="ruby-identifier">dimensions_analyzer</span>(<span class="ruby-identifier">analyzer</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)&#x000A;  <span class="ruby-identifier">args</span> = [<span class="ruby-identifier">io</span>, <span class="ruby-identifier">dimensions_analyzers</span>].<span class="ruby-identifier">take</span>(<span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">arity</span>.<span class="ruby-identifier">abs</span>)&#x000A;&#x000A;  <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">call</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;  <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;&#x000A;  <span class="ruby-identifier">dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-extract_dimensions-source'>   <span class="ruby-comment"># File lib/shrine/plugins/store_dimensions.rb</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">extract_dimensions</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="line-num">14</span>   <span class="ruby-identifier">analyzer</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:dimensions_analyzer</span>]&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">analyzer</span> = <span class="ruby-identifier">dimensions_analyzer</span>(<span class="ruby-identifier">analyzer</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>)&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">args</span> = [<span class="ruby-identifier">io</span>, <span class="ruby-identifier">dimensions_analyzers</span>].<span class="ruby-identifier">take</span>(<span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">arity</span>.<span class="ruby-identifier">abs</span>)&#x000A;<span class="line-num">17</span> &#x000A;<span class="line-num">18</span>   <span class="ruby-identifier">dimensions</span> = <span class="ruby-identifier">analyzer</span>.<span class="ruby-identifier">call</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="line-num">19</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">rewind</span>&#x000A;<span class="line-num">20</span> &#x000A;<span class="line-num">21</span>   <span class="ruby-identifier">dimensions</span>&#x000A;<span class="line-num">22</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

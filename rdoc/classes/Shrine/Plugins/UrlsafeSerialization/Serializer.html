@@ -28,7 +28,7 @@ Shrine::Plugins::UrlsafeSerialization::Serializer
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/_urlsafe_serialization.rb">lib/shrine/plugins/_urlsafe_serialization.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/_urlsafe_serialization_rb.html">lib/shrine/plugins/_urlsafe_serialization.rb</a>
 </li>
 </ol>
 <div class='parent'>
@@ -43,8 +43,8 @@ Superclass:
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#method-i-dump">dump</a></li>
-<li><a href="#method-i-load">load</a></li>
+<li><a href="#method-i-decode">decode</a></li>
+<li><a href="#method-i-encode">encode</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -52,10 +52,10 @@ Superclass:
 <div id='section'>
 <div id='methods'>
 <h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-dump'>
-<a name='method-i-dump'></a>
+<div class='method public-instance' id='method-method-i-decode'>
+<a name='method-i-decode'></a>
 <div class='synopsis'>
-<span class='name'>dump</span>
+<span class='name'>decode</span>
 <span class='arguments'>(data)</span>
 
 </div>
@@ -63,16 +63,16 @@ Superclass:
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dump-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-decode-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-dump-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 110</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dump</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">base64_encode</span>(<span class="ruby-identifier">json_encode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-decode-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb</span>&#x000A;<span class="line-num">64</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">decode</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">65</span>   <span class="ruby-identifier">json_decode</span>(<span class="ruby-identifier">base64_decode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="line-num">66</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-instance' id='method-method-i-load'>
-<a name='method-i-load'></a>
+<div class='method public-instance' id='method-method-i-encode'>
+<a name='method-i-encode'></a>
 <div class='synopsis'>
-<span class='name'>load</span>
+<span class='name'>encode</span>
 <span class='arguments'>(data)</span>
 
 </div>
@@ -80,10 +80,10 @@ Superclass:
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-encode-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 114</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load</span>(<span class="ruby-identifier">data</span>)&#x000A;  <span class="ruby-identifier">json_decode</span>(<span class="ruby-identifier">base64_decode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-encode-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb</span>&#x000A;<span class="line-num">60</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">encode</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">61</span>   <span class="ruby-identifier">base64_encode</span>(<span class="ruby-identifier">json_encode</span>(<span class="ruby-identifier">data</span>))&#x000A;<span class="line-num">62</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

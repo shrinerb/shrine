@@ -28,7 +28,7 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/_urlsafe_serialization.rb">lib/shrine/plugins/_urlsafe_serialization.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/_urlsafe_serialization_rb.html">lib/shrine/plugins/_urlsafe_serialization.rb</a>
 </li>
 </ol>
 </div>
@@ -41,7 +41,6 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 <ol>
 <li><a href="#method-i-urlsafe_dump">urlsafe_dump</a></li>
 <li><a href="#method-i-urlsafe_load">urlsafe_load</a></li>
-<li><a href="#method-i-urlsafe_serializer">urlsafe_serializer</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -53,7 +52,7 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 <a name='method-i-urlsafe_dump'></a>
 <div class='synopsis'>
 <span class='name'>urlsafe_dump</span>
-<span class='arguments'>(file, metadata: [])</span>
+<span class='arguments'>(file, **options)</span>
 
 </div>
 <div class='description'>
@@ -63,7 +62,7 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-urlsafe_dump-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-urlsafe_dump-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 83</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_dump</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> [])&#x000A;  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">data</span>.<span class="ruby-identifier">dup</span>&#x000A;  <span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;metadata&quot;</span>] = <span class="ruby-identifier">metadata</span>&#x000A;    .<span class="ruby-identifier">map</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">name</span><span class="ruby-operator">|</span> [<span class="ruby-identifier">name</span>, <span class="ruby-identifier">file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-identifier">name</span>]] }&#x000A;    .<span class="ruby-identifier">to_h</span>&#x000A;&#x000A;  <span class="ruby-identifier">urlsafe_serializer</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-urlsafe_dump-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb</span>&#x000A;<span class="line-num">46</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_dump</span>(<span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">47</span>   <span class="ruby-identifier">data</span> = <span class="ruby-identifier">file</span>.<span class="ruby-identifier">urlsafe_data</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">48</span> &#x000A;<span class="line-num">49</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">urlsafe_serialize</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">50</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-urlsafe_load'>
@@ -80,24 +79,7 @@ Shrine::Plugins::UrlsafeSerialization::FileClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-urlsafe_load-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-urlsafe_load-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 92</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_load</span>(<span class="ruby-identifier">string</span>)&#x000A;  <span class="ruby-identifier">data</span> = <span class="ruby-identifier">urlsafe_serializer</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">string</span>)&#x000A;&#x000A;  <span class="ruby-identifier">new</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method public-instance' id='method-method-i-urlsafe_serializer'>
-<a name='method-i-urlsafe_serializer'></a>
-<div class='synopsis'>
-<span class='name'>urlsafe_serializer</span>
-<span class='arguments'>()</span>
-
-</div>
-<div class='description'>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-urlsafe_serializer-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-urlsafe_serializer-source'><span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb, line 98</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_serializer</span>&#x000A;  <span class="ruby-identifier">secret_key</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:urlsafe_serialization</span>][<span class="ruby-value">:secret_key</span>]&#x000A;&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">secret_key</span>&#x000A;    <span class="ruby-constant">SecureSerializer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">secret_key:</span> <span class="ruby-identifier">secret_key</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-constant">Serializer</span>.<span class="ruby-identifier">new</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-urlsafe_load-source'>   <span class="ruby-comment"># File lib/shrine/plugins/_urlsafe_serialization.rb</span>&#x000A;<span class="line-num">52</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">urlsafe_load</span>(<span class="ruby-identifier">string</span>)&#x000A;<span class="line-num">53</span>   <span class="ruby-identifier">data</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">urlsafe_deserialize</span>(<span class="ruby-identifier">string</span>)&#x000A;<span class="line-num">54</span> &#x000A;<span class="line-num">55</span>   <span class="ruby-identifier">new</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">56</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

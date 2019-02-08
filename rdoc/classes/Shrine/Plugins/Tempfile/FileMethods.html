@@ -28,7 +28,7 @@ Shrine::Plugins::Tempfile::FileMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/tempfile.rb">lib/shrine/plugins/tempfile.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/tempfile_rb.html">lib/shrine/plugins/tempfile.rb</a>
 </li>
 </ol>
 </div>
@@ -62,7 +62,7 @@ Shrine::Plugins::Tempfile::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-close-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-close-source'><span class="ruby-comment"># File lib/shrine/plugins/tempfile.rb, line 57</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>&#x000A;  <span class="ruby-keyword">super</span>&#x000A;&#x000A;  <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">close!</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@tempfile</span>&#x000A;  <span class="ruby-ivar">@tempfile</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-close-source'>   <span class="ruby-comment"># File lib/shrine/plugins/tempfile.rb</span>&#x000A;<span class="line-num">26</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>&#x000A;<span class="line-num">27</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">28</span> &#x000A;<span class="line-num">29</span>   <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">close!</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@tempfile</span>&#x000A;<span class="line-num">30</span>   <span class="ruby-ivar">@tempfile</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-tempfile'>
@@ -79,7 +79,7 @@ Shrine::Plugins::Tempfile::FileMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-tempfile-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-tempfile-source'><span class="ruby-comment"># File lib/shrine/plugins/tempfile.rb, line 49</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">tempfile</span>&#x000A;  <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;uploaded file must be opened&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@io</span>&#x000A;&#x000A;  <span class="ruby-ivar">@tempfile</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">download</span>&#x000A;  <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">rewind</span>&#x000A;  <span class="ruby-ivar">@tempfile</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-tempfile-source'>   <span class="ruby-comment"># File lib/shrine/plugins/tempfile.rb</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">tempfile</span>&#x000A;<span class="line-num">19</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;uploaded file must be opened&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@io</span>&#x000A;<span class="line-num">20</span> &#x000A;<span class="line-num">21</span>   <span class="ruby-ivar">@tempfile</span> <span class="ruby-operator">||=</span> <span class="ruby-identifier">download</span>&#x000A;<span class="line-num">22</span>   <span class="ruby-ivar">@tempfile</span>.<span class="ruby-identifier">rewind</span>&#x000A;<span class="line-num">23</span>   <span class="ruby-ivar">@tempfile</span>&#x000A;<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

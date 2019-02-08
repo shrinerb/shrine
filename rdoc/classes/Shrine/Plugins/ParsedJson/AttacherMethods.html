@@ -28,7 +28,7 @@ Shrine::Plugins::ParsedJson::AttacherMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/parsed_json.rb">lib/shrine/plugins/parsed_json.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/parsed_json_rb.html">lib/shrine/plugins/parsed_json.rb</a>
 </li>
 </ol>
 </div>
@@ -61,7 +61,7 @@ Shrine::Plugins::ParsedJson::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign-source'><span class="ruby-comment"># File lib/shrine/plugins/parsed_json.rb, line 12</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">parsed_json?</span>(<span class="ruby-identifier">value</span>)&#x000A;    <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_json</span>)&#x000A;  <span class="ruby-keyword">else</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/parsed_json.rb</span>&#x000A;<span class="line-num"> 7</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num"> 8</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">parsed_json?</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num"> 9</span>     <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_json</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">11</span>     <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">12</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

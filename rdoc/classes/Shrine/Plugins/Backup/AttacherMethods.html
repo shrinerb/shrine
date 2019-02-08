@@ -28,7 +28,7 @@ Shrine::Plugins::Backup::AttacherMethods
 </h1>
 <ol class='paths'>
 <li>
-<a href="https://github.com/shrinerb/shrine/blob/8013b55f86f3de65f0aaabaf4c34b2b5ce6660b7/lib/shrine/plugins/backup.rb">lib/shrine/plugins/backup.rb</a> <img src="/images/github.png" width=13 height=12 style="position:absolute; margin-left:5px;">
+<a href="../../../../files/lib/shrine/plugins/backup_rb.html">lib/shrine/plugins/backup.rb</a>
 </li>
 </ol>
 </div>
@@ -59,15 +59,14 @@ Shrine::Plugins::Backup::AttacherMethods
 </div>
 <div class='description'>
 
-<p>Returns a copy of the given uploaded file with storage changed to backup
-storage.</p>
+<p>Returns a copy of the given uploaded file with storage changed to backup storage.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-backup_file-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-backup_file-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 59</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">backup_file</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;  <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;storage&quot;</span>] = <span class="ruby-identifier">backup_storage</span>.<span class="ruby-identifier">to_s</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-backup_file-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backup.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">backup_file</span>(<span class="ruby-identifier">uploaded_file</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_json</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">39</span>     <span class="ruby-identifier">file</span>.<span class="ruby-identifier">data</span>[<span class="ruby-string">&quot;storage&quot;</span>] = <span class="ruby-identifier">backup_storage</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="line-num">40</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-destroy'>
@@ -86,7 +85,7 @@ storage.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-destroy-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-destroy-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 51</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">delete_backup!</span>(<span class="ruby-identifier">get</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">delete_backup?</span>&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-destroy-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backup.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">destroy</span>&#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">31</span>   <span class="ruby-identifier">delete_backup!</span>(<span class="ruby-identifier">get</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">delete_backup?</span>&#x000A;<span class="line-num">32</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-promote'>
@@ -105,7 +104,7 @@ storage.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-promote-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-promote-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 37</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-operator">*</span>)&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">store_backup!</span>(<span class="ruby-identifier">result</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span>&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-promote-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backup.rb</span>&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">store_backup!</span>(<span class="ruby-identifier">result</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">18</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-replace'>
@@ -124,7 +123,7 @@ storage.</p>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-replace-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-replace-source'><span class="ruby-comment"># File lib/shrine/plugins/backup.rb, line 44</span>&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>&#x000A;  <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-identifier">delete_backup!</span>(<span class="ruby-ivar">@old</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">delete_backup?</span>&#x000A;  <span class="ruby-identifier">result</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre id='method-i-replace-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backup.rb</span>&#x000A;<span class="line-num">22</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">replace</span>&#x000A;<span class="line-num">23</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">24</span>   <span class="ruby-identifier">delete_backup!</span>(<span class="ruby-ivar">@old</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">delete_backup?</span>&#x000A;<span class="line-num">25</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">26</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

@@ -30,18 +30,15 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2018-12-11 10:13:25 +0100</span>
+<span class='datetime'>2019-02-08 22:33:33 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-The+Design+of+Shrine">The Design of <a href="../../classes/Shrine.html">Shrine</a><span><a href="#label-The+Design+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<h1 id="label-The+Design+of+Shrine">The Design of <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-The+Design+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<p><em>If you want an in-depth walkthrough through the <a
-href="../../classes/Shrine.html">Shrine</a> codebase, see <a
-href="https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/">Notes
-on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
+<p><em>If you want an in-depth walkthrough through the <a href="../../classes/Shrine.html"><code>Shrine</code></a> codebase, see <a href="https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/">Notes on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
 
 <p>There are five main types of objects that you deal with in Shrine:</p>
 <ul><li>
@@ -58,10 +55,7 @@ on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
 
 <h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>On the lowest level we have a storage. A storage class encapsulates file
-management logic on a particular service. It is what actually performs
-uploads, generation of URLs, deletions and similar. By convention it is
-namespaced under <code>Shrine::Storage</code>.</p>
+<p>On the lowest level we have a storage. A storage class encapsulates file management logic on a particular service. It is what actually performs uploads, generation of URLs, deletions and similar. By convention it is namespaced under <code>Shrine::Storage</code>.</p>
 
 <pre class="ruby"><span class="ruby-identifier">filesystem</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads&quot;</span>)&#x000A;<span class="ruby-identifier">filesystem</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-string">&quot;foo&quot;</span>)&#x000A;<span class="ruby-identifier">filesystem</span>.<span class="ruby-identifier">url</span>(<span class="ruby-string">&quot;foo&quot;</span>) <span class="ruby-comment">#=&gt; &quot;uploads/foo&quot;</span>&#x000A;<span class="ruby-identifier">filesystem</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-string">&quot;foo&quot;</span>)</pre>
 
@@ -73,9 +67,7 @@ namespaced under <code>Shrine::Storage</code>.</p>
 
 <h2 id="label-Shrine"><code>Shrine</code><span><a href="#label-Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>A <code>Shrine</code> object (also called an “uploader”) is essentially a
-wrapper around the <code>#upload</code> storage method. First the storage
-needs to be registered under a name:</p>
+<p>A <code>Shrine</code> object (also called an “uploader”) is essentially a wrapper around the <code>#upload</code> storage method. First the storage needs to be registered under a name:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:file_system</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads&quot;</span>)</pre>
 
@@ -83,8 +75,7 @@ needs to be registered under a name:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:file_system</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
 
-<p>The argument to <code>Shrine#upload</code> must be an IO-like object. The
-method does the following:</p>
+<p>The argument to <code>Shrine#upload</code> must be an IO-like object. The method does the following:</p>
 <ul><li>
 <p>generates a unique location</p>
 </li><li>
@@ -97,78 +88,39 @@ method does the following:</p>
 <p>creates a <code>Shrine::UploadedFile</code> from the data</p>
 </li></ul>
 
-<p><code>Shrine</code> class and subclasses are also used for loading plugins
-that extend all core classes. Each <code>Shrine</code> subclass has its own
-subclass of each of the core classes (<code>Shrine::UploadedFile</code>,
-<code>Shrine::Attacher</code>, and <code>Shrine::Attachment</code>), which
-makes it possible to have different <code>Shrine</code> subclasses with
-differently customized attachment logic. See <a
-href="https://shrinerb.com/rdoc/files/doc/creating_plugins_md.html">Creating
-a New Plugin</a> guide and the <a
-href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin
-system of Sequel and Roda</a> article for more details on the design of
-Shrine&#39;s plugin system.</p>
+<p><code>Shrine</code> class and subclasses are also used for loading plugins that extend all core classes. Each <code>Shrine</code> subclass has its own subclass of each of the core classes (<code>Shrine::UploadedFile</code>, <code>Shrine::Attacher</code>, and <code>Shrine::Attachment</code>), which makes it possible to have different <code>Shrine</code> subclasses with differently customized attachment logic. See <a href="/doc/creating_plugins.md#readme">Creating a New Plugin</a> guide and the <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin system of Sequel and Roda</a> article for more details on the design of Shrine&#39;s plugin system.</p>
 
 <h2 id="label-Shrine-3A-3AUploadedFile"><code>Shrine::UploadedFile</code><span><a href="#label-Shrine-3A-3AUploadedFile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><code>Shrine::UploadedFile</code> represents a file that was uploaded to a
-storage, and is the result of <code>Shrine#upload</code>. It is essentially
-a wrapper around a data hash containing information about the uploaded
-file.</p>
+<p><code>Shrine::UploadedFile</code> represents a file that was uploaded to a storage, and is the result of <code>Shrine#upload</code>. It is essentially a wrapper around a data hash containing information about the uploaded file.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>      <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">data</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;storage&quot;  =&gt; &quot;file_system&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;id&quot;       =&gt; &quot;9260ea09d8effd.pdf&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;metadata&quot; =&gt; {</span>&#x000A;<span class="ruby-comment">#     &quot;filename&quot;  =&gt; &quot;resume.pdf&quot;,</span>&#x000A;<span class="ruby-comment">#     &quot;mime_type&quot; =&gt; &quot;application/pdf&quot;,</span>&#x000A;<span class="ruby-comment">#     &quot;size&quot;      =&gt; 983294,</span>&#x000A;<span class="ruby-comment">#   },</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
-<p>The data hash contains the storage the file was uploaded to, the location,
-and some metadata: original filename, MIME type and filesize. The
-<code>Shrine::UploadedFile</code> object has handy methods which use this
-data:</p>
+<p>The data hash contains the storage the file was uploaded to, the location, and some metadata: original filename, MIME type and filesize. The <code>Shrine::UploadedFile</code> object has handy methods which use this data:</p>
 
 <pre class="ruby"><span class="ruby-comment"># metadata methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">size</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-comment"># storage methods</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">open</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="ruby-comment"># ...</span></pre>
 
-<p>A <code>Shrine::UploadedFile</code> is itself an IO-like object
-(representing the remote file), so it can be passed to
-<code>Shrine#upload</code> as well.</p>
+<p>A <code>Shrine::UploadedFile</code> is itself an IO-like object (representing the remote file), so it can be passed to <code>Shrine#upload</code> as well.</p>
 
 <h2 id="label-Shrine-3A-3AAttacher"><code>Shrine::Attacher</code><span><a href="#label-Shrine-3A-3AAttacher">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>We usually want to treat uploaded files as <em>attachments</em> to records,
-saving their data into a database column. This is the responsibility of
-<code>Shrine::Attacher</code>. A <code>Shrine::Attacher</code> uses
-<code>Shrine</code> uploaders and <code>Shrine::UploadedFile</code> objects
-internally.</p>
+<p>We usually want to treat uploaded files as <em>attachments</em> to records, saving their data into a database column. This is the responsibility of <code>Shrine::Attacher</code>. A <code>Shrine::Attacher</code> uses <code>Shrine</code> uploaders and <code>Shrine::UploadedFile</code> objects internally.</p>
 
-<p>The attaching process requires a temporary and a permanent storage to be
-registered (by default that&#39;s <code>:cache</code> and
-<code>:store</code>):</p>
+<p>The attaching process requires a temporary and a permanent storage to be registered (by default that&#39;s <code>:cache</code> and <code>:store</code>):</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads/cache&quot;</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads/store&quot;</span>),&#x000A;}</pre>
 
-<p>A <code>Shrine::Attacher</code> is instantiated with a model instance and
-an attachment name (an “image” attachment will be saved to
-<code>image_data</code> field):</p>
+<p>A <code>Shrine::Attacher</code> is instantiated with a model instance and an attachment name (an “image” attachment will be saved to <code>image_data</code> field):</p>
 
 <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">assign</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &quot;{\&quot;storage\&quot;:\&quot;cache\&quot;,\&quot;id\&quot;:\&quot;9260ea09d8effd.jpg\&quot;,\&quot;metadata\&quot;:{...}}&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">_promote</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">get</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">record</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &quot;{\&quot;storage\&quot;:\&quot;store\&quot;,\&quot;id\&quot;:\&quot;ksdf02lr9sf3la.jpg\&quot;,\&quot;metadata\&quot;:{...}}&quot;</span></pre>
 
-<p>Above a file is assigned by the attacher, which “caches” (uploads) the file
-to the temporary storage. The cached file is then “promoted” (uploaded) to
-permanent storage. Behind the scenes a cached
-<code>Shrine::UploadedFile</code> is given to <code>Shrine#upload</code>,
-which works because <code>Shrine::UploadedFile</code> is an IO-like object.
-After both caching and promoting the data hash of the uploaded file is
-assigned to the record&#39;s column as JSON.</p>
+<p>Above a file is assigned by the attacher, which “caches” (uploads) the file to the temporary storage. The cached file is then “promoted” (uploaded) to permanent storage. Behind the scenes a cached <code>Shrine::UploadedFile</code> is given to <code>Shrine#upload</code>, which works because <code>Shrine::UploadedFile</code> is an IO-like object. After both caching and promoting the data hash of the uploaded file is assigned to the record&#39;s column as JSON.</p>
 
-<p>For more details see <a
-href="https://shrinerb.com/rdoc/files/doc/attacher_md.html">Using
-Attacher</a>.</p>
+<p>For more details see <a href="/doc/attacher.md#readme">Using Attacher</a>.</p>
 
 <h2 id="label-Shrine-3A-3AAttachment"><code>Shrine::Attachment</code><span><a href="#label-Shrine-3A-3AAttachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p><code>Shrine::Attachment</code> is the highest level of abstraction. A
-<code>Shrine::Attachment</code> module exposes the
-<code>Shrine::Attacher</code> object through the model instance. The
-<code>Shrine::Attachment</code> class is a sublcass of <code>Module</code>,
-which means that an instance of <code>Shrine::Attachment</code> is a
-module:</p>
+<p><code>Shrine::Attachment</code> is the highest level of abstraction. A <code>Shrine::Attachment</code> module exposes the <code>Shrine::Attacher</code> object through the model instance. The <code>Shrine::Attachment</code> class is a sublcass of <code>Module</code>, which means that an instance of <code>Shrine::Attachment</code> is a module:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Module</span>) <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">instance_methods</span> <span class="ruby-comment">#=&gt; [:image=, :image, :image_url, :image_attacher]</span>&#x000A;&#x000A;<span class="ruby-comment"># equivalents</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span>[<span class="ruby-value">:image</span>]</pre>
 
@@ -178,15 +130,13 @@ module:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span> <span class="ruby-comment"># shorthand for `photo.image_attacher.assign(file)`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>        <span class="ruby-comment"># shorthand for `photo.image_attacher.get`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>    <span class="ruby-comment"># shorthand for `photo.image_attacher.url`</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span></pre>
 
-<p>When an ORM plugin is loaded, the <code>Shrine::Attachment</code> module
-also automatically:</p>
+<p>When an ORM plugin is loaded, the <code>Shrine::Attachment</code> module also automatically:</p>
 <ul><li>
 <p>syncs Shrine&#39;s validation errors with the record</p>
 </li><li>
 <p>triggers promoting after record is saved</p>
 </li><li>
-<p>deletes the uploaded file if attachment was replaced/removed or the record 
-destroyed</p>
+<p>deletes the uploaded file if attachment was replaced/removed or the record  destroyed</p>
 </li></ul>
 </div>
 <div id='context'>
