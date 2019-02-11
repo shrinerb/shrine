@@ -52,6 +52,7 @@ class Shrine
         end
 
         def perform
+          @tasks.close
           threads = @size.times.map { spawn_thread }
           threads.each(&:join)
         end
@@ -61,7 +62,7 @@ class Shrine
         def spawn_thread
           Thread.new do
             loop do
-              task = @tasks.deq(true) rescue break
+              task = @tasks.deq or break
               task.call
             end
           end
