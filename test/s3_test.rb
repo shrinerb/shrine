@@ -130,6 +130,25 @@ describe Shrine::Storage::S3 do
         @s3.upload(tempfile("content"), "foo")
         assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
       end
+
+      it "accepts custom upload options" do
+        @s3.upload(tempfile("content"), "foo", content_type: "foo/bar")
+        assert_equal "foo/bar", @s3.client.api_requests[0][:params][:content_type]
+      end
+
+      it "accepts custom content-disposition upload option" do
+        @s3.upload(tempfile("content"), "foo",
+          shrine_metadata: { "filename" => "file.txt" },
+          content_disposition: 'attachment; filename="other.jpg"')
+        assert_equal 'attachment; filename="other.jpg"', @s3.client.api_requests[0][:params][:content_disposition]
+      end
+
+      it "accepts content_disposition false option to disable default" do
+        @s3.upload(tempfile("content"), "foo",
+          shrine_metadata: { "filename" => "file.txt" },
+          content_disposition: false)
+        refute @s3.client.api_requests[0][:params].has_key?(:content_disposition)
+      end
     end
 
     describe "on filesystem file" do

@@ -110,7 +110,11 @@ class Shrine
         options.merge!(@upload_options)
         options.merge!(upload_options)
 
-        options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
+        if options[:content_disposition]
+          options[:content_disposition] = encode_content_disposition(options[:content_disposition])
+        else # may be `false` meaning don't send it
+          options.delete(:content_disposition)
+        end
 
         if copyable?(io)
           copy(io, id, **options)
