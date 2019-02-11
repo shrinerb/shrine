@@ -70,10 +70,10 @@ describe Shrine::Plugins::StoreDimensions do
   end
 
   it "overrides extract_metadata without changing method parameters" do
-    basic_uploader = uploader
+    extract_metadata          = @uploader.method(:extract_metadata)
+    original_extract_metadata = extract_metadata.super_method
 
-    assert_equal basic_uploader.method(:extract_metadata).parameters,
-      @uploader.method(:extract_metadata).parameters
+    assert_equal original_extract_metadata.parameters, extract_metadata.parameters
   end
 
   it "allows storing with custom extractor" do

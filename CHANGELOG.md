@@ -1,3 +1,7 @@
+## HEAD
+
+* Fix `store_dimensions` plugin making second argument in `Shrine#extract_metadata` mandatory (@jrochkind)
+
 ## 2.15.0 (2019-02-08)
 
 * Add `derivation_endpoint` plugin for processing uploaded files on-the-fly (@janko)
