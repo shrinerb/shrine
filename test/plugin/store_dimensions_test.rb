@@ -69,6 +69,13 @@ describe Shrine::Plugins::StoreDimensions do
     assert_equal 67,  uploaded_file.metadata["height"]
   end
 
+  it "overrides extract_metadata without changing method parameters" do
+    extract_metadata          = @uploader.method(:extract_metadata)
+    original_extract_metadata = extract_metadata.super_method
+
+    assert_equal original_extract_metadata.parameters, extract_metadata.parameters
+  end
+
   it "allows storing with custom extractor" do
     @shrine.plugin :store_dimensions, analyzer: ->(io){[5, 10]}
     assert_equal [5, 10], @shrine.extract_dimensions(fakeio)

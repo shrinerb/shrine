@@ -38,7 +38,7 @@ class Shrine
 
       module InstanceMethods
         # We update the metadata with "width" and "height".
-        def extract_metadata(io, context)
+        def extract_metadata(io, context = {})
           width, height = extract_dimensions(io)
 
           super.merge!("width" => width, "height" => height)
