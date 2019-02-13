@@ -1,7 +1,7 @@
 title: Shrine
 description: File Attachment toolkit for Ruby applications
 baseurl: ""
-url: shrinerb.com
+url: https://shrinerb.com
 markdown: kramdown
 destination: build
 plugins:
