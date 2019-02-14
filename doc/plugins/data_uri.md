@@ -1,7 +1,7 @@
 # Data URI
 
-The `data_uri` plugin enables you to upload files as [data URIs]. This plugin
-is useful for example when using [HTML5 Canvas].
+The [`data_uri`][data_uri] plugin enables you to upload files as [data URIs].
+This plugin is useful for example when using [HTML5 Canvas].
 
 ```rb
 plugin :data_uri
@@ -88,5 +88,6 @@ uploaded_file.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
 uploaded_file.base64   #=> "iVBORw0KGgoAAAANSUhEUgAAAAUA"
 ```
 
+[data_uri]: /lib/shrine/plugins/data_uri.rb
 [data URIs]: https://tools.ietf.org/html/rfc2397
 [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API

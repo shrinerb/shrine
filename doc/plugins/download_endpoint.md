@@ -1,9 +1,9 @@
 # Download Endpoint
 
-The `download_endpoint` plugin provides a Rack app for downloading uploaded
-files from specified storages. This can be useful when files from your storage
-isn't accessible over URL (e.g. database storages) or if you want to
-authenticate your downloads. It requires the [Roda] gem.
+The [`download_endpoint`][download_endpoint] plugin provides a Rack app for
+downloading uploaded files from specified storages. This can be useful when
+files from your storage isn't accessible over URL (e.g. database storages) or
+if you want to authenticate your downloads. It requires the [Roda] gem.
 
 ```rb
 # Gemfile
@@ -80,4 +80,5 @@ end
 If you want to have more control on download requests, you can use the
 `rack_response` plugin which this plugin uses internally.
 
+[download_endpoint]: /lib/shrine/plugins/download_endpoint.rb
 [Roda]: https://github.com/jeremyevans/roda

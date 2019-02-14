@@ -6,6 +6,9 @@ require "time"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/logging.md] on GitHub.
+    #
+    # [doc/plugins/logging.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/logging.md
     module Logging
       def self.load_dependencies(uploader, *)
         uploader.plugin :hooks

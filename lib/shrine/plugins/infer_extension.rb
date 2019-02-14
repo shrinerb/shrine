@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/infer_extension.md] on GitHub.
+    #
+    # [doc/plugins/infer_extension.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/infer_extension.md
     module InferExtension
       def self.configure(uploader, opts = {})
         uploader.opts[:infer_extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :mime_types))

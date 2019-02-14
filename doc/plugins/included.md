@@ -1,7 +1,8 @@
 # Included
 
-The `included` plugin allows you to hook up to the `.included` hook of the
-attachment module, and call additional methods on the model which includes it.
+The [`included`][included] plugin allows you to hook up to the `.included` hook
+of the attachment module, and call additional methods on the model which
+includes it.
 
 ```rb
 plugin :included do |name|
@@ -13,3 +14,5 @@ end
 
 If you want to define additional methods on the model, it's recommended to use
 the `module_include` plugin instead.
+
+[included]: /lib/shrine/plugins/included.rb

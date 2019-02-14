@@ -1,6 +1,6 @@
 # Copy
 
-The `copy` plugin allows copying attachment from one record to another.
+The [`copy`][copy] plugin allows copying attachment from one record to another.
 
 ```rb
 plugin :copy
@@ -20,3 +20,5 @@ duplicated_photo = photo.dup
 duplicated_photo.image #=> #<Shrine::UploadedFile>
 duplicated_photo.image != photo.image
 ```
+
+[copy]: /lib/shrine/plugins/copy.rb

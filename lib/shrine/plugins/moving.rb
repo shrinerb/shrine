@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/moving.md] on GitHub.
+    #
+    # [doc/plugins/moving.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/moving.md
     module Moving
       def self.configure(uploader, opts = {})
         uploader.opts[:moving_storages] = opts.fetch(:storages, uploader.opts[:moving_storages])

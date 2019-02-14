@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/dynamic_storage.md] on GitHub.
+    #
+    # [doc/plugins/dynamic_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/dynamic_storage.md
     module DynamicStorage
       def self.configure(uploader, options = {})
         uploader.opts[:dynamic_storages] ||= {}

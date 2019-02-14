@@ -1,7 +1,7 @@
 # Backup
 
-The `backup` plugin allows you to automatically back up stored files to an
-additional storage.
+The [`backup`][backup] plugin allows you to automatically back up stored files
+to an additional storage.
 
 ```rb
 storages[:backup_store] = Shrine::Storage::S3.new(options)
@@ -27,3 +27,5 @@ Note that when adding this plugin with already existing stored files, Shrine
 won't know whether a stored file is backed up or not, so attempting to delete
 the backup could result in an error. To avoid that you can set `delete: false`
 until you manually back up the existing stored files.
+
+[backup]: /lib/shrine/plugins/backup.rb

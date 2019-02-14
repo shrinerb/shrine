@@ -22,8 +22,8 @@ def process(io, context)
 end
 ```
 
-The `processing` plugin simplifies this by allowing us to declaratively define
-file processing for specified actions.
+The [`processing`][processing] plugin simplifies this by allowing us to
+declaratively define file processing for specified actions.
 
 ```rb
 plugin :processing
@@ -65,4 +65,5 @@ uploader.process(file, action: :store) # only process
 If you want the result of processing to be multiple files, use the `versions`
 plugin.
 
+[processing]: /lib/shrine/plugins/processing.rb
 [image_processing]: https://github.com/janko/image_processing

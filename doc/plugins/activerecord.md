@@ -1,7 +1,7 @@
 # Active Record
 
-The `activerecord` plugin extends the "attachment" interface with support for
-ActiveRecord.
+The [`activerecord`][activerecord] plugin extends the "attachment" interface
+with support for ActiveRecord.
 
 ```rb
 plugin :activerecord
@@ -89,4 +89,5 @@ model errors, you can disable it:
 plugin :activerecord, validations: false
 ```
 
+[activerecord]: /lib/shrine/plugins/activerecord.rb
 [bug with transaction callbacks]: https://github.com/rails/rails/issues/14493

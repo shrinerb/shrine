@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/default_url.md] on GitHub.
+    #
+    # [doc/plugins/default_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_url.md
     module DefaultUrl
       def self.configure(uploader, &block)
         if block

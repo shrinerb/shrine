@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/remove_invalid.md] on GitHub.
+    #
+    # [doc/plugins/remove_invalid.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_invalid.md
     module RemoveInvalid
       module AttacherMethods
         def validate

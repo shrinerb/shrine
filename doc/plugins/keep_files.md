@@ -1,8 +1,9 @@
 # Keep Files
 
-The `keep_files` plugin gives you the ability to prevent files from being
-deleted. This functionality is useful when implementing soft deletes, or when
-implementing some kind of [event store] where you need to track history.
+The [`keep_files`][keep_files] plugin gives you the ability to prevent files
+from being deleted. This functionality is useful when implementing soft
+deletes, or when implementing some kind of [event store] where you need to
+track history.
 
 The plugin accepts the following options:
 
@@ -17,4 +18,5 @@ For example, the following will keep destroyed and replaced files:
 plugin :keep_files, destroyed: true, replaced: true
 ```
 
+[keep_files]: /lib/shrine/plugins/keep_files.rb
 [event store]: http://docs.geteventstore.com/introduction/event-sourcing-basics/

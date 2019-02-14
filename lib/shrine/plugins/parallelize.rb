@@ -4,6 +4,9 @@ require "thread"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/parallelize.md] on GitHub.
+    #
+    # [doc/plugins/parallelize.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/parallelize.md
     module Parallelize
       def self.configure(uploader, opts = {})
         uploader.opts[:parallelize_threads] = opts.fetch(:threads, uploader.opts.fetch(:parallelize_threads, 3))

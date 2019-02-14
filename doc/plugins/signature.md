@@ -1,8 +1,8 @@
 # Signature
 
-The `signature` plugin provides the ability to calculate a hash from file
-content. This hash can be used as a checksum or just as a unique signature for
-the uploaded file.
+The [`signature`][signature] plugin provides the ability to calculate a hash
+from file content. This hash can be used as a checksum or just as a unique
+signature for the uploaded file.
 
 ```rb
 Shrine.plugin :signature
@@ -47,3 +47,5 @@ Shrine.calculate_signature(io, :sha256, format: :base64)
 ```
 
 The supported encoding formats are `hex` (default), `base64`, and `none`.
+
+[signature]: /lib/shrine/plugins/signature.rb

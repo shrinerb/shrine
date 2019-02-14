@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/determine_mime_type.md] on GitHub.
+    #
+    # [doc/plugins/determine_mime_type.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/determine_mime_type.md
     module DetermineMimeType
       def self.configure(uploader, opts = {})
         if opts[:analyzer] == :default

@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/backgrounding.md] on GitHub.
+    #
+    # [doc/plugins/backgrounding.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/backgrounding.md
     module Backgrounding
       module AttacherClassMethods
         # If block is passed in, stores it to be called on promotion. Otherwise

@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/upload_options.md] on GitHub.
+    #
+    # [doc/plugins/upload_options.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/upload_options.md
     module UploadOptions
       def self.configure(uploader, options = {})
         uploader.opts[:upload_options] ||= {}

@@ -4,6 +4,9 @@ Shrine.deprecation("The migration_helpers plugin is deprecated and will be remov
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/migration_helpers.md] on GitHub.
+    #
+    # [doc/plugins/migration_helpers.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/migration_helpers.md
     module MigrationHelpers
       def self.configure(uploader, delegate: false)
         uploader.opts[:migration_helpers_delegate] = delegate

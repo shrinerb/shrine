@@ -7,6 +7,9 @@ require "json"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/direct_upload.md] on GitHub.
+    #
+    # [doc/plugins/direct_upload.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/direct_upload.md
     module DirectUpload
       def self.load_dependencies(uploader, *)
         uploader.plugin :rack_file

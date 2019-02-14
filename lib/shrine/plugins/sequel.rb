@@ -4,6 +4,9 @@ require "sequel"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/sequel.md] on GitHub.
+    #
+    # [doc/plugins/sequel.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/sequel.md
     module Sequel
       def self.configure(uploader, opts = {})
         uploader.opts[:sequel_callbacks] = opts.fetch(:callbacks, uploader.opts.fetch(:sequel_callbacks, true))

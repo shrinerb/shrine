@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/parsed_json.md] on GitHub.
+    #
+    # [doc/plugins/parsed_json.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/parsed_json.md
     module ParsedJson
       module AttacherMethods
         def assign(value)

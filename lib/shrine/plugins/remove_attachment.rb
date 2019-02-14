@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/remove_attachment.md] on GitHub.
+    #
+    # [doc/plugins/remove_attachment.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_attachment.md
     module RemoveAttachment
       module AttachmentMethods
         def initialize(*)

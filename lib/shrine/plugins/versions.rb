@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/versions.md] on GitHub.
+    #
+    # [doc/plugins/versions.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/versions.md
     module Versions
       def self.load_dependencies(uploader, *)
         uploader.plugin :default_url

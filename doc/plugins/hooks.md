@@ -1,6 +1,6 @@
 # Hooks
 
-The `hooks` plugin allows you to trigger some code around
+The [`hooks`][hooks] plugin allows you to trigger some code around
 processing/storing/deleting of each file.
 
 ```rb
@@ -54,3 +54,5 @@ class ImageUploader < Shrine
   end
 end
 ```
+
+[hooks]: /lib/shrine/plugins/hooks.rb

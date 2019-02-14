@@ -1,7 +1,7 @@
 # Determine MIME Type
 
-The `determine_mime_type` plugin allows you to determine and store the actual
-MIME type of the file analyzed from file content.
+The [`determine_mime_type`][determine_mime_type] plugin allows you to determine
+and store the actual MIME type of the file analyzed from file content.
 
 ```rb
 plugin :determine_mime_type
@@ -54,6 +54,7 @@ Shrine.mime_type_analyzers[:file].call(io) # calls a built-in analyzer
 #=> "image/jpeg"
 ```
 
+[determine_mime_type]: /lib/shrine/plugins/determine_mime_type.rb
 [file]: http://linux.die.net/man/1/file
 [Windows equivalent]: http://gnuwin32.sourceforge.net/packages/file.htm
 [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic

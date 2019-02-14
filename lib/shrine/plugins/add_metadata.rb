@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/add_metadata.md] on GitHub.
+    #
+    # [doc/plugins/add_metadata.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/add_metadata.md
     module AddMetadata
       def self.configure(uploader)
         uploader.opts[:metadata] ||= []

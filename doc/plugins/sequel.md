@@ -1,6 +1,7 @@
 # Sequel
 
-The `sequel` plugin extends the "attachment" interface with support for Sequel.
+The [`sequel`][sequel] plugin extends the "attachment" interface with support
+for Sequel.
 
 ```rb
 plugin :sequel
@@ -62,3 +63,5 @@ errors, you can disable it:
 ```rb
 plugin :sequel, validations: false
 ```
+
+[sequel]: /lib/shrine/plugins/sequel.rb

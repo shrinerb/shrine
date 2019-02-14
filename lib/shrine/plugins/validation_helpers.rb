@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/validation_helpers.md] on GitHub.
+    #
+    # [doc/plugins/validation_helpers.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/validation_helpers.md
     module ValidationHelpers
       def self.configure(uploader, opts = {})
         uploader.opts[:validation_default_messages] ||= {}

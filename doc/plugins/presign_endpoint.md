@@ -1,10 +1,11 @@
 # Presign Endpoint
 
-The `presign_endpoint` plugin provides a Rack endpoint which generates the URL,
-fields, and headers that can be used to upload files directly to a storage
-service. On the client side it's recommended to use [Uppy] for asynchronous
-uploads. Storage services that support direct uploads include [Amazon S3],
-[Google Cloud Storage], [Microsoft Azure Storage] and more.
+The [`presign_endpoint`][presign_endpoint] plugin provides a Rack endpoint
+which generates the URL, fields, and headers that can be used to upload files
+directly to a storage service. On the client side it's recommended to use
+[Uppy] for asynchronous uploads. Storage services that support direct uploads
+include [Amazon S3], [Google Cloud Storage], [Microsoft Azure Storage] and
+more.
 
 ```rb
 plugin :presign_endpoint
@@ -126,6 +127,7 @@ You can override any of the options above when creating the endpoint:
 Shrine.presign_endpoint(:cache, presign_location: "${filename}")
 ```
 
+[presign_endpoint]: /lib/shrine/plugins/presign_endpoint.rb
 [Uppy]: https://uppy.io
 [Amazon S3]: https://aws.amazon.com/s3/
 [Google Cloud Storage]: https://cloud.google.com/storage/

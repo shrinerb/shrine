@@ -1,8 +1,8 @@
 # Upload Endpoint
 
-The `upload_endpoint` plugin provides a Rack endpoint which accepts file
-uploads and forwards them to specified storage. On the client side it's
-recommended to use [Uppy] for asynchronous uploads.
+The [`upload_endpoint`][upload_endpoint] plugin provides a Rack endpoint which
+accepts file uploads and forwards them to specified storage. On the client side
+it's recommended to use [Uppy] for asynchronous uploads.
 
 ```rb
 plugin :upload_endpoint
@@ -120,4 +120,5 @@ You can override any of the options above when creating the endpoint:
 Shrine.upload_endpoint(:cache, max_size: 20*1024*1024)
 ```
 
+[upload_endpoint]: /lib/shrine/plugins/upload_endpoint.rb
 [Uppy]: https://uppy.io

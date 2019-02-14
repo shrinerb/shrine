@@ -4,6 +4,9 @@ Shrine.deprecation("The multi_delete plugin is deprecated and will be removed in
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/multi_delete.md] on GitHub.
+    #
+    # [doc/plugins/multi_delete.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/multi_delete.md
     module MultiDelete
       module InstanceMethods
         private

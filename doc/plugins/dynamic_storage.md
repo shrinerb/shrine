@@ -1,7 +1,8 @@
 # Dynamic Storage
 
-The `dynamic_storage` plugin allows you to register a storage using a regex,
-and evaluate the storage class dynamically depending on the regex.
+The [`dynamic_storage`][dynamic_storage] plugin allows you to register a
+storage using a regex, and evaluate the storage class dynamically depending on
+the regex.
 
 Example:
 
@@ -18,3 +19,5 @@ name suffix. For example, `:store_foo` will use S3 storage which saves files to
 the bucket "foo". The block is yielded an instance of `MatchData`.
 
 This can be useful in combination with the `default_storage` plugin.
+
+[dynamic_storage]: /lib/shrine/plugins/dynamic_storage.rb

@@ -4,6 +4,9 @@ require "roda"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/download_endpoint.md] on GitHub.
+    #
+    # [doc/plugins/download_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/download_endpoint.md
     module DownloadEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response

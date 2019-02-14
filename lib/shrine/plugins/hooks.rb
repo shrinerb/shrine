@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/hooks.md] on GitHub.
+    #
+    # [doc/plugins/hooks.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/hooks.md
     module Hooks
       module InstanceMethods
         def upload(io, context = {})

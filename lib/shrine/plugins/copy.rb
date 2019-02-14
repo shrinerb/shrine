@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/copy.md] on GitHub.
+    #
+    # [doc/plugins/copy.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/copy.md
     module Copy
       module AttachmentMethods
         def initialize(*)

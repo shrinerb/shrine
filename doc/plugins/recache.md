@@ -1,10 +1,10 @@
 # Re-cache
 
-The `recache` plugin allows you to process your attachment after validations
-succeed, but before the attachment is promoted. This is useful for example when
-you want to generate some versions upfront (so the user immediately sees them)
-and other versions you want to generate in the promotion phase in a background
-job.
+The [`recache`][recache] plugin allows you to process your attachment after
+validations succeed, but before the attachment is promoted. This is useful for
+example when you want to generate some versions upfront (so the user
+immediately sees them) and other versions you want to generate in the promotion
+phase in a background job.
 
 ```rb
 plugin :recache
@@ -25,3 +25,5 @@ you're using the attacher directly, you can call it manually:
 ```rb
 attacher.recache if attacher.changed?
 ```
+
+[recache]: /lib/shrine/plugins/recache.rb

@@ -1,7 +1,7 @@
 # Migration Helpers
 
-The migration_helpers plugin gives the attacher additional helper methods which
-are convenient when doing file migrations.
+The [`migration_helpers`][migration_helpers] plugin gives the attacher
+additional helper methods which are convenient when doing file migrations.
 
 The plugin also allows convenient delegating to these methods through the
 model, by setting `:delegate`:
@@ -56,3 +56,5 @@ user.avatar_attacher.store #=> #<Shrine @storage_key=:store @storage=#<Shrine::S
 user.avatar_cache
 user.avatar_store
 ```
+
+[migration_helpers]: /lib/shrine/plugins/migration_helpers.rb

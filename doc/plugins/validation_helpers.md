@@ -1,7 +1,7 @@
 # Validation Helpers
 
-The `validation_helpers` plugin provides helper methods for validating attached
-files based on extracted metadata.
+The [`validation_helpers`][validation_helpers] plugin provides helper methods
+for validating attached files based on extracted metadata.
 
 ```rb
 plugin :validation_helpers
@@ -127,3 +127,5 @@ Attacher.validate do
   validate_mime_type_inclusion %w[image/jpeg image/png image/gif], message: "must be JPEG, PNG or GIF"
 end
 ```
+
+[validation_helpers]: /lib/shrine/plugins/validation_helpers.rb

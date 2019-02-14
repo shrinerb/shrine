@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/backup.md] on GitHub.
+    #
+    # [doc/plugins/backup.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/backup.md
     module Backup
       def self.configure(uploader, opts = {})
         uploader.opts[:backup_storage] = opts.fetch(:storage, uploader.opts[:backup_storage])

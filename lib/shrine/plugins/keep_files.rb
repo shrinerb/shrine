@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/keep_files.md] on GitHub.
+    #
+    # [doc/plugins/keep_files.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/keep_files.md
     module KeepFiles
       def self.configure(uploader, opts = {})
         keep_files = (uploader.opts[:keep_files] ||= [])

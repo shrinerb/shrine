@@ -1,7 +1,7 @@
 # Rack File
 
-The `rack_file` plugin enables uploaders to accept Rack uploaded file hashes
-for uploading.
+The [`rack_file`][rack_file] plugin enables uploaders to accept Rack uploaded
+file hashes for uploading.
 
 ```rb
 plugin :rack_file
@@ -47,3 +47,5 @@ io.size              #=> 58342
 Note that this plugin is not needed in Rails applications, as Rails already
 wraps the Rack uploaded file hash into an `ActionDispatch::Http::UploadedFile`
 object.
+
+[rack_file]: /lib/shrine/plugins/rack_file.rb

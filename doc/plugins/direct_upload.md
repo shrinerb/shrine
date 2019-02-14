@@ -3,8 +3,9 @@
 *[OBSOLETE] This plugin is obsolete, you should use `upload_endpoint` or
 `presign_endpoint` plugins instead.*
 
-The `direct_upload` plugin provides a Rack endpoint which can be used for
-uploading individual files asynchronously. It requires the [Roda] gem.
+The [`direct_upload`][direct_upload] plugin provides a Rack endpoint which can
+be used for uploading individual files asynchronously. It requires the [Roda]
+gem.
 
 ```rb
 plugin :direct_upload
@@ -164,6 +165,7 @@ Shrine::UploadEndpoint.use ShrineUploadMiddleware
 Upon subclassing uploader the upload endpoint is also subclassed. You can also
 call the plugin again in an uploader subclass to change its configuration.
 
+[direct_upload]: /lib/shrine/plugins/direct_upload.rb
 [Roda]: https://github.com/jeremyevans/roda
 [Uppy]: https://uppy.io
 [Roda request]: http://roda.jeremyevans.net/rdoc/classes/Roda/RodaPlugins/Base/RequestMethods.html

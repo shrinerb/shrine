@@ -1,9 +1,9 @@
 # Backgrounding
 
-The `backgrounding` plugin enables you to move promoting and deleting of files
-from record's lifecycle into background jobs. This is especially useful if
-you're doing processing and/or you're storing files on an external storage
-service.
+The [`backgrounding`][backgrounding] plugin enables you to move promoting and
+deleting of files from record's lifecycle into background jobs. This is
+especially useful if you're doing processing and/or you're storing files on an
+external storage service.
 
 The plugin provides `Attacher.promote` and `Attacher.delete` methods, which
 allow you to hook up to promoting and deleting and spawn background jobs, by
@@ -146,3 +146,5 @@ class SomethingJob
   end
 end
 ```
+
+[backgrounding]: /lib/shrine/plugins/backgrounding.rb

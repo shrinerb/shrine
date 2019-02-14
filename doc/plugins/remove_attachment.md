@@ -1,7 +1,7 @@
 # Remove Attachment
 
-The `remove_attachment` plugin allows you to delete attachments through
-checkboxes on the web form.
+The [`remove_attachment`][remove_attachment] plugin allows you to delete
+attachments through checkboxes on the web form.
 
 ```rb
 plugin :remove_attachment
@@ -14,3 +14,5 @@ to add a form field for removing attachments:
 ```rb
 form.check_box :remove_avatar
 ```
+
+[remove_attachment]: /lib/shrine/plugins/remove_attachment.rb

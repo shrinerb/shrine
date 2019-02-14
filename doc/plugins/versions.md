@@ -1,7 +1,7 @@
 # Versions
 
-The `versions` plugin enables your uploader to deal with versions, by allowing
-you to return a Hash of files when processing.
+The [`versions`][versions] plugin enables your uploader to deal with versions,
+by allowing you to return a Hash of files when processing.
 
 ```rb
 plugin :versions
@@ -175,5 +175,6 @@ end
 If you want to re-create a single or all versions, refer to the [reprocessing
 versions] guide for details.
 
+[versions]: /lib/shrine/plugins/versions.rb
 [reprocessing versions]: /doc/regenerating_versions.md#readme
 [image_processing]: https://github.com/janko/image_processing

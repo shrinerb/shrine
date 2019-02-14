@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/processing.md] on GitHub.
+    #
+    # [doc/plugins/processing.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/processing.md
     module Processing
       def self.configure(uploader)
         uploader.opts[:processing] ||= {}

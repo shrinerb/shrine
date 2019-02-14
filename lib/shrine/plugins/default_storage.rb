@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/default_storage.md] on GitHub.
+    #
+    # [doc/plugins/default_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_storage.md
     module DefaultStorage
       def self.configure(uploader, opts = {})
         uploader.opts[:default_storage_cache] = opts.fetch(:cache, uploader.opts[:default_storage_cache])

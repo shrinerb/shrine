@@ -6,6 +6,9 @@ require "json"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/presign_endpoint.md] on GitHub.
+    #
+    # [doc/plugins/presign_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/presign_endpoint.md
     module PresignEndpoint
       def self.configure(uploader, opts = {})
         uploader.opts[:presign_endpoint_presign_location] = opts.fetch(:presign_location, uploader.opts[:presign_endpoint_presign_location])

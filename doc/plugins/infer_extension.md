@@ -1,9 +1,9 @@
 # Infer Extension
 
-The `infer_extension` plugin allows deducing the appropriate file extension for
-the upload location based on the MIME type of the file. This is useful when
-using `data_uri` and `remote_url` plugins, where the file extension might not
-be known.
+The [`infer_extension`][infer_extension] plugin allows deducing the appropriate
+file extension for the upload location based on the MIME type of the file. This
+is useful when using `data_uri` and `remote_url` plugins, where the file
+extension might not be known.
 
 ```rb
 plugin :infer_extension
@@ -53,5 +53,6 @@ Shrine.extension_inferrers[:mime_types].call("image/jpeg")
 # => ".jpeg"
 ```
 
+[infer_extension]: /lib/shrine/plugins/infer_extension.rb
 [mime-types]: https://github.com/mime-types/ruby-mime-types
 [mini_mime]: https://github.com/discourse/mini_mime

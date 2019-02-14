@@ -1,7 +1,8 @@
 # Default Storage
 
-The `default_storage` plugin enables you to change which storages are going to
-be used for this uploader's attacher (the default is `:cache` and `:store`).
+The [`default_storage`][default_storage] plugin enables you to change which
+storages are going to be used for this uploader's attacher (the default is
+`:cache` and `:store`).
 
 ```rb
 plugin :default_storage, cache: :special_cache, store: :special_store
@@ -14,3 +15,5 @@ and the name of the attachment. This is useful if you're using the
 ```rb
 plugin :default_storage, store: ->(record, name) { :"store_#{record.username}" }
 ```
+
+[default_storage]: /lib/shrine/plugins/default_storage.rb

@@ -5,6 +5,8 @@ require "json"
 
 class Shrine
   module Plugins
+    # This is an internal plugin used by download_endpoint and
+    # derivation_endpoint plugins.
     module UrlsafeSerialization
       module ClassMethods
         def urlsafe_serialize(hash)

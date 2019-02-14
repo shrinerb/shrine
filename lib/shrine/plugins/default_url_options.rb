@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/default_url_options.md] on GitHub.
+    #
+    # [doc/plugins/default_url_options.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_url_options.md
     module DefaultUrlOptions
       def self.configure(uploader, options = {})
         uploader.opts[:default_url_options] ||= {}

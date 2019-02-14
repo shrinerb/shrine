@@ -5,6 +5,9 @@ require "content_disposition"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/rack_response.md] on GitHub.
+    #
+    # [doc/plugins/rack_response.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/rack_response.md
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.

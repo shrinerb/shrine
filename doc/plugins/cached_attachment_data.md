@@ -1,8 +1,8 @@
 # Cached Attachment Data
 
-The `cached_attachment_data` plugin adds the ability to retain the cached file
-across form redisplays, which means the file doesn't have to be reuploaded in
-case of validation errors.
+The [`cached_attachment_data`][cached_attachment_data] plugin adds the ability
+to retain the cached file across form redisplays, which means the file doesn't
+have to be reuploaded in case of validation errors.
 
 ```rb
 plugin :cached_attachment_data
@@ -21,3 +21,5 @@ This method delegates to `Attacher#read_cached`:
 ```rb
 attacher.read_cached #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
 ```
+
+[cached_attachment_data]: /lib/shrine/plugins/cached_attachment_data.rb

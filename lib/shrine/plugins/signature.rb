@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/signature.md] on GitHub.
+    #
+    # [doc/plugins/signature.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/signature.md
     module Signature
       module ClassMethods
         # Calculates `algorithm` hash of the contents of the IO object, and

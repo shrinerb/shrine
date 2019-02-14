@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/restore_cached_data.md] on GitHub.
+    #
+    # [doc/plugins/restore_cached_data.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/restore_cached_data.md
     module RestoreCachedData
       def self.load_dependencies(uploader, *)
         uploader.plugin :refresh_metadata

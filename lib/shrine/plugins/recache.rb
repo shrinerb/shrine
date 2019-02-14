@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/recache.md] on GitHub.
+    #
+    # [doc/plugins/recache.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/recache.md
     module Recache
       module AttacherMethods
         def save

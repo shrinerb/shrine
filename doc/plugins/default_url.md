@@ -1,7 +1,7 @@
 # Default URL
 
-The `default_url` plugin allows setting the URL which will be returned when the
-attachment is missing.
+The [`default_url`][default_url] plugin allows setting the URL which will be
+returned when the attachment is missing.
 
 ```rb
 plugin :default_url
@@ -31,3 +31,5 @@ Attacher.default_url do |options|
   record #=> #<User>
 end
 ```
+
+[default_url]: /lib/shrine/plugins/default_url.rb

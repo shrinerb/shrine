@@ -1,7 +1,7 @@
 # Refresh Metadata
 
-The `refresh_metadata` plugin allows you to re-extract metadata from an
-uploaded file.
+The [`refresh_metadata`][refresh_metadata] plugin allows you to re-extract
+metadata from an uploaded file.
 
 ```rb
 plugin :refresh_metadata
@@ -29,3 +29,5 @@ uploaded_file.open do
   # ...
 end
 ```
+
+[refresh_metadata]: /lib/shrine/plugins/refresh_metadata.rb

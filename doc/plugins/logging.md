@@ -1,6 +1,7 @@
 # Logging
 
-The `logging` plugin logs any storing/processing/deleting that is performed.
+The [`logging`][logging] plugin logs any storing/processing/deleting that is
+performed.
 
 ```rb
 plugin :logging
@@ -37,3 +38,5 @@ plugin :logging, format: :logfmt
 
 Logging is by default disabled in tests, but you can enable it by setting
 `Shrine.logger.level = Logger::INFO`.
+
+[logging]: /lib/shrine/plugins/logging.rb

@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/metadata_attributes.md] on GitHub.
+    #
+    # [doc/plugins/metadata_attributes.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/metadata_attributes.md
     module MetadataAttributes
       def self.configure(uploader, mappings = {})
         uploader.opts[:metadata_attributes_mappings] ||= {}

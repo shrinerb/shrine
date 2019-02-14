@@ -1,8 +1,9 @@
 # Derivation Endpoint
 
-The `derivation_endpoint` plugin provides a Rack app for dynamically processing
-uploaded files on request. This allows you to create URLs to files that might
-not have been generated yet, and have the endpoint process them on-the-fly.
+The [`derivation_endpoint`][derivation_endpoint] plugin provides a Rack app for
+dynamically processing uploaded files on request. This allows you to create
+URLs to files that might not have been generated yet, and have the endpoint
+process them on-the-fly.
 
 ## Quick start
 
@@ -741,6 +742,7 @@ derivation.option(:upload_location)
 | `:upload_storage`              | Storage to which the derivations will be uploaded                                                                                     | same storage as the source file                      |
 | `:version`                     | Version number to append to the URL for cache busting                                                                                 | `nil`                                                |
 
+[derivation_endpoint]: /lib/shrine/plugins/derivation_endpoint.rb
 [ImageProcessing]: https://github.com/janko/image_processing
 [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
 [`Content-Disposition`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition

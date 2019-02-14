@@ -1,7 +1,7 @@
 # Pretty Location
 
-The `pretty_location` plugin attempts to generate a nicer folder structure for
-uploaded files.
+The [`pretty_location`][pretty_location] plugin attempts to generate a nicer
+folder structure for uploaded files.
 
 ```rb
 plugin :pretty_location
@@ -27,3 +27,5 @@ plugin :pretty_location, namespace: "_"
 plugin :pretty_location, namespace: "/"
 # "blog/user/.../493g82jf23.jpg"
 ```
+
+[pretty_location]: /lib/shrine/plugins/pretty_location.rb

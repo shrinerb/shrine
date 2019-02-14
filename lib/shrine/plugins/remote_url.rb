@@ -4,6 +4,9 @@ require "down"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/remote_url.md] on GitHub.
+    #
+    # [doc/plugins/remote_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remote_url.md
     module RemoteUrl
       def self.configure(uploader, opts = {})
         raise Error, "The :max_size option is required for remote_url plugin" if !opts.key?(:max_size) && !uploader.opts.key?(:remote_url_max_size)

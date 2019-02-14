@@ -1,8 +1,8 @@
 # Delete Raw
 
-The `delete_raw` plugin will automatically delete raw files that have been
-uploaded. This is especially useful when doing processing, to ensure that
-temporary files have been deleted after upload.
+The [`delete_raw`][delete_raw] plugin will automatically delete raw files that
+have been uploaded. This is especially useful when doing processing, to ensure
+that temporary files have been deleted after upload.
 
 ```rb
 plugin :delete_raw
@@ -14,3 +14,5 @@ this only to files uploaded to certain storages:
 ```rb
 plugin :delete_raw, storages: [:store]
 ```
+
+[delete_raw]: /lib/shrine/plugins/delete_raw.rb

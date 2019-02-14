@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/store_dimensions.md] on GitHub.
+    #
+    # [doc/plugins/store_dimensions.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/store_dimensions.md
     module StoreDimensions
       def self.configure(uploader, opts = {})
         uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))

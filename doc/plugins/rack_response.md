@@ -1,8 +1,8 @@
 # Rack Response
 
-The `rack_response` plugin allows you to convert an `UploadedFile` object into
-a triple consisting of status, headers, and body, suitable for returning as a
-response in a Rack-based application.
+The [`rack_response`][rack_response] plugin allows you to convert an
+`UploadedFile` object into a triple consisting of status, headers, and body,
+suitable for returning as a response in a Rack-based application.
 
 ```rb
 plugin :rack_response
@@ -92,5 +92,6 @@ headers["Content-Range"]  #=> "bytes 100-200/1000"
 body                      # partial content
 ```
 
+[rack_response]: /lib/shrine/plugins/rack_response.rb
 [range requests]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
 [Rack::Sendfile]: https://www.rubydoc.info/github/rack/rack/Rack/Sendfile

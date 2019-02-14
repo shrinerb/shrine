@@ -8,6 +8,9 @@ require "tempfile"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/derivation_endpoint.md] on GitHub.
+    #
+    # [doc/plugins/derivation_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/derivation_endpoint.md
     module DerivationEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response

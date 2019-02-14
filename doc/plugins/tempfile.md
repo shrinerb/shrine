@@ -1,7 +1,7 @@
 # Tempfile
 
-The `tempfile` plugin makes it easier to reuse a single copy of an uploaded
-file on disk.
+The [`tempfile`][tempfile] plugin makes it easier to reuse a single copy of an
+uploaded file on disk.
 
 ```rb
 Shrine.plugin :tempfile
@@ -38,3 +38,5 @@ This plugin also modifies `Shrine.with_file` to call `UploadedFile#tempfile`
 when the given IO object is an open `UploadedFile`. Since `Shrine.with_file` is
 typically called on the `Shrine` class directly, it's recommended to load this
 plugin globally.
+
+[tempfile]: /lib/shrine/plugins/tempfile.rb

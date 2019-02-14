@@ -1,7 +1,8 @@
 # Store Dimensions
 
-The `store_dimensions` plugin extracts dimensions of uploaded images and stores
-them into the metadata hash (by default it uses the [fastimage] gem).
+The [`store_dimensions`][store_dimensions] plugin extracts dimensions of
+uploaded images and stores them into the metadata hash (by default it uses the
+[fastimage] gem).
 
 ```rb
 plugin :store_dimensions
@@ -63,6 +64,7 @@ Shrine.dimensions_analyzers[:fastimage].call(io) # calls a built-in analyzer
 #=> [300, 400]
 ```
 
+[store_dimensions]: /lib/shrine/plugins/store_dimensions.rb
 [fastimage]: https://github.com/sdsykes/fastimage
 [mini_magick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips

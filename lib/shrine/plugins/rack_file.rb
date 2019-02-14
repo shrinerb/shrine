@@ -4,6 +4,9 @@ require "forwardable"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/rack_file.md] on GitHub.
+    #
+    # [doc/plugins/rack_file.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/rack_file.md
     module RackFile
       module ClassMethods
         # Accepts a Rack uploaded file hash and wraps it in an IO object.

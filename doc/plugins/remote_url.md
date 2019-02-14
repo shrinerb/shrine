@@ -1,6 +1,7 @@
 # Remote URL
 
-The `remote_url` plugin allows you to attach files from a remote location.
+The [`remote_url`][remote_url] plugin allows you to attach files from a remote
+location.
 
 ```rb
 plugin :remote_url, max_size: 20*1024*1024
@@ -100,5 +101,6 @@ load the `infer_extension` plugin to infer it from the MIME type.
 plugin :infer_extension
 ```
 
+[remote_url]: /lib/shrine/plugins/remote_url.rb
 [Down]: https://github.com/janko/down
 [shrine-url]: https://github.com/shrinerb/shrine-url

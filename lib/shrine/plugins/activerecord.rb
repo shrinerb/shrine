@@ -4,6 +4,9 @@ require "active_record"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/activerecord.md] on GitHub.
+    #
+    # [doc/plugins/activerecord.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/activerecord.md
     module Activerecord
       def self.configure(uploader, opts = {})
         uploader.opts[:activerecord_callbacks] = opts.fetch(:callbacks, uploader.opts.fetch(:activerecord_callbacks, true))

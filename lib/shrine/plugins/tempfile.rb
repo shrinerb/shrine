@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/tempfile.md] on GitHub.
+    #
+    # [doc/plugins/tempfile.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/tempfile.md
     module Tempfile
       module ClassMethods
         def with_file(io)
