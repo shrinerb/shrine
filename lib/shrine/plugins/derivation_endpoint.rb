@@ -611,16 +611,16 @@ class Shrine
 
     # Downloads the source uploaded file from the storage.
     def download_source
-      download_args = download_options.any? ? [download_options] : []
-      downloaded    = false
-
-      source.download(*download_args) do |file|
-        downloaded = true
-        yield file
+      begin
+        file = source.download(**download_options)
+      rescue *download_errors
+        raise if downloaded # re-raise if the error didn't happen on download
+        raise Derivation::SourceNotFound, "source file \"#{source.id}\" was not found on storage :#{source.storage_key}"
       end
-    rescue *download_errors
-      raise if downloaded # re-raise if the error didn't happen on download
-      raise Derivation::SourceNotFound, "source file \"#{source.id}\" was not found on storage :#{source.storage_key}"
+
+      yield file
+    ensure
+      file.close! if file
     end
 
     def derivation_block

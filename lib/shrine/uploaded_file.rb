@@ -91,9 +91,9 @@ class Shrine
       #     # or
       #
       #     uploaded_file.open { |io| io.read } # the IO is automatically closed
-      def open(*args)
+      def open(**options)
         @io.close if @io
-        @io = storage.open(id, *args)
+        @io = _open(**options)
 
         return @io unless block_given?
 
@@ -120,9 +120,9 @@ class Shrine
       #     # or
       #
       #     uploaded_file.download { |tempfile| tempfile.read } # tempfile is deleted
-      def download(*args)
+      def download(**options)
         tempfile = Tempfile.new(["shrine", ".#{extension}"], binmode: true)
-        stream(tempfile, *args)
+        stream(tempfile, **options)
         tempfile.open
 
         block_given? ? yield(tempfile) : tempfile
@@ -141,12 +141,12 @@ class Shrine
       #     uploaded_file.stream(StringIO.new)
       #     # or
       #     uploaded_file.stream("/path/to/destination")
-      def stream(destination, *args)
+      def stream(destination, **options)
         if opened?
           IO.copy_stream(io, destination)
           io.rewind
         else
-          open(*args) { |io| IO.copy_stream(io, destination) }
+          open(**options) { |io| IO.copy_stream(io, destination) }
         end
       end
 
@@ -251,7 +251,15 @@ class Shrine
       # Returns an opened IO object for the uploaded file by calling `#open`
       # on the storage.
       def io
-        @io || open
+        @io ||= _open
+      end
+
+      def _open(**options)
+        if options.any?
+          storage.open(id, **options)
+        else
+          storage.open(id) # some storage implementations might not accept additional arguments
+        end
       end
     end
   end
