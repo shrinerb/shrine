@@ -56,7 +56,7 @@ class Shrine
           headers = {}
           headers["Content-Length"]      = length.to_s if length
           headers["Content-Type"]        = type
-          headers["Content-Disposition"] = content_disposition(disposition: disposition, filename: filename)
+          headers["Content-Disposition"] = content_disposition(disposition, filename)
           headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{file.size}" if range
           headers["Accept-Ranges"]       = "bytes" unless range == false
 
@@ -74,13 +74,13 @@ class Shrine
           if Rack.release >= "2.0"
             ranges = Rack::Utils.get_byte_ranges(range_header, file.size)
           else
-            ranges = Rack::Utils.byte_ranges({"HTTP_RANGE" => range_header}, file.size)
+            ranges = Rack::Utils.byte_ranges({ "HTTP_RANGE" => range_header }, file.size)
           end
 
           ranges.first if ranges && ranges.one?
         end
 
-        def content_disposition(disposition:, filename:)
+        def content_disposition(disposition, filename)
           ContentDisposition.format(disposition: disposition, filename: filename)
         end
       end
