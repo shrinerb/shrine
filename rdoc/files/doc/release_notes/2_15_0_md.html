@@ -30,7 +30,7 @@ doc/release_notes/2.15.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-08 22:33:33 +0100</span>
+<span class='datetime'>2019-02-08 22:37:52 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,7 +38,7 @@ Last Update:
 <div id='description'>
 <h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
-<p>The <a href="/doc/plugins/derivation_endpoint.md">derivation_endpoint</a> plugin has been added, which  provides on-the-fly processing functionality, similar to what Dragonfly,  Refile, and Active Storage provide. It&#39;s suitable for fast transformations,  such as generating image thumbnails or document previews.</p>
+<p>The <a href="/doc/plugins/derivation_endpoint.md#readme">derivation_endpoint</a> plugin has been added, which  provides on-the-fly processing functionality, similar to what Dragonfly,  Refile, and Active Storage provide. It&#39;s suitable for fast transformations,  such as generating image thumbnails or document previews.</p>
 </li></ul>
 
 <p>Rather than encoding processing steps in the URL (like Dragonfly and Active  Storage do), with <code>derivation_endpoint</code> you generate URLs to named  “derivation” blocks, passing any arguments you need for the processing.</p>
@@ -59,7 +59,7 @@ Last Update:
 
 <p><code>rb   plugin :derivation_endpoint, secret_key: &quot;&lt;YOUR SECRET KEY&gt;&quot; </code></p>
 
-<p>The <code>derivation_endpoint</code> plugin is highly configurable, you can set a <a href="/doc/plugins/derivation_endpoint.md#host">CDN host</a>, change response headers of derivatives (<a href="/doc/plugins/derivation_endpoint.md#content-type">Content-Type</a>,  <a href="/doc/plugins/derivation_endpoint.md#content-disposition">Content-Disposition</a>), add <a href="/doc/plugins/derivation_endpoint.md#expiration">URL expiration</a>, <a href="/doc/plugins/derivation_endpoint.md#uploading">cache</a>  generated derivatives to a <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storage and more. Check out the  [documentation] for more details.</p>
+<p>The <code>derivation_endpoint</code> plugin is highly configurable, you can set a <a href="/doc/plugins/derivation_endpoint.md#host">CDN host</a>, change response headers of derivatives (<a href="/doc/plugins/derivation_endpoint.md#content-type">Content-Type</a>,  <a href="/doc/plugins/derivation_endpoint.md#content-disposition">Content-Disposition</a>), add <a href="/doc/plugins/derivation_endpoint.md#expiration">URL expiration</a>, <a href="/doc/plugins/derivation_endpoint.md#uploading">cache</a>  generated derivatives to a <a href="../../../classes/Shrine.html"><code>Shrine</code></a> storage and more. Check out the  <a href="/doc/plugins/derivation_endpoint.md#readme">documentation</a> for more details.</p>
 
 <h2 id="label-Other+improvements">Other improvements<span><a href="#label-Other+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>

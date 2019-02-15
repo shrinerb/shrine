@@ -358,7 +358,7 @@ th {
 
 html {
   font-size: 10px;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 
 body {
   padding-bottom: 1em;
@@ -471,9 +471,9 @@ label {
     margin-bottom: 0; } }
 @media (min-width: 768px) {
   .core-guides .col:nth-child(1) {
-    width: 33.33333%; }
+    width: 33.3333333333%; }
   .core-guides .col:nth-child(2) {
-    width: 66.66667%; }
+    width: 66.6666666667%; }
     .core-guides .col:nth-child(2) ul {
       -webkit-columns: 10em 2;
       -moz-columns: 10em 2;

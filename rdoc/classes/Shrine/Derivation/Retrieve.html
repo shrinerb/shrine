@@ -60,12 +60,14 @@ Superclass:
 </div>
 <div class='description'>
 
+<p>Returns a <a href="../UploadedFile.html"><code>Shrine::UploadedFile</code></a> object pointing to the uploaded derivation result it exists on the storage.</p>
+
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">580</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>&#x000A;<span class="line-num">581</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">upload_location</span>)&#x000A;<span class="line-num">582</span>     <span class="ruby-identifier">shrine_class</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(&#x000A;<span class="line-num">583</span>       <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">upload_storage</span>.<span class="ruby-identifier">to_s</span>,&#x000A;<span class="line-num">584</span>       <span class="ruby-string">&quot;id&quot;</span>      <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">upload_location</span>,&#x000A;<span class="line-num">585</span>     )&#x000A;<span class="line-num">586</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">587</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">661</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>&#x000A;<span class="line-num">662</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-identifier">upload_location</span>)&#x000A;<span class="line-num">663</span>     <span class="ruby-identifier">shrine_class</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(&#x000A;<span class="line-num">664</span>       <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">upload_storage</span>.<span class="ruby-identifier">to_s</span>,&#x000A;<span class="line-num">665</span>       <span class="ruby-string">&quot;id&quot;</span>      <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">upload_location</span>,&#x000A;<span class="line-num">666</span>     )&#x000A;<span class="line-num">667</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">668</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

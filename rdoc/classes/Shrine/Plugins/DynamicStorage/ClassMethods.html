@@ -63,7 +63,7 @@ Shrine::Plugins::DynamicStorage::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-dynamic_storages-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-dynamic_storages-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dynamic_storages</span>&#x000A;<span class="line-num">12</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storages</span>]&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-dynamic_storages-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">dynamic_storages</span>&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storages</span>]&#x000A;<span class="line-num">16</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-find_storage'>
@@ -80,7 +80,7 @@ Shrine::Plugins::DynamicStorage::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-find_storage-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-find_storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">find_storage</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">20</span>   <span class="ruby-identifier">resolve_dynamic_storage</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">or</span> <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-find_storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">22</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">find_storage</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">23</span>   <span class="ruby-identifier">resolve_dynamic_storage</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">or</span> <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-storage'>
@@ -97,7 +97,7 @@ Shrine::Plugins::DynamicStorage::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-storage-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">dynamic_storages</span>[<span class="ruby-identifier">regex</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">storage</span>(<span class="ruby-identifier">regex</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">19</span>   <span class="ruby-identifier">dynamic_storages</span>[<span class="ruby-identifier">regex</span>] = <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

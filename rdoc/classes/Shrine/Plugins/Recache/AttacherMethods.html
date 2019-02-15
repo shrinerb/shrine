@@ -62,7 +62,7 @@ Shrine::Plugins::Recache::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-recache-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-recache-source'>   <span class="ruby-comment"># File lib/shrine/plugins/recache.rb</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">recache</span>&#x000A;<span class="line-num">13</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span>&#x000A;<span class="line-num">14</span>     <span class="ruby-identifier">recached</span> = <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">get</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:recache</span>)&#x000A;<span class="line-num">15</span>     <span class="ruby-identifier">_set</span>(<span class="ruby-identifier">recached</span>)&#x000A;<span class="line-num">16</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-recache-source'>   <span class="ruby-comment"># File lib/shrine/plugins/recache.rb</span>&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">recache</span>&#x000A;<span class="line-num">16</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span>&#x000A;<span class="line-num">17</span>     <span class="ruby-identifier">recached</span> = <span class="ruby-identifier">cache!</span>(<span class="ruby-identifier">get</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:recache</span>)&#x000A;<span class="line-num">18</span>     <span class="ruby-identifier">_set</span>(<span class="ruby-identifier">recached</span>)&#x000A;<span class="line-num">19</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-save'>
@@ -79,7 +79,7 @@ Shrine::Plugins::Recache::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-save-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-save-source'>   <span class="ruby-comment"># File lib/shrine/plugins/recache.rb</span>&#x000A;<span class="line-num"> 7</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>&#x000A;<span class="line-num"> 8</span>   <span class="ruby-identifier">recache</span>&#x000A;<span class="line-num"> 9</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">10</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-save-source'>   <span class="ruby-comment"># File lib/shrine/plugins/recache.rb</span>&#x000A;<span class="line-num">10</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save</span>&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">recache</span>&#x000A;<span class="line-num">12</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
