@@ -2,6 +2,7 @@ require "roda"
 
 require "./routes/albums"
 require "./routes/direct_upload"
+require "./uploaders/image_uploader"
 
 class ShrineDemo < Roda
   plugin :public
@@ -25,6 +26,10 @@ class ShrineDemo < Roda
     # all '/albums'
     r.on "albums" do
       r.run Routes::Albums
+    end
+
+    r.on "derivations/image" do
+      r.run ImageUploader::Dynamic.derivation_endpoint
     end
 
     # all other routes

@@ -10,8 +10,6 @@ class ImageUploader < Shrine
 
   plugin :remove_attachment
   plugin :pretty_location
-  plugin :processing
-  plugin :versions
   plugin :validation_helpers
   plugin :store_dimensions, analyzer: :mini_magick
 
@@ -24,16 +22,35 @@ class ImageUploader < Shrine
     end
   end
 
-  # Additional processing (requires `processing` plugin)
-  process(:store) do |io, context|
-    original = io.download
+  # uploader showcasing processing on-upload
+  class Static < ImageUploader
+    plugin :processing
+    plugin :versions
 
-    thumbnail = ImageProcessing::MiniMagick
-      .source(original)
-      .resize_to_limit!(600, nil)
+    # Additional processing (requires `processing` plugin)
+    process(:store) do |io, context|
+      original = io.download
 
-    original.close!
+      thumbnail = ImageProcessing::MiniMagick
+        .source(original)
+        .resize_to_limit!(600, nil)
 
-    { original: io, thumbnail: thumbnail }  # Hash of versions requires `versions` plugin
+      original.close!
+
+      { original: io, thumbnail: thumbnail }  # Hash of versions requires `versions` plugin
+    end
+  end
+
+  # uploader showcasing on-the-fly processing
+  class Dynamic < ImageUploader
+    plugin :derivation_endpoint, secret_key: "secret", prefix: "derivations/image"
+
+    derivation :thumbnail do |file, width, height|
+      ImageProcessing::MiniMagick
+        .source(file)
+        .resize_to_limit(width.to_i, height.to_i)
+        .convert("webp")
+        .call
+    end
   end
 end
