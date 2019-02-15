@@ -50,12 +50,12 @@ class Shrine
         # requests.
         def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
           length     = range ? range.size : file.size
-          type     ||= file.mime_type || Rack::Mime.mime_type(".#{file.extension}")
+          type     ||= file.mime_type || Rack::Mime.mime_type(".#{file.extension}", nil)
           filename ||= file.original_filename || file.id.split("/").last
 
           headers = {}
           headers["Content-Length"]      = length.to_s if length
-          headers["Content-Type"]        = type unless type == "application/octet-stream"
+          headers["Content-Type"]        = type if type
           headers["Content-Disposition"] = content_disposition(disposition, filename)
           headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{file.size}" if range
           headers["Accept-Ranges"]       = "bytes" unless range == false

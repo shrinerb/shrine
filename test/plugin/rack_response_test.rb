@@ -29,7 +29,7 @@ describe Shrine::Plugins::RackResponse do
   end
 
   it "returns Content-Type header from extension if mime_type metadata is missing" do
-    uploaded_file = @uploader.upload(fakeio(content_type: "text/plain"))
+    uploaded_file = @uploader.upload(fakeio(filename: "document.txt"))
     response = uploaded_file.to_rack_response
     assert_equal "text/plain", response[1]["Content-Type"]
   end
@@ -50,6 +50,16 @@ describe Shrine::Plugins::RackResponse do
     uploaded_file = @uploader.upload(fakeio(content_type: "text/plain"))
     response = uploaded_file.to_rack_response(type: "text/plain; charset=utf-8")
     assert_equal "text/plain; charset=utf-8", response[1]["Content-Type"]
+  end
+
+  it "it allows setting Content-Type to application/octet-stream" do
+    uploaded_file = @uploader.upload(fakeio(content_type: "application/octet-stream"))
+    response = uploaded_file.to_rack_response
+    assert_equal "application/octet-stream", response[1]["Content-Type"]
+
+    uploaded_file = @uploader.upload(fakeio)
+    response = uploaded_file.to_rack_response(type: "application/octet-stream")
+    assert_equal "application/octet-stream", response[1]["Content-Type"]
   end
 
   it "returns Content-Disposition filename from metadata" do
