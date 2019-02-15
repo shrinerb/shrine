@@ -55,7 +55,7 @@ class Shrine
 
           headers = {}
           headers["Content-Length"]      = length.to_s if length
-          headers["Content-Type"]        = type
+          headers["Content-Type"]        = type unless type == "application/octet-stream"
           headers["Content-Disposition"] = content_disposition(disposition, filename)
           headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{file.size}" if range
           headers["Accept-Ranges"]       = "bytes" unless range == false

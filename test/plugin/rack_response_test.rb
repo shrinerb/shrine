@@ -34,16 +34,16 @@ describe Shrine::Plugins::RackResponse do
     assert_equal "text/plain", response[1]["Content-Type"]
   end
 
-  it "returns Content-Type header of application/octet-stream if MIME type is unknown" do
+  it "doesn't return Content-Type header if MIME type is unknown" do
     uploaded_file = @uploader.upload(fakeio(filename: "foo.foo"))
     response = uploaded_file.to_rack_response
-    assert_equal "application/octet-stream", response[1]["Content-Type"]
+    refute response[1].key?("Content-Type")
   end
 
-  it "returns Content-Type header of application/octet-stream if MIME type is missing" do
+  it "doesn't Content-Type header if MIME type is missing" do
     uploaded_file = @uploader.upload(fakeio)
     response = uploaded_file.to_rack_response
-    assert_equal "application/octet-stream", response[1]["Content-Type"]
+    refute response[1].key?("Content-Type")
   end
 
   it "returns Content-Type header from :type" do

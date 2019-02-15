@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't return `Content-Type` header in `rack_response` when MIME type could not be determined (@janko)
+
 * Open the `UploadedFile` object in `#to_rack_response` in `rack_response` plugin (@janko)
 
 * Fix `store_dimensions` plugin making second argument in `Shrine#extract_metadata` mandatory (@jrochkind)
