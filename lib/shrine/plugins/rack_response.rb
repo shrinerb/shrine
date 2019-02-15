@@ -25,6 +25,8 @@ class Shrine
 
         # Returns a Rack response triple for the uploaded file.
         def call(**options)
+          file.open unless file.opened?
+
           options[:range] = parse_content_range(options[:range]) if options[:range]
 
           status  = rack_status(**options)
@@ -47,15 +49,15 @@ class Shrine
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
         def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
-          length     = range ? range.size : size
-          type     ||= @file.mime_type || Rack::Mime.mime_type(".#{@file.extension}")
-          filename ||= @file.original_filename || @file.id.split("/").last
+          length     = range ? range.size : file.size
+          type     ||= file.mime_type || Rack::Mime.mime_type(".#{file.extension}")
+          filename ||= file.original_filename || file.id.split("/").last
 
           headers = {}
           headers["Content-Length"]      = length.to_s if length
           headers["Content-Type"]        = type
           headers["Content-Disposition"] = content_disposition(disposition: disposition, filename: filename)
-          headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{size}" if range
+          headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{file.size}" if range
           headers["Accept-Ranges"]       = "bytes" unless range == false
 
           headers
@@ -70,9 +72,9 @@ class Shrine
         # Parses the value of a "Range" HTTP header.
         def parse_content_range(range_header)
           if Rack.release >= "2.0"
-            ranges = Rack::Utils.get_byte_ranges(range_header, size)
+            ranges = Rack::Utils.get_byte_ranges(range_header, file.size)
           else
-            ranges = Rack::Utils.byte_ranges({"HTTP_RANGE" => range_header}, size)
+            ranges = Rack::Utils.byte_ranges({"HTTP_RANGE" => range_header}, file.size)
           end
 
           ranges.first if ranges && ranges.one?
@@ -80,11 +82,6 @@ class Shrine
 
         def content_disposition(disposition:, filename:)
           ContentDisposition.format(disposition: disposition, filename: filename)
-        end
-
-        # Read size from metadata, otherwise retrieve the size from the storage.
-        def size
-          @file.size || @file.to_io.size
         end
       end
 

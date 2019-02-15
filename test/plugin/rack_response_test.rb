@@ -15,13 +15,6 @@ describe Shrine::Plugins::RackResponse do
     assert_equal 200, response[0]
   end
 
-  it "returns Content-Length header with size metadata" do
-    uploaded_file = @uploader.upload(fakeio("content"))
-    uploaded_file.metadata["size"] = 10
-    response = uploaded_file.to_rack_response
-    assert_equal "10", response[1]["Content-Length"]
-  end
-
   it "returns Content-Length header with size if metadata is missing" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.metadata.delete("size")
