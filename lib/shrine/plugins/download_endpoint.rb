@@ -13,27 +13,6 @@ class Shrine
         uploader.plugin :_urlsafe_serialization
       end
 
-      # Accepts the following options:
-      #
-      # :prefix
-      # :  The location where the download endpoint was mounted. If it was
-      #    mounted at the root level, this should be set to nil.
-      #
-      # :host
-      # :  The host that you want the download URLs to use (e.g. your app's domain
-      #    name or a CDN). By default URLs are relative.
-      #
-      # :disposition
-      # :  Can be set to "attachment" if you want that the user is always
-      #    prompted to download the file when visiting the download URL.
-      #    The default is "inline".
-      #
-      # :redirect
-      # :  If set to `true`, requests will redirect to the direct file URL. If
-      #    set to a proc object, the proc will called with the `UploadedFile`
-      #    instance and the `Rack::Request` object, and is expected to return
-      #    the URL to which the request will redirect to. Defaults to `false`,
-      #    meaning that the file content will be served through the endpoint.
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
         uploader.opts[:download_endpoint_prefix] = opts.fetch(:prefix, uploader.opts[:download_endpoint_prefix])

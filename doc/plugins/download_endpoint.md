@@ -80,5 +80,14 @@ end
 If you want to have more control on download requests, you can use the
 `rack_response` plugin which this plugin uses internally.
 
+## Plugin options
+
+| Name           | Description                                                                       | Default  |
+| :--------      | :----------                                                                       | :------  |
+| `:prefix`      | Path prefix prepended to download URLs                                            | `nil`    |
+| `:disposition` | Whether browser should render the file `inline` or download it as an `attachment` | `inline` |
+| `:host`        | URL host that will be added to download URLs                                      | `nil`    |
+| `:redirect`    | Whether to redirect to uploaded files on the storage                              | `false`  |
+
 [download_endpoint]: /lib/shrine/plugins/download_endpoint.rb
 [Roda]: https://github.com/jeremyevans/roda
