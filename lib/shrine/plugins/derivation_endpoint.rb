@@ -617,7 +617,6 @@ class Shrine
       begin
         file = source.download(**download_options)
       rescue *download_errors
-        raise if downloaded # re-raise if the error didn't happen on download
         raise Derivation::SourceNotFound, "source file \"#{source.id}\" was not found on storage :#{source.storage_key}"
       end
 
