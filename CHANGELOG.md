@@ -1,5 +1,7 @@
 ## HEAD
 
+* Don't return `Content-Type` when it couldn't be determined from file extension in `derivation_endpoint` (@janko)
+
 * Add `:download_options` option to `download_endpoint` plugin for specifying options for `Storage#open` (@janko)
 
 * Don't return `Content-Type` header in `rack_response` when MIME type could not be determined (@janko)

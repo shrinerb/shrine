@@ -448,14 +448,18 @@ class Shrine
 
       status = response[0]
 
+      content_type   = type || response[1]["Content-Type"]
+      content_length = response[1]["Content-Length"]
+      content_range  = response[1]["Content-Range"]
+
       filename  = self.filename
       filename += File.extname(file.path) if File.extname(filename).empty?
 
       headers = {}
-      headers["Content-Type"]        = type || response[1]["Content-Type"]
+      headers["Content-Type"]        = content_type if content_type
       headers["Content-Disposition"] = content_disposition(filename)
-      headers["Content-Length"]      = response[1]["Content-Length"]
-      headers["Content-Range"]       = response[1]["Content-Range"] if response[1]["Content-Range"]
+      headers["Content-Length"]      = content_length
+      headers["Content-Range"]       = content_range if content_range
       headers["Accept-Ranges"]       = "bytes"
 
       body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
@@ -495,11 +499,10 @@ class Shrine
       end
     end
 
-    # We call `Rack::File` with default `Content-Type` of
-    # "application/octet-stream", and make sure we stay compatible with both
-    # Rack 2.x and 1.6.x.
+    # We call `Rack::File` with no default `Content-Type`, and make sure we
+    # stay compatible with both Rack 2.x and 1.6.x.
     def rack_file_response(path, env)
-      server = Rack::File.new("", {}, "application/octet-stream")
+      server = Rack::File.new("", {}, nil)
 
       if Rack.release > "2"
         server.serving(Rack::Request.new(env), path)
