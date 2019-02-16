@@ -53,8 +53,8 @@ The response `Content-Type` header will default to the value of the `mime_type`
 metadata. A custom content type can be provided via the `:type` option:
 
 ```rb
-_, headers, _ uploaded_file.to_rack_response(type: "text/plain; charset=utf-8")
-headers["Content-Type"] #=> "text/plain; charset=utf-8"
+response = uploaded_file.to_rack_response(type: "text/plain; charset=utf-8")
+response[1]["Content-Type"] #=> "text/plain; charset=utf-8"
 ```
 
 ## Filename
@@ -64,8 +64,8 @@ value of the `filename` metadata. A custom download filename can be provided
 via the `:filename` option:
 
 ```rb
-_, headers, _ uploaded_file.to_rack_response(filename: "my-filename.txt")
-headers["Content-Disposition"] #=> "inline; filename=\"my-filename.txt\""
+response = uploaded_file.to_rack_response(filename: "my-filename.txt")
+response[1]["Content-Disposition"] #=> "inline; filename=\"my-filename.txt\""
 ```
 
 ## Disposition
@@ -74,8 +74,8 @@ The default disposition in the "Content-Disposition" header is `inline`, but it
 can be changed via the `:disposition` option:
 
 ```rb
-_, headers, _ = uploaded_file.to_rack_response(disposition: "attachment")
-headers["Content-Disposition"] #=> "attachment; filename=\"file.txt\""
+response = uploaded_file.to_rack_response(disposition: "attachment")
+response[1]["Content-Disposition"] #=> "attachment; filename=\"file.txt\""
 ```
 
 ## Range
@@ -84,12 +84,27 @@ headers["Content-Disposition"] #=> "attachment; filename=\"file.txt\""
 which accepts a value of the `Range` request header.
 
 ```rb
-env["HTTP_RANGE"] #=> "bytes=100-200"
 status, headers, body = uploaded_file.to_rack_response(range: env["HTTP_RANGE"])
 status                    #=> 206
 headers["Content-Length"] #=> "101"
 headers["Content-Range"]  #=> "bytes 100-200/1000"
 body                      # partial content
+```
+
+## Download options
+
+The `#to_rack_response` method will automatically open the `UploadedFile` if it
+hasn't been opened yet. If you want to pass additional download options to the
+storage, you can explicitly call `UploadedFile#open` beforehand:
+
+```rb
+uploaded_file.open(
+  sse_customer_algorithm: "AES256",
+  sse_customer_key:       "secret_key",
+  sse_customer_key_md5:   "secret_key_md5",
+)
+
+uploaded_file.to_rack_response
 ```
 
 [rack_response]: /lib/shrine/plugins/rack_response.rb

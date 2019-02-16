@@ -24,6 +24,20 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal ContentDisposition.inline(@uploaded_file.original_filename), response.headers["Content-Disposition"]
   end
 
+  it "applies :download_options hash" do
+    @shrine.plugin :download_endpoint, download_options: { foo: "bar" }
+    @uploaded_file.storage.expects(:open).with(@uploaded_file.id, foo: "bar").returns(StringIO.new("options"))
+    response = app.get(@uploaded_file.download_url)
+    assert_equal "options", response.body_binary
+  end
+
+  it "applies :download_options proc" do
+    @shrine.plugin :download_endpoint, download_options: -> (uploaded_file, request) { { foo: "bar" } }
+    @uploaded_file.storage.expects(:open).with(@uploaded_file.id, foo: "bar").returns(StringIO.new("options"))
+    response = app.get(@uploaded_file.download_url)
+    assert_equal "options", response.body_binary
+  end
+
   it "applies :disposition to response" do
     @shrine.plugin :download_endpoint, disposition: "attachment"
     response = app.get(@uploaded_file.download_url)

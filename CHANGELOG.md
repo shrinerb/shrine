@@ -1,5 +1,7 @@
 ## HEAD
 
+* Add `:download_options` option to `download_endpoint` plugin for specifying options for `Storage#open` (@janko)
+
 * Don't return `Content-Type` header in `rack_response` when MIME type could not be determined (@janko)
 
 * Open the `UploadedFile` object in `#to_rack_response` in `rack_response` plugin (@janko)

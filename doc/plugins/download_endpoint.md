@@ -59,6 +59,31 @@ uploaded_file.download_url(host: "http://example.com")
 #=> "http//example.com/attachments/eyJpZCI6ImFkdzlyeTM..."
 ```
 
+## Download options
+
+If you want to pass additional options to `Storage#open`, you can do so via
+`:download_options`:
+
+```rb
+plugin :download_endpoint, download_options: {
+  sse_customer_algorithm: "AES256",
+  sse_customer_key:       "secret_key",
+  sse_customer_key_md5:   "secret_key_md5",
+}
+```
+
+You can also specify a proc to generate download options dynamically:
+
+```rb
+plugin :download_enpdoint, download_options: -> (uploaded_file, request) {
+  {
+    sse_customer_algorithm: "AES256",
+    sse_customer_key:       "secret_key",
+    sse_customer_key_md5:   "secret_key_md5",
+  }
+}
+```
+
 ## Performance considerations
 
 Streaming files through the app might impact the request throughput, depending
@@ -69,9 +94,13 @@ Alternatively, you can have the endpoint redirect to the direct file URL:
 
 ```rb
 plugin :download_endpoint, redirect: true
-# or
+```
+
+You can also specify a proc to generate your own redirect URL:
+
+```rb
 plugin :download_endpoint, redirect: -> (uploaded_file, request) do
-  # return URL which the request will redirect to
+  uploaded_file.url(public: true)
 end
 ```
 
@@ -82,12 +111,13 @@ If you want to have more control on download requests, you can use the
 
 ## Plugin options
 
-| Name           | Description                                                                       | Default  |
-| :--------      | :----------                                                                       | :------  |
-| `:prefix`      | Path prefix prepended to download URLs                                            | `nil`    |
-| `:disposition` | Whether browser should render the file `inline` or download it as an `attachment` | `inline` |
-| `:host`        | URL host that will be added to download URLs                                      | `nil`    |
-| `:redirect`    | Whether to redirect to uploaded files on the storage                              | `false`  |
+| Name                | Description                                                                       | Default  |
+| :--------           | :----------                                                                       | :------  |
+| `:disposition`      | Whether browser should render the file `inline` or download it as an `attachment` | `inline` |
+| `:download_options` | Hash of storage-specific options passed to `Storage#open`                         | `{}`     |
+| `:host`             | URL host that will be added to download URLs                                      | `nil`    |
+| `:prefix`           | Path prefix prepended to download URLs                                            | `nil`    |
+| `:redirect`         | Whether to redirect to uploaded files on the storage                              | `false`  |
 
 [download_endpoint]: /lib/shrine/plugins/download_endpoint.rb
 [Roda]: https://github.com/jeremyevans/roda

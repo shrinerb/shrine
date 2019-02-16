@@ -16,6 +16,7 @@ class Shrine
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
         uploader.opts[:download_endpoint_prefix] = opts.fetch(:prefix, uploader.opts[:download_endpoint_prefix])
+        uploader.opts[:download_endpoint_download_options] = opts.fetch(:download_options, uploader.opts.fetch(:download_endpoint_download_options, {}))
         uploader.opts[:download_endpoint_disposition] = opts.fetch(:disposition, uploader.opts.fetch(:download_endpoint_disposition, "inline"))
         uploader.opts[:download_endpoint_host] = opts.fetch(:host, uploader.opts[:download_endpoint_host])
         uploader.opts[:download_endpoint_redirect] = opts.fetch(:redirect, uploader.opts.fetch(:download_endpoint_redirect, false))
@@ -50,8 +51,9 @@ class Shrine
         def new_download_endpoint(klass)
           endpoint_class = Class.new(klass)
           endpoint_class.opts[:shrine_class] = self
-          endpoint_class.opts[:disposition]  = opts[:download_endpoint_disposition]
-          endpoint_class.opts[:redirect]     = opts[:download_endpoint_redirect]
+          endpoint_class.opts[:download_options] = opts[:download_endpoint_download_options]
+          endpoint_class.opts[:disposition]      = opts[:download_endpoint_disposition]
+          endpoint_class.opts[:redirect]         = opts[:download_endpoint_redirect]
           endpoint_class
         end
       end
@@ -147,12 +149,16 @@ class Shrine
 
         # Streams the uploaded file content.
         def stream_file(uploaded_file)
-          range = env["HTTP_RANGE"]
+          open_file(uploaded_file)
 
-          status, headers, body = uploaded_file.to_rack_response(disposition: disposition, range: range)
-          headers["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
+          response = uploaded_file.to_rack_response(
+            disposition: disposition,
+            range:       env["HTTP_RANGE"],
+          )
 
-          request.halt [status, headers, body]
+          response[1]["Cache-Control"] = "max-age=#{365*24*60*60}" # cache for a year
+
+          request.halt response
         end
 
         # Redirects to the uploaded file's direct URL or the specified URL proc.
@@ -164,6 +170,14 @@ class Shrine
           end
 
           request.redirect redirect_url
+        end
+
+        def open_file(uploaded_file)
+          if download_options.respond_to?(:call)
+            uploaded_file.open(**download_options.call(uploaded_file, request))
+          else
+            uploaded_file.open(**download_options)
+          end
         end
 
         # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.
@@ -187,8 +201,8 @@ class Shrine
           request.halt
         end
 
-        def storage_names
-          shrine_class.storages.keys.map(&:to_s)
+        def download_options
+          opts[:download_options]
         end
 
         def redirect
@@ -201,6 +215,10 @@ class Shrine
 
         def shrine_class
           opts[:shrine_class]
+        end
+
+        def storage_names
+          shrine_class.storages.keys.map(&:to_s)
         end
       end
     end
