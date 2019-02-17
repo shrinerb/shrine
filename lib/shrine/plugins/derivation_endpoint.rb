@@ -188,6 +188,7 @@ class Shrine
     option :type
     option :upload,                      default: -> { false }
     option :upload_location,             default: -> { default_upload_location }, result: -> (o) { upload_location(o) }
+    option :upload_open_options,         default: -> { {} }
     option :upload_options,              default: -> { {} }
     option :upload_redirect,             default: -> { false }
     option :upload_redirect_url_options, default: -> { {} }
@@ -421,7 +422,8 @@ class Shrine
 
   class Derivation::Response < Derivation::Command
     delegate :type, :disposition, :filename,
-             :upload, :upload_redirect, :upload_redirect_url_options
+             :upload, :upload_open_options,
+             :upload_redirect, :upload_redirect_url_options
 
     def call(env)
       if upload
@@ -494,6 +496,7 @@ class Shrine
         if derivative
           file_response(derivative, env)
         else
+          uploaded_file.open(**upload_open_options)
           uploaded_file.to_rack_response(
             type:        type,
             disposition: disposition,

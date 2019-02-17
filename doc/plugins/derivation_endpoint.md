@@ -435,6 +435,14 @@ plugin :derivation_endpoint, upload: true,
                              upload_options: { acl: "public-read" }
 ```
 
+Additional storage-specific download options for the uploaded derivation result
+can be passed via `:upload_open_options`:
+
+```rb
+plugin :derivation_endpoint, upload: true,
+                             upload_open_options: { response_content_encoding: "gzip" }
+```
+
 ### Redirecting
 
 You can configure the endpoint to redirect to the uploaded derivative on the
@@ -737,6 +745,7 @@ derivation.option(:upload_location)
 | `:upload`                      | Whether the generated derivatives will be cached on the storage                                                                       | `false`                                              |
 | `:upload_location`             | Location to which the derivatives will be uploaded on the storage                                                                     | `<source id>/<name>-<args>`                          |
 | `:upload_options`              | Additional options to be passed when uploading derivatives                                                                            | `{}`                                                 |
+| `:upload_open_options`         | Additional options to be passed when downloading the uploaded derivative                                                              | `{}`                                                 |
 | `:upload_redirect`             | Whether the derivation response should redirect to the uploaded derivative                                                            | `false`                                              |
 | `:upload_redirect_url_options` | Additional options to be passed when generating the URL for the uploaded derivative                                                   | `{}`                                                 |
 | `:upload_storage`              | Storage to which the derivations will be uploaded                                                                                     | same storage as the source file                      |

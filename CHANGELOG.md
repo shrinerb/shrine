@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivation_endpoint` – Add `:upload_open_options` for download option for derivation result (@janko)
+
 * `derivation_endpoint` – Fix `:upload` option being incompatible with `delete_raw` plugin (@janko)
 
 * `derivation_endpoint` – Require input file in `Derivation#upload` to respond to `#path` (@janko)
