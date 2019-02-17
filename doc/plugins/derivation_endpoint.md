@@ -350,9 +350,9 @@ uploaded_file.derivation_url(:webp, type: "image/webp")
 ### Content Disposition
 
 The derivation response includes the [`Content-Disposition`] header. By default
-the disposition is set to `inline`, while the download filename is generated
-from derivation name, arguments and source file id. These values can be changed
-with the `:disposition` and `:filename` options:
+the disposition is set to `inline`, with download filename generated from
+derivation name, arguments and source file id. These values can be changed with
+the `:disposition` and `:filename` options:
 
 ```rb
 plugin :derivation_endpoint,
