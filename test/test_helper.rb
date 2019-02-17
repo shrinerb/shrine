@@ -21,5 +21,7 @@ class Shrine
   def warn(*); end # disable mime_type warnings
 end
 
+Mocha::Configuration.prevent(:stubbing_non_existent_method)
+
 require "./test/support/generic_helper"
 require "./test/support/deprecated_helper"

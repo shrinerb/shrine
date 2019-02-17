@@ -53,7 +53,6 @@ describe Shrine::Plugins::Backup do
 
   it "works with backgrounding" do
     @attacher.shrine_class.plugin :backgrounding
-    @attacher.class.stubs(:find_record).returns(@attacher.record)
     @attacher.class.delete { |data| (@f ||= []) << Fiber.new{self.class.delete(data)} }
     @attacher.assign(fakeio)
     replaced = @attacher._promote
