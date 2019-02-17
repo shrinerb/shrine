@@ -15,4 +15,11 @@ this only to files uploaded to certain storages:
 plugin :delete_raw, storages: [:store]
 ```
 
+If you want to skip deletion for a certain upload, you can pass `delete: false`
+to the uploader:
+
+```rb
+uploader.upload(file, delete: false)
+```
+
 [delete_raw]: /lib/shrine/plugins/delete_raw.rb

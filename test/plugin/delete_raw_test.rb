@@ -46,4 +46,10 @@ describe Shrine::Plugins::DeleteRaw do
     @uploader.class.new(:store).upload(tempfile = Tempfile.new)
     refute File.exist?(tempfile.path)
   end
+
+  it "accepts :delete for skipping deletion" do
+    file = Tempfile.new
+    @uploader.upload(file, delete: false)
+    assert File.exist?(file.path)
+  end
 end

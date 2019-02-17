@@ -16,7 +16,7 @@ class Shrine
         # Deletes the file that was uploaded, unless it's an UploadedFile.
         def copy(io, context)
           super
-          if io.respond_to?(:path) && io.path && delete_raw?
+          if io.respond_to?(:path) && io.path && delete_raw? && context[:delete] != false
             begin
               File.delete(io.path)
             rescue Errno::ENOENT
