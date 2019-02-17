@@ -443,7 +443,6 @@ class Shrine
     # Fills in `Content-Type` and `Content-Disposition` response headers from
     # derivation options and file extension of the derivation result.
     def file_response(file, env)
-      file.close
       response = rack_file_response(file.path, env)
 
       status = response[0]
@@ -464,6 +463,8 @@ class Shrine
 
       body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
 
+      file.close
+
       [status, headers, body]
     end
 
@@ -480,7 +481,11 @@ class Shrine
       end
 
       if upload_redirect
-        File.delete(derivative.path) if derivative
+        # we don't need the local derivation result here
+        if derivative
+          derivative.close
+          File.delete(derivative.path)
+        end
 
         redirect_url = uploaded_file.url(upload_redirect_url_options)
 
@@ -525,32 +530,10 @@ class Shrine
 
     def call
       if upload
-        upload_result
+        derivation.retrieve || derivation.upload
       else
-        local_result
+        derivation.generate
       end
-    end
-
-    private
-
-    def local_result
-      derivation.generate
-    end
-
-    # If derivation already exists on the storage, returns the uploaded file.
-    # If it doesn't, calls the derivation, uploads the result and returns the
-    # uploaded file.
-    def upload_result
-      uploaded_file = derivation.retrieve
-
-      unless uploaded_file
-        derivative    = derivation.generate
-        uploaded_file = derivation.upload(derivative)
-
-        derivative.unlink
-      end
-
-      uploaded_file
     end
   end
 
@@ -641,14 +624,32 @@ class Shrine
     # If a file object is given, uploads that to the storage, otherwise calls
     # the derivation block and uploads the result.
     def call(derivative = nil)
-      derivative ||= derivation.generate
-
-      uploader.upload derivative,
-        location:       upload_location,
-        upload_options: upload_options
+      with_derivative(derivative) do |uploadable|
+        uploader.upload uploadable,
+          location:       upload_location,
+          upload_options: upload_options
+      end
     end
 
     private
+
+    def with_derivative(derivative)
+      if derivative
+        # we want to keep the provided file open and rewinded
+        File.open(derivative.path, binmode: true) do |file|
+          yield file
+        end
+      else
+        # generate the derivative and delete it afterwards
+        begin
+          file = derivation.generate
+          yield file
+        ensure
+          file.close
+          File.delete(file.path)
+        end
+      end
+    end
 
     def uploader
       shrine_class.new(upload_storage)

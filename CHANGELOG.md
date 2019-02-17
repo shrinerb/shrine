@@ -1,5 +1,13 @@
 ## HEAD
 
+* `derivation_endpoint` – Require input file in `Derivation#upload` to respond to `#path` (@janko)
+
+* `derivation_endpoint` – Delete generated derivation result after uploading in `Derivation#upload` (@janko)
+
+* `derivation_endpoint` – Fix `Derivation#processed` breaking when derivation result is a `File` object (@janko)
+
+* `derivation_endpoint` – Don't close input file on `Derivation#upload` (@janko)
+
 * Add `:delete` parameter for skipping delete when `delete_raw` plugin is loaded (@janko)
 
 * Don't return `Content-Type` when it couldn't be determined from file extension in `derivation_endpoint` (@janko)

@@ -674,7 +674,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "",                                        response[2].enum_for(:each).to_a.join
       end
 
-      it "deletes derivation result on :upload_redirect" do
+      it "closes and deletes derivation result on :upload_redirect" do
         @shrine.plugin :derivation_endpoint, upload_redirect: true
         tempfile = Tempfile.new
         file     = File.open(tempfile.path)
@@ -726,9 +726,9 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         it "deletes derivation result after uploading" do
           tempfile = Tempfile.new
-          @shrine.derivation(:gray) { tempfile }
+          @shrine.derivation(:gray) { File.open(tempfile.path) }
           @uploaded_file.derivation(:gray).processed
-          assert_nil tempfile.path
+          refute File.exist?(tempfile.path)
         end
 
         it "retrieves already uploaded derivation" do
@@ -836,67 +836,57 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       it "rewinds, flushes, and binmodes Tempfiles" do
-        @shrine.derivation(:gray) do
-          tempfile = Tempfile.new
-          tempfile << "gray content"
-          tempfile
-        end
-        tempfile = @uploaded_file.derivation(:gray).generate
-        assert_instance_of Tempfile, tempfile
-        assert_equal "gray content", tempfile.read
-        assert_equal "gray content", File.read(tempfile.path)
-        assert tempfile.binmode?
-        refute tempfile.closed?
+        tempfile = Tempfile.new
+        tempfile << "gray content"
+        @shrine.derivation(:gray) { tempfile }
+        result = @uploaded_file.derivation(:gray).generate
+        assert_equal tempfile, result
+        refute result.closed?
+        assert result.binmode?
+        assert_equal "gray content", result.read
+        assert_equal "gray content", File.read(result.path)
       end
 
       it "rewinds, flushes, and binmodes Files" do
-        path = Dir::Tmpname.create("") {}
-        @shrine.derivation(:gray) do
-          file = File.open(path, "w+")
-          file << "gray content"
-          file
-        end
-        file = @uploaded_file.derivation(:gray).generate
-        assert_instance_of File, file
-        assert_equal "gray content", file.read
-        assert_equal "gray content", File.read(file.path)
-        assert file.binmode?
-        refute file.closed?
-        File.delete(path)
+        tempfile = Tempfile.new
+        file = File.open(tempfile.path, "w")
+        file << "gray content"
+        @shrine.derivation(:gray) { file }
+        result = @uploaded_file.derivation(:gray).generate
+        assert_instance_of File, result
+        refute result.closed?
+        assert result.binmode?
+        assert_equal "gray content", result.read
+        assert_equal "gray content", File.read(result.path)
       end
 
       it "accepts String paths" do
-        path = Dir::Tmpname.create("") {}
-        @shrine.derivation(:gray) do
-          File.write(path, "gray content")
-          path
-        end
-        file = @uploaded_file.derivation(:gray).generate
-        assert_instance_of File, file
-        assert_equal "gray content", file.read
-        assert_equal "gray content", File.read(file.path)
-        assert file.binmode?
-        refute file.closed?
-        File.delete(path)
+        tempfile = Tempfile.new
+        tempfile << "gray content"
+        tempfile.open
+        @shrine.derivation(:gray) { tempfile.path }
+        result = @uploaded_file.derivation(:gray).generate
+        assert_instance_of File, result
+        refute result.closed?
+        assert result.binmode?
+        assert_equal "gray content", result.read
+        assert_equal "gray content", File.read(result.path)
       end
 
       it "accepts Pathname paths" do
-        path = Dir::Tmpname.create("") {}
-        @shrine.derivation(:gray) do
-          pathname = Pathname(path)
-          pathname.write("gray content")
-          pathname
-        end
-        file = @uploaded_file.derivation(:gray).generate
-        assert_instance_of File, file
-        assert_equal "gray content", file.read
-        assert_equal "gray content", File.read(file.path)
-        assert file.binmode?
-        refute file.closed?
-        File.delete(path)
+        tempfile = Tempfile.new
+        tempfile << "gray content"
+        tempfile.open
+        @shrine.derivation(:gray) { Pathname(tempfile.path) }
+        result = @uploaded_file.derivation(:gray).generate
+        assert_instance_of File, result
+        refute result.closed?
+        assert result.binmode?
+        assert_equal "gray content", result.read
+        assert_equal "gray content", File.read(result.path)
       end
 
-      it "fails when derivative isn't a File object" do
+      it "fails when derivative is of unsupported type" do
         @shrine.derivation(:gray) { |file| StringIO.new }
         assert_raises(Shrine::Error) do
           @uploaded_file.derivation(:gray, "dark").generate
@@ -912,16 +902,37 @@ describe Shrine::Plugins::DerivationEndpoint do
     end
 
     describe "#upload" do
-      it "uploads and returns uploaded file" do
+      it "uploads derivation result and returns uploaded file" do
         uploaded_file = @uploaded_file.derivation(:gray).upload
         assert_instance_of @shrine::UploadedFile, uploaded_file
         assert_equal "gray content", uploaded_file.read
       end
 
-      it "allows passing already generated derivative" do
+      it "deletes the generated derivation result" do
+        tempfile = Tempfile.new
+        tempfile << "content"
+        tempfile.open
+
+        file = File.open(tempfile.path)
+        derivation = @uploaded_file.derivation(:gray)
+        derivation.expects(:generate).returns(file)
+
+        derivation.upload
+
+        assert file.closed?
+        refute File.exist?(file.path)
+      end
+
+      it "allows uploading already generated derivative" do
         @shrine.derivation(:gray) { fail "this should not be called" }
-        uploaded_file = @uploaded_file.derivation(:gray).upload(fakeio("content"))
+        file = Tempfile.new
+        file << "content"
+        file.open
+        uploaded_file = @uploaded_file.derivation(:gray).upload(file)
         assert_equal "content", uploaded_file.read
+        refute file.closed?
+        assert File.exist?(file.path)
+        assert_equal 0, file.pos
       end
 
       it "applies :upload_options" do
