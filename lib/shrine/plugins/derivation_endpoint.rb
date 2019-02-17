@@ -627,7 +627,8 @@ class Shrine
       with_derivative(derivative) do |uploadable|
         uploader.upload uploadable,
           location:       upload_location,
-          upload_options: upload_options
+          upload_options: upload_options,
+          delete:         false # disable delete_raw plugin
       end
     end
 

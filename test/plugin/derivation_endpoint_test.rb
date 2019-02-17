@@ -984,6 +984,13 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "foo/gray-dark", uploaded_file.id
         assert_equal "gray dark content",  uploaded_file.read
       end
+
+      it "disables delete_raw plugin" do
+        @shrine.plugin :delete_raw
+        file = Tempfile.new
+        @uploaded_file.derivation(:gray).upload(file)
+        assert File.exist?(file.path)
+      end
     end
 
     describe "#retrieve" do
