@@ -65,7 +65,7 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_download_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign_download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">62</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">63</span>   <span class="ruby-ivar">@download_endpoint</span> = <span class="ruby-identifier">new_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">64</span> &#x000A;<span class="line-num">65</span>   <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="line-num">66</span>   <span class="ruby-identifier">deprecate_constant</span>(<span class="ruby-value">:DownloadEndpoint</span>)&#x000A;<span class="line-num">67</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign_download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">43</span>   <span class="ruby-ivar">@download_endpoint</span> = <span class="ruby-identifier">new_download_endpoint</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">44</span> &#x000A;<span class="line-num">45</span>   <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="line-num">46</span>   <span class="ruby-identifier">deprecate_constant</span>(<span class="ruby-value">:DownloadEndpoint</span>)&#x000A;<span class="line-num">47</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-download_endpoint'>
@@ -84,7 +84,7 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-download_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">57</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_endpoint</span>&#x000A;<span class="line-num">58</span>   <span class="ruby-identifier">new_download_endpoint</span>(<span class="ruby-constant">App</span>)&#x000A;<span class="line-num">59</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_endpoint</span>&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">new_download_endpoint</span>(<span class="ruby-constant">App</span>)&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-inherited'>
@@ -103,7 +103,7 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inherited-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inherited-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;<span class="line-num">52</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">53</span>   <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="line-num">54</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-inherited-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">33</span>   <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

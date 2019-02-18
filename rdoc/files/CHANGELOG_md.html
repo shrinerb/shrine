@@ -30,14 +30,36 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-13 09:45:10 +0100</span>
+<span class='datetime'>2019-02-18 22:30:32 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h2 id="label-HEAD">HEAD<span><a href="#label-HEAD">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.16.0+-282019-02-18-29">2.16.0 (2019-02-18)<span><a href="#label-2.16.0+-282019-02-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
+<p><code>derivation_endpoint</code> – Add <code>:upload_open_options</code> for download option for derivation result (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Fix <code>:upload</code> option being incompatible with <code>delete_raw</code> plugin (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Require input file in <code>Derivation#upload</code> to respond to <code>#path</code> (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Delete generated derivation result after uploading in <code>Derivation#upload</code> (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Fix <code>Derivation#processed</code> breaking when derivation result is a <code>File</code> object (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Don&#39;t close input file on <code>Derivation#upload</code> (@janko)</p>
+</li><li>
+<p>Add <code>:delete</code> parameter for skipping delete when <code>delete_raw</code> plugin is loaded (@janko)</p>
+</li><li>
+<p>Don&#39;t return <code>Content-Type</code> when it couldn&#39;t be determined from file extension in <code>derivation_endpoint</code> (@janko)</p>
+</li><li>
+<p>Add <code>:download_options</code> option to <code>download_endpoint</code> plugin for specifying options for <code>Storage#open</code> (@janko)</p>
+</li><li>
+<p>Don&#39;t return <code>Content-Type</code> header in <code>rack_response</code> when MIME type could not be determined (@janko)</p>
+</li><li>
+<p>Open the <code>UploadedFile</code> object in <code>#to_rack_response</code> in <code>rack_response</code> plugin (@janko)</p>
+</li><li>
 <p>Fix <code>store_dimensions</code> plugin making second argument in <code>Shrine#extract_metadata</code> mandatory (@jrochkind)</p>
 </li></ul>
 
