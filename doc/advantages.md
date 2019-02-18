@@ -181,6 +181,10 @@ class ImageUploader < Shrine
   end
 end
 ```
+```rb
+photo.image_url(:large)
+#=> "https://s3.amazonaws.com/path/to/large.jpg"
+```
 
 or generate thumbnails on-demand:
 
