@@ -1,4 +1,4 @@
-## HEAD
+## 2.16.0 (2019-02-18)
 
 * `derivation_endpoint` – Add `:upload_open_options` for download option for derivation result (@janko)
 
