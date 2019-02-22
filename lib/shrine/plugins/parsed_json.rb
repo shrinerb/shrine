@@ -17,8 +17,9 @@ class Shrine
 
         private
 
-        def parsed_json?(hash)
-          hash.keys.any? { |key| key.is_a?(String) }
+        def parsed_json?(value)
+          (value.key?('id') || value.key?(:id)) &&
+          (value.key?('storage') || value.key?(:storage))
         end
       end
     end
