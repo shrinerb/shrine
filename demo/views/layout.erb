@@ -7,18 +7,11 @@
 
     <script src="https://unpkg.com/babel-polyfill@6.26.0/dist/polyfill.min.js"></script>
     <script src="https://unpkg.com/whatwg-fetch@2.0.3/fetch.js"></script>
-    <script src="https://transloadit.edgly.net/releases/uppy/v0.28.0/dist/uppy.min.js"></script>
+    <script src="https://transloadit.edgly.net/releases/uppy/v0.30.0/dist/uppy.min.js"></script>
 
     <link href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css" media="screen" rel="stylesheet" />
-    <link href="https://transloadit.edgly.net/releases/uppy/v0.28.0/dist/uppy.min.css" rel="stylesheet" />
+    <link href="https://transloadit.edgly.net/releases/uppy/v0.30.0/dist/uppy.min.css" rel="stylesheet" />
     <%= assets(:css) %>
-
-    <script type="text/template" id="template-photo">
-      <% f = Forme::Form.new(Album.new, labeler: :explicit) %>
-      <% f.with_obj(Photo.new, ["photos_attributes", "{{index}}"]) do %>
-        <%= partial("albums/photo", locals: { f: f }) %>
-      <% end %>
-    </script>
   </head>
 
   <body>

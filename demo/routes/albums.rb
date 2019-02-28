@@ -5,7 +5,7 @@ require "./models/photo"
 module Routes
   class Albums < Base
     route do |r|
-      # Only '/albums'
+      # '/albums'
       r.is do
         # GET '/albums'
         r.get do
@@ -16,6 +16,7 @@ module Routes
         # POST '/albums'
         r.post do
           album = Album.new(params[:album])
+
           if album.valid?
             album.save
             r.redirect album_path(album)
@@ -31,7 +32,7 @@ module Routes
         view("albums/new", locals: { album: album })
       end
 
-      # Only '/albums/:id'
+      # '/albums/:id'
       r.is Integer do |album_id|
         album = Album[album_id] or not_found!
 
@@ -43,6 +44,7 @@ module Routes
         # PUT '/albums/:id'
         r.put do
           album.set(params[:album])
+
           if album.valid?
             album.save
             r.redirect album_path(album)

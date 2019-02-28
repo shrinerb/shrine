@@ -2,10 +2,6 @@
   width: 800px;
 }
 
-.image-preview {
-  margin-bottom: 20px;
-}
-
 .file-upload-preview[src=""] {
   visibility: hidden;
 }
@@ -16,6 +12,7 @@
 
 .image-preview {
   margin-top: 10px;
+  margin-bottom: 20px;
   display: inline-block;
 }
 
