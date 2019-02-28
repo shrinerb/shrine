@@ -13,6 +13,7 @@ class Shrine
         end
 
         uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:mime_type_analyzer, :file))
+        uploader.opts[:analyzer_options] = opts.fetch(:options, uploader.opts.fetch(:analyzer_options, {}))
       end
 
       module ClassMethods
@@ -20,8 +21,9 @@ class Shrine
         # analyzer.
         def determine_mime_type(io)
           analyzer = opts[:mime_type_analyzer]
+
           analyzer = mime_type_analyzer(analyzer) if analyzer.is_a?(Symbol)
-          args     = [io, mime_type_analyzers].take(analyzer.arity.abs)
+          args     = (analyzer.is_a?(Proc) ? [io, mime_type_analyzers] : [io, opts[:analyzer_options]])
 
           mime_type = analyzer.call(*args)
           io.rewind
@@ -40,7 +42,7 @@ class Shrine
 
         # Returns callable mime type analyzer object.
         def mime_type_analyzer(name)
-          MimeTypeAnalyzer.new(name).method(:call)
+          MimeTypeAnalyzer.new(name)
         end
       end
 
@@ -68,8 +70,8 @@ class Shrine
           @tool = tool
         end
 
-        def call(io)
-          mime_type = send(:"extract_with_#{@tool}", io)
+        def call(io, options: {})
+          mime_type = send(:"extract_with_#{@tool}", io, options)
           io.rewind
 
           mime_type
@@ -77,7 +79,7 @@ class Shrine
 
         private
 
-        def extract_with_file(io)
+        def extract_with_file(io, options)
           require "open3"
 
           return nil if io.eof? # file command returns "application/x-empty" for empty files
@@ -106,14 +108,14 @@ class Shrine
           raise Error, "file command-line tool is not installed"
         end
 
-        def extract_with_fastimage(io)
+        def extract_with_fastimage(io, options)
           require "fastimage"
 
           type = FastImage.type(io)
           "image/#{type}" if type
         end
 
-        def extract_with_filemagic(io)
+        def extract_with_filemagic(io, options)
           require "filemagic"
 
           return nil if io.eof? # FileMagic returns "application/x-empty" for empty files
@@ -123,22 +125,23 @@ class Shrine
           end
         end
 
-        def extract_with_mimemagic(io)
+        def extract_with_mimemagic(io, options)
           require "mimemagic"
 
           mime = MimeMagic.by_magic(io)
           mime.type if mime
         end
 
-        def extract_with_marcel(io)
+        def extract_with_marcel(io, options)
           require "marcel"
 
           return nil if io.eof? # marcel returns "application/octet-stream" for empty files
 
-          Marcel::MimeType.for(io)
+          filename = (options[:filename_fallback] ? extract_filename(io) : nil)
+          Marcel::MimeType.for(io, name: filename)
         end
 
-        def extract_with_mime_types(io)
+        def extract_with_mime_types(io, options)
           require "mime/types"
 
           if filename = extract_filename(io)
@@ -147,7 +150,7 @@ class Shrine
           end
         end
 
-        def extract_with_mini_mime(io)
+        def extract_with_mini_mime(io, options)
           require "mini_mime"
 
           if filename = extract_filename(io)
@@ -156,13 +159,13 @@ class Shrine
           end
         end
 
-        def extract_with_content_type(io)
+        def extract_with_content_type(io, options)
           if io.respond_to?(:content_type) && io.content_type
             io.content_type.split(";").first
           end
         end
 
-        def extract_filename(io)
+        def extract_filename(io, options)
           if io.respond_to?(:original_filename)
             io.original_filename
           elsif io.respond_to?(:path)
