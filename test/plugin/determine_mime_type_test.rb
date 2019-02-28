@@ -129,10 +129,6 @@ describe Shrine::Plugins::DetermineMimeType do
       assert_equal "image/jpeg", @shrine.determine_mime_type(image)
     end
 
-    it "falls back to file extension" do
-      assert_equal "application/vnd.ms-excel", @shrine.determine_mime_type(fakeio("content", filename: "spreadsheet.xls"))
-    end
-
     it "returns application/octet-stream for unidentified MIME types" do
       assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃"))
     end
