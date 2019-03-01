@@ -9,17 +9,19 @@ plugin :determine_mime_type
 
 By default the UNIX [file] utility is used to determine the MIME type, and the
 result is automatically written to the `mime_type` metadata field. You can
-choose a different built-in MIME type analyzer:
+choose a different built-in MIME type analyzer, for example:
 
 ```rb
 plugin :determine_mime_type, analyzer: :marcel
 ```
 
+## Analyzers
+
 The following analyzers are accepted:
 
 | Name            | Description                                                                                                                                                                                                                                                                       |
 | :------         | :-----------                                                                                                                                                                                                                                                                      |
-| `:file`         | (Default). Uses the [file] utility to determine the MIME type from file contents. It is installed by default on most operating systems, but the [Windows equivalent] needs to be installed separately.                                                                            |
+| `:file`         | (**Default**). Uses the [file] utility to determine the MIME type from file contents. It is installed by default on most operating systems, but the [Windows equivalent] needs to be installed separately.                                                                            |
 | `:fastimage`    | Uses the [fastimage] gem to determine the MIME type from file contents. Fastimage is optimized for speed over accuracy. Best used for image content.                                                                                                                              |
 | `:filemagic`    | Uses the [ruby-filemagic] gem to determine the MIME type from file contents, using a similar MIME database as the `file` utility. Unlike the `file` utility, ruby-filemagic works on Windows without any setup.                                                                   |
 | `:mimemagic`    | Uses the [mimemagic] gem to determine the MIME type from file contents. Unlike ruby-filemagic, mimemagic is a pure-ruby solution, so it will work across all Ruby implementations.                                                                                                |
@@ -28,8 +30,33 @@ The following analyzers are accepted:
 | `:mini_mime`    | Uses the [mini_mime] gem to determine the MIME type from the file extension. Note that unlike other solutions, this analyzer is not guaranteed to return the actual MIME type of the file.                                                                                        |
 | `:content_type` | Retrieves the value of the `#content_type` attribute of the IO object. Note that this value normally comes from the "Content-Type" request header, so it's not guaranteed to hold the actual MIME type of the file.                                                               |
 
-A single analyzer is not going to properly recognize all types of files, so you
-can build your own custom analyzer for your requirements, where you can combine
+You'll need to ensure the file utility or gem is in installed on your system
+for Shrine to use the analyzer.
+
+## Analyzer Options
+
+Currently, Marcel is the only analyzer that accepts options to be passed in.
+Analyzer options can be set in one of two ways:
+
+```rb
+plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: true }
+
+# or
+
+plugin :determine_mime_type, analyzer: -> (io, analyzers) do
+  mime_type = analyzers[:marcel].call(io, filename_fallback: true)
+end
+```
+
+The `:filename_fallback` option for Marcel analyzer lets it use the filename as
+a fallback option when it fails to determine the MIME type from the file
+content. Set `:filename_fallback` to `true` in order to fallback to using the
+filename or set to `false` to not use the filename (this is the default).
+
+## Issues
+
+If you find using a single analyzer is not able to recognize all of the file
+types in your application, you can build your own custom analyzer and combine
 the built-in analyzers. For example, if you want to correctly determine MIME
 type of .css, .js, .json, .csv, .xml, or similar text-based files, you can
 combine `file` and `mime_types` analyzers:
@@ -42,7 +69,9 @@ plugin :determine_mime_type, analyzer: -> (io, analyzers) do
 end
 ```
 
-You can also use methods for determining the MIME type directly:
+## Other Usage
+
+You can also use the methods for determining the MIME type directly:
 
 ```rb
 # or YourUploader.determine_mime_type(io)
