@@ -70,7 +70,7 @@ class Shrine
           @tool = tool
         end
 
-        def call(io, options: {})
+        def call(io, options = {})
           mime_type = send(:"extract_with_#{@tool}", io, options)
           io.rewind
 
@@ -165,7 +165,7 @@ class Shrine
           end
         end
 
-        def extract_filename(io, options)
+        def extract_filename(io)
           if io.respond_to?(:original_filename)
             io.original_filename
           elsif io.respond_to?(:path)
