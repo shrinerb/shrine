@@ -240,7 +240,7 @@ describe Shrine::Plugins::DetermineMimeType do
   end
 
   it "allows passing a custom extractor" do
-    @shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) { "foo/bar" }
+    @shrine.plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" }
     assert_equal "foo/bar", @shrine.determine_mime_type(image)
 
     @shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) { analyzers[:file].call(io) }
@@ -248,7 +248,7 @@ describe Shrine::Plugins::DetermineMimeType do
   end
 
   it "always rewinds the file" do
-    @shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) { io.read }
+    @shrine.plugin :determine_mime_type, analyzer: ->(io) { io.read }
     @shrine.determine_mime_type(file = image)
     assert_equal 0, file.pos
   end
