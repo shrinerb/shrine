@@ -23,7 +23,11 @@ class Shrine
           analyzer = opts[:mime_type_analyzer]
 
           analyzer = mime_type_analyzer(analyzer) if analyzer.is_a?(Symbol)
-          args     = (analyzer.is_a?(Proc) ? [io, mime_type_analyzers] : [io, opts[:analyzer_options]])
+          args     = if analyzer.is_a?(Proc)
+              [io, mime_type_analyzers].take(analyzer.arity.abs)
+            else
+              [io, opts[:analyzer_options]]
+            end
 
           mime_type = analyzer.call(*args)
           io.rewind
