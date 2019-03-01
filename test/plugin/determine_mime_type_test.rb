@@ -121,20 +121,39 @@ describe Shrine::Plugins::DetermineMimeType do
   end
 
   describe ":marcel analyzer" do
-    before do
-      @shrine.plugin :determine_mime_type, analyzer: :marcel
+    describe "no options" do
+      before do
+        @shrine.plugin :determine_mime_type, analyzer: :marcel
+      end
+
+      it "extracts MIME type of any IO" do
+        assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+      end
+
+      it "returns application/octet-stream for unidentified MIME types" do
+        assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃"))
+      end
+
+      it "returns nil for empty IOs" do
+        assert_nil @shrine.determine_mime_type(fakeio(""))
+      end
     end
 
-    it "extracts MIME type of any IO" do
-      assert_equal "image/jpeg", @shrine.determine_mime_type(image)
-    end
+    describe "with options" do
+      it "extracts MIME type of any IO" do
+        @shrine.plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: false }
+        assert_equal "image/jpeg", @shrine.determine_mime_type(image)
+      end
 
-    it "returns application/octet-stream for unidentified MIME types" do
-      assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃"))
-    end
+      it "returns application/octet-stream for unidentified MIME types" do
+        @shrine.plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: false }
+        assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃", filename: "smile.jpeg"))
+      end
 
-    it "returns nil for empty IOs" do
-      assert_nil @shrine.determine_mime_type(fakeio(""))
+      it "returns application/octet-stream for unidentified MIME types" do
+        @shrine.plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: true }
+        assert_equal "image/jpeg", @shrine.determine_mime_type(fakeio("😃", filename: "smile.jpeg"))
+      end
     end
   end
 
@@ -221,7 +240,7 @@ describe Shrine::Plugins::DetermineMimeType do
   end
 
   it "allows passing a custom extractor" do
-    @shrine.plugin :determine_mime_type, analyzer: ->(io) { "foo/bar" }
+    @shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) { "foo/bar" }
     assert_equal "foo/bar", @shrine.determine_mime_type(image)
 
     @shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) { analyzers[:file].call(io) }
@@ -229,7 +248,7 @@ describe Shrine::Plugins::DetermineMimeType do
   end
 
   it "always rewinds the file" do
-    @shrine.plugin :determine_mime_type, analyzer: ->(io) { io.read }
+    @shrine.plugin :determine_mime_type, analyzer: ->(io, analyzers) { io.read }
     @shrine.determine_mime_type(file = image)
     assert_equal 0, file.pos
   end
@@ -247,6 +266,14 @@ describe Shrine::Plugins::DetermineMimeType do
 
     mime_type = analyzers[:content_type].call(io = fakeio("content", content_type: "foo/bar"))
     assert_equal "foo/bar", mime_type
+    assert_equal "content", io.read
+
+    mime_type = analyzers[:marcel].call(io = fakeio("content", filename: "file.json"), filename_fallback: false)
+    assert_equal "application/octet-stream", mime_type
+    assert_equal "content", io.read
+
+    mime_type = analyzers[:marcel].call(io = fakeio("content", filename: "file.json"), filename_fallback: true)
+    assert_equal "application/json", mime_type
     assert_equal "content", io.read
   end
 
