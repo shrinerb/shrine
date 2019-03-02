@@ -113,84 +113,84 @@ describe Shrine::Plugins::RackResponse do
 
   it "returns ranged responses when :range is given" do
     uploaded_file = @uploader.upload(fakeio("content"))
-    status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-6")
-    assert_equal 206,           status
-    assert_equal "bytes 0-6/7", headers["Content-Range"]
-    assert_equal "7",           headers["Content-Length"]
-    assert_equal "content",     body.each { |chunk| break chunk }
+    response = uploaded_file.to_rack_response(range: "bytes=0-6")
+    assert_equal 206,           response[0]
+    assert_equal "bytes 0-6/7", response[1]["Content-Range"]
+    assert_equal "7",           response[1]["Content-Length"]
+    assert_equal "content",     response[2].each { |chunk| break chunk }
 
     uploaded_file = @uploader.upload(fakeio("content"))
-    status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-2")
-    assert_equal 206,           status
-    assert_equal "bytes 0-2/7", headers["Content-Range"]
-    assert_equal "3",           headers["Content-Length"]
-    assert_equal "con",         body.each { |chunk| break chunk }
+    response = uploaded_file.to_rack_response(range: "bytes=0-2")
+    assert_equal 206,           response[0]
+    assert_equal "bytes 0-2/7", response[1]["Content-Range"]
+    assert_equal "3",           response[1]["Content-Length"]
+    assert_equal "con",         response[2].each { |chunk| break chunk }
 
     uploaded_file = @uploader.upload(fakeio("content"))
-    status, headers, body = uploaded_file.to_rack_response(range: "bytes=2-4")
-    assert_equal 206,           status
-    assert_equal "bytes 2-4/7", headers["Content-Range"]
-    assert_equal "3",           headers["Content-Length"]
-    assert_equal "nte",         body.each { |chunk| break chunk }
+    response = uploaded_file.to_rack_response(range: "bytes=2-4")
+    assert_equal 206,           response[0]
+    assert_equal "bytes 2-4/7", response[1]["Content-Range"]
+    assert_equal "3",           response[1]["Content-Length"]
+    assert_equal "nte",         response[2].each { |chunk| break chunk }
 
     uploaded_file = @uploader.upload(fakeio("content"))
-    status, headers, body = uploaded_file.to_rack_response(range: "bytes=4-6")
-    assert_equal 206,           status
-    assert_equal "bytes 4-6/7", headers["Content-Range"]
-    assert_equal "3",           headers["Content-Length"]
-    assert_equal "ent",         body.each { |chunk| break chunk }
+    response = uploaded_file.to_rack_response(range: "bytes=4-6")
+    assert_equal 206,           response[0]
+    assert_equal "bytes 4-6/7", response[1]["Content-Range"]
+    assert_equal "3",           response[1]["Content-Length"]
+    assert_equal "ent",         response[2].each { |chunk| break chunk }
   end
 
   it "returns ranged responses across multiple chunks" do
     uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
-    _, headers, body = uploaded_file.to_rack_response(range: "bytes=0-36863")
-    assert_equal "bytes 0-36863/36864", headers["Content-Range"]
-    assert_equal "36864", headers["Content-Length"]
+    response = uploaded_file.to_rack_response(range: "bytes=0-36863")
+    assert_equal "bytes 0-36863/36864", response[1]["Content-Range"]
+    assert_equal "36864",               response[1]["Content-Length"]
     yielded_content = ""
-    body.each { |chunk| yielded_content << chunk }
+    response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, yielded_content
 
     uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
-    _, headers, body = uploaded_file.to_rack_response(range: "bytes=0-20479")
-    assert_equal "bytes 0-20479/36864", headers["Content-Range"]
-    assert_equal "20480", headers["Content-Length"]
+    response = uploaded_file.to_rack_response(range: "bytes=0-20479")
+    assert_equal "bytes 0-20479/36864", response[1]["Content-Range"]
+    assert_equal "20480",               response[1]["Content-Length"]
     yielded_content = ""
-    body.each { |chunk| yielded_content << chunk }
+    response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 16*1024 + "b" * 4*1024, yielded_content
 
     uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
-    _, headers, body = uploaded_file.to_rack_response(range: "bytes=12288-20479")
-    assert_equal "bytes 12288-20479/36864", headers["Content-Range"]
-    assert_equal "8192", headers["Content-Length"]
+    response = uploaded_file.to_rack_response(range: "bytes=12288-20479")
+    assert_equal "bytes 12288-20479/36864", response[1]["Content-Range"]
+    assert_equal "8192", response[1]["Content-Length"]
     yielded_content = ""
-    body.each { |chunk| yielded_content << chunk }
+    response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 4*1024 + "b" * 4*1024, yielded_content
 
     uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
-    _, headers, body = uploaded_file.to_rack_response(range: "bytes=12288-33791")
-    assert_equal "bytes 12288-33791/36864", headers["Content-Range"]
-    assert_equal "21504", headers["Content-Length"]
+    response = uploaded_file.to_rack_response(range: "bytes=12288-33791")
+    assert_equal "bytes 12288-33791/36864", response[1]["Content-Range"]
+    assert_equal "21504", response[1]["Content-Length"]
     yielded_content = ""
-    body.each { |chunk| yielded_content << chunk }
+    response[2].each { |chunk| yielded_content << chunk }
     assert_equal "a" * 4*1024 + "b" * 16*1024 + "c" * 1*1024, yielded_content
 
     uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
-    _, headers, body = uploaded_file.to_rack_response(range: "bytes=35840-36863")
-    assert_equal "bytes 35840-36863/36864", headers["Content-Range"]
-    assert_equal "1024", headers["Content-Length"]
+    response = uploaded_file.to_rack_response(range: "bytes=35840-36863")
+    assert_equal "bytes 35840-36863/36864", response[1]["Content-Range"]
+    assert_equal "1024", response[1]["Content-Length"]
     yielded_content = ""
-    body.each { |chunk| yielded_content << chunk }
+    response[2].each { |chunk| yielded_content << chunk }
     assert_equal "c" * 1*1024, yielded_content
   end
 
   it "returns correct ranged response even when size metadata is missing" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.metadata.delete("size")
-    status, headers, body = uploaded_file.to_rack_response(range: "bytes=0-6")
-    assert_equal 206,           status
-    assert_equal "bytes 0-6/7", headers["Content-Range"]
-    assert_equal "7",           headers["Content-Length"]
-    assert_equal "content",     body.each { |chunk| break chunk }
+    response = uploaded_file.to_rack_response(range: "bytes=0-6")
+    assert_equal 206,           response[0]
+    assert_equal "bytes 0-6/7", response[1]["Content-Range"]
+    assert_equal "7",           response[1]["Content-Length"]
+    assert_equal "content",     response[2].each { |chunk| break chunk }
   end
 
   it "returns Accept-Ranges when :range is given" do
@@ -203,15 +203,15 @@ describe Shrine::Plugins::RackResponse do
 
   it "implements #to_path on the body for filesystem storage" do
     uploaded_file = @uploader.upload(fakeio)
-    status, headers, body = uploaded_file.to_rack_response
-    refute body.respond_to?(:to_path)
-    assert_raises(NoMethodError) { body.to_path }
+    response = uploaded_file.to_rack_response
+    refute_respond_to response[2], :to_path
+    assert_raises(NoMethodError) { response[2].to_path }
 
     @shrine.storages[:disk] = Shrine::Storage::FileSystem.new(Dir.tmpdir)
     @uploader = @shrine.new(:disk)
     uploaded_file = @uploader.upload(fakeio)
-    status, headers, body = uploaded_file.to_rack_response
-    assert body.respond_to?(:to_path)
-    assert_equal @uploader.storage.path(uploaded_file.id), body.to_path
+    response = uploaded_file.to_rack_response
+    assert_respond_to response[2], :to_path
+    assert_equal @uploader.storage.path(uploaded_file.id), response[2].to_path
   end
 end
