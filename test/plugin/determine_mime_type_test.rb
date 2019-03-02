@@ -141,17 +141,17 @@ describe Shrine::Plugins::DetermineMimeType do
 
     describe "with options" do
       it "extracts MIME type of any IO" do
-        @shrine.plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: false }
+        @shrine.plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: false }
         assert_equal "image/jpeg", @shrine.determine_mime_type(image)
       end
 
       it "returns application/octet-stream for unidentified MIME types" do
-        @shrine.plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: false }
+        @shrine.plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: false }
         assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃", filename: "smile.jpeg"))
       end
 
       it "returns application/octet-stream for unidentified MIME types" do
-        @shrine.plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: true }
+        @shrine.plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: true }
         assert_equal "image/jpeg", @shrine.determine_mime_type(fakeio("😃", filename: "smile.jpeg"))
       end
     end
