@@ -999,6 +999,15 @@ describe Shrine::Plugins::DerivationEndpoint do
         @uploaded_file.derivation(:gray).upload(file)
         assert File.exist?(file.path)
       end
+
+      it "disables moving plugin" do
+        @shrine.plugin :moving
+        @uploader.storage.instance_eval { def movable?(*); true; end }
+        file = Tempfile.new
+        @uploaded_file.derivation(:gray).upload(file)
+        assert @uploaded_file.exists?
+        assert File.exist?(file.path)
+      end
     end
 
     describe "#retrieve" do

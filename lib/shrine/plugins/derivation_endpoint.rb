@@ -631,7 +631,8 @@ class Shrine
         uploader.upload uploadable,
           location:       upload_location,
           upload_options: upload_options,
-          delete:         false # disable delete_raw plugin
+          delete:         false, # disable delete_raw plugin
+          move:           false # disable moving plugin
       end
     end
 
