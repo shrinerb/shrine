@@ -1,5 +1,9 @@
 ## HEAD
 
+* `determine_mime_type` - Allow passing options to analzyers (Marcel accepts `:filename_fallback` option) (@hmistry)
+
+* `determine_mime_type` - Revert "Extended determine MIME type with Marcel" (@hmistry)
+
 * `rack_response` – improve performance for upper bounded `Range` header values (@zarqman)
 
 * `rack_response` – prevent response body from yielding `nil`-chunks (@zarqman)
