@@ -141,6 +141,48 @@ describe Shrine::Plugins::RackResponse do
     assert_equal "ent",         body.each { |chunk| break chunk }
   end
 
+  it "returns ranged responses across multiple chunks" do
+    uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+    _, headers, body = uploaded_file.to_rack_response(range: "bytes=0-36863")
+    assert_equal "bytes 0-36863/36864", headers["Content-Range"]
+    assert_equal "36864", headers["Content-Length"]
+    yielded_content = ""
+    body.each { |chunk| yielded_content << chunk }
+    assert_equal "a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024, yielded_content
+
+    uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+    _, headers, body = uploaded_file.to_rack_response(range: "bytes=0-20479")
+    assert_equal "bytes 0-20479/36864", headers["Content-Range"]
+    assert_equal "20480", headers["Content-Length"]
+    yielded_content = ""
+    body.each { |chunk| yielded_content << chunk }
+    assert_equal "a" * 16*1024 + "b" * 4*1024, yielded_content
+
+    uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+    _, headers, body = uploaded_file.to_rack_response(range: "bytes=12288-20479")
+    assert_equal "bytes 12288-20479/36864", headers["Content-Range"]
+    assert_equal "8192", headers["Content-Length"]
+    yielded_content = ""
+    body.each { |chunk| yielded_content << chunk }
+    assert_equal "a" * 4*1024 + "b" * 4*1024, yielded_content
+
+    uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+    _, headers, body = uploaded_file.to_rack_response(range: "bytes=12288-33791")
+    assert_equal "bytes 12288-33791/36864", headers["Content-Range"]
+    assert_equal "21504", headers["Content-Length"]
+    yielded_content = ""
+    body.each { |chunk| yielded_content << chunk }
+    assert_equal "a" * 4*1024 + "b" * 16*1024 + "c" * 1*1024, yielded_content
+
+    uploaded_file = @uploader.upload(fakeio("a" * 16*1024 + "b" * 16*1024 + "c" * 4*1024))
+    _, headers, body = uploaded_file.to_rack_response(range: "bytes=35840-36863")
+    assert_equal "bytes 35840-36863/36864", headers["Content-Range"]
+    assert_equal "1024", headers["Content-Length"]
+    yielded_content = ""
+    body.each { |chunk| yielded_content << chunk }
+    assert_equal "c" * 1*1024, yielded_content
+  end
+
   it "returns correct ranged response even when size metadata is missing" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.metadata.delete("size")

@@ -128,9 +128,12 @@ class Shrine
           read_chunks do |chunk|
             chunk_range = bytes_read..(bytes_read + chunk.bytesize - 1)
 
-            if chunk_range.begin >= range.begin && chunk_range.end <= range.end
+            if chunk_range.begin > range.end
+              # no more chunks will match
+              return
+            elsif chunk_range.begin >= range.begin && chunk_range.end <= range.end
               yield chunk
-            elsif chunk_range.end >= range.begin || chunk_range.end <= range.end
+            elsif chunk_range.end >= range.begin && chunk_range.begin <= range.end
               requested_range_begin = [chunk_range.begin, range.begin].max - bytes_read
               requested_range_end   = [chunk_range.end, range.end].min - bytes_read
 
