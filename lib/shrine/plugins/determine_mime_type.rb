@@ -13,7 +13,7 @@ class Shrine
         end
 
         uploader.opts[:mime_type_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:mime_type_analyzer, :file))
-        uploader.opts[:analyzer_options] = opts.fetch(:options, uploader.opts.fetch(:analyzer_options, {}))
+        uploader.opts[:mime_type_analyzer_options] = opts.fetch(:analyzer_options, uploader.opts.fetch(:mime_type_analyzer_options, {}))
       end
 
       module ClassMethods
@@ -26,7 +26,7 @@ class Shrine
           args     = if analyzer.is_a?(Proc)
               [io, mime_type_analyzers].take(analyzer.arity.abs)
             else
-              [io, opts[:analyzer_options]]
+              [io, opts[:mime_type_analyzer_options]]
             end
 
           mime_type = analyzer.call(*args)

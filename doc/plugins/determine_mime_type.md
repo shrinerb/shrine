@@ -39,7 +39,7 @@ Currently, Marcel is the only analyzer that accepts options to be passed in.
 Analyzer options can be set in one of two ways:
 
 ```rb
-plugin :determine_mime_type, analyzer: :marcel, options: { filename_fallback: true }
+plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: true }
 
 # or
 
