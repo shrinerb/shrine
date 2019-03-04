@@ -445,9 +445,10 @@ plugin :derivation_endpoint, upload: true,
 
 ### Redirecting
 
-You can configure the endpoint to redirect to the uploaded derivative on the
-storage instead of serving it through the endpoint (which is the default
-behaviour) by setting both `:upload` and `:upload_redirect` to `true`:
+If you are using remote cloud storages, you can configure the endpoint to
+redirect the client to the uploaded derivative on the remote storage instead of
+serving it through the endpoint (which is the default behaviour) by setting both
+`:upload` and `:upload_redirect` to `true`:
 
 ```rb
 plugin :derivation_endpoint, upload: true,
@@ -461,6 +462,22 @@ redirect URL:
 plugin :derivation_endpoint, upload: true,
                              upload_redirect: true,
                              upload_redirect_url_options: { public: true }
+```
+
+If you are using the local filesystem storage, then redirecting does not make
+sense.
+
+### Deleting derivatives
+
+When you use the `:upload` options and upload the derivatives to storage, there
+will come a time when you need to delete the derivatives because the original
+file is being replaced, deleted, or some other reason. In this case, you can
+delete the derivatives before deleting the record or updating the record with
+the new original file.
+
+```rb
+# photo is the model and image is the file attachment
+photo.image.derivation(:thumbnail).delete
 ```
 
 ## Cache busting
