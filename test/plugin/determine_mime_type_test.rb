@@ -150,7 +150,7 @@ describe Shrine::Plugins::DetermineMimeType do
         assert_equal "application/octet-stream", @shrine.determine_mime_type(fakeio("😃", filename: "smile.jpeg"))
       end
 
-      it "returns image/jpeg for unidentified MIME types when using filename fallback" do
+      it "returns the MIME type based on filename for unidentified MIME types when using filename fallback" do
         @shrine.plugin :determine_mime_type, analyzer: :marcel, analyzer_options: { filename_fallback: true }
         assert_equal "image/jpeg", @shrine.determine_mime_type(fakeio("😃", filename: "smile.jpeg"))
       end
