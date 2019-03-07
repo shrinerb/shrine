@@ -709,7 +709,9 @@ class Shrine
     # Returns a URL with the `signature` query parameter generated from the
     # given path components and query parameters.
     def signed_url(*components, params)
-      path  = Rack::Utils.escape_path(components.join("/"))
+      # When using Rack < 2, Rack::Utils#escape_path will escape '/'.
+      # Escape each component and then join them together.
+      path = components.map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
       query = Rack::Utils.build_query(params)
 
       signature = generate_signature("#{path}?#{query}")
