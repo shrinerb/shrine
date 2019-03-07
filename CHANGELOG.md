@@ -1,8 +1,10 @@
 ## HEAD
 
-* `determine_mime_type` - Allow passing options to analzyers (Marcel accepts `:filename_fallback` option) (@hmistry)
+* `derivation_endpoint` – Add support for Rack < 2 (@Antsiscool)
 
-* `determine_mime_type` - Revert "Extended determine MIME type with Marcel" (@hmistry)
+* `determine_mime_type` – Allow passing options to analzyers (Marcel accepts `:filename_fallback` option) (@hmistry)
+
+* `determine_mime_type` – Revert "Extended determine MIME type with Marcel" (@hmistry)
 
 * `rack_response` – improve performance for upper bounded `Range` header values (@zarqman)
 
