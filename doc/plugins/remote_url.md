@@ -83,6 +83,12 @@ plugin :remote_url, error_message: "download failed"
 plugin :remote_url, error_message: -> (url, error) { I18n.t("errors.download_failed") }
 ```
 
+## Ignore errors
+If you encounter an error in Download, use this to disable the error.
+```rb
+plugin :remote_url, ignore_errors: true
+```
+
 ## Background
 
 If you want the file to be downloaded from the URL in the background, you can
