@@ -107,6 +107,13 @@ describe Shrine::Plugins::RemoteUrl do
     refute_includes @user.avatar_attacher.errors, "foo"
   end
 
+  it "accepts ignore errors" do
+    @attacher.shrine_class.opts[:remote_url_ignore_errors] = true
+    @user.avatar_remote_url = bad_url
+    assert_empty @user.avatar_attacher.errors
+    refute @user.avatar
+  end
+
   def good_url
     "http://example.com/good.jpg"
   end

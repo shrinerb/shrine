@@ -14,6 +14,7 @@ class Shrine
         uploader.opts[:remote_url_downloader] = opts.fetch(:downloader, uploader.opts.fetch(:remote_url_downloader, :open_uri))
         uploader.opts[:remote_url_max_size] = opts.fetch(:max_size, uploader.opts[:remote_url_max_size])
         uploader.opts[:remote_url_error_message] = opts.fetch(:error_message, uploader.opts[:remote_url_error_message])
+        uploader.opts[:remote_url_ignore_errors] = opts.fetch(:ignore_errors, uploader.opts[:remote_url_ignore_errors])
       end
 
       module AttachmentMethods
@@ -42,6 +43,7 @@ class Shrine
           begin
             downloaded_file = download(url, downloader)
           rescue => error
+            return if shrine_class.opts[:remote_url_ignore_errors]
             download_error = error
           end
 
