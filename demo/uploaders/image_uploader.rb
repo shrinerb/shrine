@@ -43,7 +43,7 @@ class ImageUploader < Shrine
 
   # uploader showcasing on-the-fly processing
   class Dynamic < ImageUploader
-    plugin :derivation_endpoint, secret_key: "secret", prefix: "derivations/image"
+    plugin :derivation_endpoint, prefix: "derivations/image"
 
     derivation :thumbnail do |file, width, height|
       ImageProcessing::MiniMagick

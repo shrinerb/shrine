@@ -584,8 +584,8 @@ these errors converted to 404 responses by adding them to `:download_errors`:
 
 ```rb
 plugin :derivation_endpoint, download_errors: [
-  Errno::ENOENT,              # raised by Shrine::Storage::FileSystem
-  Aws::S3::Errors::NoSuchKey, # raised by Shrine::Storage::S3
+  Errno::ENOENT,             # raised by Shrine::Storage::FileSystem
+  Aws::S3::Errors::NotFound, # raised by Shrine::Storage::S3
 ]
 ```
 

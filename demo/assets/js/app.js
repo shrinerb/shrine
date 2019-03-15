@@ -24,11 +24,11 @@ function singleFileUpload(fileInput) {
       target: imagePreview.parentNode,
     })
 
-  uppy.on('upload-success', function (file, data) {
+  uppy.on('upload-success', function (file, response) {
     // show image preview
     imagePreview.src = URL.createObjectURL(file.data)
 
-    var uploadedFileData = window.uploadedFileData(data, fileInput)
+    var uploadedFileData = window.uploadedFileData(file, response, fileInput)
 
     // set hidden field value to the uploaded file data so that it's submitted with the form as the attachment
     var hiddenInput = document.getElementById(fileInput.dataset.uploadResultElement)
@@ -49,11 +49,11 @@ function multipleFileUpload(fileInput) {
       replaceTargetContent: true,
     })
 
-  uppy.on('upload-success', function (file, data) {
+  uppy.on('upload-success', function (file, response) {
     hiddenField = document.createElement('input')
     hiddenField.type = 'hidden'
     hiddenField.name = 'album[photos_attributes]['+ Math.random().toString(36).substr(2, 9) + '][image]'
-    hiddenField.value = window.uploadedFileData(data, fileInput)
+    hiddenField.value = window.uploadedFileData(file, response, fileInput)
 
     document.querySelector('form').appendChild(hiddenField)
   })
@@ -83,7 +83,7 @@ function fileUpload(fileInput) {
   return uppy
 }
 
-function uploadedFileData(data, fileInput) {
+function uploadedFileData(file, response, fileInput) {
   if (fileInput.dataset.uploadServer == 's3') {
     // construct uploaded file data in the format that Shrine expects
     return JSON.stringify({
@@ -96,7 +96,7 @@ function uploadedFileData(data, fileInput) {
       }
     })
   } else {
-    return JSON.stringify(data.body)
+    return JSON.stringify(response.body)
   }
 }
 
