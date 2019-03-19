@@ -1,5 +1,7 @@
 ## HEAD
 
+* `metadata_attributes` – Fix `Attacher#assign` not accepting additional options anymore (@janko)
+
 * `derivation_endpoint` – Add support for Rack < 2 (@Antsiscool)
 
 * `determine_mime_type` – Allow passing options to analzyers (Marcel accepts `:filename_fallback` option) (@hmistry)

@@ -18,7 +18,7 @@ class Shrine
       end
 
       module AttacherMethods
-        def assign(value)
+        def assign(value, **options)
           super
           cached_file = get
 

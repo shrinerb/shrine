@@ -55,4 +55,9 @@ describe Shrine::Plugins::MetadataAttributes do
     assert_equal 4,            @attacher.record.avatar_size
     assert_equal "text/plain", @attacher.record.avatar_type
   end
+
+  it "still accepts assign options" do
+    @attacher.assign(fakeio("file"), metadata: { "mime_type" => "foo/bar" })
+    assert_equal "foo/bar", @attacher.get.mime_type
+  end
 end
