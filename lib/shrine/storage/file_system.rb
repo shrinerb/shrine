@@ -142,7 +142,7 @@ class Shrine
       # Cleans all empty subdirectories up the hierarchy.
       def clean(path)
         path.dirname.ascend do |pathname|
-          if pathname.children.empty? && pathname != directory
+          if Dir.empty?(pathname) && pathname != directory
             pathname.rmdir
           else
             break
