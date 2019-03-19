@@ -1,5 +1,7 @@
 ## HEAD
 
+* Improve performance of cleaning empty directories on deletion in `FileSystem` storage (@adamniedzielski)
+
 * Drop MRI 2.3 support (@janko)
 
 * `metadata_attributes` – Fix `Attacher#assign` not accepting additional options anymore (@janko)
