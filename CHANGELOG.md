@@ -1,5 +1,7 @@
 ## HEAD
 
+* `versions` – Allow `Attacher#url` to accept version name indifferently (@FunkyloverOne)
+
 * Improve performance of cleaning empty directories on deletion in `FileSystem` storage (@adamniedzielski)
 
 * Drop MRI 2.3 support (@janko)
