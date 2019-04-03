@@ -110,10 +110,9 @@ describe Shrine::Plugins::Versions do
   end
 
   describe "Attacher#url" do
-    it "accepts a version name indifferently" do
+    it "accepts a version name" do
       @attacher.set(thumb: @uploader.upload(fakeio))
       assert_equal @attacher.get[:thumb].url, @attacher.url(:thumb)
-      assert_equal @attacher.get[:thumb].url, @attacher.url("thumb")
     end
 
     it "returns nil when a attachment doesn't exist" do

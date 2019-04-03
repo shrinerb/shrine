@@ -105,7 +105,13 @@ class Shrine
 
           if attachment.is_a?(Hash)
             if version
-              indifferent_version_url(version, **options)
+              if attachment.key?(version)
+                attachment[version].url(**options)
+              elsif fallback = shrine_class.version_fallbacks[version]
+                url(fallback, **options)
+              else
+                default_url(**options, version: version)
+              end
             else
               raise Error, "must call Shrine::Attacher#url with the name of the version"
             end
@@ -139,30 +145,6 @@ class Shrine
           else
             super
           end
-        end
-
-        # Looks for versioned url indifferently,
-        # i.e. given version name could be both String or Symbol
-        def indifferent_version_url(version, **options)
-          attachment = get
-
-          trying_symbolized_version(version) do |v|
-            return attachment[v].url(**options) if attachment.key?(v)
-          end
-
-          trying_symbolized_version(version) do |v|
-            if (fallback = shrine_class.version_fallbacks[v])
-              return url(fallback, **options)
-            end
-          end
-
-          default_url(**options, version: version)
-        end
-
-        # Helper method for #indifferent_version_url
-        def trying_symbolized_version(version)
-          yield(version) ||
-            (!version.is_a?(Symbol) && yield(version.to_s.to_sym))
         end
       end
     end
