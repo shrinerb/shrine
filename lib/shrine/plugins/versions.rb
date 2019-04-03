@@ -105,6 +105,7 @@ class Shrine
 
           if attachment.is_a?(Hash)
             if version
+              version = version.to_sym
               if attachment.key?(version)
                 attachment[version].url(**options)
               elsif fallback = shrine_class.version_fallbacks[version]
