@@ -1,5 +1,7 @@
 ## HEAD
 
+* `versions` – Fix uploaded versions being deleted when string version names are used (@janko)
+
 * `versions` – Allow `Attacher#url` to accept version name indifferently (@FunkyloverOne)
 
 * Improve performance of cleaning empty directories on deletion in `FileSystem` storage (@adamniedzielski)

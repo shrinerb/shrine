@@ -5,6 +5,7 @@ describe Shrine::Plugins::Versions do
   before do
     @attacher = attacher { plugin :versions }
     @uploader = @attacher.store
+    @shrine   = @attacher.shrine_class
   end
 
   it "allows uploading versions" do
@@ -233,6 +234,17 @@ describe Shrine::Plugins::Versions do
       @attacher.set(thumb: [@attacher.cache!(fakeio)])
       @attacher._promote
       assert @attacher.store.uploaded?(@attacher.get[:thumb][0])
+    end
+
+    it "handles versions with string keys" do
+      @shrine.plugin :processing
+      @shrine.process(:store) { |io| { "name" => io } }
+
+      @attacher.assign(fakeio)
+      @attacher._promote(action: :store)
+
+      assert @attacher.get.key?(:name)
+      assert @attacher.get.fetch(:name).exists?
     end
   end
 
