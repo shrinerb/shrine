@@ -1,5 +1,7 @@
 ## HEAD
 
+* `default_url` – Add `:host` for specifying the URL host (@janko)
+
 * `versions` – Fix uploaded versions being deleted when string version names are used (@janko)
 
 * `versions` – Allow `Attacher#url` to accept version name indifferently (@FunkyloverOne)

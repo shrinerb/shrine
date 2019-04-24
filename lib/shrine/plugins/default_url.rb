@@ -6,7 +6,9 @@ class Shrine
     #
     # [doc/plugins/default_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_url.md
     module DefaultUrl
-      def self.configure(uploader, &block)
+      def self.configure(uploader, opts = {}, &block)
+        uploader.opts[:default_url_host] = opts.fetch(:host, uploader.opts[:default_url_host])
+
         if block
           uploader.opts[:default_url] = block
           Shrine.deprecation("Passing a block to default_url plugin is deprecated and will probably be removed in future versions of Shrine. Use `Attacher.default_url { ... }` instead.")
@@ -27,15 +29,25 @@ class Shrine
         private
 
         def default_url(**options)
-          if default_url_block
-            instance_exec(options, &default_url_block)
-          elsif shrine_class.opts[:default_url]
-            shrine_class.opts[:default_url].call(context.merge(options){|k, old, new| old})
+          url = if default_url_block
+                  instance_exec(options, &default_url_block)
+                elsif shrine_class.opts[:default_url]
+                  shrine_class.opts[:default_url].call(context.merge(options){|k, old, new| old})
+                end
+
+          if default_url_host
+            [default_url_host, url].join
+          else
+            url
           end
         end
 
         def default_url_block
           shrine_class.opts[:default_url_block]
+        end
+
+        def default_url_host
+          shrine_class.opts[:default_url_host]
         end
       end
     end

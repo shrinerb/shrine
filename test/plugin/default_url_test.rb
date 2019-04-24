@@ -4,6 +4,7 @@ require "shrine/plugins/default_url"
 describe Shrine::Plugins::DefaultUrl do
   before do
     @attacher = attacher { plugin :default_url }
+    @shrine   = @attacher.shrine_class
   end
 
   it "returns block value when attachment is missing" do
@@ -31,14 +32,23 @@ describe Shrine::Plugins::DefaultUrl do
     assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
   end
 
+  it "accepts :host" do
+    @shrine.plugin :default_url, host: "https://example.com"
+    @attacher.class.default_url { "/bar/baz" }
+    assert_equal "https://example.com/bar/baz", @attacher.url
+
+    @shrine.plugin :default_url, host: "https://example.com/foo"
+    assert_equal "https://example.com/foo/bar/baz", @attacher.url
+  end
+
   deprecated "accepts a block when loading the plugin" do
-    @attacher.shrine_class.plugin(:default_url) { "default_url" }
+    @shrine.plugin(:default_url) { "default_url" }
     assert_equal "default_url", @attacher.url
   end
 
   it "doesn't override previously set default URL if no block is given" do
     @attacher.class.default_url { "default_url" }
-    @attacher.shrine_class.plugin :default_url
+    @shrine.plugin :default_url
     assert_equal "default_url", @attacher.url
   end
 end
