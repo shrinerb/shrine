@@ -2,6 +2,7 @@
 
 require "rack"
 require "content_disposition"
+require "digest"
 
 class Shrine
   module Plugins
@@ -49,18 +50,49 @@ class Shrine
         # metadata. Also returns the correct "Content-Range" header on ranged
         # requests.
         def rack_headers(filename: nil, type: nil, disposition: "inline", range: false)
-          length     = range ? range.size : file.size
-          type     ||= file.mime_type || Rack::Mime.mime_type(".#{file.extension}", nil)
+          {
+            "Content-Length"      => content_length(range),
+            "Content-Type"        => content_type(type),
+            "Content-Disposition" => content_disposition(disposition, filename),
+            "Content-Range"       => content_range(range),
+            "Accept-Ranges"       => accept_ranges(range),
+            "ETag"                => etag,
+          }.compact
+        end
+
+        # Value for the "Content-Length" header.
+        def content_length(range)
+          length = range ? range.size : file.size
+          length.to_s if length
+        end
+
+        # Value for the "Content-Type" header.
+        def content_type(type)
+          type || file.mime_type || Rack::Mime.mime_type(".#{file.extension}", nil)
+        end
+
+        # Value for the "Content-Disposition" header.
+        def content_disposition(disposition, filename)
           filename ||= file.original_filename || file.id.split("/").last
 
-          headers = {}
-          headers["Content-Length"]      = length.to_s if length
-          headers["Content-Type"]        = type if type
-          headers["Content-Disposition"] = content_disposition(disposition, filename)
-          headers["Content-Range"]       = "bytes #{range.begin}-#{range.end}/#{file.size}" if range
-          headers["Accept-Ranges"]       = "bytes" unless range == false
+          ContentDisposition.format(disposition: disposition, filename: filename)
+        end
 
-          headers
+        # Value for the "Content-Range" header.
+        def content_range(range)
+          "bytes #{range.begin}-#{range.end}/#{file.size}" if range
+        end
+
+        # Value for the "Accept-Ranges" header.
+        def accept_ranges(range)
+          "bytes" unless range == false
+        end
+
+        # Value for the "ETag" header.
+        def etag
+          digest = Digest::SHA256.hexdigest("#{file.shrine_class}-#{file.storage_key}-#{file.id}")
+
+          %(W/"#{digest.byteslice(0, 32)}")
         end
 
         # Returns an object that responds to #each and #close, which yields
@@ -78,10 +110,6 @@ class Shrine
           end
 
           ranges.first if ranges && ranges.one?
-        end
-
-        def content_disposition(disposition, filename)
-          ContentDisposition.format(disposition: disposition, filename: filename)
         end
       end
 

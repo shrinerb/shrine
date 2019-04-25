@@ -77,6 +77,12 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal "nte",         response.body_binary
   end
 
+  it "returns ETag" do
+    response = app.get(@uploaded_file.download_url)
+    assert_instance_of String,    response.headers["ETag"]
+    assert_match /^W\/"\w{32}"$/, response.headers["ETag"]
+  end
+
   it "returns 404 for nonexisting file" do
     @uploaded_file.data["id"] = "nonexistent"
     response = app.get(@uploaded_file.download_url)

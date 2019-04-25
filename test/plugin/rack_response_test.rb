@@ -201,6 +201,35 @@ describe Shrine::Plugins::RackResponse do
     assert_equal "bytes", response[1]["Accept-Ranges"]
   end
 
+  it "returns ETag" do
+    uploaded_file = @uploader.upload(fakeio)
+    response = uploaded_file.to_rack_response
+    assert_instance_of String,    response[1]["ETag"]
+    assert_match /^W\/"\w{32}"$/, response[1]["ETag"]
+  end
+
+  it "makes ETag as unique as possible" do
+    etags = []
+
+    etags << @uploader.class.new(:cache)
+      .upload(fakeio, location: "foo")
+      .to_rack_response[1]["ETag"]
+
+    etags << @uploader.class.new(:cache)
+      .upload(fakeio, location: "bar")
+      .to_rack_response[1]["ETag"]
+
+    etags << @uploader.class.new(:store)
+      .upload(fakeio, location: "foo")
+      .to_rack_response[1]["ETag"]
+
+    etags << uploader { plugin :rack_response }
+      .upload(fakeio, location: "foo")
+      .to_rack_response[1]["ETag"]
+
+    assert_equal etags, etags.uniq
+  end
+
   it "implements #to_path on the body for filesystem storage" do
     uploaded_file = @uploader.upload(fakeio)
     response = uploaded_file.to_rack_response

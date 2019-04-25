@@ -660,6 +660,13 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "gray",         response[2].enum_for(:each).to_a.join
       end
 
+      it "returns ETag" do
+        @uploaded_file.derivation_response(:gray, env: {})
+        response = @uploaded_file.derivation_response(:gray, env: {})
+        assert_instance_of String,    response[1]["ETag"]
+        assert_match /^W\/"\w{32}"$/, response[1]["ETag"]
+      end
+
       it "applies :upload_open_options" do
         @shrine.plugin :derivation_endpoint, upload_open_options: { foo: "bar" }
         @uploaded_file.derivation_response(:gray, env: {})

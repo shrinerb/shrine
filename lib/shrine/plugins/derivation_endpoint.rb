@@ -449,19 +449,13 @@ class Shrine
 
       status = response[0]
 
-      content_type   = type || response[1]["Content-Type"]
-      content_length = response[1]["Content-Length"]
-      content_range  = response[1]["Content-Range"]
-
-      filename  = self.filename
-      filename += File.extname(file.path) if File.extname(filename).empty?
-
-      headers = {}
-      headers["Content-Type"]        = content_type if content_type
-      headers["Content-Disposition"] = content_disposition(filename)
-      headers["Content-Length"]      = content_length
-      headers["Content-Range"]       = content_range if content_range
-      headers["Accept-Ranges"]       = "bytes"
+      headers = {
+        "Content-Type"        => type || response[1]["Content-Type"],
+        "Content-Length"      => response[1]["Content-Length"],
+        "Content-Disposition" => content_disposition(file),
+        "Content-Range"       => response[1]["Content-Range"],
+        "Accept-Ranges"       => "bytes",
+      }.compact
 
       body = Rack::BodyProxy.new(response[2]) { File.delete(file.path) }
 
@@ -523,7 +517,10 @@ class Shrine
 
     # Returns disposition and filename formatted for the `Content-Disposition`
     # header.
-    def content_disposition(filename)
+    def content_disposition(file)
+      filename  = self.filename
+      filename += File.extname(file.path) if File.extname(filename).empty?
+
       ContentDisposition.format(disposition: disposition, filename: filename)
     end
   end

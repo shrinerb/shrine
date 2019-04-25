@@ -1,5 +1,11 @@
 ## HEAD
 
+* `derivation_endpoint` – Add `ETag` header to prevent `Rack::ETag` from buffering file content (@janko)
+
+* `rack_response` – Add `ETag` header to prevent `Rack::ETag` from buffering file content (@janko)
+
+* `download_endpoint` – Add `ETag` header to prevent `Rack::ETag` from buffering file content (@janko)
+
 * `default_url` – Add `:host` for specifying the URL host (@janko)
 
 * `versions` – Fix uploaded versions being deleted when string version names are used (@janko)
