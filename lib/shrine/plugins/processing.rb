@@ -13,7 +13,7 @@ class Shrine
       module ClassMethods
         def process(action, &block)
           opts[:processing][action] ||= []
-          opts[:processing][action] << block
+          opts[:processing][action] += [block]
         end
       end
 

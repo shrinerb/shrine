@@ -53,4 +53,21 @@ describe Shrine::Plugins::Processing do
     uploaded_file = @uploader.upload(fakeio, action: :foo)
     assert_equal "processed", uploaded_file.read
   end
+
+  it "doesn't share processing blocks" do
+    @shrine.process(:foo) { |io, context| FakeIO.new("#{io.read} once") }
+
+    subclass = Class.new(@shrine)
+    subclass.process(:foo) { |io, context| FakeIO.new("#{io.read} twice") }
+
+    uploaded_by_parent = @uploader.upload(fakeio("file"), action: :foo)
+    uploaded_by_subclass = subclass.new(:store).upload(fakeio("file"), action: :foo)
+
+    refute_equal @shrine.opts[:processing], subclass.opts[:processing]
+    assert_equal 1, @shrine.opts[:processing][:foo].size
+    assert_equal 2, subclass.opts[:processing][:foo].size
+
+    assert_equal "file once", uploaded_by_parent.read
+    assert_equal "file once twice", uploaded_by_subclass.read
+  end
 end
