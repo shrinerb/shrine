@@ -1,5 +1,7 @@
 ## HEAD
 
+* `processing` – Fix defining process blocks being applied to `Shrine` superclasses (@ksol)
+
 * `derivation_endpoint` – Add `ETag` header to prevent `Rack::ETag` from buffering file content (@janko)
 
 * `rack_response` – Add `ETag` header to prevent `Rack::ETag` from buffering file content (@janko)
