@@ -23,16 +23,20 @@ function singleFileUpload(fileInput) {
     .use(Uppy.ProgressBar, {
       target: imagePreview.parentNode,
     })
+    .use(Uppy.ThumbnailGenerator, {
+      thumbnailWidth: 600,
+    })
 
   uppy.on('upload-success', function (file, response) {
-    // show image preview
-    imagePreview.src = URL.createObjectURL(file.data)
-
     var uploadedFileData = window.uploadedFileData(file, response, fileInput)
 
     // set hidden field value to the uploaded file data so that it's submitted with the form as the attachment
     var hiddenInput = document.getElementById(fileInput.dataset.uploadResultElement)
     hiddenInput.value = uploadedFileData
+  })
+
+  uppy.on('thumbnail:generated', function (file, preview) {
+    imagePreview.src = preview
   })
 }
 
