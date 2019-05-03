@@ -82,6 +82,11 @@ class Shrine
       [status, headers, body]
     end
 
+    def inspect
+      "#<#{@shrine_class}::UploadEndpoint(:#{@storage_key})>"
+    end
+    alias to_s inspect
+
     private
 
     # Accepts a `Rack::Request` object, uploads the file, and returns a Rack

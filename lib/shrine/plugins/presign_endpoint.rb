@@ -77,6 +77,11 @@ class Shrine
       [status, headers, body]
     end
 
+    def inspect
+      "#<#{@shrine_class}::PresignEndpoint(:#{@storage_key})>"
+    end
+    alias to_s inspect
+
     private
 
     # Accepts a `Rack::Request` object, generates the presign, and returns a
