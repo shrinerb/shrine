@@ -1,5 +1,7 @@
 ## HEAD
 
+* `upload_endpoint` – Soft-rename `Shrine::Plugins::UploadEndpoint::App` class to `Shrine::UploadEndpoint` (@janko)
+
 * `processing` – Fix defining process blocks being applied to `Shrine` superclasses (@ksol)
 
 * `derivation_endpoint` – Add `ETag` header to prevent `Rack::ETag` from buffering file content (@janko)

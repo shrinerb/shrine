@@ -147,4 +147,8 @@ describe Shrine::Plugins::UploadEndpoint do
     response = app.post "/upload", multipart: {file: image}
     assert_equal 404, response.status
   end
+
+  deprecated "still defines Plugins::UploadEndpoint::App" do
+    assert_equal @shrine::UploadEndpoint, @shrine::Plugins::UploadEndpoint::App
+  end
 end
