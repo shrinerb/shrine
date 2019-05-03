@@ -72,7 +72,7 @@ To run the app you need to setup the following things:
 * Have SQLite on your machine, and run
 
   ```sh
-  $ sequel -m db/migrations sqlite://database.sqlite3
+  $ bundle exec sequel -m db/migrations sqlite://database.sqlite3
   ```
 
 * Put your Amazon S3 credentials in `.env` and [setup CORS].
