@@ -10,12 +10,13 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   def endpoint
-    @uploader.class.presign_endpoint(:cache)
+    @shrine.presign_endpoint(:cache)
   end
 
   before do
     @uploader = uploader { plugin :presign_endpoint }
-    @uploader.class.storages[:cache] = Shrine::Storage::S3.new(bucket: "foo", stub_responses: true)
+    @shrine = @uploader.class
+    @shrine.storages[:cache] = Shrine::Storage::S3.new(bucket: "foo", stub_responses: true)
   end
 
   it "returns a JSON response" do
@@ -39,23 +40,23 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   it "accepts presign location" do
-    @uploader.class.plugin :presign_endpoint, presign_location: -> (r) { "${filename}" }
+    @shrine.plugin :presign_endpoint, presign_location: -> (r) { "${filename}" }
     response = app.get "/"
     assert_match "${filename}", response.body_json["fields"]["key"]
   end
 
   it "accepts presign options" do
-    @uploader.class.plugin :presign_endpoint, presign_options: { content_type: "image/jpeg" }
+    @shrine.plugin :presign_endpoint, presign_options: { content_type: "image/jpeg" }
     response = app.get "/"
     assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
 
-    @uploader.class.plugin :presign_endpoint, presign_options: -> (r) { {content_type: "image/jpeg"} }
+    @shrine.plugin :presign_endpoint, presign_options: -> (r) { {content_type: "image/jpeg"} }
     response = app.get "/"
     assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
   end
 
   it "accepts presign proc" do
-    @uploader.class.plugin :presign_endpoint,
+    @shrine.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { {url: "foo", fields: o, headers: {"foo" => "bar"}} }
     response = app.get "/"
@@ -65,7 +66,7 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   it "sets default fields and headers for presign" do
-    @uploader.class.plugin :presign_endpoint,
+    @shrine.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { {url: "foo"} }
     response = app.get "/"
@@ -75,7 +76,7 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   it "supports presign as an object that responds to #to_h" do
-    @uploader.class.plugin :presign_endpoint,
+    @shrine.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { Struct.new(:url, :fields).new("foo", o) }
     response = app.get "/"
@@ -85,7 +86,7 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   deprecated "supports presign as a custom object" do
-    @uploader.class.plugin :presign_endpoint,
+    @shrine.plugin :presign_endpoint,
       presign_options: { content_type: "image/jpeg" },
       presign: -> (i, o, r) { Object.new.tap { |o| def o.url; "foo"; end; def o.fields; {}; end } }
     response = app.get "/"
@@ -95,7 +96,7 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   it "accepts response proc" do
-    @uploader.class.plugin :presign_endpoint, rack_response: -> (o, r) do
+    @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
       [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]
     end
     response = app.get "/"
@@ -104,7 +105,7 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   it "allows overriding Cache-Control" do
-    @uploader.class.plugin :presign_endpoint, rack_response: -> (o, r) do
+    @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
       [200, {"Content-Type" => "application/json", "Cache-Control" => "no-cache"}, [o.to_json]]
     end
     response = app.get "/"
@@ -112,7 +113,7 @@ describe Shrine::Plugins::PresignEndpoint do
   end
 
   it "allows overriding options when instantiating the endpoint" do
-    app = Rack::TestApp.wrap(@uploader.class.presign_endpoint(:cache, presign_options: { content_type: "image/jpeg" }))
+    app = Rack::TestApp.wrap(@shrine.presign_endpoint(:cache, presign_options: { content_type: "image/jpeg" }))
     response = app.get "/"
     assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
   end
@@ -127,5 +128,9 @@ describe Shrine::Plugins::PresignEndpoint do
   it "accepts only root requests" do
     response = app.get "/presign"
     assert_equal 404, response.status
+  end
+
+  deprecated "still defines Plugins::PresignEndpoint::App" do
+    assert_equal @shrine::PresignEndpoint, @shrine::Plugins::PresignEndpoint::App
   end
 end

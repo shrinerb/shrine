@@ -1,5 +1,7 @@
 ## HEAD
 
+* `presign_endpoint` – Soft-rename `Shrine::Plugins::PresignEndpoint::App` class to `Shrine::PresignEndpoint` (@janko)
+
 * `upload_endpoint` – Soft-rename `Shrine::Plugins::UploadEndpoint::App` class to `Shrine::UploadEndpoint` (@janko)
 
 * `processing` – Fix defining process blocks being applied to `Shrine` superclasses (@ksol)
