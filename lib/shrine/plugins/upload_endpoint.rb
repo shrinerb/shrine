@@ -16,10 +16,8 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:upload_endpoint_max_size] = opts.fetch(:max_size, uploader.opts[:upload_endpoint_max_size])
-        uploader.opts[:upload_endpoint_upload_context] = opts.fetch(:upload_context, uploader.opts[:upload_endpoint_upload_context])
-        uploader.opts[:upload_endpoint_upload] = opts.fetch(:upload, uploader.opts[:upload_endpoint_upload])
-        uploader.opts[:upload_endpoint_rack_response] = opts.fetch(:rack_response, uploader.opts[:upload_endpoint_rack_response])
+        uploader.opts[:upload_endpoint] ||= {}
+        uploader.opts[:upload_endpoint].merge!(opts)
       end
 
       module ClassMethods
@@ -32,13 +30,10 @@ class Shrine
         # plugin initialization.
         def upload_endpoint(storage_key, **options)
           Shrine::UploadEndpoint.new(
-            shrine_class:   self,
-            storage_key:    storage_key,
-            max_size:       opts[:upload_endpoint_max_size],
-            upload_context: opts[:upload_endpoint_upload_context],
-            upload:         opts[:upload_endpoint_upload],
-            rack_response:  opts[:upload_endpoint_rack_response],
-            **options
+            shrine_class: self,
+            storage_key:  storage_key,
+            **opts[:upload_endpoint],
+            **options,
           )
         end
       end

@@ -11,10 +11,8 @@ class Shrine
     # [doc/plugins/presign_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/presign_endpoint.md
     module PresignEndpoint
       def self.configure(uploader, opts = {})
-        uploader.opts[:presign_endpoint_presign_location] = opts.fetch(:presign_location, uploader.opts[:presign_endpoint_presign_location])
-        uploader.opts[:presign_endpoint_presign_options] = opts.fetch(:presign_options, uploader.opts[:presign_endpoint_presign_options])
-        uploader.opts[:presign_endpoint_presign] = opts.fetch(:presign, uploader.opts[:presign_endpoint_presign])
-        uploader.opts[:presign_endpoint_rack_response] = opts.fetch(:rack_response, uploader.opts[:presign_endpoint_rack_response])
+        uploader.opts[:presign_endpoint] ||= {}
+        uploader.opts[:presign_endpoint].merge!(opts)
       end
 
       module ClassMethods
@@ -27,13 +25,10 @@ class Shrine
         # plugin initialization.
         def presign_endpoint(storage_key, **options)
           Shrine::PresignEndpoint.new(
-            shrine_class:     self,
-            storage_key:      storage_key,
-            presign_location: opts[:presign_endpoint_presign_location],
-            presign_options:  opts[:presign_endpoint_presign_options],
-            presign:          opts[:presign_endpoint_presign],
-            rack_response:    opts[:presign_endpoint_rack_response],
-            **options
+            shrine_class: self,
+            storage_key:  storage_key,
+            **opts[:presign_endpoint],
+            **options,
           )
         end
       end
