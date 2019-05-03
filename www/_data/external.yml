@@ -220,6 +220,9 @@
         name: administrate-field-shrine
         url: https://github.com/catsky/administrate-field-shrine
       -
+        name: imgproxy
+        url: https://github.com/imgproxy/imgproxy.rb
+      -
         name: rails_admin_shrine
         url: https://github.com/iquest/rails_admin_shrine
       -
