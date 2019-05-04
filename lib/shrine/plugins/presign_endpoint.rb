@@ -67,7 +67,7 @@ class Shrine
         handle_request(request)
       end
 
-      headers["Content-Length"] = body.map(&:bytesize).inject(0, :+).to_s
+      headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
 
       [status, headers, body]
     end

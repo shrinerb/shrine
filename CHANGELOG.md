@@ -1,5 +1,9 @@
 ## HEAD
 
+* `download_endpoint` – Fix `Shrine.download_endpoint` not being accepted by Rails' `#mount` (@janko)
+
+* `download_endpoint` – Remove Roda dependency (@janko)
+
 * `presign_endpoint` – Soft-rename `Shrine::Plugins::PresignEndpoint::App` class to `Shrine::PresignEndpoint` (@janko)
 
 * `upload_endpoint` – Soft-rename `Shrine::Plugins::UploadEndpoint::App` class to `Shrine::UploadEndpoint` (@janko)

@@ -36,7 +36,6 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "shrine-memory", ">= 0.2.2"
 
-  gem.add_development_dependency "roda"
   gem.add_development_dependency "rack", "~> 2.0"
   gem.add_development_dependency "mimemagic", ">= 0.3.2"
   gem.add_development_dependency "marcel"

@@ -3,12 +3,7 @@
 The [`download_endpoint`][download_endpoint] plugin provides a Rack app for
 downloading uploaded files from specified storages. This can be useful when
 files from your storage isn't accessible over URL (e.g. database storages) or
-if you want to authenticate your downloads. It requires the [Roda] gem.
-
-```rb
-# Gemfile
-gem "roda" # dependency of the download_endpoint plugin
-```
+if you want to authenticate your downloads.
 
 You can configure the plugin with the path prefix which the endpoint will be
 mounted on.
@@ -120,4 +115,3 @@ If you want to have more control on download requests, you can use the
 | `:redirect`         | Whether to redirect to uploaded files on the storage                              | `false`  |
 
 [download_endpoint]: /lib/shrine/plugins/download_endpoint.rb
-[Roda]: https://github.com/jeremyevans/roda
