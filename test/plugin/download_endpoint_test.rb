@@ -123,6 +123,12 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_match %r{http://bar\.com/\S+}, @uploaded_file.download_url(host: "http://bar.com")
   end
 
+  it "accepts ad-hoc options" do
+    app = Rack::TestApp.wrap(@shrine.download_endpoint(disposition: "attachment"))
+    response = app.get(@uploaded_file.download_url)
+    assert_match /^attachment; /, response.headers["Content-Disposition"]
+  end
+
   it "returns same URL regardless of metadata order" do
     @uploaded_file.data["metadata"] = { "filename" => "a", "mime_type" => "b", "size" => "c" }
     url1 = @uploaded_file.url

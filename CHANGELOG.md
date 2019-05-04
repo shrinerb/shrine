@@ -1,5 +1,7 @@
 ## HEAD
 
+* `download_endpoint` – Allow passing options to `Shrine.download_endpoint` (@janko)
+
 * `download_endpoint` – Fix `Shrine.download_endpoint` not being accepted by Rails' `#mount` (@janko)
 
 * `download_endpoint` – Remove Roda dependency (@janko)

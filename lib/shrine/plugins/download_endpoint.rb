@@ -28,8 +28,8 @@ class Shrine
         end
 
         # Returns the Rack application that retrieves requested files.
-        def download_endpoint
-          new_download_endpoint(App)
+        def download_endpoint(**options)
+          new_download_endpoint(App, **options)
         end
 
         # Assigns the subclassed endpoint as the `DownloadEndpoint` constant.
@@ -42,10 +42,11 @@ class Shrine
 
         private
 
-        def new_download_endpoint(app_class)
+        def new_download_endpoint(app_class, **options)
           app_class.new(
             shrine_class: self,
             **opts[:download_endpoint],
+            **options,
           )
         end
       end

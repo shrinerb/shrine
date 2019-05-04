@@ -99,6 +99,14 @@ plugin :download_endpoint, redirect: -> (uploaded_file, request) do
 end
 ```
 
+## Ad-hoc options
+
+You can override any of the options above when creating the endpoint:
+
+```rb
+Shrine.download_endpoint(disposition: "attachment")
+```
+
 ## Custom endpoint
 
 If you want to have more control on download requests, you can use the
