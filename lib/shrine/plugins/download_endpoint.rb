@@ -12,14 +12,10 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:download_endpoint_storages] = opts.fetch(:storages, uploader.opts[:download_endpoint_storages])
-        uploader.opts[:download_endpoint_prefix] = opts.fetch(:prefix, uploader.opts[:download_endpoint_prefix])
-        uploader.opts[:download_endpoint_download_options] = opts.fetch(:download_options, uploader.opts.fetch(:download_endpoint_download_options, {}))
-        uploader.opts[:download_endpoint_disposition] = opts.fetch(:disposition, uploader.opts.fetch(:download_endpoint_disposition, "inline"))
-        uploader.opts[:download_endpoint_host] = opts.fetch(:host, uploader.opts[:download_endpoint_host])
-        uploader.opts[:download_endpoint_redirect] = opts.fetch(:redirect, uploader.opts.fetch(:download_endpoint_redirect, false))
+        uploader.opts[:download_endpoint] ||= { disposition: "inline", download_options: {} }
+        uploader.opts[:download_endpoint].merge!(opts)
 
-        Shrine.deprecation("The :storages download_endpoint option is deprecated, you should use UploadedFile#download_url for generating URLs to the download endpoint.") if uploader.opts[:download_endpoint_storages]
+        Shrine.deprecation("The :storages download_endpoint option is deprecated, you should use UploadedFile#download_url for generating URLs to the download endpoint.") if uploader.opts[:download_endpoint][:storages]
 
         uploader.assign_download_endpoint(App) unless uploader.const_defined?(:DownloadEndpoint)
       end
@@ -48,10 +44,8 @@ class Shrine
 
         def new_download_endpoint(app_class)
           app_class.new(
-            shrine_class:     self,
-            download_options: opts[:download_endpoint_download_options],
-            disposition:      opts[:download_endpoint_disposition],
-            redirect:         opts[:download_endpoint_redirect],
+            shrine_class: self,
+            **opts[:download_endpoint],
           )
         end
       end
@@ -77,7 +71,7 @@ class Shrine
         private
 
         def download_storages
-          shrine_class.opts[:download_endpoint_storages]
+          shrine_class.opts[:download_endpoint][:storages]
         end
       end
 
@@ -99,15 +93,15 @@ class Shrine
         end
 
         def host
-          shrine_class.opts[:download_endpoint_host]
+          options[:host]
         end
 
         def prefix
-          shrine_class.opts[:download_endpoint_prefix]
+          options[:prefix]
         end
 
-        def shrine_class
-          file.shrine_class
+        def options
+          file.shrine_class.opts[:download_endpoint]
         end
       end
 
