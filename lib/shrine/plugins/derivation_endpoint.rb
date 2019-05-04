@@ -383,6 +383,11 @@ class Shrine
       [status, headers, body]
     end
 
+    def inspect
+      "#<#{@shrine_class}::DerivationEndpoint>"
+    end
+    alias to_s inspect
+
     private
 
     # Return an error response if the signature is invalid.

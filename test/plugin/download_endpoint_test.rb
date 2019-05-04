@@ -4,7 +4,11 @@ require "rack/test_app"
 
 describe Shrine::Plugins::DownloadEndpoint do
   def app
-    Rack::TestApp.wrap(Rack::Lint.new(@shrine.download_endpoint))
+    Rack::TestApp.wrap(Rack::Lint.new(endpoint))
+  end
+
+  def endpoint
+    @shrine.download_endpoint
   end
 
   before do
@@ -125,6 +129,11 @@ describe Shrine::Plugins::DownloadEndpoint do
     @uploaded_file.data["metadata"] = { "mime_type" => "b", "size" => "c", "filename" => "a" }
     url2 = @uploaded_file.url
     assert_equal url1, url2
+  end
+
+  it "defines #inspect and #to_s" do
+    assert_equal "#<#{@shrine}::DownloadEndpoint>", endpoint.inspect
+    assert_equal "#<#{@shrine}::DownloadEndpoint>", endpoint.to_s
   end
 
   it "supports legacy URLs" do

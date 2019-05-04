@@ -187,7 +187,11 @@ describe Shrine::Plugins::DerivationEndpoint do
 
   describe "Shrine.derivation_endpoint" do
     def app(*args)
-      Rack::TestApp.wrap(Rack::Lint.new(@shrine.derivation_endpoint(*args)))
+      Rack::TestApp.wrap(Rack::Lint.new(endpoint(*args)))
+    end
+
+    def endpoint(*args)
+      @shrine.derivation_endpoint(*args)
     end
 
     it "generates correct derivation response" do
@@ -371,6 +375,11 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_equal 405,                              response.status
       assert_equal "Method not allowed",             response.body_binary
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
+    end
+
+    it "defines #inspect and #to_s" do
+      assert_equal "#<#{@shrine}::DerivationEndpoint>", endpoint.inspect
+      assert_equal "#<#{@shrine}::DerivationEndpoint>", endpoint.to_s
     end
   end
 

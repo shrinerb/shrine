@@ -136,6 +136,11 @@ class Shrine
           [status, headers, body]
         end
 
+        def inspect
+          "#<#{@shrine_class}::DownloadEndpoint>"
+        end
+        alias to_s inspect
+
         private
 
         def handle_request(request)
