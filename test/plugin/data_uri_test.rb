@@ -42,6 +42,11 @@ describe Shrine::Plugins::DataUri do
     assert_equal ["data URI has invalid format"], @user.avatar_attacher.errors
   end
 
+  it "accepts additional uploader options" do
+    @attacher.assign_data_uri("data:image/png,content", location: "foo")
+    assert_equal "foo", @attacher.get.id
+  end
+
   it "clears any existing errors" do
     @user.avatar_attacher.errors << "foo"
     @user.avatar_data_uri = "bla"
