@@ -68,6 +68,11 @@ describe Shrine::Plugins::RemoteUrl do
     assert_equal "{:foo=>\"bar\"}", @user.avatar.read
   end
 
+  it "accepts additional uploader options" do
+    @attacher.assign_remote_url(good_url, location: "foo")
+    assert_equal "foo", @attacher.get.id
+  end
+
   it "transforms download errors into validation errors" do
     @user.avatar_remote_url = good_url
     assert_empty @user.avatar_attacher.errors

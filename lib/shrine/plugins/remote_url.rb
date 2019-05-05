@@ -36,7 +36,7 @@ class Shrine
         # Downloads the remote file and assigns it. If download failed, sets
         # the error message and assigns the url to an instance variable so that
         # it shows up in the form.
-        def assign_remote_url(url, downloader: {})
+        def assign_remote_url(url, downloader: {}, **options)
           return if url == "" || url.nil?
 
           begin
@@ -46,7 +46,7 @@ class Shrine
           end
 
           if downloaded_file
-            assign(downloaded_file)
+            assign(downloaded_file, **options)
           else
             message = download_error_message(url, download_error)
             errors.replace [message]

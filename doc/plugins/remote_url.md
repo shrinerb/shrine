@@ -37,7 +37,13 @@ You can dynamically pass options to the downloader by using
 `Attacher#assign_remote_url`:
 
 ```rb
-attacher.assign_remote_url("http://example.com/cool-image.png", downloader: { 'Authorization' => 'Basic ...' })
+attacher.assign_remote_url(url, downloader: { 'Authorization' => 'Basic ...' })
+```
+
+You can also pass any other `Shrine#upload` options:
+
+```rb
+attacher.assign_remote_url(url, location: "/path/on/storage")
 ```
 
 ## Maximum size

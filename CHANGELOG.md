@@ -1,5 +1,7 @@
 ## HEAD
 
+* `remote_url` – Accept additional `Shrine#upload` options in `Attacher#assign_remote_url` (@janko)
+
 * `download_endpoint` – Allow passing options to `Shrine.download_endpoint` (@janko)
 
 * `download_endpoint` – Fix `Shrine.download_endpoint` not being accepted by Rails' `#mount` (@janko)
