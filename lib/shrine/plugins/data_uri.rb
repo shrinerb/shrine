@@ -83,16 +83,21 @@ class Shrine
         # the content type, decodes it, wrappes it in a StringIO and assigns it.
         # If it fails, it sets the error message and assigns the uri in an
         # instance variable so that it shows up on the UI.
-        def data_uri=(uri)
+        def assign_data_uri(uri, **options)
           return if uri == "" || uri.nil?
 
           data_file = shrine_class.data_uri(uri)
-          assign(data_file)
+          assign(data_file, **options)
         rescue ParseError => error
           message = shrine_class.opts[:data_uri_error_message] || error.message
           message = message.call(uri) if message.respond_to?(:call)
           errors.replace [message]
           @data_uri = uri
+        end
+
+        # Alias for #assign_data_uri.
+        def data_uri=(uri)
+          assign_data_uri(uri)
         end
 
         # Form builders require the reader as well.

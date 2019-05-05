@@ -1,5 +1,7 @@
 ## HEAD
 
+* `data_uri` – Add `Attacher#assign_data_uri` which accepts additional `Shrine#upload` options (@janko)
+
 * `remote_url` – Accept additional `Shrine#upload` options in `Attacher#assign_remote_url` (@janko)
 
 * `download_endpoint` – Allow passing options to `Shrine.download_endpoint` (@janko)

@@ -34,6 +34,15 @@ plugin :data_uri, error_message: "data URI was invalid"
 plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
 ```
 
+## Upload options
+
+If you want to pass additional options for `Shrine#upload`, you can use
+`#assign_data_uri`:
+
+```rb
+attacher.assign_data_uri(uri, metadata: { "mime_type" => "text/plain" })
+```
+
 ## File extension
 
 A data URI doesn't convey any information about the file extension, so when

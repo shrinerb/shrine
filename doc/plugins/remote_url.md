@@ -43,7 +43,7 @@ attacher.assign_remote_url(url, downloader: { 'Authorization' => 'Basic ...' })
 You can also pass any other `Shrine#upload` options:
 
 ```rb
-attacher.assign_remote_url(url, location: "/path/on/storage")
+attacher.assign_remote_url(url, metadata: { "mime_type" => "text/plain" })
 ```
 
 ## Maximum size
