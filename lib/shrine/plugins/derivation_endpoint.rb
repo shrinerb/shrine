@@ -318,14 +318,15 @@ class Shrine
     def plain_url(*components, params)
       # When using Rack < 2, Rack::Utils#escape_path will escape '/'.
       # Escape each component and then join them together.
-      path = components.map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
+      path  = components.map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
       query = Rack::Utils.build_query(params)
+
       "#{path}?#{query}"
     end
 
     def signed_url(url)
       signer = UrlSigner.new(secret_key)
-      signer.signed_url(url)
+      signer.sign_url(url)
     end
   end
 
@@ -720,24 +721,28 @@ class Shrine
     end
 
     # Returns a URL with the `signature` query parameter
-    def signed_url(url)
-      signature = generate_signature(url)
-      query = Rack::Utils.build_query(signature: signature)
+    def sign_url(url)
+      path, query = url.split("?")
 
-      glue = url.include?('?') ? '&' : '?'
-      "#{url}#{glue}#{query}"
+      params = Rack::Utils.parse_query(query.to_s)
+      params.merge!("signature" => generate_signature(url))
+
+      query = Rack::Utils.build_query(params)
+
+      "#{path}?#{query}"
     end
 
     # Calculcates the signature from the URL and checks whether it matches the
     # value in the `signature` query parameter. Raises `InvalidSignature` if
     # the `signature` parameter is missing or its value doesn't match the
     # calculated signature.
-    def verify_url(path_with_query)
-      path, query = path_with_query.split("?")
+    def verify_url(url)
+      path, query = url.split("?")
 
       params    = Rack::Utils.parse_query(query.to_s)
       signature = params.delete("signature")
-      query     = Rack::Utils.build_query(params)
+
+      query = Rack::Utils.build_query(params)
 
       verify_signature("#{path}?#{query}", signature)
     end
