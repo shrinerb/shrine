@@ -308,13 +308,24 @@ class Shrine
       # serializes the source uploaded file into an URL-safe format
       source_component = source.urlsafe_dump(metadata: metadata)
 
+      # generate plain URL
+      url = plain_url(name, *args, source_component, params)
+
       # generate signed URL
-      signed_url(name, *args, source_component, params)
+      signed_url(url)
     end
 
-    def signed_url(*components)
+    def plain_url(*components, params)
+      # When using Rack < 2, Rack::Utils#escape_path will escape '/'.
+      # Escape each component and then join them together.
+      path = components.map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
+      query = Rack::Utils.build_query(params)
+      "#{path}?#{query}"
+    end
+
+    def signed_url(url)
       signer = UrlSigner.new(secret_key)
-      signer.signed_url(*components)
+      signer.signed_url(url)
     end
   end
 
@@ -708,19 +719,13 @@ class Shrine
       @secret_key = secret_key
     end
 
-    # Returns a URL with the `signature` query parameter generated from the
-    # given path components and query parameters.
-    def signed_url(*components, params)
-      # When using Rack < 2, Rack::Utils#escape_path will escape '/'.
-      # Escape each component and then join them together.
-      path = components.map{|component| Rack::Utils.escape_path(component.to_s)}.join('/')
-      query = Rack::Utils.build_query(params)
+    # Returns a URL with the `signature` query parameter
+    def signed_url(url)
+      signature = generate_signature(url)
+      query = Rack::Utils.build_query(signature: signature)
 
-      signature = generate_signature("#{path}?#{query}")
-
-      query = Rack::Utils.build_query(params.merge(signature: signature))
-
-      "#{path}?#{query}"
+      glue = url.include?('?') ? '&' : '?'
+      "#{url}#{glue}#{query}"
     end
 
     # Calculcates the signature from the URL and checks whether it matches the
