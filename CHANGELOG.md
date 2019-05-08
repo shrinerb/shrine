@@ -36,6 +36,8 @@
 
 * `derivation_endpoint` – Add support for Rack < 2 (@Antsiscool)
 
+* `derivation_endpoint` – Fix `:upload` option being incompatible with `moving` plugin (@speedo-spin)
+
 * `determine_mime_type` – Allow passing options to analzyers (Marcel accepts `:filename_fallback` option) (@hmistry)
 
 * `determine_mime_type` – Revert "Extended determine MIME type with Marcel" (@hmistry)
@@ -44,7 +46,7 @@
 
 * `rack_response` – prevent response body from yielding `nil`-chunks (@zarqman)
 
-* `derivation_endpoint` – Fix `:upload` option being incompatible with `moving` plugin (@speedo-spin)
+* `parsed_json` – Accepts hashes with symbols keys (@aglushkov)
 
 ## 2.16.0 (2019-02-18)
 

@@ -32,4 +32,16 @@ Attacher.default_url do |options|
 end
 ```
 
+## Host
+
+If the default URL is relative, the URL host can be specified via the `:host`
+option:
+
+```rb
+plugin :default_url, host: "https://example.com"
+```
+```rb
+user.avatar_url #=> "https://example.com/avatar/missing.jpg"
+```
+
 [default_url]: /lib/shrine/plugins/default_url.rb
