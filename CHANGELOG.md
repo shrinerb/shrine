@@ -1,4 +1,4 @@
-## HEAD
+## 2.17.0 (2019-05-06)
 
 * `data_uri` – Add `Attacher#assign_data_uri` which accepts additional `Shrine#upload` options (@janko)
 
