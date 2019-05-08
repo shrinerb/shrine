@@ -30,12 +30,63 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-18 22:30:32 +0100</span>
+<span class='datetime'>2019-05-08 12:43:07 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.17.0+-282019-05-06-29">2.17.0 (2019-05-06)<span><a href="#label-2.17.0+-282019-05-06-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>data_uri</code> – Add <code>Attacher#assign_data_uri</code> which accepts additional <code>Shrine#upload</code> options (@janko)</p>
+</li><li>
+<p><code>remote_url</code> – Accept additional <code>Shrine#upload</code> options in <code>Attacher#assign_remote_url</code> (@janko)</p>
+</li><li>
+<p><code>download_endpoint</code> – Allow passing options to <code>Shrine.download_endpoint</code> (@janko)</p>
+</li><li>
+<p><code>download_endpoint</code> – Fix <code>Shrine.download_endpoint</code> not being accepted by Rails&#39; <code>#mount</code> (@janko)</p>
+</li><li>
+<p><code>download_endpoint</code> – Remove Roda dependency (@janko)</p>
+</li><li>
+<p><code>presign_endpoint</code> – Soft-rename <code>Shrine::Plugins::PresignEndpoint::App</code> class to <code>Shrine::PresignEndpoint</code> (@janko)</p>
+</li><li>
+<p><code>upload_endpoint</code> – Soft-rename <code>Shrine::Plugins::UploadEndpoint::App</code> class to <code>Shrine::UploadEndpoint</code> (@janko)</p>
+</li><li>
+<p><code>processing</code> – Fix defining process blocks being applied to <code>Shrine</code> superclasses (@ksol)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Add <code>ETag</code> header to prevent <code>Rack::ETag</code> from buffering file content (@janko)</p>
+</li><li>
+<p><code>rack_response</code> – Add <code>ETag</code> header to prevent <code>Rack::ETag</code> from buffering file content (@janko)</p>
+</li><li>
+<p><code>download_endpoint</code> – Add <code>ETag</code> header to prevent <code>Rack::ETag</code> from buffering file content (@janko)</p>
+</li><li>
+<p><code>default_url</code> – Add <code>:host</code> for specifying the URL host (@janko)</p>
+</li><li>
+<p><code>versions</code> – Fix uploaded versions being deleted when string version names are used (@janko)</p>
+</li><li>
+<p><code>versions</code> – Allow <code>Attacher#url</code> to accept version name indifferently (@FunkyloverOne)</p>
+</li><li>
+<p>Improve performance of cleaning empty directories on deletion in <code>FileSystem</code> storage (@adamniedzielski)</p>
+</li><li>
+<p>Drop MRI 2.3 support (@janko)</p>
+</li><li>
+<p><code>metadata_attributes</code> – Fix <code>Attacher#assign</code> not accepting additional options anymore (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Add support for Rack &lt; 2 (@Antsiscool)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Fix <code>:upload</code> option being incompatible with <code>moving</code> plugin (@speedo-spin)</p>
+</li><li>
+<p><code>determine_mime_type</code> – Allow passing options to analzyers (Marcel accepts <code>:filename_fallback</code> option) (@hmistry)</p>
+</li><li>
+<p><code>determine_mime_type</code> – Revert “Extended determine MIME type with Marcel” (@hmistry)</p>
+</li><li>
+<p><code>rack_response</code> – improve performance for upper bounded <code>Range</code> header values (@zarqman)</p>
+</li><li>
+<p><code>rack_response</code> – prevent response body from yielding <code>nil</code>-chunks (@zarqman)</p>
+</li><li>
+<p><code>parsed_json</code> – Accepts hashes with symbols keys (@aglushkov)</p>
+</li></ul>
+
 <h2 id="label-2.16.0+-282019-02-18-29">2.16.0 (2019-02-18)<span><a href="#label-2.16.0+-282019-02-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>derivation_endpoint</code> – Add <code>:upload_open_options</code> for download option for derivation result (@janko)</p>
@@ -673,9 +724,9 @@ Last Update:
 </li><li>
 <p>Allow including attachment module to non-<code>ActiveRecord::Base</code> objects in activerecord plugin (@janko)</p>
 </li><li>
-<p>Remove deprecated "restore_cached" alias for restore_cached_data plugin (@janko)</p>
+<p>Remove deprecated “restore_cached” alias for restore_cached_data plugin (@janko)</p>
 </li><li>
-<p>Remove deprecated "delete_uploaded" alias for delete_raw plugin (@janko)</p>
+<p>Remove deprecated “delete_uploaded” alias for delete_raw plugin (@janko)</p>
 </li><li>
 <p>Make the default generated unique location shorter (@janko)</p>
 </li><li>
@@ -734,7 +785,7 @@ Last Update:
 </li><li>
 <p>Prevent errors when attempting to validate dimensions when they are absent (@janko)</p>
 </li><li>
-<p>Remove "thread" gem dependency in parallelize plugin (@janko)</p>
+<p>Remove “thread” gem dependency in parallelize plugin (@janko)</p>
 </li><li>
 <p>Add <code>:filename</code> to data_uri plugin for generating filenames based on content type (@janko)</p>
 </li><li>
@@ -877,7 +928,7 @@ Last Update:
 </li><li>
 <p>Add a <code>UploadedFile#data_uri</code> method to the data_uri plugin (@janko)</p>
 </li><li>
-<p>Allow the data_uri plugin to accept "+" symbols in MIME type names (@janko)</p>
+<p>Allow the data_uri plugin to accept “+” symbols in MIME type names (@janko)</p>
 </li><li>
 <p>Make the data_uri plugin accept data URIs which aren&#39;t base64 encoded (@janko)</p>
 </li><li>
