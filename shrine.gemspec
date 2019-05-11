@@ -18,10 +18,17 @@ tying them to record's lifecycle. It natively supports background jobs and
 direct uploads for fully asynchronous user experience.
   END
 
-  gem.homepage     = "https://github.com/shrinerb/shrine"
+  gem.homepage     = "https://shrinerb.com"
   gem.authors      = ["Janko Marohnić"]
   gem.email        = ["janko.marohnic@gmail.com"]
   gem.license      = "MIT"
+  gem.metadata     = {
+    "bug_tracker_uri"   => "https://github.com/shrinerb/shrine/issues",
+    "changelog_uri"     => "https://github.com/shrinerb/shrine/blob/master/CHANGELOG.md",
+    "documentation_uri" => "https://shrinerb.com",
+    "mailing_list_uri"  => "https://groups.google.com/forum/#!forum/ruby-shrine",
+    "source_code_uri"   => "https://github.com/shrinerb/shrine",
+  }
 
   gem.files        = Dir["README.md", "LICENSE.txt", "CHANGELOG.md", "lib/**/*.rb", "shrine.gemspec", "doc/**/*.md"]
   gem.require_path = "lib"
