@@ -6,12 +6,6 @@
   </div>
 
   <div class="form-group">
-    <!-- for storing cover photo uploaded file data -->
-    <%= f.input :cover_photo,
-      type: :hidden,
-      value: album.cached_cover_photo_data,
-      id: "album-cover-photo-upload-result" %>
-
     <!-- will be replaced by Uppy -->
     <%= f.input :cover_photo,
       type: :file,
@@ -25,6 +19,12 @@
         upload_result_element: "album-cover-photo-upload-result"
       },
       dasherize_data: true %>
+
+    <!-- for storing cover photo uploaded file data -->
+    <%= f.input :cover_photo,
+      type: :hidden,
+      value: album.cached_cover_photo_data,
+      id: "album-cover-photo-upload-result" %>
   </div>
 
   <div class="image-preview">

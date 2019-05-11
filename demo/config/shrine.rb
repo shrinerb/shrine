@@ -35,7 +35,6 @@ else
 end
 
 Shrine.plugin :sequel
-Shrine.plugin :backgrounding
 Shrine.plugin :logging
 Shrine.plugin :determine_mime_type
 Shrine.plugin :cached_attachment_data
@@ -49,7 +48,7 @@ if ENV["RACK_ENV"] == "production"
 
     {
       content_disposition:    ContentDisposition.inline(filename), # set download filename
-      content_type:           type,                                # set content type (defaults to "application/octet-stream")
+      content_type:           type,                                # set content type
       content_length_range:   0..(10*1024*1024),                   # limit upload size to 10 MB
     }
   }
@@ -62,5 +61,6 @@ Shrine.plugin :derivation_endpoint,
   download_errors: [defined?(Aws) ? Aws::S3::Errors::NotFound : Errno::ENOENT]
 
 # delay promoting and deleting files to a background job (`backgrounding` plugin)
+Shrine.plugin :backgrounding
 Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
 Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
