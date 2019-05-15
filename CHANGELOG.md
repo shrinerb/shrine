@@ -1,5 +1,7 @@
 ## HEAD
 
+* `rack_file` – Fix overriden `Attacher#assign` not accepting second argument (@janko)
+
 * `parsed_json` – Fix overriden `Attacher#assign` not accepting second argument (@janko)
 
 ## 2.17.0 (2019-05-06)

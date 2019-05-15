@@ -23,9 +23,9 @@ describe Shrine::Plugins::ParsedJson do
   end
 
   it "accepts options" do
-    cached_file = @attacher.cache!(fakeio, metadata: { "foo" => "foo" })
-    assert_equal "foo", cached_file.metadata["foo"]
-    @attacher.assign(cached_file.data, foo: "bar")
+    cached_file = @attacher.cache!(fakeio, metadata: { "foo" => "bar" })
+    assert_equal "bar", cached_file.metadata["foo"]
+    @attacher.assign(cached_file.data, foo: :bar)
     assert_equal cached_file, @attacher.get
   end
 end

@@ -60,9 +60,9 @@ class Shrine
       module AttacherMethods
         # Checks whether a file is a Rack file hash, and in that case wraps the
         # hash in an IO-like object.
-        def assign(value)
+        def assign(value, **options)
           if rack_file?(value)
-            assign(shrine_class.rack_file(value))
+            assign(shrine_class.rack_file(value), **options)
           else
             super
           end

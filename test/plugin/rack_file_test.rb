@@ -82,6 +82,13 @@ describe Shrine::Plugins::RackFile do
     assert_equal "image/jpeg", @attacher.get.mime_type
   end
 
+  it "accepts assign options" do
+    @attacher.assign(@rack_hash, metadata: { "foo" => "bar" })
+    assert_equal "bar", @attacher.get.metadata["foo"]
+    @attacher.assign(fakeio, metadata: { "foo" => "bar" })
+    assert_equal "bar", @attacher.get.metadata["foo"]
+  end
+
   deprecated "supports uploading Rack files directly" do
     uploaded_file = @attacher.store.upload(@rack_hash)
 
