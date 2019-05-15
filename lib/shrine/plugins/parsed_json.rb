@@ -7,9 +7,9 @@ class Shrine
     # [doc/plugins/parsed_json.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/parsed_json.md
     module ParsedJson
       module AttacherMethods
-        def assign(value)
+        def assign(value, **options)
           if value.is_a?(Hash) && parsed_json?(value)
-            assign(value.to_json)
+            assign(value.to_json, **options)
           else
             super
           end
