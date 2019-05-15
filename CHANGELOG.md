@@ -1,4 +1,4 @@
-## HEAD
+## 2.17.1 (2019-05-15)
 
 * `rack_file` – Fix overriden `Attacher#assign` not accepting second argument (@janko)
 
