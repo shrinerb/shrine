@@ -849,16 +849,46 @@ reliable file uploads even on unstable connections, by enabling the upload to
 be resumed in case of interruptions, even after the browser was closed or the
 device was shut down.
 
-[tus-ruby-server] provides a Ruby server implemenation of the tus protocol.
+[tus-ruby-server] provides a Ruby server implementation of the tus protocol.
 Uppy's [Tus][uppy tus] plugin can then be configured to do resumable uploads to
 a tus-ruby-server instance, and then the uploaded files can be attached to the
 record with the help of [shrine-tus]. See [this walkthrough][resumable uploads
 walkthrough] that adds resumable uploads from scratch, as well as the
 [demo][resumable demo] for a complete example.
 
+```rb
+# Gemfile
+gem "tus-server", "~> 2.0"
+```
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  mount Tus::Server => "/files"
+end
+```
+
 Alternatively, you can have resumable uploads directly to S3 using Uppy's [AWS
 S3 Multipart][uppy aws s3 multipart] plugin, accompanied with the
-[uppy-s3_multipart] gem.
+[uppy-s3_multipart] gem. See its [documentation][uppy-s3_multipart shrine] for
+more details.
+
+```rb
+# Gemfile
+gem "uppy-s3_multipart", "~> 0.3"
+```
+```rb
+# config/initializers/shrine.rb
+# ...
+Shrine.plugin :uppy_s3_multipart
+```
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  mount Shrine.uppy_s3_multipart(:cache) => "/s3/multipart"
+end
+```
 
 ## Backgrounding
 
@@ -1050,6 +1080,7 @@ The gem is available as open source under the terms of the [MIT License].
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
 [uppy aws s3 multipart]: https://uppy.io/docs/aws-s3-multipart/
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
+[uppy-s3_multipart shrine]: https://github.com/janko/uppy-s3_multipart#shrine
 [resumable uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
