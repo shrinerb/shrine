@@ -783,9 +783,9 @@ nicely with Shrine.
 
 The simplest approach is creating an upload endpoint in your app that will
 receive uploads and forward them to the specified storage. You can use the
-`upload_endpoint` Shrine plugin to create a Rack app that handles uploads,
-and mount it inside your application (for web frameworks other than Rails
-see [Mounting Endpoints] wiki).
+[`upload_endpoint`][upload_endpoint plugin] Shrine plugin to create a Rack app
+that handles uploads, and mount it inside your application (for web frameworks
+other than Rails see [Mounting Endpoints] wiki).
 
 ```rb
 Shrine.plugin :upload_endpoint
@@ -793,7 +793,8 @@ Shrine.plugin :upload_endpoint
 ```rb
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount ImageUploader.upload_endpoint(:cache) => "images/upload"
+  # ..
+  mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
 end
 ```
 
@@ -804,23 +805,6 @@ side code for this will depend on your application, see [this
 walkthrough][direct uploads walkthrough] for an example of adding simple direct
 uploads from scratch.
 
-If you wanted to implement this enpdoint yourself, this is how it could roughly
-look like in Sinatra:
-
-```rb
-Shrine.plugin :rack_file # only if not using Rails
-```
-```rb
-post "/images/upload" do
-  uploader = ImageUploader.new(:cache)
-  file     = Shrine.rack_file(params["file"]) # only `params[:file]` in Rails
-
-  uploaded_file = uploader.upload(file)
-
-  json uploaded_file.data
-end
-```
-
 ### Presigned direct upload
 
 If you want to free your app from receiving file uploads, you can also upload
@@ -828,10 +812,10 @@ files directly to the cloud (AWS S3, Google Cloud etc). In this flow the client
 is required to first fetch upload parameters from the server, and then use these
 parameters to make the upload.
 
-You can use the `presign_endpoint` Shrine plugin to create a Rack app that
-generates these upload parameters (provided that the underlying storage
-implements `#presign`), and mount it inside your application (for web
-frameworks other than Rails see [Mounting Endpoints] wiki):
+You can use the [`presign_endpoint`][presign_endpoint plugin] Shrine plugin to
+create a Rack app that generates these upload parameters (provided that the
+underlying storage implements `#presign`), and mount it inside your application
+(for web frameworks other than Rails see [Mounting Endpoints] wiki):
 
 ```rb
 Shrine.plugin :presign_endpoint
@@ -839,7 +823,8 @@ Shrine.plugin :presign_endpoint
 ```rb
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount Shrine.presign_endpoint(:cache) => "s3/params"
+  # ...
+  mount Shrine.presign_endpoint(:cache) => "/s3/params"
 end
 ```
 
@@ -850,20 +835,6 @@ direct S3 uploads from scratch, as well as the [Direct Uploads to S3][direct S3
 uploads guide] guide that provides some useful tips. Also check out the
 [Roda][roda demo] / [Rails][rails demo] demo app which implements multiple
 uploads directly to S3.
-
-If you wanted to implement this enpdoint yourself, this is how it could roughly
-look like for S3 storage in Sinatra:
-
-```rb
-get "/s3/params" do
-  storage  = Shrine.storages[:cache]
-  location = SecureRandom.hex + File.extname(params["filename"].to_s)
-
-  presign_data = storage.presign(location, content_type: params["type"])
-
-  json presign_data
-end
-```
 
 ### Resumable direct upload
 

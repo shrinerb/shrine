@@ -148,6 +148,50 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal 404, response.status
   end
 
+  describe "Shrine.upload_response" do
+    it "returns the Rack response triple" do
+      form_data = HTTP::FormData.create(
+        file: HTTP::FormData::Part.new("content", filename: "foo.txt")
+      )
+
+      env = {
+        "REQUEST_METHOD" => "POST",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => "/upload",
+        "QUERY_STRING"   => "",
+        "CONTENT_TYPE"   => form_data.content_type,
+        "rack.input"     => StringIO.new(form_data.to_s),
+      }
+
+      response = @shrine.upload_response(:cache, env)
+
+      assert_equal 200, response[0]
+      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
+      assert_equal "content", @shrine.uploaded_file(response[2].first).read
+    end
+
+    it "accepts additional upload endpoint options" do
+      form_data = HTTP::FormData.create(
+        file: HTTP::FormData::Part.new("content", filename: "foo.txt")
+      )
+
+      env = {
+        "REQUEST_METHOD" => "POST",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => "/upload",
+        "QUERY_STRING"   => "",
+        "CONTENT_TYPE"   => form_data.content_type,
+        "rack.input"     => StringIO.new(form_data.to_s),
+      }
+
+      response = @shrine.upload_response(:cache, env, max_size: 1)
+
+      assert_equal 413, response[0]
+      assert_equal "text/plain", response[1]["Content-Type"]
+      assert_equal "Upload Too Large", response[2].first
+    end
+  end
+
   it "defines #inspect and #to_s" do
     assert_equal "#<#{@shrine}::UploadEndpoint(:cache)>", endpoint.inspect
     assert_equal "#<#{@shrine}::UploadEndpoint(:cache)>", endpoint.to_s

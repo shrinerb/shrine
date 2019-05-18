@@ -11,18 +11,12 @@ plugin :upload_endpoint
 The plugin adds a `Shrine.upload_endpoint` method which, given a storage
 identifier, returns a Rack application that accepts multipart POST requests,
 and uploads received files to the specified storage. You can run this Rack
-papplication inside your app:
+application inside your app:
 
 ```rb
-# config.ru (Rack)
-map "/images/upload" do
-  run ImageUploader.upload_endpoint(:cache)
-end
-
-# OR
-
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
+  # ...
   mount ImageUploader.upload_endpoint(:cache) => "/images/upload"
 end
 ```
@@ -51,6 +45,39 @@ representation of the uploaded file.
 This JSON string can now be assigned to an attachment attribute instead of a
 raw file. In a form it can be written to a hidden attachment field, and then it
 can be assigned as the attachment.
+
+## Calling from a controller
+
+If you want to run additional code around the upload (such as authentication),
+mounting the upload endpoint in your router might be limiting. You can instead
+create a custom controller action and handle upload requests there using
+`Shrine.upload_response`:
+
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  post "/images/upload", to: "uploads#image"
+end
+```
+```rb
+# app/controllers/uploads_controller.rb (Rails)
+class UploadsController < ApplicationController
+  def image
+    # ... we can perform authentication here ...
+
+    set_rack_response ImageUploader.upload_response(:cache, env)
+  end
+
+  private
+
+  def set_rack_response((status, headers, body))
+    self.status = status
+    self.headers.merge!(headers)
+    self.response_body = body
+  end
+end
+```
 
 ## Limiting filesize
 
@@ -114,10 +141,12 @@ end
 
 ## Ad-hoc options
 
-You can override any of the options above when creating the endpoint:
+You can override any of the options above when creating the endpoint/response:
 
 ```rb
 Shrine.upload_endpoint(:cache, max_size: 20*1024*1024)
+# or
+Shrine.upload_response(:cache, env, max_size: 20*1024*1024)
 ```
 
 [upload_endpoint]: /lib/shrine/plugins/upload_endpoint.rb

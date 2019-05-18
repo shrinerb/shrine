@@ -31,6 +31,27 @@ class Shrine
             **options,
           )
         end
+
+        # Calls the presign endpoint passing the request information, and
+        # returns the Rack response triple.
+        #
+        # It performs the same mounting logic that Rack and other web
+        # frameworks use, and is meant for cases where statically mounting the
+        # endpoint in the router isn't enough.
+        def presign_response(storage_key, env, **options)
+          script_name = env["SCRIPT_NAME"]
+          path_info   = env["PATH_INFO"]
+
+          begin
+            env["SCRIPT_NAME"] += path_info
+            env["PATH_INFO"]    = ""
+
+            presign_endpoint(storage_key, **options).call(env)
+          ensure
+            env["SCRIPT_NAME"] = script_name
+            env["PATH_INFO"]   = path_info
+          end
+        end
       end
     end
 

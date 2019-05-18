@@ -17,15 +17,9 @@ a presign for the specified storage. You can run this Rack application inside
 your app:
 
 ```rb
-# config.ru (Rack)
-map "/images/presign" do
-  run ImageUploader.presign_endpoint(:cache)
-end
-
-# OR
-
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
+  # ...
   mount ImageUploader.presign_endpoint(:cache) => "/images/presign"
 end
 ```
@@ -53,6 +47,39 @@ single upload directly to the storage service, in JSON format.
   },
   "headers": {}
 }
+```
+
+## Calling from a controller
+
+If you want to run additional code around the presign (such as authentication),
+mounting the presign endpoint in your router might be limiting. You can instead
+create a custom controller action and handle presign requests there using
+`Shrine.presign_response`:
+
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  post "/images/presign", to: "presigns#image"
+end
+```
+```rb
+# app/controllers/presigns_controller.rb (Rails)
+class PresignsController < ApplicationController
+  def image
+    # ... we can perform authentication here ...
+
+    set_rack_response ImageUploader.presign_response(:cache, env)
+  end
+
+  private
+
+  def set_rack_response((status, headers, body))
+    self.status = status
+    self.headers.merge!(headers)
+    self.response_body = body
+  end
+end
 ```
 
 ## Location
@@ -121,10 +148,12 @@ end
 
 ## Ad-hoc options
 
-You can override any of the options above when creating the endpoint:
+You can override any of the options above when creating the endpoint/response:
 
 ```rb
 Shrine.presign_endpoint(:cache, presign_location: "${filename}")
+# or
+Shrine.presign_response(:cache, env, presign_location: "${filename}")
 ```
 
 [presign_endpoint]: /lib/shrine/plugins/presign_endpoint.rb

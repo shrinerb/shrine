@@ -163,7 +163,8 @@ end
 # app/controllers/derivations_controller.rb
 class DerivationsController < ApplicationController
   def image
-    # we can perform authentication here
+    # ... we can perform authentication here ...
+
     set_rack_response ImageUploader.derivation_response(request.env)
   end
 

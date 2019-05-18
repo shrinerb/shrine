@@ -118,7 +118,7 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
   end
 
-  it "accepts only POST requests" do
+  it "accepts only GET requests" do
     response = app.put "/"
     assert_equal 405, response.status
     assert_equal "text/plain", response.headers["Content-Type"]
@@ -128,6 +128,40 @@ describe Shrine::Plugins::PresignEndpoint do
   it "accepts only root requests" do
     response = app.get "/presign"
     assert_equal 404, response.status
+  end
+
+  describe "Shrine.presign_response" do
+    it "returns the Rack response triple" do
+      env = {
+        "REQUEST_METHOD" => "GET",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => "/s3/params",
+        "QUERY_STRING"   => "filename=foo.txt",
+        "rack.input"     => StringIO.new,
+      }
+
+      response = @shrine.presign_response(:cache, env)
+
+      assert_equal 200, response[0]
+      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
+      assert_match /\.txt$/, JSON.parse(response[2].first)["fields"]["key"]
+    end
+
+    it "accepts additional presign endpoint options" do
+      env = {
+        "REQUEST_METHOD" => "GET",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => "/s3/params",
+        "QUERY_STRING"   => "",
+        "rack.input"     => StringIO.new,
+      }
+
+      response = @shrine.presign_response(:cache, env, presign_options: { content_type: "foo/bar" })
+
+      assert_equal 200, response[0]
+      assert_equal "application/json; charset=utf-8", response[1]["Content-Type"]
+      assert_equal "foo/bar", JSON.parse(response[2].first)["fields"]["Content-Type"]
+    end
   end
 
   it "defines #inspect and #to_s" do
