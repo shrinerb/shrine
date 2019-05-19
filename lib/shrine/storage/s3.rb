@@ -5,11 +5,13 @@ begin
   require "aws-sdk-s3"
   if Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.2.0")
     raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
+  elsif Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.14.0")
+    Shrine.deprecation("Using aws-sdk-s3 < 1.14 is deprecated and support for it will be removed in Shrine 3. Update to aws-sdk-s3 version 1.14 or higher")
   end
 rescue LoadError => exception
   begin
     require "aws-sdk"
-    Shrine.deprecation("Using aws-sdk 2.x is deprecated and support for it will be removed in Shrine 3, use the new aws-sdk-s3 gem instead.")
+    Shrine.deprecation("Using aws-sdk 2.x is deprecated and support for it will be removed in Shrine 3. Use the new aws-sdk-s3 gem instead.")
     Aws.eager_autoload!(services: ["S3"])
   rescue LoadError
     raise exception
@@ -304,8 +306,6 @@ class Shrine
               bytes_uploaded = IO.copy_stream(io, write_stream)
             end
           else
-            Shrine.deprecation "Uploading a file of unknown size with aws-sdk-s3 older than 1.14 is deprecated and will be removed in Shrine 3. Update to aws-sdk-s3 1.14 or higher."
-
             Tempfile.create("shrine-s3", binmode: true) do |file|
               bytes_uploaded = IO.copy_stream(io, file.path)
               object(id).upload_file(file.path, **options)

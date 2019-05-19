@@ -1,5 +1,7 @@
 ## HEAD
 
+* `s3` – Deprecate `aws-sdk-s3` version less than 1.14.0 (@janko)
+
 * `presign_endpoint` – Add `Shrine.presign_response` for handling presigns inside a custom controller (@janko)
 
 * `upload_endpoint` – Add `Shrine.upload_response` for handling uploads inside a custom controller (@janko)
