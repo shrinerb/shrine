@@ -800,7 +800,7 @@ end
 ```
 
 The above will add a `POST /images/upload` route to your app. You can now use
-Uppy's [XHR Upload][uppy xhr upload] plugin to upload selected files to this
+Uppy's [XHR Upload][uppy xhr-upload] plugin to upload selected files to this
 endpoint, and have the uploaded file data submitted to your app. The client
 side code for this will depend on your application, see [this
 walkthrough][direct uploads walkthrough] for an example of adding simple direct
@@ -830,7 +830,7 @@ end
 ```
 
 The above will add a `GET /s3/params` route to your app. You can now hook Uppy's
-[AWS S3][uppy aws s3] plugin to this endpoint and have it upload directly to
+[AWS S3][uppy aws-s3] plugin to this endpoint and have it upload directly to
 S3. See [this walkthrough][direct S3 uploads walkthrough] that shows adding
 direct S3 uploads from scratch, as well as the [Direct Uploads to S3][direct S3
 uploads guide] guide that provides some useful tips. Also check out the
@@ -870,7 +870,7 @@ end
 ```
 
 Alternatively, you can have resumable uploads directly to S3 using Uppy's [AWS
-S3 Multipart][uppy aws s3 multipart] plugin, accompanied with the
+S3 Multipart][uppy aws-s3-multipart] plugin, accompanied with the
 [uppy-s3_multipart] gem. See its [documentation][uppy-s3_multipart shrine] for
 more details.
 
@@ -1071,15 +1071,15 @@ The gem is available as open source under the terms of the [MIT License].
 [File Processing]: /doc/processing.md#readme
 [File Validation]: /doc/validation.md#readme
 [metadata direct uploads]: /doc/metadata.md#direct-uploads
-[uppy xhr upload]: https://uppy.io/docs/xhr-upload/
+[uppy xhr-upload]: https://uppy.io/docs/xhr-upload/
 [direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
-[uppy aws s3]: https://uppy.io/docs/aws-s3/
+[uppy aws-s3]: https://uppy.io/docs/aws-s3/
 [direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
 [direct S3 uploads guide]: /doc/direct_s3.md#readme
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [shrine-tus]: https://github.com/shrinerb/shrine-tus
-[uppy aws s3 multipart]: https://uppy.io/docs/aws-s3-multipart/
+[uppy aws-s3-multipart]: https://uppy.io/docs/aws-s3-multipart/
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [uppy-s3_multipart shrine]: https://github.com/janko/uppy-s3_multipart#shrine
 [resumable uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads
