@@ -64,8 +64,8 @@ end                                           # end
 
 Now you can create an uploader class for the type of files you want to upload,
 and add a virtual attribute for handling attachments using this uploader to
-your model. If you do not care about adding plugins or additional processing, you can
-use Shrine::Attachment.
+your model. If you do not care about adding plugins or additional processing,
+you can use `Shrine::Attachment`.
 
 ```rb
 class ImageUploader < Shrine
