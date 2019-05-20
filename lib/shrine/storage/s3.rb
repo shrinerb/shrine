@@ -154,10 +154,9 @@ class Shrine
       #    typically useful for setting CDN hosts (e.g.
       #    `http://abc123.cloudfront.net`)
       #
-      # :download
-      # :  If set to `true`, creates a "forced download" link, which means that
-      #    the browser will never display the file and always ask the user to
-      #    download it.
+      # :public
+      # :  Returns the unsigned URL to the S3 object. This requires the S3
+      #    object to be public.
       #
       # All other options are forwarded to [`Aws::S3::Object#presigned_url`] or
       # [`Aws::S3::Object#public_url`].
@@ -165,7 +164,10 @@ class Shrine
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
       def url(id, download: nil, public: self.public, host: self.host, **options)
-        options[:response_content_disposition] ||= "attachment" if download
+        if download
+          Shrine.deprecation("The :download option in Shrine::Storage::S3#url is deprecated and will be removed in Shrine 3. Use the :response_content_disposition option directly, e.g. `response_content_disposition: \"attachment\"`.")
+          options[:response_content_disposition] ||= "attachment"
+        end
         options[:response_content_disposition] = encode_content_disposition(options[:response_content_disposition]) if options[:response_content_disposition]
 
         if public || signer

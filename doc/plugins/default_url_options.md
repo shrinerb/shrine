@@ -5,7 +5,7 @@ URL options that will be applied by default for uploaded files of specified
 storages.
 
 ```rb
-plugin :default_url_options, store: { download: true }
+plugin :default_url_options, store: { expires_in: 24*60*60 }
 ```
 
 You can also generate the default URL options dynamically by using a block,

@@ -61,7 +61,7 @@ The plugin also extends the `Attacher#url` to accept versions:
 
 ```rb
 user.avatar_url(:large)
-user.avatar_url(:small, download: true) # with URL options
+user.avatar_url(:small, public: true) # with URL options
 ```
 
 `Shrine.uploaded_file` will also instantiate a hash of `Shrine::UploadedFile`

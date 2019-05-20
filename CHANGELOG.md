@@ -1,5 +1,7 @@
 ## HEAD
 
+* `s3` – Deprecate `:download` URL option over `:response_content_disposition` (@janko)
+
 * `s3` – Remove backfilling `size` metadata when uploading IO objects of unknown size (@janko)
 
 * `s3` – Deprecate `aws-sdk-s3` version less than 1.14.0 (@janko)

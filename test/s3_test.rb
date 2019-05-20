@@ -450,7 +450,7 @@ describe Shrine::Storage::S3 do
       assert_nil URI(url).query
     end
 
-    it "accepts :download for a forced-download link" do
+    deprecated "accepts :download for a forced-download link" do
       url = @s3.url("foo", download: true)
       assert_includes URI(url).query, "response-content-disposition=attachment"
     end
