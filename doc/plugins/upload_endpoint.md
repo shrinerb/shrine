@@ -91,15 +91,6 @@ plugin :upload_endpoint, max_size: 20*1024*1024 # 20 MB
 If the uploaded file is larger than the specified value, a `413 Payload Too
 Large` response will be returned.
 
-## Checksum
-
-If you want the upload endpoint to verify the integrity of the uploaded file,
-you can include the `Content-MD5` header in the request filled with the
-base64-encoded MD5 hash of the file that was calculated prior to the upload,
-and the endpoint will automatically use it to verify the uploaded data.
-
-If the checksums don't match, a `460 Checksum Mismatch` response is returned.
-
 ## Context
 
 The upload context will *not* contain `:record` and `:name` values, as the
@@ -127,6 +118,30 @@ plugin :upload_endpoint, upload: -> (io, context, request) do
 end
 ```
 
+## URL
+
+You can have the endpoint include the uploaded file URL in the response body
+by specifying the `:url` option:
+
+```rb
+plugin :upload_endpoint, url: true
+# or
+plugin :upload_endpoint, url: { public: true }
+# or
+plugin :upload_endpoint, url: -> (uploaded_file, request) {
+  uploaded_file.url(**options)
+}
+```
+
+In this case the response body will be:
+
+```rb
+{
+  "data": { "id": "...", "storage": "...", "metadata": {...} },
+  "url": "https://example.com/path/to/file"
+}
+```
+
 ## Response
 
 The response returned by the endpoint can be customized via the
@@ -148,6 +163,15 @@ Shrine.upload_endpoint(:cache, max_size: 20*1024*1024)
 # or
 Shrine.upload_response(:cache, env, max_size: 20*1024*1024)
 ```
+
+## Checksum
+
+If you want the upload endpoint to verify the integrity of the uploaded file,
+you can include the `Content-MD5` header in the request filled with the
+base64-encoded MD5 hash of the file that was calculated prior to the upload,
+and the endpoint will automatically use it to verify the uploaded data.
+
+If the checksums don't match, a `460 Checksum Mismatch` response is returned.
 
 [upload_endpoint]: /lib/shrine/plugins/upload_endpoint.rb
 [Uppy]: https://uppy.io

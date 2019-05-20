@@ -1,5 +1,7 @@
 ## HEAD
 
+* `upload_endpoint` – Add `:url` option for adding uploaded file URL to response body (@janko)
+
 * `s3` – Deprecate `:download` URL option over `:response_content_disposition` (@janko)
 
 * `s3` – Remove backfilling `size` metadata when uploading IO objects of unknown size (@janko)

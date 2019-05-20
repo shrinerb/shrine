@@ -96,6 +96,22 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal image.read, uploaded_file.read
   end
 
+  it "accepts :url parameter" do
+    @shrine.plugin :upload_endpoint, url: true
+    response = app.post "/", multipart: {file: image}
+    uploaded_file = @shrine.uploaded_file(response.body_json["data"])
+    assert_equal uploaded_file.url, response.body_json["url"]
+
+    @shrine.plugin :upload_endpoint, url: { foo: "bar" }, upload_context: -> (r) { { location: "foo" } }
+    @shrine.storages[:cache].expects(:url).with("foo", { foo: "bar" }).returns("my-url")
+    response = app.post "/", multipart: {file: image}
+    assert_equal "my-url", response.body_json["url"]
+
+    @shrine.plugin :upload_endpoint, url: -> (f, r) { "my-url" }
+    response = app.post "/", multipart: {file: image}
+    assert_equal "my-url", response.body_json["url"]
+  end
+
   it "verifies provided checksum" do
     response = app.post "/", multipart: {file: image}, headers: {"Content-MD5" => Digest::MD5.base64digest(image.read)}
     assert_equal 200, response.status

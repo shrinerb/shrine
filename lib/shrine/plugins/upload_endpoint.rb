@@ -158,7 +158,19 @@ class Shrine
       if @rack_response
         @rack_response.call(object, request)
       else
-        [200, { "Content-Type" => CONTENT_TYPE_JSON }, [object.to_json]]
+        if @url
+          url = case @url
+                when true then object.url
+                when Hash then object.url(**@url)
+                else           @url.call(object, request)
+                end
+
+          body = { data: object, url: url }.to_json
+        else
+          body = object.to_json
+        end
+
+        [200, { "Content-Type" => CONTENT_TYPE_JSON }, [body]]
       end
     end
 
