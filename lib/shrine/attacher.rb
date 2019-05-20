@@ -52,7 +52,7 @@ class Shrine
       def initialize(record, name, cache: :cache, store: :store)
         @cache   = shrine_class.new(cache)
         @store   = shrine_class.new(store)
-        @context = {record: record, name: name}
+        @context = { record: record, name: name }
         @errors  = []
       end
 
