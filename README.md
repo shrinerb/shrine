@@ -126,8 +126,8 @@ end
 Once a file is uploaded and attached to the record, you can retrieve a URL to
 the uploaded file with `#<attachment>_url` and display it on the page:
 
-```rb
-image_tag @photo.image_url
+```erb
+<img src="<%= @photo.image_url %>" />
 ```
 
 ## Storage
