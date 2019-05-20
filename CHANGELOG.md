@@ -1,5 +1,7 @@
 ## HEAD
 
+* `base` – Add `Shrine::Attachment()` shorthand for `Shrine::Attachment.new` (@janko)
+
 * `upload_endpoint` – Add `:url` option for adding uploaded file URL to response body (@janko)
 
 * `s3` – Deprecate `:download` URL option over `:response_content_disposition` (@janko)

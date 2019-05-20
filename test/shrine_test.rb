@@ -64,10 +64,10 @@ describe Shrine do
     end
   end
 
-  describe ".attachment" do
+  describe ".Attachment" do
     it "returns an instance of Attachment" do
       uploader = Class.new(Shrine)
-      uploader.storages = {cache: "cache", store: "store"}
+      assert_instance_of uploader::Attachment, uploader::Attachment(:avatar)
       assert_instance_of uploader::Attachment, uploader.attachment(:avatar)
       assert_instance_of uploader::Attachment, uploader[:avatar]
     end

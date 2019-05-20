@@ -103,10 +103,11 @@ class Shrine
     #     class Photo
     #       include Shrine.attachment(:image) # creates a Shrine::Attachment object
     #     end
-    def attachment(name, *args)
+    def Attachment(name, *args)
       self::Attachment.new(name, *args)
     end
-    alias [] attachment
+    alias attachment Attachment
+    alias [] Attachment
 
     # Instantiates a Shrine::UploadedFile from a hash, and optionally
     # yields the returned object.
