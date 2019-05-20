@@ -8,4 +8,16 @@ assign cached files with hashes/arrays.
 plugin :parsed_json
 ```
 
+```rb
+photo.image = {
+  "id"       => "sdf90s2443.jpg",
+  "storage"  => "cache",
+  "metadata" => {
+    "filename"  => "nature.jpg",
+    "size"      => 29475,
+    "mime_type" => "image/jpeg",
+  }
+}
+```
+
 [parsed_json]: /lib/shrine/plugins/parsed_json.rb
