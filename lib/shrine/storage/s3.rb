@@ -117,8 +117,7 @@ class Shrine
         if copyable?(io)
           copy(io, id, **options)
         else
-          bytes_uploaded = put(io, id, **options)
-          shrine_metadata["size"] ||= bytes_uploaded
+          put(io, id, **options)
         end
       end
 
@@ -287,33 +286,27 @@ class Shrine
 
       # Uploads the file to S3. Uses multipart upload for large files.
       def put(io, id, **options)
-        bytes_uploaded = nil
-
         if (path = extract_path(io))
           # use `upload_file` for files because it can do multipart upload
           options = { multipart_threshold: @multipart_threshold[:upload] }.merge!(options)
           object(id).upload_file(path, **options)
-          bytes_uploaded = File.size(path)
         else
           io.to_io if io.is_a?(UploadedFile) # open if not already opened
 
           if io.respond_to?(:size) && io.size && (io.size <= @multipart_threshold[:upload] || !object(id).respond_to?(:upload_stream))
             object(id).put(body: io, **options)
-            bytes_uploaded = io.size
           elsif object(id).respond_to?(:upload_stream)
             # `upload_stream` uses multipart upload
             object(id).upload_stream(tempfile: true, **options) do |write_stream|
-              bytes_uploaded = IO.copy_stream(io, write_stream)
+              IO.copy_stream(io, write_stream)
             end
           else
             Tempfile.create("shrine-s3", binmode: true) do |file|
-              bytes_uploaded = IO.copy_stream(io, file.path)
+              IO.copy_stream(io, file.path)
               object(id).upload_file(file.path, **options)
             end
           end
         end
-
-        bytes_uploaded
       end
 
       # Aws::S3::Object#load doesn't support passing options to #head_object,

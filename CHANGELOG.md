@@ -1,5 +1,7 @@
 ## HEAD
 
+* `s3` – Remove backfilling `size` metadata when uploading IO objects of unknown size (@janko)
+
 * `s3` – Deprecate `aws-sdk-s3` version less than 1.14.0 (@janko)
 
 * `presign_endpoint` – Add `Shrine.presign_response` for handling presigns inside a custom controller (@janko)

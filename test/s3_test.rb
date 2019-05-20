@@ -317,17 +317,6 @@ describe Shrine::Storage::S3 do
         assert_raises(Aws::S3::Errors::NetworkError) { @s3.upload(io, "foo") }
       end
 
-      it "backfills size metadata if missing" do
-        io = fakeio("content").tap { |io| io.instance_eval { undef size } }
-        uploaded_file = @uploader.upload(io)
-        assert_equal 7, uploaded_file.metadata["size"]
-
-        # doesn't override existing size
-        io = fakeio("content").tap { |io| io.instance_eval { def size; 3; end } }
-        uploaded_file = @uploader.upload(io)
-        assert_equal 3, uploaded_file.metadata["size"]
-      end
-
       it "respects :prefix" do
         @s3 = s3(prefix: "prefix")
         @s3.upload(fakeio, "foo")
