@@ -114,13 +114,6 @@ Shrine.plugin :presign_endpoint, presign_options: -> (request) {
 }
 ```
 ```rb
-# config.ru (Rack)
-map "/s3/params" do
-  run Shrine.presign_endpoint(:cache)
-end
-
-# OR
-
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
   mount Shrine.presign_endpoint(:cache) => "/s3/params"
