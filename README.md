@@ -139,7 +139,7 @@ in `Shrine.storages`, so that they can later be used by uploaders.
 
 ```rb
 # Gemfile
-gem "aws-sdk-s3", "~> 1.2" # for AWS S3 storage
+gem "aws-sdk-s3", "~> 1.14" # for AWS S3 storage
 ```
 ```rb
 require "shrine/storage/s3"

@@ -29,7 +29,7 @@ temporary storage uploading to the `cache/` prefix:
 ```rb
 # Gemfile
 gem "shrine", "~> 2.11"
-gem "aws-sdk-s3", "~> 1.2"
+gem "aws-sdk-s3", "~> 1.14"
 ```
 ```rb
 require "shrine/storage/s3"
