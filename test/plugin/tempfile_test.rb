@@ -39,7 +39,7 @@ describe Shrine::Plugins::Tempfile do
     assert_nil tempfile.path
   end
 
-  it "rewinds the tempfile " do
+  it "rewinds the tempfile" do
     uploaded_file = @uploader.upload(fakeio("content"))
     uploaded_file.open do
       uploaded_file.tempfile.read
@@ -62,23 +62,33 @@ describe Shrine::Plugins::Tempfile do
     end
   end
 
-  it "yields an open tempfile reference in Shrine.with_file" do
-    uploaded_file = @uploader.upload(fakeio("content"))
-    uploaded_file.open do
-      file = @shrine.with_file(uploaded_file) do |file|
-        assert_equal uploaded_file.tempfile.path, file.path
-        refute_equal uploaded_file.tempfile.fileno, file.fileno
-        assert file.binmode?
-        refute file.closed?
-        file
+  describe "Shrine.with_file" do
+    it "yields an open tempfile reference" do
+      uploaded_file = @uploader.upload(fakeio("content"))
+      uploaded_file.open do
+        file = @shrine.with_file(uploaded_file) do |file|
+          assert_equal uploaded_file.tempfile.path, file.path
+          refute_equal uploaded_file.tempfile.fileno, file.fileno
+          assert file.binmode?
+          refute file.closed?
+          file
+        end
+        assert file.closed?
       end
-      assert file.closed?
+
+      # calls #download when uploaded file is not opened
+      path1, path2 = nil
+      @shrine.with_file(uploaded_file) { |file| path1 = file.path }
+      @shrine.with_file(uploaded_file) { |file| path2 = file.path }
+      refute_equal path1, path2
     end
 
-    # calls #download when uploaded file is not opened
-    path1, path2 = nil
-    @shrine.with_file(uploaded_file) { |file| path1 = file.path }
-    @shrine.with_file(uploaded_file) { |file| path2 = file.path }
-    refute_equal path1, path2
+    it "works with non-opened uploaded files" do
+      uploaded_file = @uploader.upload(fakeio("content"))
+      @shrine.with_file(uploaded_file) do |file|
+        File.exist?(file.path)
+        assert_equal "content", file.read
+      end
+    end
   end
 end
