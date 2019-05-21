@@ -25,12 +25,9 @@ uploaded_file.eof?   # => false
 uploaded_file.close  # closes the underlying IO object (this should be called when you're done)
 ```
 
-In reality these methods are simply delegated on the IO object returned by the
-`Storage#open` method of the underlying Shrine storage. For
-`Shrine::Storage::FileSystem` this IO object will be a `File` object, while for
-`Shrine::Storage::S3` (and most other remote storages) it will be a
-[`Down::ChunkedIO`] object. `Storage#open` is implicitly called when any of
-these IO methods are called for the first time.
+These methods are simply delegated on the IO object returned by the
+`Storage#open` method of the underlying Shrine storage. `Storage#open` is
+implicitly called when any of these IO methods are called for the first time.
 
 ```rb
 uploaded_file.read(10) # calls `Storage#open` and assigns result to an instance variable
@@ -43,6 +40,48 @@ You can retrieve the underlying IO object returned by `Storage#open` with
 
 ```rb
 uploaded_file.to_io # the underlying IO object returned by `Storage#open`
+```
+
+## `Storage#open`
+
+The underlying IO object that `Shrine::UploadedFile` will use depends on the
+storage. The `FileSystem` storage will return a `File` object, while `S3` and
+most other remote storages will return [`Down::ChunkedIO`] that downloads file
+content on-demand.
+
+```rb
+Shrine.storages = {
+  file_system: Shrine::Storage::FileSystem.new(...),
+  s3:          Shrine::Storage::S3.new(...),
+}
+
+local_file = Shrine.new(:file_system).upload(file)
+local_file.to_io #=> #<File:/path/to/file>
+
+remote_file = Shrine.new(:s3).upload(file)
+remote_file.to_io #=> #<Down::ChunkedIO> (opens HTTP connection)
+remote_file.read(1*1024*1024) # downloads first 1MB
+remote_file.read(1*1024*1024) # downloads next 1MB
+remote_file.close # closes HTTP connection
+```
+
+The `Down::ChunkedIO` object will cache downloaded content to disk in order to
+be rewindable, which is used in a places such as metadata extraction.
+
+```rb
+remote_file.read(1*1024*1024) # downloads and caches first 1MB
+remote_file.rewind
+remote_file.read(1*1024*1024) # reads first 1MB from the cache
+remote_file.read(1*1024*1024) # downloads and caches next 1MB
+```
+
+If you want to turn off caching to disk, most storages allow you to pass
+`:rewindable` to `Storage#open`:
+
+```rb
+remote_file.open(rewindable: false)
+remote_file.read(1*1024*1024) # downloads first 1MB (no caching to disk)
+remote_file.rewind #~> IOError: this Down::ChunkedIO is not rewindable
 ```
 
 ## Opening
