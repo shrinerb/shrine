@@ -118,9 +118,7 @@ class Shrine
 
     # Retrieves the upload from the request and verifies it.
     def get_io(request)
-      file = if request.form_data?
-               get_multipart_upload(request)
-             end
+      file = get_multipart_upload(request)
 
       verify_size!(file, request)
       verify_checksum!(file, request)
