@@ -37,6 +37,21 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal image.read, uploaded_file.read
   end
 
+  it "finds the file in Uppy's default files[] format" do
+    response = app.post "/", multipart: {"files[]": image}
+    uploaded_file = @shrine.uploaded_file(response.body_json)
+    assert_equal image.read, uploaded_file.read
+  end
+
+  it "doesn't accept more than one file" do
+    response = app.post "/", multipart: HTTP::FormData.create("files[]": [
+      HTTP::FormData::File.new(image.path),
+      HTTP::FormData::File.new(image.path),
+    ])
+    assert_equal 400, response.status
+    assert_equal "Too Many Files", response.body_binary
+  end
+
   it "validates maximum size" do
     @shrine.plugin :upload_endpoint, max_size: 10
     response = app.post "/", multipart: {file: image}

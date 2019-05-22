@@ -1,5 +1,7 @@
 ## HEAD
 
+* `upload_endpoint` – Accept file uploads from Uppy's default `files[]` array (@janko)
+
 * `base` – Add `Shrine::Attachment()` shorthand for `Shrine::Attachment.new` (@janko)
 
 * `upload_endpoint` – Add `:url` option for adding uploaded file URL to response body (@janko)

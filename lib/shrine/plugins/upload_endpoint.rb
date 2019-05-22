@@ -116,18 +116,32 @@ class Shrine
       make_response(uploaded_file, request)
     end
 
-    # Retrieves the "file" multipart request parameter, and returns an
-    # IO-like object that can be passed to `Shrine#upload`.
+    # Retrieves the upload from the request and verifies it.
     def get_io(request)
-      file = request.params["file"]
+      file = if request.form_data?
+               get_multipart_upload(request)
+             end
 
-      error!(400, "Upload Not Found") if file.nil?
-      error!(400, "Upload Not Valid") unless file.is_a?(Hash) && file[:tempfile]
-      error!(413, "Upload Too Large") if @max_size && file[:tempfile].size > @max_size
+      verify_size!(file, request)
+      verify_checksum!(file, request)
 
-      verify_checksum!(file[:tempfile], request.env["HTTP_CONTENT_MD5"]) if request.env["HTTP_CONTENT_MD5"]
+      file
+    end
 
-      @shrine_class.rack_file(file)
+    # Retrieves the file from "file" or "files[]" multipart POST param, and
+    # converts it into an IO-like object that can be passed to `Shrine#upload`.
+    def get_multipart_upload(request)
+      if request.params.key?("file")
+        value = request.params["file"]
+      elsif request.params["files"].is_a?(Array)
+        error!(400, "Too Many Files") if request.params["files"].count > 1
+        value = request.params["files"].first
+      end
+
+      error!(400, "Upload Not Found") if value.nil?
+      error!(400, "Upload Not Valid") unless value.is_a?(Hash) && value[:tempfile]
+
+      @shrine_class.rack_file(value)
     end
 
     # Returns a hash of information containing `:action` and `:request`
@@ -174,8 +188,16 @@ class Shrine
       end
     end
 
+    def verify_size!(file, request)
+      error!(413, "Upload Too Large") if @max_size && file.size > @max_size
+    end
+
     # Verifies the provided checksum against the received file.
-    def verify_checksum!(file, provided_checksum)
+    def verify_checksum!(file, request)
+      return unless request.env.key?("HTTP_CONTENT_MD5")
+
+      provided_checksum = request.env["HTTP_CONTENT_MD5"]
+
       error!(400, "The Content-MD5 you specified was invalid") if provided_checksum.length != 24
 
       calculated_checksum = Digest::MD5.file(file.path).base64digest
