@@ -184,8 +184,14 @@
         name: shrine-webdav
         url: https://github.com/funbox/shrine-webdav
   -
-    title: Plugins
+    title: Extensions
     items:
+      -
+        name: administrate-field-shrine
+        url: https://github.com/catsky/administrate-field-shrine
+      -
+        name: rails_admin_shrine
+        url: https://github.com/iquest/rails_admin_shrine
       -
         name: shrine-color
         url: https://github.com/jnylen/shrine-color
@@ -205,6 +211,9 @@
         name: shrine-mongoid
         url: https://github.com/shrinerb/shrine-mongoid
       -
+        name: shrine-rails
+        url: https://github.com/abepetrillo/shrine-rails
+      -
         name: shrine-reform
         url: https://github.com/shrinerb/shrine-reform
       -
@@ -214,17 +223,11 @@
     title: Libraries
     items:
       -
-        name: administrate-field-shrine
-        url: https://github.com/catsky/administrate-field-shrine
-      -
         name: imgproxy
         url: https://github.com/imgproxy/imgproxy.rb
       -
         name: rails_admin
         url: https://github.com/sferik/rails_admin
-      -
-        name: rails_admin_shrine
-        url: https://github.com/iquest/rails_admin_shrine
       -
         name: uppy-s3_multipart
         url: https://github.com/janko/uppy-s3_multipart
