@@ -96,8 +96,8 @@
     title: Videos
     items:
       -
-        name: "Shrine: Handle file uploads like it's 2017"
-        url: https://www.youtube.com/watch?v=plD-RkKEay0
+        name: "wroc_love.rb – Handling file uploads for a modern developer"
+        url: https://www.youtube.com/watch?v=fP2JGjTZU2s
       -
         name: "File Uploads in Rails with Shrine (GoRails)"
         url: https://gorails.com/episodes/file-uploading-with-shrine?autoplay=1
