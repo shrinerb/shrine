@@ -10,8 +10,7 @@ class Shrine
         # Calculates `algorithm` hash of the contents of the IO object, and
         # encodes it into `format`.
         def calculate_signature(io, algorithm, format: :hex)
-          algorithm = algorithm.downcase # support uppercase algorithm names like :MD5
-          SignatureCalculator.new(algorithm, format: format).call(io)
+          SignatureCalculator.new(algorithm.downcase, format: format).call(io)
         end
       end
 
