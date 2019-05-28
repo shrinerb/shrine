@@ -91,10 +91,9 @@ class Shrine
     end
 
     # Retrieves the storage under the given identifier (can be a Symbol or
-    # a String), and raises Shrine::Error if the storage is missing.
+    # a String), raising Shrine::Error if the storage is missing.
     def find_storage(name)
-      storages.each { |key, value| return value if key.to_s == name.to_s }
-      raise Error, "storage #{name.inspect} isn't registered on #{self}"
+      storages[name.to_sym] or fail Error, "storage #{name.inspect} isn't registered on #{self}"
     end
 
     # Generates an instance of Shrine::Attachment to be included in the
