@@ -66,7 +66,7 @@ name:
 Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
 ```
 
-Now we can instantiate an uploader with this identifier, and upload files:
+Now we can instantiate an uploader with this identifier and upload files:
 
 ```rb
 uploader = Shrine.new(:file_system)

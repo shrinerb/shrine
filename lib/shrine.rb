@@ -108,6 +108,13 @@ class Shrine
     alias attachment Attachment
     alias [] Attachment
 
+    # Uploads the file to the specified storage. It delegates to `Shrine#upload`.
+    #
+    #     Shrine.upload(io, :store) #=> #<Shrine::UploadedFile>
+    def upload(io, storage, context = {})
+      new(storage).upload(io, context)
+    end
+
     # Instantiates a Shrine::UploadedFile from a hash, and optionally
     # yields the returned object.
     #
@@ -161,6 +168,8 @@ class Shrine
     attr_reader :storage
 
     # Accepts a storage symbol registered in `Shrine.storages`.
+    #
+    #     Shrine.new(:store)
     def initialize(storage_key)
       @storage = self.class.find_storage(storage_key)
       @storage_key = storage_key.to_sym

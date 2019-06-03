@@ -62,8 +62,7 @@ deleting files, they also represent the uploaded file. Shrine has a separate
 `Shrine::UploadedFile` class which represents the uploaded file.
 
 ```rb
-uploader = ImageUploader.new(:store)
-uploaded_file = uploader.upload(image)
+uploaded_file = ImageUploader.upload(file, :store)
 uploaded_file          #=> #<Shrine::UploadedFile>
 uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
 uploaded_file.download #=> #<Tempfile>
@@ -381,12 +380,12 @@ end
 
 #### `#store!`, `#cache!`
 
-In Shrine you store and cache files by instantiating it with a corresponding
-storage, and calling `#upload`:
+In Shrine you store and cache files by passing the corresponding storage to
+`Shrine.upload`:
 
 ```rb
-ImageUploader.new(:cache).upload(file)
-ImageUploader.new(:store).upload(file)
+ImageUploader.upload(file, :cache)
+ImageUploader.upload(file, :store)
 ```
 
 Note that in Shrine you cannot pass in a path to the file, you always have to
@@ -398,8 +397,8 @@ pass an IO-like object, which is required to respond to: `#read(*args)`,
 In Shrine you simply call `#download` on the uploaded file:
 
 ```rb
-uploaded_file = ImageUploader.new(:store).upload(file)
-uploaded_file.download #=> #<Tempfile>
+uploaded_file = ImageUploader.upload(file, :store)
+uploaded_file.download #=> #<Tempfile:/path/to/file>
 ```
 
 #### `#url`

@@ -73,8 +73,7 @@ Among other things, this allows you to use uploader classes standalone, which
 gives you more power:
 
 ```rb
-uploader = ImageUploader.new(:store)
-uploaded_file = uploader.upload(File.open("nature.jpg"))
+uploaded_file = ImageUploader.upload(File.open("nature.jpg"), :store)
 uploaded_file     #=> #<Shrine::UploadedFile>
 uploaded_file.url #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
 ```

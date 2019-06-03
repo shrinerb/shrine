@@ -73,6 +73,14 @@ describe Shrine do
     end
   end
 
+  describe ".upload" do
+    it "uploads the file" do
+      uploaded_file = @shrine.upload(fakeio("content"), :store)
+      assert_equal @shrine.storages[:store], uploaded_file.storage
+      assert_equal "content",                uploaded_file.read
+    end
+  end
+
   describe ".uploaded_file" do
     it "accepts data as Hash" do
       uploaded_file = @uploader.upload(fakeio)

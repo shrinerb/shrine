@@ -159,9 +159,9 @@ Shrine.storages = {
 
 The above example sets up AWS S3 storage both for temporary and permanent
 storage, which is suitable for [direct uploads][direct S3 uploads guide]. The
-`:cache` and `:store` names are special only in terms that the attacher will
-automatically pick them up, but you can also register more storages under
-different names.
+`:cache` and `:store` names are special only in terms that the
+[attacher](#attacher) will automatically pick them up, but you can also
+register more storages under different names.
 
 Shrine ships with [FileSystem] and [S3] storage, take a look at their
 documentation for more details on various features they support. There are
@@ -170,32 +170,36 @@ you can also [create your own storage][creating storage].
 
 ## Uploader
 
-Uploaders are subclasses of `Shrine`, and are essentially wrappers around
-storages. They perform common tasks around upload that aren't related to a
+Uploaders are subclasses of `Shrine`, and they wrap the actual upload to the
+storage. They perform common tasks around upload that aren't related to a
 particular storage.
 
 ```rb
-class ImageUploader < Shrine
+class MyUploader < Shrine
   # image attachent logic
 end
 ```
-```rb
-uploader = ImageUploader.new(:store)
-uploader #=> uploader for storage registered under `:store`
-```
 
 It's common to create an uploader for each type of file that you want to handle
-(image, video, audio, document etc), but really you can organize them in any way
-you like.
+(`ImageUploader`, `VideoUploader`, `AudioUploader` etc), but really you can
+organize them in any way you like.
 
 ### Uploading
 
-The main method of the uploader is `#upload`, which takes an IO-like object on
-the input, and returns a representation of the uploaded file on the output.
+The main method of the uploader is `#upload`, which takes an [IO-like
+object](#io-abstraction) and a storage identifier on the input, and returns a
+representation of the [uploaded file](#uploaded-file) on the output.
 
 ```rb
-uploaded_file = uploader.upload(file)
-uploaded_file #=> #<Shrine::UploadedFile>
+MyUploader.upload(file, :store) #=> #<Shrine::UploadedFile>
+```
+
+Internally this instantiates the uploader with the storage and calls `#upload`
+on it. For simplicity, we'll be using this form in our examples.
+
+```rb
+uploader = MyUploader.new(:store)
+uploader.upload(file) #=> #<Shrine::UploadedFile>
 ```
 
 Some of the tasks performed by `#upload` include:

@@ -55,10 +55,10 @@ Shrine.storages = {
   s3:          Shrine::Storage::S3.new(...),
 }
 
-local_file = Shrine.new(:file_system).upload(file)
+local_file = Shrine.upload(file, :file_system)
 local_file.to_io #=> #<File:/path/to/file>
 
-remote_file = Shrine.new(:s3).upload(file)
+remote_file = Shrine.upload(file, :s3)
 remote_file.to_io #=> #<Down::ChunkedIO> (opens HTTP connection)
 remote_file.read(1*1024*1024) # downloads first 1MB
 remote_file.read(1*1024*1024) # downloads next 1MB

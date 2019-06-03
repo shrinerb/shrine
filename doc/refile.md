@@ -14,18 +14,15 @@ named "storages", it uses the same IO abstraction for uploading and representing
 uploaded files, similar attachment logic, and direct uploads are also supported.
 
 While in Refile you work with storages directly, Shrine uses *uploaders* which
-act as wrappers around storages:
+wrap storage uploads:
 
 ```rb
 storage = Shrine.storages[:store]
-storage #=> #<Shrine::Storage::S3 ...>
+storage #=> #<Shrine::Storage::S3>
 
-uploader = Shrine.new(:store)
-uploader         #=> #<Shrine @storage_key=:store @storage=#<Shrine::Storage::S3>>
-uploader.storage #=> #<Shrine::Storage::S3 ...>
-
-uploaded_file = uploader.upload(image)
-uploaded_file #=> #<Shrine::UploadedFile>
+uploaded_file = Shrine.upload(image, :store)
+uploaded_file #=> #<Shrine::UploadedFile ...>
+uploaded_file.storage #=> #<Shrine::Storage::S3>
 ```
 
 This way Shrine can perform tasks like generating location, extracting

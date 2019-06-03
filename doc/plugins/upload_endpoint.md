@@ -114,7 +114,7 @@ You can also customize the upload itself via the `:upload` option:
 
 ```rb
 plugin :upload_endpoint, upload: -> (io, context, request) do
-  Shrine.new(:cache).upload(io, context)
+  Shrine.upload(io, :cache, context)
 end
 ```
 

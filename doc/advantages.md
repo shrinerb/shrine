@@ -84,9 +84,7 @@ Storage provides, you can ditch the Shrine's attachment implementation and use
 uploaders and uploaded files that are decoupled from attachment:
 
 ```rb
-uploader      = ImageUploader.new(:store)
-uploaded_file = uploader.upload(image) # metadata extraction, upload location generation
-
+uploaded_file = ImageUploader.upload(image, :store) # metadata extraction, upload location generation
 uploaded_file.id       #=> "44ccafc10ce6a4ff22829e8f579ee6b9.jpg"
 uplaoded_file.metadata #=> { ... extracted metadata ... }
 
