@@ -1135,7 +1135,7 @@ The gem is available as open source under the terms of the [MIT License].
 
 [Uppy]: https://uppy.io
 [direct S3 uploads guide]: /doc/direct_s3.md#readme
-[direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads<Paste>
+[direct S3 uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads
 [direct uploads walkthrough]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [resumable demo]: https://github.com/shrinerb/shrine-tus-demo
