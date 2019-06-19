@@ -63,10 +63,8 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(*)
+        def initialize(name, **options)
           super
-
-          name = attachment_name
 
           define_method :"#{name}_data_uri=" do |uri|
             send(:"#{name}_attacher").data_uri = uri

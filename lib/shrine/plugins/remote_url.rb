@@ -17,10 +17,8 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(*)
+        def initialize(name, **options)
           super
-
-          name = attachment_name
 
           define_method :"#{name}_remote_url=" do |url|
             send(:"#{name}_attacher").remote_url = url

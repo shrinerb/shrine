@@ -7,10 +7,8 @@ class Shrine
     # [doc/plugins/remove_attachment.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_attachment.md
     module RemoveAttachment
       module AttachmentMethods
-        def initialize(*)
+        def initialize(name, **options)
           super
-
-          name = attachment_name
 
           define_method :"remove_#{name}=" do |value|
             send(:"#{name}_attacher").remove = value
