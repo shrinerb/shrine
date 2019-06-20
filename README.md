@@ -25,6 +25,35 @@ If you're curious how it compares to other file attachment libraries, see the [A
 | Bugs              | [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues)             |
 | Help & Discussion | [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine) |
 
+## Contents
+
+* [Quick start](#quick-start)
+* [Storage](#storage)
+* [Uploader](#uploader)
+  - [Uploading](#uploading)
+  - [IO abstraction](#io-abstraction)
+* [Uploaded file](#uploaded-file)
+* [Attachment](#attachment)
+* [Attacher](#attacher)
+* [Plugin system](#plugin-system)
+* [Metadata](#metadata)
+  * [MIME type](#mime-type)
+  * [Other metadata](#other-metadata)
+* [Processing](#processing)
+  * [Processing on upload](#processing-on-upload)
+  * [Processing on-the-fly](#processing-on-the-fly)
+* [Validation](#validation)
+* [Context](#context)
+* [Location](#location)
+* [Direct uploads](#direct-uploads)
+  - [Simple direct upload](#simple-direct-upload)
+  - [Presigned direct upload](#presigned-direct-upload)
+  - [Resumable direct upload](#resumable-direct-upload)
+* [Backgrounding](#backgrounding)
+* [Clearing cache](#clearing-cache)
+* [Logging](#logging)
+* [Settings](#settings)
+
 ## Quick start
 
 Add Shrine to the Gemfile and write an initializer which sets up the storage and
