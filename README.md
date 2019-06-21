@@ -603,7 +603,7 @@ $ brew install imagemagick
 gem "image_processing", "~> 1.0"
 ```
 ```rb
-require "image/mini_magick"
+require "image_processing/mini_magick"
 
 thumbnail = ImageProcessing::MiniMagick
   .source(original_image)
