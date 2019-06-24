@@ -349,7 +349,7 @@ In Shrine equivalents are (private) methods `Shrine#extract_filename` and
 #### `.app_url`
 
 You should use your framework to generate the URL to your mounted direct
-enpdoint.
+endpoint.
 
 #### `.attachment_url`, `.file_url`
 

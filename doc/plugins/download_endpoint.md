@@ -62,7 +62,7 @@ plugin :download_endpoint, download_options: {
 You can also specify a proc to generate download options dynamically:
 
 ```rb
-plugin :download_enpdoint, download_options: -> (uploaded_file, request) {
+plugin :download_endpoint, download_options: -> (uploaded_file, request) {
   {
     sse_customer_algorithm: "AES256",
     sse_customer_key:       "secret_key",

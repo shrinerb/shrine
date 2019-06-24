@@ -11,7 +11,7 @@ class Photo < Sequel::Model
 end
 ```
 
-However, you don't want to add additional methods on the model and prefer
+However, if you don't want to add additional methods on the model and prefer
 explicitness, or you need more control, you can achieve the same behaviour
 using the `Shrine::Attacher` object, which is what the attachment interface
 uses under the hood.
@@ -22,7 +22,14 @@ attacher.assign(file)                                 # equivalent to `photo.ima
 attacher.get                                          # equivalent to `photo.image`
 ```
 
-## Attributes
+The attacher will use the `<attachment>_data` attribute for storing information
+about the attachment.
+
+```rb
+attacher.data_attribute #=> :image_data
+```
+
+## Initializing
 
 The attacher object exposes the objects it uses:
 
@@ -38,9 +45,15 @@ also tell it to use different temporary and permanent storage:
 
 ```rb
 ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
+
+# OR
+
+photo.image_attacher(cache: :other_cache, store: :other_store)
+photo.image = file # uploads to :other_cache storage
+photo.save         # promotes to :other_store storage
 ```
 
-Note that you can pass the `:cache` and `:store` options via `Attachment.new` too:
+You can pass the `:cache` and `:store` options via `Attachment.new` too:
 
 ```rb
 class Photo < Sequel::Model
@@ -48,12 +61,8 @@ class Photo < Sequel::Model
 end
 ```
 
-The attacher will use the `<attachment>_data` attribute for storing information
-about the attachment.
-
-```rb
-attacher.data_attribute #=> :image_data
-```
+Note that it's not necessary to use the temporary storage, see the next section
+for more details.
 
 ## Assignment
 
@@ -92,10 +101,12 @@ attacher.assign(cached_file.to_json)
 
 For security reasons `#assign` doesn't accept files uploaded to permanent
 storage, but you can use `#set` to attach any `Shrine::UploadedFile` object.
+You can use this to skip temporary storage altogether and upload files directly
+to permanent storage:
 
 ```rb
-uploaded_file #=> #<Shrine::UploadedFile>
-attacher.set(uploaded_file)
+uploaded_file = attacher.store!(file) # upload a file directly to permanent storage
+attacher.set(uploaded_file)          # attach the uploaded file
 ```
 
 ## Retrieval

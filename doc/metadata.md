@@ -1,8 +1,7 @@
 # Extracting Metadata
 
 Before a file is uploaded, Shrine automatically extracts metadata from it, and
-stores them in the `Shrine::UploadedFile` object. By default it extracts
-`size`, `filename` and `mime_type`.
+stores them in the `Shrine::UploadedFile` object.
 
 ```rb
 uploaded_file = uploader.upload(file)
@@ -13,6 +12,15 @@ uploaded_file.metadata #=>
 #   "mime_type" => "video/mp4",
 # }
 ```
+
+The following metadata is extracted by default:
+
+| Key         | Default source                                     |
+| :-----      | :------                                            |
+| `filename`  | extracted from `io.original_filename` or `io.path` |
+| `mime_type` | extracted from `io.content_type`                   |
+| `size`      | extracted from `io.size`                           |
+
 
 Under the hood `Shrine#extract_metadata` is called, which you can also use
 directly to extract metadata from any IO object.
@@ -107,7 +115,7 @@ require "mini_magick"
 class ImageUploader < Shrine
   plugin :add_metadata
 
-  add_metadata :exif do |io|
+  add_metadata :exif do |io, context|
     Shrine.with_file(io) do |file|
       begin
         MiniMagick::Image.new(file.path).exif

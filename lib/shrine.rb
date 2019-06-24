@@ -185,6 +185,11 @@ class Shrine
     # optional context hash (used internally by Shrine::Attacher). It calls
     # user-defined #process, and afterwards it calls #store. The `io` is
     # closed after upload.
+    #
+    #   uploader.upload(io)
+    #   uploader.upload(io, metadata: { "foo" => "bar" })           # add metadata
+    #   uploader.upload(io, location: "path/to/file")               # specify location
+    #   uploader.upload(io, upload_options: { acl: "public-read" }) # add upload options
     def upload(io, context = {})
       io = processed(io, context) || io
       store(io, context)
