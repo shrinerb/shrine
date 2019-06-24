@@ -30,7 +30,7 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-19 10:20:44 +0100</span>
+<span class='datetime'>2019-06-03 11:54:21 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -71,7 +71,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:file_system</span>] = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;uploads&quot;</span>)</pre>
 
-<p>Now we can instantiate an uploader with this identifier, and upload files:</p>
+<p>Now we can instantiate an uploader with this identifier and upload files:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:file_system</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
 

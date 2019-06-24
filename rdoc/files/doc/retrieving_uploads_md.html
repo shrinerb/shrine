@@ -30,7 +30,7 @@ doc/retrieving_uploads.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-19 10:20:44 +0100</span>
+<span class='datetime'>2019-06-03 11:53:37 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -48,13 +48,27 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># =&gt; false</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>   <span class="ruby-comment"># =&gt; &quot;...&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># =&gt; true</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-comment"># rewinds the underlying IO object</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">eof?</span>   <span class="ruby-comment"># =&gt; false</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">close</span>  <span class="ruby-comment"># closes the underlying IO object (this should be called when you&#39;re done)</span></pre>
 
-<p>In reality these methods are simply delegated on the IO object returned by the <code>Storage#open</code> method of the underlying <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage. For <code>Shrine::Storage::FileSystem</code> this IO object will be a <code>File</code> object, while for <code>Shrine::Storage::S3</code> (and most other remote storages) it will be a <a href="https://github.com/janko/down#streaming">Down::ChunkedIO</a> object. <code>Storage#open</code> is implicitly called when any of these IO methods are called for the first time.</p>
+<p>These methods are simply delegated on the IO object returned by the <code>Storage#open</code> method of the underlying <a href="../../classes/Shrine.html"><code>Shrine</code></a> storage. <code>Storage#open</code> is implicitly called when any of these IO methods are called for the first time.</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">10</span>) <span class="ruby-comment"># calls `Storage#open` and assigns result to an instance variable</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">10</span>)&#x000A;<span class="ruby-comment"># ...</span></pre>
 
 <p>You can retrieve the underlying IO object returned by <code>Storage#open</code> with <code>#to_io</code>:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">to_io</span> <span class="ruby-comment"># the underlying IO object returned by `Storage#open`</span></pre>
+
+<h2 id="label-Storage-23open"><code>Storage#open</code><span><a href="#label-Storage-23open">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The underlying IO object that <code>Shrine::UploadedFile</code> will use depends on the storage. The <code>FileSystem</code> storage will return a <code>File</code> object, while <code>S3</code> and most other remote storages will return <a href="https://github.com/janko/down#streaming">Down::ChunkedIO</a> that downloads file content on-demand.</p>
+
+<pre>Shrine.storages = {&#x000A;  file_system: Shrine::Storage::FileSystem.new(...),&#x000A;  s3:          Shrine::Storage::S3.new(...),&#x000A;}&#x000A;local_file = Shrine.upload(file, :file_system)&#x000A;local_file.to_io #=&gt; #&lt;File:/path/to/file&gt;&#x000A;&#x000A;remote_file = Shrine.upload(file, :s3)&#x000A;remote_file.to_io #=&gt; #&lt;Down::ChunkedIO&gt; (opens HTTP connection)&#x000A;remote_file.read(1*1024*1024) # downloads first 1MB&#x000A;remote_file.read(1*1024*1024) # downloads next 1MB&#x000A;remote_file.close # closes HTTP connection</pre>
+
+<p>The <code>Down::ChunkedIO</code> object will cache downloaded content to disk in order to be rewindable, which is used in a places such as metadata extraction.</p>
+
+<pre class="ruby"><span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment"># downloads and caches first 1MB</span>&#x000A;<span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">rewind</span>&#x000A;<span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment"># reads first 1MB from the cache</span>&#x000A;<span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment"># downloads and caches next 1MB</span></pre>
+
+<p>If you want to turn off caching to disk, most storages allow you to pass <code>:rewindable</code> to <code>Storage#open</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">open</span>(<span class="ruby-value">rewindable:</span> <span class="ruby-keyword">false</span>)&#x000A;<span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">read</span>(<span class="ruby-value">1</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>) <span class="ruby-comment"># downloads first 1MB (no caching to disk)</span>&#x000A;<span class="ruby-identifier">remote_file</span>.<span class="ruby-identifier">rewind</span> <span class="ruby-comment">#~&gt; IOError: this Down::ChunkedIO is not rewindable</span></pre>
 
 <h2 id="label-Opening">Opening<span><a href="#label-Opening">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

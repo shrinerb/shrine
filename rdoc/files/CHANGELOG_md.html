@@ -30,12 +30,37 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-05-08 12:43:07 +0200</span>
+<span class='datetime'>2019-06-24 17:34:29 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.18.0+-282019-06-24-29">2.18.0 (2019-06-24)<span><a href="#label-2.18.0+-282019-06-24-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>core</code> – Add <code>Shrine.upload</code> method as a shorthand for <code>Shrine.new(...).upload(...)</code> (@janko)</p>
+</li><li>
+<p><code>upload_endpoint</code> – Accept file uploads from Uppy&#39;s default <code>files[]</code> array (@janko)</p>
+</li><li>
+<p><code>core</code> – Add <code>Shrine::Attachment()</code> shorthand for <code>Shrine::Attachment.new</code> (@janko)</p>
+</li><li>
+<p><code>upload_endpoint</code> – Add <code>:url</code> option for adding uploaded file URL to response body (@janko)</p>
+</li><li>
+<p><code>s3</code> – Deprecate <code>:download</code> URL option over <code>:response_content_disposition</code> (@janko)</p>
+</li><li>
+<p><code>s3</code> – Remove backfilling <code>size</code> metadata when uploading IO objects of unknown size (@janko)</p>
+</li><li>
+<p><code>s3</code> – Deprecate <code>aws-sdk-s3</code> version less than 1.14.0 (@janko)</p>
+</li><li>
+<p><code>presign_endpoint</code> – Add <code>Shrine.presign_response</code> for handling presigns inside a custom controller (@janko)</p>
+</li><li>
+<p><code>upload_endpoint</code> – Add <code>Shrine.upload_response</code> for handling uploads inside a custom controller (@janko)</p>
+</li><li>
+<p><code>rack_file</code> – Fix overriden <code>Attacher#assign</code> not accepting second argument (@janko)</p>
+</li><li>
+<p><code>parsed_json</code> – Fix overriden <code>Attacher#assign</code> not accepting second argument (@janko)</p>
+</li></ul>
+
 <h2 id="label-2.17.0+-282019-05-06-29">2.17.0 (2019-05-06)<span><a href="#label-2.17.0+-282019-05-06-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>data_uri</code> – Add <code>Attacher#assign_data_uri</code> which accepts additional <code>Shrine#upload</code> options (@janko)</p>
@@ -758,7 +783,7 @@ Last Update:
 </li><li>
 <p>Keep <code>Shrine#extract_mime_type</code> a private method when loading determine_mime_type plugin (@janko)</p>
 </li><li>
-<p>Deprecate loading the backgrounding plugin through the old "background_helpers" alias (@janko)</p>
+<p>Deprecate loading the backgrounding plugin through the old “background_helpers” alias (@janko)</p>
 </li></ul>
 
 <h2 id="label-1.4.2+-282016-04-19-29">1.4.2 (2016-04-19)<span><a href="#label-1.4.2+-282016-04-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>

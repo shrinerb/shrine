@@ -40,6 +40,7 @@ Shrine::Plugins::UploadEndpoint::ClassMethods
 <h3>Public Instance</h3>
 <ol>
 <li><a href="#method-i-upload_endpoint">upload_endpoint</a></li>
+<li><a href="#method-i-upload_response">upload_response</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -66,6 +67,27 @@ Shrine::Plugins::UploadEndpoint::ClassMethods
 [show source]
 </a>
 <pre id='method-i-upload_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload_endpoint</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadEndpoint</span>.<span class="ruby-identifier">new</span>(&#x000A;<span class="line-num">33</span>     <span class="ruby-value">shrine_class:</span> <span class="ruby-keyword">self</span>,&#x000A;<span class="line-num">34</span>     <span class="ruby-value">storage_key:</span>  <span class="ruby-identifier">storage_key</span>,&#x000A;<span class="line-num">35</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>[<span class="ruby-value">:upload_endpoint</span>],&#x000A;<span class="line-num">36</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>,&#x000A;<span class="line-num">37</span>   )&#x000A;<span class="line-num">38</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-upload_response'>
+<a name='method-i-upload_response'></a>
+<div class='synopsis'>
+<span class='name'>upload_response</span>
+<span class='arguments'>(storage_key, env, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Calls the upload endpoint passing the request information, and returns the Rack response triple.</p>
+
+<p>It performs the same mounting logic that Rack and other web frameworks use, and is meant for cases where statically mounting the endpoint in the router isn&#39;t enough.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload_response-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-upload_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/upload_endpoint.rb</span>&#x000A;<span class="line-num">46</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload_response</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">47</span>   <span class="ruby-identifier">script_name</span> = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>]&#x000A;<span class="line-num">48</span>   <span class="ruby-identifier">path_info</span>   = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]&#x000A;<span class="line-num">49</span> &#x000A;<span class="line-num">50</span>   <span class="ruby-keyword">begin</span>&#x000A;<span class="line-num">51</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] <span class="ruby-operator">+=</span> <span class="ruby-identifier">path_info</span>&#x000A;<span class="line-num">52</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]    = <span class="ruby-string">&quot;&quot;</span>&#x000A;<span class="line-num">53</span> &#x000A;<span class="line-num">54</span>     <span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-identifier">storage_key</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">55</span>   <span class="ruby-keyword">ensure</span>&#x000A;<span class="line-num">56</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] = <span class="ruby-identifier">script_name</span>&#x000A;<span class="line-num">57</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]   = <span class="ruby-identifier">path_info</span>&#x000A;<span class="line-num">58</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">59</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

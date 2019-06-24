@@ -30,7 +30,7 @@ doc/paperclip.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-19 10:20:44 +0100</span>
+<span class='datetime'>2019-06-03 12:25:00 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -71,7 +71,7 @@ Last Update:
 
 <p>Among other things, this allows you to use uploader classes standalone, which gives you more power:</p>
 
-<pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;nature.jpg&quot;</span>))&#x000A;<span class="ruby-identifier">uploaded_file</span>     <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg&quot;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;nature.jpg&quot;</span>), <span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>     <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span> <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg&quot;</span></pre>
 
 <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 

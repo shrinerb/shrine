@@ -30,7 +30,7 @@ doc/refile.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-19 10:20:44 +0100</span>
+<span class='datetime'>2019-06-24 16:39:58 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -51,9 +51,9 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> borrows many great concepts from Refile: Refile&#39;s “backends” are here named “storages”, it uses the same IO abstraction for uploading and representing uploaded files, similar attachment logic, and direct uploads are also supported.</p>
 
-<p>While in Refile you work with storages directly, <a href="../../classes/Shrine.html"><code>Shrine</code></a> uses <em>uploaders</em> which act as wrappers around storages:</p>
+<p>While in Refile you work with storages directly, <a href="../../classes/Shrine.html"><code>Shrine</code></a> uses <em>uploaders</em> which wrap storage uploads:</p>
 
-<pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:store</span>]&#x000A;<span class="ruby-identifier">storage</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3 ...&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">uploader</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploader</span>         <span class="ruby-comment">#=&gt; #&lt;Shrine @storage_key=:store @storage=#&lt;Shrine::Storage::S3&gt;&gt;</span>&#x000A;<span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">storage</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3 ...&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">storage</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:store</span>]&#x000A;<span class="ruby-identifier">storage</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>, <span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span></pre>
 
 <p>This way <a href="../../classes/Shrine.html"><code>Shrine</code></a> can perform tasks like generating location, extracting metadata, processing, and logging, which are all storage-agnostic, and leave storages to deal only with actual file storage. And these tasks can be configured differently depending on the types of files you&#39;re uploading:</p>
 
@@ -181,7 +181,7 @@ Last Update:
 
 <h4 id="label-.app_url"><code>.app_url</code><span><a href="#label-.app_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>You should use your framework to generate the URL to your mounted direct enpdoint.</p>
+<p>You should use your framework to generate the URL to your mounted direct endpoint.</p>
 
 <h4 id="label-.attachment_url-2C+.file_url"><code>.attachment_url</code>, <code>.file_url</code><span><a href="#label-.attachment_url-2C+.file_url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 

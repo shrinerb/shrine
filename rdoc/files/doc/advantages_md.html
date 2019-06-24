@@ -30,7 +30,7 @@ doc/advantages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-19 10:20:44 +0100</span>
+<span class='datetime'>2019-06-03 12:25:32 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -77,7 +77,7 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a complete attachment functionality, but it also exposes many low level APIs that can be used for building your own customized attachment flow. For example, if you prefer the <code>Attachment</code>/<code>Blob</code> architecture Active Storage provides, you can ditch the Shrine&#39;s attachment implementation and use uploaders and uploaded files that are decoupled from attachment:</p>
 
-<pre>uploader      = ImageUploader.new(:store)&#x000A;uploaded_file = uploader.upload(image) # metadata extraction, upload location generation&#x000A;uploaded_file.id       #=&gt; &quot;44ccafc10ce6a4ff22829e8f579ee6b9.jpg&quot;&#x000A;uplaoded_file.metadata #=&gt; { ... extracted metadata ... }&#x000A;&#x000A;data = uploaded_file.to_json # serialization&#x000A;# ...&#x000A;uploaded_file = ImageUploader.uploaded_file(data) # deserialization&#x000A;&#x000A;uploaded_file.url #=&gt; &quot;https://...&quot;&#x000A;uploaded_file.download { |tempfile| ... } # streaming download&#x000A;uploaded_file.delete</pre>
+<pre>uploaded_file = ImageUploader.upload(image, :store) # metadata extraction, upload location generation&#x000A;uploaded_file.id       #=&gt; &quot;44ccafc10ce6a4ff22829e8f579ee6b9.jpg&quot;&#x000A;uplaoded_file.metadata #=&gt; { ... extracted metadata ... }&#x000A;data = uploaded_file.to_json # serialization&#x000A;# ...&#x000A;uploaded_file = ImageUploader.uploaded_file(data) # deserialization&#x000A;&#x000A;uploaded_file.url #=&gt; &quot;https://...&quot;&#x000A;uploaded_file.download { |tempfile| ... } # streaming download&#x000A;uploaded_file.delete</pre>
 
 <h3 id="label-Dependencies">Dependencies<span><a href="#label-Dependencies">&para;</a> <a href="#top">&uarr;</a></span></h3>
 

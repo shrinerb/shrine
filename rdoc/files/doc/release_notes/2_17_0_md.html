@@ -30,7 +30,7 @@ doc/release_notes/2.17.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-05-08 12:41:38 +0200</span>
+<span class='datetime'>2019-06-24 16:39:58 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -41,7 +41,7 @@ Last Update:
 <p>The <code>download_endpoint</code> plugin now accepts ad-hoc options when creating the  endpoint instance, which override any plugin options.</p>
 </li></ul>
 
-<p><code>rb   Shrine.download_enpdoint(disposition: &quot;attachment&quot;) </code></p>
+<p><code>rb   Shrine.download_endpoint(disposition: &quot;attachment&quot;) </code></p>
 <ul><li>
 <p>The <code>Shrine::Attacher#assign_remote_url</code> method in the <code>remote_url</code> plugin  now accepts additional options forwarded to <code>Shrine#upload</code>.</p>
 </li></ul>
@@ -111,7 +111,7 @@ Last Update:
 </li><li>
 <p>The <code>Shrine::Plugins::DownloadEndpoint::App</code> class is not a <code>Roda</code> subclass  anymore, it&#39;s now a PORO whose instance responds to <code>#call</code>. This shouldn&#39;t  affect your code unless you were calling Roda methods on that class.</p>
 </li><li>
-<p>The plugin options of <code>upload_enpdoint</code>, <code>presign_endpoint</code>, and  <code>download_endpoint</code> are now internally stored in a different place in  <code>Shrine.opts</code>. This shouldn&#39;t affect your code unless you were accessing  these options directly.</p>
+<p>The plugin options of <code>upload_endpoint</code>, <code>presign_endpoint</code>, and  <code>download_endpoint</code> are now internally stored in a different place in  <code>Shrine.opts</code>. This shouldn&#39;t affect your code unless you were accessing  these options directly.</p>
 </li><li>
 <p>The <code>Shrine::UrlSigner</code> internal class in <code>derivation_endpoint</code> plugin has  been updated. This shouldn&#39;t affect your code unless you were  using/overriding that class.</p>
 </li></ul>

@@ -30,7 +30,7 @@ doc/carrierwave.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-02-19 10:20:44 +0100</span>
+<span class='datetime'>2019-06-03 12:24:06 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -67,7 +67,7 @@ Last Update:
 
 <p>However, uploaders in CarrierWave are very broad; in addition to uploading and deleting files, they also represent the uploaded file. <a href="../../classes/Shrine.html"><code>Shrine</code></a> has a separate <code>Shrine::UploadedFile</code> class which represents the uploaded file.</p>
 
-<pre class="ruby"><span class="ruby-identifier">uploader</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">image</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>          <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>      <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>          <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">url</span>      <span class="ruby-comment">#=&gt; &quot;https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile&gt;</span></pre>
 
 <h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -169,9 +169,9 @@ Last Update:
 
 <h4 id="label-23store-21-2C+-23cache-21"><code>#store!</code>, <code>#cache!</code><span><a href="#label-23store-21-2C+-23cache-21">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you store and cache files by instantiating it with a corresponding storage, and calling <code>#upload</code>:</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you store and cache files by passing the corresponding storage to <code>Shrine.upload</code>:</p>
 
-<pre class="ruby"><span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:cache</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:store</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)</pre>
+<pre class="ruby"><span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:cache</span>)&#x000A;<span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>)</pre>
 
 <p>Note that in <a href="../../classes/Shrine.html"><code>Shrine</code></a> you cannot pass in a path to the file, you always have to pass an IO-like object, which is required to respond to: <code>#read(*args)</code>, <code>#size</code>, <code>#eof?</code>, <code>#rewind</code> and <code>#close</code>.</p>
 
@@ -179,7 +179,7 @@ Last Update:
 
 <p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> you simply call <code>#download</code> on the uploaded file:</p>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:store</span>).<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile&gt;</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span> <span class="ruby-comment">#=&gt; #&lt;Tempfile:/path/to/file&gt;</span></pre>
 
 <h4 id="label-23url"><code>#url</code><span><a href="#label-23url">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
