@@ -28,7 +28,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_max_size(1024*1024) }
       @attacher.validate
-      assert_equal ["is too large (max is 1.0 MB)"], @attacher.errors
+      assert_equal ["must not be larger than 1.0 MB"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -74,7 +74,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_min_size(1024*1024) }
       @attacher.validate
-      assert_equal ["is too small (min is 1.0 MB)"], @attacher.errors
+      assert_equal ["must not be smaller than 1.0 MB"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -121,7 +121,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_max_width(1) }
       @attacher.validate
-      assert_equal ["is too wide (max is 1 px)"], @attacher.errors
+      assert_equal ["width must not be larger than 1px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -176,7 +176,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_min_width(200) }
       @attacher.validate
-      assert_equal ["is too narrow (min is 200 px)"], @attacher.errors
+      assert_equal ["width must not be smaller than 200px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -231,7 +231,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_max_height(1) }
       @attacher.validate
-      assert_equal ["is too tall (max is 1 px)"], @attacher.errors
+      assert_equal ["height must not be larger than 1px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -286,7 +286,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_min_height(200) }
       @attacher.validate
-      assert_equal ["is too short (min is 200 px)"], @attacher.errors
+      assert_equal ["height must not be smaller than 200px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -347,7 +347,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_mime_type_inclusion(["video/mpeg"]) }
       @attacher.validate
-      assert_equal ["isn't of allowed type (allowed types: video/mpeg)"], @attacher.errors
+      assert_equal ["type must be one of: video/mpeg"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -417,7 +417,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_mime_type_exclusion(["video/mpeg"]) }
       @attacher.validate
-      assert_equal ["is of forbidden type"], @attacher.errors
+      assert_equal ["type must not be one of: video/mpeg"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -487,7 +487,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_extension_inclusion(["mp4"]) }
       @attacher.validate
-      assert_equal ["isn't of allowed format (allowed formats: mp4)"], @attacher.errors
+      assert_equal ["extension must be one of: mp4"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -557,7 +557,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_extension_exclusion(["mp4"]) }
       @attacher.validate
-      assert_equal ["is of forbidden format"], @attacher.errors
+      assert_equal ["extension must not be one of: mp4"], @attacher.errors
     end
 
     it "accepts a custom error message" do

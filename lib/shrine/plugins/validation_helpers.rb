@@ -12,16 +12,16 @@ class Shrine
       end
 
       DEFAULT_MESSAGES = {
-        max_size: ->(max) { "is too large (max is #{PRETTY_FILESIZE.call(max)})" },
-        min_size: ->(min) { "is too small (min is #{PRETTY_FILESIZE.call(min)})" },
-        max_width: ->(max) { "is too wide (max is #{max} px)" },
-        min_width: ->(min) { "is too narrow (min is #{min} px)" },
-        max_height: ->(max) { "is too tall (max is #{max} px)" },
-        min_height: ->(min) { "is too short (min is #{min} px)" },
-        mime_type_inclusion: ->(list) { "isn't of allowed type (allowed types: #{list.join(", ")})" },
-        mime_type_exclusion: ->(list) { "is of forbidden type" },
-        extension_inclusion: ->(list) { "isn't of allowed format (allowed formats: #{list.join(", ")})" },
-        extension_exclusion: ->(list) { "is of forbidden format" },
+        max_size:            -> (max)  { "must not be larger than #{PRETTY_FILESIZE.call(max)}" },
+        min_size:            -> (min)  { "must not be smaller than #{PRETTY_FILESIZE.call(min)}" },
+        max_width:           -> (max)  { "width must not be larger than #{max}px" },
+        min_width:           -> (min)  { "width must not be smaller than #{min}px" },
+        max_height:          -> (max)  { "height must not be larger than #{max}px" },
+        min_height:          -> (min)  { "height must not be smaller than #{min}px" },
+        mime_type_inclusion: -> (list) { "type must be one of: #{list.join(", ")}" },
+        mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
+        extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
+        extension_exclusion: -> (list) { "extension must not be one of: #{list.join(", ")}" },
       }
 
       FILESIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"].freeze
