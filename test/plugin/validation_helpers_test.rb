@@ -98,6 +98,30 @@ describe Shrine::Plugins::ValidationHelpers do
     end
   end
 
+  describe "#validate_size" do
+    before do
+      @attacher.assign(fakeio("file"))
+    end
+
+    it "passes if size is in given range" do
+      @attacher.class.validate { @validation_passed = validate_size 0..4 }
+      @attacher.validate
+      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "adds an error if size is larger than given maximum" do
+      @attacher.class.validate { validate_size 0..2 }
+      @attacher.validate
+      assert_equal ["must not be larger than 2.0 B"], @attacher.errors
+    end
+
+    it "adds an error if size is smaller than given minimum" do
+      @attacher.class.validate { validate_size 10..14 }
+      @attacher.validate
+      assert_equal ["must not be smaller than 10.0 B"], @attacher.errors
+    end
+  end
+
   describe "#validate_max_width" do
     before do
       @attacher.shrine_class.plugin :store_dimensions
@@ -208,6 +232,31 @@ describe Shrine::Plugins::ValidationHelpers do
     end
   end
 
+  describe "#validate_width" do
+    before do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(image)
+    end
+
+    it "passes if width is in given range" do
+      @attacher.class.validate { @validation_passed = validate_width 0..100 }
+      @attacher.validate
+      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "adds an error if width is larger than given maximum" do
+      @attacher.class.validate { validate_width 0..10 }
+      @attacher.validate
+      assert_equal ["width must not be larger than 10px"], @attacher.errors
+    end
+
+    it "adds an error if width is smaller than given minimum" do
+      @attacher.class.validate { validate_width 150..200 }
+      @attacher.validate
+      assert_equal ["width must not be smaller than 150px"], @attacher.errors
+    end
+  end
+
   describe "#validate_max_height" do
     before do
       @attacher.shrine_class.plugin :store_dimensions
@@ -315,6 +364,31 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_empty @attacher.errors
       assert_nil @validation_passed
+    end
+  end
+
+  describe "#validate_height" do
+    before do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(image)
+    end
+
+    it "passes if height is in given range" do
+      @attacher.class.validate { @validation_passed = validate_height 0..100 }
+      @attacher.validate
+      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "adds an error if height is larger than given maximum" do
+      @attacher.class.validate { validate_height 0..10 }
+      @attacher.validate
+      assert_equal ["height must not be larger than 10px"], @attacher.errors
+    end
+
+    it "adds an error if height is smaller than given minimum" do
+      @attacher.class.validate { validate_height 150..200 }
+      @attacher.validate
+      assert_equal ["height must not be smaller than 150px"], @attacher.errors
     end
   end
 

@@ -21,8 +21,14 @@ and validate that the `size` metadata value is not larger or smaller than the
 specified size.
 
 ```rb
-validate_max_size 5*1024*1024 # file must be smaller than 5 MB
-validate_min_size 1024        # file must be larger than 1 KB
+validate_max_size 5*1024*1024 # file must not be larger than 5 MB
+validate_min_size 1024        # file must not be smaller than 1 KB
+```
+
+You can also use the `#validate_size` method, which combines these two:
+
+```rb
+validate_size 1024..5*1024*1024 # file not be larger than 5 MB nor smaller than 1 KB
 ```
 
 ### MIME type
@@ -58,30 +64,48 @@ practice to validate both the file extension and the MIME type.
 
 ### Image Dimensions
 
+These validations validate `width` and `height` metadata values, which are
+extracted by the `store_dimensions` plugin.
+
+```rb
+plugin :store_dimensions
+```
+
+It's good practice to validate dimensions in addition to filesize, as a guard
+against decompression attacks.
+
+#### Width
+
 The `#validate_max_width`/`#validate_min_width` methods accept a width in
 pixels, and validates that the `width` metadata value is not larger or smaller
 than the specified number:
 
 ```rb
-validate_max_width 5000 # image width must be smaller than 5000px
-validate_min_width 100  # image width must be larger than 100px
+validate_max_width 5000 # image width must not be larger than 5000px
+validate_min_width 100  # image width must not be smaller than 100px
 ```
+
+You can also use the `#validate_width` method, which combines these two:
+
+```rb
+validate_width 100..5000 # image width must not be larger than 5000px nor smaller than 100px
+```
+
+#### Height
 
 The `#validate_max_height`/`#validate_min_height` methods accept a height in
 pixels, and validates that the `height` metadata value is not larger or smaller
 than the specified number:
 
 ```rb
-validate_max_height 5000 # image height must be smaller than 5000px
-validate_min_height 100  # image height must be larger than 100px
+validate_max_height 5000 # image height must not be larger than 5000px
+validate_min_height 100  # image height must not be smaller than 100px
 ```
 
-It's good practice to validate dimensions in addition to filesize, as a guard
-against decompression attacks. Note that these validations only make sense if
-the `store_dimensions` plugin is loaded, so that image dimensions are extracted.
+You can also use the `#validate_height` method, which combines these two:
 
 ```rb
-plugin :store_dimensions
+validate_height 100..5000 # image height must not be larger than 5000px nor smaller than 100px
 ```
 
 ## Dynamic evaluation

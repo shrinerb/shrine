@@ -59,6 +59,14 @@ class Shrine
           get.size >= min or add_error(:min_size, message, min) && false
         end
 
+        # Validates that the `size` metadata is in the given range.
+        #
+        #     validate_size 1024..5*1024*1024
+        def validate_size(range)
+          validate_min_size(range.begin) && validate_max_size(range.end)
+        end
+
+
         # Validates that the `width` metadata is not larger than `max`.
         # Requires the `store_dimensions` plugin.
         #
@@ -85,6 +93,14 @@ class Shrine
           end
         end
 
+        # Validates that the `width` metadata is in the given range.
+        #
+        #     validate_width 100..5000
+        def validate_width(range)
+          validate_min_width(range.begin) && validate_max_width(range.end)
+        end
+
+
         # Validates that the `height` metadata is not larger than `max`.
         # Requires the `store_dimensions` plugin.
         #
@@ -110,6 +126,14 @@ class Shrine
             Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
           end
         end
+
+        # Validates that the `height` metadata is in the given range.
+        #
+        #     validate_height 100..5000
+        def validate_height(range)
+          validate_min_height(range.begin) && validate_max_height(range.end)
+        end
+
 
         # Validates that the `mime_type` metadata is included in the given
         # list.

@@ -1,5 +1,7 @@
 ## HEAD
 
+* `validation_helpers` - Add `#validate_size`, `#validate_width`, and `#validate_height` shorthands (@janko)
+
 * `validation_helpers` – Add `#validate_mime_type` and `#validate_extension` aliases for inclusion (@janko)
 
 * `validation_helpers` – Simplify default validation error messages (@janko)
