@@ -11,7 +11,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio("file" * 1024*1024))
     end
 
-    it "adds an error if the file is larger than given size" do
+    it "adds an error if size is larger than given maximum" do
       @attacher.class.validate { validate_max_size(get.size + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -57,7 +57,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio("file"))
     end
 
-    it "adds an error if the file is smaller than given size" do
+    it "adds an error if size is smaller than given minimum" do
       @attacher.class.validate { validate_min_size(get.size - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -104,7 +104,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if the file is smaller than given size" do
+    it "adds an error if width is larger than given maximum" do
       @attacher.class.validate { validate_max_width(get.width + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -159,7 +159,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if the file is smaller than given size" do
+    it "adds an error if width is smaller than given minimum" do
       @attacher.class.validate { validate_min_width(get.width - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -214,7 +214,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if the file is smaller than given size" do
+    it "adds an error if height is larger than given maximum" do
       @attacher.class.validate { validate_max_height(get.height + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -269,7 +269,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if the file is smaller than given size" do
+    it "adds an error if height is smaller than given minimum" do
       @attacher.class.validate { validate_min_height(get.height - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -399,7 +399,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio(content_type: "video/mpeg"))
     end
 
-    it "adds an error when mime_type is not in the whitelist" do
+    it "adds an error when mime_type is in the blacklist" do
       @attacher.class.validate { validate_mime_type_exclusion(["image/jpeg"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -545,7 +545,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio(filename: "video.mp4"))
     end
 
-    it "adds an error when extension is not in the whitelist" do
+    it "adds an error when extension is in the blacklist" do
       @attacher.class.validate { validate_extension_exclusion(["jpg"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
