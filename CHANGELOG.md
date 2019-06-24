@@ -1,4 +1,4 @@
-## HEAD
+## 2.18.0 (2019-06-24)
 
 * `core` – Add `Shrine.upload` method as a shorthand for `Shrine.new(...).upload(...)` (@janko)
 
@@ -17,8 +17,6 @@
 * `presign_endpoint` – Add `Shrine.presign_response` for handling presigns inside a custom controller (@janko)
 
 * `upload_endpoint` – Add `Shrine.upload_response` for handling uploads inside a custom controller (@janko)
-
-## 2.17.1 (2019-05-15)
 
 * `rack_file` – Fix overriden `Attacher#assign` not accepting second argument (@janko)
 

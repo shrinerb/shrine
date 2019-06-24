@@ -7,8 +7,8 @@ class Shrine
 
   module VERSION
     MAJOR = 2
-    MINOR = 17
-    TINY  = 1
+    MINOR = 18
+    TINY  = 0
     PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join(".")
