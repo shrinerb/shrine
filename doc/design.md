@@ -188,7 +188,7 @@ Shrine::Attachment.new(:image).instance_methods #=> [:image=, :image, :image_url
 
 # equivalents
 Shrine::Attachment.new(:image)
-Shrine.attachment(:image)
+Shrine::Attachment(:image)
 Shrine[:image]
 ```
 
