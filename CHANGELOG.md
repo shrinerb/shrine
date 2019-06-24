@@ -1,5 +1,7 @@
 ## HEAD
 
+* `validation_helpers` – Add `#validate_mime_type` and `#validate_extension` aliases for inclusion (@janko)
+
 * `validation_helpers` – Simplify default validation error messages (@janko)
 
 ## 2.18.0 (2019-06-24)

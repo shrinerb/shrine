@@ -36,6 +36,9 @@ validate_mime_type_inclusion %w[image/jpeg image/png image/gif] # file must be a
 validate_mime_type_exclusion %w[application/x-php]              # file must not be a PHP script
 ```
 
+Instead of `#validate_mime_type_inclusion` you can also use just
+`#validate_mime_type`.
+
 ### File extension
 
 The `#validate_extension_inclusion`/`#validation_extension_exclusion` methods
@@ -46,6 +49,9 @@ value extension is (not) a member of that list.
 validate_extension_inclusion %w[jpg jpeg png gif] # file must have .jpg, .jpeg, .png, or .gif extension
 validate_extension_exclusion %w[php]              # file must not have a .php extension
 ```
+
+Instead of `#validate_extension_inclusion` you can also use just
+`#validate_extension`.
 
 Since file extension doesn't have to match the type of the file, it's good
 practice to validate both the file extension and the MIME type.

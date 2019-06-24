@@ -377,6 +377,12 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
 
+    it "is aliased to #validate_mime_type" do
+      @attacher.class.validate { validate_mime_type(["video/mpeg"]) }
+      @attacher.validate
+      assert_equal ["type must be one of: video/mpeg"], @attacher.errors
+    end
+
     deprecated "accepts regexes" do
       @attacher.class.validate { validate_mime_type_inclusion([/image/]) }
       @attacher.validate
@@ -515,6 +521,12 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_extension_inclusion(["mp4"]) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "is aliased to #validate_extension" do
+      @attacher.class.validate { validate_extension(["mp4"]) }
+      @attacher.validate
+      assert_equal ["extension must be one of: mp4"], @attacher.errors
     end
 
     deprecated "accepts regexes" do

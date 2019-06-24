@@ -106,6 +106,7 @@ class Shrine
           whitelist.any? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
             or add_error(:mime_type_inclusion, message, whitelist) && false
         end
+        alias validate_mime_type validate_mime_type_inclusion
 
         # Validates that the MIME type is not in the given collection.
         #
@@ -123,6 +124,7 @@ class Shrine
           whitelist.any? { |extension| regex(extension) =~ get.extension.to_s } \
             or add_error(:extension_inclusion, message, whitelist) && false
         end
+        alias validate_extension validate_extension_inclusion
 
         # Validates that the extension is not in the given collection.
         # Comparison is case insensitive.
