@@ -45,18 +45,24 @@ class Shrine
       end
 
       module AttacherMethods
-        # Validates that the file is not larger than `max`.
+        # Validates that the `size` metadata is not larger than `max`.
+        #
+        #     validate_max_size 5*1024*1024
         def validate_max_size(max, message: nil)
           get.size <= max or add_error(:max_size, message, max) && false
         end
 
-        # Validates that the file is not smaller than `min`.
+        # Validates that the `size` metadata is not smaller than `min`.
+        #
+        #     validate_min_size 1024
         def validate_min_size(min, message: nil)
           get.size >= min or add_error(:min_size, message, min) && false
         end
 
-        # Validates that the file is not wider than `max`. Requires the
-        # `store_dimensions` plugin.
+        # Validates that the `width` metadata is not larger than `max`.
+        # Requires the `store_dimensions` plugin.
+        #
+        #     validate_max_width 5000
         def validate_max_width(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
           if get.width
@@ -66,8 +72,10 @@ class Shrine
           end
         end
 
-        # Validates that the file is not narrower than `min`. Requires the
-        # `store_dimensions` plugin.
+        # Validates that the `width` metadata is not smaller than `min`.
+        # Requires the `store_dimensions` plugin.
+        #
+        #     validate_min_width 100
         def validate_min_width(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
           if get.width
@@ -77,8 +85,10 @@ class Shrine
           end
         end
 
-        # Validates that the file is not taller than `max`. Requires the
-        # `store_dimensions` plugin.
+        # Validates that the `height` metadata is not larger than `max`.
+        # Requires the `store_dimensions` plugin.
+        #
+        #     validate_max_height 5000
         def validate_max_height(max, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
           if get.height
@@ -88,8 +98,10 @@ class Shrine
           end
         end
 
-        # Validates that the file is not shorter than `min`. Requires the
-        # `store_dimensions` plugin.
+        # Validates that the `height` metadata is not smaller than `min`.
+        # Requires the `store_dimensions` plugin.
+        #
+        #     validate_min_height 100
         def validate_min_height(min, message: nil)
           raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
           if get.height
@@ -99,7 +111,8 @@ class Shrine
           end
         end
 
-        # Validates that the MIME type is in the given collection.
+        # Validates that the `mime_type` metadata is included in the given
+        # list.
         #
         #     validate_mime_type_inclusion %w[audio/mp3 audio/flac]
         def validate_mime_type_inclusion(whitelist, message: nil)
@@ -108,7 +121,8 @@ class Shrine
         end
         alias validate_mime_type validate_mime_type_inclusion
 
-        # Validates that the MIME type is not in the given collection.
+        # Validates that the `mime_type` metadata is not included in the given
+        # list.
         #
         #     validate_mime_type_exclusion %w[text/x-php]
         def validate_mime_type_exclusion(blacklist, message: nil)
@@ -116,8 +130,8 @@ class Shrine
             or add_error(:mime_type_exclusion, message, blacklist) && false
         end
 
-        # Validates that the extension is in the given collection. Comparison
-        # is case insensitive.
+        # Validates that the extension is included in the given list.
+        # Comparison is case insensitive.
         #
         #     validate_extension_inclusion %w[jpg jpeg png gif]
         def validate_extension_inclusion(whitelist, message: nil)
@@ -126,7 +140,7 @@ class Shrine
         end
         alias validate_extension validate_extension_inclusion
 
-        # Validates that the extension is not in the given collection.
+        # Validates that the extension is not included in the given list.
         # Comparison is case insensitive.
         #
         #     validate_extension_exclusion %[php jar]
