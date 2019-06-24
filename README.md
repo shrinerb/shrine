@@ -741,7 +741,7 @@ end
 uppy.use(Uppy.XHRUpload, {
   endpoint: '/images/upload'
 })
-// ...
+
 uppy.on('upload-success', (file, response) => {
   const uploadedFileData = JSON.stringify(response.body)
   // ... add this data to your form or submit it to your app ...
@@ -789,7 +789,7 @@ end
 uppy.use(Uppy.AwsS3, {
   companionUrl: '/' // uses '/s3/params'
 })
-// ...
+
 uppy.on('upload-success', (file, response) => {
   const uploadedFileData = JSON.stringify({
     id: file.meta['key'].match(/^cache\/(.+)/)[1], // object key without prefix
@@ -811,8 +811,8 @@ See also the [Direct Uploads to S3] guide for more details.
 ### Resumable direct upload
 
 If your app is accepting large uploads, you can make the uploads **resumable**.
-This can significantly improve experience for users on a slow and/or flaky
-internet connection.
+This can significantly improve experience for users on slow and flaky internet
+connections.
 
 #### Uppy S3 Multipart
 
@@ -841,7 +841,7 @@ end
 uppy.use(Uppy.AwsS3Multipart, {
   companionUrl: '/' // uses '/s3/multipart/*' routes
 })
-// ...
+
 uppy.on('upload-success', (file, response) => {
   const uploadedFileData = JSON.stringify({
     id: response.uploadURL.match(/\/cache\/([^\?]+)/)[1], // object key without prefix
@@ -887,10 +887,12 @@ end
 ```
 ```js
 // upload.js
-uppy.use(Uppy.Tus, {
-  endpoint: '/files'
-})
 // ...
+uppy.use(Uppy.Tus, {
+  endpoint:  '/files',
+  chunkSize: 5*1024*1024,
+})
+
 uppy.on('upload-success', (file, response) => {
   const uploadedFileData = JSON.stringify({
     id: response.uploadURL,
