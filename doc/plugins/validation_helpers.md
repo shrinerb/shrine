@@ -146,8 +146,18 @@ the `:default_messages` option to the plugin:
 
 ```rb
 plugin :validation_helpers, default_messages: {
-  max_size: ->(max) { I18n.t("errors.file.max_size", max: max) },
-  mime_type_inclusion: ->(whitelist) { I18n.t("errors.file.mime_type_inclusion", whitelist: whitelist) },
+  max_size:            -> (max)  { I18n.t("errors.file.max_size", max: max) },
+  min_size:            -> (max)  { I18n.t("errors.file.min_size", min: min) },
+  max_width:           -> (max)  { I18n.t("errors.file.max_width", max: max) },
+  min_width:           -> (max)  { I18n.t("errors.file.min_width", min: min) },
+  max_height:          -> (max)  { I18n.t("errors.file.max_height", max: max) },
+  min_height:          -> (max)  { I18n.t("errors.file.min_height", min: min) },
+  max_dimensions:      -> (dims) { I18n.t("errors.file.max_dimensions", dims: dims) },
+  min_dimensions:      -> (dims) { I18n.t("errors.file.min_dimensions", dims: dims) },
+  mime_type_inclusion: -> (list) { I18n.t("errors.file.mime_type_inclusion", list: list) },
+  mime_type_exclusion: -> (list) { I18n.t("errors.file.mime_type_exclusion", list: list) },
+  extension_inclusion: -> (list) { I18n.t("errors.file.extension_inclusion", list: list) },
+  extension_exclusion: -> (list) { I18n.t("errors.file.extension_exclusion", list: list) },
 }
 ```
 
@@ -156,7 +166,7 @@ If you would like to change the error message inline, you can pass the
 
 ```rb
 Attacher.validate do
-  validate_mime_type_inclusion %w[image/jpeg image/png image/gif], message: "must be JPEG, PNG or GIF"
+  validate_mime_type %w[image/jpeg image/png image/gif], message: "must be JPEG, PNG or GIF"
 end
 ```
 
