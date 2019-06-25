@@ -20,7 +20,7 @@ describe Shrine::Plugins::Parallelize do
     assert_equal "large", versions[:large].read
     assert_equal "medium", versions[:medium].read
     assert_equal "small", versions[:small].read
-  end
+  end unless RUBY_ENGINE == "jruby"
 
   it "successfully deletes" do
     versions = @uploader.upload(
