@@ -49,21 +49,23 @@ class Shrine
         #
         #     validate_max_size 5*1024*1024
         def validate_max_size(max, message: nil)
-          get.size <= max or add_error(:max_size, message, max) && false
+          validate_result(get.size <= max, :max_size, message, max)
         end
 
         # Validates that the `size` metadata is not smaller than `min`.
         #
         #     validate_min_size 1024
         def validate_min_size(min, message: nil)
-          get.size >= min or add_error(:min_size, message, min) && false
+          validate_result(get.size >= min, :min_size, message, min)
         end
 
         # Validates that the `size` metadata is in the given range.
         #
         #     validate_size 1024..5*1024*1024
-        def validate_size(range)
-          validate_min_size(range.begin) && validate_max_size(range.end)
+        def validate_size(size_range)
+          min_size, max_size = size_range.begin, size_range.end
+
+          validate_min_size(min_size) && validate_max_size(max_size)
         end
 
 
@@ -72,9 +74,9 @@ class Shrine
         #
         #     validate_max_width 5000
         def validate_max_width(max, message: nil)
-          raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
+          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width)
           if get.width
-            get.width <= max or add_error(:max_width, message, max) && false
+            validate_result(get.width <= max, :max_width, message, max)
           else
             Shrine.deprecation("Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil.")
           end
@@ -85,9 +87,9 @@ class Shrine
         #
         #     validate_min_width 100
         def validate_min_width(min, message: nil)
-          raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:width)
+          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width)
           if get.width
-            get.width >= min or add_error(:min_width, message, min) && false
+            validate_result(get.width >= min, :min_width, message, min)
           else
             Shrine.deprecation("Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil.")
           end
@@ -96,8 +98,10 @@ class Shrine
         # Validates that the `width` metadata is in the given range.
         #
         #     validate_width 100..5000
-        def validate_width(range)
-          validate_min_width(range.begin) && validate_max_width(range.end)
+        def validate_width(width_range)
+          min_width, max_width = width_range.begin, width_range.end
+
+          validate_min_width(min_width) && validate_max_width(max_width)
         end
 
 
@@ -106,9 +110,9 @@ class Shrine
         #
         #     validate_max_height 5000
         def validate_max_height(max, message: nil)
-          raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
+          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:height)
           if get.height
-            get.height <= max or add_error(:max_height, message, max) && false
+            validate_result(get.height <= max, :max_height, message, max)
           else
             Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
           end
@@ -119,9 +123,9 @@ class Shrine
         #
         #     validate_min_height 100
         def validate_min_height(min, message: nil)
-          raise Error, ":store_dimensions plugin is required" if !get.respond_to?(:height)
+          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:height)
           if get.height
-            get.height >= min or add_error(:min_height, message, min) && false
+            validate_result(get.height >= min, :min_height, message, min)
           else
             Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
           end
@@ -130,8 +134,10 @@ class Shrine
         # Validates that the `height` metadata is in the given range.
         #
         #     validate_height 100..5000
-        def validate_height(range)
-          validate_min_height(range.begin) && validate_max_height(range.end)
+        def validate_height(height_range)
+          min_height, max_height = height_range.begin, height_range.end
+
+          validate_min_height(min_height) && validate_max_height(max_height)
         end
 
 
@@ -139,9 +145,11 @@ class Shrine
         # list.
         #
         #     validate_mime_type_inclusion %w[audio/mp3 audio/flac]
-        def validate_mime_type_inclusion(whitelist, message: nil)
-          whitelist.any? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
-            or add_error(:mime_type_inclusion, message, whitelist) && false
+        def validate_mime_type_inclusion(types, message: nil)
+          validate_result(
+            types.any? { |type| regex(type) =~ get.mime_type.to_s },
+            :mime_type_inclusion, message, types
+          )
         end
         alias validate_mime_type validate_mime_type_inclusion
 
@@ -149,18 +157,22 @@ class Shrine
         # list.
         #
         #     validate_mime_type_exclusion %w[text/x-php]
-        def validate_mime_type_exclusion(blacklist, message: nil)
-          blacklist.none? { |mime_type| regex(mime_type) =~ get.mime_type.to_s } \
-            or add_error(:mime_type_exclusion, message, blacklist) && false
+        def validate_mime_type_exclusion(types, message: nil)
+          validate_result(
+            types.none? { |type| regex(type) =~ get.mime_type.to_s },
+            :mime_type_exclusion, message, types
+          )
         end
 
         # Validates that the extension is included in the given list.
         # Comparison is case insensitive.
         #
         #     validate_extension_inclusion %w[jpg jpeg png gif]
-        def validate_extension_inclusion(whitelist, message: nil)
-          whitelist.any? { |extension| regex(extension) =~ get.extension.to_s } \
-            or add_error(:extension_inclusion, message, whitelist) && false
+        def validate_extension_inclusion(extensions, message: nil)
+          validate_result(
+            extensions.any? { |extension| regex(extension) =~ get.extension.to_s },
+            :extension_inclusion, message, extensions
+          )
         end
         alias validate_extension validate_extension_inclusion
 
@@ -168,12 +180,24 @@ class Shrine
         # Comparison is case insensitive.
         #
         #     validate_extension_exclusion %[php jar]
-        def validate_extension_exclusion(blacklist, message: nil)
-          blacklist.none? { |extension| regex(extension) =~ get.extension.to_s } \
-            or add_error(:extension_exclusion, message, blacklist) && false
+        def validate_extension_exclusion(extensions, message: nil)
+          validate_result(
+            extensions.none? { |extension| regex(extension) =~ get.extension.to_s },
+            :extension_exclusion, message, extensions
+          )
         end
 
         private
+
+        # Adds an error if result is false and returns the result.
+        def validate_result(result, type, message, *args)
+          if result
+            true
+          else
+            add_error(type, message, *args)
+            false
+          end
+        end
 
         # Converts a string to a regex.
         def regex(value)
