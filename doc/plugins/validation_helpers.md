@@ -127,21 +127,6 @@ validate_dimensions [100..5000, 100..5000] # image dimensions must not be greate
 
 ## Dynamic evaluation
 
-The validation block is evaluated dynamically in the context of a
-`Shrine::Attacher` instance, so you can access the attachment name, record and
-context:
-
-```rb
-Attacher.validate do
-  self    #=> #<Shrine::Attacher>
-  name    #=> :image
-  record  #=> #<Photo>
-  context #=> { ... }
-
-  # ...
-end
-```
-
 The validation methods return whether the validation succeeded, allowing you to
 easily do conditional validation:
 
