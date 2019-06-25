@@ -34,6 +34,7 @@ class Shrine
 
           mime_type
         end
+        alias mime_type determine_mime_type
 
         # Returns a hash of built-in MIME type analyzers, where keys are
         # analyzer names and values are `#call`-able objects which accepts the

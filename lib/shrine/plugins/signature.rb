@@ -12,6 +12,7 @@ class Shrine
         def calculate_signature(io, algorithm, format: :hex)
           SignatureCalculator.new(algorithm.downcase, format: format).call(io)
         end
+        alias signature calculate_signature
       end
 
       module InstanceMethods

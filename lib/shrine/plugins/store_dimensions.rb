@@ -23,6 +23,7 @@ class Shrine
 
           dimensions
         end
+        alias dimensions extract_dimensions
 
         # Returns a hash of built-in dimensions analyzers, where keys are
         # analyzer names and values are `#call`-able objects which accepts the

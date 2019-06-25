@@ -6,6 +6,7 @@ require "zlib"
 describe Shrine::Plugins::Signature do
   before do
     @uploader = uploader { plugin :signature }
+    @shrine   = @uploader.class
   end
 
   supported_algorithms = Shrine::Plugins::Signature::SUPPORTED_ALGORITHMS
@@ -79,6 +80,7 @@ describe Shrine::Plugins::Signature do
 
   it "can calculate hash both from instance and class level" do
     assert_instance_of String, @uploader.calculate_signature(fakeio, :md5)
-    assert_instance_of String, @uploader.class.calculate_signature(fakeio, :md5)
+    assert_instance_of String, @shrine.calculate_signature(fakeio, :md5)
+    assert_instance_of String, @shrine.signature(fakeio, :md5)
   end
 end

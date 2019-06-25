@@ -13,8 +13,9 @@ uploader. The method accepts an IO object and a hashing algorithm, and returns
 the calculated hash.
 
 ```rb
-Shrine.calculate_signature(io, :md5)
-#=> "9a0364b9e99bb480dd25e1f0284c8555"
+Shrine.calculate_signature(io, :md5) #=> "9a0364b9e99bb480dd25e1f0284c8555"
+# or just
+Shrine.signature(io, :md5) #=> "9a0364b9e99bb480dd25e1f0284c8555"
 ```
 
 You can then use the `add_metadata` plugin to add a new metadata field with the

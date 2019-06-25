@@ -1,5 +1,11 @@
 ## HEAD
 
+* `signature` – Add `Shrine.signature` alias for `Shrine.calculcate_signature` (@janko)
+
+* `store_dimensions` – Add `Shrine.dimensions` alias for `Shrine.extract_dimensions` (@janko)
+
+* `determine_mime_type` – Add `Shrine.mime_type` alias for `Shrine.determine_mime_type` (@janko)
+
 * `validation_helpers` – Add `#validate_max_dimensions`, `#validate_min_dimensions`, and `#validate_dimensions` (@janko)
 
 * `validation_helpers` - Add `#validate_size`, `#validate_width`, and `#validate_height` shorthands (@janko)

@@ -56,12 +56,12 @@ You can use methods for extracting the dimensions directly:
 
 ```rb
 # or YourUploader.extract_dimensions(io)
-Shrine.extract_dimensions(io) # calls the defined analyzer
-#=> [300, 400]
+Shrine.extract_dimensions(io) #=> [300, 400] (calls the defined analyzer)
+# or just
+Shrine.dimensions(io) #=> [300, 400] (calls the defined analyzer)
 
 # or YourUploader.dimensions_analyzers
-Shrine.dimensions_analyzers[:fastimage].call(io) # calls a built-in analyzer
-#=> [300, 400]
+Shrine.dimensions_analyzers[:fastimage].call(io) #=> [300, 400] (calls a built-in analyzer)
 ```
 
 [store_dimensions]: /lib/shrine/plugins/store_dimensions.rb

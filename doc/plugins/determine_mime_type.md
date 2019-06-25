@@ -75,12 +75,12 @@ You can also use the methods for determining the MIME type directly:
 
 ```rb
 # or YourUploader.determine_mime_type(io)
-Shrine.determine_mime_type(io) # calls the defined analyzer
-#=> "image/jpeg"
+Shrine.determine_mime_type(io) #=> "image/jpeg" (calls the defined analyzer)
+# or just
+Shrine.mime_type(io) #=> "image/jpeg" (calls the defined analyzer)
 
 # or YourUploader.mime_type_analyzers
-Shrine.mime_type_analyzers[:file].call(io) # calls a built-in analyzer
-#=> "image/jpeg"
+Shrine.mime_type_analyzers[:file].call(io) #=> "image/jpeg" (calls a built-in analyzer)
 ```
 
 [determine_mime_type]: /lib/shrine/plugins/determine_mime_type.rb

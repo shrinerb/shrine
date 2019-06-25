@@ -277,6 +277,10 @@ describe Shrine::Plugins::DetermineMimeType do
     assert_equal "content", io.read
   end
 
+  it "has .mime_type alias" do
+    assert_equal "image/jpeg", @shrine.mime_type(image)
+  end
+
   it "returns Shrine::Error on unknown analyzer" do
     assert_raises Shrine::Error do
       @shrine.plugin :determine_mime_type, analyzer: :foo
