@@ -18,6 +18,8 @@ class Shrine
         min_width:           -> (min)  { "width must not be less than #{min}px" },
         max_height:          -> (max)  { "height must not be greater than #{max}px" },
         min_height:          -> (min)  { "height must not be less than #{min}px" },
+        max_dimensions:      -> (dims) { "dimensions must not be greater than #{dims.join("x")}" },
+        min_dimensions:      -> (dims) { "dimensions must not be less than #{dims.join("x")}" },
         mime_type_inclusion: -> (list) { "type must be one of: #{list.join(", ")}" },
         mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
         extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
@@ -140,6 +142,41 @@ class Shrine
           validate_min_height(min_height) && validate_max_height(max_height)
         end
 
+        # Validates that the dimensions are not larger than specified.
+        #
+        #     validate_max_dimensions [5000, 5000]
+        def validate_max_dimensions((max_width, max_height), message: nil)
+          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width) && get.respond_to?(:height)
+          fail Error, "width or height metadata is nil" unless get.width && get.height
+
+          validate_result(
+            get.width <= max_width && get.height <= max_height,
+            :max_dimensions, message, [max_width, max_height]
+          )
+        end
+
+        # Validates that the dimensions are not smaller than specified.
+        #
+        #     validate_max_dimensions [100, 100]
+        def validate_min_dimensions((min_width, min_height), message: nil)
+          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width) && get.respond_to?(:height)
+          fail Error, "width or height metadata is nil" unless get.width && get.height
+
+          validate_result(
+            get.width >= min_width && get.height >= min_height,
+            :min_dimensions, message, [min_width, min_height]
+          )
+        end
+
+        # Validates that the dimensions are in the given range.
+        #
+        #     validate_dimensions [100..5000, 100..5000]
+        def validate_dimensions((width_range, height_range))
+          min_dims = width_range.begin, height_range.begin
+          max_dims = width_range.end,   height_range.end
+
+          validate_min_dimensions(min_dims) && validate_max_dimensions(max_dims)
+        end
 
         # Validates that the `mime_type` metadata is included in the given
         # list.

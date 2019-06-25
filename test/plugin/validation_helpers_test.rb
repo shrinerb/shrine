@@ -404,6 +404,169 @@ describe Shrine::Plugins::ValidationHelpers do
     end
   end
 
+  describe "#validate_max_dimensions" do
+    before do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(image)
+    end
+
+    it "adds an error if width is greater than given maximum" do
+      @attacher.class.validate { validate_max_dimensions([get.width + 1, get.height]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_max_dimensions([get.width, get.height]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_max_dimensions([get.width - 1, get.height]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
+
+    it "adds an error if height is greater than given maximum" do
+      @attacher.class.validate { validate_max_dimensions([get.width, get.height + 1]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_max_dimensions([get.width, get.height]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_max_dimensions([get.width, get.height - 1]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
+
+    it "uses the default error message" do
+      @attacher.class.validate { validate_max_dimensions([50, 50]) }
+      @attacher.validate
+      assert_equal ["dimensions must not be greater than 50x50"], @attacher.errors
+    end
+
+    it "accepts a custom error message" do
+      @attacher.class.validate { validate_max_dimensions([50, 50], message: "should not be larger than 50x50") }
+      @attacher.validate
+      assert_equal ["should not be larger than 50x50"], @attacher.errors
+
+      @attacher.class.validate { validate_max_dimensions([50, 50], message: ->((w,h)){"should not be larger than #{w}x#{h}"}) }
+      @attacher.validate
+      assert_equal ["should not be larger than 50x50"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
+      @attacher.class.validate { @validation_passed = validate_max_dimensions([100, 100]) }
+      @attacher.validate
+      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+
+      @attacher.class.validate { @validation_passed = validate_max_dimensions([10, 10]) }
+      @attacher.validate
+      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "raises an error if width or height are missing" do
+      @attacher.assign(image, metadata: { "width" => nil, "height" => nil })
+      @attacher.class.validate { validate_max_dimensions([100, 100]) }
+      assert_raises(Shrine::Error) { @attacher.validate }
+    end
+  end
+
+  describe "#validate_min_dimensions" do
+    before do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(image)
+    end
+
+    it "adds an error if width is less than given minimum" do
+      @attacher.class.validate { validate_min_dimensions([get.width - 1, get.height]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_min_dimensions([get.width, get.height]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_min_dimensions([get.width + 1, get.height]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
+
+    it "adds an error if height is less than given minimum" do
+      @attacher.class.validate { validate_min_dimensions([get.width, get.height - 1]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_min_dimensions([get.width, get.height]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_min_dimensions([get.width, get.height + 1]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
+
+    it "uses the default error message" do
+      @attacher.class.validate { validate_min_dimensions([150, 150]) }
+      @attacher.validate
+      assert_equal ["dimensions must not be less than 150x150"], @attacher.errors
+    end
+
+    it "accepts a custom error message" do
+      @attacher.class.validate { validate_min_dimensions([150, 150], message: "should not be smaller than 150x150") }
+      @attacher.validate
+      assert_equal ["should not be smaller than 150x150"], @attacher.errors
+
+      @attacher.class.validate { validate_min_dimensions([150, 150], message: ->((w,h)){"should not be smaller than #{w}x#{h}"}) }
+      @attacher.validate
+      assert_equal ["should not be smaller than 150x150"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
+      @attacher.class.validate { @validation_passed = validate_min_dimensions([0, 0]) }
+      @attacher.validate
+      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+
+      @attacher.class.validate { @validation_passed = validate_min_dimensions([150, 150]) }
+      @attacher.validate
+      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "raises an error if width or height are missing" do
+      @attacher.assign(image, metadata: { "width" => nil, "height" => nil })
+      @attacher.class.validate { validate_min_dimensions([0, 0]) }
+      assert_raises(Shrine::Error) { @attacher.validate }
+    end
+  end
+
+  describe "#validate_dimensions" do
+    before do
+      @attacher.shrine_class.plugin :store_dimensions
+      @attacher.assign(image)
+    end
+
+    it "adds an error if dimensions are greater than given maximum" do
+      @attacher.class.validate { validate_dimensions([0..50, 0..50]) }
+      @attacher.validate
+      assert_equal ["dimensions must not be greater than 50x50"], @attacher.errors
+    end
+
+    it "adds an error if dimensions are smaller than given minimum" do
+      @attacher.class.validate { validate_dimensions([150..200, 150..200]) }
+      @attacher.validate
+      assert_equal ["dimensions must not be less than 150x150"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
+      @attacher.class.validate { @validation_passed = validate_dimensions([0..100, 0..100]) }
+      @attacher.validate
+      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+
+      @attacher.class.validate { @validation_passed = validate_dimensions([150..200, 150..200]) }
+      @attacher.validate
+      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+  end
+
   describe "#validate_mime_type_inclusion" do
     before do
       @attacher.assign(fakeio(content_type: "image/jpeg"))

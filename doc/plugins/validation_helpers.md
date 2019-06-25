@@ -108,6 +108,23 @@ You can also use the `#validate_height` method, which combines these two:
 validate_height 100..5000 # image height must not be greater than 5000px nor less than 100px
 ```
 
+#### Width & Height
+
+The `#validate_max_dimensions`/`#validate_min_dimensions` methods accept an
+array of width and height in pixels, and validates that the `width` and
+`height` metadata values are not greater/less than the specified numbers:
+
+```rb
+validate_max_dimensions [5000, 5000] # image dimensions must not be greater than 5000x5000
+validate_min_dimensions [100, 100]   # image dimensions must not be less than 100x100
+```
+
+You can also use the `#validate_dimensions` methods, which combines these two:
+
+```rb
+validate_dimensions [100..5000, 100..5000] # image dimensions must not be greater than 5000x5000 nor less than 100x100
+```
+
 ## Dynamic evaluation
 
 The validation block is evaluated dynamically in the context of a

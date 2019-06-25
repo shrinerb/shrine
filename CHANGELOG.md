@@ -1,5 +1,7 @@
 ## HEAD
 
+* `validation_helpers` – Add `#validate_max_dimensions`, `#validate_min_dimensions`, and `#validate_dimensions` (@janko)
+
 * `validation_helpers` - Add `#validate_size`, `#validate_width`, and `#validate_height` shorthands (@janko)
 
 * `validation_helpers` – Add `#validate_mime_type` and `#validate_extension` aliases for inclusion (@janko)
