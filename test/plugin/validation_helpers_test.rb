@@ -11,7 +11,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio("file" * 1024*1024))
     end
 
-    it "adds an error if size is larger than given maximum" do
+    it "adds an error if size is greater than given maximum" do
       @attacher.class.validate { validate_max_size(get.size + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -28,17 +28,17 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_max_size(1024*1024) }
       @attacher.validate
-      assert_equal ["must not be larger than 1.0 MB"], @attacher.errors
+      assert_equal ["size must not be greater than 1.0 MB"], @attacher.errors
     end
 
     it "accepts a custom error message" do
-      @attacher.class.validate { validate_max_size(1024*1024, message: "should not be larger than 1 MB") }
+      @attacher.class.validate { validate_max_size(1024*1024, message: "should not be greater than 1 MB") }
       @attacher.validate
-      assert_equal ["should not be larger than 1 MB"], @attacher.errors
+      assert_equal ["should not be greater than 1 MB"], @attacher.errors
 
-      @attacher.class.validate { validate_max_size(1024*1024, message: ->(max){"should not be larger than #{max/1024/1024} MB"}) }
+      @attacher.class.validate { validate_max_size(1024*1024, message: ->(max){"should not be greater than #{max/1024/1024} MB"}) }
       @attacher.validate
-      assert_equal ["should not be larger than 1 MB"], @attacher.errors
+      assert_equal ["should not be greater than 1 MB"], @attacher.errors
     end
 
     it "returns whether the validation succeeded" do
@@ -57,7 +57,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio("file"))
     end
 
-    it "adds an error if size is smaller than given minimum" do
+    it "adds an error if size is less than given minimum" do
       @attacher.class.validate { validate_min_size(get.size - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -74,17 +74,17 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_min_size(1024*1024) }
       @attacher.validate
-      assert_equal ["must not be smaller than 1.0 MB"], @attacher.errors
+      assert_equal ["size must not be less than 1.0 MB"], @attacher.errors
     end
 
     it "accepts a custom error message" do
-      @attacher.class.validate { validate_min_size(1024*1024, message: "should not be smaller than 1 MB") }
+      @attacher.class.validate { validate_min_size(1024*1024, message: "should not be less than 1 MB") }
       @attacher.validate
-      assert_equal ["should not be smaller than 1 MB"], @attacher.errors
+      assert_equal ["should not be less than 1 MB"], @attacher.errors
 
-      @attacher.class.validate { validate_min_size(1024*1024, message: ->(min){"should not be smaller than #{min/1024/1024} MB"}) }
+      @attacher.class.validate { validate_min_size(1024*1024, message: ->(min){"should not be less than #{min/1024/1024} MB"}) }
       @attacher.validate
-      assert_equal ["should not be smaller than 1 MB"], @attacher.errors
+      assert_equal ["should not be less than 1 MB"], @attacher.errors
     end
 
     it "returns whether the validation succeeded" do
@@ -103,22 +103,26 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(fakeio("file"))
     end
 
-    it "passes if size is in given range" do
+    it "adds an error if size is greater than given maximum" do
+      @attacher.class.validate { validate_size 0..2 }
+      @attacher.validate
+      assert_equal ["size must not be greater than 2.0 B"], @attacher.errors
+    end
+
+    it "adds an error if size is less than given minimum" do
+      @attacher.class.validate { validate_size 10..14 }
+      @attacher.validate
+      assert_equal ["size must not be less than 10.0 B"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
       @attacher.class.validate { @validation_passed = validate_size 0..4 }
       @attacher.validate
       assert_equal true, @attacher.instance_variable_get("@validation_passed")
-    end
 
-    it "adds an error if size is larger than given maximum" do
-      @attacher.class.validate { validate_size 0..2 }
+      @attacher.class.validate { @validation_passed = validate_size 10..14 }
       @attacher.validate
-      assert_equal ["must not be larger than 2.0 B"], @attacher.errors
-    end
-
-    it "adds an error if size is smaller than given minimum" do
-      @attacher.class.validate { validate_size 10..14 }
-      @attacher.validate
-      assert_equal ["must not be smaller than 10.0 B"], @attacher.errors
+      assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
   end
 
@@ -128,7 +132,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if width is larger than given maximum" do
+    it "adds an error if width is greater than given maximum" do
       @attacher.class.validate { validate_max_width(get.width + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -145,7 +149,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_max_width(1) }
       @attacher.validate
-      assert_equal ["width must not be larger than 1px"], @attacher.errors
+      assert_equal ["width must not be greater than 1px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -183,7 +187,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if width is smaller than given minimum" do
+    it "adds an error if width is less than given minimum" do
       @attacher.class.validate { validate_min_width(get.width - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -200,7 +204,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_min_width(200) }
       @attacher.validate
-      assert_equal ["width must not be smaller than 200px"], @attacher.errors
+      assert_equal ["width must not be less than 200px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -238,22 +242,26 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "passes if width is in given range" do
+    it "adds an error if width is greater than given maximum" do
+      @attacher.class.validate { validate_width 0..10 }
+      @attacher.validate
+      assert_equal ["width must not be greater than 10px"], @attacher.errors
+    end
+
+    it "adds an error if width is less than given minimum" do
+      @attacher.class.validate { validate_width 150..200 }
+      @attacher.validate
+      assert_equal ["width must not be less than 150px"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
       @attacher.class.validate { @validation_passed = validate_width 0..100 }
       @attacher.validate
       assert_equal true, @attacher.instance_variable_get("@validation_passed")
-    end
 
-    it "adds an error if width is larger than given maximum" do
-      @attacher.class.validate { validate_width 0..10 }
+      @attacher.class.validate { @validation_passed = validate_width 150..200 }
       @attacher.validate
-      assert_equal ["width must not be larger than 10px"], @attacher.errors
-    end
-
-    it "adds an error if width is smaller than given minimum" do
-      @attacher.class.validate { validate_width 150..200 }
-      @attacher.validate
-      assert_equal ["width must not be smaller than 150px"], @attacher.errors
+      assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
   end
 
@@ -263,7 +271,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if height is larger than given maximum" do
+    it "adds an error if height is greater than given maximum" do
       @attacher.class.validate { validate_max_height(get.height + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -280,7 +288,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_max_height(1) }
       @attacher.validate
-      assert_equal ["height must not be larger than 1px"], @attacher.errors
+      assert_equal ["height must not be greater than 1px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -318,7 +326,7 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "adds an error if height is smaller than given minimum" do
+    it "adds an error if height is less than given minimum" do
       @attacher.class.validate { validate_min_height(get.height - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -335,7 +343,7 @@ describe Shrine::Plugins::ValidationHelpers do
     it "uses the default error message" do
       @attacher.class.validate { validate_min_height(200) }
       @attacher.validate
-      assert_equal ["height must not be smaller than 200px"], @attacher.errors
+      assert_equal ["height must not be less than 200px"], @attacher.errors
     end
 
     it "accepts a custom error message" do
@@ -373,22 +381,26 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.assign(image)
     end
 
-    it "passes if height is in given range" do
+    it "adds an error if height is greater than given maximum" do
+      @attacher.class.validate { validate_height 0..10 }
+      @attacher.validate
+      assert_equal ["height must not be greater than 10px"], @attacher.errors
+    end
+
+    it "adds an error if height is less than given minimum" do
+      @attacher.class.validate { validate_height 150..200 }
+      @attacher.validate
+      assert_equal ["height must not be less than 150px"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
       @attacher.class.validate { @validation_passed = validate_height 0..100 }
       @attacher.validate
       assert_equal true, @attacher.instance_variable_get("@validation_passed")
-    end
 
-    it "adds an error if height is larger than given maximum" do
-      @attacher.class.validate { validate_height 0..10 }
+      @attacher.class.validate { @validation_passed = validate_height 150..200 }
       @attacher.validate
-      assert_equal ["height must not be larger than 10px"], @attacher.errors
-    end
-
-    it "adds an error if height is smaller than given minimum" do
-      @attacher.class.validate { validate_height 150..200 }
-      @attacher.validate
-      assert_equal ["height must not be smaller than 150px"], @attacher.errors
+      assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
   end
 

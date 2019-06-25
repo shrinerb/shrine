@@ -17,25 +17,25 @@ end
 ### File size
 
 The `#validate_max_size`/`#validate_min_size` methods accept a number of bytes,
-and validate that the `size` metadata value is not larger or smaller than the
+and validate that the `size` metadata value is not greater/less than the
 specified size.
 
 ```rb
-validate_max_size 5*1024*1024 # file must not be larger than 5 MB
-validate_min_size 1024        # file must not be smaller than 1 KB
+validate_max_size 5*1024*1024 # file size must not be greater than 5 MB
+validate_min_size 1024        # file size must not be less than 1 KB
 ```
 
 You can also use the `#validate_size` method, which combines these two:
 
 ```rb
-validate_size 1024..5*1024*1024 # file not be larger than 5 MB nor smaller than 1 KB
+validate_size 1024..5*1024*1024 # file size must not be greater than 5 MB nor less than 1 KB
 ```
 
 ### MIME type
 
 The `#validate_mime_type_inclusion`/`#validate_mime_type_exclusion` methods
 accept a list of MIME types, and validate that the `mime_type` metadata value
-is (not) a member of that list.
+is/is not a member of that list.
 
 ```rb
 validate_mime_type_inclusion %w[image/jpeg image/png image/gif] # file must be a JPEG, PNG or a GIF image
@@ -49,7 +49,7 @@ Instead of `#validate_mime_type_inclusion` you can also use just
 
 The `#validate_extension_inclusion`/`#validation_extension_exclusion` methods
 accept a list of file extensions, and validate that the `filename` metadata
-value extension is (not) a member of that list.
+value extension is/is not a member of that list.
 
 ```rb
 validate_extension_inclusion %w[jpg jpeg png gif] # file must have .jpg, .jpeg, .png, or .gif extension
@@ -77,35 +77,35 @@ against decompression attacks.
 #### Width
 
 The `#validate_max_width`/`#validate_min_width` methods accept a width in
-pixels, and validates that the `width` metadata value is not larger or smaller
+pixels, and validates that the `width` metadata value is not greater/less
 than the specified number:
 
 ```rb
-validate_max_width 5000 # image width must not be larger than 5000px
-validate_min_width 100  # image width must not be smaller than 100px
+validate_max_width 5000 # image width must not be greater than 5000px
+validate_min_width 100  # image width must not be less than 100px
 ```
 
 You can also use the `#validate_width` method, which combines these two:
 
 ```rb
-validate_width 100..5000 # image width must not be larger than 5000px nor smaller than 100px
+validate_width 100..5000 # image width must not be greater than 5000px nor less than 100px
 ```
 
 #### Height
 
 The `#validate_max_height`/`#validate_min_height` methods accept a height in
-pixels, and validates that the `height` metadata value is not larger or smaller
+pixels, and validates that the `height` metadata value is not greater/less
 than the specified number:
 
 ```rb
-validate_max_height 5000 # image height must not be larger than 5000px
-validate_min_height 100  # image height must not be smaller than 100px
+validate_max_height 5000 # image height must not be greater than 5000px
+validate_min_height 100  # image height must not be less than 100px
 ```
 
 You can also use the `#validate_height` method, which combines these two:
 
 ```rb
-validate_height 100..5000 # image height must not be larger than 5000px nor smaller than 100px
+validate_height 100..5000 # image height must not be greater than 5000px nor less than 100px
 ```
 
 ## Dynamic evaluation

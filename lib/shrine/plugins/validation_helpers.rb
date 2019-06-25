@@ -12,12 +12,12 @@ class Shrine
       end
 
       DEFAULT_MESSAGES = {
-        max_size:            -> (max)  { "must not be larger than #{PRETTY_FILESIZE.call(max)}" },
-        min_size:            -> (min)  { "must not be smaller than #{PRETTY_FILESIZE.call(min)}" },
-        max_width:           -> (max)  { "width must not be larger than #{max}px" },
-        min_width:           -> (min)  { "width must not be smaller than #{min}px" },
-        max_height:          -> (max)  { "height must not be larger than #{max}px" },
-        min_height:          -> (min)  { "height must not be smaller than #{min}px" },
+        max_size:            -> (max)  { "size must not be greater than #{PRETTY_FILESIZE.call(max)}" },
+        min_size:            -> (min)  { "size must not be less than #{PRETTY_FILESIZE.call(min)}" },
+        max_width:           -> (max)  { "width must not be greater than #{max}px" },
+        min_width:           -> (min)  { "width must not be less than #{min}px" },
+        max_height:          -> (max)  { "height must not be greater than #{max}px" },
+        min_height:          -> (min)  { "height must not be less than #{min}px" },
         mime_type_inclusion: -> (list) { "type must be one of: #{list.join(", ")}" },
         mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
         extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
