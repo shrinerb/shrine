@@ -50,7 +50,6 @@ If you're curious how it compares to other file attachment libraries, see the [A
   - [Resumable direct upload](#resumable-direct-upload)
 * [Backgrounding](#backgrounding)
 * [Clearing cache](#clearing-cache)
-* [Settings](#settings)
 
 ## Quick start
 
@@ -968,28 +967,6 @@ file_system.clear! { |path| path.mtime < Time.now - 7*24*60*60 } # delete files 
 s3 = Shrine.storages[:cache]
 s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete files older than 1 week
 ```
-
-## Settings
-
-Each uploader can store generic settings in the `opts` hash, which can be
-accessed in other uploader actions. You can store there anything that you find
-convenient.
-
-```rb
-Shrine.opts[:type] = "file"
-
-class DocumentUploader < Shrine; end
-class ImageUploader < Shrine
-  opts[:type] = "image"
-end
-
-DocumentUploader.opts[:type] #=> "file"
-ImageUploader.opts[:type]    #=> "image"
-```
-
-Because `opts` is cloned in subclasses, overriding settings works with
-inheritance. The `opts` hash is used internally by plugins to store
-configuration.
 
 ## Inspiration
 
