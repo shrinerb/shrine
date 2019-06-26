@@ -722,7 +722,7 @@ photo.image = file
 photo.image = '{"id":"...","storage":"cache","metadata":{...}}'
 ```
 
-On the client side it's highly recommended to use **[Uppy]**, a very flexible
+On the client side it's highly recommended to use **[Uppy]** :dog:, a very flexible
 modern JavaScript file upload library that happens to integrate nicely with
 Shrine.
 
