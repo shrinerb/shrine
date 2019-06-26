@@ -711,7 +711,16 @@ can also access the extracted metadata through `context[:metadata]`.
 
 To improve the user experience, it's recommended to upload files asynchronously
 as soon as the user selects them. The direct uploads would go to temporary
-storage, just like in the synchronous flow.
+storage, just like in the synchronous flow. Then, instead of attaching a raw
+file to your model, you assign the cached file JSON data.
+
+```rb
+# in the regular synchronous flow
+photo.image = file
+
+# in the direct upload flow
+photo.image = '{"id":"...","storage":"cache","metadata":{...}}'
+```
 
 On the client side it's highly recommended to use **[Uppy]**, a very flexible
 modern JavaScript file upload library that happens to integrate nicely with
