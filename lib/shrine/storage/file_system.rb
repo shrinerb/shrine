@@ -106,17 +106,22 @@ class Shrine
         host ? host + path : path
       end
 
-      # Deletes all files from the #directory. If `:older_than` is passed in (a
-      # `Time` object), deletes all files which were last modified before that
-      # time.
-      def clear!(older_than: nil)
-        if older_than
-          # add trailing slash to make it work with symlinks
-          Pathname("#{directory}/").find do |path|
-            if path.file? && path.mtime < older_than
-              path.delete
-              clean(path) if clean?
+      # Deletes all files from the #directory. If a block is passed in, deletes
+      # only the files for which the block evaluates to true.
+      #
+      #     file_system.clear! # deletes all files and subdirectories in the storage directory
+      #     file_system.clear! { |path| path.mtime < Time.now - 7*24*60*60 } # deletes only files older than 1 week
+      def clear!(older_than: nil, &condition)
+        if older_than || condition
+          list_files(directory) do |path|
+            if older_than
+              Shrine.deprecation("The :older_than option to FileSystem#clear! is deprecated and will be removed in Shrine 3. You should use a block instead, e.g. `storage.clear! { |path| path.mtime < Time.now - 7*24*60*60 }`.")
+              next unless path.mtime < older_than
+            else
+              next unless condition.call(path)
             end
+            path.delete
+            clean(path) if clean?
           end
         else
           directory.children.each(&:rmtree)
@@ -169,6 +174,12 @@ class Shrine
 
       def relative(path)
         path.sub(%r{^/}, "")
+      end
+
+      def list_files(directory)
+        Pathname("#{directory}/") # add trailing slash to make it work with symlinks
+          .find
+          .each { |path| yield path if path.file? }
       end
 
       def deprecated_download(id, **options)

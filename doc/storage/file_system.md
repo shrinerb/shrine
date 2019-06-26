@@ -66,7 +66,7 @@ periodically:
 
 ```rb
 file_system = Shrine.storages[:cache]
-file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
+file_system.clear! { |path| path.mtime < Time.now - 7*24*60*60 } # delete files older than 1 week
 ```
 
 ## Permissions

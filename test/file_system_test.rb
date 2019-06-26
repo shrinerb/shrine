@@ -259,7 +259,7 @@ describe Shrine::Storage::FileSystem do
     end
 
     describe "with :older_than" do
-      it "deletes files and directories older than specified time" do
+      deprecated "deletes files and directories older than specified time" do
         time = Time.utc(2017, 3, 29)
 
         @storage.upload(fakeio, "foo")
@@ -281,7 +281,7 @@ describe Shrine::Storage::FileSystem do
         assert @storage.directory.directory?
       end
 
-      it "works with symlinks" do
+      deprecated "works with symlinks" do
         time = Time.utc(2017, 3, 29)
 
         @storage = file_system(root_symlink)
@@ -290,6 +290,45 @@ describe Shrine::Storage::FileSystem do
         File.utime(time - 1, time - 1, @storage.directory.join("foo"))
 
         @storage.clear!(older_than: time)
+
+        refute @storage.directory.join("foo").exist?
+        assert @storage.directory.directory?
+        assert File.symlink?(root_symlink)
+      end unless RUBY_ENGINE == "jruby" # https://github.com/jruby/jruby/issues/5539
+    end
+
+    describe "with a block" do
+      it "deletes selected files and directories" do
+        time = Time.utc(2017, 3, 29)
+
+        @storage.upload(fakeio, "foo")
+        @storage.upload(fakeio, "dir/bar")
+        @storage.upload(fakeio, "dir/baz")
+        @storage.upload(fakeio, "dir/dir/quux")
+
+        File.utime(time,     time,     @storage.directory.join("dir/bar"))
+        File.utime(time - 1, time - 1, @storage.directory.join("foo"))
+        File.utime(time - 1, time - 1, @storage.directory.join("dir/baz"))
+        File.utime(time - 2, time - 2, @storage.directory.join("dir/dir/quux"))
+
+        @storage.clear! { |path| path.mtime < time }
+
+        refute @storage.directory.join("foo").exist?
+        assert @storage.directory.join("dir/bar").exist?
+        refute @storage.directory.join("dir/baz").exist?
+        refute @storage.directory.join("dir/dir").exist?
+        assert @storage.directory.directory?
+      end
+
+      it "works with symlinks" do
+        time = Time.utc(2017, 3, 29)
+
+        @storage = file_system(root_symlink)
+        @storage.upload(fakeio, "foo")
+
+        File.utime(time - 1, time - 1, @storage.directory.join("foo"))
+
+        @storage.clear! { |path| path.mtime < time }
 
         refute @storage.directory.join("foo").exist?
         assert @storage.directory.directory?

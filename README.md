@@ -955,13 +955,13 @@ Shrine doesn't automatically delete files uploaded to temporary storage, instead
 you should set up a separate recurring task that will automatically delete old
 cached files.
 
-Most of Shrine storage classes come with a `#clear!` method, which you can call
-in a recurring script. For FileSystem and S3 storage it would look like this:
+Most Shrine storage classes come with a `#clear!` method, which you can call in
+a recurring script. For FileSystem and S3 storage it would look like this:
 
 ```rb
 # FileSystem storage
 file_system = Shrine.storages[:cache]
-file_system.clear!(older_than: Time.now - 7*24*60*60) # delete files older than 1 week
+file_system.clear! { |path| path.mtime < Time.now - 7*24*60*60 } # delete files older than 1 week
 ```
 ```rb
 # S3 storage
