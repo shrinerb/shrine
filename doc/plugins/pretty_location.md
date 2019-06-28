@@ -28,4 +28,16 @@ plugin :pretty_location, namespace: "/"
 # "blog/user/.../493g82jf23.jpg"
 ```
 
+By default if a record responds to `id`, this will is used in the location. 
+If you want to use a different identifier for the record, you can pass in
+the `:identifier` option with the desired method/attribute name as the value:
+
+```rb
+plugin :pretty_location, identifier: "uuid"
+# "user/aa357797-5845-451b-8662-08eecdc9f762/profile_picture/493g82jf23.jpg"
+
+plugin :pretty_location, identifier: :email
+# "user/foo@bar.com/profile_picture/493g82jf23.jpg"
+```
+
 [pretty_location]: /lib/shrine/plugins/pretty_location.rb
