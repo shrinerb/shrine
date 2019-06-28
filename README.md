@@ -721,17 +721,16 @@ photo.image = file
 photo.image = '{"id":"...","storage":"cache","metadata":{...}}'
 ```
 
-On the client side it's highly recommended to use **[Uppy]** :dog:, a very flexible
-modern JavaScript file upload library that happens to integrate nicely with
-Shrine.
+On the client side it's highly recommended to use **[Uppy]** :dog:, a very
+flexible modern JavaScript file upload library that happens to integrate nicely
+with Shrine.
 
 ### Simple direct upload
 
-The simplest approach is creating an upload endpoint in your app that will
-forward uploads to the specified storage. The
+The simplest approach is to upload directly to an endpoint in your app, which
+forwards uploads to the specified storage. The
 [`upload_endpoint`][upload_endpoint plugin] Shrine plugin provides a
-[mountable][Mounting Endpoints] Rack application that does that, and you can
-combine it with Uppy's [XHR Upload][uppy xhr-upload] plugin:
+[mountable][Mounting Endpoints] Rack app that implements this endpoint:
 
 ```rb
 Shrine.plugin :upload_endpoint
@@ -743,22 +742,11 @@ Rails.application.routes.draw do
   mount ImageUploader.upload_endpoint(:cache) => "/images/upload" # POST /images/upload
 end
 ```
-```js
-// upload.js
-// ...
-uppy.use(Uppy.XHRUpload, {
-  endpoint: '/images/upload'
-})
 
-uppy.on('upload-success', (file, response) => {
-  const uploadedFileData = JSON.stringify(response.body)
-  // ... add this data to your form or submit it to your app ...
-})
-```
-
-For adding simple direct uploads from scratch, see [this walkthrough][Adding
-Direct App Uploads] (there is also the [Roda][roda demo] / [Rails][rails demo]
-demo app).
+Then you can configure Uppy's [XHR Upload][uppy xhr-upload] plugin to upload to
+this endpoint. See [this walkthrough][Adding Direct App Uploads] for adding
+simple direct uploads from scratch, it includes a complete JavaScript example
+(there is also the [Roda][roda demo] / [Rails][rails demo] demo app).
 
 ### Presigned direct upload
 
@@ -776,10 +764,9 @@ Shrine.storages = {
 ```
 
 In this flow, the client needs to first fetch upload parameters from the
-server, and then use these parameters for the upload to the cloud service. The
-[`presign_endpoint`][presign_endpoint plugin] Shrine plugin provides a
-[mountable][Mounting Endpoints] Rack application that generates upload
-parameters, and you can combine it with Uppy's [AWS S3][uppy aws-s3] plugin:
+server, and then use these parameters for the upload to the cloud service.
+The [`presign_endpoint`][presign_endpoint plugin] Shrine plugin provides a
+[mountable][Mounting Endpoints] Rack app that generates upload parameters:
 
 ```rb
 Shrine.plugin :presign_endpoint
@@ -791,43 +778,24 @@ Rails.application.routes.draw do
   mount Shrine.presign_endpoint(:cache) => "/s3/params" # GET /s3/params
 end
 ```
-```js
-// upload.js
-// ...
-uppy.use(Uppy.AwsS3, {
-  companionUrl: '/' // uses '/s3/params'
-})
 
-uppy.on('upload-success', (file, response) => {
-  const uploadedFileData = JSON.stringify({
-    id: file.meta['key'].match(/^cache\/(.+)/)[1], // object key without prefix
-    storage: 'cache',
-    metadata: {
-      size:      file.size,
-      filename:  file.name,
-      mime_type: file.type,
-    }
-  })
-  // ... add this data to your form or submit it to your app ...
-})
-```
-
-For adding direct S3 uploads from scratch, see [this walkthrough][Adding Direct
-S3 Uploads] (there is also the [Roda][roda demo] / [Rails][rails demo] demo).
-See also the [Direct Uploads to S3] guide for more details.
+Then you can configure Uppy's [AWS S3][uppy aws-s3] plugin to fetch params from
+your endpoint before uploading to S3. See [this walkthrough][Adding Direct S3
+Uploads] for adding direct uploads to S3 from scratch, it includes a complete
+JavaScript example (there is also the [Roda][roda demo] / [Rails][rails demo]
+demo). See also the [Direct Uploads to S3] guide for more details.
 
 ### Resumable direct upload
 
-If your app is accepting large uploads, you can make the uploads **resumable**.
-This can significantly improve experience for users on slow and flaky internet
-connections.
+If your app is accepting large uploads, you can improve resilience by making
+the uploads **resumable**. This can significantly improve experience for users
+on slow and flaky internet connections.
 
 #### Uppy S3 Multipart
 
 You can achieve resumable uploads directly to S3 with the [AWS S3
-Multipart][uppy aws-s3-multipart] Uppy plugin, accompanied with the Shrine
-plugin provided by the [uppy-s3_multipart] gem (assuming your temporary storage
-is `Shrine::Storage::S3`):
+Multipart][uppy aws-s3-multipart] Uppy plugin, accompanied with
+`uppy_s3_multipart` Shrine plugin provided by the [uppy-s3_multipart] gem.
 
 ```rb
 # Gemfile
@@ -843,35 +811,15 @@ Rails.application.routes.draw do
   mount Shrine.uppy_s3_multipart(:cache) => "/s3/multipart"
 end
 ```
-```js
-// upload.js
-// ...
-uppy.use(Uppy.AwsS3Multipart, {
-  companionUrl: '/' // uses '/s3/multipart/*' routes
-})
-
-uppy.on('upload-success', (file, response) => {
-  const uploadedFileData = JSON.stringify({
-    id: response.uploadURL.match(/\/cache\/([^\?]+)/)[1], // object key without prefix
-    storage: 'cache',
-    metadata: {
-      size:      file.size,
-      filename:  file.name,
-      mime_type: file.type,
-    }
-  })
-  // ... add this data to your form or submit it to your app ...
-})
-```
 
 See the [uppy-s3_multipart] docs for more details.
 
 #### Tus protocol
 
 If you want a more generic approach, you can build your resumable uploads on
-**[tus]**, an open resumable upload protocol. On the server side you can use
+**[tus]** – an open resumable upload protocol. On the server side you can use
 the [tus-ruby-server] gem, on the client side Uppy's [Tus][uppy tus] plugin,
-and the [shrine-tus] gem for the glue:
+and the [shrine-tus] gem for the glue.
 
 ```rb
 # Gemfile
@@ -893,31 +841,11 @@ Rails.application.routes.draw do
   mount Tus::Server => "/files"
 end
 ```
-```js
-// upload.js
-// ...
-uppy.use(Uppy.Tus, {
-  endpoint:  '/files',
-  chunkSize: 5*1024*1024,
-})
 
-uppy.on('upload-success', (file, response) => {
-  const uploadedFileData = JSON.stringify({
-    id: response.uploadURL,
-    storage: "cache",
-    metadata: {
-      filename:  file.name,
-      size:      file.size,
-      mime_type: file.type,
-    }
-  })
-  // ... add this data to your form or submit it to your app ...
-})
-```
-
-For adding tus-powered resumable uploads from scratch, see [this
-walkthrough][Adding Resumable Uploads] (there is also a [demo app][resumable
-demo]). See also [shrine-tus] and [tus-ruby-server] docs for more details.
+See [this walkthrough][Adding Resumable Uploads] for adding tus-powered
+resumable uploads from scratch, it includes a complete JavaScript example
+(there is also a [demo app][resumable demo]). See also [shrine-tus] and
+[tus-ruby-server] docs for more details.
 
 ## Backgrounding
 
