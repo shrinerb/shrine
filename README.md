@@ -323,7 +323,7 @@ uploaded_file = uploader.upload(file)
 uploaded_file.data #=> {"id"=>"949sdjg834.jpg","storage"=>"store","metadata"=>{...}}
 
 uploaded_file.id       #=> "949sdjg834.jpg"
-uploaded_file.storage  #=> #<Shrine::Storage::FileSystem>
+uploaded_file.storage  #=> #<Shrine::Storage::S3>
 uploaded_file.metadata #=> {...}
 ```
 
@@ -354,7 +354,7 @@ For more details, see the [Retrieving Uploads] guide and
 
 ## Attachment
 
-Storages, uploaders, and uploaded file objects are Shrine's foundational
+Storage objects, uploaders, and uploaded file objects are Shrine's foundational
 components. To help you actually attach uploaded files to database records in
 your application, Shrine comes with a high-level attachment interface built on
 top of these components.
