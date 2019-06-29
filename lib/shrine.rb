@@ -233,11 +233,7 @@ class Shrine
     # file extension. Can be overriden in uploaders for generating custom
     # location.
     def generate_location(io, context = {})
-      extension   = ".#{io.extension}" if io.is_a?(UploadedFile) && io.extension
-      extension ||= File.extname(extract_filename(io).to_s).downcase
-      basename    = generate_uid(io)
-
-      basename + extension
+      basic_location(io)
     end
 
     # Extracts filename, size and MIME type from the file, which is later
@@ -327,6 +323,15 @@ class Shrine
     # Delegates to #process.
     def processed(io, context)
       process(io, context)
+    end
+
+    # Generates a basic location for an uploaded file
+    def basic_location(io)
+      extension   = ".#{io.extension}" if io.is_a?(UploadedFile) && io.extension
+      extension ||= File.extname(extract_filename(io).to_s).downcase
+      basename    = generate_uid(io)
+
+      basename + extension
     end
 
     # Retrieves the location for the given IO and context. First it looks

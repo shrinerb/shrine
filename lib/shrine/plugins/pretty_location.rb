@@ -13,14 +13,18 @@ class Shrine
 
       module InstanceMethods
         def generate_location(io, context)
+          identifier = (opts[:pretty_location_identifier] || :id).to_sym
+          pretty_location(io, identifier, context)
+        end
+
+        def pretty_location(io, identifier, context = {})
           if context[:record]
-            identifier = (opts[:pretty_location_identifier] || :id).to_sym
-            type       = class_location(context[:record].class) if context[:record].class.name
-            id         = context[:record].public_send(identifier) if context[:record].respond_to?(identifier)
+            type = class_location(context[:record].class) if context[:record].class.name
+            id   = context[:record].public_send(identifier) if context[:record].respond_to?(identifier)
           end
           name = context[:name]
 
-          dirname, slash, basename = super.rpartition("/")
+          dirname, slash, basename = basic_location(io).rpartition("/")
           basename = "#{context[:version]}-#{basename}" if context[:version]
           original = dirname + slash + basename
 
