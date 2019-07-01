@@ -66,7 +66,7 @@ class UploadsController < ApplicationController
   def image
     # ... we can perform authentication here ...
 
-    set_rack_response ImageUploader.upload_response(:cache, env)
+    set_rack_response ImageUploader.upload_response(:cache, request.env)
   end
 
   private
@@ -161,7 +161,7 @@ You can override any of the options above when creating the endpoint/response:
 ```rb
 Shrine.upload_endpoint(:cache, max_size: 20*1024*1024)
 # or
-Shrine.upload_response(:cache, env, max_size: 20*1024*1024)
+Shrine.upload_response(:cache, request.env, max_size: 20*1024*1024)
 ```
 
 ## Checksum
