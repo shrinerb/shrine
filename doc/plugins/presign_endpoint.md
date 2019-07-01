@@ -69,7 +69,7 @@ class PresignsController < ApplicationController
   def image
     # ... we can perform authentication here ...
 
-    set_rack_response ImageUploader.presign_response(:cache, env)
+    set_rack_response ImageUploader.presign_response(:cache, request.env)
   end
 
   private
