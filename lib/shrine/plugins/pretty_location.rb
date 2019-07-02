@@ -13,17 +13,7 @@ class Shrine
 
       module InstanceMethods
         def generate_location(io, context)
-          default_identifier = :id
-          param_identifier   = opts[:pretty_location_identifier]
-
-          if param_identifier && context[:record].respond_to?(param_identifier)
-            identifier = context[:record].public_send(param_identifier)
-          elsif context[:record].respond_to?(default_identifier)
-            identifier = context[:record].public_send(default_identifier)
-          else
-            identifier = nil
-          end
-
+          identifier = record_identifier(context[:record], opts[:pretty_location_identifier])
           pretty_location(io, identifier, context)
         end
 
@@ -41,6 +31,16 @@ class Shrine
         end
 
         private
+
+        def record_identifier(record, method)
+          return unless record
+
+          identifier = nil
+          identifier = record.send(method) if method && record.respond_to?(method)
+          identifier = record.id if !identifier && record.respond_to?(:id)
+
+          identifier
+        end
 
         def class_location(klass)
           parts = klass.name.downcase.split("::")
