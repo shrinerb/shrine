@@ -196,7 +196,7 @@ the uploaded file with `#<attachment>_url` and display it on the page:
 A "storage" in Shrine is an object that encapsulates communication with a
 specific storage service, by implementing a common public interface. Storage
 instances are registered under an identifier in `Shrine.storages`, so that they
-can later by used by [uploaders][uploader].
+can later be used by [uploaders][uploader].
 
 Previously we've shown the [FileSystem] storage which saves files to disk, but
 Shrine also ships with [S3] storage which stores files on [AWS S3] (or any
