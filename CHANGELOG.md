@@ -18,6 +18,8 @@
 
 * `validation_helpers` – Simplify default validation error messages (@janko)
 
+* `core` – Allow registering storage objects under string keys (@janko)
+
 ## 2.18.0 (2019-06-24)
 
 * `core` – Add `Shrine.upload` method as a shorthand for `Shrine.new(...).upload(...)` (@janko)

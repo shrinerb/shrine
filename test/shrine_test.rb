@@ -114,9 +114,13 @@ describe Shrine do
   describe ".find_storage" do
     it "finds by symbol names" do
       assert_equal @uploader.storage, @shrine.find_storage(:store)
+      @shrine.storages["store"] = @shrine.storages.delete(:store)
+      assert_equal @uploader.storage, @shrine.find_storage(:store)
     end
 
     it "finds by string names" do
+      assert_equal @uploader.storage, @shrine.find_storage("store")
+      @shrine.storages["store"] = @shrine.storages.delete(:store)
       assert_equal @uploader.storage, @shrine.find_storage("store")
     end
 
