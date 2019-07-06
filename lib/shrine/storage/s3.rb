@@ -252,11 +252,8 @@ class Shrine
       #     # or
       #     s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 }
       def clear!(&block)
-        objects_to_delete = Enumerator.new do |yielder|
-          bucket.objects(prefix: prefix).each do |object|
-            yielder << object if block.nil? || block.call(object)
-          end
-        end
+        objects_to_delete = bucket.objects(prefix: prefix)
+        objects_to_delete = objects_to_delete.lazy.select(&block) if block
 
         delete_objects(objects_to_delete)
       end
