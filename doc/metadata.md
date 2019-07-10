@@ -34,21 +34,29 @@ uploader.extract_metadata(io) #=>
 # }
 ```
 
-By default these values are determined from the following attributes on the IO
-object:
+`Shrine#upload` accepts a `:metadata` option which accepts the following values:
 
-* `filename` – `io.original_filename` or `io.path`
-* `mime_type` – `io.content_type`
-* `size` – `io.size`
+  * `Hash` – adds/overrides extracted metadata with the given hash
 
-Note that you can also manually add or override metadata on upload by passing
-the `:metadata` option to `Shrine#upload`:
+    ```rb
+    uploaded_file = uploader.upload(file, metadata: { "filename" => "Matrix[1999].mp4", "foo" => "bar" })
+    uploaded_file.original_filename #=> "Matrix[1999].mp4"
+    uploaded_file.metadata["foo"]   #=> "bar"
+    ```
 
-```rb
-uploaded_file = uploader.upload(file, metadata: { "filename" => "Matrix[1999].mp4", "foo" => "bar" })
-uploaded_file.original_filename #=> "Matrix[1999].mp4"
-uploaded_file.metadata["foo"]   #=> "bar"
-```
+  * `false` – skips metadata extraction (useful in tests)
+
+    ```rb
+    uploaded_file = uploader.upload(file, metadata: false)
+    uploaded_file.metadata #=> {}
+    ```
+
+  * `true` – forces metadata extraction when a `Shrine::UploadedFile` is being
+    uploaded (by default metadata is simply copied over)
+
+    ```rb
+    uploader.upload(uploaded_file, metadata: true)
+    ```
 
 ## MIME type
 

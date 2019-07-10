@@ -283,7 +283,7 @@ class Shrine
       _enforce_io(io)
 
       metadata = get_metadata(io, context)
-      metadata = metadata.merge(context[:metadata]) if context[:metadata]
+      metadata = metadata.merge(context[:metadata]) if context[:metadata].is_a?(Hash)
 
       location = get_location(io, context.merge(metadata: metadata))
 
@@ -339,10 +339,12 @@ class Shrine
     # If the IO object is a Shrine::UploadedFile, it simply copies over its
     # metadata, otherwise it calls #extract_metadata.
     def get_metadata(io, context)
-      if io.is_a?(UploadedFile)
+      if io.is_a?(UploadedFile) && context[:metadata] != true
         io.metadata.dup
-      else
+      elsif context[:metadata] != false
         extract_metadata(io, context)
+      else
+        {}
       end
     end
 

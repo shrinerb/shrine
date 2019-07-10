@@ -267,6 +267,17 @@ describe Shrine do
       assert_equal "bar", uploaded_file.metadata["foo"]
     end
 
+    it "allows skipping metadata extraction" do
+      uploaded_file = @uploader.store(fakeio, metadata: false)
+      assert_equal Hash.new, uploaded_file.metadata
+    end
+
+    it "allows forcing metadata extraction" do
+      another_uploaded_file = @uploader.store(fakeio, metadata: false)
+      uploaded_file = @uploader.store(another_uploaded_file, metadata: true)
+      assert_equal ["filename", "size", "mime_type"], uploaded_file.metadata.keys
+    end
+
     it "closes the file after uploading" do
       @uploader.store(io = fakeio)
       assert_raises(IOError) { io.read }

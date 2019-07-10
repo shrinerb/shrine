@@ -1,5 +1,9 @@
 ## HEAD
 
+* `core` – Add ability to force metadata extraction by passing `metadata: true` to `Shrine#upload` (@janko)
+
+* `core` – Add ability to skip metadata extraction by passing `metadata: false` to `Shrine#upload` (@janko)
+
 * `file_system` – Deprecate `:older_than` option for `FileSystem#clear!` in favour of a block (@janko)
 
 * `file_system` – Add the ability for `FileSystem#clear!` to take a block (@janko)
