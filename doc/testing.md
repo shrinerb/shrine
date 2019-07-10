@@ -54,14 +54,14 @@ Shrine.storages = {
 }
 ```
 
-If you're using AWS S3 storage, you can use [Minio] (explained below) instead
+If you're using AWS S3 storage, you can use [MinIO] (explained below) instead
 of S3, both in test and development environment. Alternatively, you can [stub
 aws-sdk-s3 requests][aws-sdk-ruby stubs] in tests.
 
-### Minio
+### MinIO
 
-[Minio] is an open source object storage server with AWS S3 compatible API which
-you can run locally. The advantage of using Minio for your development and test
+[MinIO] is an open source object storage server with AWS S3 compatible API which
+you can run locally. The advantage of using MinIO for your development and test
 environments is that all AWS S3 functionality should still continue to work,
 including direct uploads, so you don't need to update your code.
 
@@ -71,17 +71,17 @@ If you're on a Mac you can install it with Homebrew:
 $ brew install minio/stable/minio
 ```
 
-Afterwards you can start the Minio server and give it a directory where it will
+Afterwards you can start the MinIO server and give it a directory where it will
 store the data:
 
 ```
 $ minio server data/
 ```
 
-This command will print out the credentials for the running Minio server, as
-well as a link to the Minio web interface. Follow that link and create a new
+This command will print out the credentials for the running MinIO server, as
+well as a link to the MinIO web interface. Follow that link and create a new
 bucket. Once you've done that, you can configure `Shrine::Storage::S3` to use
-your Minio server:
+your MinIO server:
 
 ```rb
 Shrine::Storage::S3.new(
@@ -94,7 +94,7 @@ Shrine::Storage::S3.new(
 )
 ```
 
-The `:endpoint` option will make aws-sdk-s3 point all URLs to your Minio server
+The `:endpoint` option will make aws-sdk-s3 point all URLs to your MinIO server
 (instead of `s3.amazonaws.com`), and `:force_path_style` tells it not to use
 subdomains when generating URLs.
 
@@ -285,4 +285,4 @@ isolation.
 [Rack::Test]: https://github.com/brynary/rack-test
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
 [aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
-[Minio]: https://minio.io
+[MinIO]: https://min.io/
