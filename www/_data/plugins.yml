@@ -14,9 +14,6 @@ Model:
     name: cached_attachment_data
     description: Adds a convenient model method for the hidden form cache field.
   -
-    name: copy
-    description: Allows copying attachments from one record to another.
-  -
     name: data_uri
     description: Adds ability to upload files via a data URI.
   -

@@ -1,5 +1,7 @@
 ## HEAD
 
+* `copy` – Deprecate the plugin (@janko)
+
 * `core` – Add ability to force metadata extraction by passing `metadata: true` to `Shrine#upload` (@janko)
 
 * `core` – Add ability to skip metadata extraction by passing `metadata: false` to `Shrine#upload` (@janko)

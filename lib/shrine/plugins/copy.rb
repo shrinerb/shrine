@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The copy plugin is deprecated and will be removed in Shrine 3.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/copy.md] on GitHub.
