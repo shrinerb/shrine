@@ -11,8 +11,8 @@ class Shrine
       end
 
       module ClassMethods
-        def add_metadata(name = nil, **options, &block)
-          opts[:metadata] << [name, options, block]
+        def add_metadata(name = nil, &block)
+          opts[:metadata] << [name, block]
 
           metadata_method(name) if name
         end
@@ -43,8 +43,7 @@ class Shrine
         private
 
         def extract_custom_metadata(io, context)
-          opts[:metadata].each do |name, options, block|
-            result   = instance_exec(io, context, &block)
+          opts[:metadata].each do |name, block|
             metadata = {}
 
             if name
