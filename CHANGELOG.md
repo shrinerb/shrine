@@ -1,5 +1,7 @@
 ## HEAD
 
+* `add_metadata` – Allow calling `super` when overriding dynamically defined `UploadedFile` methods (@janko)
+
 * `store_dimensions` – Add `:on_error` option for specifying the exception strategy (@janko)
 
 * `store_dimensions` – Print warnings when exception occurred while extracting dimensions (@janko)
