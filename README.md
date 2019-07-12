@@ -50,6 +50,7 @@ If you're curious how it compares to other file attachment libraries, see the [A
   - [Resumable direct upload](#resumable-direct-upload)
 * [Backgrounding](#backgrounding)
 * [Clearing cache](#clearing-cache)
+* [Logging](#logging)
 
 ## Quick start
 
@@ -894,6 +895,16 @@ file_system.clear! { |path| path.mtime < Time.now - 7*24*60*60 } # delete files 
 # S3 storage
 s3 = Shrine.storages[:cache]
 s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete files older than 1 week
+```
+
+## Logging
+
+Shrine uses its internal logger to print out warnings or any other messages.
+You can tell Shrine to use a different logger, for example if you're using
+Rails:
+
+```rb
+Shrine.logger = Rails.logger
 ```
 
 ## Inspiration

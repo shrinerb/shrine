@@ -1,5 +1,7 @@
 ## HEAD
 
+* `core` – Add `Shrine.logger` and make any warnings go through it (@janko)
+
 * `copy` – Deprecate the plugin (@janko)
 
 * `core` – Add ability to force metadata extraction by passing `metadata: true` to `Shrine#upload` (@janko)

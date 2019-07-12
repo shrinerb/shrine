@@ -9,6 +9,7 @@ require "shrine/plugins"
 require "securerandom"
 require "json"
 require "tempfile"
+require "logger"
 
 # Core class that represents uploader.
 # Base implementation is defined in InstanceMethods and ClassMethods.
@@ -37,6 +38,8 @@ class Shrine
 
   @opts = {}
   @storages = {}
+  @logger = Logger.new(STDOUT)
+  @logger.formatter = -> (*, message) { "#{message}\n" }
 
   module ClassMethods
     # Generic options for this class, plugins store their options here.
@@ -44,6 +47,9 @@ class Shrine
 
     # A hash of storages with their symbol identifiers.
     attr_accessor :storages
+
+    # A logger instance.
+    attr_accessor :logger
 
     # When inheriting Shrine, copy the instance variables into the subclass,
     # and create subclasses of core classes.
@@ -154,9 +160,14 @@ class Shrine
       end
     end
 
-    # Prints a deprecation warning to standard error.
+    # Prints a warning to the logger.
+    def warn(message)
+      Shrine.logger.warn "SHRINE WARNING: #{message}"
+    end
+
+    # Prints a deprecation warning to the logger.
     def deprecation(message)
-      warn "SHRINE DEPRECATION WARNING: #{message}"
+      Shrine.logger.warn "SHRINE DEPRECATION WARNING: #{message}"
     end
   end
 
@@ -264,7 +275,7 @@ class Shrine
     # Attempts to extract the MIME type from the IO object.
     def extract_mime_type(io)
       if io.respond_to?(:content_type) && io.content_type
-        warn "The \"mime_type\" Shrine metadata field will be set from the \"Content-Type\" request header, which might not hold the actual MIME type of the file. It is recommended to load the determine_mime_type plugin which determines MIME type from file content."
+        Shrine.warn "The \"mime_type\" Shrine metadata field will be set from the \"Content-Type\" request header, which might not hold the actual MIME type of the file. It is recommended to load the determine_mime_type plugin which determines MIME type from file content."
         io.content_type.split(";").first # exclude media type parameters
       end
     end
