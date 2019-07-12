@@ -6,18 +6,32 @@ class Shrine
     #
     # [doc/plugins/infer_extension.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/infer_extension.md
     module InferExtension
+      LOG_SUBSCRIBER = -> (event) do
+        Shrine.logger.info "Extension (#{event.duration}ms) – #{{
+          mime_type: event[:mime_type],
+          uploader:  event[:uploader],
+        }.inspect}"
+      end
+
       def self.configure(uploader, opts = {})
-        uploader.opts[:infer_extension_inferrer] = opts.fetch(:inferrer, uploader.opts.fetch(:infer_extension_inferrer, :mime_types))
-        uploader.opts[:infer_extension_force] = opts.fetch(:force, uploader.opts.fetch(:infer_extension_force, false))
+        uploader.opts[:infer_extension] ||= { inferrer: :mime_types, force: false, log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:infer_extension].merge!(opts)
+
+        # instrumentation plugin integration
+        if uploader.respond_to?(:subscribe)
+          uploader.subscribe(:metadata_extension) do |event|
+            uploader.opts[:infer_extension][:log_subscriber]&.call(event)
+          end
+        end
       end
 
       module ClassMethods
         def infer_extension(mime_type)
-          inferrer = opts[:infer_extension_inferrer]
+          inferrer = opts[:infer_extension][:inferrer]
           inferrer = extension_inferrer(inferrer) if inferrer.is_a?(Symbol)
           args     = [mime_type, extension_inferrers].take(inferrer.arity.abs)
 
-          inferrer.call(*args)
+          instrument_extension(mime_type) { inferrer.call(*args) }
         end
 
         def extension_inferrers
@@ -29,6 +43,15 @@ class Shrine
         def extension_inferrer(name)
           ExtensionInferrer.new(name).method(:call)
         end
+
+        private
+
+        # Send event for the instrumentation plugin.
+        def instrument_extension(mime_type, &block)
+          return yield unless respond_to?(:instrument)
+
+          instrument(:metadata_extension, mime_type: mime_type, &block)
+        end
       end
 
       module InstanceMethods
@@ -38,7 +61,7 @@ class Shrine
           location = super
           current_extension = File.extname(location)
 
-          if current_extension.empty? || opts[:infer_extension_force]
+          if current_extension.empty? || opts[:infer_extension][:force]
             inferred_extension = infer_extension(mime_type)
             location = location.chomp(current_extension) << inferred_extension unless inferred_extension.empty?
           end

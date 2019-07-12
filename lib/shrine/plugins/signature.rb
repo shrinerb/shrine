@@ -6,13 +6,44 @@ class Shrine
     #
     # [doc/plugins/signature.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/signature.md
     module Signature
+      LOG_SUBSCRIBER = -> (event) do
+        Shrine.logger.info "Signature (#{event.duration}ms) – #{{
+          io:        event[:io].class,
+          algorithm: event[:algorithm],
+          format:    event[:format],
+          uploader:  event[:uploader],
+        }.inspect}"
+      end
+
+      def self.configure(uploader, opts = {})
+        uploader.opts[:signature] ||= { log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:signature].merge!(opts)
+
+        # instrumentation plugin integration
+        if uploader.respond_to?(:subscribe)
+          uploader.subscribe(:metadata_signature) do |event|
+            uploader.opts[:signature][:log_subscriber]&.call(event)
+          end
+        end
+      end
+
       module ClassMethods
         # Calculates `algorithm` hash of the contents of the IO object, and
         # encodes it into `format`.
         def calculate_signature(io, algorithm, format: :hex)
-          SignatureCalculator.new(algorithm.downcase, format: format).call(io)
+          instrument_signature(io, algorithm, format) do
+            SignatureCalculator.new(algorithm.downcase, format: format).call(io)
+          end
         end
         alias signature calculate_signature
+
+        private
+
+        def instrument_signature(io, algorithm, format, &block)
+          return yield unless respond_to?(:instrument)
+
+          instrument(:metadata_signature, io: io, algorithm: algorithm, format: format, &block)
+        end
       end
 
       module InstanceMethods

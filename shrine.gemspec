@@ -36,26 +36,41 @@ direct uploads for fully asynchronous user experience.
   gem.add_dependency "down", "~> 4.1"
   gem.add_dependency "content_disposition", "~> 1.0"
 
+  # general testing helpers
   gem.add_development_dependency "rake", ">= 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "minitest-hooks", "~> 1.3"
   gem.add_development_dependency "mocha", "~> 1.4"
-  gem.add_development_dependency "rack-test_app"
   gem.add_development_dependency "shrine-memory", ">= 0.2.2"
 
+  # for endpoint plugins
   gem.add_development_dependency "rack", "~> 2.0"
+  gem.add_development_dependency "http-form_data", "~> 2.0"
+  gem.add_development_dependency "rack-test_app"
+
+  # for determine_mime_type plugin
   gem.add_development_dependency "mimemagic", ">= 0.3.2"
   gem.add_development_dependency "marcel"
+  gem.add_development_dependency "ruby-filemagic", "~> 0.7" unless RUBY_ENGINE == "jruby" || ENV["CI"]
+
+  # for determine_mime_type and infer_extension plugins
   gem.add_development_dependency "mime-types"
   gem.add_development_dependency "mini_mime", "~> 1.0"
-  gem.add_development_dependency "ruby-filemagic", "~> 0.7" unless RUBY_ENGINE == "jruby" || ENV["CI"]
+
+  # for store_dimensions plugin
   gem.add_development_dependency "fastimage"
   gem.add_development_dependency "mini_magick", "~> 4.0" unless ENV["CI"]
   gem.add_development_dependency "ruby-vips", "~> 2.0" unless ENV["CI"]
+
+  # for S3 storage
   gem.add_development_dependency "aws-sdk-s3", "~> 1.16"
   gem.add_development_dependency "aws-sdk-core", "~> 3.23"
-  gem.add_development_dependency "http-form_data", "~> 2.0"
 
+  # for instrumentation plugin
+  gem.add_development_dependency "dry-monitor"
+  gem.add_development_dependency "activesupport", "~> 5.2.0"
+
+  # for ORM plugins
   gem.add_development_dependency "sequel"
   gem.add_development_dependency "activerecord", "~> 5.2.0"
   gem.add_development_dependency "sqlite3", "~> 1.3.6" unless RUBY_ENGINE == "jruby"

@@ -8,12 +8,28 @@ class Shrine
     #
     # [doc/plugins/remote_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remote_url.md
     module RemoteUrl
-      def self.configure(uploader, opts = {})
-        raise Error, "The :max_size option is required for remote_url plugin" if !opts.key?(:max_size) && !uploader.opts.key?(:remote_url_max_size)
+      LOG_SUBSCRIBER = -> (event) do
+        Shrine.logger.info "Remote URL Download (#{event.duration}ms) – #{{
+          remote_url:       event[:remote_url],
+          download_options: event[:download_options],
+          uploader:         event[:uploader],
+        }.inspect}"
+      end
 
-        uploader.opts[:remote_url_downloader] = opts.fetch(:downloader, uploader.opts.fetch(:remote_url_downloader, :open_uri))
-        uploader.opts[:remote_url_max_size] = opts.fetch(:max_size, uploader.opts[:remote_url_max_size])
-        uploader.opts[:remote_url_error_message] = opts.fetch(:error_message, uploader.opts[:remote_url_error_message])
+      def self.configure(uploader, opts = {})
+        uploader.opts[:remote_url] ||= { downloader: :open_uri, log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:remote_url].merge!(opts)
+
+        unless uploader.opts[:remote_url].key?(:max_size)
+          fail Error, "The :max_size option is required for remote_url plugin"
+        end
+
+        # instrumentation plugin integration
+        if uploader.respond_to?(:subscribe)
+          uploader.subscribe(:remote_url_download) do |event|
+            uploader.opts[:remote_url][:log_subscriber]&.call(event)
+          end
+        end
       end
 
       module AttachmentMethods
@@ -68,11 +84,26 @@ class Shrine
         # Checks the file size and terminates the download early if the file
         # is too big.
         def download(url, options)
-          downloader = shrine_class.opts[:remote_url_downloader]
+          downloader = shrine_class.opts[:remote_url][:downloader]
           downloader = method(:"download_with_#{downloader}") if downloader.is_a?(Symbol)
-          max_size = shrine_class.opts[:remote_url_max_size]
+          options = { max_size: shrine_class.opts[:remote_url][:max_size] }.merge(options)
 
-          downloader.call(url, { max_size: max_size }.merge(options))
+          remote_url_instrument(url, options) do
+            downloader.call(url, options)
+          end
+        end
+
+        private
+
+        def remote_url_instrument(url, options, &block)
+          return yield unless shrine_class.respond_to?(:instrument)
+
+          shrine_class.instrument(
+            :remote_url_download,
+            remote_url: url,
+            download_options: options,
+            &block
+          )
         end
 
         # We silence any download errors, because for the user's point of view
@@ -82,7 +113,7 @@ class Shrine
         end
 
         def download_error_message(url, error)
-          if message = shrine_class.opts[:remote_url_error_message]
+          if message = shrine_class.opts[:remote_url][:error_message]
             if message.respond_to?(:call)
               args = [url, error].take(message.arity.abs)
               message = message.call(*args)

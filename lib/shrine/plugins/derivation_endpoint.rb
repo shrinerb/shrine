@@ -12,19 +12,34 @@ class Shrine
     #
     # [doc/plugins/derivation_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/derivation_endpoint.md
     module DerivationEndpoint
+      LOG_SUBSCRIBER = -> (event) do
+        Shrine.logger.info "Derivation (#{event.duration}ms) – #{{
+          name:     event[:name],
+          args:     event[:args],
+          uploader: event[:uploader],
+        }.inspect}"
+      end
+
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_response
         uploader.plugin :_urlsafe_serialization
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:derivation_endpoint_options] ||= {}
+        uploader.opts[:derivation_endpoint_options] ||= { log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:derivation_endpoint_options].merge!(opts)
 
         uploader.opts[:derivation_endpoint_derivations] ||= {}
 
         unless uploader.opts[:derivation_endpoint_options][:secret_key]
           fail Error, "must provide :secret_key option to derivation_endpoint plugin"
+        end
+
+        # instrumentation plugin integration
+        if uploader.respond_to?(:subscribe)
+          uploader.subscribe(:derivation) do |event|
+            uploader.opts[:derivation_endpoint_options][:log_subscriber]&.call(event)
+          end
         end
       end
 
@@ -567,21 +582,41 @@ class Shrine
 
     private
 
-    # Calls the derivation block with the source file and derivation arguments.
-    # If a file object is given, passes that as the source file, otherwise
-    # downloads the source uploaded file.
+    # Determines how to call the deriation block. If a file object is given,
+    # passes that as the source file, otherwise downloads the source uploaded
+    # file.
     def generate(file)
       if download
         with_downloaded(file) do |file|
           if include_uploaded_file
-            uploader.instance_exec(file, source, *args, &derivation_block)
+            derive(file, source, *args)
           else
-            uploader.instance_exec(file, *args, &derivation_block)
+            derive(file, *args)
           end
         end
       else
-        uploader.instance_exec(source, *args, &derivation_block)
+        derive(source, *args)
       end
+    end
+
+    # Calls the derivation block.
+    def derive(*args)
+      instrument_derivation do
+        uploader.instance_exec(*args, &derivation_block)
+      end
+    end
+
+    # Send event for the instrumentation plugin.
+    def instrument_derivation
+      return yield unless shrine_class.respond_to?(:instrument)
+
+      shrine_class.instrument(
+        :derivation,
+        name:       derivation.name,
+        args:       derivation.args,
+        derivation: derivation,
+        &block
+      )
     end
 
     # Massages the derivation result, ensuring it's opened in binary mode,
@@ -681,18 +716,12 @@ class Shrine
     # Returns a Shrine::UploadedFile object pointing to the uploaded derivation
     # result it exists on the storage.
     def call
-      if storage.exists?(upload_location)
-        shrine_class::UploadedFile.new(
-          "storage" => upload_storage.to_s,
-          "id"      => upload_location,
-        )
-      end
-    end
+      uploaded_file = shrine_class::UploadedFile.new(
+        "storage" => upload_storage.to_s,
+        "id"      => upload_location,
+      )
 
-    private
-
-    def storage
-      shrine_class.find_storage(upload_storage)
+      uploaded_file if uploaded_file.exists?
     end
   end
 

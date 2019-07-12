@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The logging plugin has been deprecated in favor of instrumentation plugin. It will be removed in Shrine 3.")
+
 require "logger"
 require "json"
 require "time"

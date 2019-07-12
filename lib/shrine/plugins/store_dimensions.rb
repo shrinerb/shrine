@@ -6,18 +6,32 @@ class Shrine
     #
     # [doc/plugins/store_dimensions.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/store_dimensions.md
     module StoreDimensions
+      LOG_SUBSCRIBER = -> (event) do
+        Shrine.logger.info "Image Dimensions (#{event.duration}ms) – #{{
+          io:       event[:io].class,
+          uploader: event[:uploader],
+        }.inspect}"
+      end
+
       def self.configure(uploader, opts = {})
-        uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))
-        uploader.opts[:dimensions_error] = opts.fetch(:error, uploader.opts.fetch(:dimensions_error, :warn))
+        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :warn, log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:store_dimensions].merge!(opts)
 
         # resolve error strategy
-        case uploader.opts[:dimensions_error]
+        case uploader.opts[:store_dimensions][:on_error]
         when :fail
-          uploader.opts[:dimensions_error] = -> (error) { fail error }
+          uploader.opts[:store_dimensions][:on_error] = -> (error) { fail error }
         when :warn
-          uploader.opts[:dimensions_error] = -> (error) { Shrine.warn "Error occurred when attempting to extract image dimensions: #{error.inspect}" }
+          uploader.opts[:store_dimensions][:on_error] = -> (error) { Shrine.warn "Error occurred when attempting to extract image dimensions: #{error.inspect}" }
         when :ignore
-          uploader.opts[:dimensions_error] = -> (error) { }
+          uploader.opts[:store_dimensions][:on_error] = -> (error) { }
+        end
+
+        # instrumentation plugin integration
+        if uploader.respond_to?(:subscribe)
+          uploader.subscribe(:metadata_image_dimensions) do |event|
+            uploader.opts[:store_dimensions][:log_subscriber]&.call(event)
+          end
         end
       end
 
@@ -25,11 +39,11 @@ class Shrine
         # Determines the dimensions of the IO object by calling the specified
         # analyzer.
         def extract_dimensions(io)
-          analyzer = opts[:dimensions_analyzer]
+          analyzer = opts[:store_dimensions][:analyzer]
           analyzer = dimensions_analyzer(analyzer) if analyzer.is_a?(Symbol)
           args = [io, dimensions_analyzers].take(analyzer.arity.abs)
 
-          dimensions = analyzer.call(*args)
+          dimensions = instrument_dimensions(io) { analyzer.call(*args) }
           io.rewind
 
           dimensions
@@ -47,7 +61,18 @@ class Shrine
 
         # Returns callable dimensions analyzer object.
         def dimensions_analyzer(name)
-          DimensionsAnalyzer.new(name, on_error: opts[:dimensions_error]).method(:call)
+          on_error = opts[:store_dimensions][:on_error]
+
+          DimensionsAnalyzer.new(name, on_error: on_error).method(:call)
+        end
+
+        private
+
+        # Sends the event for the instrumentation plugin.
+        def instrument_dimensions(io, &block)
+          return yield unless respond_to?(:instrument)
+
+          instrument(:metadata_image_dimensions, io: io, &block)
         end
       end
 

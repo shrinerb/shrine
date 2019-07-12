@@ -3,9 +3,8 @@ require "shrine/plugins/remote_url"
 
 describe Shrine::Plugins::RemoteUrl do
   before do
-    @attacher = attacher do
-      plugin :remote_url, max_size: nil
-    end
+    @attacher = attacher { plugin :remote_url, max_size: nil }
+    @shrine = @attacher.shrine_class
     @user = @attacher.record
 
     Down.stubs(:download).with(good_url, max_size: nil).returns(StringIO.new("file"))
@@ -46,24 +45,24 @@ describe Shrine::Plugins::RemoteUrl do
   end
 
   it "accepts :max_size" do
-    @attacher.shrine_class.opts[:remote_url_max_size] = 1
+    @shrine.plugin :remote_url, max_size: 1
     Down.stubs(:download).with(good_url, max_size: 1).raises(Down::TooLarge.new("file is too large"))
     @user.avatar_remote_url = good_url
     refute @user.avatar
   end
 
   it "accepts custom downloader" do
-    @attacher.shrine_class.opts[:remote_url_downloader] = ->(url, **){fakeio(url)}
+    @shrine.plugin :remote_url, downloader: ->(url, **){fakeio(url)}
     @user.avatar_remote_url = "foo"
     assert_equal "foo", @user.avatar.read
   end
 
   it "defaults downloader to :open_uri" do
-    assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url_downloader]
+    assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url][:downloader]
   end
 
   it "accepts additional downloader options" do
-    @attacher.shrine_class.opts[:remote_url_downloader] = ->(url, max_size:, **options){fakeio(options.to_s)}
+    @shrine.plugin :remote_url, downloader: ->(url, max_size:, **options){fakeio(options.to_s)}
     @attacher.assign_remote_url(good_url, downloader: { foo: "bar" })
     assert_equal "{:foo=>\"bar\"}", @user.avatar.read
   end
@@ -80,28 +79,28 @@ describe Shrine::Plugins::RemoteUrl do
     @user.avatar_remote_url = bad_url
     assert_equal ["download failed: file not found"], @user.avatar_attacher.errors
 
-    @attacher.shrine_class.opts[:remote_url_max_size] = 1
+    @shrine.plugin :remote_url, max_size: 1
     Down.stubs(:download).with(good_url, max_size: 1).raises(Down::TooLarge.new("file is too large"))
     @user.avatar_remote_url = good_url
     assert_equal ["download failed: file is too large"], @user.avatar_attacher.errors
   end
 
   it "accepts custom error message" do
-    @attacher.shrine_class.opts[:remote_url_error_message] = "download failed"
+    @shrine.plugin :remote_url, error_message: "download failed"
     @user.avatar_remote_url = bad_url
     assert_equal ["download failed"], @user.avatar_attacher.errors
 
-    @attacher.shrine_class.opts[:remote_url_error_message] = ->(url){"download failed: #{url}"}
+    @shrine.plugin :remote_url, error_message: ->(url){"download failed: #{url}"}
     @user.avatar_remote_url = bad_url
     assert_equal ["download failed: #{bad_url}"], @user.avatar_attacher.errors
 
-    @attacher.shrine_class.opts[:remote_url_error_message] = ->(url, error){error.message}
+    @shrine.plugin :remote_url, error_message: ->(url, error){error.message}
     @user.avatar_remote_url = bad_url
     assert_equal ["file not found"], @user.avatar_attacher.errors
   end
 
   it "has a default error message when downloader returns nil" do
-    @attacher.shrine_class.opts[:remote_url_downloader] = ->(url, **){nil}
+    @shrine.plugin :remote_url, downloader: ->(url, **){nil}
     @user.avatar_remote_url = good_url
     assert_equal ["download failed"], @user.avatar_attacher.errors
   end

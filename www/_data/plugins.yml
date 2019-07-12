@@ -137,8 +137,8 @@ Other:
     name: hooks
     description: Allows you to specify actions that occur before/around/after process/store/delete.
   -
-    name: logging
-    description: Automatically logs processing, storing and deleting, with a configurable format.
+    name: instrumentation
+    description: Logs expensive events that happen during attachment.
   -
     name: module_include
     description: Allows easy extending of core classes for a given uploader.

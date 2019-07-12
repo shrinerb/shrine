@@ -78,14 +78,14 @@ plugin loaded even for files that are not images.
 
 However, you can choose different strategies for handling these exceptions:
 
-  ```rb
-  plugin :store_dimensions, error: :warn        # prints a warning (default)
-  plugin :store_dimensions, error: :fail        # raises the exception
-  plugin :store_dimensions, error: :ignore      # ignores exceptions
-  plugin :store_dimensions, error: -> (error) { # custom handler
-    # report the exception to your exception handler
-  }
-  ```
+```rb
+plugin :store_dimensions, on_error: :warn        # prints a warning (default)
+plugin :store_dimensions, on_error: :fail        # raises the exception
+plugin :store_dimensions, on_error: :ignore      # ignores exceptions
+plugin :store_dimensions, on_error: -> (error) { # custom handler
+  # report the exception to your exception handler
+}
+```
 
 [store_dimensions]: /lib/shrine/plugins/store_dimensions.rb
 [fastimage]: https://github.com/sdsykes/fastimage

@@ -5,6 +5,7 @@ class Minitest::HooksSpec
     previous_logger = Shrine.logger
     output = StringIO.new
     Shrine.logger = Logger.new(output)
+    Shrine.logger.formatter = -> (*, message) { "#{message}\n" }
 
     yield
 
