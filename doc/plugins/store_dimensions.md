@@ -8,6 +8,8 @@ uploaded images and stores them into the metadata hash (by default it uses the
 plugin :store_dimensions
 ```
 
+## Metadata
+
 The dimensions are stored as "width" and "height" metadata values on the
 Shrine::UploadedFile object. For convenience the plugin also adds `#width`,
 `#height` and `#dimensions` reader methods.
@@ -23,6 +25,8 @@ image.height #=> 500
 # or
 image.dimensions #=> [300, 500]
 ```
+
+## Analyzers
 
 By default the [fastimage] gem is used to extract dimensions. You can choose a
 different built-in analyzer via the `:analyzer` option:
@@ -52,6 +56,8 @@ plugin :store_dimensions, analyzer: -> (io, analyzers) do
 end
 ```
 
+## API
+
 You can use methods for extracting the dimensions directly:
 
 ```rb
@@ -63,6 +69,23 @@ Shrine.dimensions(io) #=> [300, 400] (calls the defined analyzer)
 # or YourUploader.dimensions_analyzers
 Shrine.dimensions_analyzers[:fastimage].call(io) #=> [300, 400] (calls a built-in analyzer)
 ```
+
+## Errors
+
+By default, any exceptions that the analyzer raises while extracting dimensions
+will be caught and a warning will be printed out. This allows you to have the
+plugin loaded even for files that are not images.
+
+However, you can choose different strategies for handling these exceptions:
+
+  ```rb
+  plugin :store_dimensions, error: :warn        # prints a warning (default)
+  plugin :store_dimensions, error: :fail        # raises the exception
+  plugin :store_dimensions, error: :ignore      # ignores exceptions
+  plugin :store_dimensions, error: -> (error) { # custom handler
+    # report the exception to your exception handler
+  }
+  ```
 
 [store_dimensions]: /lib/shrine/plugins/store_dimensions.rb
 [fastimage]: https://github.com/sdsykes/fastimage

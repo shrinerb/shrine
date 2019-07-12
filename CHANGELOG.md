@@ -1,5 +1,9 @@
 ## HEAD
 
+* `store_dimensions` – Add `:error` option for specifying the exception strategy (@janko)
+
+* `store_dimensions` – Print warnings when exception occurred while extracting dimensions (@janko)
+
 * `core` – Add `Shrine.logger` and make any warnings go through it (@janko)
 
 * `copy` – Deprecate the plugin (@janko)

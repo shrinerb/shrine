@@ -8,6 +8,17 @@ class Shrine
     module StoreDimensions
       def self.configure(uploader, opts = {})
         uploader.opts[:dimensions_analyzer] = opts.fetch(:analyzer, uploader.opts.fetch(:dimensions_analyzer, :fastimage))
+        uploader.opts[:dimensions_error] = opts.fetch(:error, uploader.opts.fetch(:dimensions_error, :warn))
+
+        # resolve error strategy
+        case uploader.opts[:dimensions_error]
+        when :fail
+          uploader.opts[:dimensions_error] = -> (error) { fail error }
+        when :warn
+          uploader.opts[:dimensions_error] = -> (error) { Shrine.warn "Error occurred when attempting to extract image dimensions: #{error.inspect}" }
+        when :ignore
+          uploader.opts[:dimensions_error] = -> (error) { }
+        end
       end
 
       module ClassMethods
@@ -36,7 +47,7 @@ class Shrine
 
         # Returns callable dimensions analyzer object.
         def dimensions_analyzer(name)
-          DimensionsAnalyzer.new(name).method(:call)
+          DimensionsAnalyzer.new(name, on_error: opts[:dimensions_error]).method(:call)
         end
       end
 
@@ -78,10 +89,11 @@ class Shrine
       class DimensionsAnalyzer
         SUPPORTED_TOOLS = [:fastimage, :mini_magick, :ruby_vips]
 
-        def initialize(tool)
+        def initialize(tool, on_error: method(:fail))
           raise Error, "unknown dimensions analyzer #{tool.inspect}, supported analyzers are: #{SUPPORTED_TOOLS.join(",")}" unless SUPPORTED_TOOLS.include?(tool)
 
-          @tool = tool
+          @tool     = tool
+          @on_error = on_error
         end
 
         def call(io)
@@ -94,19 +106,28 @@ class Shrine
 
         def extract_with_fastimage(io)
           require "fastimage"
-          FastImage.size(io)
+          FastImage.size(io, raise_on_failure: true)
+        rescue FastImage::FastImageException => error
+          on_error(error)
         end
 
         def extract_with_mini_magick(io)
           require "mini_magick"
           Shrine.with_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
-        rescue MiniMagick::Error
+        rescue MiniMagick::Error => error
+          on_error(error)
         end
 
         def extract_with_ruby_vips(io)
           require "vips"
           Shrine.with_file(io) { |file| Vips::Image.new_from_file(file.path).size }
-        rescue Vips::Error
+        rescue Vips::Error => error
+          on_error(error)
+        end
+
+        def on_error(error)
+          @on_error.call(error)
+          nil
         end
       end
     end
