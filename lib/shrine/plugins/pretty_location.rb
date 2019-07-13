@@ -14,10 +14,10 @@ class Shrine
       module InstanceMethods
         def generate_location(io, context)
           identifier = record_identifier(context[:record], opts[:pretty_location_identifier])
-          pretty_location(io, identifier, context)
+          pretty_location(io, context, identifier: identifier)
         end
 
-        def pretty_location(io, identifier, context = {})
+        def pretty_location(io, context = {}, identifier:)
           if context[:record]
             type = class_location(context[:record].class) if context[:record].class.name
           end
@@ -35,11 +35,11 @@ class Shrine
         def record_identifier(record, method)
           return unless record
 
-          identifier = nil
-          identifier = record.send(method) if method && record.respond_to?(method)
-          identifier = record.id if !identifier && record.respond_to?(:id)
-
-          identifier
+          if method
+            record.send(method)
+          else
+            record.id
+          end
         end
 
         def class_location(klass)
