@@ -494,22 +494,22 @@ uploaded_file.size              #=> 345993
 
 ### MIME type
 
-By default, `mime_type` metadata will be inherited from the `#content_type`
-attribute of the uploaded file, which is generally not secure and will trigger
-a warning. You can load the [`determine_mime_type`][determine_mime_type plugin]
-plugin to have MIME type extracted from file *content* instead.
+By default, `mime_type` metadata will be set from the `#content_type` attribute
+of the uploaded file (if it exists), which is generally not secure and will
+trigger a warning. You can load the [`determine_mime_type`][determine_mime_type
+plugin] plugin to have MIME type extracted from file *content* instead.
 
 ```rb
-Shrine.plugin :determine_mime_type
+# Gemfile
+gem "marcel", "~> 0.3"
+```
+```rb
+Shrine.plugin :determine_mime_type, analyzer: :marcel
 ```
 ```rb
 photo = Photo.create(image: StringIO.new("<?php ... ?>"))
-photo.image.mime_type #=> "text/x-php"
+photo.image.mime_type #=> "application/x-php"
 ```
-
-By the default the UNIX [`file`] utility is used to determine the MIME type,
-but you can also choose a different analyzer, see the
-[`determine_mime_type`][determine_mime_type plugin] docs for more details.
 
 ### Other metadata
 

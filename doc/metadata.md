@@ -21,9 +21,22 @@ The following metadata is extracted by default:
 | `mime_type` | extracted from `io.content_type`                   |
 | `size`      | extracted from `io.size`                           |
 
+You can access extracted metadata in two ways:
 
-Under the hood `Shrine#extract_metadata` is called, which you can also use
-directly to extract metadata from any IO object.
+```rb
+# via methods (if they're defined)
+uploaded_file.size
+uploaded_file.original_filename
+uploaded_file.mime_type
+
+# via the metadata hash
+uploaded_file.metadata["size"]
+uploaded_file.metadata["filename"]
+uploaded_file.metadata["mime_type"]
+```
+
+Under the hood, `Shrine#upload` calls `Shrine#extract_metadata`, which you can
+also use directly to extract metadata from any IO object:
 
 ```rb
 uploader.extract_metadata(io) #=>
@@ -55,38 +68,40 @@ uploader.extract_metadata(io) #=>
     uploaded (by default metadata is simply copied over)
 
     ```rb
-    uploader.upload(uploaded_file, metadata: true)
+    uploaded_file = uploader.upload(uploaded_file, metadata: true)
+    uploaded_file.metadata # re-extracted metadata
     ```
 
 ## MIME type
 
 By default, the `mime_type` metadata will be copied over from the
-`#content_type` attribute of the input file, if present. However, since
+`#content_type` attribute of the input file (if present). However, since
 `#content_type` value comes from the `Content-Type` header of the upload
 request, it's *not guaranteed* to hold the actual MIME type of the file (browser
 determines this header based on file extension). Moreover, only
-`ActionDispatch::Http::UploadedFile` and `Shrine::Plugins::RackFile::UploadedFile`
-objects have `#content_type` defined, so when uploading simple file objects
-`mime_type` will be nil. That makes relying on `#content_type` both a security
-risk and limiting.
+`ActionDispatch::Http::UploadedFile`, `Shrine::Plugins::RackFile::UploadedFile`,
+and `Shrine::Plugins::DataUri::DataFile` objects have `#content_type` defined,
+so, when uploading simple file objects, `mime_type` will be nil. That makes
+relying on `#content_type` both a security risk and limiting.
 
-To remedy that, Shrine comes with a `determine_mime_type` plugin which is able
-to extract the MIME type from IO *content*. When you load it, the `mime_type`
-plugin will now be determined using the UNIX [`file`] command.
+To remedy that, Shrine comes with a
+[`determine_mime_type`][determine_mime_type] plugin which is able to extract
+the MIME type from IO *content*:
 
 ```rb
-Shrine.plugin :determine_mime_type
+# Gemfile
+gem "marcel", "~> 0.3"
+```
+```rb
+Shrine.plugin :determine_mime_type, analyzer: :marcel
 ```
 ```rb
 uploaded_file = uploader.upload StringIO.new("<?php ... ?>")
-uploaded_file.mime_type #=> "text/x-php"
+uploaded_file.mime_type #=> "application/x-php"
 ```
 
-The `file` command won't correctly determine the MIME type in all cases, that's
-why the `determine_mime_type` plugin comes with different MIME type analyzers.
-So, instead of the `file` command you can use gems like [MimeMagic] or
-[Marcel], as well as mix-and-match the analyzers to suit your needs. See the
-plugin documentation for more details.
+You can choose different analyzers, and even mix-and-match them. See the
+[`determine_mime_type`][determine_mime_type] plugin docs for more details.
 
 ## Image Dimensions
 
@@ -173,13 +188,10 @@ uploaded_file.metadata #=>
 
 The yielded `io` object will not always be an object that responds to `#path`.
 If you're using the `data_uri` plugin, the `io` will be a `StringIO` wrapper.
-When the `restore_cached_data` plugin is loaded, any assigned cached file will
-get their metadata extracted, and `io` will be a `Shrine::UploadedFile` object.
-If you're using a metadata analyzer that requires the source file to be on
-disk, you can use `Shrine.with_file` to ensure you have a file object.
-
-Also, be aware that metadata is extracted before file validation, so you'll
-need to handle the cases where the file is not of expected type.
+With `restore_cached_data` or `refresh_metadata` plugins, `io` might be a
+`Shrine::UploadedFile` object. If you're using a metadata analyzer that
+requires the source file to be on disk, you can use `Shrine.with_file` to
+ensure you have a file object.
 
 ## Metadata columns
 
@@ -327,3 +339,4 @@ end
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [tus server]: https://github.com/janko/tus-ruby-server
+[determine_mime_type]: /doc/plugins/determine_mime_type.md
