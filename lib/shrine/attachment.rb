@@ -93,5 +93,8 @@ class Shrine
         self.class.shrine_class
       end
     end
+
+    extend ClassMethods
+    include InstanceMethods
   end
 end

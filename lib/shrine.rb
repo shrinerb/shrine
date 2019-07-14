@@ -373,9 +373,7 @@ class Shrine
       SecureRandom.hex
     end
   end
-end
 
-[Shrine, Shrine::UploadedFile, Shrine::Attacher, Shrine::Attachment].each do |core_class|
-  core_class.include core_class.const_get(:InstanceMethods)
-  core_class.extend core_class.const_get(:ClassMethods)
+  extend ClassMethods
+  include InstanceMethods
 end

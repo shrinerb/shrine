@@ -267,5 +267,8 @@ class Shrine
         options
       end
     end
+
+    extend ClassMethods
+    include InstanceMethods
   end
 end
