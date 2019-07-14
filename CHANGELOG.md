@@ -1,5 +1,7 @@
 ## HEAD
 
+* `core` – Add `UploadedFile#[]` shorthand for accessing metadata (@janko)
+
 * `add_metadata` – Allow calling `super` when overriding dynamically defined `UploadedFile` methods (@janko)
 
 * `store_dimensions` – Add `:on_error` option for specifying the exception strategy (@janko)

@@ -179,6 +179,18 @@ describe Shrine::UploadedFile do
     end
   end
 
+  describe "#[]" do
+    it "retrieves specified metadata value" do
+      uploaded_file = uploaded_file("metadata" => {"mime_type" => "image/jpeg"})
+      assert_equal "image/jpeg", uploaded_file["mime_type"]
+    end
+
+    it "returns nil for missing metadata" do
+      uploaded_file = uploaded_file("metadata" => {})
+      assert_nil uploaded_file["mime_type"]
+    end
+  end
+
   describe "#read" do
     it "delegates to underlying IO" do
       uploaded_file = @uploader.upload(fakeio("file"))

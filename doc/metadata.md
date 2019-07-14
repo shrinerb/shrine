@@ -21,7 +21,7 @@ The following metadata is extracted by default:
 | `mime_type` | extracted from `io.content_type`                   |
 | `size`      | extracted from `io.size`                           |
 
-You can access extracted metadata in two ways:
+You can access extracted metadata in three ways:
 
 ```rb
 # via methods (if they're defined)
@@ -33,6 +33,11 @@ uploaded_file.mime_type
 uploaded_file.metadata["size"]
 uploaded_file.metadata["filename"]
 uploaded_file.metadata["mime_type"]
+
+# via the #[] operator
+uploaded_file["size"]
+uploaded_file["filename"]
+uploaded_file["mime_type"]
 ```
 
 Under the hood, `Shrine#upload` calls `Shrine#extract_metadata`, which you can

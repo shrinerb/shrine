@@ -74,6 +74,11 @@ class Shrine
       end
       alias content_type mime_type
 
+      # Shorthand for accessing metadata values.
+      def [](key)
+        metadata[key]
+      end
+
       # Calls `#open` on the storage to open the uploaded file for reading.
       # Most storages will return a lazy IO object which dynamically
       # retrieves file content from the storage as the object is being read.
