@@ -1,6 +1,7 @@
 require "test_helper"
 require "shrine/plugins/derivation_endpoint"
 require "rack/test_app"
+require "dry-monitor"
 require "tempfile"
 require "stringio"
 require "pathname"
@@ -921,6 +922,53 @@ describe Shrine::Plugins::DerivationEndpoint do
         derivation = @uploaded_file.derivation(:unknown)
         assert_raises(Shrine::Derivation::NotFound) do
           derivation.generate
+        end
+      end
+
+      describe "with instrumentation" do
+        before do
+          @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+        end
+
+        it "logs derivation" do
+          @shrine.plugin :derivation_endpoint
+
+          assert_logged /^Derivation \(\d+ms\) – \{.+\}$/ do
+            @uploaded_file.derivation(:gray).generate
+          end
+        end
+
+        it "sends a derivation event" do
+          @shrine.plugin :derivation_endpoint
+
+          @shrine.subscribe(:derivation) { |event| @event = event }
+          @uploaded_file.derivation(:gray, "dark").generate
+
+          refute_nil @event
+          assert_equal :derivation,              @event.name
+          assert_equal :gray,                    @event[:name]
+          assert_equal ["dark"],                 @event[:args]
+          assert_instance_of Shrine::Derivation, @event[:derivation]
+          assert_equal @shrine,                  @event[:uploader]
+          assert_instance_of Integer,            @event.duration
+        end
+
+        it "allows swapping log subscriber" do
+          @shrine.plugin :derivation_endpoint, log_subscriber: -> (event) { @event = event }
+
+          refute_logged /^Signature/ do
+            @uploaded_file.derivation(:gray).generate
+          end
+
+          refute_nil @event
+        end
+
+        it "allows disabling log subscriber" do
+          @shrine.plugin :derivation_endpoint, log_subscriber: nil
+
+          refute_logged /^Signature/ do
+            @uploaded_file.derivation(:gray).generate
+          end
         end
       end
     end

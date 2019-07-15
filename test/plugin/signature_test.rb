@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/signature"
+require "dry-monitor"
 require "digest"
 require "zlib"
 
@@ -60,6 +61,53 @@ describe Shrine::Plugins::Signature do
     assert_equal Digest::SHA512.base64digest(content), @uploader.calculate_signature(io, :sha512, format: :base64)
 
     assert_equal Zlib.crc32(content).to_s,             @uploader.calculate_signature(io, :crc32,  format: :none)
+  end
+
+  describe "with instrumentation" do
+    before do
+      @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+    end
+
+    it "logs signature calculation" do
+      @shrine.plugin :signature
+
+      assert_logged /^Signature \(\d+ms\) – \{.+\}$/ do
+        @shrine.calculate_signature(fakeio, :md5)
+      end
+    end
+
+    it "sends a signature calculation event" do
+      @shrine.plugin :signature
+
+      @shrine.subscribe(:signature) { |event| @event = event }
+      @shrine.calculate_signature(io = fakeio, :md5)
+
+      refute_nil @event
+      assert_equal :signature,    @event.name
+      assert_equal io,            @event[:io]
+      assert_equal :md5,          @event[:algorithm]
+      assert_equal :hex,          @event[:format]
+      assert_equal @shrine,       @event[:uploader]
+      assert_instance_of Integer, @event.duration
+    end
+
+    it "allows swapping log subscriber" do
+      @shrine.plugin :signature, log_subscriber: -> (event) { @event = event }
+
+      refute_logged /^Signature/ do
+        @shrine.calculate_signature(fakeio, :md5)
+      end
+
+      refute_nil @event
+    end
+
+    it "allows disabling log subscriber" do
+      @shrine.plugin :signature, log_subscriber: nil
+
+      refute_logged /^Signature/ do
+        @shrine.calculate_signature(fakeio, :md5)
+      end
+    end
   end
 
   it "defaults hash format to hexadecimal" do

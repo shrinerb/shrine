@@ -21,7 +21,7 @@ class Shrine
       DEFAULT_CONTENT_TYPE = "text/plain"
 
       LOG_SUBSCRIBER = -> (event) do
-        Shrine.logger.info "Data URI Parse (#{event.duration}ms) – #{{
+        Shrine.logger.info "Data URI (#{event.duration}ms) – #{{
           uploader: event[:uploader],
         }.inspect}"
       end
@@ -36,9 +36,7 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:data_uri_parse) do |event|
-            uploader.opts[:data_uri][:log_subscriber]&.call(event)
-          end
+          uploader.subscribe(:data_uri, &uploader.opts[:data_uri][:log_subscriber])
         end
       end
 
@@ -51,8 +49,15 @@ class Shrine
         #     io.size         #=> 21
         #     io.read         # decoded content
         def data_uri(uri, filename: nil)
-          info = parse_data_uri(uri)
+          instrument_data_uri(uri) do
+            info = parse_data_uri(uri)
+            create_data_file(info, filename: filename)
+          end
+        end
 
+        private
+
+        def create_data_file(info, filename: nil)
           content_type = info[:content_type] || DEFAULT_CONTENT_TYPE
           content      = info[:base64] ? Base64.decode64(info[:data]) : CGI.unescape(info[:data])
           filename     = opts[:data_uri][:filename].call(content_type) if opts[:data_uri][:filename]
@@ -63,8 +68,6 @@ class Shrine
           data_file
         end
 
-        private
-
         def parse_data_uri(uri)
           scanner = StringScanner.new(uri)
           scanner.scan(DATA_REGEXP) or raise ParseError, "data URI has invalid format"
@@ -74,6 +77,12 @@ class Shrine
           content = scanner.post_match
 
           { content_type: media_type, base64: !!base64, data: content }
+        end
+
+        def instrument_data_uri(uri, &block)
+          return yield unless respond_to?(:instrument)
+
+          instrument(:data_uri, data_uri: uri, &block)
         end
       end
 
@@ -99,7 +108,7 @@ class Shrine
         def assign_data_uri(uri, **options)
           return if uri == "" || uri.nil?
 
-          data_file = instrument_data_uri(uri) { shrine_class.data_uri(uri) }
+          data_file = shrine_class.data_uri(uri)
           assign(data_file, **options)
         rescue ParseError => error
           message = shrine_class.opts[:data_uri][:error_message] || error.message
@@ -116,17 +125,6 @@ class Shrine
         # Form builders require the reader as well.
         def data_uri
           @data_uri
-        end
-
-        private
-
-        def instrument_data_uri(uri, &block)
-          return yield unless shrine_class.respond_to?(:instrument)
-
-          shrine_class.instrument(
-            :data_uri_parse,
-            &block
-          )
         end
       end
 

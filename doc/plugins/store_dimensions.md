@@ -87,6 +87,48 @@ plugin :store_dimensions, on_error: -> (error) { # custom handler
 }
 ```
 
+## Instrumentation
+
+If the `instrumentation` plugin has been loaded, the `store_dimensions` plugin
+adds instrumentation around dimensions extraction.
+
+```rb
+# instrumentation plugin needs to be loaded *before* store_dimensions
+plugin :instrumentation
+plugin :store_dimensions
+```
+
+Extracting metadata will send a `image_dimensions.shrine` event with the
+following payload:
+
+| Key         | Description                            |
+| :--         | :----                                  |
+| `:io`       | The IO object                          |
+| `:uploader` | The uploader class that sent the event |
+
+A default log subscriber is added as well which logs these events:
+
+```
+Image Dimensions (108ms) – {:io=>File, :uploader=>Shrine}
+```
+
+You can also use your own log subscriber:
+
+```rb
+plugin :store_dimensions, log_subscriber: -> (event) {
+  Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
+}
+```
+```
+{"name":"image_dimensions","duration":114,"io":"#<File:0x00007fc445371d90>","uploader":"Shrine"}
+```
+
+Or disable logging altogether:
+
+```rb
+plugin :store_dimensions, log_subscriber: nil
+```
+
 [store_dimensions]: /lib/shrine/plugins/store_dimensions.rb
 [fastimage]: https://github.com/sdsykes/fastimage
 [mini_magick]: https://github.com/minimagick/minimagick

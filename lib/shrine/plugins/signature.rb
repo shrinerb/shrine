@@ -21,9 +21,7 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:metadata_signature) do |event|
-            uploader.opts[:signature][:log_subscriber]&.call(event)
-          end
+          uploader.subscribe(:signature, &uploader.opts[:signature][:log_subscriber])
         end
       end
 
@@ -39,10 +37,11 @@ class Shrine
 
         private
 
+        # Sends "metadata_signature.shrine" events for instrumentation plugin.
         def instrument_signature(io, algorithm, format, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:metadata_signature, io: io, algorithm: algorithm, format: format, &block)
+          instrument(:signature, io: io, algorithm: algorithm, format: format, &block)
         end
       end
 

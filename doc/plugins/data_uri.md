@@ -26,6 +26,8 @@ You can also use `#data_uri=` and `#data_uri` methods directly on the
 attacher.data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
 ```
 
+## Errors
+
 If the data URI wasn't correctly parsed, an error message will be added to the
 attachment column. You can change the default error message:
 
@@ -54,7 +56,9 @@ load the `infer_extension` plugin to infer it from the MIME type.
 plugin :infer_extension
 ```
 
-## `Shrine.data_uri`
+## API
+
+### `Shrine.data_uri`
 
 If you just want to parse the data URI and create an IO object from it, you can
 do that with `Shrine.data_uri`. If the data URI cannot be parsed, a
@@ -86,15 +90,57 @@ io = Shrine.data_uri("data:,content", filename: "foo.txt")
 io.original_filename #=> "foo.txt"
 ```
 
-## `UploadedFile#data_uri` and `UploadedFile#base64`
+### `UploadedFile#data_uri` and `UploadedFile#base64`
 
-This plugin also adds UploadedFile#data_uri method, which returns a
-base64-encoded data URI of the file content, and UploadedFile#base64, which
+This plugin also adds `UploadedFile#data_uri` method, which returns a
+base64-encoded data URI of the file content, and `UploadedFile#base64`, which
 simply returns the file content base64-encoded.
 
 ```rb
 uploaded_file.data_uri #=> "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
 uploaded_file.base64   #=> "iVBORw0KGgoAAAANSUhEUgAAAAUA"
+```
+
+## Instrumentation
+
+If the `instrumentation` plugin has been loaded, the `data_uri` plugin adds
+instrumentation around data URI parsing.
+
+```rb
+# instrumentation plugin needs to be loaded *before* data_uri
+plugin :instrumentation
+plugin :data_uri
+```
+
+Parsing data URIs will trigger a `data_uri.shrine` event with the following
+payload:
+
+| Key         | Description                            |
+| :--         | :----                                  |
+| `:data_uri` | The data URI string                    |
+| `:uploader` | The uploader class that sent the event |
+
+A default log subscriber is added as well which logs these events:
+
+```
+Data URI (5ms) – {:uploader=>Shrine}
+```
+
+You can also use your own log subscriber:
+
+```rb
+plugin :data_uri, log_subscriber: -> (event) {
+  Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, uploader: event[:uploader])
+}
+```
+```
+{"name":"data_uri","duration":5,"uploader":"Shrine"}
+```
+
+Or disable logging altogether:
+
+```rb
+plugin :data_uri, log_subscriber: nil
 ```
 
 [data_uri]: /lib/shrine/plugins/data_uri.rb

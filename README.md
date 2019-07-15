@@ -456,7 +456,7 @@ ship with Shrine. This way you can choose exactly what and how much Shrine does
 for you, and you load the code only for features that you use.
 
 ```rb
-Shrine.plugin :logging # adds logging
+Shrine.plugin :instrumentation # adds instrumentation
 ```
 
 Plugins add behaviour by extending Shrine core classes via module inclusion, and
@@ -899,9 +899,42 @@ s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete fil
 
 ## Logging
 
-Shrine uses its internal logger to print out warnings or any other messages.
-You can tell Shrine to use a different logger, for example if you're using
-Rails:
+The [`instrumentation`][instrumentation plugin] plugin sends and logs events for
+important operations:
+
+```rb
+Shrine.plugin :instrumentation, notifications: ActiveSupport::Notifications
+
+uploaded_file = Shrine.upload(io, :store)
+uploaded_file.exists?
+uploaded_file.download
+uploaded_file.delete
+```
+```
+Metadata (32ms) – {:storage=>:store, :io=>StringIO, :uploader=>Shrine}
+Upload (1523ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=>StringIO, :upload_options=>{}, :uploader=>Shrine}
+Exists (755ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
+Download (1002ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :download_options=>{}, :uploader=>Shrine}
+Delete (700ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
+```
+
+Some plugins add their own instrumentation as well when they detect that the
+`instrumentation` plugin has been loaded. For that to work, the
+`instrumentation` plugin needs to be loaded *before* any of these plugins.
+
+| Plugin                | Instrumentation                         |
+| :-----                | :--------------                         |
+| `derivation_endpoint` | instruments file processing             |
+| `determine_mime_type` | instruments analyzing MIME type         |
+| `store_dimensions`    | instruments extracting image dimensions |
+| `signature`           | instruments calculating signature       |
+| `infer_extension`     | instruments inferring extension         |
+| `remote_url`          | instruments remote URL downloading      |
+| `data_uri`            | instruments data URI parsing            |
+
+For instrumentation, warnings, and other logging, Shrine uses its internal
+logger. You can tell Shrine to use a different logger, for example if you're
+using Rails:
 
 ```rb
 Shrine.logger = Rails.logger
@@ -1006,6 +1039,7 @@ The gem is available as open source under the terms of the [MIT License].
 [backgrounding plugin]: /doc/plugins/backgrounding.md#readme
 [derivation_endpoint plugin]: /doc/plugins/derivation_endpoint.md#readme
 [determine_mime_type plugin]: /doc/plugins/determine_mime_type.md#readme
+[instrumentation plugin]: /doc/plugins/instrumentation.md#readme
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [presign_endpoint plugin]: /doc/plugins/presign_endpoint.md#readme

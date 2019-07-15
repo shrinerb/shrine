@@ -69,12 +69,12 @@ that you want. Moreover, you're only loading the code for features that you
 use, which means that Shrine will generally load very fast.
 
 ```rb
-Shrine.plugin :logging
+Shrine.plugin :instrumentation
 
 # translates to
 
-require "shrine/plugins/logging"
-Shrine.plugin Shrine::Plugins::Logging
+require "shrine/plugins/instrumentation"
+Shrine.plugin Shrine::Plugins::Instrumentation
 ```
 
 Shrine comes with a complete attachment functionality, but it also exposes many
@@ -135,7 +135,7 @@ other plugins would be loaded only for a specific uploader.
 
 ```rb
 Shrine.plugin :activerecord
-Shrine.plugin :logging
+Shrine.plugin :instrumentation
 ```
 ```rb
 class ImageUploader < Shrine

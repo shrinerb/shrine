@@ -1,5 +1,9 @@
 ## HEAD
 
+* `logging` – Deprecate plugin in favour of `instrumentation` (@janko)
+
+* `instrumentation` – Add plugin which sends events via `ActiveSupport::Notifications` or `dry-monitor` (@janko)
+
 * `core` – Add `UploadedFile#[]` shorthand for accessing metadata (@janko)
 
 * `add_metadata` – Allow calling `super` when overriding dynamically defined `UploadedFile` methods (@janko)

@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/store_dimensions"
+require "dry-monitor"
 
 describe Shrine::Plugins::StoreDimensions do
   before do
@@ -68,6 +69,51 @@ describe Shrine::Plugins::StoreDimensions do
       end
     end
   end unless ENV["CI"]
+
+  describe "with instrumentation" do
+    before do
+      @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+    end
+
+    it "logs dimensions extraction" do
+      @shrine.plugin :store_dimensions
+
+      assert_logged /^Image Dimensions \(\d+ms\) – \{.+\}$/ do
+        @shrine.extract_dimensions(image)
+      end
+    end
+
+    it "sends a dimensions extraction event" do
+      @shrine.plugin :store_dimensions
+
+      @shrine.subscribe(:image_dimensions) { |event| @event = event }
+      @shrine.extract_dimensions(io = image)
+
+      refute_nil @event
+      assert_equal :image_dimensions, @event.name
+      assert_equal io,                @event[:io]
+      assert_equal @shrine,           @event[:uploader]
+      assert_instance_of Integer,     @event.duration
+    end
+
+    it "allows swapping log subscriber" do
+      @shrine.plugin :store_dimensions, log_subscriber: -> (event) { @event = event }
+
+      refute_logged /^Image Dimensions/ do
+        @shrine.extract_dimensions(image)
+      end
+
+      refute_nil @event
+    end
+
+    it "allows disabling log subscriber" do
+      @shrine.plugin :determine_mime_type, log_subscriber: nil
+
+      refute_logged /^Image Dimensions/ do
+        @shrine.extract_dimensions(image)
+      end
+    end
+  end
 
   it "automatically extracts dimensions on upload" do
     uploaded_file = @uploader.upload(image)

@@ -24,9 +24,7 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:metadata_mime_type) do |event|
-            uploader.opts[:determine_mime_type][:log_subscriber]&.call(event)
-          end
+          uploader.subscribe(:mime_type, &uploader.opts[:determine_mime_type][:log_subscriber])
         end
       end
 
@@ -66,11 +64,11 @@ class Shrine
 
         private
 
-        # Sends the event for the instrumentation plugin.
+        # Sends "metadata_mime_type.shrine" events for instrumentation plugin.
         def instrument_mime_type(io, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:metadata_mime_type, io: io, &block)
+          instrument(:mime_type, io: io, &block)
         end
       end
 

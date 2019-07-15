@@ -27,9 +27,9 @@ You can also use `#remote_url=` and `#remote_url` methods directly on the
 attacher.remote_url = "http://example.com/cool-image.png"
 ```
 
-The file will by default be downloaded using [Down], which is a wrapper around
-the `open-uri` standard library. Note that Down expects the given URL to be
-URI-encoded.
+By default, the file will be downloaded using `Down.download` from the [Down]
+gem. This will use the `Down::NetHttp` backend by default, which is a wrapper
+around [open-uri].
 
 ## Dynamic options
 
@@ -67,16 +67,22 @@ plugin :remote_url, max_size: nil
 
 If you want to customize how the file is downloaded, you can override the
 `:downloader` parameter and provide your own implementation. For example, you
-can use the HTTP.rb Down backend for downloading:
+can use the [http.rb] Down backend for downloading:
 
+```rb
+# Gemfile
+gem "http"
+```
 ```rb
 require "down/http"
 
-plugin :remote_url, max_size: 20*1024*1024, downloader: -> (url, max_size:, **options) do
-  Down::Http.download(url, max_size: max_size, **options) do |http|
-    http.follow(max_hops: 2).timeout(connect: 2, read: 2)
-  end
+down = Down::Http.new do |client|
+  client
+    .follow(max_hops: 2)
+    .timeout(connect: 2, read: 2)
 end
+
+plugin :remote_url, max_size: 20*1024*1024, downloader: down.method(:download)
 ```
 
 ## Errors
@@ -107,6 +113,51 @@ load the `infer_extension` plugin to infer it from the MIME type.
 plugin :infer_extension
 ```
 
+## Instrumentation
+
+If the `instrumentation` plugin has been loaded, the `remote_url` plugin adds
+instrumentation around remote URL downloading.
+
+```rb
+# instrumentation plugin needs to be loaded *before* remote_url
+plugin :instrumentation
+plugin :remote_url
+```
+
+Downloading remote URLs will trigger a `remote_url.shrine` event with the
+following payload:
+
+| Key                 | Description                            |
+| :--                 | :----                                  |
+| `:remote_url`       | The remote URL string                  |
+| `:download_options` | Any download options passed in         |
+| `:uploader`         | The uploader class that sent the event |
+
+A default log subscriber is added as well which logs these events:
+
+```
+Remote URL (1550ms) – {:remote_url=>"https://example.com/image.jpg",:download_options=>{},:uploader=>Shrine}
+```
+
+You can also use your own log subscriber:
+
+```rb
+plugin :remote_url, log_subscriber: -> (event) {
+  Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
+}
+```
+```
+{"name":"remote_url","duration":5,"remote_url":"https://example.com/image.jpg","download_options":{},"uploader":"Shrine"}
+```
+
+Or disable logging altogether:
+
+```rb
+plugin :remote_url, log_subscriber: nil
+```
+
 [remote_url]: /lib/shrine/plugins/remote_url.rb
 [Down]: https://github.com/janko/down
+[open-uri]: https://ruby-doc.org/stdlib/libdoc/open-uri/rdoc/OpenURI.html
+[http.rb]: https://github.com/httprb/http
 [shrine-url]: https://github.com/shrinerb/shrine-url

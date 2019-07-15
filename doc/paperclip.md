@@ -182,16 +182,17 @@ but without the possibility of false negatives.
 
 In Paperclip you enable logging by setting `Paperclip.options[:log] = true`,
 however, this only logs ImageMagick commands. Shrine has full logging support,
-which measures processing, uploading and deleting individually, along with
-context for debugging:
+which measures processing, uploading and deleting individually:
 
 ```rb
-Shrine.plugin :logging
+Shrine.plugin :instrumentation
 ```
 ```
-2015-10-09T20:06:06.676Z #25602: STORE[cache] ImageUploader[:avatar] User[29543] 1 file (0.1s)
-2015-10-09T20:06:06.854Z #25602: PROCESS[store]: ImageUploader[:avatar] User[29543] 1-3 files (0.22s)
-2015-10-09T20:06:07.133Z #25602: DELETE[destroyed]: ImageUploader[:avatar] User[29543] 3 files (0.07s)
+Metadata (32ms) – {:storage=>:store, :io=>StringIO, :uploader=>Shrine}
+Upload (1523ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=>StringIO, :upload_options=>{}, :uploader=>Shrine}
+Exists (755ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
+Download (1002ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :download_options=>{}, :uploader=>Shrine}
+Delete (700ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
 ```
 
 ## Attachments

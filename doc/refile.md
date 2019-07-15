@@ -312,7 +312,7 @@ specify the storage that will be used.
 #### `.logger`
 
 ```rb
-Shrine.plugin :logging
+Shrine.logger
 ```
 
 #### `.processors`, `.processor`

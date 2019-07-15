@@ -29,9 +29,7 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:metadata_image_dimensions) do |event|
-            uploader.opts[:store_dimensions][:log_subscriber]&.call(event)
-          end
+          uploader.subscribe(:image_dimensions, &uploader.opts[:store_dimensions][:log_subscriber])
         end
       end
 
@@ -68,11 +66,11 @@ class Shrine
 
         private
 
-        # Sends the event for the instrumentation plugin.
+        # Sends "metadata_image_dimensions.shrine" events for instrumentation plugin.
         def instrument_dimensions(io, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:metadata_image_dimensions, io: io, &block)
+          instrument(:image_dimensions, io: io, &block)
         end
       end
 

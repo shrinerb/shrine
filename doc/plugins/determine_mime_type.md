@@ -69,7 +69,7 @@ plugin :determine_mime_type, analyzer: -> (io, analyzers) do
 end
 ```
 
-## Other Usage
+## API
 
 You can also use the methods for determining the MIME type directly:
 
@@ -81,6 +81,48 @@ Shrine.mime_type(io) #=> "image/jpeg" (calls the defined analyzer)
 
 # or YourUploader.mime_type_analyzers
 Shrine.mime_type_analyzers[:file].call(io) #=> "image/jpeg" (calls a built-in analyzer)
+```
+
+## Instrumentation
+
+If the `instrumentation` plugin has been loaded, the `determine_mime_type` plugin
+adds instrumentation around MIME type analyzation.
+
+```rb
+# instrumentation plugin needs to be loaded *before* determine_mime_type
+plugin :instrumentation
+plugin :determine_mime_type
+```
+
+Analyzing MIME type will trigger a `mime_type.shrine` event with the following
+payload:
+
+| Key         | Description                            |
+| :--         | :----                                  |
+| `:io`       | The IO object                          |
+| `:uploader` | The uploader class that sent the event |
+
+A default log subscriber is added as well which logs these events:
+
+```
+MIME Type (33ms) – {:io=>StringIO, :uploader=>Shrine}
+```
+
+You can also use your own log subscriber:
+
+```rb
+plugin :determine_mime_type, log_subscriber: -> (event) {
+  Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
+}
+```
+```
+{"name":"mime_type","duration":24,"io":"#<StringIO:0x00007fb7c5b08b80>","uploader":"Shrine"}
+```
+
+Or disable logging altogether:
+
+```rb
+plugin :determine_mime_type, log_subscriber: nil
 ```
 
 [determine_mime_type]: /lib/shrine/plugins/determine_mime_type.rb

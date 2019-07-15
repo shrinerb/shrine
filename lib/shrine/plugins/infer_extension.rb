@@ -19,9 +19,7 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:metadata_extension) do |event|
-            uploader.opts[:infer_extension][:log_subscriber]&.call(event)
-          end
+          uploader.subscribe(:extension, &uploader.opts[:infer_extension][:log_subscriber])
         end
       end
 
@@ -46,11 +44,11 @@ class Shrine
 
         private
 
-        # Send event for the instrumentation plugin.
+        # Sends "metadata_extension.shrine" events for instrumentation plugin.
         def instrument_extension(mime_type, &block)
           return yield unless respond_to?(:instrument)
 
-          instrument(:metadata_extension, mime_type: mime_type, &block)
+          instrument(:extension, mime_type: mime_type, &block)
         end
       end
 

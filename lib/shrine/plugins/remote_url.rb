@@ -9,7 +9,7 @@ class Shrine
     # [doc/plugins/remote_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remote_url.md
     module RemoteUrl
       LOG_SUBSCRIBER = -> (event) do
-        Shrine.logger.info "Remote URL Download (#{event.duration}ms) – #{{
+        Shrine.logger.info "Remote URL (#{event.duration}ms) – #{{
           remote_url:       event[:remote_url],
           download_options: event[:download_options],
           uploader:         event[:uploader],
@@ -17,7 +17,7 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:remote_url] ||= { downloader: :open_uri, log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:remote_url] ||= { downloader: Down.method(:download), log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:remote_url].merge!(opts)
 
         unless uploader.opts[:remote_url].key?(:max_size)
@@ -26,9 +26,28 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:remote_url_download) do |event|
-            uploader.opts[:remote_url][:log_subscriber]&.call(event)
+          uploader.subscribe(:remote_url, &uploader.opts[:remote_url][:log_subscriber])
+        end
+      end
+
+      module ClassMethods
+        # Downloads the file using the "down" gem or a custom downloader.
+        # Checks the file size and terminates the download early if the file
+        # is too big.
+        def remote_url(url, **options)
+          options = { max_size: opts[:remote_url][:max_size] }.merge(options)
+
+          remote_url_instrument(url, options) do
+            opts[:remote_url][:downloader].call(url, options)
           end
+        end
+
+        private
+
+        def remote_url_instrument(url, options, &block)
+          return yield unless respond_to?(:instrument)
+
+          instrument(:remote_url, remote_url: url, download_options: options, &block)
         end
       end
 
@@ -54,7 +73,7 @@ class Shrine
           return if url == "" || url.nil?
 
           begin
-            downloaded_file = download(url, downloader)
+            downloaded_file = shrine_class.remote_url(url, downloader)
           rescue => error
             download_error = error
           end
@@ -79,38 +98,6 @@ class Shrine
         end
 
         private
-
-        # Downloads the file using the "down" gem or a custom downloader.
-        # Checks the file size and terminates the download early if the file
-        # is too big.
-        def download(url, options)
-          downloader = shrine_class.opts[:remote_url][:downloader]
-          downloader = method(:"download_with_#{downloader}") if downloader.is_a?(Symbol)
-          options = { max_size: shrine_class.opts[:remote_url][:max_size] }.merge(options)
-
-          remote_url_instrument(url, options) do
-            downloader.call(url, options)
-          end
-        end
-
-        private
-
-        def remote_url_instrument(url, options, &block)
-          return yield unless shrine_class.respond_to?(:instrument)
-
-          shrine_class.instrument(
-            :remote_url_download,
-            remote_url: url,
-            download_options: options,
-            &block
-          )
-        end
-
-        # We silence any download errors, because for the user's point of view
-        # the download simply failed.
-        def download_with_open_uri(url, options)
-          Down.download(url, options)
-        end
 
         def download_error_message(url, error)
           if message = shrine_class.opts[:remote_url][:error_message]

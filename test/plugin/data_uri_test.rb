@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/data_uri"
+require "dry-monitor"
 require "base64"
 
 describe Shrine::Plugins::DataUri do
@@ -135,5 +136,50 @@ describe Shrine::Plugins::DataUri do
     @user.avatar = fakeio(Base64.decode64("a" * 120))
     assert_equal "data:text/plain;base64,#{"a" * 120}", @user.avatar.data_uri
     assert_equal "a" * 120, @user.avatar.base64
+  end
+
+  describe "with instrumentation" do
+    before do
+      @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+    end
+
+    it "logs data URI parsing" do
+      @shrine.plugin :data_uri
+
+      assert_logged /^Data URI \(\d+ms\) – \{.+\}$/ do
+        @shrine.data_uri("data:image/png,content")
+      end
+    end
+
+    it "sends a data URI parsing event" do
+      @shrine.plugin :data_uri
+
+      @shrine.subscribe(:data_uri) { |event| @event = event }
+      @shrine.data_uri("data:image/png,content")
+
+      refute_nil @event
+      assert_equal :data_uri,                @event.name
+      assert_equal "data:image/png,content", @event[:data_uri]
+      assert_equal @shrine,                  @event[:uploader]
+      assert_instance_of Integer,            @event.duration
+    end
+
+    it "allows swapping log subscriber" do
+      @shrine.plugin :data_uri, log_subscriber: -> (event) { @event = event }
+
+      refute_logged /^Data URI/ do
+        @shrine.data_uri("data:image/png,content")
+      end
+
+      refute_nil @event
+    end
+
+    it "allows disabling log subscriber" do
+      @shrine.plugin :data_uri, log_subscriber: nil
+
+      refute_logged /^Data URI/ do
+        @shrine.data_uri("data:image/png,content")
+      end
+    end
   end
 end

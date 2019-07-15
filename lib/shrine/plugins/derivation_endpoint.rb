@@ -37,9 +37,7 @@ class Shrine
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:derivation) do |event|
-            uploader.opts[:derivation_endpoint_options][:log_subscriber]&.call(event)
-          end
+          uploader.subscribe(:derivation, &uploader.opts[:derivation_endpoint_options][:log_subscriber])
         end
       end
 
@@ -582,7 +580,7 @@ class Shrine
 
     private
 
-    # Determines how to call the deriation block. If a file object is given,
+    # Determines how to call the derivation block. If a file object is given,
     # passes that as the source file, otherwise downloads the source uploaded
     # file.
     def generate(file)
@@ -606,8 +604,8 @@ class Shrine
       end
     end
 
-    # Send event for the instrumentation plugin.
-    def instrument_derivation
+    # Sends "derivation.shrine" events for instrumentation plugin.
+    def instrument_derivation(&block)
       return yield unless shrine_class.respond_to?(:instrument)
 
       shrine_class.instrument(

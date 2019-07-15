@@ -184,8 +184,7 @@ attacher.promote(cached_file, action: :custom_name)
 ```
 
 The `:action` parameter is optional; it can be used for triggering a certain
-processing block, and it is also automatically printed by the `logging` plugin
-to aid in debugging.
+processing block, or for additional context during instrumentation.
 
 As a matter of fact, all additional options passed to `#promote` will be
 forwarded to `Shrine#upload`. So unless you're generating versions, you can do

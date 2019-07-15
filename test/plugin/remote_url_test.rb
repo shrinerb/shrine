@@ -1,14 +1,15 @@
 require "test_helper"
 require "shrine/plugins/remote_url"
+require "dry-monitor"
 
 describe Shrine::Plugins::RemoteUrl do
   before do
+    Down.stubs(:download).with(good_url, max_size: nil).returns(StringIO.new("file"))
+    Down.stubs(:download).with(bad_url, max_size: nil).raises(Down::Error.new("file not found"))
+
     @attacher = attacher { plugin :remote_url, max_size: nil }
     @shrine = @attacher.shrine_class
     @user = @attacher.record
-
-    Down.stubs(:download).with(good_url, max_size: nil).returns(StringIO.new("file"))
-    Down.stubs(:download).with(bad_url, max_size: nil).raises(Down::Error.new("file not found"))
   end
 
   it "enables attaching a file via a remote url" do
@@ -55,10 +56,6 @@ describe Shrine::Plugins::RemoteUrl do
     @shrine.plugin :remote_url, downloader: ->(url, **){fakeio(url)}
     @user.avatar_remote_url = "foo"
     assert_equal "foo", @user.avatar.read
-  end
-
-  it "defaults downloader to :open_uri" do
-    assert_equal :open_uri, @attacher.shrine_class.opts[:remote_url][:downloader]
   end
 
   it "accepts additional downloader options" do
@@ -109,6 +106,52 @@ describe Shrine::Plugins::RemoteUrl do
     @user.avatar_attacher.errors << "foo"
     @user.avatar_remote_url = bad_url
     refute_includes @user.avatar_attacher.errors, "foo"
+  end
+
+  describe "with instrumentation" do
+    before do
+      @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+    end
+
+    it "logs remote URL download" do
+      @shrine.plugin :remote_url
+
+      assert_logged /^Remote URL \(\d+ms\) – \{.+\}$/ do
+        @shrine.remote_url(good_url)
+      end
+    end
+
+    it "sends a remote URL download event" do
+      @shrine.plugin :remote_url
+
+      @shrine.subscribe(:remote_url) { |event| @event = event }
+      @shrine.remote_url(good_url)
+
+      refute_nil @event
+      assert_equal :remote_url,         @event.name
+      assert_equal good_url,            @event[:remote_url]
+      assert_equal Hash[max_size: nil], @event[:download_options]
+      assert_equal @shrine,             @event[:uploader]
+      assert_instance_of Integer,       @event.duration
+    end
+
+    it "allows swapping log subscriber" do
+      @shrine.plugin :remote_url, log_subscriber: -> (event) { @event = event }
+
+      refute_logged /^Remote URL/ do
+        @shrine.remote_url(good_url)
+      end
+
+      refute_nil @event
+    end
+
+    it "allows disabling log subscriber" do
+      @shrine.plugin :remote_url, log_subscriber: nil
+
+      refute_logged /^Remote URL/ do
+        @shrine.remote_url(good_url)
+      end
+    end
   end
 
   def good_url

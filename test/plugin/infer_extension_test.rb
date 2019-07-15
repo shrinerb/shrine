@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/infer_extension"
+require "dry-monitor"
 
 describe Shrine::Plugins::InferExtension do
   before do
@@ -40,6 +41,51 @@ describe Shrine::Plugins::InferExtension do
 
     it "returns empty string when it couldn't determine extension" do
       assert_nil @shrine.infer_extension("foo")
+    end
+  end
+
+  describe "with instrumentation" do
+    before do
+      @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+    end
+
+    it "logs inferring extension" do
+      @shrine.plugin :infer_extension
+
+      assert_logged /^Extension \(\d+ms\) – \{.+\}$/ do
+        @shrine.infer_extension("image/jpeg")
+      end
+    end
+
+    it "sends an infer extension event" do
+      @shrine.plugin :infer_extension
+
+      @shrine.subscribe(:extension) { |event| @event = event }
+      @shrine.infer_extension("image/jpeg")
+
+      refute_nil @event
+      assert_equal :extension,    @event.name
+      assert_equal "image/jpeg",  @event[:mime_type]
+      assert_equal @shrine,       @event[:uploader]
+      assert_instance_of Integer, @event.duration
+    end
+
+    it "allows swapping log subscriber" do
+      @shrine.plugin :infer_extension, log_subscriber: -> (event) { @event = event }
+
+      refute_logged /^Extension/ do
+        @shrine.infer_extension("image/jpeg")
+      end
+
+      refute_nil @event
+    end
+
+    it "allows disabling log subscriber" do
+      @shrine.plugin :infer_extension, log_subscriber: nil
+
+      refute_logged /^Extension/ do
+        @shrine.infer_extension("image/jpeg")
+      end
     end
   end
 

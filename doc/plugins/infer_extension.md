@@ -9,15 +9,7 @@ extension might not be known.
 plugin :infer_extension
 ```
 
-Ordinarily, the upload location will gain the inferred extension only if it
-couldn't be determined from the filename. However, you can pass `force: true`
-to force the inferred extension to be used rather than an extension from the
-original filename. This can be used to canonicalize extensions (jpg, jpeg =>
-jpeg), or replace an incorrect original extension.
-
-```rb
-plugin :infer_extension, force: true
-```
+## Inferrers
 
 By default `MIME::Types` will be used for inferring the extension, but you can
 also choose a different inferrer:
@@ -43,6 +35,8 @@ plugin :infer_extension, inferrer: -> (mime_type, inferrers) do
 end
 ```
 
+## API
+
 You can also use methods for inferring extension directly:
 
 ```rb
@@ -51,6 +45,48 @@ Shrine.infer_extension("image/jpeg")
 
 Shrine.extension_inferrers[:mime_types].call("image/jpeg")
 # => ".jpeg"
+```
+
+## Instrumentation
+
+If the `instrumentation` plugin has been loaded, the `infer_extension` plugin
+adds instrumentation around inferring extension.
+
+```rb
+# instrumentation plugin needs to be loaded *before* infer_extension
+plugin :instrumentation
+plugin :infer_extension
+```
+
+Inferring extension will trigger a `extension.shrine` event with the following
+payload:
+
+| Key          | Description                            |
+| :--          | :----                                  |
+| `:mime_type` | MIME type to infer extension from      |
+| `:uploader`  | The uploader class that sent the event |
+
+A default log subscriber is added as well which logs these events:
+
+```
+Extension (5ms) – {:mime_type=>"image/jpeg", :uploader=>Shrine}
+```
+
+You can also use your own log subscriber:
+
+```rb
+plugin :infer_extension, log_subscriber: -> (event) {
+  Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
+}
+```
+```
+{"name":"extension","duration":5,"mime_type":"image/jpeg","uploader":"Shrine"}
+```
+
+Or disable logging altogether:
+
+```rb
+plugin :infer_extension, log_subscriber: nil
 ```
 
 [infer_extension]: /lib/shrine/plugins/infer_extension.rb

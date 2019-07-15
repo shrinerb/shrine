@@ -2,6 +2,7 @@ require "test_helper"
 require "shrine/plugins/determine_mime_type"
 require "stringio"
 require "open3"
+require "dry-monitor"
 
 describe Shrine::Plugins::DetermineMimeType do
   before do
@@ -227,6 +228,51 @@ describe Shrine::Plugins::DetermineMimeType do
     deprecated "works with the :default alias" do
       @shrine.plugin :determine_mime_type, analyzer: :default
       assert_equal "foo/bar", @shrine.determine_mime_type(fakeio(content_type: "foo/bar"))
+    end
+  end
+
+  describe "with instrumentation" do
+    before do
+      @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
+    end
+
+    it "logs MIME type extraction" do
+      @shrine.plugin :determine_mime_type
+
+      assert_logged /^MIME Type \(\d+ms\) – \{.+\}$/ do
+        @shrine.determine_mime_type(image)
+      end
+    end
+
+    it "sends a MIME type extraction event" do
+      @shrine.plugin :determine_mime_type
+
+      @shrine.subscribe(:mime_type) { |event| @event = event }
+      @shrine.determine_mime_type(io = image)
+
+      refute_nil @event
+      assert_equal :mime_type,    @event.name
+      assert_equal io,            @event[:io]
+      assert_equal @shrine,       @event[:uploader]
+      assert_instance_of Integer, @event.duration
+    end
+
+    it "allows swapping log subscriber" do
+      @shrine.plugin :determine_mime_type, log_subscriber: -> (event) { @event = event }
+
+      refute_logged /^MIME Type/ do
+        @shrine.determine_mime_type(image)
+      end
+
+      refute_nil @event
+    end
+
+    it "allows disabling log subscriber" do
+      @shrine.plugin :determine_mime_type, log_subscriber: nil
+
+      refute_logged /^MIME Type/ do
+        @shrine.determine_mime_type(image)
+      end
     end
   end
 
