@@ -44,7 +44,7 @@ class Shrine
 
         private
 
-        # Sends "metadata_extension.shrine" events for instrumentation plugin.
+        # Sends a `extension.shrine` event for instrumentation plugin.
         def instrument_extension(mime_type, &block)
           return yield unless respond_to?(:instrument)
 

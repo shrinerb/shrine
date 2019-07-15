@@ -37,7 +37,7 @@ class Shrine
 
         private
 
-        # Sends "metadata_signature.shrine" events for instrumentation plugin.
+        # Sends a `signature.shrine` event for instrumentation plugin.
         def instrument_signature(io, algorithm, format, &block)
           return yield unless respond_to?(:instrument)
 

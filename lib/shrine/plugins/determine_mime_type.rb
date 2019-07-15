@@ -64,7 +64,7 @@ class Shrine
 
         private
 
-        # Sends "metadata_mime_type.shrine" events for instrumentation plugin.
+        # Sends a `mime_type.shrine` event for instrumentation plugin.
         def instrument_mime_type(io, &block)
           return yield unless respond_to?(:instrument)
 

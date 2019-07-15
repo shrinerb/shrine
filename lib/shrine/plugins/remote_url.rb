@@ -37,14 +37,15 @@ class Shrine
         def remote_url(url, **options)
           options = { max_size: opts[:remote_url][:max_size] }.merge(options)
 
-          remote_url_instrument(url, options) do
+          instrument_remote_url(url, options) do
             opts[:remote_url][:downloader].call(url, options)
           end
         end
 
         private
 
-        def remote_url_instrument(url, options, &block)
+        # Sends a `remote_url.shrine` event for instrumentation plugin.
+        def instrument_remote_url(url, options, &block)
           return yield unless respond_to?(:instrument)
 
           instrument(:remote_url, remote_url: url, download_options: options, &block)

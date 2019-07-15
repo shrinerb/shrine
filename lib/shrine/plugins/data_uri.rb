@@ -79,6 +79,7 @@ class Shrine
           { content_type: media_type, base64: !!base64, data: content }
         end
 
+        # Sends a `data_uri.shrine` event for instrumentation plugin.
         def instrument_data_uri(uri, &block)
           return yield unless respond_to?(:instrument)
 

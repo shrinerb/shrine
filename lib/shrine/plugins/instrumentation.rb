@@ -75,7 +75,7 @@ class Shrine
       module InstanceMethods
         private
 
-        # Sends a `storage_upload.shrine` event.
+        # Sends a `upload.shrine` event.
         def copy(io, context)
           self.class.instrument(
             :upload,
@@ -101,7 +101,7 @@ class Shrine
       end
 
       module FileMethods
-        # Sends a `storage_download.shrine` event.
+        # Sends a `download.shrine` event.
         def open(**options)
           shrine_class.instrument(
             :download,
@@ -111,7 +111,7 @@ class Shrine
           ) { super }
         end
 
-        # Sends a `storage_exists.shrine` event.
+        # Sends a `exists.shrine` event.
         def exists?
           shrine_class.instrument(
             :exists,
@@ -120,7 +120,7 @@ class Shrine
           ) { super }
         end
 
-        # Sends a `storage_delete.shrine` event.
+        # Sends a `delete.shrine` event.
         def delete
           shrine_class.instrument(
             :delete,

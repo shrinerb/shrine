@@ -604,7 +604,7 @@ class Shrine
       end
     end
 
-    # Sends "derivation.shrine" events for instrumentation plugin.
+    # Sends a `derivation.shrine` event for instrumentation plugin.
     def instrument_derivation(&block)
       return yield unless shrine_class.respond_to?(:instrument)
 

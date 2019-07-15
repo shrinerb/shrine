@@ -66,7 +66,7 @@ class Shrine
 
         private
 
-        # Sends "metadata_image_dimensions.shrine" events for instrumentation plugin.
+        # Sends a `image_dimensions.shrine` event for instrumentation plugin.
         def instrument_dimensions(io, &block)
           return yield unless respond_to?(:instrument)
 
