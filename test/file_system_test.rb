@@ -108,18 +108,6 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root, directory_permissions: nil)
       @storage.upload(fakeio, "a/b/c/file.jpg")
     end
-
-    it "backfills size metadata if missing" do
-      io = fakeio("content")
-      io.instance_eval { undef size }
-      uploaded_file = @shrine.new(:file_system).upload(io)
-      assert_equal 7, uploaded_file.metadata["size"]
-
-      io = fakeio("content")
-      io.instance_eval { def size; 3; end }
-      uploaded_file = @shrine.new(:file_system).upload(io)
-      assert_equal 3, uploaded_file.metadata["size"]
-    end
   end
 
   describe "#movable?" do

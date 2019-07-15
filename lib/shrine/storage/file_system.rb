@@ -50,11 +50,9 @@ class Shrine
       end
 
       # Copies the file into the given location.
-      def upload(io, id, shrine_metadata: {}, **upload_options)
-        bytes_copied = IO.copy_stream(io, path!(id))
+      def upload(io, id, shrine_metadata: {}, move: false, **upload_options)
+        IO.copy_stream(io, path!(id))
         path(id).chmod(permissions) if permissions
-
-        shrine_metadata["size"] ||= bytes_copied
       end
 
       # Moves the file to the given location. This gets called by the `moving`

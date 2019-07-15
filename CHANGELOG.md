@@ -1,5 +1,7 @@
 ## HEAD
 
+* `file_system` – Don't fill `size` metadata if missing in `FileSystem#upload` (@janko)
+
 * `logging` – Deprecate plugin in favour of `instrumentation` (@janko)
 
 * `instrumentation` – Add plugin which sends events via `ActiveSupport::Notifications` or `dry-monitor` (@janko)
