@@ -9,7 +9,7 @@ Shrine.plugin :instrumentation
 ```
 
 By default, the notification component is assumed to be
-`ActiveSupport::Notifications`, but [dry-monitor] is supported as well:
+[ActiveSupport::Notifications], but [dry-monitor] is supported as well:
 
 ```rb
 # Gemfile
@@ -166,4 +166,5 @@ end
 ```
 
 [instrumentation]: /lib/shrine/plugins/instrumentation.rb
+[ActiveSupport::Notifications]: https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html
 [dry-monitor]: https://github.com/dry-rb/dry-monitor
