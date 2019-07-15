@@ -123,9 +123,6 @@ Storage:
     name: dynamic_storage
     description: Allows you to define storages dynamically based on their identifier.
   -
-    name: moving
-    description: Allows you to move files to storages instead of copying them.
-  -
     name: pretty_location
     description: Generates a more organized directory structure on the storage.
 

@@ -517,7 +517,7 @@ class Shrine
 
         [302, { "Location" => redirect_url }, []]
       else
-        if derivative
+        if derivative && File.exist?(derivative.path)
           file_response(derivative, env)
         else
           uploaded_file.open(**upload_open_options)
@@ -677,9 +677,7 @@ class Shrine
       with_derivative(derivative) do |uploadable|
         uploader.upload uploadable,
           location:       upload_location,
-          upload_options: upload_options,
-          delete:         false, # disable delete_raw plugin
-          move:           false # disable moving plugin
+          upload_options: upload_options
       end
     end
 
@@ -687,9 +685,14 @@ class Shrine
 
     def with_derivative(derivative)
       if derivative
-        # we want to keep the provided file open and rewinded
-        File.open(derivative.path, binmode: true) do |file|
-          yield file
+        begin
+          # we want to keep the provided file open and rewinded
+          File.open(derivative.path, binmode: true) do |file|
+            yield file
+          end
+        ensure
+          # close the file handler if the file was deleted during upload
+          derivative.close if !File.exist?(derivative.path)
         end
       else
         # generate the derivative and delete it afterwards
