@@ -204,26 +204,6 @@ The storage can support additional options to customize how the presign will be
 generated, those can be forwarded via the `:presign_options` option on the
 `presign_endpoint` plugin.
 
-## Move
-
-If your storage can move files, you can add the additional `#move` and
-`#movable?` methods, and they will automatically get used if the `moving`
-plugin is loaded.
-
-```rb
-class MyStorage
-  # ...
-  def move(io, id, **upload_options)
-    # does the moving of the `io` to the location `id`
-  end
-
-  def movable?(io, id)
-    # whether the given `io` is movable to the location `id`
-  end
-  # ...
-end
-```
-
 ## Clear
 
 While this method is not used by Shrine, it is good to give users the

@@ -1,5 +1,7 @@
 ## HEAD
 
+* `moving` – Deprecate the plugin in favor of the `:move` option for `FileSystem#upload` (@janko)
+
 * `file_system` – Add `:move` option for `FileSystem#upload` (@janko)
 
 * `file_system` – Don't fill `size` metadata if missing in `FileSystem#upload` (@janko)

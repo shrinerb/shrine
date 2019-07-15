@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The moving plugin has been deprecated in favor of the :move upload option for FileSystem storage. It will no longer be available in Shrine 3.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/moving.md] on GitHub.
