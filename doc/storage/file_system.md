@@ -11,7 +11,7 @@ storage.url("image.jpg") #=> "/uploads/image.jpg"
 ```
 
 This storage will upload all files to "public/uploads", and the URLs of the
-uploaded files will start with "/uploads/*". This way you can use FileSystem
+uploaded files will start with "/uploads/\*". This way you can use FileSystem
 for both cache and store, one having the prefix "uploads/cache" and other
 "uploads/store". If you're uploading files to the `public` directory itself,
 you need to set `:prefix` to `"/"`:
@@ -27,12 +27,6 @@ the FileSystem storage will generate absolute URLs to files:
 ```rb
 storage = Shrine::Storage::FileSystem.new(Dir.tmpdir)
 storage.url("image.jpg") #=> "/var/folders/k7/6zx6dx6x7ys3rv3srh0nyfj00000gn/T/image.jpg"
-```
-
-In general you can always retrieve path to the file using `#path`:
-
-```rb
-storage.path("image.jpg") #=> #<Pathname:public/image.jpg>
 ```
 
 ## Host
@@ -56,6 +50,28 @@ example have files located on another server:
 storage = Shrine::Storage::FileSystem.new("/opt/files")
 storage.url("image.jpg", host: "http://943.23.43.1")
 #=> "http://943.23.43.1/opt/files/image.jpg"
+```
+
+## Moving
+
+If you're uploading files on disk and want to improve performance, you can tell
+the `FileSystem#upload` method to **move** files instead of copying them:
+
+```rb
+storage.upload(file, "/path/to/destination", move: true) # performs the `mv` command
+
+File.exist?(file.path) #=> false
+```
+
+If you want to make this option default, you can use the
+[`upload_options`][upload_options] plugin.
+
+## Path
+
+You can retrieve path to the file using `#path`:
+
+```rb
+storage.path("image.jpg") #=> #<Pathname:public/image.jpg>
 ```
 
 ## Clearing cache
@@ -94,3 +110,5 @@ use it for cache, since Heroku wipes this directory between app restarts. This
 also means that deploying the app can cancel someone's uploading if you're
 using backgrounding. Also, by default you cannot generate URLs to files in the
 "tmp" directory, but you can with the `download_endpoint` plugin.
+
+[upload_options]: /doc/plugins/upload_options.md#readme

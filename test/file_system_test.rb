@@ -108,6 +108,23 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root, directory_permissions: nil)
       @storage.upload(fakeio, "a/b/c/file.jpg")
     end
+
+    it "moves when :move is set to true" do
+      file = Tempfile.new
+      file.write "file"
+      file.open
+
+      @storage.upload(file, "foo.jpg", move: true)
+
+      assert_equal "file", @storage.open("foo.jpg").read
+      refute File.exist?(file.path)
+    end
+
+    it "doesn't move when file is not movable" do
+      @storage.upload(fakeio, "foo.jpg", move: true)
+
+      assert_equal "file", @storage.open("foo.jpg").read
+    end
   end
 
   describe "#movable?" do

@@ -613,10 +613,11 @@ Shrine.plugin :keep_files, cached: true, replaced: true
 
 #### `move_to_cache`, `move_to_store`
 
-Shrine brings this functionality through the `moving` plugin.
+You can tell the `FileSystem` storage that it should move files by specifying
+the `:move` upload option:
 
 ```rb
-Shrine.plugin :moving, storages: [:cache]
+Shrine.plugin :upload_options, cache: { move: true }, store: { move: true }
 ```
 
 #### `validate_integrity`, `ignore_integrity_errors`

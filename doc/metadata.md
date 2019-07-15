@@ -344,4 +344,4 @@ end
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [tus server]: https://github.com/janko/tus-ruby-server
-[determine_mime_type]: /doc/plugins/determine_mime_type.md
+[determine_mime_type]: /doc/plugins/determine_mime_type.md#readme
