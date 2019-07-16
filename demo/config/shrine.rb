@@ -37,7 +37,7 @@ end
 
 Shrine.plugin :sequel
 Shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
-Shrine.plugin :determine_mime_type
+Shrine.plugin :determine_mime_type, analyzer: :marcel
 Shrine.plugin :cached_attachment_data
 Shrine.plugin :restore_cached_data
 
