@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The backup plugin has been deprecated, the new preferred way to implement mirroring is via the instrumentation plugin – see https://github.com/shrinerb/shrine/wiki/Mirroring-Uploads. The backup plugin will be removed in Shrine 3.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/backup.md] on GitHub.

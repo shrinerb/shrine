@@ -1,5 +1,7 @@
 ## HEAD
 
+* `backup` – Deprecate the plugin over [mirroring uploads](https://github.com/shrinerb/shrine/wiki/Mirroring-Uploads) via the `instrumentation` plugin (@janko)
+
 * `moving` – Deprecate the plugin in favor of the `:move` option for `FileSystem#upload` (@janko)
 
 * `file_system` – Add `:move` option for `FileSystem#upload` (@janko)
