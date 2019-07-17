@@ -205,7 +205,7 @@ class Shrine
     option :upload_options,              default: -> { {} }
     option :upload_redirect,             default: -> { false }
     option :upload_redirect_url_options, default: -> { {} }
-    option :upload_storage,              default: -> { source.storage_key.to_sym }
+    option :upload_storage,              default: -> { default_upload_storage }
     option :version
 
     # Retrieves the value of a derivation option.
@@ -256,6 +256,11 @@ class Shrine
       filename  = [name, *args].join("-")
 
       [directory, filename].join("/")
+    end
+
+    # The source uploaded file storage is the default derivative storage.
+    def default_upload_storage
+      source.storage_key.to_sym
     end
 
     # Allows caching for 1 year or until the URL expires.
