@@ -66,33 +66,6 @@ describe Shrine::Storage::Linter do
     end
   end
 
-  describe "move" do
-    it "tests that storage allows 3rd options argument" do
-      @storage.instance_eval { def move(io, id); super; end }
-      assert_raises(ArgumentError) { @linter.call }
-    end
-
-    it "tests that #movable? is defined" do
-      @storage.instance_eval { undef movable? }
-      assert_raises(NoMethodError) { @linter.call }
-    end
-
-    it "tests that destination exists" do
-      @storage.instance_eval { def move(io, id, *); store.delete(io.id); end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "tests that source doesn't exist" do
-      @storage.instance_eval { def move(io, id, *); store[id] = io.read; end }
-      assert_raises(Shrine::LintError) { @linter.call }
-    end
-
-    it "isn't tested if storage doesn't define it" do
-      @storage.instance_eval { undef move }
-      @linter.call
-    end
-  end
-
   it "doesn't leave any files" do
     @linter.call
     assert_empty @storage.store

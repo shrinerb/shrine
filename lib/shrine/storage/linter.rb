@@ -43,11 +43,6 @@ class Shrine
         lint_url(id)
         lint_delete(id)
 
-        if storage.respond_to?(:move)
-          uploaded_file = uploader.upload(io_factory.call, location: "bar".dup)
-          lint_move(uploaded_file, "quux")
-        end
-
         if storage.respond_to?(:clear!)
           storage.upload(io_factory.call, id = "quux".dup)
           lint_clear(id)
@@ -82,14 +77,6 @@ class Shrine
           storage.delete(id)
         rescue => exception
           error :delete, "shouldn't fail if the file doesn't exist, but raised #{exception.class}"
-        end
-      end
-
-      def lint_move(uploaded_file, id)
-        if storage.movable?(uploaded_file, id)
-          storage.move(uploaded_file, id, {})
-          error :exists?, "returns false for destination after #move" if !storage.exists?(id)
-          error :exists?, "returns true for source after #move" if storage.exists?(uploaded_file.id)
         end
       end
 
