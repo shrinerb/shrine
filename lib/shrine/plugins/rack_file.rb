@@ -19,7 +19,7 @@ class Shrine
             )
           end
 
-          UploadedFile.new(hash)
+          Shrine::RackFile.new(hash)
         end
       end
 
@@ -77,27 +77,32 @@ class Shrine
         end
       end
 
-      # This is used to wrap the Rack hash into an IO-like object which Shrine
-      # can upload.
-      class UploadedFile
-        attr_reader :tempfile, :original_filename, :content_type
-        alias :to_io :tempfile
-
-        def initialize(hash)
-          @tempfile          = hash[:tempfile]
-          @original_filename = hash[:filename]
-          @content_type      = hash[:type]
-        end
-
-        def path
-          @tempfile.path
-        end
-
-        extend Forwardable
-        delegate [:read, :size, :rewind, :eof?, :close] => :@tempfile
-      end
     end
 
     register_plugin(:rack_file, RackFile)
   end
+
+  # This is used to wrap the Rack hash into an IO-like object which Shrine
+  # can upload.
+  class RackFile
+    attr_reader :tempfile, :original_filename, :content_type
+    alias :to_io :tempfile
+
+    def initialize(hash)
+      @tempfile          = hash[:tempfile]
+      @original_filename = hash[:filename]
+      @content_type      = hash[:type]
+    end
+
+    def path
+      @tempfile.path
+    end
+
+    extend Forwardable
+    delegate [:read, :size, :rewind, :eof?, :close] => :@tempfile
+  end
+
+  # backwards compatibility
+  Plugins::RackFile.const_set(:UploadedFile, RackFile)
+  Plugins::RackFile.deprecate_constant(:UploadedFile)
 end
