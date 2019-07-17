@@ -8,24 +8,39 @@ class Shrine
     module PrettyLocation
       def self.configure(uploader, opts = {})
         uploader.opts[:pretty_location_namespace] = opts.fetch(:namespace, uploader.opts[:pretty_location_namespace])
+        uploader.opts[:pretty_location_identifier] = opts.fetch(:identifier, uploader.opts[:pretty_location_identifier])
       end
 
       module InstanceMethods
         def generate_location(io, context)
+          identifier = record_identifier(context[:record], opts[:pretty_location_identifier])
+          pretty_location(io, context, identifier: identifier)
+        end
+
+        def pretty_location(io, context = {}, identifier:)
           if context[:record]
             type = class_location(context[:record].class) if context[:record].class.name
-            id   = context[:record].id if context[:record].respond_to?(:id)
           end
           name = context[:name]
 
-          dirname, slash, basename = super.rpartition("/")
+          dirname, slash, basename = basic_location(io).rpartition("/")
           basename = "#{context[:version]}-#{basename}" if context[:version]
           original = dirname + slash + basename
 
-          [type, id, name, original].compact.join("/")
+          [type, identifier, name, original].compact.join("/")
         end
 
         private
+
+        def record_identifier(record, method)
+          return unless record
+
+          if method
+            record.send(method)
+          else
+            record.id
+          end
+        end
 
         def class_location(klass)
           parts = klass.name.downcase.split("::")
