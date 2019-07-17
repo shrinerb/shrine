@@ -62,7 +62,7 @@ class Shrine
           content      = info[:base64] ? Base64.decode64(info[:data]) : CGI.unescape(info[:data])
           filename     = opts[:data_uri][:filename].call(content_type) if opts[:data_uri][:filename]
 
-          data_file = DataFile.new(content, content_type: content_type, filename: filename)
+          data_file = Shrine::DataFile.new(content, content_type: content_type, filename: filename)
           info[:data].clear
 
           data_file
@@ -143,30 +143,33 @@ class Shrine
           result
         end
       end
-
-      class DataFile
-        attr_reader :content_type, :original_filename
-
-        def initialize(content, content_type: nil, filename: nil)
-          @content_type      = content_type
-          @original_filename = filename
-          @io                = StringIO.new(content)
-        end
-
-        def to_io
-          @io
-        end
-
-        extend Forwardable
-        delegate [:read, :size, :rewind, :eof?] => :@io
-
-        def close
-          @io.close
-          @io.string.clear # deallocate string
-        end
-      end
     end
 
     register_plugin(:data_uri, DataUri)
   end
+
+  class DataFile
+    attr_reader :content_type, :original_filename
+
+    def initialize(content, content_type: nil, filename: nil)
+      @content_type      = content_type
+      @original_filename = filename
+      @io                = StringIO.new(content)
+    end
+
+    def to_io
+      @io
+    end
+
+    extend Forwardable
+    delegate [:read, :size, :rewind, :eof?] => :@io
+
+    def close
+      @io.close
+      @io.string.clear # deallocate string
+    end
+  end
+
+  Plugins::DataUri.const_set(:DataFile, DataFile)
+  Plugins::DataUri.deprecate_constant(:DataFile)
 end

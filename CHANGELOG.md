@@ -1,5 +1,7 @@
 ## HEAD
 
+* `data_uri` – Soft-move `Shrine::Plugins::DataUri::DataFile` to `Shrine::DataFile` (@janko)
+
 * `rack_file` – Soft-move `Shrine::Plugins::RackFile::UploadedFile` to `Shrine::RackFile` (@janko)
 
 * `backup` – Deprecate the plugin over [mirroring uploads](https://github.com/shrinerb/shrine/wiki/Mirroring-Uploads) via the `instrumentation` plugin (@janko)
