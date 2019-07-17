@@ -48,6 +48,6 @@ def generate_location(io, context)
   identifier = context[:record].email if context[:record].is_a?(User)
   pretty_location(io, context, identifier: identifier)
 end
-```rb
+```
 
 [pretty_location]: /lib/shrine/plugins/pretty_location.rb
