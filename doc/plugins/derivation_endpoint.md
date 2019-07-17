@@ -5,6 +5,30 @@ dynamically processing uploaded files on request. This allows you to create
 URLs to files that might not have been generated yet, and have the endpoint
 process them on-the-fly.
 
+## Contents
+
+* [Quick start](#quick-start)
+* [How it works](#how-it-works)
+  - [Performance](#performance)
+* [Derivation response](#derivation-response)
+* [Dynamic settings](#dynamic-settings)
+* [Host](#host)
+* [Prefix](#prefix)
+* [Expiration](#expiration)
+* [Response headers](#response-headers)
+  - [Content Type](#content-type)
+  - [Content Disposition](#content-disposition)
+  - [Cache Control](#cache-control)
+* [Uploading](#uploading)
+  - [Redirecting](#redirecting)
+  - [Deleting derivatives](#deleting-derivatives)
+* [Cache busting](#cache-busting)
+* [Accessing source file](#accessing-source-file)
+* [Downloading](#downloading)
+  - [Skipping download](#skipping-download)
+* [Derivation API](#derivation-api)
+* [Plugin Options](#plugin-options)
+
 ## Quick start
 
 We first load the plugin, providing a secret key and a path prefix to where the
