@@ -7,44 +7,38 @@ class Shrine
     # [doc/plugins/pretty_location.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/pretty_location.md
     module PrettyLocation
       def self.configure(uploader, opts = {})
-        uploader.opts[:pretty_location_namespace] = opts.fetch(:namespace, uploader.opts[:pretty_location_namespace])
-        uploader.opts[:pretty_location_identifier] = opts.fetch(:identifier, uploader.opts[:pretty_location_identifier])
+        uploader.opts[:pretty_location] ||= { identifier: :id }
+        uploader.opts[:pretty_location].merge!(opts)
       end
 
       module InstanceMethods
         def generate_location(io, context)
-          identifier = record_identifier(context[:record], opts[:pretty_location_identifier])
-          pretty_location(io, context, identifier: identifier)
+          pretty_location(io, context)
         end
 
-        def pretty_location(io, context = {}, identifier:)
-          if context[:record]
-            type = class_location(context[:record].class) if context[:record].class.name
+        def pretty_location(io, name: nil, record: nil, version: nil, identifier: nil, **)
+          if record
+            namespace    = record_namespace(record)
+            identifier ||= record_identifier(record)
           end
-          name = context[:name]
 
-          dirname, slash, basename = basic_location(io).rpartition("/")
-          basename = "#{context[:version]}-#{basename}" if context[:version]
-          original = dirname + slash + basename
+          basename = basic_location(io)
+          basename = "#{version}-#{basename}" if version
 
-          [type, identifier, name, original].compact.join("/")
+          [*namespace, *identifier, *name, basename].join("/")
         end
 
         private
 
-        def record_identifier(record, method)
-          return unless record
-
-          if method
-            record.send(method)
-          else
-            record.id
-          end
+        def record_identifier(record)
+          record.public_send(opts[:pretty_location][:identifier])
         end
 
-        def class_location(klass)
-          parts = klass.name.downcase.split("::")
-          if separator = opts[:pretty_location_namespace]
+        def record_namespace(record)
+          class_name = record.class.name or return
+          parts      = class_name.downcase.split("::")
+
+          if separator = opts[:pretty_location][:namespace]
             parts.join(separator)
           else
             parts.last

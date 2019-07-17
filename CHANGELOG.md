@@ -1,5 +1,7 @@
 ## HEAD
 
+* `pretty_location` – Allow specifying a different identifier from `id` (@00dav00)
+
 * `data_uri` – Soft-move `Shrine::Plugins::DataUri::DataFile` to `Shrine::DataFile` (@janko)
 
 * `rack_file` – Soft-move `Shrine::Plugins::RackFile::UploadedFile` to `Shrine::RackFile` (@janko)
