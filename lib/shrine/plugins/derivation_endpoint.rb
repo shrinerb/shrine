@@ -539,7 +539,6 @@ class Shrine
       if Rack.release > "2"
         server.serving(Rack::Request.new(env), path)
       else
-        server = server.dup
         server.path = path
         server.serving(env)
       end
