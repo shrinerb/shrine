@@ -1,4 +1,4 @@
-## HEAD
+## 2.19.0 (2019-07-18)
 
 * `pretty_location` – Allow specifying a different identifier from `id` (@00dav00)
 
