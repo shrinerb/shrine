@@ -604,14 +604,6 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#method_missing" do
-    describe "#stream" do
-      deprecated "yields downloaded content" do
-        @s3.client.stub_responses(:head_object, content_length: 7)
-        @s3.client.stub_responses(:get_object, body: "content")
-        assert_equal [["content", 7]], @s3.enum_for(:stream, "foo").to_a
-      end
-    end
-
     describe "#download" do
       deprecated "downloads the object to a Tempfile" do
         @s3.client.stub_responses(:get_object, body: "content")

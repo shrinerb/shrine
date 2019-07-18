@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `s3` – Remove deprecated `S3#stream` method (@janko)
+
 * `presign_endpoint` – Drop support for presign objects that don't respond to `#to_h` (@janko)
 
 * `s3` – Return a Hash in `S3#presign` when method is POST (@janko)

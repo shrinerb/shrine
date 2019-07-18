@@ -229,7 +229,6 @@ class Shrine
       # Catches the deprecated `#download` and `#stream` methods.
       def method_missing(name, *args, &block)
         case name
-        when :stream   then deprecated_stream(*args, &block)
         when :download then deprecated_download(*args, &block)
         else
           super
@@ -310,12 +309,6 @@ class Shrine
           delete_params = { objects: objects_batch.map { |object| { key: object.key } } }
           bucket.delete_objects(delete: delete_params)
         end
-      end
-
-      def deprecated_stream(id)
-        Shrine.deprecation("Shrine::Storage::S3#stream is deprecated over calling #each_chunk on S3#open.")
-        object = object(id)
-        object.get { |chunk| yield chunk, object.content_length }
       end
 
       def deprecated_download(id, **options)
