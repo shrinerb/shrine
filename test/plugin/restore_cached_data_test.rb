@@ -22,8 +22,8 @@ describe Shrine::Plugins::RestoreCachedData do
   it "forwards the context" do
     cached_file = @attacher.cache!(fakeio)
     @attacher.shrine_class.plugin :add_metadata
-    @attacher.shrine_class.add_metadata(:context) { |io, context| context.keys.to_s }
+    @attacher.shrine_class.add_metadata(:context) { |io, context| context.keys.sort.to_s }
     @attacher.assign(cached_file.to_json)
-    assert_equal "[:record, :name, :metadata]", @attacher.get.metadata["context"]
+    assert_equal "[:metadata, :name, :record]", @attacher.get.metadata["context"]
   end
 end
