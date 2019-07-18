@@ -1,3 +1,7 @@
+## 3.0.0 (unreleased)
+
+* `s3` – drop support for `aws-sdk` 2.x (@janko)
+
 ## 2.19.0 (2019-07-18)
 
 * `pretty_location` – Allow specifying a different identifier from `id` (@00dav00)
