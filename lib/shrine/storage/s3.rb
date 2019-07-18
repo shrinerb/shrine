@@ -134,12 +134,7 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
-      def url(id, download: nil, public: self.public, host: nil, **options)
-        if download
-          Shrine.deprecation("The :download option in Shrine::Storage::S3#url is deprecated and will be removed in Shrine 3. Use the :response_content_disposition option directly, e.g. `response_content_disposition: \"attachment\"`.")
-          options[:response_content_disposition] ||= "attachment"
-        end
-
+      def url(id, public: self.public, host: nil, **options)
         if public || signer
           url = object(id).public_url(**options)
         else

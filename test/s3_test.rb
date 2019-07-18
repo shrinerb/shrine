@@ -431,11 +431,6 @@ describe Shrine::Storage::S3 do
       assert_nil URI(url).query
     end
 
-    deprecated "accepts :download for a forced-download link" do
-      url = @s3.url("foo", download: true)
-      assert_includes URI(url).query, "response-content-disposition=attachment"
-    end
-
     it "accepts :host for specifying CDN links" do
       url = s3(bucket: "my-bucket").url("foo/bar quux", host: "http://123.cloudfront.net")
       assert_match "http://123.cloudfront.net/foo/bar%20quux", url

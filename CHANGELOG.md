@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `s3` – Remove `:download` option in `S3#url` (@janko)
+
 * `s3` – Remove support for non URI-escaped content disposition values (@janko)
 
 * `s3` – Remove `S3#s3` method (@janko)
