@@ -1,11 +1,5 @@
 require "test_helper"
-
 require "shrine/storage/s3"
-require "shrine/storage/file_system"
-
-require "stringio"
-require "tmpdir"
-require "fileutils"
 require "uri"
 
 describe Shrine::Storage::S3 do
