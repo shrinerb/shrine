@@ -30,7 +30,7 @@ doc/attacher.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 16:39:58 +0200</span>
+<span class='datetime'>2019-07-15 16:05:48 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -126,7 +126,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-comment"># uploads cached file to permanent storage and replaces the current one</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>(<span class="ruby-identifier">cached_file</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:custom_name</span>)</pre>
 
-<p>The <code>:action</code> parameter is optional; it can be used for triggering a certain processing block, and it is also automatically printed by the <code>logging</code> plugin to aid in debugging.</p>
+<p>The <code>:action</code> parameter is optional; it can be used for triggering a certain processing block, or for additional context during instrumentation.</p>
 
 <p>As a matter of fact, all additional options passed to <code>#promote</code> will be forwarded to <code>Shrine#upload</code>. So unless you&#39;re generating versions, you can do things like override metadata, set upload location, or pass upload options:</p>
 

@@ -30,12 +30,69 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 17:34:29 +0200</span>
+<span class='datetime'>2019-07-18 09:47:50 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-2.19.0+-282019-07-18-29">2.19.0 (2019-07-18)<span><a href="#label-2.19.0+-282019-07-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>pretty_location</code> – Allow specifying a different identifier from <code>id</code> (@00dav00)</p>
+</li><li>
+<p><code>data_uri</code> – Soft-move <code>Shrine::Plugins::DataUri::DataFile</code> to <code>Shrine::DataFile</code> (@janko)</p>
+</li><li>
+<p><code>rack_file</code> – Soft-move <code>Shrine::Plugins::RackFile::UploadedFile</code> to <code>Shrine::RackFile</code> (@janko)</p>
+</li><li>
+<p><code>backup</code> – Deprecate the plugin over <a href="https://github.com/shrinerb/shrine/wiki/Mirroring-Uploads">mirroring uploads</a> via the <code>instrumentation</code> plugin (@janko)</p>
+</li><li>
+<p><code>moving</code> – Deprecate the plugin in favor of the <code>:move</code> option for <code>FileSystem#upload</code> (@janko)</p>
+</li><li>
+<p><code>file_system</code> – Add <code>:move</code> option for <code>FileSystem#upload</code> (@janko)</p>
+</li><li>
+<p><code>file_system</code> – Don&#39;t fill <code>size</code> metadata if missing in <code>FileSystem#upload</code> (@janko)</p>
+</li><li>
+<p><code>logging</code> – Deprecate plugin in favour of <code>instrumentation</code> (@janko)</p>
+</li><li>
+<p><code>instrumentation</code> – Add plugin which sends events via <code>ActiveSupport::Notifications</code> or <code>dry-monitor</code> (@janko)</p>
+</li><li>
+<p><code>core</code> – Add <code>UploadedFile#[]</code> shorthand for accessing metadata (@janko)</p>
+</li><li>
+<p><code>add_metadata</code> – Allow calling <code>super</code> when overriding dynamically defined <code>UploadedFile</code> methods (@janko)</p>
+</li><li>
+<p><code>store_dimensions</code> – Add <code>:on_error</code> option for specifying the exception strategy (@janko)</p>
+</li><li>
+<p><code>store_dimensions</code> – Print warnings when exception occurred while extracting dimensions (@janko)</p>
+</li><li>
+<p><code>core</code> – Add <code>Shrine.logger</code> and make any warnings go through it (@janko)</p>
+</li><li>
+<p><code>copy</code> – Deprecate the plugin (@janko)</p>
+</li><li>
+<p><code>core</code> – Add ability to force metadata extraction by passing <code>metadata: true</code> to <code>Shrine#upload</code> (@janko)</p>
+</li><li>
+<p><code>core</code> – Add ability to skip metadata extraction by passing <code>metadata: false</code> to <code>Shrine#upload</code> (@janko)</p>
+</li><li>
+<p><code>file_system</code> – Deprecate <code>:older_than</code> option for <code>FileSystem#clear!</code> in favour of a block (@janko)</p>
+</li><li>
+<p><code>file_system</code> – Add the ability for <code>FileSystem#clear!</code> to take a block (@janko)</p>
+</li><li>
+<p><code>signature</code> – Add <code>Shrine.signature</code> alias for <code>Shrine.calculcate_signature</code> (@janko)</p>
+</li><li>
+<p><code>store_dimensions</code> – Add <code>Shrine.dimensions</code> alias for <code>Shrine.extract_dimensions</code> (@janko)</p>
+</li><li>
+<p><code>determine_mime_type</code> – Add <code>Shrine.mime_type</code> alias for <code>Shrine.determine_mime_type</code> (@janko)</p>
+</li><li>
+<p><code>validation_helpers</code> – Add <code>#validate_max_dimensions</code>, <code>#validate_min_dimensions</code>, and <code>#validate_dimensions</code> (@janko)</p>
+</li><li>
+<p><code>validation_helpers</code> - Add <code>#validate_size</code>, <code>#validate_width</code>, and <code>#validate_height</code> shorthands (@janko)</p>
+</li><li>
+<p><code>validation_helpers</code> – Add <code>#validate_mime_type</code> and <code>#validate_extension</code> aliases for inclusion (@janko)</p>
+</li><li>
+<p><code>validation_helpers</code> – Simplify default validation error messages (@janko)</p>
+</li><li>
+<p><code>core</code> – Allow registering storage objects under string keys (@janko)</p>
+</li></ul>
+
 <h2 id="label-2.18.0+-282019-06-24-29">2.18.0 (2019-06-24)<span><a href="#label-2.18.0+-282019-06-24-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>core</code> – Add <code>Shrine.upload</code> method as a shorthand for <code>Shrine.new(...).upload(...)</code> (@janko)</p>

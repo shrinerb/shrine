@@ -30,7 +30,7 @@ doc/release_notes/2.18.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 18:08:22 +0200</span>
+<span class='datetime'>2019-07-05 17:53:14 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -43,7 +43,7 @@ Last Update:
 
 <p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/upload&quot; =&gt; &quot;uploads#image&quot;   end </code>  “`rb  # app/controllers/uploads_controller.rb (Rails)  class UploadsController &lt; ApplicationController  def image  authenticate_user!</p>
 
-<pre>  set_rack_response ImageUploader.upload_response(:cache, env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
+<pre>  set_rack_response ImageUploader.upload_response(:cache, request.env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
 
 <p>end  “`</p>
 <ul><li>
@@ -52,7 +52,7 @@ Last Update:
 
 <p><code>rb   # config/routes.rb (Rails)   Rails.application.routes.draw do     # ...     post &quot;/images/presign&quot;, to: &quot;presigns#image&quot;   end </code>  “`rb  # app/controllers/presigns_controller.rb (Rails)  class PresignsController &lt; ApplicationController  def image  authenticate_user!</p>
 
-<pre>  set_rack_response ImageUploader.presign_response(:cache, env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
+<pre>  set_rack_response ImageUploader.presign_response(:cache, request.env)&#x000A;end&#x000A;private&#x000A;&#x000A;def set_rack_response((status, headers, body))&#x000A;  self.status = status&#x000A;  self.headers.merge!(headers)&#x000A;  self.response_body = body&#x000A;end</pre>
 
 <p>end  “`</p>
 <ul><li>
@@ -77,11 +77,11 @@ Last Update:
 <p>The <code>Shrine.upload</code> convenience method has been added, which is a bit shorter  when you don&#39;t need the uploader instance.</p>
 </li></ul>
 
-<p>“`rb  Shrine.upload(io, :storage)</p>
+<p>“`rb  <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :storage)</p>
 
 <p># expands to</p>
 
-<p>uploader = Shrine.new(:storage)  uploader.upload(io)  “`</p>
+<p>uploader = <a href="../../../classes/Shrine/InstanceMethods.html#method-c-new"><code>Shrine.new</code></a>(:storage)  uploader.upload(io)  “`</p>
 <ul><li>
 <p>The <code>Shrine.Attachment(...)</code> shorthand for <code>Shrine::Attachment.new(...)</code> has  been added.</p>
 </li></ul>

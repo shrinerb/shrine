@@ -30,7 +30,7 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 16:48:05 +0200</span>
+<span class='datetime'>2019-07-16 23:29:25 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -113,7 +113,7 @@ Last Update:
 </li><li>
 <p><a href="#clearing-cache">Clearing cache</a></p>
 </li><li>
-<p><a href="#settings">Settings</a></p>
+<p><a href="#logging">Logging</a></p>
 </li></ul>
 
 <h2 id="label-Quick+start">Quick start<span><a href="#label-Quick+start">&para;</a> <a href="#top">&uarr;</a></span></h2>
@@ -164,7 +164,7 @@ Last Update:
 
 <h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>A “storage” in <a href="../classes/Shrine.html"><code>Shrine</code></a> is an object that encapsulates communication with a specific storage service, by implementing a common public interface. Storage instances are registered under an identifier in <code>Shrine.storages</code>, so that they can later by used by <a href="#uploader">uploaders</a>.</p>
+<p>A “storage” in <a href="../classes/Shrine.html"><code>Shrine</code></a> is an object that encapsulates communication with a specific storage service, by implementing a common public interface. Storage instances are registered under an identifier in <code>Shrine.storages</code>, so that they can later be used by <a href="#uploader">uploaders</a>.</p>
 
 <p>Previously we&#39;ve shown the <a href="/doc/storage/file_system.md#readme">FileSystem</a> storage which saves files to disk, but <a href="../classes/Shrine.html"><code>Shrine</code></a> also ships with <a href="/doc/storage/s3.md#readme">S3</a> storage which stores files on <a href="https://aws.amazon.com/s3/">AWS S3</a> (or any S3-compatible service such as <a href="https://www.digitalocean.com/products/spaces/">DigitalOcean Spaces</a> or <a href="https://min.io/">MinIO</a>).</p>
 
@@ -227,7 +227,7 @@ Last Update:
 
 <p>| Key | Description | | :——- | :———- | | <code>id</code> | location of the file on the storage | | <code>storage</code> | identifier of the storage the file was uploaded to | | <code>metadata</code> | file <a href="#metadata">metadata</a> that was extracted before upload |</p>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">data</span> <span class="ruby-comment">#=&gt; {&quot;id&quot;=&gt;&quot;949sdjg834.jpg&quot;,&quot;storage&quot;=&gt;&quot;store&quot;,&quot;metadata&quot;=&gt;{...}}</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">id</span>       <span class="ruby-comment">#=&gt; &quot;949sdjg834.jpg&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage</span>  <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::FileSystem&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {...}</span></pre>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">data</span> <span class="ruby-comment">#=&gt; {&quot;id&quot;=&gt;&quot;949sdjg834.jpg&quot;,&quot;storage&quot;=&gt;&quot;store&quot;,&quot;metadata&quot;=&gt;{...}}</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">id</span>       <span class="ruby-comment">#=&gt; &quot;949sdjg834.jpg&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">storage</span>  <span class="ruby-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {...}</span></pre>
 
 <p>It comes with many convenient methods that delegate to the storage:</p>
 
@@ -241,7 +241,7 @@ Last Update:
 
 <h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Storages, uploaders, and uploaded file objects are Shrine&#39;s foundational components. To help you actually attach uploaded files to database records in your application, <a href="../classes/Shrine.html"><code>Shrine</code></a> comes with a high-level attachment interface built on top of these components.</p>
+<p>Storage objects, uploaders, and uploaded file objects are Shrine&#39;s foundational components. To help you actually attach uploaded files to database records in your application, <a href="../classes/Shrine.html"><code>Shrine</code></a> comes with a high-level attachment interface built on top of these components.</p>
 
 <p>There are plugins for hooking into most database libraries, and in case of ActiveRecord and Sequel the plugin will automatically tie the attached files to records&#39; lifecycles. But you can also use <a href="../classes/Shrine.html"><code>Shrine</code></a> just with plain old Ruby objects.</p>
 
@@ -279,7 +279,7 @@ Last Update:
 
 <p>By default <a href="../classes/Shrine.html"><code>Shrine</code></a> comes with a small core which provides only the essential functionality. All additional features are available via <a href="https://shrinerb.com/#plugins">plugins</a>, which also ship with <a href="../classes/Shrine.html"><code>Shrine</code></a>. This way you can choose exactly what and how much <a href="../classes/Shrine.html"><code>Shrine</code></a> does for you, and you load the code only for features that you use.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:logging</span> <span class="ruby-comment"># adds logging</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:instrumentation</span> <span class="ruby-comment"># adds instrumentation</span></pre>
 
 <p>Plugins add behaviour by extending <a href="../classes/Shrine.html"><code>Shrine</code></a> core classes via module inclusion, and many of them also accept configuration options. The plugin system respects inheritance, so you can choose to load a plugin globally or per uploader.</p>
 
@@ -295,13 +295,13 @@ Last Update:
 
 <h3 id="label-MIME+type">MIME type<span><a href="#label-MIME+type">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>By default, <code>mime_type</code> metadata will be inherited from the <code>#content_type</code> attribute of the uploaded file, which is generally not secure and will trigger a warning. You can load the <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> plugin to have MIME type extracted from file <em>content</em> instead.</p>
+<p>By default, <code>mime_type</code> metadata will be set from the <code>#content_type</code> attribute of the uploaded file (if it exists), which is generally not secure and will trigger a warning. You can load the <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> plugin to have MIME type extracted from file <em>content</em> instead.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span></pre>
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span></pre>
 
-<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">image:</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;&lt;?php ... ?&gt;&quot;</span>))&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;text/x-php&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span></pre>
 
-<p>By the default the UNIX <a target="_top" href="http://linux.die.net/man/1/file">file</a> utility is used to determine the MIME type, but you can also choose a different analyzer, see the <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> docs for more details.</p>
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-value">image:</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;&lt;?php ... ?&gt;&quot;</span>))&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;application/x-php&quot;</span></pre>
 
 <h3 id="label-Other+metadata">Other metadata<span><a href="#label-Other+metadata">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -371,21 +371,21 @@ Last Update:
 
 <h2 id="label-Direct+uploads">Direct uploads<span><a href="#label-Direct+uploads">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>To improve the user experience, it&#39;s recommended to upload files asynchronously as soon as the user selects them. The direct uploads would go to temporary storage, just like in the synchronous flow.</p>
+<p>To improve the user experience, it&#39;s recommended to upload files asynchronously as soon as the user selects them. The direct uploads would go to temporary storage, just like in the synchronous flow. Then, instead of attaching a raw file to your model, you assign the cached file JSON data.</p>
 
-<p>On the client side it&#39;s highly recommended to use <strong><a href="https://uppy.io">Uppy</a></strong>, a very flexible modern JavaScript file upload library that happens to integrate nicely with <a href="../classes/Shrine.html"><code>Shrine</code></a>.</p>
+<pre class="ruby"><span class="ruby-comment"># in the regular synchronous flow</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span>&#x000A;&#x000A;<span class="ruby-comment"># in the direct upload flow</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;</span></pre>
+
+<p>On the client side it&#39;s highly recommended to use <strong><a href="https://uppy.io">Uppy</a></strong> :dog:, a very flexible modern JavaScript file upload library that happens to integrate nicely with <a href="../classes/Shrine.html"><code>Shrine</code></a>.</p>
 
 <h3 id="label-Simple+direct+upload">Simple direct upload<span><a href="#label-Simple+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The simplest approach is creating an upload endpoint in your app that will forward uploads to the specified storage. The <a href="/doc/plugins/upload_endpoint.md#readme">upload_endpoint</a> <a href="../classes/Shrine.html"><code>Shrine</code></a> plugin provides a <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack application that does that, and you can combine it with Uppy&#39;s <a href="https://uppy.io/docs/xhr-upload/">XHR Upload</a> plugin:</p>
+<p>The simplest approach is to upload directly to an endpoint in your app, which forwards uploads to the specified storage. The <a href="/doc/plugins/upload_endpoint.md#readme">upload_endpoint</a> <a href="../classes/Shrine.html"><code>Shrine</code></a> plugin provides a <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app that implements this endpoint:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_endpoint</span></pre>
 
 <pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">upload_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/images/upload&quot;</span> <span class="ruby-comment"># POST /images/upload</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<pre>// upload.js&#x000A;// ...&#x000A;uppy.use(Uppy.XHRUpload, {&#x000A;  endpoint: &#39;/images/upload&#39;&#x000A;})&#x000A;uppy.on(&#39;upload-success&#39;, (file, response) =&gt; {&#x000A;  const uploadedFileData = JSON.stringify(response.body)&#x000A;  // ... add this data to your form or submit it to your app ...&#x000A;})</pre>
-
-<p>For adding simple direct uploads from scratch, see <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads">this walkthrough</a> (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app).</p>
+<p>Then you can configure Uppy&#39;s <a href="https://uppy.io/docs/xhr-upload/">XHR Upload</a> plugin to upload to this endpoint. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads">this walkthrough</a> for adding simple direct uploads from scratch, it includes a complete JavaScript example (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app).</p>
 
 <h3 id="label-Presigned+direct+upload">Presigned direct upload<span><a href="#label-Presigned+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -393,23 +393,21 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>)&#x000A;}</pre>
 
-<p>In this flow, the client needs to first fetch upload parameters from the server, and then use these parameters for the upload to the cloud service. The <a href="/doc/plugins/presign_endpoint.md#readme">presign_endpoint</a> <a href="../classes/Shrine.html"><code>Shrine</code></a> plugin provides a <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack application that generates upload parameters, and you can combine it with Uppy&#39;s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin:</p>
+<p>In this flow, the client needs to first fetch upload parameters from the server, and then use these parameters for the upload to the cloud service. The <a href="/doc/plugins/presign_endpoint.md#readme">presign_endpoint</a> <a href="../classes/Shrine.html"><code>Shrine</code></a> plugin provides a <a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app that generates upload parameters:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:presign_endpoint</span></pre>
 
 <pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">presign_endpoint</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/s3/params&quot;</span> <span class="ruby-comment"># GET /s3/params</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<pre>// upload.js&#x000A;// ...&#x000A;uppy.use(Uppy.AwsS3, {&#x000A;  companionUrl: &#39;/&#39; // uses &#39;/s3/params&#39;&#x000A;})&#x000A;uppy.on(&#39;upload-success&#39;, (file, response) =&gt; {&#x000A;  const uploadedFileData = JSON.stringify({&#x000A;    id: file.meta[&#39;key&#39;].match(/^cache\/(.+)/)[1], // object key without prefix&#x000A;    storage: &#39;cache&#39;,&#x000A;    metadata: {&#x000A;      size:      file.size,&#x000A;      filename:  file.name,&#x000A;      mime_type: file.type,&#x000A;    }&#x000A;  })&#x000A;  // ... add this data to your form or submit it to your app ...&#x000A;})</pre>
-
-<p>For adding direct S3 uploads from scratch, see <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this walkthrough</a> (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo). See also the <a href="/doc/direct_s3.md#readme">Direct Uploads to S3</a> guide for more details.</p>
+<p>Then you can configure Uppy&#39;s <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin to fetch params from your endpoint before uploading to S3. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this walkthrough</a> for adding direct uploads to S3 from scratch, it includes a complete JavaScript example (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo). See also the <a href="/doc/direct_s3.md#readme">Direct Uploads to S3</a> guide for more details.</p>
 
 <h3 id="label-Resumable+direct+upload">Resumable direct upload<span><a href="#label-Resumable+direct+upload">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If your app is accepting large uploads, you can make the uploads <strong>resumable</strong>. This can significantly improve experience for users on slow and flaky internet connections.</p>
+<p>If your app is accepting large uploads, you can improve resilience by making the uploads <strong>resumable</strong>. This can significantly improve experience for users on slow and flaky internet connections.</p>
 
 <h4 id="label-Uppy+S3+Multipart">Uppy S3 Multipart<span><a href="#label-Uppy+S3+Multipart">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>You can achieve resumable uploads directly to S3 with the <a href="https://uppy.io/docs/aws-s3-multipart/">AWS S3 Multipart</a> Uppy plugin, accompanied with the <a href="../classes/Shrine.html"><code>Shrine</code></a> plugin provided by the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem (assuming your temporary storage is <code>Shrine::Storage::S3</code>):</p>
+<p>You can achieve resumable uploads directly to S3 with the <a href="https://uppy.io/docs/aws-s3-multipart/">AWS S3 Multipart</a> Uppy plugin, accompanied with <code>uppy_s3_multipart</code> <a href="../classes/Shrine.html"><code>Shrine</code></a> plugin provided by the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;uppy-s3_multipart&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span></pre>
 
@@ -417,13 +415,11 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uppy_s3_multipart</span>(<span class="ruby-value">:cache</span>) <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/s3/multipart&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<pre>// upload.js&#x000A;// ...&#x000A;uppy.use(Uppy.AwsS3Multipart, {&#x000A;  companionUrl: &#39;/&#39; // uses &#39;/s3/multipart/*&#39; routes&#x000A;})&#x000A;uppy.on(&#39;upload-success&#39;, (file, response) =&gt; {&#x000A;  const uploadedFileData = JSON.stringify({&#x000A;    id: response.uploadURL.match(/\/cache\/([^\?]+)/)[1], // object key without prefix&#x000A;    storage: &#39;cache&#39;,&#x000A;    metadata: {&#x000A;      size:      file.size,&#x000A;      filename:  file.name,&#x000A;      mime_type: file.type,&#x000A;    }&#x000A;  })&#x000A;  // ... add this data to your form or submit it to your app ...&#x000A;})</pre>
-
 <p>See the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> docs for more details.</p>
 
 <h4 id="label-Tus+protocol">Tus protocol<span><a href="#label-Tus+protocol">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>If you want a more generic approach, you can build your resumable uploads on <strong><a href="https://tus.io">tus</a></strong>, an open resumable upload protocol. On the server side you can use the <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> gem, on the client side Uppy&#39;s <a href="https://uppy.io/docs/tus/">Tus</a> plugin, and the <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> gem for the glue:</p>
+<p>If you want a more generic approach, you can build your resumable uploads on <strong><a href="https://tus.io">tus</a></strong> – an open resumable upload protocol. On the server side you can use the <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> gem, on the client side Uppy&#39;s <a href="https://uppy.io/docs/tus/">Tus</a> plugin, and the <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> gem for the glue.</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;tus-server&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.0&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine-tus&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.2&quot;</span></pre>
 
@@ -431,9 +427,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">Tus</span><span class="ruby-operator">::</span><span class="ruby-constant">Server</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/files&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<pre>// upload.js&#x000A;// ...&#x000A;uppy.use(Uppy.Tus, {&#x000A;  endpoint:  &#39;/files&#39;,&#x000A;  chunkSize: 5*1024*1024,&#x000A;})&#x000A;uppy.on(&#39;upload-success&#39;, (file, response) =&gt; {&#x000A;  const uploadedFileData = JSON.stringify({&#x000A;    id: response.uploadURL,&#x000A;    storage: &quot;cache&quot;,&#x000A;    metadata: {&#x000A;      filename:  file.name,&#x000A;      size:      file.size,&#x000A;      mime_type: file.type,&#x000A;    }&#x000A;  })&#x000A;  // ... add this data to your form or submit it to your app ...&#x000A;})</pre>
-
-<p>For adding tus-powered resumable uploads from scratch, see <a href="https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads">this walkthrough</a> (there is also a <a href="https://github.com/shrinerb/shrine-tus-demo">demo app</a>). See also <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> and <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> docs for more details.</p>
+<p>See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads">this walkthrough</a> for adding tus-powered resumable uploads from scratch, it includes a complete JavaScript example (there is also a <a href="https://github.com/shrinerb/shrine-tus-demo">demo app</a>). See also <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> and <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> docs for more details.</p>
 
 <h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -449,19 +443,27 @@ Last Update:
 
 <p><a href="../classes/Shrine.html"><code>Shrine</code></a> doesn&#39;t automatically delete files uploaded to temporary storage, instead you should set up a separate recurring task that will automatically delete old cached files.</p>
 
-<p>Most of <a href="../classes/Shrine.html"><code>Shrine</code></a> storage classes come with a <code>#clear!</code> method, which you can call in a recurring script. For FileSystem and S3 storage it would look like this:</p>
+<p>Most <a href="../classes/Shrine.html"><code>Shrine</code></a> storage classes come with a <code>#clear!</code> method, which you can call in a recurring script. For FileSystem and S3 storage it would look like this:</p>
 
-<pre class="ruby"><span class="ruby-comment"># FileSystem storage</span>&#x000A;<span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span>(<span class="ruby-value">older_than:</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span>) <span class="ruby-comment"># delete files older than 1 week</span></pre>
+<pre class="ruby"><span class="ruby-comment"># FileSystem storage</span>&#x000A;<span class="ruby-identifier">file_system</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>]&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">mtime</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># delete files older than 1 week</span></pre>
 
 <pre class="ruby"><span class="ruby-comment"># S3 storage</span>&#x000A;<span class="ruby-identifier">s3</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span>[<span class="ruby-value">:cache</span>]&#x000A;<span class="ruby-identifier">s3</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">object</span><span class="ruby-operator">|</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">last_modified</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># delete files older than 1 week</span></pre>
 
-<h2 id="label-Settings">Settings<span><a href="#label-Settings">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Logging">Logging<span><a href="#label-Logging">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Each uploader can store generic settings in the <code>opts</code> hash, which can be accessed in other uploader actions. You can store there anything that you find convenient.</p>
+<p>The <a href="/doc/plugins/instrumentation.md#readme">instrumentation</a> plugin sends and logs events for important operations:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type</span>] = <span class="ruby-string">&quot;file&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">DocumentUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>; <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">opts</span>[<span class="ruby-value">:type</span>] = <span class="ruby-string">&quot;image&quot;</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-constant">DocumentUploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type</span>] <span class="ruby-comment">#=&gt; &quot;file&quot;</span>&#x000A;<span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:type</span>]    <span class="ruby-comment">#=&gt; &quot;image&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:instrumentation</span>, <span class="ruby-value">notifications:</span> <span class="ruby-constant">ActiveSupport</span><span class="ruby-operator">::</span><span class="ruby-constant">Notifications</span>&#x000A;&#x000A;<span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:store</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">exists?</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">download</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">delete</span></pre>
 
-<p>Because <code>opts</code> is cloned in subclasses, overriding settings works with inheritance. The <code>opts</code> hash is used internally by plugins to store configuration.</p>
+<pre>Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}&#x000A;Upload (1523ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}&#x000A;Exists (755ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :uploader=&gt;Shrine}&#x000A;Download (1002ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :download_options=&gt;{}, :uploader=&gt;Shrine}&#x000A;Delete (700ms) – {:storage=&gt;:store, :location=&gt;&quot;ed0e30ddec8b97813f2c1f4cfd1700b4&quot;, :uploader=&gt;Shrine}</pre>
+
+<p>Some plugins add their own instrumentation as well when they detect that the <code>instrumentation</code> plugin has been loaded. For that to work, the <code>instrumentation</code> plugin needs to be loaded <em>before</em> any of these plugins.</p>
+
+<p>| Plugin | Instrumentation | | :—– | :————– | | <code>derivation_endpoint</code> | instruments file processing | | <code>determine_mime_type</code> | instruments analyzing MIME type | | <code>store_dimensions</code> | instruments extracting image dimensions | | <code>signature</code> | instruments calculating signature | | <code>infer_extension</code> | instruments inferring extension | | <code>remote_url</code> | instruments remote URL downloading | | <code>data_uri</code> | instruments data URI parsing |</p>
+
+<p>For instrumentation, warnings, and other logging, <a href="../classes/Shrine.html"><code>Shrine</code></a> uses its internal logger. You can tell <a href="../classes/Shrine.html"><code>Shrine</code></a> to use a different logger, for example if you&#39;re using Rails:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">logger</span></pre>
 
 <h2 id="label-Inspiration">Inspiration<span><a href="#label-Inspiration">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

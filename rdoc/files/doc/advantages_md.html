@@ -30,7 +30,7 @@ doc/advantages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-03 12:25:32 +0200</span>
+<span class='datetime'>2019-07-15 16:05:48 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -73,7 +73,7 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> uses a <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">plugin system</a> that allows you to pick and choose the features that you want. Moreover, you&#39;re only loading the code for features that you use, which means that <a href="../../classes/Shrine.html"><code>Shrine</code></a> will generally load very fast.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:logging</span>&#x000A;&#x000A;<span class="ruby-comment"># translates to</span>&#x000A;&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/plugins/logging&quot;</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Logging</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:instrumentation</span>&#x000A;&#x000A;<span class="ruby-comment"># translates to</span>&#x000A;&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/plugins/instrumentation&quot;</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Instrumentation</span></pre>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a complete attachment functionality, but it also exposes many low level APIs that can be used for building your own customized attachment flow. For example, if you prefer the <code>Attachment</code>/<code>Blob</code> architecture Active Storage provides, you can ditch the Shrine&#39;s attachment implementation and use uploaders and uploaded files that are decoupled from attachment:</p>
 
@@ -102,7 +102,7 @@ Last Update:
 
 <p>With <a href="../../classes/Shrine.html"><code>Shrine</code></a> you can create isolated uploaders for each type of file. Plugins that you want to be applied to both uploaders can be applied globally, while other plugins would be loaded only for a specific uploader.</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:logging</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:instrumentation</span></pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:store_dimensions</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

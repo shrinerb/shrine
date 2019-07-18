@@ -55,6 +55,25 @@ Shrine::Plugins::InferExtension
 </ol>
 </div>
 <div id='section'>
+<div id='constants-list'>
+<h2>Constants</h2>
+<div class='name-list'>
+<table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>LOG_SUBSCRIBER</td>
+<td>=</td>
+<td class='context-item-value'>-> (event) do
+Shrine.logger.info "Extension (#{event.duration}ms) – #{{
+mime_type: event[:mime_type],
+uploader:  event[:uploader],
+}.inspect}"
+end</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
 <div id='methods'>
 <h2>Public Class methods</h2>
 <div class='method public-class' id='method-method-c-configure'>
@@ -71,7 +90,7 @@ Shrine::Plugins::InferExtension
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension_inferrer</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:inferrer</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_inferrer</span>, <span class="ruby-value">:mime_types</span>))&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension_force</span>] = <span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:force</span>, <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-value">:infer_extension_force</span>, <span class="ruby-keyword">false</span>))&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb</span>&#x000A;<span class="line-num">16</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">inferrer:</span> <span class="ruby-value">:mime_types</span>, <span class="ruby-value">force:</span> <span class="ruby-keyword">false</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span> }&#x000A;<span class="line-num">18</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">19</span> &#x000A;<span class="line-num">20</span>   <span class="ruby-comment"># instrumentation plugin integration</span>&#x000A;<span class="line-num">21</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:subscribe</span>)&#x000A;<span class="line-num">22</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:extension</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension</span>][<span class="ruby-value">:log_subscriber</span>])&#x000A;<span class="line-num">23</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

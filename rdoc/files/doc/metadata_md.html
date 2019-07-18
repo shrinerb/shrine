@@ -30,7 +30,7 @@ doc/metadata.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 16:39:58 +0200</span>
+<span class='datetime'>2019-07-16 00:26:18 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -46,34 +46,42 @@ Last Update:
 
 <p>| Key | Default source | | :—– | :—— | | <code>filename</code> | extracted from <code>io.original_filename</code> or <code>io.path</code> | | <code>mime_type</code> | extracted from <code>io.content_type</code> | | <code>size</code> | extracted from <code>io.size</code> |</p>
 
-<p>Under the hood <code>Shrine#extract_metadata</code> is called, which you can also use directly to extract metadata from any IO object.</p>
+<p>You can access extracted metadata in three ways:</p>
+
+<pre class="ruby"><span class="ruby-comment"># via methods (if they&#39;re defined)</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">size</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span>&#x000A;&#x000A;<span class="ruby-comment"># via the metadata hash</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;size&quot;</span>]&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;filename&quot;</span>]&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]&#x000A;&#x000A;<span class="ruby-comment"># via the #[] operator</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>[<span class="ruby-string">&quot;size&quot;</span>]&#x000A;<span class="ruby-identifier">uploaded_file</span>[<span class="ruby-string">&quot;filename&quot;</span>]&#x000A;<span class="ruby-identifier">uploaded_file</span>[<span class="ruby-string">&quot;mime_type&quot;</span>]</pre>
+
+<p>Under the hood, <code>Shrine#upload</code> calls <code>Shrine#extract_metadata</code>, which you can also use directly to extract metadata from any IO object:</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">extract_metadata</span>(<span class="ruby-identifier">io</span>) <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   &quot;size&quot; =&gt; 345993,</span>&#x000A;<span class="ruby-comment">#   &quot;filename&quot; =&gt; &quot;matrix.mp4&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;mime_type&quot; =&gt; &quot;video/mp4&quot;,</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
-<p>By default these values are determined from the following attributes on the IO object:</p>
+<p><code>Shrine#upload</code> accepts a <code>:metadata</code> option which accepts the following values:</p>
 <ul><li>
-<p><code>filename</code> – <code>io.original_filename</code> or <code>io.path</code></p>
-</li><li>
-<p><code>mime_type</code> – <code>io.content_type</code></p>
-</li><li>
-<p><code>size</code> – <code>io.size</code></p>
-</li></ul>
-
-<p>Note that you can also manually add or override metadata on upload by passing the <code>:metadata</code> option to <code>Shrine#upload</code>:</p>
+<p><code>Hash</code> – adds/overrides extracted metadata with the given hash</p>
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> { <span class="ruby-string">&quot;filename&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;Matrix[1999].mp4&quot;</span>, <span class="ruby-string">&quot;foo&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;bar&quot;</span> })&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">original_filename</span> <span class="ruby-comment">#=&gt; &quot;Matrix[1999].mp4&quot;</span>&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-string">&quot;foo&quot;</span>]   <span class="ruby-comment">#=&gt; &quot;bar&quot;</span></pre>
+</li><li>
+<p><code>false</code> – skips metadata extraction (useful in tests)</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">metadata:</span> <span class="ruby-keyword">false</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt; {}</span></pre>
+</li><li>
+<p><code>true</code> – forces metadata extraction when a <code>Shrine::UploadedFile</code> is being uploaded (by default metadata is simply copied over)</p>
+
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">uploaded_file</span>, <span class="ruby-value">metadata:</span> <span class="ruby-keyword">true</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment"># re-extracted metadata</span></pre>
+</li></ul>
 
 <h2 id="label-MIME+type">MIME type<span><a href="#label-MIME+type">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>By default, the <code>mime_type</code> metadata will be copied over from the <code>#content_type</code> attribute of the input file, if present. However, since <code>#content_type</code> value comes from the <code>Content-Type</code> header of the upload request, it&#39;s <em>not guaranteed</em> to hold the actual MIME type of the file (browser determines this header based on file extension). Moreover, only <code>ActionDispatch::Http::UploadedFile</code> and <code>Shrine::Plugins::RackFile::UploadedFile</code> objects have <code>#content_type</code> defined, so when uploading simple file objects <code>mime_type</code> will be nil. That makes relying on <code>#content_type</code> both a security risk and limiting.</p>
+<p>By default, the <code>mime_type</code> metadata will be copied over from the <code>#content_type</code> attribute of the input file (if present). However, since <code>#content_type</code> value comes from the <code>Content-Type</code> header of the upload request, it&#39;s <em>not guaranteed</em> to hold the actual MIME type of the file (browser determines this header based on file extension). Moreover, only <code>ActionDispatch::Http::UploadedFile</code>, <code>Shrine::Plugins::RackFile::UploadedFile</code>, and <code>Shrine::Plugins::DataUri::DataFile</code> objects have <code>#content_type</code> defined, so, when uploading simple file objects, <code>mime_type</code> will be nil. That makes relying on <code>#content_type</code> both a security risk and limiting.</p>
 
-<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <code>determine_mime_type</code> plugin which is able to extract the MIME type from IO <em>content</em>. When you load it, the <code>mime_type</code> plugin will now be determined using the UNIX <a target="_top" href="http://linux.die.net/man/1/file">file</a> command.</p>
+<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span></pre>
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span></pre>
 
-<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;&lt;?php ... ?&gt;&quot;</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;text/x-php&quot;</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:determine_mime_type</span>, <span class="ruby-value">analyzer:</span> <span class="ruby-value">:marcel</span></pre>
 
-<p>The <code>file</code> command won&#39;t correctly determine the MIME type in all cases, that&#39;s why the <code>determine_mime_type</code> plugin comes with different MIME type analyzers. So, instead of the <code>file</code> command you can use gems like <a href="https://github.com/minad/mimemagic">MimeMagic</a> or <a href="https://github.com/basecamp/marcel">Marcel</a>, as well as mix-and-match the analyzers to suit your needs. See the plugin documentation for more details.</p>
+<pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;&lt;?php ... ?&gt;&quot;</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;application/x-php&quot;</span></pre>
+
+<p>You can choose different analyzers, and even mix-and-match them. See the <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> plugin docs for more details.</p>
 
 <h2 id="label-Image+Dimensions">Image Dimensions<span><a href="#label-Image+Dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -97,9 +105,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">video</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   ...</span>&#x000A;<span class="ruby-comment">#   &quot;duration&quot; =&gt; 7.5,</span>&#x000A;<span class="ruby-comment">#   &quot;bitrate&quot; =&gt; 481,</span>&#x000A;<span class="ruby-comment">#   &quot;resolution&quot; =&gt; &quot;640x480&quot;,</span>&#x000A;<span class="ruby-comment">#   &quot;frame_rate&quot; =&gt; 16.72</span>&#x000A;<span class="ruby-comment"># }</span></pre>
 
-<p>The yielded <code>io</code> object will not always be an object that responds to <code>#path</code>. If you&#39;re using the <code>data_uri</code> plugin, the <code>io</code> will be a <code>StringIO</code> wrapper. When the <code>restore_cached_data</code> plugin is loaded, any assigned cached file will get their metadata extracted, and <code>io</code> will be a <code>Shrine::UploadedFile</code> object. If you&#39;re using a metadata analyzer that requires the source file to be on disk, you can use <code>Shrine.with_file</code> to ensure you have a file object.</p>
-
-<p>Also, be aware that metadata is extracted before file validation, so you&#39;ll need to handle the cases where the file is not of expected type.</p>
+<p>The yielded <code>io</code> object will not always be an object that responds to <code>#path</code>. If you&#39;re using the <code>data_uri</code> plugin, the <code>io</code> will be a <code>StringIO</code> wrapper. With <code>restore_cached_data</code> or <code>refresh_metadata</code> plugins, <code>io</code> might be a <code>Shrine::UploadedFile</code> object. If you&#39;re using a metadata analyzer that requires the source file to be on disk, you can use <code>Shrine.with_file</code> to ensure you have a file object.</p>
 
 <h2 id="label-Metadata+columns">Metadata columns<span><a href="#label-Metadata+columns">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

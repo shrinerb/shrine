@@ -30,7 +30,7 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-03 11:54:21 +0200</span>
+<span class='datetime'>2019-07-05 17:53:14 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -122,7 +122,7 @@ Last Update:
 
 <p><code>Shrine::Attachment</code> is the highest level of abstraction. A <code>Shrine::Attachment</code> module exposes the <code>Shrine::Attacher</code> object through the model instance. The <code>Shrine::Attachment</code> class is a sublcass of <code>Module</code>, which means that an instance of <code>Shrine::Attachment</code> is a module:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Module</span>) <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">instance_methods</span> <span class="ruby-comment">#=&gt; [:image=, :image, :image_url, :image_attacher]</span>&#x000A;&#x000A;<span class="ruby-comment"># equivalents</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span>[<span class="ruby-value">:image</span>]</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Module</span>) <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">instance_methods</span> <span class="ruby-comment">#=&gt; [:image=, :image, :image_url, :image_attacher]</span>&#x000A;&#x000A;<span class="ruby-comment"># equivalents</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span>[<span class="ruby-value">:image</span>]</pre>
 
 <p>We can include this module to a model:</p>
 

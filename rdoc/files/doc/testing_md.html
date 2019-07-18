@@ -30,7 +30,7 @@ doc/testing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-05-20 13:27:02 +0200</span>
+<span class='datetime'>2019-07-10 23:57:19 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -60,25 +60,25 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-comment"># test/test_helper.rb</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/memory&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">Memory</span>.<span class="ruby-identifier">new</span>,&#x000A;}</pre>
 
-<p>If you&#39;re using AWS S3 storage, you can use <a href="https://minio.io">Minio</a> (explained below) instead of S3, both in test and development environment. Alternatively, you can <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub aws-sdk-s3 requests</a> in tests.</p>
+<p>If you&#39;re using AWS S3 storage, you can use <a href="https://min.io/">MinIO</a> (explained below) instead of S3, both in test and development environment. Alternatively, you can <a target="_top" href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub aws-sdk-s3 requests</a> in tests.</p>
 
-<h3 id="label-Minio">Minio<span><a href="#label-Minio">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<h3 id="label-MinIO">MinIO<span><a href="#label-MinIO">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p><a href="https://minio.io">Minio</a> is an open source object storage server with AWS S3 compatible API which you can run locally. The advantage of using Minio for your development and test environments is that all AWS S3 functionality should still continue to work, including direct uploads, so you don&#39;t need to update your code.</p>
+<p><a href="https://min.io/">MinIO</a> is an open source object storage server with AWS S3 compatible API which you can run locally. The advantage of using MinIO for your development and test environments is that all AWS S3 functionality should still continue to work, including direct uploads, so you don&#39;t need to update your code.</p>
 
 <p>If you&#39;re on a Mac you can install it with Homebrew:</p>
 
 <pre>$ brew install minio/stable/minio</pre>
 
-<p>Afterwards you can start the Minio server and give it a directory where it will store the data:</p>
+<p>Afterwards you can start the MinIO server and give it a directory where it will store the data:</p>
 
 <pre>$ minio server data/</pre>
 
-<p>This command will print out the credentials for the running Minio server, as well as a link to the Minio web interface. Follow that link and create a new bucket. Once you&#39;ve done that, you can configure <code>Shrine::Storage::S3</code> to use your Minio server:</p>
+<p>This command will print out the credentials for the running MinIO server, as well as a link to the MinIO web interface. Follow that link and create a new bucket. Once you&#39;ve done that, you can configure <code>Shrine::Storage::S3</code> to use your MinIO server:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;MINIO_ACCESS_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;AccessKey&quot; value</span>&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;&lt;MINIO_SECRET_KEY&gt;&quot;</span>, <span class="ruby-comment"># &quot;SecretKey&quot; value</span>&#x000A;  <span class="ruby-value">endpoint:</span>          <span class="ruby-string">&quot;&lt;MINIO_ENDPOINT&gt;&quot;</span>,   <span class="ruby-comment"># &quot;Endpoint&quot;  value</span>&#x000A;  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;&lt;MINIO_BUCKET&gt;&quot;</span>,     <span class="ruby-comment"># name of the bucket you created</span>&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;us-east-1&quot;</span>,&#x000A;  <span class="ruby-value">force_path_style:</span>  <span class="ruby-keyword">true</span>,&#x000A;)</pre>
 
-<p>The <code>:endpoint</code> option will make aws-sdk-s3 point all URLs to your Minio server (instead of <code>s3.amazonaws.com</code>), and <code>:force_path_style</code> tells it not to use subdomains when generating URLs.</p>
+<p>The <code>:endpoint</code> option will make aws-sdk-s3 point all URLs to your MinIO server (instead of <code>s3.amazonaws.com</code>), and <code>:force_path_style</code> tells it not to use subdomains when generating URLs.</p>
 
 <h2 id="label-Test+data">Test data<span><a href="#label-Test+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

@@ -52,7 +52,7 @@ Shrine::Plugins::AddMetadata::ClassMethods
 <a name='method-i-add_metadata'></a>
 <div class='synopsis'>
 <span class='name'>add_metadata</span>
-<span class='arguments'>(name = nil, **options, &block)</span>
+<span class='arguments'>(name = nil, &block)</span>
 
 </div>
 <div class='description'>
@@ -62,7 +62,7 @@ Shrine::Plugins::AddMetadata::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-add_metadata-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-add_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_metadata</span>(<span class="ruby-identifier">name</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span>, <span class="ruby-identifier">block</span>]&#x000A;<span class="line-num">16</span> &#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">metadata_method</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-add_metadata-source'>   <span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add_metadata</span>(<span class="ruby-identifier">name</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">opts</span>[<span class="ruby-value">:add_metadata_definitions</span>] <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">name</span>, <span class="ruby-identifier">block</span>]&#x000A;<span class="line-num">16</span> &#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">metadata_method</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-metadata_method'>

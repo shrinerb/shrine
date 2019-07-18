@@ -50,6 +50,7 @@ Shrine::Plugins::AddMetadata
 <h2>Classes and Modules</h2>
 <ol>
 <li><a href="AddMetadata/ClassMethods.html">Shrine::Plugins::AddMetadata::ClassMethods</a></li>
+<li><a href="AddMetadata/FileMethods.html">Shrine::Plugins::AddMetadata::FileMethods</a></li>
 <li><a href="AddMetadata/InstanceMethods.html">Shrine::Plugins::AddMetadata::InstanceMethods</a></li>
 </ol>
 </div>
@@ -70,7 +71,7 @@ Shrine::Plugins::AddMetadata
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-operator">||=</span> []&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/add_metadata.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:add_metadata_definitions</span>] <span class="ruby-operator">||=</span> []&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

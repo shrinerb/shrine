@@ -30,7 +30,7 @@ doc/carrierwave.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-03 12:24:06 +0200</span>
+<span class='datetime'>2019-07-16 00:32:29 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -303,9 +303,9 @@ Last Update:
 
 <h4 id="label-move_to_cache-2C+move_to_store"><code>move_to_cache</code>, <code>move_to_store</code><span><a href="#label-move_to_cache-2C+move_to_store">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> brings this functionality through the <code>moving</code> plugin.</p>
+<p>You can tell the <code>FileSystem</code> storage that it should move files by specifying the <code>:move</code> upload option:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:moving</span>, <span class="ruby-value">storages:</span> [<span class="ruby-value">:cache</span>]</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">cache:</span> { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> }, <span class="ruby-value">store:</span> { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> }</pre>
 
 <h4 id="label-validate_integrity-2C+ignore_integrity_errors"><code>validate_integrity</code>, <code>ignore_integrity_errors</code><span><a href="#label-validate_integrity-2C+ignore_integrity_errors">&para;</a> <a href="#top">&uarr;</a></span></h4>
 

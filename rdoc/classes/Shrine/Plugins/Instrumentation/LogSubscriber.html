@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::Instrumentation::LogSubscriber</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+Shrine::Plugins::Instrumentation::LogSubscriber
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/instrumentation_rb.html">lib/shrine/plugins/instrumentation.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<p>Logs received events.</p>
+</div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-call">call</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-on_delete">on_delete</a></li>
+<li><a href="#method-i-on_download">on_download</a></li>
+<li><a href="#method-i-on_exists">on_exists</a></li>
+<li><a href="#method-i-on_metadata">on_metadata</a></li>
+<li><a href="#method-i-on_upload">on_upload</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-call'>
+<a name='method-c-call'></a>
+<div class='synopsis'>
+<span class='name'>call</span>
+<span class='arguments'>(event)</span>
+
+</div>
+<div class='description'>
+
+<p>Entry point for logging.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-call-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">235</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">236</span>   <span class="ruby-identifier">new</span>.<span class="ruby-identifier">public_send</span>(<span class="ruby-value">:&quot;on_#{event.name}&quot;</span>, <span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">237</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-on_delete'>
+<a name='method-i-on_delete'></a>
+<div class='synopsis'>
+<span class='name'>on_delete</span>
+<span class='arguments'>(event)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-on_delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">266</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_delete</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">267</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Delete (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">268</span>     storage:  event[:storage],&#x000A;<span class="line-num">269</span>     location: event[:location],&#x000A;<span class="line-num">270</span>     uploader: event[:uploader],&#x000A;<span class="line-num">271</span>   )}&quot;</span>&#x000A;<span class="line-num">272</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-on_download'>
+<a name='method-i-on_download'></a>
+<div class='synopsis'>
+<span class='name'>on_download</span>
+<span class='arguments'>(event)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_download-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-on_download-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">249</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_download</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">250</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Download (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">251</span>     storage:          event[:storage],&#x000A;<span class="line-num">252</span>     location:         event[:location],&#x000A;<span class="line-num">253</span>     download_options: event[:download_options],&#x000A;<span class="line-num">254</span>     uploader:         event[:uploader],&#x000A;<span class="line-num">255</span>   )}&quot;</span>&#x000A;<span class="line-num">256</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-on_exists'>
+<a name='method-i-on_exists'></a>
+<div class='synopsis'>
+<span class='name'>on_exists</span>
+<span class='arguments'>(event)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_exists-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-on_exists-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">258</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_exists</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">259</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Exists (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">260</span>     storage:  event[:storage],&#x000A;<span class="line-num">261</span>     location: event[:location],&#x000A;<span class="line-num">262</span>     uploader: event[:uploader],&#x000A;<span class="line-num">263</span>   )}&quot;</span>&#x000A;<span class="line-num">264</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-on_metadata'>
+<a name='method-i-on_metadata'></a>
+<div class='synopsis'>
+<span class='name'>on_metadata</span>
+<span class='arguments'>(event)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_metadata-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-on_metadata-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">274</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_metadata</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">275</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Metadata (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">276</span>     storage:  event[:storage],&#x000A;<span class="line-num">277</span>     io:       event[:io].class,&#x000A;<span class="line-num">278</span>     uploader: event[:uploader],&#x000A;<span class="line-num">279</span>   )}&quot;</span>&#x000A;<span class="line-num">280</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-on_upload'>
+<a name='method-i-on_upload'></a>
+<div class='synopsis'>
+<span class='name'>on_upload</span>
+<span class='arguments'>(event)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-on_upload-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-on_upload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">239</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">on_upload</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">240</span>   <span class="ruby-identifier">log</span> <span class="ruby-node">&quot;Upload (#{event.duration}ms) – #{format(&#x000A;<span class="line-num">241</span>     storage:        event[:storage],&#x000A;<span class="line-num">242</span>     location:       event[:location],&#x000A;<span class="line-num">243</span>     io:             event[:io].class,&#x000A;<span class="line-num">244</span>     upload_options: event[:upload_options],&#x000A;<span class="line-num">245</span>     uploader:       event[:uploader],&#x000A;<span class="line-num">246</span>   )}&quot;</span>&#x000A;<span class="line-num">247</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

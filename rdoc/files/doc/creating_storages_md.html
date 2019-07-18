@@ -30,7 +30,7 @@ doc/creating_storages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-05-20 13:28:13 +0200</span>
+<span class='datetime'>2019-07-16 00:36:13 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -112,12 +112,6 @@ Last Update:
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">presign</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;    <span class="ruby-comment"># returns a Hash with :method, :url, :fields, and :headers keys</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <p>The storage can support additional options to customize how the presign will be generated, those can be forwarded via the <code>:presign_options</code> option on the <code>presign_endpoint</code> plugin.</p>
-
-<h2 id="label-Move">Move<span><a href="#label-Move">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>If your storage can move files, you can add the additional <code>#move</code> and <code>#movable?</code> methods, and they will automatically get used if the <code>moving</code> plugin is loaded.</p>
-
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">upload_options</span>)&#x000A;    <span class="ruby-comment"># does the moving of the `io` to the location `id`</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">movable?</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>)&#x000A;    <span class="ruby-comment"># whether the given `io` is movable to the location `id`</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Clear">Clear<span><a href="#label-Clear">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

@@ -37,6 +37,13 @@ Shrine::Plugins::Signature
 <div id='description'>
 <p>Documentation lives in <a href="https://github.com/shrinerb/shrine/blob/master/doc/plugins/signature.md">doc/plugins/signature.md</a> on GitHub.</p>
 </div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-configure">configure</a></li>
+</ol>
+</div>
 <div id='context'>
 </div>
 <div id='class-list'>
@@ -53,6 +60,20 @@ Shrine::Plugins::Signature
 <div class='name-list'>
 <table summary='Constants'>
 <tr class='top-aligned-row context-row'>
+<td class='context-item-name'>LOG_SUBSCRIBER</td>
+<td>=</td>
+<td class='context-item-value'>-> (event) do
+Shrine.logger.info "Signature (#{event.duration}ms) – #{{
+io:        event[:io].class,
+algorithm: event[:algorithm],
+format:    event[:format],
+uploader:  event[:uploader],
+}.inspect}"
+end</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
 <td class='context-item-name'>SUPPORTED_ALGORITHMS</td>
 <td>=</td>
 <td class='context-item-value'>SignatureCalculator::SUPPORTED_ALGORITHMS</td>
@@ -67,6 +88,26 @@ Shrine::Plugins::Signature
 <td class='context-item-desc'></td>
 </tr>
 </table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(uploader, opts = {})</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/signature.rb</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">19</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:signature</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span> }&#x000A;<span class="line-num">20</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:signature</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">21</span> &#x000A;<span class="line-num">22</span>   <span class="ruby-comment"># instrumentation plugin integration</span>&#x000A;<span class="line-num">23</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:subscribe</span>)&#x000A;<span class="line-num">24</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:signature</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:signature</span>][<span class="ruby-value">:log_subscriber</span>])&#x000A;<span class="line-num">25</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">26</span> <span class="ruby-keyword">end</span></pre>
+</div>
 </div>
 </div>
 </div>
