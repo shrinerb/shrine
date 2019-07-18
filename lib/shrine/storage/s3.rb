@@ -17,6 +17,8 @@ class Shrine
     class S3
       attr_reader :client, :bucket, :prefix, :upload_options, :signer, :public
 
+      MULTIPART_THRESHOLD = { upload: 15*1024*1024, copy: 100*1024*1024 }
+
       # Initializes a storage for uploading to S3. All options are forwarded to
       # [`Aws::S3::Client#initialize`], except the following:
       #
@@ -57,17 +59,11 @@ class Shrine
       def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
         raise ArgumentError, "the :bucket option is nil" unless bucket
 
-        if multipart_threshold.is_a?(Integer)
-          Shrine.deprecation("Accepting the :multipart_threshold S3 option as an integer is deprecated, use a hash with :upload and :copy keys instead, e.g. {upload: 15*1024*1024, copy: 150*1024*1024}")
-          multipart_threshold = { upload: multipart_threshold }
-        end
-        multipart_threshold = { upload: 15*1024*1024, copy: 100*1024*1024 }.merge(multipart_threshold)
-
         @client = client || Aws::S3::Client.new(**s3_options)
         @bucket = Aws::S3::Bucket.new(name: bucket, client: @client)
         @prefix = prefix
         @upload_options = upload_options
-        @multipart_threshold = multipart_threshold
+        @multipart_threshold = MULTIPART_THRESHOLD.merge(multipart_threshold)
         @signer = signer
         @public = public
       end

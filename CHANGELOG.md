@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `s3` – Remove support for specifying `:multipart_threshold` as an integer (@janko)
+
 * `s3` – Remove `:host` option on `S3#initialize` (@janko)
 
 * `s3` – Drop support for `aws-sdk-s3` versions lower than 1.14 (@janko)
