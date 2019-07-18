@@ -40,13 +40,14 @@ plugin :pretty_location, identifier: :email
 # "user/foo@bar.com/profile_picture/493g82jf23.jpg"
 ```
 
-For a more custom identifier logic, you can overwrite the method `generate_location`
-and call `pretty_location` with the identifier you have calculated.
+For a more custom identifier logic, you can overwrite the method
+`#generate_location` and call `#pretty_location` with the identifier you have
+calculated.
 
 ```rb
-def generate_location(io, context)
-  identifier = context[:record].email if context[:record].is_a?(User)
-  pretty_location(io, context, identifier: identifier)
+def generate_location(io, record: nil, **context)
+  identifier = record.email if record.is_a?(User)
+  pretty_location(io, record: record, identifier: identifier, **context)
 end
 ```
 
