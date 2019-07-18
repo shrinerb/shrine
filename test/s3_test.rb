@@ -63,14 +63,6 @@ describe Shrine::Storage::S3 do
     end
   end
 
-  describe "#s3" do
-    deprecated "returns the deprecated Aws::S3::Resource object" do
-      resource = @s3.s3
-      assert_instance_of Aws::S3::Resource, resource
-      assert_equal resource.client, @s3.client
-    end
-  end
-
   describe "#upload" do
     describe "on IO object with size" do
       it "uploads in a single request" do

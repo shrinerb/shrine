@@ -68,12 +68,6 @@ class Shrine
         @public = public
       end
 
-      # Returns an `Aws::S3::Resource` object.
-      def s3
-        Shrine.deprecation("Shrine::Storage::S3#s3 that returns an Aws::S3::Resource is deprecated, use Shrine::Storage::S3#client which returns an Aws::S3::Client object.")
-        Aws::S3::Resource.new(client: @client)
-      end
-
       # If the file is an UploadedFile from S3, issues a COPY command, otherwise
       # uploads the file. For files larger than `:multipart_threshold` a
       # multipart upload/copy will be used for better performance and more
