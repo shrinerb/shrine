@@ -185,7 +185,7 @@ class Shrine
         if method == :post
           presigned_post = object(id).presigned_post(options)
 
-          Struct.new(:method, :url, :fields).new(method, presigned_post.url, presigned_post.fields)
+          { method: method, url: presigned_post.url, fields: presigned_post.fields }
         else
           url = object(id).presigned_url(method, options)
 
