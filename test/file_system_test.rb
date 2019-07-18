@@ -125,6 +125,10 @@ describe Shrine::Storage::FileSystem do
 
       assert_equal "file", @storage.open("foo.jpg").read
     end
+
+    deprecated "ignores extra options" do
+      @storage.upload(fakeio, "foo.jpg", foo: "bar")
+    end
   end
 
   describe "#movable?" do
