@@ -140,17 +140,7 @@ class Shrine
         data = storage.presign(location, options)
       end
 
-      if data.respond_to?(:to_h)
-        { fields: {}, headers: {} }.merge(data.to_h)
-      else
-        Shrine.deprecation("Returning a custom object in Storage#presign is deprecated, presign_endpoint will not support it in Shrine 3. Storage#presign should return a Hash instead.")
-
-        url     = data.url
-        fields  = data.fields
-        headers = data.headers if data.respond_to?(:headers)
-
-        { url: url, fields: fields.to_h, headers: headers.to_h }
-      end
+      { fields: {}, headers: {} }.merge(data.to_h)
     end
 
     # Transforms the presign hash into a JSON response. It returns a Rack

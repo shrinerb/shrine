@@ -130,7 +130,8 @@ option:
 
 ```rb
 plugin :presign_endpoint, presign: -> (id, options, request) do
-  # return a Hash with :url, :fields, and :headers keys
+  # return a Hash with :method, :url, :fields, and :headers keys
+  Shrine.storages[:cache].presign(id, options)
 end
 ```
 

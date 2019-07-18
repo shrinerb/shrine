@@ -85,16 +85,6 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal Hash.new,     response.body_json["headers"]
   end
 
-  deprecated "supports presign as a custom object" do
-    @shrine.plugin :presign_endpoint,
-      presign_options: { content_type: "image/jpeg" },
-      presign: -> (i, o, r) { Object.new.tap { |o| def o.url; "foo"; end; def o.fields; {}; end } }
-    response = app.get "/"
-    assert_match "foo",    response.body_json["url"]
-    assert_equal Hash.new, response.body_json["fields"]
-    assert_equal Hash.new, response.body_json["headers"]
-  end
-
   it "accepts response proc" do
     @shrine.plugin :presign_endpoint, rack_response: -> (o, r) do
       [200, {"Content-Type" => "application/vnd.api+json"}, [{data: o}.to_json]]

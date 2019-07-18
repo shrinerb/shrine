@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `presign_endpoint` – Drop support for presign objects that don't respond to `#to_h` (@janko)
+
 * `s3` – Return a Hash in `S3#presign` when method is POST (@janko)
 
 * `s3` – Remove `:download` option in `S3#url` (@janko)
