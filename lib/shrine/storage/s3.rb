@@ -9,7 +9,6 @@ require "down/chunked_io"
 require "content_disposition"
 
 require "uri"
-require "cgi"
 require "tempfile"
 
 class Shrine
@@ -86,8 +85,6 @@ class Shrine
         options.merge!(@upload_options)
         options.merge!(upload_options)
 
-        options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
-
         if copyable?(io)
           copy(io, id, **options)
         else
@@ -142,7 +139,6 @@ class Shrine
           Shrine.deprecation("The :download option in Shrine::Storage::S3#url is deprecated and will be removed in Shrine 3. Use the :response_content_disposition option directly, e.g. `response_content_disposition: \"attachment\"`.")
           options[:response_content_disposition] ||= "attachment"
         end
-        options[:response_content_disposition] = encode_content_disposition(options[:response_content_disposition]) if options[:response_content_disposition]
 
         if public || signer
           url = object(id).public_url(**options)
@@ -190,8 +186,6 @@ class Shrine
 
         options.merge!(@upload_options)
         options.merge!(presign_options)
-
-        options[:content_disposition] = encode_content_disposition(options[:content_disposition]) if options[:content_disposition]
 
         if method == :post
           presigned_post = object(id).presigned_post(options)
@@ -320,20 +314,6 @@ class Shrine
         objects.each_slice(1000) do |objects_batch|
           delete_params = { objects: objects_batch.map { |object| { key: object.key } } }
           bucket.delete_objects(delete: delete_params)
-        end
-      end
-
-      # Upload requests will fail if filename has non-ASCII characters, because
-      # of how S3 generates signatures, so we URI-encode them. Most browsers
-      # should automatically URI-decode filenames when downloading.
-      def encode_content_disposition(content_disposition)
-        content_disposition.sub(/(?<=filename=").+(?=")/) do |filename|
-          if filename =~ /[^[:ascii:]]/
-            Shrine.deprecation("Shrine::Storage::S3 will not escape characters in the filename for Content-Disposition header in Shrine 3. Use the content_disposition gem, for example `ContentDisposition.format(disposition: 'inline', filename: '...')`.")
-            CGI.escape(filename).gsub("+", " ")
-          else
-            filename
-          end
         end
       end
 

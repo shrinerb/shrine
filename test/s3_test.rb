@@ -4,7 +4,6 @@ require "shrine/storage/s3"
 require "shrine/storage/file_system"
 
 require "stringio"
-require "cgi"
 require "tmpdir"
 require "fileutils"
 require "uri"
@@ -331,11 +330,6 @@ describe Shrine::Storage::S3 do
       assert_equal ContentDisposition.inline("file.txt"), @s3.client.api_requests[0][:params][:content_disposition]
     end
 
-    deprecated "accepts :content_disposition with non-ASCII characters, quotes, and spaces" do
-      @s3.upload(fakeio, "foo", content_disposition: 'inline; filename=""été foo bar.pdf""')
-      assert_equal "inline; filename=\"\"été foo bar.pdf\"\"", CGI.unescape(@s3.client.api_requests[0][:params][:content_disposition])
-    end
-
     it "applies default upload options" do
       @s3 = s3(upload_options: { content_type: "foo/bar" })
       @s3.upload(fakeio, "foo")
@@ -484,13 +478,6 @@ describe Shrine::Storage::S3 do
 
       url = @s3.url("foo", host: "https://123.cloudfront.net", bar: "baz")
       assert_equal "https://123.cloudfront.net/foo?bar=baz", url
-    end
-
-    deprecated "encodes non-ASCII characters, quotes, and spaces in :content_disposition" do
-      url = @s3.url("foo", response_content_disposition: 'inline; filename=""été foo bar.pdf""')
-      unescaped_query = CGI.unescape(URI(url).query.force_encoding("UTF-8"))
-      assert_includes unescaped_query, 'filename="%22%C3%A9t%C3%A9 foo bar.pdf%22"'
-      assert_includes CGI.unescape(unescaped_query), "inline; filename=\"\"été foo bar.pdf\"\""
     end
   end
 
