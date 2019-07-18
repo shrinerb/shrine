@@ -9,7 +9,6 @@ require "down/chunked_io"
 require "content_disposition"
 
 require "uri"
-require "tempfile"
 
 class Shrine
   module Storage
@@ -238,25 +237,11 @@ class Shrine
 
       # Uploads the file to S3. Uses multipart upload for large files.
       def put(io, id, **options)
-        if (path = extract_path(io))
-          # use `upload_file` for files because it can do multipart upload
-          options = { multipart_threshold: @multipart_threshold[:upload] }.merge!(options)
-          object(id).upload_file(path, **options)
-        else
-          io.to_io if io.is_a?(UploadedFile) # open if not already opened
-
-          if io.respond_to?(:size) && io.size && (io.size <= @multipart_threshold[:upload] || !object(id).respond_to?(:upload_stream))
-            object(id).put(body: io, **options)
-          elsif object(id).respond_to?(:upload_stream)
-            # `upload_stream` uses multipart upload
-            object(id).upload_stream(tempfile: true, **options) do |write_stream|
-              IO.copy_stream(io, write_stream)
-            end
-          else
-            Tempfile.create("shrine-s3", binmode: true) do |file|
-              IO.copy_stream(io, file.path)
-              object(id).upload_file(file.path, **options)
-            end
+        if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
+          object(id).put(body: io, **options)
+        else # multipart upload
+          object(id).upload_stream(**options) do |write_stream|
+            IO.copy_stream(io, write_stream)
           end
         end
       end
@@ -276,14 +261,6 @@ class Shrine
         )
 
         object.instance_variable_set(:@data, response.data)
-      end
-
-      def extract_path(io)
-        if io.respond_to?(:path)
-          io.path
-        elsif io.is_a?(UploadedFile) && defined?(Storage::FileSystem) && io.storage.is_a?(Storage::FileSystem)
-          io.storage.path(io.id).to_s
-        end
       end
 
       # The file is copyable if it's on S3 and on the same Amazon account.

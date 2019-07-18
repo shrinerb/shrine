@@ -63,15 +63,14 @@ describe Shrine::Storage::S3 do
   end
 
   describe "#upload" do
-    describe "on IO object with size" do
-      it "uploads in a single request" do
-        @s3.upload(fakeio("content"), "foo", acl: "public-read")
+    describe "simple upload" do
+      it "is performed on IO with size under multipart threshold" do
+        @s3.upload(fakeio("content"), "foo")
         assert_equal 1, @s3.client.api_requests.size
 
         assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
         assert_instance_of FakeIO,  @s3.client.api_requests[0][:params][:body]
         assert_equal "foo",         @s3.client.api_requests[0][:params][:key]
-        assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
       end
 
       it "respects :prefix" do
@@ -81,87 +80,50 @@ describe Shrine::Storage::S3 do
       end
     end
 
-    describe "on file object" do
-      it "uploads in a single request if small" do
-        @s3.upload(tempfile("content"), "foo", acl: "public-read")
-        assert_equal 1, @s3.client.api_requests.size
+    describe "multipart upload" do
+      it "is used when object has unknown size" do
+        io = fakeio("a" * 6*1024*1024)
+        io.instance_eval { undef size }
 
-        assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
-        assert_instance_of File,    @s3.client.api_requests[0][:params][:body]
-        assert_equal "foo",         @s3.client.api_requests[0][:params][:key]
-        assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
-      end
+        @s3.upload(io, "foo")
 
-      it "uploads in multipart requests if large" do
+        assert_equal [
+          :create_multipart_upload,
+          :upload_part,
+          :upload_part,
+          :complete_multipart_upload,
+        ], @s3.client.api_requests.map { |r| r[:operation_name] }
+      end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
+
+      it "is used when object has nil size" do
+        io = fakeio("a" * 6*1024*1024)
+        io.instance_eval { def size; nil; end }
+
+        @s3.upload(io, "foo")
+
+        assert_equal [
+          :create_multipart_upload,
+          :upload_part,
+          :upload_part,
+          :complete_multipart_upload,
+        ], @s3.client.api_requests.map { |r| r[:operation_name] }
+      end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
+
+      it "is used when object has size larger than multipart threshold" do
         @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
-        @s3.upload(tempfile("a" * 6*1024*1024), "foo", acl: "public-read")
-        assert_equal 4, @s3.client.api_requests.size
+        @s3.upload(fakeio("a" * 6*1024*1024), "foo")
 
-        assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[0][:params][:key]
-        assert_equal "public-read",              @s3.client.api_requests[0][:params][:acl]
-
-        assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
-
-        assert_equal :upload_part,               @s3.client.api_requests[2][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
-
-        assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
+        assert_equal [
+          :create_multipart_upload,
+          :upload_part,
+          :upload_part,
+          :complete_multipart_upload,
+        ], @s3.client.api_requests.map { |r| r[:operation_name] }
       end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
 
       it "respects :prefix" do
-        @s3 = s3(prefix: "prefix")
-        @s3.upload(tempfile("content"), "foo")
-        assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
-      end
-    end
-
-    describe "on filesystem file" do
-      before do
-        @shrine.storages[:filesystem] = Shrine::Storage::FileSystem.new("#{Dir.tmpdir}/shrine")
-      end
-
-      after do
-        FileUtils.rm_rf("#{Dir.tmpdir}/shrine")
-      end
-
-      it "uploads in a single request if small" do
-        uploaded_file = @shrine.new(:filesystem).upload(fakeio)
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
-        assert_equal 1, @s3.client.api_requests.size
-
-        assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
-        assert_instance_of File,    @s3.client.api_requests[0][:params][:body]
-        assert_equal "foo",         @s3.client.api_requests[0][:params][:key]
-        assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
-      end
-
-      it "uploads in multipart requests if large" do
-        @s3 = s3(multipart_threshold: { upload: 5*1024*1024 })
-        uploaded_file = @shrine.new(:filesystem).upload(fakeio("a" * 6*1024*1024))
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
-        assert_equal 4, @s3.client.api_requests.size
-
-        assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[0][:params][:key]
-        assert_equal "public-read",              @s3.client.api_requests[0][:params][:acl]
-
-        assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
-
-        assert_equal :upload_part,               @s3.client.api_requests[2][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
-
-        assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
-        assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
-      end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
-
-      it "respects :prefix" do
-        @s3 = s3(prefix: "prefix")
-        uploaded_file = @shrine.new(:filesystem).upload(fakeio)
-        @s3.upload(uploaded_file, "foo")
+        @s3 = s3(multipart_threshold: { upload: 1}, prefix: "prefix")
+        @s3.upload(fakeio, "foo")
         assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
       end
     end
@@ -232,94 +194,6 @@ describe Shrine::Storage::S3 do
       end
     end
 
-    describe "on other uploaded file" do
-      before do
-        @shrine.storages[:test] = Shrine::Storage::Test.new
-      end
-
-      it "uploads in a single request" do
-        uploaded_file = @shrine.new(:test).upload(fakeio)
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
-        assert_equal 1, @s3.client.api_requests.size
-        assert_equal :put_object,   @s3.client.api_requests[0][:operation_name]
-        assert_equal "foo",         @s3.client.api_requests[0][:params][:key]
-        assert_equal uploaded_file, @s3.client.api_requests[0][:params][:body]
-      end
-
-      it "respects :prefix" do
-        uploaded_file = @shrine.new(:test).upload(fakeio)
-        @s3 = s3(prefix: "prefix")
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
-        assert_equal :put_object,  @s3.client.api_requests[0][:operation_name]
-        assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
-      end
-    end
-
-    describe "on IO object with unknown size" do
-      it "uses multipart upload" do
-        ios = [
-          fakeio("a" * 6*1024*1024).tap { |io| io.instance_eval { undef size } },
-          fakeio("a" * 6*1024*1024).tap { |io| io.instance_eval { def size; nil; end } },
-        ]
-
-        ios.each do |io|
-          @s3 = s3
-          @s3.upload(io, "foo", acl: "public-read")
-          assert_equal 4, @s3.client.api_requests.size
-
-          assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
-          assert_equal "foo",                      @s3.client.api_requests[0][:params][:key]
-          assert_equal "public-read",              @s3.client.api_requests[0][:params][:acl]
-
-          assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
-          assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
-
-          assert_equal :upload_part,               @s3.client.api_requests[2][:operation_name]
-          assert_equal "foo",                      @s3.client.api_requests[2][:params][:key]
-
-          assert_equal :complete_multipart_upload, @s3.client.api_requests[3][:operation_name]
-          assert_equal "foo",                      @s3.client.api_requests[3][:params][:key]
-        end
-      end unless RUBY_ENGINE == "jruby" # randomly fails on JRuby
-
-      it "aborts multipart upload on exceptions" do
-        @s3.client.stub_responses(:create_multipart_upload, { upload_id: "upload_id" })
-        @s3.client.stub_responses(:upload_part, "NetworkError")
-        io = fakeio.tap { |io| io.instance_eval { undef size } }
-        assert_raises(Aws::S3::MultipartUploadError) { @s3.upload(io, "foo") }
-        assert_equal 3, @s3.client.api_requests.size
-
-        assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
-
-        assert_equal :upload_part,               @s3.client.api_requests[1][:operation_name]
-
-        assert_equal :abort_multipart_upload,    @s3.client.api_requests[2][:operation_name]
-        assert_equal "upload_id",                @s3.client.api_requests[2][:params][:upload_id]
-      end
-
-      it "propagates exceptions when creating multipart upload" do
-        @s3.client.stub_responses(:create_multipart_upload, "NetworkError")
-        io = fakeio.tap { |io| io.instance_eval { undef size } }
-        assert_raises(Aws::S3::Errors::NetworkError) { @s3.upload(io, "foo") }
-      end
-
-      it "respects :prefix" do
-        @s3 = s3(prefix: "prefix")
-        @s3.upload(fakeio, "foo")
-        assert_equal "prefix/foo", @s3.client.api_requests[0][:params][:key]
-      end
-
-      it "respects :public" do
-        @s3 = s3(public: true)
-
-        @s3.upload(fakeio, "foo")
-        assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
-
-        @s3.upload(fakeio, "foo", acl: "public-read-write")
-        assert_equal "public-read-write", @s3.client.api_requests[1][:params][:acl]
-      end
-    end
-
     it "forwards mime_type metadata" do
       @s3.upload(fakeio, "foo", shrine_metadata: { "mime_type" => "foo/bar" })
       assert_equal "foo/bar", @s3.client.api_requests[0][:params][:content_type]
@@ -328,6 +202,16 @@ describe Shrine::Storage::S3 do
     it "forwards filename metadata" do
       @s3.upload(fakeio, "foo", shrine_metadata: { "filename" => "file.txt" })
       assert_equal ContentDisposition.inline("file.txt"), @s3.client.api_requests[0][:params][:content_disposition]
+    end
+
+    it "respects :public option" do
+      @s3 = s3(public: true)
+
+      @s3.upload(fakeio, "foo")
+      assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
+
+      @s3.upload(fakeio, "foo", acl: "public-read-write")
+      assert_equal "public-read-write", @s3.client.api_requests[1][:params][:acl]
     end
 
     it "applies default upload options" do
