@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
+gem "aws-sdk-s3", "~> 1.14"
+
 require "shrine"
 require "aws-sdk-s3"
-if Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.2.0")
-  raise "Shrine::Storage::S3 requires aws-sdk-s3 version 1.2.0 or above"
-elsif Gem::Version.new(Aws::S3::GEM_VERSION) < Gem::Version.new("1.14.0")
-  Shrine.deprecation("Using aws-sdk-s3 < 1.14 is deprecated and support for it will be removed in Shrine 3. Update to aws-sdk-s3 version 1.14 or higher")
-end
 
 require "down/chunked_io"
 require "content_disposition"
