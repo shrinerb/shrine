@@ -15,7 +15,7 @@ require "tempfile"
 class Shrine
   module Storage
     class S3
-      attr_reader :client, :bucket, :prefix, :host, :upload_options, :signer, :public
+      attr_reader :client, :bucket, :prefix, :upload_options, :signer, :public
 
       # Initializes a storage for uploading to S3. All options are forwarded to
       # [`Aws::S3::Client#initialize`], except the following:
@@ -54,10 +54,8 @@ class Shrine
       # [`Aws::S3::Bucket#presigned_post`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method
       # [`Aws::S3::Client#initialize`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#initialize-instance_method
       # [configuring AWS SDK]: https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/setup-config.html
-      def initialize(bucket:, client: nil, prefix: nil, host: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
+      def initialize(bucket:, client: nil, prefix: nil, upload_options: {}, multipart_threshold: {}, signer: nil, public: nil, **s3_options)
         raise ArgumentError, "the :bucket option is nil" unless bucket
-
-        Shrine.deprecation("The :host option to Shrine::Storage::S3#initialize is deprecated and will be removed in Shrine 3. Pass :host to S3#url instead, you can also use default_url_options plugin.") if host
 
         if multipart_threshold.is_a?(Integer)
           Shrine.deprecation("Accepting the :multipart_threshold S3 option as an integer is deprecated, use a hash with :upload and :copy keys instead, e.g. {upload: 15*1024*1024, copy: 150*1024*1024}")
@@ -68,7 +66,6 @@ class Shrine
         @client = client || Aws::S3::Client.new(**s3_options)
         @bucket = Aws::S3::Bucket.new(name: bucket, client: @client)
         @prefix = prefix
-        @host = host
         @upload_options = upload_options
         @multipart_threshold = multipart_threshold
         @signer = signer
@@ -150,7 +147,7 @@ class Shrine
       #
       # [`Aws::S3::Object#presigned_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method
       # [`Aws::S3::Object#public_url`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#public_url-instance_method
-      def url(id, download: nil, public: self.public, host: self.host, **options)
+      def url(id, download: nil, public: self.public, host: nil, **options)
         if download
           Shrine.deprecation("The :download option in Shrine::Storage::S3#url is deprecated and will be removed in Shrine 3. Use the :response_content_disposition option directly, e.g. `response_content_disposition: \"attachment\"`.")
           options[:response_content_disposition] ||= "attachment"
