@@ -226,15 +226,6 @@ class Shrine
         bucket.object([*prefix, id].join("/"))
       end
 
-      # Catches the deprecated `#download` and `#stream` methods.
-      def method_missing(name, *args, &block)
-        case name
-        when :download then deprecated_download(*args, &block)
-        else
-          super
-        end
-      end
-
       private
 
       # Copies an existing S3 object to a new location. Uses multipart copy for
@@ -309,23 +300,6 @@ class Shrine
           delete_params = { objects: objects_batch.map { |object| { key: object.key } } }
           bucket.delete_objects(delete: delete_params)
         end
-      end
-
-      def deprecated_download(id, **options)
-        Shrine.deprecation("Shrine::Storage::S3#download is deprecated over S3#open.")
-
-        tempfile = Tempfile.new(["shrine-s3", File.extname(id)], binmode: true)
-        data = object(id).get(response_target: tempfile, **options)
-        tempfile.content_type = data.content_type
-        tempfile.tap(&:open)
-      rescue
-        tempfile.close! if tempfile
-        raise
-      end
-
-      # Tempfile with #content_type accessor which represents downloaded files.
-      class Tempfile < ::Tempfile
-        attr_accessor :content_type
       end
     end
   end
