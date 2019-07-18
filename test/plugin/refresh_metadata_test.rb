@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/refresh_metadata"
+require "dry-monitor"
 
 describe Shrine::Plugins::RefreshMetadata do
   before do
@@ -56,5 +57,17 @@ describe Shrine::Plugins::RefreshMetadata do
     uploaded_file.refresh_metadata!
     assert_empty data["metadata"]
     refute_empty uploaded_file.data["metadata"]
+  end
+
+  it "triggers metadata event" do
+    @shrine.plugin :instrumentation,
+      notifications: Dry::Monitor::Notifications.new(:test),
+      log_events: %i[metadata]
+
+    uploaded_file = @uploader.upload(fakeio)
+
+    assert_logged /^Metadata/ do
+      uploaded_file.refresh_metadata!
+    end
   end
 end
