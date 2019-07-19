@@ -15,8 +15,6 @@ class Shrine
         uploader.opts[:download_endpoint] ||= { disposition: "inline", download_options: {} }
         uploader.opts[:download_endpoint].merge!(opts)
 
-        Shrine.deprecation("The :storages download_endpoint option is deprecated, you should use UploadedFile#download_url for generating URLs to the download endpoint.") if uploader.opts[:download_endpoint][:storages]
-
         uploader.assign_download_endpoint(App) unless uploader.const_defined?(:DownloadEndpoint)
       end
 
@@ -52,27 +50,9 @@ class Shrine
       end
 
       module FileMethods
-        # Constructs the URL from the optional host, prefix, storage key and
-        # uploaded file's id. For other uploaded files that aren't in the list
-        # of storages it just returns their original URL.
-        def url(**options)
-          if download_storages && download_storages.include?(storage_key.to_sym)
-            Shrine.deprecation("The :storages option for download_endpoint plugin is deprecated and will be obsolete in Shrine 3. Use UploadedFile#download_url instead.")
-            download_url
-          else
-            super
-          end
-        end
-
         # Returns file URL on the download endpoint.
         def download_url(**options)
           FileUrl.new(self).call(**options)
-        end
-
-        private
-
-        def download_storages
-          shrine_class.opts[:download_endpoint][:storages]
         end
       end
 

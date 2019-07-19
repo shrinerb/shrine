@@ -147,14 +147,6 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal @uploaded_file.read, response.body_binary
   end
 
-  deprecated "supports :storages option" do
-    @shrine.plugin :download_endpoint, storages: [:cache]
-    cached_file = @shrine.new(:cache).upload(fakeio)
-    stored_file = @shrine.new(:store).upload(fakeio)
-    assert_match %r{^/\w+$},         cached_file.url
-    assert_match %r{^memory://\w+$}, stored_file.url
-  end
-
   deprecated "adds DownloadEndpoint constant" do
     assert_respond_to @shrine::DownloadEndpoint, :call
   end
