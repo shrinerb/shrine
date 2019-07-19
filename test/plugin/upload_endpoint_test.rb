@@ -227,8 +227,4 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal "#<#{@shrine}::UploadEndpoint(:cache)>", endpoint.inspect
     assert_equal "#<#{@shrine}::UploadEndpoint(:cache)>", endpoint.to_s
   end
-
-  deprecated "still defines Plugins::UploadEndpoint::App" do
-    assert_equal @shrine::UploadEndpoint, @shrine::Plugins::UploadEndpoint::App
-  end
 end

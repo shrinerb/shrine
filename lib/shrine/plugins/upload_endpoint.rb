@@ -212,8 +212,4 @@ class Shrine
       @shrine_class.new(@storage_key)
     end
   end
-
-  # backwards compatibility
-  Plugins::UploadEndpoint.const_set(:App, UploadEndpoint)
-  Plugins::UploadEndpoint.deprecate_constant(:App)
 end

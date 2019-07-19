@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `upload_endpoint` – Remove deprecated `Shrine::Plugins::UploadEndpoint::App` constant (@janko)
+
 * `determine_mime_type` – Remove `Shrine#mime_type_analyzers` method (@janko)
 
 * `store_dimensions` – Remove `Shrine#extract_dimensions` and `Shrine#dimensions_analyzers` methods (@janko)
