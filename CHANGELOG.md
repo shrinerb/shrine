@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `file_system` – Remove deprecated `:older_than` option in `FileSystem#clear!` (@janko)
+
 * `file_system` – Don't accept a block anymore in `FileSystem#open` (@janko)
 
 * `file_system` – Remove deprecated `FileSystem#download` method (@janko)

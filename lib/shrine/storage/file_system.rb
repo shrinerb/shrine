@@ -92,15 +92,10 @@ class Shrine
       #
       #     file_system.clear! # deletes all files and subdirectories in the storage directory
       #     file_system.clear! { |path| path.mtime < Time.now - 7*24*60*60 } # deletes only files older than 1 week
-      def clear!(older_than: nil, &condition)
-        if older_than || condition
+      def clear!(&condition)
+        if condition
           list_files(directory) do |path|
-            if older_than
-              Shrine.deprecation("The :older_than option to FileSystem#clear! is deprecated and will be removed in Shrine 3. You should use a block instead, e.g. `storage.clear! { |path| path.mtime < Time.now - 7*24*60*60 }`.")
-              next unless path.mtime < older_than
-            else
-              next unless condition.call(path)
-            end
+            next unless condition.call(path)
             path.delete
             clean(path) if clean?
           end
