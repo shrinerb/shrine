@@ -18,14 +18,14 @@ class Shrine
         uploader.opts[:store_dimensions].merge!(opts)
 
         # resolve error strategy
-        case uploader.opts[:store_dimensions][:on_error]
-        when :fail
-          uploader.opts[:store_dimensions][:on_error] = -> (error) { fail error }
-        when :warn
-          uploader.opts[:store_dimensions][:on_error] = -> (error) { Shrine.warn "Error occurred when attempting to extract image dimensions: #{error.inspect}" }
-        when :ignore
-          uploader.opts[:store_dimensions][:on_error] = -> (error) { }
-        end
+        uploader.opts[:store_dimensions][:on_error] =
+          case uploader.opts[:store_dimensions][:on_error]
+          when :fail   then -> (error) { fail error }
+          when :warn   then -> (error) { Shrine.warn "Error occurred when attempting to extract image dimensions: #{error.inspect}" }
+          when :ignore then -> (error) { }
+          else
+            uploader.opts[:store_dimensions][:on_error]
+          end
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
