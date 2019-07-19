@@ -933,11 +933,17 @@ Some plugins add their own instrumentation as well when they detect that the
 | `data_uri`            | instruments data URI parsing            |
 
 For instrumentation, warnings, and other logging, Shrine uses its internal
-logger. You can tell Shrine to use a different logger, for example if you're
-using Rails:
+logger. You can tell Shrine to use a different logger. For example, if you're
+using Rails, you might want to tell it to use the Rails logger:
 
 ```rb
 Shrine.logger = Rails.logger
+```
+
+In tests you might want to tell Shrine to log only warnings:
+
+```rb
+Shrine.logger.level = Logger::WARN
 ```
 
 ## Inspiration
