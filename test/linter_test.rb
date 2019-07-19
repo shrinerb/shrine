@@ -3,7 +3,7 @@ require "shrine/storage/linter"
 
 describe Shrine::Storage::Linter do
   before do
-    @storage = Shrine::Storage::Test.new
+    @storage = Shrine::Storage::Memory.new
     @linter = Shrine::Storage::Linter.new(@storage)
   end
 

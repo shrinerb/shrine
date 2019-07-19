@@ -15,18 +15,18 @@ describe Shrine::Plugins::DynamicStorage do
   end
 
   it "allows saved storage resolvers to be inherited" do
-    @shrine.storage(/store/) { |match| Shrine::Storage::Test.new }
+    @shrine.storage(/store/) { |match| Shrine::Storage::Memory.new }
     subclass = Class.new(@shrine)
     refute_equal subclass.storages[:store], subclass.find_storage(:store)
   end
 
   it "doesn't clear registered storage resolvers when reapplying" do
-    @shrine.storage(/store/) { |match| Shrine::Storage::Test.new }
+    @shrine.storage(/store/) { |match| Shrine::Storage::Memory.new }
     @shrine.plugin :dynamic_storage
     refute_equal @shrine.storages[:store], @shrine.find_storage(:store)
   end
 
   it "delegates to default behaviour when storage wasn't found" do
-    assert_instance_of Shrine::Storage::Test, @uploader.class.new(:store).storage
+    assert_instance_of Shrine::Storage::Memory, @uploader.class.new(:store).storage
   end
 end

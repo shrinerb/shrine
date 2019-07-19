@@ -34,27 +34,6 @@ describe Shrine::Plugins::Parallelize do
     refute versions[:small].exists?
   end
 
-  it "works with moving plugin" do
-    @uploader = uploader do
-      plugin :parallelize
-      plugin :moving
-    end
-    @uploader.storage.instance_eval do
-      def move(io, id, **options)
-        store[id] = io.storage.delete(io.id)
-      end
-
-      def movable?(io, id)
-        io.is_a?(Shrine::UploadedFile) && io.storage.is_a?(Shrine::Storage::Memory)
-      end
-    end
-
-    memory_file = @uploader.upload(fakeio)
-    uploaded_file = @uploader.upload(memory_file)
-    assert uploaded_file.exists?
-    refute memory_file.exists?
-  end
-
   it "propagates any errors" do
     Thread.report_on_exception = false if Thread.respond_to?(:report_on_exception)
     @uploader.storage.instance_eval { def upload(*); raise; end }
