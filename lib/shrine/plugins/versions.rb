@@ -11,27 +11,13 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        Shrine.deprecation("The versions Shrine plugin doesn't need the :names option anymore, you can safely remove it.") if opts.key?(:names)
-
-        uploader.opts[:version_names] = opts.fetch(:names, uploader.opts[:version_names])
         uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
         uploader.opts[:versions_fallback_to_original] = opts.fetch(:fallback_to_original, uploader.opts.fetch(:versions_fallback_to_original, true))
       end
 
       module ClassMethods
-        def version_names
-          Shrine.deprecation("Shrine.version_names is deprecated and will be removed in Shrine 3.")
-          opts[:version_names]
-        end
-
         def version_fallbacks
           opts[:version_fallbacks]
-        end
-
-        # Checks that the identifier is a registered version.
-        def version?(name)
-          Shrine.deprecation("Shrine.version? is deprecated and will be removed in Shrine 3.")
-          version_names.nil? || version_names.map(&:to_s).include?(name.to_s)
         end
 
         # Converts a hash of data into a hash of versions.
