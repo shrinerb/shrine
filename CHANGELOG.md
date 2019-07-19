@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `multi_delete` – Remove deprecated plugin (@janko)
+
 * `direct_upload` – Remove deprecated plugin (@janko)
 
 * `backup` – Remove deprecated plugin (@janko)
