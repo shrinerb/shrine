@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `copy` – Remove deprecated plugin (@janko)
+
 * `logging` – Remove deprecated plugin (@janko)
 
 * `s3` – Remove deprecated `S3#download` method (@janko)
