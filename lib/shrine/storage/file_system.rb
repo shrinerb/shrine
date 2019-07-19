@@ -47,9 +47,7 @@ class Shrine
       end
 
       # Copies the file into the given location.
-      def upload(io, id, move: false, shrine_metadata: {}, **options)
-        Shrine.deprecation("Unrecognized options for FileSystem#upload: #{options.inspect}. Passing unrecognized options to FileSystem#upload will not be supported in Shrine 3.") if options.any?
-
+      def upload(io, id, move: false, **)
         if move && movable?(io, id)
           move(io, id)
         else
