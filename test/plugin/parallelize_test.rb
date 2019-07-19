@@ -55,26 +55,6 @@ describe Shrine::Plugins::Parallelize do
     refute memory_file.exists?
   end
 
-  it "works with logging plugin" do
-    @uploader = uploader do
-      plugin :logging, stream: StringIO.new
-      plugin :parallelize
-    end
-
-    @uploader.instance_eval do
-      def with_pool(*)
-        super
-        opts[:logging_stream].puts("pool performed")
-      end
-    end
-
-    @uploader.upload(fakeio)
-    log = @uploader.opts[:logging_stream].string
-
-    assert_match "pool performed", log.lines[0]
-    assert_match "STORE",          log.lines[1]
-  end
-
   it "propagates any errors" do
     Thread.report_on_exception = false if Thread.respond_to?(:report_on_exception)
     @uploader.storage.instance_eval { def upload(*); raise; end }
