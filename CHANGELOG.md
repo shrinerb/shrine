@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `file_system` – Don't accept a block anymore in `FileSystem#open` (@janko)
+
 * `file_system` – Remove deprecated `FileSystem#download` method (@janko)
 
 * `file_system` – Make `FileSystem#movable?` and `FileSystem#move` methods private (@janko)
