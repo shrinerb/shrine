@@ -103,13 +103,6 @@ describe Shrine::Plugins::Versions do
     refute deleted_versions[:thumb][0].exists?
   end
 
-  deprecated "accepts version names" do
-    @uploader = uploader { plugin :versions, names: [:foo] }
-    assert_equal [:foo], @uploader.class.version_names
-    assert_equal true, @uploader.class.version?(:foo)
-    assert_equal false, @uploader.class.version?(:bar)
-  end
-
   describe "Attacher#url" do
     it "accepts a version name indifferently" do
       @attacher.set(thumb: @uploader.upload(fakeio))
