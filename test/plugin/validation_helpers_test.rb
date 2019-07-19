@@ -128,20 +128,19 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_max_width" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is greater than given maximum" do
-      @attacher.class.validate { validate_max_width(get.width + 1) }
+      @attacher.class.validate { validate_max_width(get["width"] + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_width(get.width) }
+      @attacher.class.validate { validate_max_width(get["width"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_width(get.width - 1) }
+      @attacher.class.validate { validate_max_width(get["width"] - 1) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -172,31 +171,28 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
 
-    deprecated "doesn't add an error message when width is nil" do
+    it "fails when width metadata is missing" do
       @attacher.assign(fakeio)
-      @attacher.class.validate { @validation_passed = validate_max_width(200) }
-      @attacher.validate
-      assert_empty @attacher.errors
-      assert_nil @validation_passed
+      @attacher.class.validate { validate_max_width(100) }
+      assert_raises(Shrine::Error) { @attacher.validate }
     end
   end
 
   describe "#validate_min_width" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is less than given minimum" do
-      @attacher.class.validate { validate_min_width(get.width - 1) }
+      @attacher.class.validate { validate_min_width(get["width"] - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_width(get.width) }
+      @attacher.class.validate { validate_min_width(get["width"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_width(get.width + 1) }
+      @attacher.class.validate { validate_min_width(get["width"] + 1) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -227,19 +223,16 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
 
-    deprecated "doesn't add an error message when width is nil" do
+    it "fails when width metadata is missing" do
       @attacher.assign(fakeio)
-      @attacher.class.validate { @validation_passed = validate_min_width(200) }
-      @attacher.validate
-      assert_empty @attacher.errors
-      assert_nil @validation_passed
+      @attacher.class.validate { validate_min_width(1) }
+      assert_raises(Shrine::Error) { @attacher.validate }
     end
   end
 
   describe "#validate_width" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is greater than given maximum" do
@@ -263,24 +256,29 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
+
+    it "fails when width metadata is missing" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { validate_width 0..100 }
+      assert_raises(Shrine::Error) { @attacher.validate }
+    end
   end
 
   describe "#validate_max_height" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if height is greater than given maximum" do
-      @attacher.class.validate { validate_max_height(get.height + 1) }
+      @attacher.class.validate { validate_max_height(get["height"] + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_height(get.height) }
+      @attacher.class.validate { validate_max_height(get["height"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_height(get.height - 1) }
+      @attacher.class.validate { validate_max_height(get["height"] - 1) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -311,31 +309,28 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
 
-    deprecated "doesn't add an error message when height is nil" do
+    it "fails when height metadata is missing" do
       @attacher.assign(fakeio)
-      @attacher.class.validate { @validation_passed = validate_max_height(200) }
-      @attacher.validate
-      assert_empty @attacher.errors
-      assert_nil @validation_passed
+      @attacher.class.validate { validate_max_height 100 }
+      assert_raises(Shrine::Error) { @attacher.validate }
     end
   end
 
   describe "#validate_min_height" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if height is less than given minimum" do
-      @attacher.class.validate { validate_min_height(get.height - 1) }
+      @attacher.class.validate { validate_min_height(get["height"] - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_height(get.height) }
+      @attacher.class.validate { validate_min_height(get["height"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_height(get.height + 1) }
+      @attacher.class.validate { validate_min_height(get["height"] + 1) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -366,19 +361,16 @@ describe Shrine::Plugins::ValidationHelpers do
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
 
-    deprecated "doesn't add an error message when height is nil" do
+    it "fails when height metadata is missing" do
       @attacher.assign(fakeio)
-      @attacher.class.validate { @validation_passed = validate_min_height(200) }
-      @attacher.validate
-      assert_empty @attacher.errors
-      assert_nil @validation_passed
+      @attacher.class.validate { validate_min_height 1 }
+      assert_raises(Shrine::Error) { @attacher.validate }
     end
   end
 
   describe "#validate_height" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if height is greater than given maximum" do
@@ -402,38 +394,43 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
     end
+
+    it "fails when height metadata is missing" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { validate_height 0..100 }
+      assert_raises(Shrine::Error) { @attacher.validate }
+    end
   end
 
   describe "#validate_max_dimensions" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is greater than given maximum" do
-      @attacher.class.validate { validate_max_dimensions([get.width + 1, get.height]) }
+      @attacher.class.validate { validate_max_dimensions([get["width"] + 1, get["height"]]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_dimensions([get.width, get.height]) }
+      @attacher.class.validate { validate_max_dimensions([get["width"], get["height"]]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_dimensions([get.width - 1, get.height]) }
+      @attacher.class.validate { validate_max_dimensions([get["width"] - 1, get["height"]]) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
 
     it "adds an error if height is greater than given maximum" do
-      @attacher.class.validate { validate_max_dimensions([get.width, get.height + 1]) }
+      @attacher.class.validate { validate_max_dimensions([get["width"], get["height"] + 1]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_dimensions([get.width, get.height]) }
+      @attacher.class.validate { validate_max_dimensions([get["width"], get["height"]]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_dimensions([get.width, get.height - 1]) }
+      @attacher.class.validate { validate_max_dimensions([get["width"], get["height"] - 1]) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -465,7 +462,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "raises an error if width or height are missing" do
-      @attacher.assign(image, metadata: { "width" => nil, "height" => nil })
+      @attacher.assign(fakeio)
       @attacher.class.validate { validate_max_dimensions([100, 100]) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -473,34 +470,33 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_min_dimensions" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is less than given minimum" do
-      @attacher.class.validate { validate_min_dimensions([get.width - 1, get.height]) }
+      @attacher.class.validate { validate_min_dimensions([get["width"] - 1, get["height"]]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_dimensions([get.width, get.height]) }
+      @attacher.class.validate { validate_min_dimensions([get["width"], get["height"]]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_dimensions([get.width + 1, get.height]) }
+      @attacher.class.validate { validate_min_dimensions([get["width"] + 1, get["height"]]) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
 
     it "adds an error if height is less than given minimum" do
-      @attacher.class.validate { validate_min_dimensions([get.width, get.height - 1]) }
+      @attacher.class.validate { validate_min_dimensions([get["width"], get["height"] - 1]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_dimensions([get.width, get.height]) }
+      @attacher.class.validate { validate_min_dimensions([get["width"], get["height"]]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_dimensions([get.width, get.height + 1]) }
+      @attacher.class.validate { validate_min_dimensions([get["width"], get["height"] + 1]) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -532,7 +528,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "raises an error if width or height are missing" do
-      @attacher.assign(image, metadata: { "width" => nil, "height" => nil })
+      @attacher.assign(fakeio)
       @attacher.class.validate { validate_min_dimensions([0, 0]) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -540,8 +536,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_dimensions" do
     before do
-      @attacher.shrine_class.plugin :store_dimensions
-      @attacher.assign(image)
+      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if dimensions are greater than given maximum" do
@@ -564,6 +559,12 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_dimensions([150..200, 150..200]) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
+    end
+
+    it "raises an error if width or height are missing" do
+      @attacher.assign(fakeio)
+      @attacher.class.validate { validate_dimensions([0..100, 0..100]) }
+      assert_raises(Shrine::Error) { @attacher.validate }
     end
   end
 

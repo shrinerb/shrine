@@ -76,12 +76,9 @@ class Shrine
         #
         #     validate_max_width 5000
         def validate_max_width(max, message: nil)
-          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width)
-          if get.width
-            validate_result(get.width <= max, :max_width, message, max)
-          else
-            Shrine.deprecation("Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil.")
-          end
+          fail Error, "width metadata is missing" unless get["width"]
+
+          validate_result(get["width"] <= max, :max_width, message, max)
         end
 
         # Validates that the `width` metadata is not smaller than `min`.
@@ -89,12 +86,9 @@ class Shrine
         #
         #     validate_min_width 100
         def validate_min_width(min, message: nil)
-          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width)
-          if get.width
-            validate_result(get.width >= min, :min_width, message, min)
-          else
-            Shrine.deprecation("Width of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if width is nil.")
-          end
+          fail Error, "width metadata is missing" unless get["width"]
+
+          validate_result(get["width"] >= min, :min_width, message, min)
         end
 
         # Validates that the `width` metadata is in the given range.
@@ -112,12 +106,9 @@ class Shrine
         #
         #     validate_max_height 5000
         def validate_max_height(max, message: nil)
-          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:height)
-          if get.height
-            validate_result(get.height <= max, :max_height, message, max)
-          else
-            Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
-          end
+          fail Error, "height metadata is missing" unless get["height"]
+
+          validate_result(get["height"] <= max, :max_height, message, max)
         end
 
         # Validates that the `height` metadata is not smaller than `min`.
@@ -125,12 +116,9 @@ class Shrine
         #
         #     validate_min_height 100
         def validate_min_height(min, message: nil)
-          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:height)
-          if get.height
-            validate_result(get.height >= min, :min_height, message, min)
-          else
-            Shrine.deprecation("Height of the uploaded file is nil, and Shrine skipped the validation. In Shrine 3 the validation will fail if height is nil.")
-          end
+          fail Error, "height metadata is missing" unless get["height"]
+
+          validate_result(get["height"] >= min, :min_height, message, min)
         end
 
         # Validates that the `height` metadata is in the given range.
@@ -146,11 +134,10 @@ class Shrine
         #
         #     validate_max_dimensions [5000, 5000]
         def validate_max_dimensions((max_width, max_height), message: nil)
-          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width) && get.respond_to?(:height)
-          fail Error, "width or height metadata is nil" unless get.width && get.height
+          fail Error, "width and/or height metadata is missing" unless get["width"] && get["height"]
 
           validate_result(
-            get.width <= max_width && get.height <= max_height,
+            get["width"] <= max_width && get["height"] <= max_height,
             :max_dimensions, message, [max_width, max_height]
           )
         end
@@ -159,11 +146,10 @@ class Shrine
         #
         #     validate_max_dimensions [100, 100]
         def validate_min_dimensions((min_width, min_height), message: nil)
-          fail Error, ":store_dimensions plugin is required" unless get.respond_to?(:width) && get.respond_to?(:height)
-          fail Error, "width or height metadata is nil" unless get.width && get.height
+          fail Error, "width and/or height metadata is missing" unless get["width"] && get["height"]
 
           validate_result(
-            get.width >= min_width && get.height >= min_height,
+            get["width"] >= min_width && get["height"] >= min_height,
             :min_dimensions, message, [min_width, min_height]
           )
         end
