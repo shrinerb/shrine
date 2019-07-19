@@ -14,11 +14,6 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        if opts[:analyzer] == :default
-          Shrine.deprecation("The :default analyzer of the determine_mime_type plugin has been renamed to :content_type. The :default alias will not be supported in Shrine 3.")
-          opts = opts.merge(analyzer: :content_type)
-        end
-
         uploader.opts[:determine_mime_type] ||= { analyzer: :file, analyzer_options: {}, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:determine_mime_type].merge!(opts)
 

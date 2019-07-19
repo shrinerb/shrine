@@ -224,11 +224,6 @@ describe Shrine::Plugins::DetermineMimeType do
     it "returns nil when IO doesn't respond to #content_type" do
       assert_nil @shrine.determine_mime_type(image)
     end
-
-    deprecated "works with the :default alias" do
-      @shrine.plugin :determine_mime_type, analyzer: :default
-      assert_equal "foo/bar", @shrine.determine_mime_type(fakeio(content_type: "foo/bar"))
-    end
   end
 
   describe "with instrumentation" do

@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `determine_mime_type` – Remove deprecated `:default` analyzer alias (@janko)
+
 * `default_url` – Remove deprecated block argument when loading the plugin (@janko)
 
 * `data_uri` – Remove deprecated `Shrine::Plugins::DataUri::DataFile` constant (@janko)
