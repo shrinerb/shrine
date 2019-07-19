@@ -48,33 +48,13 @@ class Shrine
 
       # Copies the file into the given location.
       def upload(io, id, move: false, **)
-        if move && movable?(io, id)
-          move(io, id)
+        if move && movable?(io)
+          move(io, path!(id))
         else
           IO.copy_stream(io, path!(id))
-
-          path(id).chmod(permissions) if permissions
-        end
-      end
-
-      # Moves the file to the given location. This gets called by the `moving`
-      # plugin.
-      def move(io, id, **)
-        if io.respond_to?(:path)
-          FileUtils.mv io.path, path!(id)
-        else
-          FileUtils.mv io.storage.path(io.id), path!(id)
-          io.storage.clean(io.storage.path(io.id)) if io.storage.clean?
         end
 
         path(id).chmod(permissions) if permissions
-      end
-
-      # Returns true if the file is a `File` or a UploadedFile uploaded by the
-      # FileSystem storage.
-      def movable?(io, id)
-        io.respond_to?(:path) ||
-          (io.is_a?(UploadedFile) && io.storage.is_a?(Storage::FileSystem))
       end
 
       # Opens the file on the given location in read mode. Accepts additional
@@ -161,6 +141,24 @@ class Shrine
       end
 
       private
+
+      # Moves the file to the given location. This gets called by the `moving`
+      # plugin.
+      def move(io, path)
+        if io.respond_to?(:path)
+          FileUtils.mv io.path, path
+        else
+          FileUtils.mv io.storage.path(io.id), path
+          io.storage.clean(io.storage.path(io.id)) if io.storage.clean?
+        end
+      end
+
+      # Returns true if the file is a `File` or a UploadedFile uploaded by the
+      # FileSystem storage.
+      def movable?(io)
+        io.respond_to?(:path) ||
+          (io.is_a?(UploadedFile) && io.storage.is_a?(Storage::FileSystem))
+      end
 
       # Creates all intermediate directories for that location.
       def path!(id)

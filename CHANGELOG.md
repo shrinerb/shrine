@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `file_system` – Make `FileSystem#movable?` and `FileSystem#move` methods private (@janko)
+
 * `file_system` – Remove deprecation warning on unrecognized options in `FileSystem#upload` (@janko)
 
 * `file_system` – Remove deprecated `:host` option for `FileSystem#initialize` (@janko)

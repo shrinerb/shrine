@@ -109,92 +109,58 @@ describe Shrine::Storage::FileSystem do
       @storage.upload(fakeio, "a/b/c/file.jpg")
     end
 
-    it "moves when :move is set to true" do
-      file = Tempfile.new
-      file.write "file"
-      file.open
+    describe "on :move" do
+      it "moves movable files" do
+        file          = tempfile("file")
+        uploaded_file = @shrine.new(:file_system).upload(fakeio("file"))
 
-      @storage.upload(file, "foo.jpg", move: true)
+        @storage.upload(file,          "foo", move: true)
+        @storage.upload(uploaded_file, "bar", move: true)
 
-      assert_equal "file", @storage.open("foo.jpg").read
-      refute File.exist?(file.path)
+        assert_equal "file", @storage.open("foo").read
+        assert_equal "file", @storage.open("bar").read
+
+        refute File.exist?(file.path)
+        refute uploaded_file.exists?
+      end
+
+      it "creates subdirectories" do
+        file          = tempfile("file")
+        uploaded_file = @shrine.new(:file_system).upload(fakeio("file"))
+
+        @storage.upload(file, "a/a/a.jpg", move: true)
+        assert @storage.exists?("a/a/a.jpg")
+
+        @storage.upload(uploaded_file, "b/b/b.jpg", move: true)
+        assert @storage.exists?("b/b/b.jpg")
+      end
+
+      it "cleans moved file's directory" do
+        uploaded_file = @shrine.new(:file_system).upload(fakeio, location: "a/a/a.jpg")
+        @storage.upload(uploaded_file, "b.jpg", move: true)
+        refute @storage.exists?("a/a")
+      end
+
+      it "sets file permissions" do
+        @storage = file_system(root, permissions: 0600)
+        @storage.upload(tempfile("file"), "bar.jpg", move: true)
+        assert_permissions 0600, @storage.open("bar.jpg").path
+      end
+
+      it "doesn't move unmovable files" do
+        file          = fakeio("file")
+        uploaded_file = @shrine.new(:memory).upload(fakeio("file"))
+
+        @storage.upload(file,          "foo", move: true)
+        @storage.upload(uploaded_file, "bar", move: true)
+
+        assert_equal "file", @storage.open("foo").read
+        assert_equal "file", @storage.open("bar").read
+      end
     end
 
-    it "doesn't move when file is not movable" do
-      @storage.upload(fakeio, "foo.jpg", move: true)
-
-      assert_equal "file", @storage.open("foo.jpg").read
-    end
-
-    deprecated "ignores extra options" do
+    it "ignores extra options" do
       @storage.upload(fakeio, "foo.jpg", foo: "bar")
-    end
-  end
-
-  describe "#movable?" do
-    it "returns true for files and UploadedFiles from FileSystem" do
-      file                      = Tempfile.new
-      file_system_uploaded_file = @shrine.new(:file_system).upload(fakeio)
-      memory_uploaded_file      = @shrine.new(:memory).upload(fakeio)
-      assert @storage.movable?(file, nil)
-      assert @storage.movable?(file_system_uploaded_file, nil)
-      refute @storage.movable?(memory_uploaded_file, nil)
-    end
-  end
-
-  describe "#move" do
-    it "moves files and UploadedFiles" do
-      file          = Tempfile.new
-      uploaded_file = @shrine.new(:file_system).upload(fakeio)
-
-      @storage.move(file, "foo")
-      assert @storage.exists?("foo")
-      refute File.exist?(file.path)
-
-      @storage.move(uploaded_file, "bar")
-      assert @storage.exists?("bar")
-      refute uploaded_file.exists?
-    end
-
-    it "creates subdirectories" do
-      file          = Tempfile.new
-      uploaded_file = @shrine.new(:file_system).upload(fakeio)
-
-      @storage.move(file, "a/a/a.jpg")
-      assert @storage.exists?("a/a/a.jpg")
-
-      @storage.move(uploaded_file, "b/b/b.jpg")
-      assert @storage.exists?("b/b/b.jpg")
-    end
-
-    it "cleans moved file's directory" do
-      uploaded_file = @shrine.new(:file_system).upload(fakeio, location: "a/a/a.jpg")
-      @storage.move(uploaded_file, "b.jpg")
-      refute @storage.exists?("a/a")
-    end
-
-    it "sets file permissions" do
-      @storage = file_system(root, permissions: 0600)
-      @storage.move(Tempfile.new, "bar.jpg")
-      assert_permissions 0600, @storage.open("bar.jpg").path
-    end
-
-    it "handles file permissions being nil" do
-      @storage = file_system(root, permissions: nil)
-      @storage.move(Tempfile.new, "bar.jpg")
-    end
-
-    it "sets directory permissions on intermediary directories" do
-      @storage = file_system(root, directory_permissions: 0777)
-      @storage.move(Tempfile.new, "a/b/c/file.jpg")
-      assert_permissions 0777, "#{root}/a"
-      assert_permissions 0777, "#{root}/a/b"
-      assert_permissions 0777, "#{root}/a/b/c"
-    end
-
-    it "handles directory permissions being nil" do
-      @storage = file_system(root, directory_permissions: nil)
-      @storage.move(Tempfile.new, "a/b/c/file.jpg")
     end
   end
 
