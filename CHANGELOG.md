@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `store_dimensions` – Remove `Shrine#extract_dimensions` and `Shrine#dimensions_analyzers` methods (@janko)
+
 * `rack_file` – Remove deprecated `Shrine::Plugins::RackFile::UploadedFile` constant (@janko)
 
 * `rack_file` – Drop support for passing file hash to `Shrine#upload` and `Shrine#store` (@janko)
