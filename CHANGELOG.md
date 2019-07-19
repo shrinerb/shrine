@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `rack_file` – Remove deprecated `Shrine::Plugins::RackFile::UploadedFile` constant (@janko)
+
 * `rack_file` – Drop support for passing file hash to `Shrine#upload` and `Shrine#store` (@janko)
 
 * `download_endpoint` – Move `Shrine::Plugins::DownloadEndpoint::App` into `Shrine::DownloadEndpoint` (@janko)

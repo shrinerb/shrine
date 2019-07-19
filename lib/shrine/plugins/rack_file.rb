@@ -67,8 +67,4 @@ class Shrine
     extend Forwardable
     delegate [:read, :size, :rewind, :eof?, :close] => :@tempfile
   end
-
-  # backwards compatibility
-  Plugins::RackFile.const_set(:UploadedFile, RackFile)
-  Plugins::RackFile.deprecate_constant(:UploadedFile)
 end
