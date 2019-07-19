@@ -40,9 +40,6 @@ Rack:
     name: derivation_endpoint
     description: Provides a Rack application for processing uploaded files on-the-fly.
   -
-    name: direct_upload
-    description: "[OBSOLETE] Use upload_endpoint and presign_endpoint plugins instead."
-  -
     name: download_endpoint
     description: Provides a Rack application through which uploaded files can be downloaded.
   -
