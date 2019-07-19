@@ -632,16 +632,6 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal ["type must be one of: video/mpeg"], @attacher.errors
     end
-
-    deprecated "accepts regexes" do
-      @attacher.class.validate { validate_mime_type_inclusion([/image/]) }
-      @attacher.validate
-      assert_equal 0, @attacher.errors.size
-
-      @attacher.class.validate { validate_mime_type_inclusion([/video/]) }
-      @attacher.validate
-      assert_equal 1, @attacher.errors.size
-    end
   end
 
   describe "#validate_mime_type_exclusion" do
@@ -701,16 +691,6 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_mime_type_exclusion(["video/mpeg"]) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
-    end
-
-    deprecated "accepts regexes" do
-      @attacher.class.validate { validate_mime_type_exclusion([/image/]) }
-      @attacher.validate
-      assert_equal 0, @attacher.errors.size
-
-      @attacher.class.validate { validate_mime_type_exclusion([/video/]) }
-      @attacher.validate
-      assert_equal 1, @attacher.errors.size
     end
   end
 
@@ -778,16 +758,6 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.validate
       assert_equal ["extension must be one of: mp4"], @attacher.errors
     end
-
-    deprecated "accepts regexes" do
-      @attacher.class.validate { validate_extension_inclusion([/jpe?g/]) }
-      @attacher.validate
-      assert_equal 0, @attacher.errors.size
-
-      @attacher.class.validate { validate_extension_inclusion([/mp4/]) }
-      @attacher.validate
-      assert_equal 1, @attacher.errors.size
-    end
   end
 
   describe "#validate_extension_exclusion" do
@@ -847,16 +817,6 @@ describe Shrine::Plugins::ValidationHelpers do
       @attacher.class.validate { @validation_passed = validate_extension_exclusion(["mp4"]) }
       @attacher.validate
       assert_equal false, @attacher.instance_variable_get("@validation_passed")
-    end
-
-    deprecated "accepts regexes" do
-      @attacher.class.validate { validate_extension_exclusion([/jpe?g/]) }
-      @attacher.validate
-      assert_equal 0, @attacher.errors.size
-
-      @attacher.class.validate { validate_extension_exclusion([/mp4/]) }
-      @attacher.validate
-      assert_equal 1, @attacher.errors.size
     end
   end
 

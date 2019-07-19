@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `validation_helpers` – Remove support for regexes in MIME type or extension validations (@janko)
+
 * `validation_helpers` – Don't require `#width` and `#height` methods to be defined on `UploadedFile` (@janko)
 
 * `validation_helpers` – Fail dimensions validations when `width` or `height` metadata is missing (@janko)

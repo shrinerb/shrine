@@ -170,7 +170,7 @@ class Shrine
         #     validate_mime_type_inclusion %w[audio/mp3 audio/flac]
         def validate_mime_type_inclusion(types, message: nil)
           validate_result(
-            types.any? { |type| regex(type) =~ get.mime_type.to_s },
+            types.include?(get.mime_type),
             :mime_type_inclusion, message, types
           )
         end
@@ -182,7 +182,7 @@ class Shrine
         #     validate_mime_type_exclusion %w[text/x-php]
         def validate_mime_type_exclusion(types, message: nil)
           validate_result(
-            types.none? { |type| regex(type) =~ get.mime_type.to_s },
+            !types.include?(get.mime_type),
             :mime_type_exclusion, message, types
           )
         end
@@ -193,7 +193,7 @@ class Shrine
         #     validate_extension_inclusion %w[jpg jpeg png gif]
         def validate_extension_inclusion(extensions, message: nil)
           validate_result(
-            extensions.any? { |extension| regex(extension) =~ get.extension.to_s },
+            extensions.any? { |extension| extension.casecmp(get.extension) == 0 },
             :extension_inclusion, message, extensions
           )
         end
@@ -205,7 +205,7 @@ class Shrine
         #     validate_extension_exclusion %[php jar]
         def validate_extension_exclusion(extensions, message: nil)
           validate_result(
-            extensions.none? { |extension| regex(extension) =~ get.extension.to_s },
+            extensions.none? { |extension| extension.casecmp(get.extension) == 0 },
             :extension_exclusion, message, extensions
           )
         end
@@ -219,16 +219,6 @@ class Shrine
           else
             add_error(type, message, *args)
             false
-          end
-        end
-
-        # Converts a string to a regex.
-        def regex(value)
-          if value.is_a?(Regexp)
-            Shrine.deprecation("Passing regexes to type/extension whitelists/blacklists in validation_helpers plugin is deprecated and will be removed in Shrine 3. Use strings instead.")
-            value
-          else
-            /\A#{Regexp.escape(value)}\z/i
           end
         end
 
