@@ -74,11 +74,6 @@ class Shrine
         def extract_mime_type(io)
           self.class.determine_mime_type(io)
         end
-
-        # Returns a hash of built-in MIME type analyzers.
-        def mime_type_analyzers
-          self.class.mime_type_analyzers
-        end
       end
 
       class MimeTypeAnalyzer

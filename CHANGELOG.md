@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `determine_mime_type` – Remove `Shrine#mime_type_analyzers` method (@janko)
+
 * `store_dimensions` – Remove `Shrine#extract_dimensions` and `Shrine#dimensions_analyzers` methods (@janko)
 
 * `rack_file` – Remove deprecated `Shrine::Plugins::RackFile::UploadedFile` constant (@janko)
