@@ -41,11 +41,6 @@ describe Shrine::Plugins::DefaultUrl do
     assert_equal "https://example.com/foo/bar/baz", @attacher.url
   end
 
-  deprecated "accepts a block when loading the plugin" do
-    @shrine.plugin(:default_url) { "default_url" }
-    assert_equal "default_url", @attacher.url
-  end
-
   it "doesn't override previously set default URL if no block is given" do
     @attacher.class.default_url { "default_url" }
     @shrine.plugin :default_url

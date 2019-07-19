@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `default_url` – Remove deprecated block argument when loading the plugin (@janko)
+
 * `data_uri` – Remove deprecated `Shrine::Plugins::DataUri::DataFile` constant (@janko)
 
 * `data_uri` – Remove deprecated `:filename` plugin option (@janko)
