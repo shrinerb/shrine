@@ -114,15 +114,6 @@ class Shrine
         directory.join(id.gsub("/", File::SEPARATOR))
       end
 
-      # Catches the deprecated `#download` method.
-      def method_missing(name, *args, &block)
-        case name
-        when :download then deprecated_download(*args, &block)
-        else
-          super
-        end
-      end
-
       protected
 
       # Cleans all empty subdirectories up the hierarchy.
@@ -179,16 +170,6 @@ class Shrine
         Pathname("#{directory}/") # add trailing slash to make it work with symlinks
           .find
           .each { |path| yield path if path.file? }
-      end
-
-      def deprecated_download(id, **options)
-        Shrine.deprecation("Shrine::Storage::FileSystem#download is deprecated and will be removed in Shrine 3.")
-        tempfile = Tempfile.new(["shrine-filesystem", File.extname(id)], binmode: true)
-        open(id, **options) { |file| IO.copy_stream(file, tempfile) }
-        tempfile.tap(&:open)
-      rescue
-        tempfile.close! if tempfile
-        raise
       end
     end
   end
