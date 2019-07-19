@@ -23,46 +23,12 @@ class Shrine
         end
       end
 
-      module InstanceMethods
-        # If `io` is a Rack uploaded file hash, converts it to an IO-like
-        # object and calls `super`.
-        def upload(io, context = {})
-          super(convert_rack_file(io), context)
-        end
-
-        # If `io` is a Rack uploaded file hash, converts it to an IO-like
-        # object and calls `super`.
-        def store(io, context = {})
-          super(convert_rack_file(io), context)
-        end
-
-        private
-
-        # If given a Rack uploaded file hash, returns a
-        # `Shrine::Plugins::RackFile::UploadedFile` IO-like object wrapping that
-        # hash, otherwise returns the value unchanged.
-        def convert_rack_file(value)
-          if rack_file?(value)
-            Shrine.deprecation("Passing a Rack uploaded file hash to Shrine#upload is deprecated, use Shrine.rack_file to convert the Rack file hash into an IO object.")
-            self.class.rack_file(value)
-          else
-            value
-          end
-        end
-
-        # Returns whether a given value is a Rack uploaded file hash, by
-        # checking whether it's a hash with `:tempfile` and `:name` keys.
-        def rack_file?(value)
-          value.is_a?(Hash) && value.key?(:tempfile) && value.key?(:name)
-        end
-      end
-
       module AttacherMethods
         # Checks whether a file is a Rack file hash, and in that case wraps the
         # hash in an IO-like object.
         def assign(value, **options)
           if rack_file?(value)
-            assign(shrine_class.rack_file(value), **options)
+            assign shrine_class.rack_file(value), **options
           else
             super
           end
