@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `download_endpoint` – Move `Shrine::Plugins::DownloadEndpoint::App` into `Shrine::DownloadEndpoint` (@janko)
+
 * `download_endpoint` – Remove deprecated `Shrine::DownloadEndpoint` constant (@janko)
 
 * `download_endpoint` – Remove deprecated `:storages` option (@janko)
