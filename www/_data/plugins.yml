@@ -114,9 +114,6 @@ Deleting:
 
 Storage:
   -
-    name: backup
-    description: Uploads stored files to an additional "backup" storage.
-  -
     name: default_storage
     description: Allows you to choose different storages for different attachments.
   -

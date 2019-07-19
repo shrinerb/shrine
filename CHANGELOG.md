@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `backup` – Remove deprecated plugin (@janko)
+
 * `background_helpers` – Remove deprecated plugin (@janko)
 
 * `migration_helpers` – Remove deprecated plugin (@janko)
