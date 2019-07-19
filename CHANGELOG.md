@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `data_uri` – Remove deprecated `Shrine::Plugins::DataUri::DataFile` constant (@janko)
+
 * `data_uri` – Remove deprecated `:filename` plugin option (@janko)
 
 * `cached_attachment_data` – Remove deprecated model setter (@janko)

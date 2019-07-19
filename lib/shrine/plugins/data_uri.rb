@@ -164,7 +164,4 @@ class Shrine
       @io.string.clear # deallocate string
     end
   end
-
-  Plugins::DataUri.const_set(:DataFile, DataFile)
-  Plugins::DataUri.deprecate_constant(:DataFile)
 end
