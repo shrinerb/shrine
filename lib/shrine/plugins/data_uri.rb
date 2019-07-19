@@ -30,10 +30,6 @@ class Shrine
         uploader.opts[:data_uri] ||= { log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:data_uri].merge!(opts)
 
-        if uploader.opts[:data_uri][:filename]
-          Shrine.deprecation("The :filename option is deprecated for the data_uri plugin, and will be removed in Shrine 3. Use the infer_extension plugin instead.")
-        end
-
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
           uploader.subscribe(:data_uri, &uploader.opts[:data_uri][:log_subscriber])
@@ -60,7 +56,6 @@ class Shrine
         def create_data_file(info, filename: nil)
           content_type = info[:content_type] || DEFAULT_CONTENT_TYPE
           content      = info[:base64] ? Base64.decode64(info[:data]) : CGI.unescape(info[:data])
-          filename     = opts[:data_uri][:filename].call(content_type) if opts[:data_uri][:filename]
 
           data_file = Shrine::DataFile.new(content, content_type: content_type, filename: filename)
           info[:data].clear

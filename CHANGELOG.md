@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `data_uri` – Remove deprecated `:filename` plugin option (@janko)
+
 * `cached_attachment_data` – Remove deprecated model setter (@janko)
 
 * `file_system` – Remove deprecated `:older_than` option in `FileSystem#clear!` (@janko)

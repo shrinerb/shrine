@@ -125,13 +125,6 @@ describe Shrine::Plugins::DataUri do
     assert_equal "foo.txt", io.original_filename
   end
 
-  deprecated "can generate filenames" do
-    @shrine.plugin :data_uri, filename: ->(c) { "data_uri.#{c.split("/").last}" }
-    io = @shrine.data_uri("data:image/png,content")
-    assert_equal "image/png",    io.content_type
-    assert_equal "data_uri.png", io.original_filename
-  end
-
   it "adds #data_uri and #base64 methods to UploadedFile" do
     @user.avatar = fakeio(Base64.decode64("a" * 120))
     assert_equal "data:text/plain;base64,#{"a" * 120}", @user.avatar.data_uri
