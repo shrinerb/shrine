@@ -146,8 +146,4 @@ describe Shrine::Plugins::DownloadEndpoint do
     response = app.get("/#{@uploaded_file.storage_key}/#{@uploaded_file.id}")
     assert_equal @uploaded_file.read, response.body_binary
   end
-
-  deprecated "adds DownloadEndpoint constant" do
-    assert_respond_to @shrine::DownloadEndpoint, :call
-  end
 end

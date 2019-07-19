@@ -14,34 +14,12 @@ class Shrine
       def self.configure(uploader, opts = {})
         uploader.opts[:download_endpoint] ||= { disposition: "inline", download_options: {} }
         uploader.opts[:download_endpoint].merge!(opts)
-
-        uploader.assign_download_endpoint(App) unless uploader.const_defined?(:DownloadEndpoint)
       end
 
       module ClassMethods
-        # Assigns the subclass a copy of the download endpoint class.
-        def inherited(subclass)
-          super
-          subclass.assign_download_endpoint(@download_endpoint)
-        end
-
         # Returns the Rack application that retrieves requested files.
         def download_endpoint(**options)
-          new_download_endpoint(App, **options)
-        end
-
-        # Assigns the subclassed endpoint as the `DownloadEndpoint` constant.
-        def assign_download_endpoint(app_class)
-          @download_endpoint = new_download_endpoint(app_class)
-
-          const_set(:DownloadEndpoint, @download_endpoint)
-          deprecate_constant(:DownloadEndpoint)
-        end
-
-        private
-
-        def new_download_endpoint(app_class, **options)
-          app_class.new(
+          App.new(
             shrine_class: self,
             **opts[:download_endpoint],
             **options,

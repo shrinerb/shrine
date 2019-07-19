@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `download_endpoint` – Remove deprecated `Shrine::DownloadEndpoint` constant (@janko)
+
 * `download_endpoint` – Remove deprecated `:storages` option (@janko)
 
 * `determine_mime_type` – Remove deprecated `:default` analyzer alias (@janko)
