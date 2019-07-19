@@ -6,7 +6,7 @@ require "pathname"
 class Shrine
   module Storage
     class FileSystem
-      attr_reader :directory, :prefix, :host, :permissions, :directory_permissions
+      attr_reader :directory, :prefix, :permissions, :directory_permissions
 
       # Initializes a storage for uploading to the filesystem.
       #
@@ -28,9 +28,7 @@ class Shrine
       # :  By default empty folders inside the directory are automatically
       #    deleted, but if it happens that it causes too much load on the
       #    filesystem, you can set this option to `false`.
-      def initialize(directory, prefix: nil, host: nil, clean: true, permissions: 0644, directory_permissions: 0755)
-        Shrine.deprecation("The :host option to Shrine::Storage::FileSystem#initialize is deprecated and will be removed in Shrine 3. Pass :host to FileSystem#url instead, you can also use default_url_options plugin.") if host
-
+      def initialize(directory, prefix: nil, clean: true, permissions: 0644, directory_permissions: 0755)
         if prefix
           @prefix = Pathname(relative(prefix))
           @directory = Pathname(directory).join(@prefix).expand_path
@@ -38,7 +36,6 @@ class Shrine
           @directory = Pathname(directory).expand_path
         end
 
-        @host = host
         @permissions = permissions
         @directory_permissions = directory_permissions
         @clean = clean
@@ -107,7 +104,7 @@ class Shrine
       # from the returned path (e.g. #directory can be set to "public" folder).
       # Both cases accept a `:host` value which will be prefixed to the
       # generated path.
-      def url(id, host: self.host, **options)
+      def url(id, host: nil, **options)
         path = (prefix ? relative_path(id) : path(id)).to_s
         host ? host + path : path
       end

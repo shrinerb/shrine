@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `file_system` – Remove deprecated `:host` option for `FileSystem#initialize` (@janko)
+
 * `moving` – Remove deprecated plugin (@janko)
 
 * `multi_delete` – Remove deprecated plugin (@janko)
