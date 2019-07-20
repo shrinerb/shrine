@@ -193,7 +193,7 @@ class Shrine
         #     validate_extension_inclusion %w[jpg jpeg png gif]
         def validate_extension_inclusion(extensions, message: nil)
           validate_result(
-            extensions.any? { |extension| extension.casecmp(get.extension) == 0 },
+            extensions.any? { |extension| extension.casecmp(get.extension.to_s) == 0 },
             :extension_inclusion, message, extensions
           )
         end
@@ -205,7 +205,7 @@ class Shrine
         #     validate_extension_exclusion %[php jar]
         def validate_extension_exclusion(extensions, message: nil)
           validate_result(
-            extensions.none? { |extension| extension.casecmp(get.extension) == 0 },
+            extensions.none? { |extension| extension.casecmp(get.extension.to_s) == 0 },
             :extension_exclusion, message, extensions
           )
         end

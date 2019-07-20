@@ -83,12 +83,12 @@ describe Shrine::Plugins::Signature do
       @shrine.calculate_signature(io = fakeio, :md5)
 
       refute_nil @event
-      assert_equal :signature,    @event.name
-      assert_equal io,            @event[:io]
-      assert_equal :md5,          @event[:algorithm]
-      assert_equal :hex,          @event[:format]
-      assert_equal @shrine,       @event[:uploader]
-      assert_instance_of Integer, @event.duration
+      assert_equal :signature, @event.name
+      assert_equal io,         @event[:io]
+      assert_equal :md5,       @event[:algorithm]
+      assert_equal :hex,       @event[:format]
+      assert_equal @shrine,    @event[:uploader]
+      assert_kind_of Integer,  @event.duration
     end
 
     it "allows swapping log subscriber" do

@@ -967,7 +967,7 @@ describe Shrine::Plugins::DerivationEndpoint do
           assert_equal ["dark"],                 @event[:args]
           assert_instance_of Shrine::Derivation, @event[:derivation]
           assert_equal @shrine,                  @event[:uploader]
-          assert_instance_of Integer,            @event.duration
+          assert_kind_of Integer,                @event.duration
         end
 
         it "allows swapping log subscriber" do

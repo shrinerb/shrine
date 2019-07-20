@@ -154,7 +154,7 @@ describe Shrine::Plugins::DataUri do
       assert_equal :data_uri,                @event.name
       assert_equal "data:image/png,content", @event[:data_uri]
       assert_equal @shrine,                  @event[:uploader]
-      assert_instance_of Integer,            @event.duration
+      assert_kind_of Integer,                @event.duration
     end
 
     it "allows swapping log subscriber" do

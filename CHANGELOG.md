@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* Bring back Ruby 2.3 support (@janko)
+
 * `versions` – Remove deprecated `:version_names`, `Shrine.version_names` and `Shrine.version?` (@janko)
 
 * `validation_helpers` – Remove support for regexes in MIME type or extension validations (@janko)

@@ -64,10 +64,10 @@ describe Shrine::Plugins::InferExtension do
       @shrine.infer_extension("image/jpeg")
 
       refute_nil @event
-      assert_equal :extension,    @event.name
-      assert_equal "image/jpeg",  @event[:mime_type]
-      assert_equal @shrine,       @event[:uploader]
-      assert_instance_of Integer, @event.duration
+      assert_equal :extension,   @event.name
+      assert_equal "image/jpeg", @event[:mime_type]
+      assert_equal @shrine,      @event[:uploader]
+      assert_kind_of Integer,    @event.duration
     end
 
     it "allows swapping log subscriber" do
