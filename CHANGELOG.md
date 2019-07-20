@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `infer_extension` – Make `:mini_mime` the default analyzer (@janko)
+
 * Bring back Ruby 2.3 support (@janko)
 
 * `versions` – Remove deprecated `:version_names`, `Shrine.version_names` and `Shrine.version?` (@janko)

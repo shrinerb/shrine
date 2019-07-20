@@ -14,7 +14,7 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:infer_extension] ||= { inferrer: :mime_types, force: false, log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:infer_extension] ||= { inferrer: :mini_mime, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:infer_extension].merge!(opts)
 
         # instrumentation plugin integration
