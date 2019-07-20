@@ -125,35 +125,32 @@ describe Shrine::Storage::S3 do
     describe "on S3 file" do
       it "copies in a single request if small" do
         uploaded_file = @shrine.uploaded_file("id"=>"bar", "storage"=>"s3", "metadata"=>{"size"=>10})
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        @s3.upload(uploaded_file, "foo")
         assert_equal 1, @s3.client.api_requests.size
 
         assert_equal :copy_object,    @s3.client.api_requests[0][:operation_name]
         assert_equal "foo",           @s3.client.api_requests[0][:params][:key]
         assert_equal "my-bucket/bar", @s3.client.api_requests[0][:params][:copy_source]
-        assert_equal "public-read",   @s3.client.api_requests[0][:params][:acl]
       end
 
       it "copies in single request if size is unknown" do
         uploaded_file = @shrine.uploaded_file("id"=>"bar", "storage"=>"s3")
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        @s3.upload(uploaded_file, "foo")
         assert_equal 1, @s3.client.api_requests.size
 
         assert_equal :copy_object,    @s3.client.api_requests[0][:operation_name]
         assert_equal "foo",           @s3.client.api_requests[0][:params][:key]
         assert_equal "my-bucket/bar", @s3.client.api_requests[0][:params][:copy_source]
-        assert_equal "public-read",   @s3.client.api_requests[0][:params][:acl]
       end
 
       it "copies in multipart requests if large" do
         @s3 = s3(multipart_threshold: { copy: 5*1024*1024 })
         uploaded_file = @shrine.uploaded_file("id"=>"bar", "storage"=>"s3", "metadata"=>{"size"=>6*1024*1024})
-        @s3.upload(uploaded_file, "foo", acl: "public-read", min_part_size: 5*1024*1024)
+        @s3.upload(uploaded_file, "foo", min_part_size: 5*1024*1024)
         assert_equal 4, @s3.client.api_requests.size
 
         assert_equal :create_multipart_upload,   @s3.client.api_requests[0][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[0][:params][:key]
-        assert_equal "public-read",              @s3.client.api_requests[0][:params][:acl]
 
         assert_equal :upload_part_copy,          @s3.client.api_requests[1][:operation_name]
         assert_equal "foo",                      @s3.client.api_requests[1][:params][:key]
@@ -170,13 +167,26 @@ describe Shrine::Storage::S3 do
       it "works with object from other storage" do
         @shrine.storages[:other_s3] = s3(bucket: "other-bucket", prefix: "prefix")
         uploaded_file = @shrine.uploaded_file("id"=>"bar", "storage"=>"other_s3")
-        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        @s3.upload(uploaded_file, "foo")
         assert_equal 1, @s3.client.api_requests.size
 
         assert_equal :copy_object,              @s3.client.api_requests[0][:operation_name]
         assert_equal "foo",                     @s3.client.api_requests[0][:params][:key]
         assert_equal "other-bucket/prefix/bar", @s3.client.api_requests[0][:params][:copy_source]
-        assert_equal "public-read",             @s3.client.api_requests[0][:params][:acl]
+      end
+
+      it "adds directive for replacing object metadata" do
+        uploaded_file = @shrine.uploaded_file("id"=>"bar", "storage"=>"s3", "metadata"=>{"size"=>10})
+        @s3.upload(uploaded_file, "foo")
+        assert_equal :copy_object, @s3.client.api_requests[0][:operation_name]
+        assert_equal "REPLACE",    @s3.client.api_requests[0][:params][:metadata_directive]
+      end
+
+      it "forwards any upload options" do
+        uploaded_file = @shrine.uploaded_file("id"=>"bar", "storage"=>"s3", "metadata"=>{"size"=>10})
+        @s3.upload(uploaded_file, "foo", acl: "public-read")
+        assert_equal :copy_object,  @s3.client.api_requests[0][:operation_name]
+        assert_equal "public-read", @s3.client.api_requests[0][:params][:acl]
       end
 
       it "respects :prefix" do

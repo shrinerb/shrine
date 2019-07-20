@@ -247,28 +247,6 @@ additional HTTP requests.
 See [this section][metadata direct uploads] or the rationale and instructions
 on how to opt in.
 
-## Object data
-
-When the cached S3 object is copied to permanent storage, the destination S3
-object will by default inherit any object data that was assigned to the cached
-object via presign parameters. However, S3 will by default also ignore any new
-object parameters that are given to the copy request.
-
-Whether object data will be copied or replaced depends on the value of the
-`:metadata_directive` parameter:
-
-* `"COPY"` - destination object will inherit source object data and any new data will be ignored (default)
-* `"REPLACE"` - destination object will not inherit any of the source object data and will accept new data
-
-You can use the `upload_options` plugin to change the `:metadata_directive`
-option when S3 objects are copied:
-
-```rb
-plugin :upload_options, store: -> (io, context) do
-  { metadata_directive: "REPLACE" } if io.is_a?(Shrine::UploadedFile)
-end
-```
-
 ## Clearing cache
 
 Directly uploaded files won't automatically be deleted from your temporary

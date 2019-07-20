@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `s3` – Replace source object metadata when copying a file from S3 (@janko)
+
 * `core` – Change `UploadedFile#storage_key` to return a Symbol instead of a String (@janko)
 
 * `infer_extension` – Make `:mini_mime` the default analyzer (@janko)

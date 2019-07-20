@@ -229,9 +229,16 @@ class Shrine
 
       # Copies an existing S3 object to a new location. Uses multipart copy for
       # large files.
-      def copy(io, id, **options)
-        # pass :content_length on multipart copy to avoid an additional HEAD request
-        options = { multipart_copy: true, content_length: io.size }.merge!(options) if io.size && io.size >= @multipart_threshold[:copy]
+      def copy(io, id, **copy_options)
+        options = { metadata_directive: "REPLACE" } # don't inherit source object metadata
+
+        if io.size && io.size >= @multipart_threshold[:copy]
+          # pass :content_length on multipart copy to avoid an additional HEAD request
+          options.merge!(multipart_copy: true, content_length: io.size)
+        end
+
+        options.merge!(copy_options)
+
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
