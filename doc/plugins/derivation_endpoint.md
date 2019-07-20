@@ -552,7 +552,7 @@ derivation block:
 derivation :thumbnail do |file, uploaded_file, width, height|
   uploaded_file             #=> #<Shrine::UploadedFile>
   uploaded_file.id          #=> "9a7d1bfdad24a76f9cfaff137fe1b5c7.jpg"
-  uploaded_file.storage_key #=> "store"
+  uploaded_file.storage_key #=> :store
   uploaded_file.metadata    #=> {}
 
   # ...

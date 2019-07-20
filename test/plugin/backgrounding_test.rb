@@ -33,9 +33,9 @@ describe Shrine::Plugins::Backgrounding do
     it "stores the file and saves it to record" do
       @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
       @user.update(avatar: fakeio)
-      assert_equal "cache", @user.reload.avatar.storage_key
+      assert_equal :cache, @user.reload.avatar.storage_key
       @attacher.instance_variable_get("@f").resume
-      assert_equal "store", @user.reload.avatar.storage_key
+      assert_equal :store, @user.reload.avatar.storage_key
     end
 
     it "passes the correct :action" do
@@ -124,7 +124,7 @@ describe Shrine::Plugins::Backgrounding do
       user = @attacher.instance_variable_get("@f").resume
       user.avatar.metadata["foo"] = "bar"
       assert @attacher.instance_variable_get("@f").resume
-      assert_equal "store", @user.class[@user.id].avatar.storage_key
+      assert_equal :store, @user.class[@user.id].avatar.storage_key
     end
 
     it "doesn't return the record if promoting aborted" do
@@ -139,7 +139,7 @@ describe Shrine::Plugins::Backgrounding do
       @user.class.include @uploader.class::Attachment.new(:avatar, store: :other)
       @attacher.class.promote { |data| self.class.promote(data) }
       @user.update(avatar: fakeio)
-      assert_equal "other", @user.reload.avatar.storage_key
+      assert_equal :other, @user.reload.avatar.storage_key
     end
   end
 

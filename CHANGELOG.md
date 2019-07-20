@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Change `UploadedFile#storage_key` to return a Symbol instead of a String (@janko)
+
 * `infer_extension` – Make `:mini_mime` the default analyzer (@janko)
 
 * Bring back Ruby 2.3 support (@janko)

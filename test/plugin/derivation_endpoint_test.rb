@@ -1059,11 +1059,11 @@ describe Shrine::Plugins::DerivationEndpoint do
       it "applies :upload_storage" do
         @shrine.plugin :derivation_endpoint, upload_storage: :cache
         uploaded_file = @uploaded_file.derivation(:gray).upload
-        assert_equal "cache",        uploaded_file.storage_key
+        assert_equal :cache,         uploaded_file.storage_key
         assert_equal "gray content", uploaded_file.read
 
         uploaded_file = @uploaded_file.derivation(:gray, upload_storage: :store).upload
-        assert_equal "store",        uploaded_file.storage_key
+        assert_equal :store,         uploaded_file.storage_key
         assert_equal "gray content", uploaded_file.read
       end
 
@@ -1116,12 +1116,12 @@ describe Shrine::Plugins::DerivationEndpoint do
         @shrine.plugin :derivation_endpoint, upload_storage: :cache
         @uploaded_file.derivation(:gray).upload
         uploaded_file = @uploaded_file.derivation(:gray).retrieve
-        assert_equal "cache",        uploaded_file.storage_key
+        assert_equal :cache,         uploaded_file.storage_key
         assert_equal "gray content", uploaded_file.read
 
         @uploaded_file.derivation(:gray, upload_storage: :store).upload
         uploaded_file = @uploaded_file.derivation(:gray, upload_storage: :store).retrieve
-        assert_equal "store",        uploaded_file.storage_key
+        assert_equal :store,         uploaded_file.storage_key
         assert_equal "gray content", uploaded_file.read
       end
 
@@ -1158,12 +1158,12 @@ describe Shrine::Plugins::DerivationEndpoint do
         @shrine.plugin :derivation_endpoint, upload_storage: :cache
         uploaded_file = @uploaded_file.derivation(:gray).upload
         @uploaded_file.derivation(:gray).delete
-        assert_equal "cache", uploaded_file.storage_key
+        assert_equal :cache, uploaded_file.storage_key
         refute uploaded_file.exists?
 
         uploaded_file = @uploaded_file.derivation(:gray, upload_storage: :store).upload
         @uploaded_file.derivation(:gray, upload_storage: :store).delete
-        assert_equal "store", uploaded_file.storage_key
+        assert_equal :store, uploaded_file.storage_key
         refute uploaded_file.exists?
       end
     end

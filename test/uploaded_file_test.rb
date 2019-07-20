@@ -54,9 +54,9 @@ describe Shrine::UploadedFile do
   describe "#storage_key" do
     it "is fetched from data" do
       uploaded_file = uploaded_file("storage" => "store")
-      assert_equal "store", uploaded_file.storage_key
+      assert_equal :store, uploaded_file.storage_key
       uploaded_file.data["storage"] = "cache"
-      assert_equal "cache", uploaded_file.storage_key
+      assert_equal :cache, uploaded_file.storage_key
     end
   end
 

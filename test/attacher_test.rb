@@ -158,7 +158,7 @@ describe Shrine::Attacher do
     it "uploads the cached file to store" do
       @attacher.assign(fakeio)
       @attacher.promote(@attacher.get)
-      assert_equal "store", @attacher.get.storage_key
+      assert_equal :store, @attacher.get.storage_key
       assert @attacher.get.exists?
     end
 

@@ -85,12 +85,12 @@ describe Shrine::Plugins::Activerecord do
     it "is triggered when attachment changes" do
       @user.update(avatar: fakeio("file1")) # insert
       refute @user.changed?
-      assert_equal "store", @user.avatar.storage_key
+      assert_equal :store,  @user.avatar.storage_key
       assert_equal "file1", @user.avatar.read
 
       @user.update(avatar: fakeio("file2")) # update
       refute @user.changed?
-      assert_equal "store", @user.avatar.storage_key
+      assert_equal :store,  @user.avatar.storage_key
       assert_equal "file2", @user.avatar.read
     end
 
@@ -104,14 +104,14 @@ describe Shrine::Plugins::Activerecord do
     it "is triggered after transaction commits" do
       @user.class.transaction do
         @user.update(avatar: fakeio("file2"))
-        assert_equal "cache", @user.avatar.storage_key
+        assert_equal :cache, @user.avatar.storage_key
       end
-      assert_equal "store", @user.avatar.storage_key
+      assert_equal :store, @user.avatar.storage_key
     end
 
     it "triggers callbacks" do
       @user.class.before_save do
-        @promote_callback = true if avatar.storage_key == "store"
+        @promote_callback = true if avatar.storage_key == :store
       end
       @user.update(avatar: fakeio)
       assert @user.instance_variable_get("@promote_callback")
@@ -122,8 +122,8 @@ describe Shrine::Plugins::Activerecord do
       @user.class.update_all(name: "Name")
       @attacher.promote
       @user.reload
-      assert_equal "store", @user.avatar.storage_key
-      assert_equal "Name",  @user.name
+      assert_equal :store, @user.avatar.storage_key
+      assert_equal "Name", @user.name
     end
 
     it "bypasses validations" do
@@ -131,7 +131,7 @@ describe Shrine::Plugins::Activerecord do
       @user.avatar = fakeio
       @user.save(validate: false)
       refute @user.changed?
-      assert_equal "store", @user.avatar.storage_key
+      assert_equal :store, @user.avatar.storage_key
     end
   end
 
@@ -189,7 +189,7 @@ describe Shrine::Plugins::Activerecord do
     @attacher.class.delete { |data| self.class.delete(data) }
 
     @user.update(avatar: fakeio)
-    assert_equal "store", @user.reload.avatar.storage_key
+    assert_equal :store, @user.reload.avatar.storage_key
 
     @user.destroy
     refute @user.avatar.exists?

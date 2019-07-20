@@ -231,7 +231,7 @@ class Shrine
     # Returns true if the storage of the given uploaded file matches the
     # storage of this uploader.
     def uploaded?(uploaded_file)
-      uploaded_file.storage_key == storage_key.to_s
+      uploaded_file.storage_key == storage_key
     end
 
     # Deletes the given uploaded file and returns it.

@@ -42,7 +42,7 @@ class Shrine
 
       # The string identifier of the storage the file is uploaded to.
       def storage_key
-        @data.fetch("storage")
+        @data.fetch("storage").to_sym
       end
 
       # A hash of file metadata that was extracted during upload.

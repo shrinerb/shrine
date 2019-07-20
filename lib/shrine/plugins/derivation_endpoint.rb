@@ -260,7 +260,7 @@ class Shrine
 
     # The source uploaded file storage is the default derivative storage.
     def default_upload_storage
-      source.storage_key.to_sym
+      source.storage_key
     end
 
     # Allows caching for 1 year or until the URL expires.
