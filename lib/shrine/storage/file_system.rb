@@ -153,7 +153,7 @@ class Shrine
       # Cleans all empty subdirectories up the hierarchy.
       def clean(path)
         path.dirname.ascend do |pathname|
-          if Dir.empty?(pathname) && pathname != directory
+          if dir_empty?(pathname) && pathname != directory
             pathname.rmdir
           else
             break
@@ -186,6 +186,17 @@ class Shrine
         Pathname("#{directory}/") # add trailing slash to make it work with symlinks
           .find
           .each { |path| yield path if path.file? }
+      end
+
+      if RUBY_VERSION >= "2.4"
+        def dir_empty?(path)
+          Dir.empty?(path)
+        end
+      else
+        def dir_empty?(path)
+          Dir.foreach(path) { |x| return false unless [".", ".."].include?(x) }
+          true
+        end
       end
 
       def deprecated_download(id, **options)

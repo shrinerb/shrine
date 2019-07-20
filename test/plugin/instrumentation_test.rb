@@ -58,8 +58,8 @@ describe Shrine::Plugins::Instrumentation do
       @shrine.instrument(:my_event, foo: "bar") {}
 
       assert_instance_of Dry::Events::Event, @event
-      assert_equal "bar", @event[:foo]
-      assert_instance_of Integer, @event[:time]
+      assert_equal "bar",                    @event[:foo]
+      assert_kind_of Integer,                @event[:time]
     end
   end
 
@@ -73,7 +73,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal :my_event,             @event.name
       assert_equal "bar",                 @event[:foo]
       assert_equal %i[foo time uploader], @event.payload.keys.sort
-      assert_instance_of Integer,         @event.duration
+      assert_kind_of Integer,             @event.duration
     end
 
     it "yields events for ActiveSupport::Notifications" do
@@ -85,7 +85,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal :my_event,        @event.name
       assert_equal "bar",            @event[:foo]
       assert_equal %i[foo uploader], @event.payload.keys.sort
-      assert_instance_of Integer,    @event.duration
+      assert_kind_of Integer,        @event.duration
     end
 
     it "only subscribes to events from shrine class descendants" do
@@ -160,7 +160,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal Hash[foo: "bar"],                         @event[:upload_options]
       assert_equal %i[bar location metadata upload_options], @event[:options].keys.sort
       assert_equal @shrine,                                  @event[:uploader]
-      assert_instance_of Integer,                            @event[:time]
+      assert_kind_of Integer,                                @event[:time]
     end
 
     it "instruments & logs metadata events" do
@@ -181,7 +181,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal io,                     @event[:io]
       assert_equal %i[upload_options bar], @event[:options].keys
       assert_equal @shrine,                @event[:uploader]
-      assert_instance_of Integer,          @event[:time]
+      assert_kind_of Integer,              @event[:time]
     end
 
     it "instruments & logs download events" do
@@ -199,7 +199,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal uploaded_file.id, @event[:location]
       assert_equal Hash[foo: "bar"], @event[:download_options]
       assert_equal @shrine,          @event[:uploader]
-      assert_instance_of Integer,    @event[:time]
+      assert_kind_of Integer,        @event[:time]
     end
 
     it "instruments & logs exists events" do
@@ -215,7 +215,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal :store,           @event[:storage]
       assert_equal uploaded_file.id, @event[:location]
       assert_equal @shrine,          @event[:uploader]
-      assert_instance_of Integer,    @event[:time]
+      assert_kind_of Integer,        @event[:time]
     end
 
     it "instruments & logs delete events" do
@@ -231,7 +231,7 @@ describe Shrine::Plugins::Instrumentation do
       assert_equal :store,           @event[:storage]
       assert_equal uploaded_file.id, @event[:location]
       assert_equal @shrine,          @event[:uploader]
-      assert_instance_of Integer,    @event[:time]
+      assert_kind_of Integer,        @event[:time]
     end
   end
 

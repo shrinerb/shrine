@@ -93,7 +93,7 @@ describe Shrine::Plugins::StoreDimensions do
       assert_equal :image_dimensions, @event.name
       assert_equal io,                @event[:io]
       assert_equal @shrine,           @event[:uploader]
-      assert_instance_of Integer,     @event.duration
+      assert_kind_of Integer,         @event.duration
     end
 
     it "allows swapping log subscriber" do

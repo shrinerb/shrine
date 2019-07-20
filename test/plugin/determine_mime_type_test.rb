@@ -251,10 +251,10 @@ describe Shrine::Plugins::DetermineMimeType do
       @shrine.determine_mime_type(io = image)
 
       refute_nil @event
-      assert_equal :mime_type,    @event.name
-      assert_equal io,            @event[:io]
-      assert_equal @shrine,       @event[:uploader]
-      assert_instance_of Integer, @event.duration
+      assert_equal :mime_type, @event.name
+      assert_equal io,         @event[:io]
+      assert_equal @shrine,    @event[:uploader]
+      assert_kind_of Integer,  @event.duration
     end
 
     it "allows swapping log subscriber" do

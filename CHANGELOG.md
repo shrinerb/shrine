@@ -1,3 +1,7 @@
+## 2.19.1 (2018-07-20)
+
+* Bring back support for Ruby 2.3 (@janko)
+
 ## 2.19.0 (2019-07-18)
 
 * `pretty_location` – Allow specifying a different identifier from `id` (@00dav00)

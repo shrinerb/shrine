@@ -132,7 +132,7 @@ describe Shrine::Plugins::RemoteUrl do
       assert_equal good_url,            @event[:remote_url]
       assert_equal Hash[max_size: nil], @event[:download_options]
       assert_equal @shrine,             @event[:uploader]
-      assert_instance_of Integer,       @event.duration
+      assert_kind_of Integer,           @event.duration
     end
 
     it "allows swapping log subscriber" do
