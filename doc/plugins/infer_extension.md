@@ -11,19 +11,19 @@ plugin :infer_extension
 
 ## Inferrers
 
-By default `MIME::Types` will be used for inferring the extension, but you can
-also choose a different inferrer:
+By default, the [mini_mime] gem will be used for inferring the extension, but
+you can also choose a different inferrer:
 
 ```rb
-plugin :infer_extension, inferrer: :mini_mime
+plugin :infer_extension, inferrer: :mime_types
 ```
 
 The following inferrers are accepted:
 
-| Name          | Description                                                                             |
-| :------------ | :-----------                                                                            |
-| `:mime_types` | (Default). Uses the [mime-types] gem to infer the appropriate extension from MIME type. |
-| `:mini_mime`  | Uses the [mini_mime] gem to infer the appropriate extension from MIME type.             |
+| Name          | Description                                                                            |
+| :------------ | :-----------                                                                           |
+| `:mini_mime`  | (Default). Uses the [mini_mime] gem to infer the appropriate extension from MIME type. |
+| `:mime_types` | Uses the [mime-types] gem to infer the appropriate extension from MIME type.           |
 
 You can also define your own inferrer, with the possibility to call the
 built-in inferrers:
@@ -31,7 +31,7 @@ built-in inferrers:
 ```rb
 plugin :infer_extension, inferrer: -> (mime_type, inferrers) do
   # don't add extension if the file is a text file
-  inferrers[:rack_mime].call(mime_type) unless mime_type == "text/plain"
+  inferrers[:mini_mime].call(mime_type) unless mime_type == "text/plain"
 end
 ```
 
