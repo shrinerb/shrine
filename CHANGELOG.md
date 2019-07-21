@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `parsed_json` – Remove plugin (@janko)
+
 * `parallelize` – Remove plugin (@janko)
 
 * `hooks` – Remove plugin (@janko)

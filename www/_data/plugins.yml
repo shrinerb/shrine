@@ -23,9 +23,6 @@ Model:
     name: included
     description: Allows the included attachments to define additional methods on the model.
   -
-    name: parsed_json
-    description: Allows assigning cached files as hashes/arrays (on top of JSON strings).
-  -
     name: remote_url
     description: Allows your models to accept attachments as remote URLs.
   -
