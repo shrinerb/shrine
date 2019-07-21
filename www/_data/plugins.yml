@@ -57,9 +57,6 @@ Rack:
 
 Processing:
   -
-    name: parallelize
-    description: Allows you to parallelize uploads and deletes when using versions.
-  -
     name: processing
     description: Allows you to define processing performed for a specific action.
   -

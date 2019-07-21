@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `parallelize` – Remove plugin (@janko)
+
 * `hooks` – Remove plugin (@janko)
 
 * `s3` – Replace source object metadata when copying a file from S3 (@janko)
