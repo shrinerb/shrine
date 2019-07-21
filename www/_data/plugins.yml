@@ -125,9 +125,6 @@ Other:
     name: default_url_options
     description: Allows you to specify default URL options for uploaded files.
   -
-    name: hooks
-    description: Allows you to specify actions that occur before/around/after process/store/delete.
-  -
     name: instrumentation
     description: Logs expensive events that happen during attachment.
   -
