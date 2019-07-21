@@ -25,17 +25,6 @@ class Shrine
     end
   end
 
-  # Methods which an object has to respond to in order to be considered
-  # an IO object, along with their arguments.
-  IO_METHODS = {
-    read:   [:length, :outbuf],
-    eof?:   [],
-    rewind: [],
-    size:   [],
-    close:  [],
-  }
-  deprecate_constant(:IO_METHODS)
-
   @opts = {}
   @storages = {}
   @logger = Logger.new(STDOUT)
