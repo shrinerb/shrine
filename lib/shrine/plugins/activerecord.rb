@@ -35,9 +35,11 @@ class Shrine
               attacher.save if attacher.changed?
             end
 
-            model.after_commit if: :persisted? do
-              attacher = send("#{name}_attacher")
-              attacher.finalize if attacher.changed?
+            [:create, :update].each do |action|
+              model.after_commit on: action do
+                attacher = send("#{name}_attacher")
+                attacher.finalize if attacher.changed?
+              end
             end
 
             model.after_commit on: :destroy do
