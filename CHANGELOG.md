@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `delete_promoted` – Remove plugin (@janko)
+
 * `parsed_json` – Remove plugin (@janko)
 
 * `parallelize` – Remove plugin (@janko)

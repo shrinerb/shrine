@@ -91,9 +91,6 @@ Metadata:
 
 Deleting:
   -
-    name: delete_promoted
-    description: Deletes promoted files after the record has been updated.
-  -
     name: delete_raw
     description: Automatically deletes raw files after they've been uploaded.
   -
