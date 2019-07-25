@@ -1,5 +1,7 @@
 ## HEAD
 
+* `default_url_options` – Allow deleting passed options when using a block (@janko)
+
 * `activerecord` – Make it work with ActiveRecord 3 (@texpert)
 
 * `infer_extension` – Fix compatibility with `pretty_location` plugin (@janko)

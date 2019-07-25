@@ -14,7 +14,7 @@ class Shrine
       module FileMethods
         def url(**options)
           default_options   = default_url_options
-          default_options   = default_options.call(self, **options) if default_options.respond_to?(:call)
+          default_options   = default_options.call(self, options) if default_options.respond_to?(:call)
           default_options ||= {}
 
           super(default_options.merge(options))

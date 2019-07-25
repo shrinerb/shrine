@@ -13,7 +13,7 @@ which will receive the UploadedFile object along with any options that were
 passed to `UploadedFile#url`.
 
 ```rb
-plugin :default_url_options, store: -> (io, **options) do
+plugin :default_url_options, store: -> (io, options) do
   { response_content_disposition: ContentDisposition.attachment(io.original_filename) }
 end
 ```

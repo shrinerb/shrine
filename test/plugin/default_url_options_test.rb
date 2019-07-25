@@ -49,4 +49,14 @@ describe Shrine::Plugins::DefaultUrlOptions do
     uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo"})
     uploaded_file.url(foo: "foo")
   end
+
+  it "allows user to override passed options" do
+    @uploader.class.plugin :default_url_options, store: ->(io, options) do
+      { foo: "#{options.delete(:foo)} bar" }
+    end
+
+    uploaded_file = @uploader.upload(fakeio)
+    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo bar"})
+    uploaded_file.url(foo: "foo")
+  end
 end
