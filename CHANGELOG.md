@@ -1,5 +1,7 @@
 ## HEAD
 
+* `activerecord` – Make it work with ActiveRecord 3 (@texpert)
+
 * `infer_extension` – Fix compatibility with `pretty_location` plugin (@janko)
 
 ## 2.19.1 (2018-07-20)
