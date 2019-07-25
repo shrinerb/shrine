@@ -1,3 +1,7 @@
+## HEAD
+
+* `infer_extension` – Fix compatibility with `pretty_location` plugin (@janko)
+
 ## 2.19.1 (2018-07-20)
 
 * Bring back support for Ruby 2.3 (@janko)

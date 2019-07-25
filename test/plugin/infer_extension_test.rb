@@ -107,6 +107,12 @@ describe Shrine::Plugins::InferExtension do
     assert_nil uploaded_file.original_filename
   end
 
+  it "works with pretty_location plugin" do
+    @shrine.plugin :pretty_location
+    uploaded_file = @uploader.upload(fakeio(content_type: "image/jpeg"))
+    assert_equal ".jpeg", File.extname(uploaded_file.id)
+  end
+
   it "does not replace existing extension when generating location" do
     uploaded_file = @uploader.upload(fakeio(filename: "nature.jpg", content_type: "image/jpeg"))
     assert_equal ".jpg", File.extname(uploaded_file.id)

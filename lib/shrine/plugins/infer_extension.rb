@@ -53,14 +53,12 @@ class Shrine
       end
 
       module InstanceMethods
-        def generate_location(io, context = {})
-          mime_type = (context[:metadata] || {})["mime_type"]
-
+        def basic_location(io, metadata:)
           location = super
           current_extension = File.extname(location)
 
           if current_extension.empty? || opts[:infer_extension][:force]
-            inferred_extension = infer_extension(mime_type)
+            inferred_extension = infer_extension(metadata["mime_type"])
             location = location.chomp(current_extension) << inferred_extension unless inferred_extension.empty?
           end
 
