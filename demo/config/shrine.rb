@@ -63,5 +63,14 @@ Shrine.plugin :derivation_endpoint,
 
 # delay promoting and deleting files to a background job (`backgrounding` plugin)
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
-Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
+Shrine::Attacher.promote_block do |attacher|
+  PromoteJob.perform_async(
+    attacher.record.class,
+    attacher.record.id,
+    attacher.name,
+    attacher.data,
+  )
+end
+Shrine::Attacher.destroy_block do |attacher|
+  DeleteJob.perform_async(attacher.data)
+end

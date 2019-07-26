@@ -158,8 +158,4 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal "#<#{@shrine}::PresignEndpoint(:cache)>", endpoint.inspect
     assert_equal "#<#{@shrine}::PresignEndpoint(:cache)>", endpoint.to_s
   end
-
-  deprecated "still defines Plugins::PresignEndpoint::App" do
-    assert_equal @shrine::PresignEndpoint, @shrine::Plugins::PresignEndpoint::App
-  end
 end

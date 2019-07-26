@@ -4,6 +4,7 @@ class DeleteJob
   include SuckerPunch::Job
 
   def perform(data)
-    Shrine::Attacher.delete(data)  # finish deleting (`backgrounding` plugin)
+    attacher = Shrine::Attacher.from_data(data)
+    attacher.destroy
   end
 end

@@ -4,49 +4,73 @@ require "shrine/plugins/default_url_options"
 describe Shrine::Plugins::DefaultUrlOptions do
   before do
     @uploader = uploader { plugin :default_url_options }
+    @shrine   = @uploader.class
   end
 
-  it "adds default options statically" do
-    @uploader.class.plugin :default_url_options, store: {foo: "foo"}
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo"})
-    uploaded_file.url
-  end
+  describe "UploadedFile" do
+    describe "#url" do
+      it "adds default options statically" do
+        @shrine.plugin :default_url_options, store: { foo: "foo" }
 
-  it "adds default options dynamically" do
-    @uploader.class.plugin :default_url_options, store: ->(io, **options) do
-      raise unless io.is_a?(Shrine::UploadedFile)
-      raise unless options.is_a?(Hash) && options.key?(:bar)
-      {foo: "foo"}
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo" })
+        file.url
+      end
+
+      it "adds default options dynamically" do
+        minitest = self
+
+        @uploader.class.plugin :default_url_options, store: -> (io, **options) do
+          minitest.assert_kind_of Shrine::UploadedFile, io
+          minitest.assert_equal "bar", options[:bar]
+
+          { foo: "foo" }
+        end
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo", bar: "bar" })
+        file.url(bar: "bar")
+      end
+
+      it "merges default options with direct options" do
+        @shrine.plugin :default_url_options, store: { foo: "foo" }
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo", bar: "bar" })
+        file.url(bar: "bar")
+      end
+
+      it "allows direct options to override default options" do
+        @shrine.plugin :default_url_options, store: { foo: "foo" }
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "overriden" })
+        file.url(foo: "overriden")
+      end
+
+      it "handles nil values" do
+        @shrine.plugin :default_url_options, store: nil
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo" })
+        file.url(foo: "foo")
+
+        @shrine.plugin :default_url_options, store: -> (io, **options) {}
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo" })
+        file.url(foo: "foo")
+      end
+
+      it "allows overriding passed options" do
+        @shrine.plugin :default_url_options, store: -> (io, options) {
+          { foo: "#{options.delete(:foo)} bar" }
+        }
+
+        file = @uploader.upload(fakeio)
+        file.storage.expects(:url).with(file.id, { foo: "foo bar" })
+        file.url(foo: "foo")
+      end
     end
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo", bar: "bar"})
-    uploaded_file.url(bar: "bar")
-  end
-
-  it "merges default options with custom options" do
-    @uploader.class.plugin :default_url_options, store: {foo: "foo"}
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo", bar: "bar"})
-    uploaded_file.url(bar: "bar")
-  end
-
-  it "allows direct options to override default options" do
-    @uploader.class.plugin :default_url_options, store: {foo: "foo"}
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "overriden"})
-    uploaded_file.url(foo: "overriden")
-  end
-
-  it "handles nil values" do
-    @uploader.class.plugin :default_url_options, store: nil
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo"})
-    uploaded_file.url(foo: "foo")
-
-    @uploader.class.plugin :default_url_options, store: ->(io, **options) {}
-    uploaded_file = @uploader.upload(fakeio)
-    uploaded_file.storage.expects(:url).with(uploaded_file.id, {foo: "foo"})
-    uploaded_file.url(foo: "foo")
   end
 end

@@ -4,7 +4,7 @@ require "shrine/plugins/dynamic_storage"
 describe Shrine::Plugins::DynamicStorage do
   before do
     @uploader = uploader { plugin :dynamic_storage }
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   it "allows registering a storage with a regex" do

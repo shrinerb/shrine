@@ -11,9 +11,9 @@ class Shrine
           super
         ensure
           if errors.any? && changed?
-            _delete(get, action: :validate)
-            _set(@old)
-            remove_instance_variable(:@old)
+            destroy
+            set @previous.file
+            remove_instance_variable(:@previous)
           end
         end
       end

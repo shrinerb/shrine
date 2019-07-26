@@ -8,6 +8,8 @@ class Shrine
     #
     # [doc/plugins/remote_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remote_url.md
     module RemoteUrl
+      class DownloadError < Error; end
+
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Remote URL (#{event.duration}ms) – #{{
           remote_url:       event[:remote_url],
@@ -16,8 +18,16 @@ class Shrine
         }.inspect}"
       end
 
+      DOWNLOADER = -> (url, options) do
+        begin
+          Down.download(url, options)
+        rescue Down::Error => error
+          raise DownloadError, error.message
+        end
+      end
+
       def self.configure(uploader, opts = {})
-        uploader.opts[:remote_url] ||= { downloader: Down.method(:download), log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:remote_url] ||= { downloader: DOWNLOADER, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:remote_url].merge!(opts)
 
         unless uploader.opts[:remote_url].key?(:max_size)
@@ -27,6 +37,24 @@ class Shrine
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
           uploader.subscribe(:remote_url, &uploader.opts[:remote_url][:log_subscriber])
+        end
+      end
+
+      module AttachmentMethods
+        def included(klass)
+          super
+
+          return unless options[:type] == :model
+
+          name = attachment_name
+
+          define_method :"#{name}_remote_url=" do |url|
+            send(:"#{name}_attacher").assign_remote_url(url)
+          end
+
+          define_method :"#{name}_remote_url" do
+            # form builders require the reader method
+          end
         end
       end
 
@@ -52,20 +80,6 @@ class Shrine
         end
       end
 
-      module AttachmentMethods
-        def initialize(name, **options)
-          super
-
-          define_method :"#{name}_remote_url=" do |url|
-            send(:"#{name}_attacher").remote_url = url
-          end
-
-          define_method :"#{name}_remote_url" do
-            send(:"#{name}_attacher").remote_url
-          end
-        end
-      end
-
       module AttacherMethods
         # Downloads the remote file and assigns it. If download failed, sets
         # the error message and assigns the url to an instance variable so that
@@ -73,45 +87,20 @@ class Shrine
         def assign_remote_url(url, downloader: {}, **options)
           return if url == "" || url.nil?
 
-          begin
-            downloaded_file = shrine_class.remote_url(url, downloader)
-          rescue => error
-            download_error = error
-          end
-
-          if downloaded_file
-            assign(downloaded_file, **options)
-          else
-            message = download_error_message(url, download_error)
-            errors.replace [message]
-            @remote_url = url
-          end
-        end
-
-        # Alias for #assign_remote_url.
-        def remote_url=(url)
-          assign_remote_url(url)
-        end
-
-        # Form builders require the reader as well.
-        def remote_url
-          @remote_url
+          downloaded_file = shrine_class.remote_url(url, downloader)
+          attach_cached(downloaded_file, **options)
+        rescue DownloadError => error
+          errors.clear << remote_url_error_message(url, error)
+          false
         end
 
         private
 
-        def download_error_message(url, error)
-          if message = shrine_class.opts[:remote_url][:error_message]
-            if message.respond_to?(:call)
-              args = [url, error].take(message.arity.abs)
-              message = message.call(*args)
-            end
-          else
-            message = "download failed"
-            message = "#{message}: #{error.message}" if error
-          end
-
-          message
+        # Generates an error message for failed remote URL download.
+        def remote_url_error_message(url, error)
+          message = shrine_class.opts[:remote_url][:error_message]
+          message = message.call *[url, error].take(message.arity.abs) if message.respond_to?(:call)
+          message || "download failed: #{error.message}"
         end
       end
     end

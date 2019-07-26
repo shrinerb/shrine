@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pathname"
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/infer_extension.md] on GitHub.
@@ -13,7 +15,7 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:infer_extension] ||= { inferrer: :mini_mime, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:infer_extension].merge!(opts)
 
@@ -53,24 +55,15 @@ class Shrine
       end
 
       module InstanceMethods
-        def generate_location(io, context = {})
-          mime_type = (context[:metadata] || {})["mime_type"]
+        def basic_location(io, metadata:)
+          location = Pathname(super)
 
-          location = super
-          current_extension = File.extname(location)
-
-          if current_extension.empty? || opts[:infer_extension][:force]
-            inferred_extension = infer_extension(mime_type)
-            location = location.chomp(current_extension) << inferred_extension unless inferred_extension.empty?
+          if location.extname.empty? || opts[:infer_extension][:force]
+            inferred_extension = self.class.infer_extension(metadata["mime_type"])
+            location = location.sub_ext(inferred_extension) if inferred_extension
           end
 
-          location
-        end
-
-        private
-
-        def infer_extension(mime_type)
-          self.class.infer_extension(mime_type).to_s
+          location.to_s
         end
       end
 

@@ -4,7 +4,7 @@ require "shrine/plugins/add_metadata"
 describe Shrine::Plugins::AddMetadata do
   before do
     @uploader = uploader { plugin :add_metadata }
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   describe "add_metadata" do

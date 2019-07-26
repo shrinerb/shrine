@@ -1,7 +1,16 @@
-ORM:
+Persistence:
   -
     name: activerecord
     description: Provides ActiveRecord integration, adding callbacks and validations.
+  -
+    name: column
+    description: Provides integration for handling attachments on a database column.
+  -
+    name: entity
+    description: Provides integration for handling attachments on an immutable struct.
+  -
+    name: model
+    description: Provides integration for handling attachments on a mutable struct.
   -
     name: sequel
     description: Provides Sequel integration, adding callbacks and validations.

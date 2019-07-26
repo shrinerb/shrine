@@ -6,7 +6,7 @@ require "rack/test_app"
 describe Shrine::Plugins::RackResponse do
   before do
     @uploader = uploader { plugin :rack_response }
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   it "returns 200 status" do

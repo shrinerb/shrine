@@ -175,8 +175,4 @@ class Shrine
       @shrine_class.find_storage(@storage_key)
     end
   end
-
-  # backwards compatibility
-  Plugins::PresignEndpoint.const_set(:App, PresignEndpoint)
-  Plugins::PresignEndpoint.deprecate_constant(:App)
 end

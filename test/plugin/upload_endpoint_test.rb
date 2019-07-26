@@ -89,12 +89,6 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal "upload", response.body_json["metadata"]["action"]
   end
 
-  it "adds the :request parameter to context" do
-    @shrine.class_eval { def extract_metadata(io, context); {"query" => context[:request].query_string}; end }
-    response = app.post "/?foo=bar", multipart: {file: image}
-    assert_equal "foo=bar", response.body_json["metadata"]["query"]
-  end
-
   it "accepts upload context" do
     @shrine.plugin :upload_endpoint, upload_context: -> (r) { { location: "foo" } }
     response = app.post "/", multipart: {file: image}

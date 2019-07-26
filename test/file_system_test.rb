@@ -48,6 +48,8 @@ describe Shrine::Storage::FileSystem do
     it "expands the directory" do
       assert_equal File.expand_path("test"),        file_system("test").directory.to_s
       assert_equal File.expand_path("test/prefix"), file_system("test", prefix: "prefix").directory.to_s
+
+      FileUtils.rmdir("test/prefix")
     end
 
     it "creates the given directory" do

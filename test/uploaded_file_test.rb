@@ -5,7 +5,7 @@ require "set"
 describe Shrine::UploadedFile do
   before do
     @uploader = uploader(:store)
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   def uploaded_file(data = {})

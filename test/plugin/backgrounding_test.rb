@@ -1,261 +1,265 @@
 require "test_helper"
 require "shrine/plugins/backgrounding"
-require "sequel"
-
-db = Sequel.connect("#{"jdbc:" if RUBY_ENGINE == "jruby"}sqlite::memory:")
-db.create_table :users do
-  primary_key :id
-  column :avatar_data, :text
-end
-
-Sequel::Model.cache_anonymous_models = false
 
 describe Shrine::Plugins::Backgrounding do
   before do
-    @uploader = uploader do
-      plugin :sequel
-      plugin :backgrounding
-    end
-
-    user_class = Object.const_set("User", Sequel::Model(:users))
-    user_class.include @uploader.class::Attachment.new(:avatar)
-
-    @user = user_class.new
-    @attacher = @user.avatar_attacher
-  end
-
-  after do
-    User.dataset.delete if User < Sequel::Model
-    Object.send(:remove_const, "User")
-  end
-
-  describe "promoting" do
-    it "stores the file and saves it to record" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.update(avatar: fakeio)
-      assert_equal :cache, @user.reload.avatar.storage_key
-      @attacher.instance_variable_get("@f").resume
-      assert_equal :store, @user.reload.avatar.storage_key
-    end
-
-    it "passes the correct :action" do
-      @attacher.class.promote { |data| self.class.promote(data) }
-      @user.avatar = fakeio
-      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, {action: :store})
-      @user.save
-
-      @attacher.class.promote { |data| self.class.promote(data.merge("action" => "foo")) }
-      @user.avatar = fakeio
-      Shrine::Attacher.any_instance.expects(:promote).with(@user.avatar, {action: :foo})
-      @user.save
-    end
-
-    it "returns the attacher" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.update(avatar: fakeio)
-      assert_instance_of @attacher.class, @attacher.instance_variable_get("@f").resume
-    end
-
-    it "doesn't get triggered when there is nothing to promote" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.save
-      refute @attacher.instance_variable_defined?("@f")
-    end
-
-    it "doesn't error when record was deleted before promoting" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.update(avatar: fakeio)
-      @user.destroy
-      @attacher.instance_variable_get("@f").resume
-    end
-
-    it "doesn't error when record was deleted during promoting" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @attacher.class.class_eval do
-        def swap(*)
-          Fiber.yield
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      @attacher.instance_variable_get("@f").resume
-      @user.this.delete
-      @attacher.instance_variable_get("@f").resume
-    end
-
-    it "doesn't continue uploading if attachment has already changed" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @user.update(avatar: fakeio)
-      @user.this.update(avatar_data: nil)
-      Shrine.any_instance.expects(:upload).never
-      refute @attacher.instance_variable_get("@f").resume
-      assert @user.reload.avatar.nil?
-    end
-
-    it "aborts promoting if attachment has changed" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @attacher.class.class_eval do
-        def swap(*)
-          Fiber.yield
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      @attacher.instance_variable_get("@f").resume
-      @user.this.update(avatar_data: nil)
-      refute @attacher.instance_variable_get("@f").resume
-      assert @user.reload.avatar.nil?
-    end
-
-    it "doesn't abort promoting if metadata has changed" do
-      # imitate how a JSON column would behave
-      @attacher.class.class_eval {
-        def write(value); super; @value = JSON.parse(value) rescue nil; end
-        def read; @value ||= JSON.parse(super) rescue nil; end
-      }
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @attacher.class.class_eval do
-        def swap(*)
-          Fiber.yield(record)
-          super
-        end
-      end
-      @user.update(avatar: fakeio)
-      user = @attacher.instance_variable_get("@f").resume
-      user.avatar.metadata["foo"] = "bar"
-      assert @attacher.instance_variable_get("@f").resume
-      assert_equal :store, @user.class[@user.id].avatar.storage_key
-    end
-
-    it "doesn't return the record if promoting aborted" do
-      @attacher.class.promote { |data| @f = Fiber.new{self.class.promote(data)} }
-      @attacher.class.class_eval { def swap(*); nil; end }
-      @user.update(avatar: fakeio)
-      refute @attacher.instance_variable_get("@f").resume
-    end
-
-    it "respects default storage set via Attachment.new" do
-      @uploader.class.storages[:other] = @uploader.class.storages.delete(:store)
-      @user.class.include @uploader.class::Attachment.new(:avatar, store: :other)
-      @attacher.class.promote { |data| self.class.promote(data) }
-      @user.update(avatar: fakeio)
-      assert_equal :other, @user.reload.avatar.storage_key
-    end
-  end
-
-  describe "deleting" do
-    it "is triggered on destroy" do
-      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
-      @user.update(avatar: fakeio)
-      uploaded_file = @user.avatar
-      @user.destroy
-      assert uploaded_file.exists?
-      @attacher.instance_variable_get("@f").resume
-      refute uploaded_file.exists?
-    end
-
-    it "is triggered on replace" do
-      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
-      @user.update(avatar: fakeio)
-      uploaded_file = @user.avatar
-      @user.update(avatar: fakeio)
-      assert uploaded_file.exists?
-      @attacher.instance_variable_get("@f").resume
-      refute uploaded_file.exists?
-    end
-
-    it "returns the attacher" do
-      @attacher.class.delete { |data| @f = Fiber.new{self.class.delete(data)} }
-      @user.update(avatar: fakeio)
-      @user.destroy
-      assert_instance_of @attacher.class, @attacher.instance_variable_get("@f").resume
-    end
-
-    it "does regular deleting if nothing was assigned" do
-      @user.update(avatar: fakeio)
-      uploaded_file = @user.avatar
-      @user.destroy
-      refute uploaded_file.exists?
-    end
-  end
-
-  describe ".dump" do
-    it "creates a serializable hash of the attacher" do
-      @attacher.record.save
-      @attacher.assign(fakeio)
-      data = @attacher.class.dump(@attacher)
-      assert_equal @attacher.get, @attacher.uploaded_file(data["attachment"])
-      assert_equal [@attacher.record.class.to_s, @attacher.record.id.to_s], data["record"]
-      assert_equal @attacher.name.to_s, data["name"]
-    end
-
-    it "handles the case when attachment is nil" do
-      data = @attacher.class.dump(@attacher)
-      assert_nil data["attachment"]
-    end
-
-    it "includes the shrine_class" do
-      Object.const_set(:MyUploader, @attacher.shrine_class)
-      data = @attacher.class.dump(@attacher)
-      assert_equal "MyUploader", data["shrine_class"]
-      Object.send(:remove_const, :MyUploader)
-    end
-
-    it "sets shrine_class to nil for anonymous classes" do
-      data = @attacher.class.dump(@attacher)
-      assert_nil data["shrine_class"]
-    end
-  end
-
-  describe ".load" do
-    it "instantiates the attacher" do
-      @attacher.record.save
-      data = @attacher.class.dump(@attacher)
-      attacher = @attacher.class.load(data)
-      assert_instance_of @attacher.class, attacher
-      assert_equal @attacher.name, attacher.name
-      assert_equal @attacher.record.class, attacher.record.class
-      assert_equal @attacher.record.id, attacher.record.id
-    end
-
-    it "handles record not found" do
-      @attacher.record.save
-      @attacher.record.destroy
-      data = @attacher.class.dump(@attacher)
-      attacher = @attacher.class.load(data)
-      assert_equal @attacher.record.class, attacher.record.class
-      assert_equal @attacher.record.id.to_s, attacher.record.id
-    end
-
-    it "loads attacher from shrine_class if available" do
-      Object.const_set(:MyUploader, @attacher.shrine_class)
-      data = @attacher.class.dump(@attacher)
-      User.class_eval { undef avatar_attacher }
-      attacher = @attacher.class.load(data)
-      Object.send(:remove_const, :MyUploader)
-    end
-  end
-
-  it "works with PORO models" do
-    promote_job = proc do |data|
-      attacher = @attacher.class.promote(data)
-      assert_equal @attacher.record.class, attacher.record.class
-      assert attacher.stored?
-      assert attacher.get.exists?
-    end
-
-    delete_job = proc do |data|
-      attacher = @attacher.class.delete(data)
-      assert_equal @attacher.record.class, attacher.record.class
-      assert_instance_of @attacher.record.class, attacher.record.class
-      refute attacher.get.exists?
-    end
-
     @attacher = attacher { plugin :backgrounding }
-    @attacher.class.promote { |data| promote_job.call(data) }
-    @attacher.class.delete { |data| delete_job.call(data) }
+    @shrine   = @attacher.shrine_class
 
-    @attacher.assign(fakeio)
-    @attacher.finalize
+    @job = nil
+  end
+
+  describe "Attacher" do
+    describe ".promote_block" do
+      it "registers a promote block" do
+        assert_nil @attacher.class.promote_block
+
+        @attacher.class.promote_block { |attacher| }
+
+        assert_instance_of Proc, @attacher.class.promote_block
+      end
+    end
+
+    describe ".destroy_block" do
+      it "registers a destroy block" do
+        assert_nil @attacher.class.destroy_block
+
+        @attacher.class.destroy_block { |attacher| }
+
+        assert_instance_of Proc, @attacher.class.destroy_block
+      end
+    end
+
+    describe "#promote_block" do
+      it "registers a promote block" do
+        assert_nil @attacher.promote_block
+
+        @attacher.promote_block { |attacher| }
+
+        assert_instance_of Proc, @attacher.promote_block
+      end
+
+      it "overrides a class-level promote block" do
+        @attacher.class.promote_block { |attacher| }
+
+        @attacher = @attacher.class.new
+
+        assert_equal @attacher.class.promote_block, @attacher.promote_block
+
+        @attacher.promote_block { |attacher| }
+
+        refute_equal @attacher.class.promote_block, @attacher.promote_block
+      end
+    end
+
+    describe "#destroy_block" do
+      it "registers a destroy block" do
+        assert_nil @attacher.class.destroy_block
+
+        @attacher.class.destroy_block { |attacher| }
+
+        assert_instance_of Proc, @attacher.class.destroy_block
+      end
+
+      it "overrides a class-level destroy block" do
+        @attacher.class.destroy_block { |attacher| }
+
+        @attacher = @attacher.class.new
+
+        assert_equal @attacher.class.destroy_block, @attacher.destroy_block
+
+        @attacher.destroy_block { |attacher| }
+
+        refute_equal @attacher.class.destroy_block, @attacher.destroy_block
+      end
+    end
+
+    describe "#promote_cached" do
+      it "calls class-level promote block" do
+        @attacher.class.promote_block do |attacher|
+          @job = Fiber.new { attacher.promote }
+        end
+
+        @attacher = @attacher.class.new
+        @attacher.attach_cached(fakeio)
+        @attacher.finalize
+
+        assert @attacher.cached?
+
+        @job.resume
+
+        assert @attacher.stored?
+      end
+
+      it "calls instance-level promote block" do
+        @attacher.promote_block do |attacher|
+          @job = Fiber.new { attacher.promote }
+        end
+
+        @attacher.attach_cached(fakeio)
+        @attacher.finalize
+
+        assert @attacher.cached?
+
+        @job.resume
+
+        assert @attacher.stored?
+      end
+
+      it "calls default promotion when no promote blocks are registered" do
+        @attacher.attach_cached(fakeio)
+        @attacher.finalize
+
+        assert @attacher.stored?
+      end
+
+      it "doesn't call the block when there is nothing to promote" do
+        @attacher.promote_block do |attacher|
+          @job = Fiber.new { attacher.promote }
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.finalize
+
+        assert @attacher.stored?
+        assert_nil @job
+      end
+    end
+
+    describe "#promote" do
+      it "is still synchronous by default" do
+        @attacher.promote_block do |attacher|
+          @job = Fiber.new { attacher.promote }
+        end
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote(location: "foo")
+
+        assert @attacher.stored?
+        assert_equal "foo", @attacher.file.id
+        assert_nil @job
+      end
+    end
+
+    describe "#destroy_previous" do
+      it "calls class-level destroy block" do
+        @attacher.class.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher = @attacher.class.new
+        previous_file = @attacher.attach(fakeio)
+        @attacher.attach(nil)
+        @attacher.finalize
+
+        assert previous_file.exists?
+
+        @job.resume
+
+        refute previous_file.exists?
+      end
+
+      it "calls instance-level destroy block" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        previous_file = @attacher.attach(fakeio)
+        @attacher.attach(nil)
+        @attacher.finalize
+
+        assert previous_file.exists?
+
+        @job.resume
+
+        refute previous_file.exists?
+      end
+
+      it "calls default destroy when no destroy blocks are registered" do
+        previous_file = @attacher.attach(fakeio)
+        @attacher.attach(nil)
+        @attacher.finalize
+
+        refute previous_file.exists?
+      end
+
+      it "doesn't call the block when there is nothing to destroy" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        previous_file = @attacher.attach_cached(fakeio)
+        @attacher.assign(fakeio)
+
+        assert previous_file.exists?
+        assert_nil @job
+      end
+    end
+
+    describe "#destroy_cached" do
+      it "calls class-level destroy block" do
+        @attacher.class.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher = @attacher.class.new
+        @attacher.attach(fakeio)
+        @attacher.destroy_attached
+
+        assert @attacher.file.exists?
+
+        @job.resume
+
+        refute @attacher.file.exists?
+      end
+
+      it "calls instance-level destroy block" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.destroy_attached
+
+        assert @attacher.file.exists?
+
+        @job.resume
+
+        refute @attacher.file.exists?
+      end
+
+      it "calls default destroy when no destroy blocks are registered" do
+        @attacher.attach(fakeio)
+        @attacher.destroy_attached
+
+        refute @attacher.file.exists?
+      end
+
+      it "doesn't call the block when there is nothing to destroy" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher.attach_cached(fakeio)
+        @attacher.destroy_attached
+
+        assert @attacher.file.exists?
+        assert_nil @job
+      end
+    end
+
+    describe "#destroy" do
+      it "is still synchronous by default" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.destroy
+
+        refute @attacher.file.exists?
+        assert_nil @job
+      end
+    end
   end
 end

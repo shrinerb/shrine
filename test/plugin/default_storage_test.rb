@@ -2,23 +2,30 @@ require "test_helper"
 require "shrine/plugins/default_storage"
 
 describe Shrine::Plugins::DefaultStorage do
-  it "allows setting the cache as symbol" do
-    @attacher = attacher { plugin :default_storage, cache: :store }
-    assert_equal :store, @attacher.cache.storage_key
+  before do
+    @attacher = attacher { plugin :default_storage }
+    @shrine   = @attacher.shrine_class
   end
 
-  it "allows setting the cache as a block" do
-    @attacher = attacher { plugin :default_storage, cache: ->(record, name){:store} }
-    assert_equal :store, @attacher.cache.storage_key
-  end
+  describe "Attacher" do
+    describe "#initialize" do
+      it "inherits default temporary and permanent storage" do
+        @shrine.plugin :default_storage, cache: :other_cache, store: :other_store
 
-  it "allows setting the store as symbol" do
-    @attacher = attacher { plugin :default_storage, store: :cache }
-    assert_equal :cache, @attacher.store.storage_key
-  end
+        attacher = @shrine::Attacher.new
 
-  it "allows setting the store as a block" do
-    @attacher = attacher { plugin :default_storage, store: ->(record, name){:cache} }
-    assert_equal :cache, @attacher.store.storage_key
+        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_store, attacher.store.storage_key
+      end
+
+      it "still allows overriding storage" do
+        @shrine.plugin :default_storage, cache: :other_cache, store: :other_store
+
+        attacher = @shrine::Attacher.new(cache: :cache, store: :store)
+
+        assert_equal :cache, attacher.cache.storage_key
+        assert_equal :store, attacher.store.storage_key
+      end
+    end
   end
 end

@@ -3,7 +3,7 @@ require "test_helper"
 describe Shrine do
   before do
     @uploader = uploader
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   describe ".inherited" do
@@ -67,43 +67,59 @@ describe Shrine do
   describe ".Attachment" do
     it "returns an instance of Attachment" do
       uploader = Class.new(Shrine)
-      assert_instance_of uploader::Attachment, uploader::Attachment(:avatar)
-      assert_instance_of uploader::Attachment, uploader.attachment(:avatar)
-      assert_instance_of uploader::Attachment, uploader[:avatar]
+
+      assert_instance_of uploader::Attachment, uploader::Attachment(:file)
+      assert_instance_of uploader::Attachment, uploader.attachment(:file)
+      assert_instance_of uploader::Attachment, uploader[:file]
     end
   end
 
   describe ".upload" do
     it "uploads the file" do
-      uploaded_file = @shrine.upload(fakeio("content"), :store)
-      assert_equal @shrine.storages[:store], uploaded_file.storage
-      assert_equal "content",                uploaded_file.read
+      file = @shrine.upload(fakeio, :store)
+
+      assert_instance_of @shrine::UploadedFile, file
+    end
+
+    it "forwads additional options" do
+      file = @shrine.upload(fakeio, :store, location: "foo")
+
+      assert_equal "foo", file.id
     end
   end
 
   describe ".uploaded_file" do
-    it "accepts data as Hash" do
+    it "accepts data as stringified Hash" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @shrine.uploaded_file(uploaded_file.data)
+      retrieved     = @shrine.uploaded_file(uploaded_file.data)
+
       assert_equal uploaded_file, retrieved
+    end
+
+    it "accepts data as symbolized Hash" do
+      uploaded_file = @uploader.upload(fakeio)
+
+      data            = uploaded_file.data.transform_keys(&:to_sym)
+      data[:metadata] = data[:metadata].transform_keys(&:to_sym)
+
+      retrieved = @shrine.uploaded_file(data)
+
+      assert_equal uploaded_file,          retrieved
+      assert_equal uploaded_file.metadata, retrieved.metadata
     end
 
     it "accepts data as JSON" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @shrine.uploaded_file(uploaded_file.to_json)
+      retrieved     = @shrine.uploaded_file(uploaded_file.to_json)
+
       assert_equal uploaded_file, retrieved
     end
 
     it "accepts an UploadedFile" do
       uploaded_file = @uploader.upload(fakeio)
-      retrieved = @shrine.uploaded_file(uploaded_file)
-      assert_equal uploaded_file, retrieved
-    end
+      retrieved     = @shrine.uploaded_file(uploaded_file)
 
-    it "yields the converted file" do
-      uploaded_file = @uploader.upload(fakeio)
-      @shrine.uploaded_file(uploaded_file.data) { |o| @yielded = o }
-      assert_equal uploaded_file, @yielded
+      assert_equal uploaded_file, retrieved
     end
 
     it "raises an error on invalid input" do
@@ -166,12 +182,16 @@ describe Shrine do
   end
 
   describe "#initialize" do
-    it "accepts symbol and string storage names" do
+    it "accepts symbol storage name" do
       uploader = @shrine.new(:store)
+
       assert_equal :store, uploader.storage_key
       assert_equal @uploader.storage, uploader.storage
+    end
 
+    it "accepts string storage name" do
       uploader = @shrine.new("store")
+
       assert_equal :store, uploader.storage_key
       assert_equal @uploader.storage, uploader.storage
     end
@@ -182,157 +202,215 @@ describe Shrine do
   end
 
   it "has #storage_key, #storage and #opts" do
-    assert_equal :store, @uploader.storage_key
+    assert_equal :store,                   @uploader.storage_key
     assert_equal @shrine.storages[:store], @uploader.storage
-    assert_equal Hash.new, @uploader.opts
+    assert_equal Hash.new,                 @uploader.opts
   end
 
   describe "#upload" do
-    it "stores the file" do
-      uploaded_file = @uploader.upload(fakeio("original"))
-      assert uploaded_file.exists?
-      assert_equal "original", uploaded_file.read
+    it "uploads the file to storage" do
+      file = @uploader.upload(fakeio("file"))
+
+      assert file.exists?
+      assert_equal "file", file.read
     end
 
-    it "calls the processing" do
-      @uploader.instance_eval { def process(io, context); FakeIO.new(io.read.reverse); end }
-      uploaded_file = @uploader.upload(fakeio("original"))
-      assert_equal "lanigiro", uploaded_file.read
-    end
-
-    it "sends the context all the way down" do
-      @uploader.instance_eval do
-        def process(io, context); FakeIO.new(context[:foo]); end
-        def generate_location(io, context); context[:foo]; end
-        def extract_metadata(io, context); {"foo" => context[:foo]}; end
+    it "raises Shrine::InvalidFile when input is not an IO-like object" do
+      assert_raises Shrine::InvalidFile do
+        @uploader.upload(:not_io)
       end
-      uploaded_file = @uploader.upload(fakeio, {foo: "bar"})
-      assert_equal "bar", uploaded_file.read
-      assert_equal "bar", uploaded_file.id
-      assert_equal "bar", uploaded_file.metadata["foo"]
     end
 
-    it "doesn't mutate context" do
-      @uploader.upload(fakeio, {}.freeze)
-    end
-  end
+    it "stores basic metadata" do
+      io = fakeio("file", filename: "nature.jpg", content_type: "image/jpeg")
 
-  describe "#store" do
+      file = @uploader.upload(io)
+
+      assert_equal Hash[
+        "size"      => 4,
+        "filename"  => "nature.jpg",
+        "mime_type" => "image/jpeg",
+      ], file.metadata
+    end
+
+    it "copies metadata from UploadedFile objects" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.metadata.clear
+
+      file = @uploader.upload(uploaded_file)
+
+      assert_equal Hash.new, file.metadata
+      refute_equal uploaded_file.metadata.object_id, file.metadata.object_id
+    end
+
+    it "accepts additional metadata" do
+      io = fakeio("file", filename: "nature.jpg", content_type: "image/jpeg")
+
+      file = @uploader.upload(io, metadata: { "filename" => "overridden.jpg", "foo" => "bar" })
+
+      assert_equal Hash[
+        "size"      => 4,
+        "filename"  => "overridden.jpg",
+        "mime_type" => "image/jpeg",
+        "foo"       => "bar",
+      ], file.metadata
+    end
+
+    it "skips metadata extraction on metadata: false" do
+      @uploader.expects(:extract_metadata).never
+
+      file = @uploader.upload(fakeio, metadata: false)
+
+      assert_equal Hash.new, file.metadata
+    end
+
+    it "forces metadata extraction on metadata: true" do
+      uploaded_file = @uploader.upload(fakeio)
+      uploaded_file.metadata.clear
+
+      file = @uploader.upload(uploaded_file, metadata: true)
+
+      assert_equal %w[filename size mime_type], file.metadata.keys
+      refute_equal uploaded_file.metadata.object_id, file.metadata.object_id
+    end
+
+    it "forwards options for metadata extraction" do
+      @uploader.instance_eval do
+        def extract_metadata(io, **options)
+          options
+        end
+      end
+
+      file = @uploader.upload(fakeio, foo: "bar")
+
+      assert_equal "bar", file.metadata[:foo]
+    end
+
+    it "uses result of #generate_location for upload location" do
+      @uploader.instance_eval do
+        def get_location(io, **)
+          "foo"
+        end
+      end
+
+      file = @uploader.upload(fakeio)
+
+      assert_equal "foo", file.id
+    end
+
+    it "forwards metadata for location generation" do
+      @uploader.instance_eval do
+        def generate_location(io, **options)
+          options[:metadata].to_s
+        end
+      end
+
+      file = @uploader.upload(fakeio)
+
+      assert_equal file.metadata.to_s, file.id
+    end
+
+    it "forwards options for location generation" do
+      @uploader.instance_eval do
+        def generate_location(io, **options)
+          options[:foo]
+        end
+      end
+
+      file = @uploader.upload(fakeio, foo: "bar")
+
+      assert_equal "bar", file.id
+    end
+
+    it "accepts :location" do
+      file = @uploader.upload(fakeio, location: "foo")
+
+      assert_equal "foo", file.id
+    end
+
+    it "raises exception when upload location was nil" do
+      @uploader.instance_eval do
+        def generate_location(io, **options)
+          nil
+        end
+      end
+
+      assert_raises Shrine::Error do
+        @uploader.upload(fakeio)
+      end
+    end
+
+    it "forwards metadata to the storage" do
+      @uploader.storage.instance_eval do
+        def upload(io, id, shrine_metadata: {}, **)
+          fail unless shrine_metadata.keys == %w[filename size mime_type]
+
+          super
+        end
+      end
+
+      @uploader.upload(fakeio)
+    end
+
+    it "forwards :upload_options to the storage" do
+      @uploader.storage.instance_eval do
+        def upload(io, id, shrine_metadata: {}, **upload_options)
+          fail unless upload_options == { foo: "bar" }
+
+          super
+        end
+      end
+
+      @uploader.upload(fakeio, upload_options: { foo: "bar" })
+    end
+
     it "returns instance of correct UploadedFile" do
-      uploaded_file = @uploader.store(fakeio)
-      assert_instance_of @shrine::UploadedFile, uploaded_file
-    end
+      file = @uploader.upload(fakeio)
 
-    it "uploads the file without processing" do
-      @uploader.instance_eval { def process(io, context); FakeIO.new(io.read.reverse); end }
-      uploaded_file = @uploader.store(fakeio("original"))
-      assert_equal "original", uploaded_file.read
-    end
-
-    it "uses :location if available" do
-      uploaded_file = @uploader.store(fakeio, location: "foo")
-      assert_equal "foo", uploaded_file.id
-    end
-
-    it "calls #generate_location if :location isn't provided" do
-      @uploader.instance_eval { def generate_location(io, context); "foo"; end }
-      uploaded_file = @uploader.store(fakeio)
-      assert_equal "foo", uploaded_file.id
-    end
-
-    it "raises Shrine::Error when generated location was nil" do
-      @uploader.instance_eval { def generate_location(io, context); nil; end }
-      assert_raises(Shrine::Error) { @uploader.store(fakeio) }
-    end
-
-    it "extracts and assigns metadata" do
-      photo = fakeio("photo", filename: "nature.jpg", content_type: "image/jpeg")
-      uploaded_file = @uploader.store(photo)
-      assert_equal 5,            uploaded_file.metadata["size"]
-      assert_equal "nature.jpg", uploaded_file.metadata["filename"]
-      assert_equal "image/jpeg", uploaded_file.metadata["mime_type"]
-    end
-
-    it "allows setting metadata manually" do
-      photo = fakeio("photo", filename: "random")
-      uploaded_file = @uploader.store(photo, metadata: { "filename" => "nature.jpg", "foo" => "bar" })
-      assert_equal "nature.jpg", uploaded_file.metadata["filename"]
-      assert_equal "bar",        uploaded_file.metadata["foo"]
-    end
-
-    it "copies metadata from other UploadedFiles" do
-      another_uploaded_file = @uploader.store(fakeio)
-      another_uploaded_file.metadata["foo"] = "bar"
-      uploaded_file = @uploader.store(another_uploaded_file)
-      assert_equal "bar", uploaded_file.metadata["foo"]
-    end
-
-    it "allows skipping metadata extraction" do
-      uploaded_file = @uploader.store(fakeio, metadata: false)
-      assert_equal Hash.new, uploaded_file.metadata
-    end
-
-    it "allows forcing metadata extraction" do
-      another_uploaded_file = @uploader.store(fakeio, metadata: false)
-      uploaded_file = @uploader.store(another_uploaded_file, metadata: true)
-      assert_equal ["filename", "size", "mime_type"], uploaded_file.metadata.keys
+      assert_instance_of @shrine::UploadedFile, file
     end
 
     it "closes the file after uploading" do
-      @uploader.store(io = fakeio)
+      @uploader.upload(io = fakeio)
+
       assert_raises(IOError) { io.read }
     end
 
     it "doesn't error when storage already closed the file" do
       @uploader.storage.instance_eval { def upload(io, *); super; io.close; end }
-      @uploader.store(fakeio)
+      @uploader.upload(fakeio)
     end
 
-    it "checks if the input is a valid IO" do
-      assert_raises(Shrine::InvalidFile) { @uploader.store(:not_an_io) }
-    end
-
-    it "accepts IO objects with unknown size" do
+    it "accepts IO objects of unknown size" do
       io = StringIO.new
       io.instance_eval { undef size }
-      uploaded_file = @uploader.store(io)
+      uploaded_file = @uploader.upload(io)
       assert_equal "", uploaded_file.read
 
       io = StringIO.new
       io.instance_eval { def size; nil; end }
-      uploaded_file = @uploader.store(io)
+      uploaded_file = @uploader.upload(io)
       assert_equal "", uploaded_file.read
     end
 
-    it "passes objects which satisfy IO interface through #method_missing" do
-      delegator_class = Struct.new(:object) do
-        def method_missing(name, *args, &block)
-          object.send(name, *args, &block)
+    it "accepts input which satisfies IO interface through #method_missing" do
+      delegator_class = Class.new do
+        def initialize(object)
+          @object = object
         end
 
-        def respond_to?(name, include_private = false)
-          object.respond_to?(name, include_private) || super
+        def method_missing(name, *args, &block)
+          @object.send(name, *args, &block)
+        end
+
+        def respond_to_missing?(name, include_private = false)
+          @object.respond_to?(name, include_private) || super
         end
       end
 
-      @uploader.store(delegator_class.new(fakeio))
-    end
-  end
+      io = delegator_class.new(fakeio)
 
-  describe "#uploaded?" do
-    it "returns true if storages match" do
-      cached_file = @shrine.new(:cache).upload(fakeio)
-      assert @shrine.new(:cache).uploaded?(cached_file)
-      refute @shrine.new(:store).uploaded?(cached_file)
-    end
-  end
-
-  describe "#delete" do
-    it "deletes the given file" do
-      uploaded_file = @uploader.upload(fakeio)
-      deleted_file = @uploader.delete(uploaded_file)
-      refute deleted_file.exists?
-      assert_equal uploaded_file, deleted_file
+      @uploader.upload(io)
     end
   end
 
@@ -340,6 +418,7 @@ describe Shrine do
     it "creates a unique location" do
       location1 = @uploader.generate_location(fakeio)
       location2 = @uploader.generate_location(fakeio)
+
       refute location1 == location2
     end
 
@@ -385,17 +464,6 @@ describe Shrine do
       refute_match /key=value/, location
       assert_match /^[\w-]+$/, location
     end
-
-    it "can access extracted metadata" do
-      @uploader.instance_eval do
-        def generate_location(io, context)
-          @metadata = context[:metadata]
-          super
-        end
-      end
-      uploaded_file = @uploader.upload(fakeio)
-      assert_equal uploaded_file.metadata, @uploader.instance_variable_get("@metadata")
-    end
   end
 
   describe "#extract_metadata" do
@@ -415,7 +483,7 @@ describe Shrine do
       assert_equal 5, metadata["size"]
     end
 
-    it "extracts the content type" do
+    it "extracts the mime type" do
       metadata = @uploader.extract_metadata(fakeio(content_type: "image/jpeg"))
       assert_equal "image/jpeg", metadata["mime_type"]
 
@@ -430,70 +498,13 @@ describe Shrine do
     end
 
     it "successfully extracts metadata from another UploadedFile" do
-      file = fakeio("avatar", filename: "foo.jpg", content_type: "image/jpeg")
-      uploaded_file = @uploader.upload(file)
-      metadata = @uploader.extract_metadata(uploaded_file)
+      io            = fakeio("avatar", filename: "foo.jpg", content_type: "image/jpeg")
+      uploaded_file = @uploader.upload(io)
+      metadata      = @uploader.extract_metadata(uploaded_file)
+
       assert_equal 6,            metadata["size"]
       assert_equal "foo.jpg",    metadata["filename"]
       assert_equal "image/jpeg", metadata["mime_type"]
-    end
-  end
-
-  describe ".plugin" do
-    describe "when called globally" do
-      before do
-        @components = [Shrine, Shrine::UploadedFile, Shrine::Attachment, Shrine::Attacher]
-
-        @components.each do |component|
-          component::InstanceMethods.send(:define_method, :foo) { :foo }
-          component::ClassMethods.send(:define_method, :foo) { :foo }
-        end
-
-        module TestPlugin
-          module ClassMethods;           def foo; :plugin_foo; end; end
-          module InstanceMethods;        def foo; :plugin_foo; end; end
-          module FileClassMethods;       def foo; :plugin_foo; end; end
-          module FileMethods;            def foo; :plugin_foo; end; end
-          module AttacherClassMethods;   def foo; :plugin_foo; end; end
-          module AttacherMethods;        def foo; :plugin_foo; end; end
-          module AttachmentClassMethods; def foo; :plugin_foo; end; end
-          module AttachmentMethods;      def foo; :plugin_foo; end; end
-        end
-      end
-
-      after do
-        @components.each do |component|
-          component::InstanceMethods.send(:undef_method, :foo)
-          component::ClassMethods.send(:undef_method, :foo)
-        end
-
-        TestPlugin.constants.each do |name|
-          mod = TestPlugin.const_get(name)
-          mod.send(:undef_method, :foo)
-        end
-      end
-
-      it "allows the plugin to override base methods of core classes" do
-        assert_equal :foo, Shrine.foo
-        assert_equal :foo, Shrine.allocate.foo
-        assert_equal :foo, Shrine::UploadedFile.foo
-        assert_equal :foo, Shrine::UploadedFile.allocate.foo
-        assert_equal :foo, Shrine::Attacher.foo
-        assert_equal :foo, Shrine::Attacher.allocate.foo
-        assert_equal :foo, Shrine::Attachment.foo
-        assert_equal :foo, Shrine::Attachment.allocate.foo
-
-        Shrine.plugin TestPlugin
-
-        assert_equal :plugin_foo, Shrine.foo
-        assert_equal :plugin_foo, Shrine.allocate.foo
-        assert_equal :plugin_foo, Shrine::UploadedFile.foo
-        assert_equal :plugin_foo, Shrine::UploadedFile.allocate.foo
-        assert_equal :plugin_foo, Shrine::Attacher.foo
-        assert_equal :plugin_foo, Shrine::Attacher.allocate.foo
-        assert_equal :plugin_foo, Shrine::Attachment.foo
-        assert_equal :plugin_foo, Shrine::Attachment.allocate.foo
-      end
     end
   end
 end

@@ -26,13 +26,31 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:data_uri] ||= { log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:data_uri].merge!(opts)
 
         # instrumentation plugin integration
         if uploader.respond_to?(:subscribe)
           uploader.subscribe(:data_uri, &uploader.opts[:data_uri][:log_subscriber])
+        end
+      end
+
+      module AttachmentMethods
+        def included(klass)
+          super
+
+          return unless options[:type] == :model
+
+          name = attachment_name
+
+          define_method :"#{name}_data_uri=" do |uri|
+            send(:"#{name}_attacher").assign_data_uri(uri)
+          end
+
+          define_method :"#{name}_data_uri" do
+            # form builders require the reader method
+          end
         end
       end
 
@@ -53,6 +71,7 @@ class Shrine
 
         private
 
+        # Creates an IO-like object from parsed data URI.
         def create_data_file(info, filename: nil)
           content_type = info[:content_type] || DEFAULT_CONTENT_TYPE
           content      = info[:base64] ? Base64.decode64(info[:data]) : CGI.unescape(info[:data])
@@ -63,6 +82,7 @@ class Shrine
           data_file
         end
 
+        # Parses the data URI string and returns parts.
         def parse_data_uri(uri)
           scanner = StringScanner.new(uri)
           scanner.scan(DATA_REGEXP) or raise ParseError, "data URI has invalid format"
@@ -82,20 +102,6 @@ class Shrine
         end
       end
 
-      module AttachmentMethods
-        def initialize(name, **options)
-          super
-
-          define_method :"#{name}_data_uri=" do |uri|
-            send(:"#{name}_attacher").data_uri = uri
-          end
-
-          define_method :"#{name}_data_uri" do
-            send(:"#{name}_attacher").data_uri
-          end
-        end
-      end
-
       module AttacherMethods
         # Handles assignment of a data URI. If the regexp matches, it extracts
         # the content type, decodes it, wrappes it in a StringIO and assigns it.
@@ -105,22 +111,19 @@ class Shrine
           return if uri == "" || uri.nil?
 
           data_file = shrine_class.data_uri(uri)
-          assign(data_file, **options)
+          attach_cached(data_file, **options)
         rescue ParseError => error
-          message = shrine_class.opts[:data_uri][:error_message] || error.message
+          errors.clear << data_uri_error_messsage(uri, error)
+          false
+        end
+
+        private
+
+        # Generates an error message for failed data URI parse.
+        def data_uri_error_messsage(uri, error)
+          message = shrine_class.opts[:data_uri][:error_message]
           message = message.call(uri) if message.respond_to?(:call)
-          errors.replace [message]
-          @data_uri = uri
-        end
-
-        # Alias for #assign_data_uri.
-        def data_uri=(uri)
-          assign_data_uri(uri)
-        end
-
-        # Form builders require the reader as well.
-        def data_uri
-          @data_uri
+          message || error.message
         end
       end
 

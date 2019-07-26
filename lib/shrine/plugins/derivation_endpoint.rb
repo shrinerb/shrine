@@ -20,12 +20,12 @@ class Shrine
         }.inspect}"
       end
 
-      def self.load_dependencies(uploader, opts = {})
+      def self.load_dependencies(uploader, **)
         uploader.plugin :rack_response
         uploader.plugin :_urlsafe_serialization
       end
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:derivation_endpoint_options] ||= { log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:derivation_endpoint_options].merge!(opts)
 

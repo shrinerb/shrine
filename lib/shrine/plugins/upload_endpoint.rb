@@ -146,7 +146,7 @@ class Shrine
     # keys, which is to be passed to `Shrine#upload`. Calls
     # `:upload_context` option if given.
     def get_context(request)
-      context = { action: :upload, phase: :upload, request: request }
+      context = { action: :upload }
       context.merge! @upload_context.call(request) if @upload_context
       context
     end

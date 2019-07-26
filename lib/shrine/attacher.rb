@@ -27,186 +27,320 @@ class Shrine
       #       end
       #     end
       def validate(&block)
-        define_method(:validate_block, &block)
-        private :validate_block
+        private define_method(:run_validations, &block)
+      end
+
+      # Initializes the attacher from a data hash generated from `Attacher#data`.
+      #
+      #     attacher = Attacher.from_data({ "id" => "...", "storage" => "...", "metadata" => { ... } })
+      #     attacher.file #=> #<Shrine::UploadedFile>
+      def from_data(data, **options)
+        attacher = new(**options)
+        attacher.load_data(data)
+        attacher
       end
     end
 
     module InstanceMethods
-      # Returns the uploader that is used for the temporary storage.
-      attr_reader :cache
+      # Returns the attached uploaded file.
+      attr_reader :file
 
-      # Returns the uploader that is used for the permanent storage.
-      attr_reader :store
-
-      # Returns the context that will be sent to the uploader when uploading
-      # and deleting. Can be modified with additional data to be sent to the
-      # uploader.
+      # Returns the context that will be sent to the uploader when uploading.
+      # Can be modified with additional data to be sent to the uploader.
       attr_reader :context
 
       # Returns an array of validation errors created on file assignment in
       # the `Attacher.validate` block.
       attr_reader :errors
 
-      # Initializes the necessary attributes.
-      def initialize(record, name, cache: :cache, store: :store)
-        @cache   = shrine_class.new(cache)
-        @store   = shrine_class.new(store)
-        @context = { record: record, name: name }
+      # Initializes the attached file, temporary and permanent storage.
+      def initialize(file: nil, cache: :cache, store: :store)
+        @file    = file
+        @cache   = cache
+        @store   = store
+        @context = {}
         @errors  = []
       end
 
-      # Returns the model instance associated with the attacher.
-      def record; context[:record]; end
+      # Returns the uploader that is used for the temporary storage.
+      def cache; shrine_class.new(@cache); end
+      # Returns the uploader that is used for the permanent storage.
+      def store; shrine_class.new(@store); end
 
-      # Returns the attachment name associated with the attacher.
-      def name;   context[:name];   end
-
-      # Receives the attachment value from the form. It can receive an
-      # already cached file as a JSON string, otherwise it assumes that it's
-      # an IO object and uploads it to the temporary storage. The cached file
-      # is then written to the attachment attribute in the JSON format.
+      # Calls #attach_cached, but skips if value is an empty string (this is
+      # useful when the uploaded file comes from form fields). Forwards any
+      # additional options to #attach_cached.
+      #
+      #     attacher.assign(File.open(...))
+      #     attacher.assign(File.open(...), metadata: { "foo" => "bar" })
+      #     attacher.assign('{"id":"...","storage":"cache","metadata":{...}}')
+      #     attacher.assign({ "id" => "...", "storage" => "cache", "metadata" => {} })
+      #
+      #     # ignores the assignment when a blank string is given
+      #     attacher.assign("")
       def assign(value, **options)
-        if value.is_a?(String)
-          return if value == "" || !cached?(uploaded_file(value))
-          assign_cached(uploaded_file(value))
+        return if value == "" # skip empty hidden field
+
+        attach_cached(value, **options)
+      end
+
+      # Sets an existing cached file, or uploads an IO object to temporary
+      # storage and sets it via #attach. Forwards any additional options to
+      # #attach.
+      #
+      #     # upload file to temporary storage and set the uploaded file.
+      #     attacher.attach_cached(File.open(...))
+      #
+      #     # foward additional options to the uploader
+      #     attacher.attach_cached(File.open(...), metadata: { "foo" => "bar" })
+      #
+      #     # sets an existing cached file from JSON data
+      #     attacher.attach_cached('{"id":"...","storage":"cache","metadata":{...}}')
+      #
+      #     # sets an existing cached file from Hash data
+      #     attacher.attach_cached({ "id" => "...", "storage" => "cache", "metadata" => {} })
+      def attach_cached(value, **options)
+        if value.is_a?(String) || value.is_a?(Hash)
+          change cached(value)
         else
-          uploaded_file = cache!(value, action: :cache, **options) if value
-          set(uploaded_file)
+          attach(value, storage: @cache, action: :cache, **options)
         end
       end
 
-      # Accepts a Shrine::UploadedFile object and writes it to the attachment
-      # attribute. It then runs file validations, and records that the
-      # attachment has changed.
-      def set(uploaded_file)
-        file = get
-        @old = file unless uploaded_file == file
-        _set(uploaded_file)
-        validate
+      # Uploads given IO object and changes the uploaded file.
+      #
+      #     # uploads the file to permanent storage
+      #     attacher.attach(io)
+      #
+      #     # uploads the file to specified storage
+      #     attacher.attach(io, storage: :other_store)
+      #
+      #     # forwards additional options to the uploader
+      #     attacher.attach(io, upload_options: { acl: "public-read" }, metadata: { "foo" => "bar" })
+      #
+      #     # removes the attachment
+      #     attacher.attach(nil)
+      def attach(io, storage: @store, **options)
+        file = upload(io, storage, **options) if io
+
+        change(file)
       end
 
-      # Runs the validations defined by `Attacher.validate`.
-      def validate
-        errors.clear
-        validate_block if get
+      # Deletes any previous file and promotes newly attached cached file.
+      # It also clears any dirty tracking.
+      #
+      #     # promoting cached file
+      #     attacher.assign(io)
+      #     attacher.cached? #=> true
+      #     attacher.finalize
+      #     attacher.stored?
+      #
+      #     # deleting previous file
+      #     previous_file = attacher.file
+      #     previous_file.exists? #=> true
+      #     attacher.assign(io)
+      #     attacher.finalize
+      #     previous_file.exists? #=> false
+      #
+      #     # clearing dirty tracking
+      #     attacher.assign(io)
+      #     attacher.changed? #=> true
+      #     attacher.finalize
+      #     attacher.changed? #=> false
+      def finalize
+        destroy_previous
+        promote_cached
+        remove_instance_variable(:@previous) if changed?
       end
-
-      # Returns true if a new file has been attached.
-      def changed?
-        instance_variable_defined?(:@old)
-      end
-      alias attached? changed?
 
       # Plugins can override this if they want something to be done before
       # save.
       def save
       end
 
-      # Deletes the old file and promotes the new one. Typically this should
-      # be called after saving the model instance.
-      def finalize
-        return if !instance_variable_defined?(:@old)
-        replace
-        remove_instance_variable(:@old)
-        _promote(action: :store) if cached?
+      # If a new cached file has been attached, uploads it to permanent storage.
+      # Any additional options are forwarded to #promote.
+      #
+      #     attacher.assign(io)
+      #     attacher.cached? #=> true
+      #     attacher.promote_cached
+      #     attacher.stored? #=> true
+      def promote_cached(**options)
+        promote(action: :store, **options) if changed? && cached?
       end
 
-      # Delegates to #promote, overriden for backgrounding.
-      def _promote(uploaded_file = get, **options)
-        promote(uploaded_file, **options)
+      # Uploads current file to permanent storage and sets the stored file.
+      #
+      #     attacher.cached? #=> true
+      #     attacher.promote
+      #     attacher.stored? #=> true
+      def promote(storage: @store, **options)
+        set upload(file, storage, **options)
       end
 
-      # Uploads the cached file to store, and writes the stored file to the
-      # attachment attribute.
-      def promote(uploaded_file = get, **options)
-        stored_file = store!(uploaded_file, **options)
-        result = swap(stored_file) or _delete(stored_file, action: :abort)
-        result
+      # Delegates to `Shrine.upload`, passing #context to the uploader.
+      #
+      #     # upload file to specified storage
+      #     attacher.upload(io, :store) #=> #<Shrine::UploadedFile>
+      #
+      #     # pass additional options for the uploader
+      #     attacher.upload(io, :store, metadata: { "foo" => "bar" })
+      def upload(io, storage, **options)
+        shrine_class.upload(io, storage, **context, **options)
       end
 
-      # Calls #update, overriden in ORM plugins, and returns true if the
-      # attachment was successfully updated.
-      def swap(uploaded_file)
-        update(uploaded_file)
-        uploaded_file if uploaded_file == get
+      # If a new file was attached, deletes previously attached file if any.
+      #
+      #     previous_file = attacher.file
+      #     attacher.attach(file)
+      #     attacher.destroy_previous
+      #     previous_file.exists? #=> false
+      def destroy_previous(**options)
+        @previous.destroy_attached(**options) if changed?
       end
 
-      # Deletes the previous attachment that was replaced, typically called
-      # after the model instance is saved with the new attachment.
-      def replace
-        _delete(@old, action: :replace) if @old && !cached?(@old)
+      # Destroys the attached file if it exists and is uploaded to permanent
+      # storage.
+      #
+      #     attacher.file.exists? #=> true
+      #     attacher.destroy_attached
+      #     attacher.file.exists? #=> false
+      def destroy_attached(**options)
+        destroy(**options) if attached? && !cached?
       end
 
-      # Deletes the current attachment, typically called after destroying the
-      # record.
-      def destroy
-        file = get
-        _delete(file, action: :destroy) if file && !cached?(file)
+      # Destroys the attachment.
+      #
+      #     attacher.file.exists? #=> true
+      #     attacher.destroy
+      #     attacher.file.exists? #=> false
+      def destroy(**options)
+        file&.delete
       end
 
-      # Delegates to #delete!, overriden for backgrounding.
-      def _delete(uploaded_file, **options)
-        delete!(uploaded_file, **options)
+      # Sets the uploaded file with dirty tracking, and runs validations.
+      #
+      #     attacher.change(uploaded_file)
+      #     attacher.file #=> #<Shrine::UploadedFile>
+      #     attacher.changed? #=> true
+      def change(file)
+        @previous = dup unless @file == file
+        set file
+        validate
+        file
       end
 
-      # Returns the URL to the attached file if it's present. It forwards any
-      # given URL options to the storage.
-      def url(**options)
-        get.url(**options) if read
+      # Runs the validations defined by `Attacher.validate`.
+      def validate
+        errors.clear
+        run_validations if attached?
       end
 
-      # Returns true if attachment is present and cached.
-      def cached?(file = get)
-        file && cache.uploaded?(file)
+      # Sets the uploaded file.
+      #
+      #     attacher.set(uploaded_file)
+      #     attacher.file #=> #<Shrine::UploadedFile>
+      #     attacher.changed? #=> false
+      def set(file)
+        self.file = file
       end
 
-      # Returns true if attachment is present and stored.
-      def stored?(file = get)
-        file && store.uploaded?(file)
-      end
-
-      # Returns a Shrine::UploadedFile instantiated from the data written to
-      # the attachment attribute.
+      # Returns the attached file.
+      #
+      #     # when a file is attached
+      #     attacher.get #=> #<Shrine::UploadedFile>
+      #
+      #     # when no file is attached
+      #     attacher.get #=> nil
       def get
-        uploaded_file(read) if read
+        file
       end
 
-      # Reads from the `<attachment>_data` attribute on the model instance.
-      # It returns nil if the value is blank.
-      def read
-        value = record.send(data_attribute)
-        convert_after_read(value) unless value.nil? || value.empty?
+      # If a file is attached, returns the uploaded file URL, otherwise returns
+      # nil. Any options are forwarded to the storage.
+      #
+      #     attacher.file = file
+      #     attacher.url #=> "https://..."
+      #
+      #     attacher.file = nil
+      #     attacher.url #=> nil
+      def url(**options)
+        file&.url(**options)
       end
 
-      # Uploads the file using the #cache uploader, passing the #context.
-      def cache!(io, **options)
-        Shrine.deprecation("Sending :phase to Attacher#cache! is deprecated and will not be supported in Shrine 3. Use :action instead.") if options[:phase]
-        cache.upload(io, context.merge(_equalize_phase_and_action(options)))
+      # Returns whether the attachment has changed.
+      #
+      #     attacher.changed? #=> false
+      #     attacher.attach(file)
+      #     attacher.changed? #=> true
+      def changed?
+        instance_variable_defined?(:@previous)
       end
 
-      # Uploads the file using the #store uploader, passing the #context.
-      def store!(io, **options)
-        Shrine.deprecation("Sending :phase to Attacher#store! is deprecated and will not be supported in Shrine 3. Use :action instead.") if options[:phase]
-        store.upload(io, context.merge(_equalize_phase_and_action(options)))
+      # Returns whether a file is attached.
+      #
+      #     attacher.attach(io)
+      #     attacher.attached? #=> true
+      #
+      #     attacher.attach(nil)
+      #     attacher.attached? #=> false
+      def attached?
+        !!file
       end
 
-      # Deletes the file using the uploader, passing the #context.
-      def delete!(uploaded_file, **options)
-        Shrine.deprecation("Sending :phase to Attacher#delete! is deprecated and will not be supported in Shrine 3. Use :action instead.") if options[:phase]
-        store.delete(uploaded_file, context.merge(_equalize_phase_and_action(options)))
+      # Returns whether the file is uploaded to temporary storage.
+      #
+      #     attacher.cached?       # checks current file
+      #     attacher.cached?(file) # checks given file
+      def cached?(file = self.file)
+        uploaded?(file, @cache)
       end
 
-      # Enhances `Shrine.uploaded_file` with the ability to recognize uploaded
-      # files as JSON strings.
-      def uploaded_file(object, &block)
-        shrine_class.uploaded_file(object, &block)
+      # Returns whether the file is uploaded to permanent storage.
+      #
+      #     attacher.stored?       # checks current file
+      #     attacher.stored?(file) # checks given file
+      def stored?(file = self.file)
+        uploaded?(file, @store)
       end
 
-      # The name of the attribute on the model instance that is used to store
-      # the attachment data. Defaults to `<attachment>_data`.
-      def data_attribute
-        :"#{name}_data"
+      # Generates serializable data for the attachment.
+      #
+      #     attacher.data #=> { "id" => "...", "storage" => "...", "metadata": { ... } }
+      def data
+        file&.data
+      end
+
+      # Loads the uploaded file from data generated by `Attacher#data`.
+      #
+      #     attacher.file #=> nil
+      #     attacher.load_data({ "id" => "...", "storage" => "...", "metadata" => { ... } })
+      #     attacher.file #=> #<Shrine::UploadedFile>
+      def load_data(data)
+        @file = data && uploaded_file(data)
+      end
+
+      # Saves the given uploaded file to an instance variable.
+      #
+      #     attacher.file = uploaded_file
+      #     attacher.file #=> #<Shrine::UploadedFile>
+      def file=(file)
+        unless file.is_a?(Shrine::UploadedFile) || file.nil?
+          fail ArgumentError, "expected a Shrine::UploadedFile or nil, got #{file.inspect}"
+        end
+
+        @file = file
+      end
+
+      # Converts JSON or Hash data into a Shrine::UploadedFile object.
+      #
+      #     attacher.uploaded_file('{"id":"...","storage":"...","metadata":{...}}')
+      #     #=> #<Shrine::UploadedFile ...>
+      #
+      #     attacher.uploaded_file({ "id" => "...", "storage" => "...", "metadata" => {} })
+      #     #=> #<Shrine::UploadedFile ...>
+      def uploaded_file(value)
+        shrine_class.uploaded_file(value)
       end
 
       # Returns the Shrine class that this attacher's class is namespaced
@@ -217,54 +351,34 @@ class Shrine
 
       private
 
-      # Assigns a cached file.
-      def assign_cached(cached_file)
-        set(cached_file)
+      # Converts a String or Hash value into an UploadedFile object and ensures
+      # it's uploaded to temporary storage.
+      #
+      #     # from JSON data
+      #     attacher.cached('{"id":"...","storage":"cache","metadata":{...}}')
+      #     #=> #<Shrine::UploadedFile>
+      #
+      #     # from Hash data
+      #     attacher.cached({ "id" => "...", "storage" => "cache", "metadata" => { ... } })
+      #     #=> #<Shrine::UploadedFile>
+      def cached(value)
+        uploaded_file = uploaded_file(value)
+
+        # reject files not uploaded to temporary storage, because otherwise
+        # attackers could hijack other users' attachments
+        unless cached?(uploaded_file)
+          fail Shrine::Error, "expected cached file, got #{value.inspect}"
+        end
+
+        uploaded_file
       end
 
-      # Writes the uploaded file to the attachment attribute. Overriden in ORM
-      # plugins to additionally save the model instance.
-      def update(uploaded_file)
-        _set(uploaded_file)
+      def uploaded?(file, storage_key)
+        file&.storage_key == storage_key
       end
 
-      # Performs validation actually.
-      # This method is redefined with `Attacher.validate`.
-      def validate_block
-      end
-
-      # Converts the UploadedFile to a data hash and writes it to the
-      # attribute.
-      def _set(uploaded_file)
-        data = convert_to_data(uploaded_file) if uploaded_file
-        write(data ? convert_before_write(data) : nil)
-      end
-
-      # Writes to the `<attachment>_data` attribute on the model instance.
-      def write(value)
-        record.send(:"#{data_attribute}=", value)
-      end
-
-      # Returns the data hash of the given UploadedFile.
-      def convert_to_data(uploaded_file)
-        uploaded_file.data
-      end
-
-      # Returns the hash value dumped to JSON.
-      def convert_before_write(value)
-        value.to_json
-      end
-
-      # Returns the read value unchanged.
-      def convert_after_read(value)
-        value
-      end
-
-      # Temporary method used for transitioning from :phase to :action.
-      def _equalize_phase_and_action(options)
-        options[:phase]  = options[:action] if options.key?(:action)
-        options[:action] = options[:phase] if options.key?(:phase)
-        options
+      # Performs validations defined in `Attacher.validate` block.
+      def run_validations
       end
     end
 

@@ -12,18 +12,19 @@ class Shrine
       end
 
       module InstanceMethods
-        def put(io, context)
-          upload_options = get_upload_options(io, context)
-          context = { upload_options: upload_options }.merge(context)
-          super
+        def _upload(io, **options)
+          upload_options = get_upload_options(io, options)
+
+          super(io, **options, upload_options: upload_options)
         end
 
         private
 
-        def get_upload_options(io, context)
-          options = opts[:upload_options][storage_key]
-          options = options.call(io, context) if options.respond_to?(:call)
-          options
+        def get_upload_options(io, options)
+          upload_options = opts[:upload_options][storage_key] || {}
+          upload_options = upload_options.call(io, options) if upload_options.respond_to?(:call)
+          upload_options = upload_options.merge(options[:upload_options]) if options[:upload_options]
+          upload_options
         end
       end
     end

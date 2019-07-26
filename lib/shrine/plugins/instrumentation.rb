@@ -11,7 +11,7 @@ class Shrine
       # We use a proc in order to be able identify listeners.
       LOG_SUBSCRIBER = -> (event) { LogSubscriber.call(event) }
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:instrumentation] ||= { log_subscriber: LOG_SUBSCRIBER, log_events: EVENTS }
         uploader.opts[:instrumentation].merge!(opts)
         uploader.opts[:instrumentation][:notifications] ||= ::ActiveSupport::Notifications
@@ -76,26 +76,26 @@ class Shrine
         private
 
         # Sends a `upload.shrine` event.
-        def copy(io, context)
+        def _upload(io, **options)
           self.class.instrument(
             :upload,
             storage: storage_key,
-            location: context[:location],
+            location: options[:location],
             io: io,
-            upload_options: context[:upload_options] || {},
-            options: context,
+            upload_options: options[:upload_options] || {},
+            options: options,
           ) { super }
         end
 
         # Sends a `metadata.shrine` event.
-        def get_metadata(io, context)
-          return super if io.is_a?(UploadedFile) && context[:metadata] != true || context[:metadata] == false
+        def get_metadata(io, metadata: nil, **options)
+          return super if io.is_a?(UploadedFile) && metadata != true || metadata == false
 
           self.class.instrument(
             :metadata,
             storage: storage_key,
             io: io,
-            options: context,
+            options: options.merge(metadata: metadata),
           ) { super }
         end
       end
@@ -105,7 +105,7 @@ class Shrine
         def open(**options)
           shrine_class.instrument(
             :download,
-            storage: storage_key.to_sym,
+            storage: storage_key,
             location: id,
             download_options: options,
           ) { super }
@@ -115,7 +115,7 @@ class Shrine
         def exists?
           shrine_class.instrument(
             :exists,
-            storage: storage_key.to_sym,
+            storage: storage_key,
             location: id,
           ) { super }
         end
@@ -124,7 +124,7 @@ class Shrine
         def delete
           shrine_class.instrument(
             :delete,
-            storage: storage_key.to_sym,
+            storage: storage_key,
             location: id,
           ) { super }
         end

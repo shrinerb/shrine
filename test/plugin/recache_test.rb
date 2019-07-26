@@ -1,15 +1,19 @@
 require "test_helper"
+require "shrine/plugins/recache"
 
-describe "the recache plugin" do
-  def setup
+describe Shrine::Plugins::Recache do
+  before do
     @attacher = attacher { plugin :recache }
   end
 
   it "recaches cached files" do
-    @attacher.assign(fakeio("original"))
-    cached_file = @attacher.get
+    file = @attacher.assign(fakeio("original"))
+
     @attacher.save
-    refute_equal cached_file, @attacher.get
+
+    assert_equal :cache,     @attacher.file.storage_key
+    refute_equal file,       @attacher.file
+    assert_equal "original", @attacher.file.read
   end
 
   it "doesn't recache if attachment is missing" do
@@ -17,9 +21,10 @@ describe "the recache plugin" do
   end
 
   it "recaches only cached files" do
-    @attacher.set(@attacher.store!(fakeio))
-    stored_file = @attacher.get
+    file = @attacher.attach(fakeio)
+
     @attacher.save
-    assert_equal stored_file, @attacher.get
+
+    assert_equal file, @attacher.file
   end
 end

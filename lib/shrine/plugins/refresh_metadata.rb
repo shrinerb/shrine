@@ -7,12 +7,12 @@ class Shrine
     # [doc/plugins/refresh_metadata.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/refresh_metadata.md
     module RefreshMetadata
       module FileMethods
-        def refresh_metadata!(**context)
+        def refresh_metadata!(**options)
           refreshed_metadata =
             if opened?
-              uploader.send(:get_metadata, self, metadata: true, **context)
+              uploader.send(:get_metadata, self, metadata: true, **options)
             else
-              open { uploader.send(:get_metadata, self, metadata: true, **context) }
+              open { uploader.send(:get_metadata, self, metadata: true, **options) }
             end
 
           @data = @data.merge("metadata" => metadata.merge(refreshed_metadata))

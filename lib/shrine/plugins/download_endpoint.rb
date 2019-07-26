@@ -6,12 +6,12 @@ class Shrine
     #
     # [doc/plugins/download_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/download_endpoint.md
     module DownloadEndpoint
-      def self.load_dependencies(uploader, opts = {})
+      def self.load_dependencies(uploader, **)
         uploader.plugin :rack_response
         uploader.plugin :_urlsafe_serialization
       end
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:download_endpoint] ||= { disposition: "inline", download_options: {} }
         uploader.opts[:download_endpoint].merge!(opts)
       end

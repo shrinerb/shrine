@@ -14,10 +14,10 @@ class ImageUploader < Shrine
 
   # File validations (requires `validation_helpers` plugin)
   Attacher.validate do
-    validate_max_size MAX_SIZE
-    if validate_mime_type_inclusion(ALLOWED_TYPES)
-      validate_max_width 5000
-      validate_max_height 5000
+    validate_size 0..MAX_SIZE
+
+    if validate_mime_type ALLOWED_TYPES
+      validate_max_dimensions [5000, 5000]
     end
   end
 end

@@ -23,6 +23,7 @@
     <!-- for storing cover photo uploaded file data -->
     <%= f.input :cover_photo,
       type: :hidden,
+      error_handler: false,
       value: album.cached_cover_photo_data,
       id: "album-cover-photo-upload-result" %>
   </div>

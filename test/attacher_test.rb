@@ -1,402 +1,609 @@
 require "test_helper"
-require "json"
 
 describe Shrine::Attacher do
   before do
     @attacher = attacher
+    @shrine   = @attacher.shrine_class
+  end
+
+  describe ".from_data" do
+    it "instantiates an attacher from file data" do
+      file     = @shrine.upload(fakeio, :store)
+      attacher = @shrine::Attacher.from_data(file.data)
+      assert_equal file, attacher.file
+    end
+
+    it "forwards additional options to .new" do
+      attacher = @shrine::Attacher.from_data(nil, cache: :other_cache)
+      assert_equal :other_cache, attacher.cache.storage_key
+    end
+  end
+
+  describe ".validate" do
+    it "supports validation inheritance" do
+      @attacher.class.validate { errors << "superclass" }
+
+      shrine   = Class.new(@shrine)
+      attacher = shrine::Attacher.new
+      attacher.class.validate { super(); errors << "subclass" }
+
+      attacher.validate
+      attacher.errors
+    end
+
+    it "keeps the #run_validations method visibility" do
+      assert_includes @attacher.private_methods, :run_validations
+      @attacher.class.validate { errors << "error" }
+      assert_includes @attacher.private_methods, :run_validations
+    end
   end
 
   describe "#assign" do
-    it "caches the object if it's an IO" do
-      @attacher.assign(fakeio("image"))
-      assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
-      assert_equal "cache", @attacher.get.data["storage"]
-      assert_equal "image", @attacher.get.read
-    end
-
-    it "caches to different locations when repeated" do
+    it "attaches a file to cache" do
       @attacher.assign(fakeio)
-      uploaded_file1 = @attacher.get
-      @attacher.assign(fakeio)
-      uploaded_file2 = @attacher.get
-      refute_equal uploaded_file1.id, uploaded_file2.id
+      assert_equal :cache,  @attacher.file.storage_key
     end
 
-    it "passes context hash on caching" do
-      io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, action: :cache, phase: :cache}
-      @attacher.cache.expects(:upload).with(io, context)
-      @attacher.assign(io)
-    end
-
-    it "accepts already uploaded files via a JSON string" do
-      cached_file = @attacher.cache!(fakeio)
-      @attacher.assign(cached_file.to_json)
-      assert_equal cached_file, @attacher.get
-    end
-
-    it "forwards options to the uploader" do
-      @attacher.assign(fakeio, metadata: { "foo" => "bar" }, location: "foo")
-      assert_equal "foo", @attacher.get.id
-      assert_equal "bar", @attacher.get.metadata["foo"]
-    end
-
-    it "rejects stored files for security reasons" do
-      stored_file = @attacher.store!(fakeio)
-      @attacher.assign(stored_file.to_json)
-      assert_nil @attacher.get
-    end
-
-    it "accepts nils" do
-      @attacher.assign(fakeio)
-      @attacher.assign(nil)
-      assert_nil @attacher.get
+    it "returns the cached file" do
+      file = @attacher.assign(fakeio)
+      assert_equal @attacher.file, file
     end
 
     it "ignores empty strings" do
       @attacher.assign(fakeio)
       @attacher.assign("")
-      assert @attacher.get
+      assert @attacher.attached?
+    end
+
+    it "accepts nil" do
+      @attacher.assign(fakeio)
+      @attacher.assign(nil)
+      refute @attacher.attached?
+    end
+
+    it "fowards any additional options for upload" do
+      @attacher.assign(fakeio, location: "foo")
+      assert_equal "foo", @attacher.file.id
+    end
+  end
+
+  describe "#attach_cached" do
+    it "caches an IO object" do
+      @attacher.attach_cached(fakeio)
+      assert_equal :cache,  @attacher.file.storage_key
+    end
+
+    it "caches an UploadedFile object" do
+      cached_file = @shrine.upload(fakeio, :cache)
+      @attacher.attach_cached(cached_file)
+      refute_equal cached_file.id, @attacher.file.id
+    end
+
+    it "accepts JSON data of a cached file" do
+      cached_file = @shrine.upload(fakeio, :cache)
+      @attacher.attach_cached(cached_file.to_json)
+      assert_equal cached_file, @attacher.file
+    end
+
+    it "accepts Hash data of a cached file" do
+      cached_file = @shrine.upload(fakeio, :cache)
+      @attacher.attach_cached(cached_file.data)
+      assert_equal cached_file, @attacher.file
+    end
+
+    it "uses attacher's temporary storage" do
+      @attacher = @shrine::Attacher.new(cache: :other_cache)
+
+      @attacher.attach_cached(fakeio)
+      assert_equal :other_cache, @attacher.file.storage_key
+
+      @attacher.attach_cached(@attacher.file.to_json)
+    end
+
+    it "returns the attached file" do
+      file = @attacher.attach_cached(fakeio)
+      assert_equal @attacher.file, file
+
+      file = @attacher.attach_cached(file.data)
+      assert_equal @attacher.file, file
+    end
+
+    it "changes the attachment" do
+      cached_file = @shrine.upload(fakeio, :cache)
+      @attacher.attach_cached(cached_file.data)
+      assert @attacher.changed?
+    end
+
+    it "rejects non-cached files" do
+      stored_file = @shrine.upload(fakeio, :store)
+      assert_raises(Shrine::Error) do
+        @attacher.attach_cached(stored_file.data)
+      end
+    end
+
+    it "accepts nils" do
+      @attacher.attach_cached(fakeio)
+      @attacher.attach_cached(nil)
+      assert_nil @attacher.file
+    end
+
+    it "passes :action as :cache" do
+      io = fakeio
+      @attacher.shrine_class.expects(:upload).with(io, :cache, { action: :cache })
+      @attacher.attach_cached(io)
+    end
+
+    it "forwards additional options for upload" do
+      @attacher.attach_cached(fakeio, location: "foo")
+      assert_equal "foo", @attacher.file.id
+    end
+  end
+
+  describe "#attach" do
+    it "uploads the file to permanent storage" do
+      @attacher.attach(fakeio)
+      assert @attacher.file.exists?
+      assert_equal :store, @attacher.file.storage_key
+    end
+
+    it "uses attacher's permanent storage" do
+      @attacher = @shrine::Attacher.new(store: :other_store)
+
+      @attacher.attach(fakeio)
+      assert_equal :other_store, @attacher.file.storage_key
+    end
+
+    it "allows specifying a different storage" do
+      @attacher.attach(fakeio, storage: :cache)
+      assert @attacher.file.exists?
+      assert_equal :cache, @attacher.file.storage_key
+    end
+
+    it "forwards additional options for upload" do
+      @attacher.attach(fakeio, location: "foo")
+      assert_equal "foo", @attacher.file.id
+    end
+
+    it "returns the uploaded file" do
+      file = @attacher.attach(fakeio)
+      assert_equal @attacher.file, file
+    end
+
+    it "changes the attachment" do
+      @attacher.attach(fakeio)
+      assert @attacher.changed?
+    end
+
+    it "accepts nil" do
+      @attacher.attach(fakeio)
+      @attacher.attach(nil)
+      assert_nil @attacher.file
+    end
+  end
+
+  describe "#finalize" do
+    it "promotes cached file" do
+      @attacher.attach_cached(fakeio)
+      @attacher.finalize
+      assert_equal :store, @attacher.file.storage_key
+    end
+
+    it "deletes previous file" do
+      previous_file = @attacher.attach(fakeio)
+      @attacher.attach(fakeio)
+      @attacher.finalize
+      refute previous_file.exists?
+    end
+
+    it "clears dirty state" do
+      @attacher.attach(fakeio)
+      @attacher.finalize
+      refute @attacher.changed?
+    end
+  end
+
+  describe "#promote_cached" do
+    it "uploads cached file to permanent storage" do
+      @attacher.attach_cached(fakeio)
+      @attacher.promote_cached
+      assert_equal :store, @attacher.file.storage_key
+    end
+
+    it "doesn't promote if file is not cached" do
+      file = @attacher.attach(fakeio, storage: :other_store)
+      @attacher.promote_cached
+      assert_equal file, @attacher.file
+    end
+
+    it "doesn't promote if attachment has not changed" do
+      file = @shrine.upload(fakeio, :cache)
+      @attacher.file = file
+      @attacher.promote_cached
+      assert_equal file, @attacher.file
+    end
+
+    it "sets :action to :store" do
+      file = @attacher.attach_cached(fakeio)
+      @attacher.shrine_class.expects(:upload).with(file, :store, { action: :store })
+      @attacher.promote_cached
+    end
+
+    it "forwards additional options for upload" do
+      @attacher.attach_cached(fakeio)
+      @attacher.promote_cached(location: "foo")
+      assert_equal "foo", @attacher.file.id
+    end
+  end
+
+  describe "#promote" do
+    it "uploads attached file to permanent storage" do
+      @attacher.attach_cached(fakeio)
+      @attacher.promote
+      assert_equal :store, @attacher.file.storage_key
+      assert @attacher.file.exists?
+    end
+
+    it "returns the promoted file" do
+      @attacher.attach_cached(fakeio)
+      file = @attacher.promote
+      assert_equal @attacher.file, file
+    end
+
+    it "allows uploading to a different storage" do
+      @attacher.attach(fakeio)
+      @attacher.promote(storage: :cache)
+      assert_equal :cache, @attacher.file.storage_key
+      assert @attacher.file.exists?
+    end
+
+    it "forwards additional options for upload" do
+      @attacher.attach_cached(fakeio)
+      @attacher.promote(location: "foo")
+      assert_equal "foo", @attacher.file.id
+    end
+
+    it "doesn't change the attachment" do
+      @attacher.file = @shrine.upload(fakeio, :cache)
+      @attacher.promote
+      refute @attacher.changed?
+    end
+  end
+
+  describe "#upload" do
+    it "uploads file to specified storage" do
+      uploaded_file = @attacher.upload(fakeio, :store)
+      assert_instance_of @shrine::UploadedFile, uploaded_file
+      assert uploaded_file.exists?
+      assert_equal :store, uploaded_file.storage_key
+    end
+
+    it "forwards context hash" do
+      @attacher.context[:foo] = "bar"
+      io = fakeio
+      @attacher.shrine_class.expects(:upload).with(io, :store, @attacher.context)
+      @attacher.upload(io, :store)
+    end
+
+    it "forwards additional options" do
+      uploaded_file = @attacher.upload(fakeio, :store, metadata: { "foo" => "bar" })
+      assert_equal "bar", uploaded_file.metadata["foo"]
+    end
+  end
+
+  describe "#destroy_previous" do
+    it "deletes previous attached file" do
+      previous_file = @attacher.attach(fakeio)
+      @attacher.attach(fakeio)
+      @attacher.destroy_previous
+      refute previous_file.exists?
+      assert @attacher.file.exists?
+    end
+
+    it "deletes only stored files" do
+      previous_file = @attacher.attach_cached(fakeio)
+      @attacher.attach(fakeio)
+      @attacher.destroy_previous
+      assert previous_file.exists?
+      assert @attacher.file.exists?
+    end
+
+    it "handles previous attachment being nil" do
+      @attacher.attach(fakeio)
+      @attacher.destroy_previous
+      assert @attacher.file.exists?
+    end
+
+    it "skips when attachment hasn't changed" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.destroy_previous
+      assert @attacher.file.exists?
+    end
+  end
+
+  describe "#destroy_attached" do
+    it "deletes stored file" do
+      @attacher.file = @shrine.upload(fakeio, :other_store)
+      @attacher.destroy_attached
+      refute @attacher.file.exists?
+    end
+
+    it "doesn't delete cached files" do
+      @attacher.file = @shrine.upload(fakeio, :cache)
+      @attacher.destroy_attached
+      assert @attacher.file.exists?
+    end
+
+    it "handles no attached file" do
+      @attacher.destroy_attached
+    end
+  end
+
+  describe "#destroy" do
+    it "deletes attached file" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.destroy
+    end
+
+    it "handles no attached file" do
+      @attacher.destroy
+    end
+  end
+
+  describe "#change" do
+    it "sets the uploaded file" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.change(file)
+      assert_equal file, @attacher.file
+    end
+
+    it "returns the uploaded file" do
+      file = @shrine.upload(fakeio, :store)
+      assert_equal file, @attacher.change(file)
+    end
+
+    it "marks attacher as changed" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.change(file)
+      assert @attacher.changed?
+    end
+
+    it "doesn't mark attacher as changed on same file" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.change(@attacher.file)
+      refute @attacher.changed?
+    end
+
+    it "runs validations" do
+      @attacher.class.validate { errors << "error" }
+      @attacher.change @shrine.upload(fakeio, :store)
+      assert_equal ["error"], @attacher.errors
+    end
+  end
+
+  describe "validate" do
+    it "runs validations" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.class.validate { errors << "error" }
+      @attacher.validate
+      assert_equal ["error"], @attacher.errors
+    end
+
+    it "clears previous errors" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.errors << "pervious_error"
+      @attacher.class.validate { errors << "new_error" }
+      @attacher.validate
+      assert_equal ["new_error"], @attacher.errors
+    end
+
+    it "doesn't run validations if no file is attached" do
+      @attacher.class.validate { errors << "error" }
+      @attacher.validate
+      assert_equal [], @attacher.errors
     end
   end
 
   describe "#set" do
-    it "writes to record's data attribute" do
-      @attacher.assign(fakeio)
-      assert_equal @attacher.get.to_json, @attacher.record.avatar_data
+    it "sets the uploaded file" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.set(file)
+      assert_equal file, @attacher.file
     end
 
-    it "puts attacher into attached state" do
-      @attacher.assign(fakeio)
-      assert @attacher.changed?
+    it "returns the set file" do
+      file = @shrine.upload(fakeio, :store)
+      assert_equal file, @attacher.set(file)
     end
 
-    it "nullifies the attachment if nil is passed in" do
-      @attacher.assign(fakeio)
-      @attacher.set(nil)
-      assert_nil @attacher.get
-      assert_nil @attacher.record.avatar_data
-    end
-
-    it "allows setting stored files" do
-      stored_file = @attacher.store!(fakeio)
-      @attacher.set(stored_file)
-      assert @attacher.get
-    end
-
-    it "runs validations" do
-      @attacher.class.validate { errors << :foo }
-      @attacher.assign(fakeio)
-      refute_empty @attacher.errors
-    end
-
-    it "doesn't dirty if attachment didn't change" do
-      @attacher.record.avatar_data = @attacher.store!(fakeio).to_json
-      @attacher.set(@attacher.get)
+    it "doesn't mark attacher as changed" do
+      @attacher.set @shrine.upload(fakeio, :store)
       refute @attacher.changed?
     end
   end
 
   describe "#get" do
-    it "reads from the database column" do
-      uploaded_file = @attacher.cache!(fakeio)
-
-      @attacher.record.avatar_data = uploaded_file.data.to_json
-      assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
-
-      @attacher.record.avatar_data = uploaded_file.data # serialized
-      assert_instance_of @attacher.shrine_class::UploadedFile, @attacher.get
+    it "returns the attached file" do
+      @attacher.attach(fakeio)
+      assert_equal @attacher.file, @attacher.get
     end
 
-    it "returns nil when column is blank" do
-      @attacher.record.avatar_data = nil
+    it "returns nil when no file is attached" do
       assert_nil @attacher.get
-
-      @attacher.record.avatar_data = ""
-      assert_nil @attacher.get
-    end
-  end
-
-  describe "#finalize" do
-    it "it removes the attached state" do
-      @attacher.assign(fakeio)
-      @attacher.finalize
-      refute @attacher.changed?
-    end
-
-    it "doesn't call #_promote if assigned file is not cached" do
-      stored_file = @attacher.store!(fakeio)
-      @attacher.set(stored_file)
-      @attacher.expects(:promote).never
-      @attacher.finalize
-    end
-
-    it "doesn't call #promote if no file is assigned" do
-      @attacher.assign(fakeio)
-      @attacher.assign(nil)
-      @attacher.expects(:promote).never
-      @attacher.finalize
-    end
-
-    it "is a no-op when attachment hasn't changed" do
-      @attacher.record.avatar_data = @attacher.cache!(fakeio).to_json
-      @attacher.finalize
-      assert @attacher.cached?
-    end
-  end
-
-  describe "#_promote" do
-    it "calls #promote if assigned file is cached" do
-      cached_file = @attacher.cache!(fakeio)
-      @attacher.record.avatar_data = cached_file.to_json
-      @attacher.expects(:promote)
-      @attacher._promote
-    end
-  end
-
-  describe "#promote" do
-    it "uploads the cached file to store" do
-      @attacher.assign(fakeio)
-      @attacher.promote(@attacher.get)
-      assert_equal :store, @attacher.get.storage_key
-      assert @attacher.get.exists?
-    end
-
-    it "passes context hash on storing" do
-      io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, action: :foo, phase: :foo}
-      @attacher.assign(io)
-      @attacher.store.expects(:upload).with(@attacher.get, context).returns(@attacher.get)
-      @attacher.promote(@attacher.get, action: :foo)
-    end
-
-    it "returns the promoted file" do
-      @attacher.assign(fakeio)
-      stored_file = @attacher.promote(@attacher.get)
-      assert_equal @attacher.get, stored_file
-    end
-
-    it "deletes stored file if swapping failed" do
-      @attacher.instance_eval do
-        def swap(uploaded_file)
-          @stored_file = uploaded_file
-          nil
-        end
-      end
-      @attacher.assign(fakeio)
-      @attacher.promote(@attacher.get)
-      refute @attacher.instance_variable_get("@stored_file").exists?
-    end
-  end
-
-  describe "#replace" do
-    it "deletes replaced files" do
-      @attacher.set(uploaded_file = @attacher.store!(fakeio))
-      @attacher.set(@attacher.store!(fakeio))
-      @attacher.replace
-      refute uploaded_file.exists?
-    end
-
-    it "passes context hash to delete" do
-      context = {name: @attacher.name, record: @attacher.record, action: :replace, phase: :replace}
-      @attacher.set(@attacher.store!(fakeio))
-      @attacher.store.expects(:delete).with(@attacher.get, context)
-      @attacher.set(nil)
-      @attacher.replace
-    end
-
-    it "doesn't trip if there was no previous file" do
-      @attacher.set(@attacher.store!(fakeio))
-      @attacher.replace
-    end
-
-    it "doesn't replace cached files" do
-      @attacher.set(cached_file = @attacher.cache!(fakeio))
-      @attacher.replace
-      assert cached_file.exists?
-    end
-  end
-
-  describe "#destroy" do
-    it "deletes the attached file" do
-      @attacher.set(@attacher.store!(fakeio))
-      @attacher.destroy
-      refute @attacher.get.exists?
-    end
-
-    it "passes context hash to delete" do
-      context = {name: @attacher.name, record: @attacher.record, action: :destroy, phase: :destroy}
-      @attacher.set(@attacher.store!(fakeio))
-      @attacher.store.expects(:delete).with(@attacher.get, context)
-      @attacher.destroy
-    end
-
-    it "doesn't trip if file doesn't exist" do
-      @attacher.destroy
-    end
-
-    it "doesn't delete cached files" do
-      @attacher.set(@attacher.cache!(fakeio))
-      @attacher.destroy
-      assert @attacher.get.exists?
-    end
-  end
-
-  describe "#_delete" do
-    it "deletes the uploaded file" do
-      uploaded_file = @attacher.store!(fakeio)
-      @attacher._delete(uploaded_file)
-      refute uploaded_file.exists?
     end
   end
 
   describe "#url" do
-    it "calls storage's #url" do
-      assert_nil @attacher.url
-      @attacher.assign(fakeio)
-      assert_equal "memory://#{@attacher.get.id}", @attacher.url
+    it "returns the attached file URL" do
+      @attacher.attach(fakeio)
+      assert_equal @attacher.file.url, @attacher.url
     end
 
-    it "forwards options to uploaded file's #url" do
-      @attacher.cache.storage.instance_eval { def url(id, **opts); opts.to_json; end }
-      @attacher.assign(fakeio)
-      assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
+    it "returns nil when no file is attached" do
+      assert_nil @attacher.url
+    end
+
+    it "forwards additional URL options" do
+      @attacher.attach(fakeio)
+      @attacher.file.expects(:url).with(foo: "bar")
+      @attacher.url(foo: "bar")
+    end
+  end
+
+  describe "changed?" do
+    it "returns true when the attachment has changed to another file" do
+      @attacher.attach(fakeio)
+      assert_equal true, @attacher.changed?
+    end
+
+    it "returns true when the attachment has changed to nil" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.attach(nil)
+      assert_equal true, @attacher.changed?
+    end
+
+    it "returns false when attachment hasn't changed" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      assert_equal false, @attacher.changed?
+    end
+  end
+
+  describe "#attached?" do
+    it "returns true when file is attached" do
+      @attacher.attach(fakeio)
+      assert_equal true, @attacher.attached?
+    end
+
+    it "returns false when file is not attached" do
+      assert_equal false, @attacher.attached?
+      @attacher.attach(nil)
+      assert_equal false, @attacher.attached?
     end
   end
 
   describe "#cached?" do
-    it "returns true if attachment is cached" do
-      @attacher.set(@attacher.cache!(fakeio))
-      assert @attacher.cached?
-      @attacher.set(@attacher.store!(fakeio))
-      refute @attacher.cached?
-      @attacher.set(nil)
-      refute @attacher.cached?
+    it "returns true when attached file is present and cached" do
+      @attacher.file = @shrine.upload(fakeio, :cache)
+      assert_equal true, @attacher.cached?
     end
 
-    it "can take an argument" do
-      uploaded_file = @attacher.cache!(fakeio)
-      assert @attacher.cached?(uploaded_file)
+    it "returns true when specified file is present and cached" do
+      assert_equal true, @attacher.cached?(@shrine.upload(fakeio, :cache))
+    end
+
+    it "returns false when attached file is present and stored" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      assert_equal false, @attacher.cached?
+    end
+
+    it "returns false when specified file is present and stored" do
+      assert_equal false, @attacher.cached?(@shrine.upload(fakeio, :store))
+    end
+
+    it "returns false when no file is attached" do
+      assert_equal false, @attacher.cached?
+    end
+
+    it "returns false when specified file is nil" do
+      assert_equal false, @attacher.cached?(nil)
     end
   end
 
   describe "#stored?" do
-    it "returns true if attachment is cached" do
-      @attacher.set(@attacher.store!(fakeio))
-      assert @attacher.stored?
-      @attacher.set(@attacher.cache!(fakeio))
-      refute @attacher.stored?
-      @attacher.set(nil)
-      refute @attacher.stored?
+    it "returns true when attached file is present and stored" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      assert_equal true, @attacher.stored?
     end
 
-    it "can take an argument" do
-      uploaded_file = @attacher.store!(fakeio)
-      assert @attacher.stored?(uploaded_file)
+    it "returns true when specified file is present and stored" do
+      assert_equal true, @attacher.stored?(@shrine.upload(fakeio, :store))
+    end
+
+    it "returns false when attached file is present and cached" do
+      @attacher.file = @shrine.upload(fakeio, :cache)
+      assert_equal false, @attacher.stored?
+    end
+
+    it "returns false when specified file is present and cached" do
+      assert_equal false, @attacher.stored?(@shrine.upload(fakeio, :cache))
+    end
+
+    it "returns false when no file is attached" do
+      assert_equal false, @attacher.stored?
+    end
+
+    it "returns false when specified file is nil" do
+      assert_equal false, @attacher.stored?(nil)
     end
   end
 
-  describe "#validate" do
-    it "instance exec's the validation block" do
-      @attacher.class.validate { errors << get.read }
-      @attacher.assign(fakeio("image"))
-      assert_equal ["image"], @attacher.errors
+  describe "#data" do
+    it "returns file data when file is attached" do
+      file = @attacher.attach(fakeio)
+      assert_equal file.data, @attacher.data
     end
 
-    it "doesn't run validations when there is no attachment" do
-      @attacher.class.validate { errors << :foo }
-      @attacher.validate
-      assert_empty @attacher.errors
+    it "returns nil when no file is attached" do
+      assert_nil @attacher.data
+    end
+  end
+
+  describe "#load_data" do
+    it "loads file from given file data" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.load_data(file.data)
+      assert_equal file, @attacher.file
     end
 
-    it "clears existing errors" do
-      @attacher.errors << :foo
-      @attacher.validate
-      assert_empty @attacher.errors
+    it "clears file when given data is nil" do
+      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.load_data(nil)
+      assert_nil @attacher.file
+    end
+  end
+
+  describe "#file=" do
+    it "sets the file" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.file = file
+      assert_equal file, @attacher.file
     end
 
-    it "can call validations from the superclass" do
-      @attacher.class.validate { errors << :from_superclass }
-      attacher = Class.new(@attacher.shrine_class)::Attacher.new(Struct.new(:avatar_data).new, :avatar)
-      attacher.assign(fakeio)
-      attacher.class.validate do
-        super()
-        errors << :foo
+    it "accepts nil" do
+      @attacher.attach(fakeio)
+      @attacher.file = nil
+      assert_nil @attacher.file
+    end
+
+    it "raises error on other arguments" do
+      assert_raises(ArgumentError) do
+        @attacher.file = :foo
       end
-      attacher.validate
-      assert_equal [:from_superclass, :foo], attacher.errors
     end
   end
 
-  describe "#uploaded_file" do
-    it "accepts data as JSON string" do
-      uploaded_file = @attacher.cache!(fakeio)
-      retrieved = @attacher.uploaded_file(uploaded_file.to_json)
-      assert_equal uploaded_file, retrieved
-    end
-
-    it "accepts data as Hash" do
-      uploaded_file = @attacher.cache!(fakeio)
-      retrieved = @attacher.uploaded_file(uploaded_file.data)
-      assert_equal uploaded_file, retrieved
-    end
-
-    it "accepts an UploadedFile" do
-      uploaded_file = @attacher.cache!(fakeio)
-      retrieved = @attacher.uploaded_file(uploaded_file)
-      assert_equal uploaded_file, retrieved
-    end
-
-    it "yields the converted file" do
-      uploaded_file = @attacher.cache!(fakeio)
-      @attacher.uploaded_file(uploaded_file.data) { |o| @yielded = o }
-      assert_equal uploaded_file, @yielded
-    end
-
-    it "raises an error on invalid input" do
-      assert_raises(Shrine::Error) { @attacher.uploaded_file(:foo) }
+  describe "#file" do
+    it "returns the set file" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.file = file
+      assert_equal file, @attacher.file
     end
   end
 
-  describe "#cache!" do
-    it "uploads the IO to cache and passes context" do
-      io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, foo: "bar"}
-      @attacher.cache.expects(:upload).with(io, context)
-      @attacher.cache!(io, foo: "bar")
+  describe "#upload_file" do
+    it "instantiates an uploaded file with JSON data" do
+      file = @shrine.upload(fakeio, :store)
+      assert_equal file, @attacher.uploaded_file(file.to_json)
     end
-  end
 
-  describe "#store!" do
-    it "uploads the IO to store and passes context" do
-      io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, foo: "bar"}
-      @attacher.store.expects(:upload).with(io, context)
-      @attacher.store!(io, foo: "bar")
+    it "instantiates an uploaded file with Hash data" do
+      file = @shrine.upload(fakeio, :store)
+      assert_equal file, @attacher.uploaded_file(file.data)
     end
-  end
 
-  describe "#delete!" do
-    it "deletes the IO and passes context" do
-      io = fakeio
-      context = {name: @attacher.name, record: @attacher.record, foo: "bar"}
-      @attacher.store.expects(:delete).with(io, context)
-      @attacher.delete!(io, foo: "bar")
+    it "returns file with UploadedFile" do
+      file = @shrine.upload(fakeio, :store)
+      assert_equal file, @attacher.uploaded_file(file)
     end
-  end
-
-  describe "#data_attribute" do
-    it "returns the :<attachment>_data" do
-      assert_equal :avatar_data, @attacher.data_attribute
-    end
-  end
-
-  it "allows modifying context" do
-    @attacher.context[:record] = :record
-    assert_equal :record, @attacher.context[:record]
-
-    @attacher.context[:name] = :name
-    assert_equal :name, @attacher.context[:name]
   end
 
   it "has smarter .inspect" do

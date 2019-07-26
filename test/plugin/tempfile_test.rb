@@ -4,7 +4,7 @@ require "shrine/plugins/tempfile"
 describe Shrine::Plugins::Tempfile do
   before do
     @uploader = uploader { plugin :tempfile }
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   it "downloads the content to tempfile on first call" do

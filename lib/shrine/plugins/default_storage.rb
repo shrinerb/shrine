@@ -6,24 +6,14 @@ class Shrine
     #
     # [doc/plugins/default_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_storage.md
     module DefaultStorage
-      def self.configure(uploader, opts = {})
-        uploader.opts[:default_storage_cache] = opts.fetch(:cache, uploader.opts[:default_storage_cache])
-        uploader.opts[:default_storage_store] = opts.fetch(:store, uploader.opts[:default_storage_store])
+      def self.configure(uploader, **opts)
+        uploader.opts[:default_storage] ||= {}
+        uploader.opts[:default_storage].merge!(opts)
       end
 
       module AttacherMethods
-        def initialize(record, name, **options)
-          if cache = shrine_class.opts[:default_storage_cache]
-            cache = cache.call(record, name) if cache.respond_to?(:call)
-            options[:cache] = cache
-          end
-
-          if store = shrine_class.opts[:default_storage_store]
-            store = store.call(record, name) if store.respond_to?(:call)
-            options[:store] = store
-          end
-
-          super
+        def initialize(**options)
+          super(**shrine_class.opts[:default_storage], **options)
         end
       end
     end

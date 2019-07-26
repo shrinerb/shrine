@@ -5,7 +5,7 @@ require "dry-monitor"
 describe Shrine::Plugins::InferExtension do
   before do
     @uploader = uploader { plugin :infer_extension }
-    @shrine = @uploader.class
+    @shrine   = @uploader.class
   end
 
   describe ":mime_types analyzer" do
@@ -103,8 +103,14 @@ describe Shrine::Plugins::InferExtension do
 
   it "automatically infers extension when generating location" do
     uploaded_file = @uploader.upload(fakeio(content_type: "image/jpeg"))
-    assert_equal ".jpeg", File.extname(uploaded_file.id)
+    assert_equal "jpeg", uploaded_file.extension
     assert_nil uploaded_file.original_filename
+  end
+
+  it "works with the pretty_location plugin" do
+    @shrine.plugin :pretty_location
+    uploaded_file = @uploader.upload(fakeio(content_type: "image/jpeg"))
+    assert_equal "jpeg", uploaded_file.extension
   end
 
   it "does not replace existing extension when generating location" do

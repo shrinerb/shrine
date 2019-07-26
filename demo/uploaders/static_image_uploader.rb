@@ -7,7 +7,7 @@ class StaticImageUploader < ImageUploader
   plugin :versions
 
   # Additional processing (requires `processing` plugin)
-  process(:store) do |io, context|
+  process(:store) do |io, options|
     original = io.download
 
     thumbnail = ImageProcessing::MiniMagick

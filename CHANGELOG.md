@@ -1,5 +1,111 @@
 ## 3.0.0 (unreleased)
 
+* `upload_options` – Upload options from the block are now merged with passed options instead of replaced (@janko)
+
+* `upload_endpoint` – Stop passing `Rack::Request` object to the uploader (@janko)
+
+* `remote_url` – Require custom downlodaers to raise `Shrine::Plugins::RemoteUrl::DownloadError` for conversion into a validation error (@janko)
+
+* `remote_url` – Remove `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
+
+* `infer_extension` – Fix compatibility with the `pretty_location` plugin (@janko)
+
+* `presign_endpoint` – Remove deprecated `Shrine::Plugins::PresignEndpoint::App` constant (@janko)
+
+* `keep_files` – Remove the ability to choose whether to keep only destroyed or only replaced files (@janko)
+
+* `infer_extension` – Remove `Shrine#infer_extension` method (@janko)
+
+* `default_url_options` – Allow overriding passed URL options by deleting them inside the block (@janko)
+
+* `default_storage` – Remove the ability to register a dynamic block (@janko)
+
+* `data_uri` – Remove `Attacher#data_uri=` and `Attacher#data_uri` methods (@janko)
+
+* `cached_attachment_data` – Rename `Attacher#read_cached` to `Attacher#cached_data` (@janko)
+
+* `sequel` – Add `Attacher#atomic_promote` and `Attacher#atomic_persist` (@janko)
+
+* `sequel` – Remove adding persistence to `Attacher#promote` (@janko)
+
+* `activerecord` – Add `Attacher#atomic_promote` and `Attacher#atomic_persist` (@janko)
+
+* `activerecord` – Remove adding persistence to `Attacher#promote` (@janko)
+
+* `atomic_helpers` – Add new plugin with helper methods for atomic promotion and persistence (@janko)
+
+* `backgrounding` – Add `Attacher#promote_block` & `Attacher#destroy_block` for overriding class level blocks (@janko)
+
+* `backgrounding` – Add `Attacher.promote_block` & `Attacher.destroy_block` on class level (@janko)
+
+* `backgrounding` – Remove overriding `Attacher#swap` with atomic promotion (@janko)
+
+* `backgrounding` – Remove `Attacher.promote`, `Attacher.delete`, `Attacher.dump`, `Attacher#dump`, `Attacher.load`, `Attacher.load_record` (@janko)
+
+* `model` – Allow disabling caching to temporary storage on assignment (@janko)
+
+* `model` – Add `Attacher.from_model`, `Attacher#write` (@janko)
+
+* `model` – Add new plugin for integrating with mutable structs (@janko)
+
+* `entity` – Add `Attacher.from_entity`, `Attacher#reload`, `Attacher#column_values`, `Attacher#attribute` (@janko)
+
+* `entity` – Add new plugin for integrating with immutable structs (@janko)
+
+* `column` – Allow changing column serializer from default `JSON` library (@janko)
+
+* `column` – Addd `Attacher#column_value` and `Attacher.from_column` methods (@janko)
+
+* `column` – Add new plugin for (de)serializing attacher data (@janko)
+
+* `attachment` – Removed any default attachment methods (@janko)
+
+* `shrine` – Require context hash passed as second argument to `Shrine#upload` to have symbol keys (@janko)
+
+* `shrine` – Change `Shrine.uploaded_file` not to yield files anymore (@janko)
+
+* `shrine` – Allow `Shrine.uploaded_file` to accept file data hashes with symbol keys (@janko)
+
+* `shrine` – Remove `Shrine#uploaded?`
+
+* `shrine` – Remove `Shrine#delete`, `Shrine#_delete`, `Shrine#remove` (@janko)
+
+* `shrine` – Remove `Shrine#store`, `Shrine#_store`, `Shrine#put`, `Shrine#copy` (@janko)
+
+* `shrine` – Remove `Shrine#processed`, `Shrine#process` (@janko)
+
+* `attacher` – Don't pass `:phase` anymore on uploads (@janko)
+
+* `attacher` – Read attachment from the record attribute only on initialization (@janko)
+
+* `attacher` – Don't require a temporary storage (@janko)
+
+* `attacher` – Add `Attacher#data` and `Attacher.from_data` for dumping to and loading from a Hash (@janko)
+
+* `attacher` – Enable `Attacher#assign` to accept cached file data as a Hash (@janko)
+
+* `attacher` – Add `Attacher#file` alias for `Attacher#get` (@janko)
+
+* `attacher` – Change `Attacher#attached?` to return whether a file is attached (@janko)
+
+* `attacher` – Change `Attacher#promote` to always only save promoted file in memory (@janko)
+
+* `attacher` – Rename `Attacher#replace` to `Attacher#destroy_previous` (@janko)
+
+* `attacher` – Remove `Attacher#_promote` and `Attacher#_delete`, add `Attacher#promote_cached` and `Attacher#destroy_attached` (@janko)
+
+* `attacher` – Rename `Attacher#set` and `Attacher#_set` to `Attacher#change` and `Attacher#set` (@janko)
+
+* `attacher` – Remove `Attacher#cache!` and `Attacher#store!`, add `Attacher#upload` (@janko)
+
+* `attacher` – Rename `Attacher#validate_block` to `Attacher#run_validations` (@janko)
+
+* `attacher` – Add `Attacher#attach`, `Attacher#attach_cached`, extracted from `Attacher#assign` (@janko)
+
+* `attacher` – Remove `Attacher#swap`, `Attacher#update`, `Attacher#read`, `Attacher#write`, `Attacher#data_attribute`, `Attacher#convert_to_data`, `Attacher#convert_before_write`, and `Attacher#convert_after_read` (@janko)
+
+* `attacher` – Change `Attacher.new` to not accept a model anymore (@janko)
+
 * `delete_promoted` – Remove plugin (@janko)
 
 * `parsed_json` – Remove plugin (@janko)

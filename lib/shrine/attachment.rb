@@ -27,40 +27,6 @@ class Shrine
       def initialize(name, **options)
         @name    = name.to_sym
         @options = options
-
-        define_attachment_methods!
-      end
-
-      # Defines attachment methods for the specified attachment name. These
-      # methods will be added to any model that includes this module.
-      def define_attachment_methods!
-        attachment = self
-        name = attachment_name
-
-        define_method :"#{name}_attacher" do |**options|
-          if !instance_variable_get(:"@#{name}_attacher") || options.any?
-            instance_variable_set(:"@#{name}_attacher", attachment.build_attacher(self, options))
-          else
-            instance_variable_get(:"@#{name}_attacher")
-          end
-        end
-
-        define_method :"#{name}=" do |value|
-          send(:"#{name}_attacher").assign(value)
-        end
-
-        define_method :"#{name}" do
-          send(:"#{name}_attacher").get
-        end
-
-        define_method :"#{name}_url" do |*args|
-          send(:"#{name}_attacher").url(*args)
-        end
-      end
-
-      # Creates an instance of the corresponding Attacher subclass.
-      def build_attacher(object, options)
-        shrine_class::Attacher.new(object, @name, @options.merge(options))
       end
 
       # Returns name of the attachment this module provides.
@@ -75,17 +41,11 @@ class Shrine
 
       # Returns class name with attachment name included.
       #
-      #     Shrine[:image].to_s #=> "#<Shrine::Attachment(image)>"
-      def to_s
-        "#<#{self.class.inspect}(#{attachment_name})>"
-      end
-
-      # Returns class name with attachment name included.
-      #
-      #     Shrine[:image].inspect #=> "#<Shrine::Attachment(image)>"
+      #     Shrine::Attachment.new(:image).to_s #=> "#<Shrine::Attachment(image)>"
       def inspect
         "#<#{self.class.inspect}(#{attachment_name})>"
       end
+      alias to_s inspect
 
       # Returns the Shrine class that this attachment's class is namespaced
       # under.

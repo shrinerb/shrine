@@ -18,14 +18,27 @@ class Shrine
       end
 
       module InstanceMethods
-        def process(io, context = {})
-          pipeline = opts[:processing][context[:action]] || []
-
-          result = pipeline.inject(io) do |input, processing|
-            instance_exec(input, context, &processing) || input
+        def upload(io, process: true, **options)
+          if process
+            input = process(io, **options)
+          else
+            input = io
           end
 
-          result unless result == io
+          super(input, **options)
+        end
+
+        private
+
+        def process(io, **options)
+          pipeline = processing_pipeline(options[:action])
+          pipeline.inject(io) do |input, processor|
+            instance_exec(input, options, &processor) || input
+          end
+        end
+
+        def processing_pipeline(key)
+          opts[:processing][key] || []
         end
       end
     end

@@ -6,94 +6,65 @@ class Shrine
     #
     # [doc/plugins/versions.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/versions.md
     module Versions
-      def self.load_dependencies(uploader, *)
+      def self.load_dependencies(uploader, **)
+        uploader.plugin :processing
         uploader.plugin :default_url
       end
 
-      def self.configure(uploader, opts = {})
-        uploader.opts[:version_fallbacks] = opts.fetch(:fallbacks, uploader.opts.fetch(:version_fallbacks, {}))
-        uploader.opts[:versions_fallback_to_original] = opts.fetch(:fallback_to_original, uploader.opts.fetch(:versions_fallback_to_original, true))
+      def self.configure(uploader, **opts)
+        uploader.opts[:versions] ||= { fallbacks: {}, fallback_to_original: true }
+        uploader.opts[:versions].merge!(opts)
       end
 
       module ClassMethods
         def version_fallbacks
-          opts[:version_fallbacks]
+          opts[:versions][:fallbacks]
         end
 
         # Converts a hash of data into a hash of versions.
-        def uploaded_file(object, &block)
-          if object.is_a?(Hash) && object.values.none? { |value| value.is_a?(String) }
-            object.inject({}) do |result, (name, value)|
-              result.merge!(name.to_sym => uploaded_file(value, &block))
+        def uploaded_file(object)
+          object = JSON.parse(object) if object.is_a?(String)
+
+          Utils.deep_map(object, transform_keys: :to_sym) do |path, value|
+            if value.is_a?(Hash) && (value["id"].is_a?(String) || value[:id].is_a?(String))
+              file = super(value)
+            elsif value.is_a?(UploadedFile)
+              file = value
             end
-          elsif object.is_a?(Array)
-            object.map { |value| uploaded_file(value, &block) }
-          else
-            super
+
+            if file
+              yield file if block_given?
+              file
+            end
           end
         end
       end
 
       module InstanceMethods
-        # Checks whether all versions are uploaded by this uploader.
-        def uploaded?(object)
-          if object.is_a?(Hash)
-            object.all? { |name, version| uploaded?(version) }
-          elsif object.is_a?(Array)
-            object.all? { |version| uploaded?(version) }
-          else
-            super
-          end
-        end
+        def upload(io, **options)
+          files = process(io, **options)
 
-        private
+          Utils.map_file(files) do |name, version|
+            options.merge!(version: name.one? ? name.first : name) if name
 
-        # Stores each version individually. It asserts that all versions are
-        # known, because later the versions will be silently filtered, so
-        # we want to let the user know that they forgot to register a new
-        # version.
-        def _store(io, context)
-          if (hash = io).is_a?(Hash)
-            raise Error, ":location is not applicable to versions" if context.key?(:location)
-            raise Error, "detected multiple versions that point to the same IO object: given versions: #{hash.keys}, unique versions: #{hash.invert.invert.keys}" if hash.invert.invert != hash
-
-            hash.inject({}) do |result, (name, value)|
-              result.merge!(name.to_sym => _store(value, context.merge(version: name.to_sym){|_, v1, v2| Array(v1) + Array(v2)}))
-            end
-          elsif (array = io).is_a?(Array)
-            array.map.with_index { |value, idx| _store(value, context.merge(version: idx){|_, v1, v2| Array(v1) + Array(v2)}) }
-          else
-            super
-          end
-        end
-
-        # Deletes each file individually
-        def _delete(uploaded_file, context)
-          if (hash = uploaded_file).is_a?(Hash)
-            hash.each do |name, value|
-              _delete(value, context)
-            end
-          elsif (array = uploaded_file).is_a?(Array)
-            array.each do |value|
-              _delete(value, context)
-            end
-          else
-            super
+            super(version, **options, process: false)
           end
         end
       end
 
       module AttacherMethods
+        def destroy(*)
+          Utils.each_file(self.file) { |_, file| file.delete }
+        end
+
         # Smart versioned URLs, which include the version name in the default
         # URL, and properly forwards any options to the underlying storage.
         def url(version = nil, **options)
-          attachment = get
-
-          if attachment.is_a?(Hash)
+          if file.is_a?(Hash)
             if version
               version = version.to_sym
-              if attachment.key?(version)
-                attachment[version].url(**options)
+              if file.key?(version)
+                file[version].url(**options)
               elsif fallback = shrine_class.version_fallbacks[version]
                 url(fallback, **options)
               else
@@ -104,8 +75,8 @@ class Shrine
             end
           else
             if version
-              if attachment && fallback_to_original?
-                attachment.url(**options)
+              if file && shrine_class.opts[:versions][:fallback_to_original]
+                file.url(**options)
               else
                 default_url(**options, version: version)
               end
@@ -115,22 +86,87 @@ class Shrine
           end
         end
 
-        private
-
-        def fallback_to_original?
-          shrine_class.opts[:versions_fallback_to_original]
+        # Converts the Hash/Array of UploadedFile objects into a Hash/Array of data.
+        def data
+          Utils.map_file(file, transform_keys: :to_s) do |_, version|
+            version.data
+          end
         end
 
-        # Converts the Hash/Array of UploadedFile objects into a Hash/Array of data.
-        def convert_to_data(object)
-          if object.is_a?(Hash)
-            object.inject({}) do |hash, (name, value)|
-              hash.merge!(name => convert_to_data(value))
-            end
-          elsif object.is_a?(Array)
-            object.map { |value| convert_to_data(value) }
+        def file=(file)
+          if file.is_a?(Hash) || file.is_a?(Array)
+            @file = file
           else
             super
+          end
+        end
+
+        def uploaded_file(value, &block)
+          shrine_class.uploaded_file(value, &block)
+        end
+
+        private
+
+        def uploaded?(file, storage_key)
+          return super unless file.is_a?(Hash) || file.is_a?(Array)
+
+          uploaded = true
+
+          Utils.each_file(file) do |_, file|
+            uploaded &&= (file.storage_key == storage_key)
+          end
+
+          uploaded
+        end
+      end
+
+      module Utils
+        module_function
+
+        def each_file(object)
+          map_file(object) do |path, file|
+            yield path, file
+            file
+          end
+        end
+
+        def map_file(object, transform_keys: :to_sym)
+          if object.is_a?(Hash) || object.is_a?(Array)
+            deep_map(object, transform_keys: transform_keys) do |path, value|
+              yield path, value unless value.is_a?(Hash) || value.is_a?(Array)
+            end
+          elsif object
+            yield nil, object
+          else
+            object
+          end
+        end
+
+        def deep_map(object, path = [], transform_keys:, &block)
+          if object.is_a?(Hash)
+            result = yield path, object
+
+            return result if result
+
+            object.inject({}) do |hash, (key, value)|
+              key    = key.send(transform_keys)
+              result = yield [*path, key], value
+
+              hash.merge! key => (result || deep_map(value, [*path, key], transform_keys: transform_keys, &block))
+            end
+          elsif object.is_a?(Array)
+            result = yield path, object
+
+            return result if result
+
+            object.map.with_index do |value, idx|
+              result = yield [*path, idx], value
+
+              result || deep_map(value, [*path, idx], transform_keys: transform_keys, &block)
+            end
+          else
+            result = yield path, object
+            result or fail Shrine::Error, "leaf reached"
           end
         end
       end

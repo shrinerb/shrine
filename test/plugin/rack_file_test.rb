@@ -73,7 +73,7 @@ describe Shrine::Plugins::RackFile do
     assert_equal Encoding::BINARY, @rack_hash[:filename].encoding
   end
 
-  it "supports attaching Rack files directly" do
+  it "supports assigning Rack files directly" do
     @attacher.assign(@rack_hash)
 
     assert_equal "",           @attacher.get.read
@@ -84,8 +84,9 @@ describe Shrine::Plugins::RackFile do
 
   it "accepts assign options" do
     @attacher.assign(@rack_hash, metadata: { "foo" => "bar" })
-    assert_equal "bar", @attacher.get.metadata["foo"]
+    assert_equal "bar", @attacher.file.metadata["foo"]
+
     @attacher.assign(fakeio, metadata: { "foo" => "bar" })
-    assert_equal "bar", @attacher.get.metadata["foo"]
+    assert_equal "bar", @attacher.file.metadata["foo"]
   end
 end

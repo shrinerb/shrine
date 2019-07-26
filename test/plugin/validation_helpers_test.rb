@@ -8,19 +8,19 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_max_size" do
     before do
-      @attacher.assign(fakeio("file" * 1024*1024))
+      @attacher.attach(fakeio("file" * 1024*1024))
     end
 
     it "adds an error if size is greater than given maximum" do
-      @attacher.class.validate { validate_max_size(get.size + 1) }
+      @attacher.class.validate { validate_max_size(file.size + 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_size(get.size) }
+      @attacher.class.validate { validate_max_size(file.size) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_max_size(get.size - 1) }
+      @attacher.class.validate { validate_max_size(file.size - 1) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -42,31 +42,33 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_max_size(get.size) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_max_size(1) }
+      @attacher.class.validate { validation_passed = validate_max_size(file.size) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_max_size(1) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
   end
 
   describe "#validate_min_size" do
     before do
-      @attacher.assign(fakeio("file"))
+      @attacher.attach(fakeio("file"))
     end
 
     it "adds an error if size is less than given minimum" do
-      @attacher.class.validate { validate_min_size(get.size - 1) }
+      @attacher.class.validate { validate_min_size(file.size - 1) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_size(get.size) }
+      @attacher.class.validate { validate_min_size(file.size) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
 
-      @attacher.class.validate { validate_min_size(get.size + 1) }
+      @attacher.class.validate { validate_min_size(file.size + 1) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
@@ -88,19 +90,21 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_min_size(1) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_min_size(get.size + 1) }
+      @attacher.class.validate { validation_passed = validate_min_size(1) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_min_size(file.size + 1) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
   end
 
   describe "#validate_size" do
     before do
-      @attacher.assign(fakeio("file"))
+      @attacher.attach(fakeio("file"))
     end
 
     it "adds an error if size is greater than given maximum" do
@@ -116,19 +120,21 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_size 0..4 }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_size 10..14 }
+      @attacher.class.validate { validation_passed = validate_size 0..4 }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_size 10..14 }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
   end
 
   describe "#validate_max_width" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is greater than given maximum" do
@@ -162,17 +168,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_max_width(200) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_max_width(1) }
+      @attacher.class.validate { validation_passed = validate_max_width(200) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_max_width(1) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "fails when width metadata is missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_max_width(100) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -180,7 +188,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_min_width" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is less than given minimum" do
@@ -214,17 +222,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_min_width(1) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_min_width(200) }
+      @attacher.class.validate { validation_passed = validate_min_width(1) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_min_width(200) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "fails when width metadata is missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_min_width(1) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -232,7 +242,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_width" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is greater than given maximum" do
@@ -248,17 +258,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_width 0..100 }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_width 150..200 }
+      @attacher.class.validate { validation_passed = validate_width 0..100 }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_width 150..200 }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "fails when width metadata is missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_width 0..100 }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -266,7 +278,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_max_height" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if height is greater than given maximum" do
@@ -300,17 +312,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_max_height(200) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_max_height(1) }
+      @attacher.class.validate { validation_passed = validate_max_height(200) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_max_height(1) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "fails when height metadata is missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_max_height 100 }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -318,7 +332,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_min_height" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if height is less than given minimum" do
@@ -352,17 +366,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_min_height(1) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_min_height(200) }
+      @attacher.class.validate { validation_passed = validate_min_height(1) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_min_height(200) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "fails when height metadata is missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_min_height 1 }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -370,7 +386,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_height" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if height is greater than given maximum" do
@@ -386,17 +402,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_height 0..100 }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_height 150..200 }
+      @attacher.class.validate { validation_passed = validate_height 0..100 }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_height 150..200 }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "fails when height metadata is missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_height 0..100 }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -404,7 +422,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_max_dimensions" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is greater than given maximum" do
@@ -452,17 +470,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_max_dimensions([100, 100]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_max_dimensions([10, 10]) }
+      @attacher.class.validate { validation_passed = validate_max_dimensions([100, 100]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_max_dimensions([10, 10]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "raises an error if width or height are missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_max_dimensions([100, 100]) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -470,7 +490,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_min_dimensions" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if width is less than given minimum" do
@@ -518,17 +538,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_min_dimensions([0, 0]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_min_dimensions([150, 150]) }
+      @attacher.class.validate { validation_passed = validate_min_dimensions([0, 0]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_min_dimensions([150, 150]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "raises an error if width or height are missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_min_dimensions([0, 0]) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -536,7 +558,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_dimensions" do
     before do
-      @attacher.assign(fakeio, metadata: { "width" => 100, "height" => 70 })
+      @attacher.attach(fakeio, metadata: { "width" => 100, "height" => 70 })
     end
 
     it "adds an error if dimensions are greater than given maximum" do
@@ -552,17 +574,19 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_dimensions([0..100, 0..100]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_dimensions([150..200, 150..200]) }
+      @attacher.class.validate { validation_passed = validate_dimensions([0..100, 0..100]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_dimensions([150..200, 150..200]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "raises an error if width or height are missing" do
-      @attacher.assign(fakeio)
+      @attacher.attach(fakeio)
       @attacher.class.validate { validate_dimensions([0..100, 0..100]) }
       assert_raises(Shrine::Error) { @attacher.validate }
     end
@@ -570,7 +594,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_mime_type_inclusion" do
     before do
-      @attacher.assign(fakeio(content_type: "image/jpeg"))
+      @attacher.attach(fakeio(content_type: "image/jpeg"))
     end
 
     it "adds an error when mime_type is not in the whitelist" do
@@ -588,7 +612,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "handles blank mime type" do
-      @attacher.assign(fakeio(content_type: nil))
+      @attacher.attach(fakeio(content_type: nil))
       @attacher.class.validate { validate_mime_type_inclusion(["image/jpeg"]) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
@@ -611,20 +635,22 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "handles multiline mime types" do
-      @attacher.assign(fakeio(content_type: "video/mpeg\nfoo"))
+      @attacher.attach(fakeio(content_type: "video/mpeg\nfoo"))
       @attacher.class.validate { validate_mime_type_inclusion ["video/mpeg"] }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_mime_type_inclusion(["image/jpeg"]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_mime_type_inclusion(["video/mpeg"]) }
+      @attacher.class.validate { validation_passed = validate_mime_type_inclusion(["image/jpeg"]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_mime_type_inclusion(["video/mpeg"]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "is aliased to #validate_mime_type" do
@@ -636,7 +662,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_mime_type_exclusion" do
     before do
-      @attacher.assign(fakeio(content_type: "video/mpeg"))
+      @attacher.attach(fakeio(content_type: "video/mpeg"))
     end
 
     it "adds an error when mime_type is in the blacklist" do
@@ -654,7 +680,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "handles blank mime type" do
-      @attacher.assign(fakeio(content_type: nil))
+      @attacher.attach(fakeio(content_type: nil))
       @attacher.class.validate { validate_mime_type_exclusion(["video/mpeg"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -677,26 +703,28 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "handles multiline mime types" do
-      @attacher.assign(fakeio(content_type: "video/mpeg\nfoo"))
+      @attacher.attach(fakeio(content_type: "video/mpeg\nfoo"))
       @attacher.class.validate { validate_mime_type_exclusion ["video/mpeg"] }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_mime_type_exclusion(["image/jpeg"]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_mime_type_exclusion(["video/mpeg"]) }
+      @attacher.class.validate { validation_passed = validate_mime_type_exclusion(["image/jpeg"]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_mime_type_exclusion(["video/mpeg"]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
   end
 
   describe "#validate_extension_inclusion" do
     before do
-      @attacher.assign(fakeio(filename: "image.jpg"))
+      @attacher.attach(fakeio(filename: "image.jpg"))
     end
 
     it "adds an error when extension is not in the whitelist" do
@@ -714,7 +742,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "handles blank extension" do
-      @attacher.assign(fakeio(filename: nil))
+      @attacher.attach(fakeio(filename: nil))
       @attacher.class.validate { validate_extension_inclusion(["jpg"]) }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
@@ -737,20 +765,22 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "does a case insensitive match" do
-      @attacher.assign(fakeio(filename: "image.JPG"))
+      @attacher.attach(fakeio(filename: "image.JPG"))
       @attacher.class.validate { validate_extension_inclusion ["jpg"] }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_extension_inclusion(["jpg"]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_extension_inclusion(["mp4"]) }
+      @attacher.class.validate { validation_passed = validate_extension_inclusion(["jpg"]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_extension_inclusion(["mp4"]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
 
     it "is aliased to #validate_extension" do
@@ -762,7 +792,7 @@ describe Shrine::Plugins::ValidationHelpers do
 
   describe "#validate_extension_exclusion" do
     before do
-      @attacher.assign(fakeio(filename: "video.mp4"))
+      @attacher.attach(fakeio(filename: "video.mp4"))
     end
 
     it "adds an error when extension is in the blacklist" do
@@ -780,7 +810,7 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "handles blank extension" do
-      @attacher.assign(fakeio(filename: nil))
+      @attacher.attach(fakeio(filename: nil))
       @attacher.class.validate { validate_extension_exclusion(["jpg"]) }
       @attacher.validate
       assert_equal 0, @attacher.errors.size
@@ -803,20 +833,22 @@ describe Shrine::Plugins::ValidationHelpers do
     end
 
     it "does a case insensitive match" do
-      @attacher.assign(fakeio(filename: "image.JPG"))
+      @attacher.attach(fakeio(filename: "image.JPG"))
       @attacher.class.validate { validate_extension_exclusion ["jpg"] }
       @attacher.validate
       assert_equal 1, @attacher.errors.size
     end
 
     it "returns whether the validation succeeded" do
-      @attacher.class.validate { @validation_passed = validate_extension_exclusion(["jpg"]) }
-      @attacher.validate
-      assert_equal true, @attacher.instance_variable_get("@validation_passed")
+      validation_passed = nil
 
-      @attacher.class.validate { @validation_passed = validate_extension_exclusion(["mp4"]) }
+      @attacher.class.validate { validation_passed = validate_extension_exclusion(["jpg"]) }
       @attacher.validate
-      assert_equal false, @attacher.instance_variable_get("@validation_passed")
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_extension_exclusion(["mp4"]) }
+      @attacher.validate
+      assert_equal false, validation_passed
     end
   end
 
@@ -849,7 +881,7 @@ describe Shrine::Plugins::ValidationHelpers do
       max_size: -> (max) { "is too big" }
     }
     @attacher.class.validate { validate_max_size 1 }
-    @attacher.assign(fakeio("file"))
+    @attacher.attach(fakeio("file"))
     assert_equal ["is too big"], @attacher.errors
   end
 
@@ -864,7 +896,7 @@ describe Shrine::Plugins::ValidationHelpers do
       validate_max_size 1
       validate_mime_type_inclusion %w[image/jpeg]
     end
-    @attacher.assign(fakeio("file", content_type: "image/gif"))
+    @attacher.attach(fakeio("file", content_type: "image/gif"))
     assert_equal ["is too big", "is forbidden"], @attacher.errors
   end
 end

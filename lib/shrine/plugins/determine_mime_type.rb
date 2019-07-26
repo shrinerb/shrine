@@ -13,7 +13,7 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:determine_mime_type] ||= { analyzer: :file, analyzer_options: {}, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:determine_mime_type].merge!(opts)
 

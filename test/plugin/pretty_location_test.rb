@@ -1,56 +1,81 @@
 require "test_helper"
 require "shrine/plugins/pretty_location"
-require "ostruct"
 
 describe Shrine::Plugins::PrettyLocation do
-  class WhinyOpenStruct < OpenStruct
-    def method_missing(_, *_args)
-      raise NoMethodError
-      super
+  before do
+    @uploader = uploader { plugin :pretty_location }
+    @shrine   = @uploader.class
+  end
+
+  class NameSpaced
+    class Entity < Struct.new(:id)
     end
   end
 
-  module NameSpaced
-    class OpenStruct < ::OpenStruct; end
-  end
+  describe "Shrine" do
+    describe "#generate_location" do
+      it "prepends record identifier and attachmet name" do
+        location = @uploader.generate_location(
+          fakeio,
+          record: struct(id: 123),
+          name:   :file,
+        )
 
-  before do
-    @uploader = uploader { plugin :pretty_location }
-  end
+        assert_match %r{^123/file/[\w-]+$}, location
+      end
 
-  it "uses context to build the directory when the record responds to the default identifier" do
-    uploaded_file = @uploader.upload(fakeio, record: OpenStruct.new(id: 123), name: :avatar)
-    assert_match %r{^openstruct/123/avatar/[\w-]+$}, uploaded_file.id
-  end
+      it "allows overriding :identifier on the plugin level" do
+        @shrine.plugin :pretty_location, identifier: :uuid
 
-  it "raises an error when the record does not respond to the default identifier" do
-    assert_raises(NoMethodError) { @uploader.upload(fakeio, record: WhinyOpenStruct.new(email: 'foo@bar'), name: :avatar) }
-  end
+        location = @uploader.generate_location(
+          fakeio,
+          record: struct(uuid: "xyz"),
+          name: :file,
+        )
 
-  it "includes different identifier when :identifier is set and the record respond to it" do
-    @uploader.class.plugin :pretty_location, identifier: :uuid
-    uploaded_file = @uploader.upload(fakeio, record: OpenStruct.new(id: 123, uuid: 'xyz'), name: :avatar)
-    assert_match %r{^openstruct/xyz/avatar/[\w-]+$}, uploaded_file.id
-  end
+        assert_match %r{^xyz/file/[\w-]+$}, location
+      end
 
-  it "raises an error when :identifier is set but the record does not respond to it" do
-    @uploader.class.plugin :pretty_location, identifier: :uuid
-    assert_raises(NoMethodError) { @uploader.upload(fakeio, record: WhinyOpenStruct.new(id: 123), name: :avatar) }
-  end
+      it "prepends version name to basic location" do
+        location = @uploader.generate_location(
+          fakeio,
+          version: :thumb
+        )
 
-  it "prepends version names to generated location" do
-    uploaded_file = @uploader.upload(fakeio(filename: "foo.jpg"), version: :thumb)
-    assert_match %r{^thumb-[\w-]+\.jpg$}, uploaded_file.id
-  end
+        assert_match %r{^thumb-[\w-]+$}, location
+      end
 
-  it "includes only the inner class in location by default" do
-    uploaded_file = @uploader.upload(fakeio, record: NameSpaced::OpenStruct.new(id: 123), name: :avatar)
-    assert_match %r{^openstruct/123/avatar/[\w-]+$}, uploaded_file.id
-  end
+      it "includes only the inner class by default" do
+        location = @uploader.generate_location(
+          fakeio,
+          record: NameSpaced::Entity.new(123),
+          name: :file,
+        )
 
-  it "includes class namespace when :namespace is set" do
-    @uploader.class.plugin :pretty_location, namespace: "_"
-    uploaded_file = @uploader.upload(fakeio, record: NameSpaced::OpenStruct.new(id: 123), name: :avatar)
-    assert_match %r{^namespaced_openstruct/123/avatar/[\w-]+$}, uploaded_file.id
+        assert_match %r{^entity/123/file/[\w-]+$}, location
+      end
+
+      it "includes class namespace when :namespace is set" do
+        @shrine.plugin :pretty_location, namespace: "_"
+
+        location = @uploader.generate_location(
+          fakeio,
+          record: NameSpaced::Entity.new(123),
+          name: :file,
+        )
+
+        assert_match %r{^namespaced_entity/123/file/[\w-]+$}, location
+      end
+
+      it "fails when record does not respond to default identifier" do
+        assert_raises NoMethodError do
+          @uploader.generate_location(
+            fakeio,
+            record: struct({}),
+            name:   :file,
+          )
+        end
+      end
+    end
   end
 end

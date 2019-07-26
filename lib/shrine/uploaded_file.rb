@@ -196,8 +196,8 @@ class Shrine
       end
 
       # Uploads a new file to this file's location and returns it.
-      def replace(io, context = {})
-        uploader.upload(io, context.merge(location: id))
+      def replace(io, **options)
+        uploader.upload(io, **options, location: id)
       end
 
       # Calls `#delete` on the storage, which deletes the file from the

@@ -31,25 +31,24 @@ class Shrine
       end
 
       module InstanceMethods
-        def extract_metadata(io, context = {})
+        def extract_metadata(io, **options)
           metadata = super
-          context  = context.merge(metadata: metadata)
 
-          extract_custom_metadata(io, context)
+          extract_custom_metadata(io, **options, metadata: metadata)
 
           metadata
         end
 
         private
 
-        def extract_custom_metadata(io, context)
+        def extract_custom_metadata(io, **options)
           opts[:add_metadata_definitions].each do |name, block|
-            result = instance_exec(io, context, &block)
+            result = instance_exec(io, options, &block)
 
             if name
-              context[:metadata].merge! name.to_s => result
+              options[:metadata].merge! name.to_s => result
             else
-              context[:metadata].merge! result.transform_keys(&:to_s) if result
+              options[:metadata].merge! result.transform_keys(&:to_s) if result
             end
 
             # rewind between metadata blocks

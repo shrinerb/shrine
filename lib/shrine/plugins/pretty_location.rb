@@ -6,23 +6,23 @@ class Shrine
     #
     # [doc/plugins/pretty_location.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/pretty_location.md
     module PrettyLocation
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:pretty_location] ||= { identifier: :id }
         uploader.opts[:pretty_location].merge!(opts)
       end
 
       module InstanceMethods
-        def generate_location(io, context)
-          pretty_location(io, context)
+        def generate_location(io, **options)
+          pretty_location(io, options)
         end
 
-        def pretty_location(io, name: nil, record: nil, version: nil, identifier: nil, **)
+        def pretty_location(io, name: nil, record: nil, version: nil, identifier: nil, metadata: {}, **)
           if record
             namespace    = record_namespace(record)
             identifier ||= record_identifier(record)
           end
 
-          basename = basic_location(io)
+          basename = basic_location(io, metadata: metadata)
           basename = "#{version}-#{basename}" if version
 
           [*namespace, *identifier, *name, basename].join("/")

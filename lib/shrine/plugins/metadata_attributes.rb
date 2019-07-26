@@ -6,6 +6,10 @@ class Shrine
     #
     # [doc/plugins/metadata_attributes.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/metadata_attributes.md
     module MetadataAttributes
+      def self.load_dependencies(uploader, *)
+        uploader.plugin :entity
+      end
+
       def self.configure(uploader, mappings = {})
         uploader.opts[:metadata_attributes_mappings] ||= {}
         uploader.opts[:metadata_attributes_mappings].merge!(mappings)
@@ -18,21 +22,18 @@ class Shrine
       end
 
       module AttacherMethods
-        def assign(value, **options)
-          super
-          cached_file = get
+        def column_values
+          values = super
 
           shrine_class.opts[:metadata_attributes_mappings].each do |source, destination|
-            attribute_name = destination.is_a?(Symbol) ? :"#{name}_#{destination}" : :"#{destination}"
+            metadata_attribute = destination.is_a?(Symbol) ? :"#{name}_#{destination}" : :"#{destination}"
 
-            next unless record.respond_to?(:"#{attribute_name}=")
+            next unless record.respond_to?(metadata_attribute)
 
-            if cached_file
-              record.send(:"#{attribute_name}=", cached_file.metadata[source.to_s])
-            else
-              record.send(:"#{attribute_name}=", nil)
-            end
+            values[metadata_attribute] = file && file.metadata[source.to_s]
           end
+
+          values
         end
       end
     end

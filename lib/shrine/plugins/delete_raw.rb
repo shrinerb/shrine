@@ -6,28 +6,30 @@ class Shrine
     #
     # [doc/plugins/delete_raw.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/delete_raw.md
     module DeleteRaw
-      def self.configure(uploader, opts = {})
-        uploader.opts[:delete_raw_storages] = opts.fetch(:storages, uploader.opts[:delete_raw_storages])
+      def self.configure(uploader, **opts)
+        uploader.opts[:delete_raw] = {}
+        uploader.opts[:delete_raw].merge!(opts)
       end
 
       module InstanceMethods
         private
 
         # Deletes the file that was uploaded, unless it's an UploadedFile.
-        def copy(io, context)
-          super
-          if io.respond_to?(:path) && io.path && delete_raw? && context[:delete] != false
+        def _upload(io, delete: nil, **options)
+          super(io, **options)
+
+          if io.respond_to?(:path) && io.path && delete_raw? && delete != false
             begin
               File.delete(io.path)
             rescue Errno::ENOENT
-              # file might already be deleted by the moving plugin
+              # file might already be deleted if it was moved
             end
           end
         end
 
         def delete_raw?
-          opts[:delete_raw_storages].nil? ||
-          opts[:delete_raw_storages].include?(storage_key)
+          opts[:delete_raw][:storages].nil? ||
+          opts[:delete_raw][:storages].include?(storage_key)
         end
       end
     end

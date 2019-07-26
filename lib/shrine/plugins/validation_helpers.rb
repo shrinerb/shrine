@@ -51,14 +51,14 @@ class Shrine
         #
         #     validate_max_size 5*1024*1024
         def validate_max_size(max, message: nil)
-          validate_result(get.size <= max, :max_size, message, max)
+          validate_result(file.size <= max, :max_size, message, max)
         end
 
         # Validates that the `size` metadata is not smaller than `min`.
         #
         #     validate_min_size 1024
         def validate_min_size(min, message: nil)
-          validate_result(get.size >= min, :min_size, message, min)
+          validate_result(file.size >= min, :min_size, message, min)
         end
 
         # Validates that the `size` metadata is in the given range.
@@ -76,9 +76,9 @@ class Shrine
         #
         #     validate_max_width 5000
         def validate_max_width(max, message: nil)
-          fail Error, "width metadata is missing" unless get["width"]
+          fail Error, "width metadata is missing" unless file["width"]
 
-          validate_result(get["width"] <= max, :max_width, message, max)
+          validate_result(file["width"] <= max, :max_width, message, max)
         end
 
         # Validates that the `width` metadata is not smaller than `min`.
@@ -86,9 +86,9 @@ class Shrine
         #
         #     validate_min_width 100
         def validate_min_width(min, message: nil)
-          fail Error, "width metadata is missing" unless get["width"]
+          fail Error, "width metadata is missing" unless file["width"]
 
-          validate_result(get["width"] >= min, :min_width, message, min)
+          validate_result(file["width"] >= min, :min_width, message, min)
         end
 
         # Validates that the `width` metadata is in the given range.
@@ -106,9 +106,9 @@ class Shrine
         #
         #     validate_max_height 5000
         def validate_max_height(max, message: nil)
-          fail Error, "height metadata is missing" unless get["height"]
+          fail Error, "height metadata is missing" unless file["height"]
 
-          validate_result(get["height"] <= max, :max_height, message, max)
+          validate_result(file["height"] <= max, :max_height, message, max)
         end
 
         # Validates that the `height` metadata is not smaller than `min`.
@@ -116,9 +116,9 @@ class Shrine
         #
         #     validate_min_height 100
         def validate_min_height(min, message: nil)
-          fail Error, "height metadata is missing" unless get["height"]
+          fail Error, "height metadata is missing" unless file["height"]
 
-          validate_result(get["height"] >= min, :min_height, message, min)
+          validate_result(file["height"] >= min, :min_height, message, min)
         end
 
         # Validates that the `height` metadata is in the given range.
@@ -134,10 +134,10 @@ class Shrine
         #
         #     validate_max_dimensions [5000, 5000]
         def validate_max_dimensions((max_width, max_height), message: nil)
-          fail Error, "width and/or height metadata is missing" unless get["width"] && get["height"]
+          fail Error, "width and/or height metadata is missing" unless file["width"] && file["height"]
 
           validate_result(
-            get["width"] <= max_width && get["height"] <= max_height,
+            file["width"] <= max_width && file["height"] <= max_height,
             :max_dimensions, message, [max_width, max_height]
           )
         end
@@ -146,10 +146,10 @@ class Shrine
         #
         #     validate_max_dimensions [100, 100]
         def validate_min_dimensions((min_width, min_height), message: nil)
-          fail Error, "width and/or height metadata is missing" unless get["width"] && get["height"]
+          fail Error, "width and/or height metadata is missing" unless file["width"] && file["height"]
 
           validate_result(
-            get["width"] >= min_width && get["height"] >= min_height,
+            file["width"] >= min_width && file["height"] >= min_height,
             :min_dimensions, message, [min_width, min_height]
           )
         end
@@ -170,7 +170,7 @@ class Shrine
         #     validate_mime_type_inclusion %w[audio/mp3 audio/flac]
         def validate_mime_type_inclusion(types, message: nil)
           validate_result(
-            types.include?(get.mime_type),
+            types.include?(file.mime_type),
             :mime_type_inclusion, message, types
           )
         end
@@ -182,7 +182,7 @@ class Shrine
         #     validate_mime_type_exclusion %w[text/x-php]
         def validate_mime_type_exclusion(types, message: nil)
           validate_result(
-            !types.include?(get.mime_type),
+            !types.include?(file.mime_type),
             :mime_type_exclusion, message, types
           )
         end
@@ -193,7 +193,7 @@ class Shrine
         #     validate_extension_inclusion %w[jpg jpeg png gif]
         def validate_extension_inclusion(extensions, message: nil)
           validate_result(
-            extensions.any? { |extension| extension.casecmp(get.extension.to_s) == 0 },
+            extensions.any? { |extension| extension.casecmp(file.extension.to_s) == 0 },
             :extension_inclusion, message, extensions
           )
         end
@@ -205,7 +205,7 @@ class Shrine
         #     validate_extension_exclusion %[php jar]
         def validate_extension_exclusion(extensions, message: nil)
           validate_result(
-            extensions.none? { |extension| extension.casecmp(get.extension.to_s) == 0 },
+            extensions.none? { |extension| extension.casecmp(file.extension.to_s) == 0 },
             :extension_exclusion, message, extensions
           )
         end

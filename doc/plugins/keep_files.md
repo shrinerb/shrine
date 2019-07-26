@@ -1,22 +1,12 @@
 # Keep Files
 
-The [`keep_files`][keep_files] plugin gives you the ability to prevent files
-from being deleted. This functionality is useful when implementing soft
-deletes, or when implementing some kind of [event store] where you need to
-track history.
-
-The plugin accepts the following options:
-
-| Option       | Description                                                                     |
-| :------      | :----------                                                                     |
-| `:destroyed` | If set to `true`, destroying the record won't delete the associated attachment. |
-| `:replaced`  | If set to `true`, uploading a new attachment won't delete the old one.          |
-
-For example, the following will keep destroyed and replaced files:
+The [`keep_files`][keep_files] plugin prevents file deletion when the attacher
+is about to destroy currently attached or previously attached file. This
+functionality is useful when implementing soft deletes, versioning, or in
+general any scenario where you need to track history.
 
 ```rb
-plugin :keep_files, destroyed: true, replaced: true
+plugin :keep_files
 ```
 
 [keep_files]: /lib/shrine/plugins/keep_files.rb
-[event store]: http://docs.geteventstore.com/introduction/event-sourcing-basics/

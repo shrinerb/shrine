@@ -7,20 +7,22 @@ class Shrine
     # [doc/plugins/cached_attachment_data.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/cached_attachment_data.md
     module CachedAttachmentData
       module AttachmentMethods
-        def initialize(*)
+        def included(klass)
           super
+
+          return unless options[:type] == :model
 
           name = attachment_name
 
           define_method :"cached_#{name}_data" do
-            send(:"#{name}_attacher").read_cached
+            send(:"#{name}_attacher").cached_data
           end
         end
       end
 
       module AttacherMethods
-        def read_cached
-          get.to_json if cached? && changed?
+        def cached_data
+          file.to_json if cached? && changed?
         end
       end
     end

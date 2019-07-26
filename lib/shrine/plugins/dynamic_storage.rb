@@ -6,7 +6,7 @@ class Shrine
     #
     # [doc/plugins/dynamic_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/dynamic_storage.md
     module DynamicStorage
-      def self.configure(uploader, options = {})
+      def self.configure(uploader)
         uploader.opts[:dynamic_storages] ||= {}
       end
 

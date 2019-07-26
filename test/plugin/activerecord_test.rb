@@ -1,212 +1,626 @@
 require "test_helper"
+require "./test/support/activerecord"
 require "shrine/plugins/activerecord"
 require "active_record"
 
 describe Shrine::Plugins::Activerecord do
   before do
-    @uploader = uploader { plugin :activerecord }
+    @shrine = shrine { plugin :activerecord }
 
-    ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
-    ActiveRecord::Base.connection.create_table(:users) do |t|
-      t.string :name
-      t.text :avatar_data
-    end
-    ActiveRecord::Base.raise_in_transactional_callbacks = true unless ActiveRecord.version >= Gem::Version.new("5.0.0")
-
-    user_class = Object.const_set("User", Class.new(ActiveRecord::Base))
+    user_class = Class.new(ActiveRecord::Base)
     user_class.table_name = :users
-    user_class.include @uploader.class::Attachment.new(:avatar)
+    user_class.class_eval do
+      # needed for translating validation errors
+      def self.model_name
+        ActiveModel::Name.new(self, nil, "User")
+      end
+    end
 
-    @user = user_class.new
-    @attacher = @user.avatar_attacher
+    @user     = user_class.new
+    @attacher = @shrine::Attacher.from_model(@user, :avatar)
   end
 
   after do
-    ActiveRecord::Base.remove_connection
-    Object.send(:remove_const, "User")
+    I18n.backend.reload!
   end
 
-  describe "validating" do
-    it "adds errors to the record" do
-      @user.avatar_attacher.class.validate { errors << "error" }
-      @user.avatar = fakeio
-      refute @user.valid?
-      assert_equal Hash[avatar: ["error"]], @user.errors.to_hash
+  describe "Attachment" do
+    describe "validate" do
+      it "adds attacher errors to the record" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @attacher.class.validate { errors << "error" }
+        @user.avatar = fakeio
+        refute @user.valid?
+        assert_equal Hash[avatar: ["error"]], @user.errors.to_hash
+      end
+
+      it "allows errors to be symbols" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        store_translation(
+          %i[activerecord errors models user attributes avatar error],
+          "translated error"
+        )
+
+        @attacher.class.validate { errors << :error }
+        @user.avatar = fakeio
+        refute @user.valid?
+        assert_equal Hash[avatar: ["translated error"]], @user.errors.to_hash
+      end
+
+      it "allows errors to be symbols and parameters" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        store_translation(
+          %i[activerecord errors models user attributes avatar error],
+          "translated error: %{param}"
+        )
+
+        @attacher.class.validate { errors << [:error, param: "some param"] }
+        @user.avatar = fakeio
+        refute @user.valid?
+        assert_equal Hash[avatar: ["translated error: some param"]], @user.errors.to_hash
+      end
+
+      it "is skipped if validations are disabled" do
+        @shrine.plugin :activerecord, validations: false
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @attacher.class.validate { errors << "error" }
+        @user.avatar = fakeio
+        assert @user.valid?
+      end
     end
 
-    it "allows errors to be symbols" do
-      I18n.backend.store_translations I18n.locale, {
-        activerecord: {
-          errors: {
-            models: {
-              user: {
-                attributes: {
-                  avatar: {
-                    error: "translated error"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+    describe "before_save" do
+      it "calls Attacher#save if attachment has changed" do
+        @user.class.include @shrine::Attachment.new(:avatar)
 
-      @user.avatar_attacher.class.validate { errors << :error }
-      @user.avatar = fakeio
-      refute @user.valid?
-      assert_equal Hash[avatar: ["translated error"]], @user.errors.to_hash
+        @user.avatar = fakeio
+        @user.avatar_attacher.expects(:save).once
+        @user.save
+      end
+
+      it "doesn't call Attacher#save if attachment has not changed" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.name = "Janko"
+        @user.avatar_attacher.expects(:save).never
+        @user.save
+      end
+
+      it "is skipped when callbacks are disabled" do
+        @shrine.plugin :activerecord, callbacks: false
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.avatar = fakeio
+        @user.avatar_attacher.expects(:save).never
+        @user.save
+      end
     end
 
-    it "allows errors to be symbols and parameters" do
-      I18n.backend.store_translations I18n.locale, {
-        activerecord: {
-          errors: {
-            models: {
-              user: {
-                attributes: {
-                  avatar: {
-                    error: "translated error: %{param}"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+    describe "after_save" do
+      it "finalizes attacher when attachment changes on create" do
+        @user.class.include @shrine::Attachment.new(:avatar)
 
-      @user.avatar_attacher.class.validate { errors << [:error, param: "some param"] }
-      @user.avatar = fakeio
-      refute @user.valid?
-      assert_equal Hash[avatar: ["translated error: some param"]], @user.errors.to_hash
-    end
-  end
+        previous_file = @shrine.upload(fakeio, :store)
+        @user.avatar_attacher.set(previous_file)
 
-  describe "promoting" do
-    it "is triggered when attachment changes" do
-      @user.update(avatar: fakeio("file1")) # insert
-      refute @user.changed?
-      assert_equal :store,  @user.avatar.storage_key
-      assert_equal "file1", @user.avatar.read
+        @user.avatar = fakeio
+        @user.save
 
-      @user.update(avatar: fakeio("file2")) # update
-      refute @user.changed?
-      assert_equal :store,  @user.avatar.storage_key
-      assert_equal "file2", @user.avatar.read
-    end
+        assert_equal :store, @user.avatar.storage_key
+        refute previous_file.exists?
+      end
 
-    it "isn't triggered when attachment didn't change" do
-      @user.update(avatar: fakeio("file"))
-      attachment = @user.avatar
-      @user.update(name: "Name")
-      assert_equal attachment, @user.avatar
-    end
+      it "finalizes attacher when attachment changes on update" do
+        @user.class.include @shrine::Attachment.new(:avatar)
 
-    it "is triggered after transaction commits" do
-      @user.class.transaction do
-        @user.update(avatar: fakeio("file2"))
+        previous_file = @shrine.upload(fakeio, :store)
+        @user.avatar_attacher.set(previous_file)
+        @user.save
+
+        @user.avatar = fakeio
+        @user.save
+
+        assert_equal :store, @user.avatar.storage_key
+        refute previous_file.exists?
+      end
+
+      it "persists changes after finalization" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.avatar = fakeio
+        @user.save
+        @user.reload
+
+        assert_equal :store, @user.avatar.storage_key
+      end
+
+      it "performs finalization after the transaction commits" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.avatar = fakeio
+
+        @user.class.transaction do
+          @user.save
+          assert_equal :cache, @user.avatar.storage_key
+        end
+        assert_equal :store, @user.avatar.storage_key
+      end
+
+      it "ignores validation errors" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+        @user.class.validates_presence_of :name
+
+        @user.avatar = fakeio
+        @user.save(validate: false)
+        @user.reload
+
+        assert_equal :store, @user.avatar.storage_key
+      end
+
+      it "is skipped when callbacks are disabled" do
+        @shrine.plugin :activerecord, callbacks: false
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.avatar = fakeio
+        @user.save
+
         assert_equal :cache, @user.avatar.storage_key
       end
-      assert_equal :store, @user.avatar.storage_key
     end
 
-    it "triggers callbacks" do
-      @user.class.before_save do
-        @promote_callback = true if avatar.storage_key == :store
+    describe "after_destroy" do
+      it "deletes attached files" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.destroy
+
+        refute @user.avatar.exists?
       end
-      @user.update(avatar: fakeio)
-      assert @user.instance_variable_get("@promote_callback")
-    end
 
-    it "updates only the attachment column" do
-      @user.update(avatar_data: @attacher.cache!(fakeio).to_json)
-      @user.class.update_all(name: "Name")
-      @attacher.promote
-      @user.reload
-      assert_equal :store, @user.avatar.storage_key
-      assert_equal "Name", @user.name
-    end
+      it "is skipped when callbacks are disabled" do
+        @shrine.plugin :activerecord, callbacks: false
+        @user.class.include @shrine::Attachment.new(:avatar)
 
-    it "bypasses validations" do
-      @user.class.validate { errors.add(:base, "Invalid") }
-      @user.avatar = fakeio
-      @user.save(validate: false)
-      refute @user.changed?
-      assert_equal :store, @user.avatar.storage_key
-    end
-  end
+        @attacher.attach(fakeio)
+        @user.save
 
-  describe "replacing" do
-    it "is triggered after saving" do
-      @user.update(avatar: fakeio)
-      uploaded_file = @user.avatar
-      @user.update(avatar: fakeio)
-      refute uploaded_file.exists?
-    end
+        @user.destroy
 
-    it "isn't triggered when callback chain is halted" do
-      @user.update(avatar: fakeio)
-      uploaded_file = @user.avatar
-      if ActiveRecord.version >= Gem::Version.new("5.0.0")
-        @user.class.before_save { throw(:abort) }
-      else
-        @user.class.before_save { false }
+        assert @user.avatar.exists?
       end
-      @user.update(avatar: fakeio)
-      assert uploaded_file.exists?
+    end
+
+    describe "#reload" do
+      it "reloads the attacher on ActiveRecord::Base#reload" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+        @user.avatar_attacher # ensure attacher is memoized
+
+        file = @shrine.upload(fakeio, :store)
+        @user.class.update_all(avatar_data: file.to_json)
+
+        @user.reload
+
+        assert_equal file, @user.avatar
+      end
+
+      it "reloads the attacher on ActiveRecord::Base#lock!" do
+        # assertions
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+        @user.avatar_attacher # ensure attacher is memoized
+
+        file = @shrine.upload(fakeio, :store)
+        @user.class.update_all(avatar_data: file.to_json)
+
+        @user.class.transaction { @user.lock! }
+
+        assert_equal file, @user.avatar
+      end
+
+      it "returns self" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+
+        assert_equal @user, @user.reload
+      end
+    end
+
+    it "can still be included into non-ActiveRecord classes" do
+      model_class = model_class(:avatar_data)
+      model_class.include @shrine::Attachment.new(:avatar)
     end
   end
 
-  describe "saving" do
-    it "is triggered when file is attached" do
-      @user.avatar_attacher.expects(:save).twice
-      @user.update(avatar: fakeio) # insert
-      @user.update(avatar: fakeio) # update
+  describe "Attacher" do
+    describe "#activerecord_atomic_promote" do
+      it "promotes cached file to permanent storage" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_promote
+
+        assert_equal :store, @attacher.file.storage_key
+      end
+
+      it "updates the record with promoted file" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_promote
+
+        @attacher.reload
+        assert_equal :store, @attacher.file.storage_key
+
+        @user.reload
+        @attacher.reload
+        assert_equal :store, @attacher.file.storage_key
+      end
+
+      it "accepts promote options" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_promote(location: "foo")
+
+        assert_equal "foo", @attacher.file.id
+      end
+
+      it "persists any other attribute changes" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_promote
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "executes the given block before persisting" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_promote { @user.name = "Janko" }
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "fails on attachment change" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @user.class.update_all(avatar_data: nil)
+
+        assert_raises(Shrine::AttachmentChanged) do
+          @attacher.activerecord_atomic_promote { @block_called = true }
+        end
+
+        @user.reload
+        @attacher.reload
+
+        assert_nil @attacher.file
+        refute @block_called
+      end
+
+      it "respects column serializer" do
+        # make avatar_data column read and write hashes
+        @user.instance_eval do
+          def avatar_data;         super && JSON.parse(super);          end
+          def avatar_data=(value); super value && JSON.generate(value); end
+        end
+
+        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: nil)
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_promote
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal :store, @attacher.file.storage_key
+      end
+
+      it "accepts :fetch reload strategy" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_promote(reload: :fetch)
+
+        @attacher.reload
+
+        assert_equal :store, @attacher.file.storage_key
+        assert_equal "Janko", @user.name
+      end
+
+      it "accepts custom reload strategy" do
+        cached_file = @attacher.attach_cached(fakeio)
+        @user.save
+
+        @user.class.update_all(avatar_data: nil) # this change will not be detected
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_promote(reload: -> (&block) {
+          block.call @user.class.new(avatar_data: cached_file.to_json)
+        })
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal :store, @attacher.file.storage_key
+        assert_equal "Janko", @user.name
+      end
+
+      it "allows disabling reloading" do
+        cached_file = @attacher.attach_cached(fakeio)
+        @user.save
+
+        @user.class.update_all(avatar_data: nil) # this change will not be detected
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_promote(reload: false)
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal :store, @attacher.file.storage_key
+        assert_equal "Janko", @user.name
+      end
+
+      it "accepts custom persist strategy" do
+        @attacher.attach_cached(fakeio)
+        @user.save(validate: false)
+
+        @attacher.activerecord_atomic_promote(persist: -> {
+          @user.name = "Janko"
+          @user.save
+        })
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal :store, @attacher.file.storage_key
+        assert_equal "Janko", @user.name
+      end
+
+      it "allows disabling persistence" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_promote(persist: false)
+
+        assert_equal :store, @attacher.file.storage_key
+        assert_equal "Janko", @user.name
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal :cache, @attacher.file.storage_key
+        assert_nil @user.name
+      end
+
+      it "is aliased to #atomic_promote" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        @attacher.atomic_promote
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal :store, @attacher.file.storage_key
+      end
     end
 
-    it "isn't triggered when no file was attached" do
-      @user.avatar_attacher.expects(:save).never
-      @user.save # insert
-      @user.save # update
+    describe "#activerecord_atomic_persist" do
+      it "persists the record" do
+        file = @attacher.attach(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_persist
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+        assert_equal file,    @attacher.file
+      end
+
+      it "executes the given block before persisting" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_persist { @user.name = "Janko" }
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "fails on attachment change" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.class.update_all(avatar_data: nil)
+
+        @user.name = "Janko"
+        assert_raises(Shrine::AttachmentChanged) do
+          @attacher.activerecord_atomic_persist { @block_called = true }
+        end
+
+        @user.reload
+        @attacher.reload
+
+        assert_nil @attacher.file
+        assert_nil @user.name
+        refute @block_called
+      end
+
+      it "respects column serializer" do
+        # make avatar_data column read and write hashes
+        @user.instance_eval do
+          def avatar_data;         super && JSON.parse(super);          end
+          def avatar_data=(value); super value && JSON.generate(value); end
+        end
+
+        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: nil)
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_persist
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal "Janko", @user.name
+      end
+
+      it "accepts :fetch reload strategy" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.name = "Name"
+        @attacher.activerecord_atomic_persist(reload: :fetch)
+
+        assert_equal "Name", @user.name
+      end
+
+      it "accepts custom reload strategy" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.class.update_all(avatar_data: nil) # this change will not be detected
+
+        @user.name = "Name"
+        @attacher.activerecord_atomic_persist(reload: -> (&block) { block.call(@user) })
+
+        assert_equal "Name", @user.reload.name
+      end
+
+      it "allows disabling reloading" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.class.update_all(avatar_data: nil) # this change will not be detected
+
+        @user.name = "Name"
+        @attacher.activerecord_atomic_persist(reload: false)
+
+        assert_equal "Name", @user.reload.name
+      end
+
+      it "skips validations when persisting" do
+        @user.class.validates_presence_of :name
+
+        @attacher.attach(fakeio)
+        @user.name = "Janko"
+        @user.save(validate: false)
+
+        @user.name = nil
+        @attacher.activerecord_atomic_persist
+
+        assert_nil @user.reload.name
+      end
+
+      it "persists only changed attributes" do
+        @user.save
+
+        file = @attacher.attach(fakeio)
+        @user.class.update_all(name: "Janko")
+
+        @attacher.activerecord_atomic_persist(nil)
+
+        @user.reload
+        @attacher.reload
+
+        assert_equal file, @attacher.file
+        assert_equal "Janko", @user.name
+      end
+
+      it "triggers callbacks when persisting" do
+        @user.save
+
+        after_save_called = false
+        @user.class.after_save { after_save_called = true }
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_persist
+
+        assert after_save_called
+      end
+
+      it "accepts custom persist strategy" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @attacher.activerecord_atomic_persist(persist: -> {
+          @user.name = "Janko"
+          @user.save
+        })
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "allows disabling persistence" do
+        @attacher.attach(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_persist(persist: false)
+
+        assert_equal "Janko", @user.name
+        assert_nil @user.reload.name
+      end
+
+      it "accepts current file" do
+        @user.save
+
+        file = @shrine.upload(fakeio, :store)
+        @user.class.update_all(avatar_data: file.to_json)
+
+        assert_raises(Shrine::AttachmentChanged) do
+          @attacher.activerecord_atomic_persist
+        end
+
+        @user.name = "Janko"
+        @attacher.activerecord_atomic_persist(file)
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "is aliased to #atomic_persist" do
+        file = @attacher.attach(fakeio)
+        @user.save
+
+        @user.name = "Janko"
+        @attacher.atomic_persist
+
+        assert_equal "Janko", @user.name
+        assert_equal "Janko", @user.reload.name
+        assert_equal file,    @attacher.file
+      end
     end
   end
 
-  describe "destroying" do
-    it "is triggered on record destroy" do
-      @user.update(avatar: fakeio)
-      @user.destroy
-      refute @user.avatar.exists?
-    end
-
-    it "doesn't raise errors if no file is attached" do
-      @user.save
-      @user.destroy
-    end
-  end
-
-  it "works with backgrounding" do
-    @uploader.class.plugin :backgrounding
-    @attacher.class.promote { |data| self.class.promote(data) }
-    @attacher.class.delete { |data| self.class.delete(data) }
-
-    @user.update(avatar: fakeio)
-    assert_equal :store, @user.reload.avatar.storage_key
-
-    @user.destroy
-    refute @user.avatar.exists?
-  end
-
-  it "returns nil when record is not found" do
-    assert_nil @attacher.class.find_record(@user.class, "foo")
-  end
-
-  it "raises an appropriate exception when column is missing" do
-    @user.class.include @uploader.class::Attachment.new(:missing)
-    error = assert_raises(NoMethodError) { @user.missing = fakeio }
-    assert_match "undefined method `missing_data'", error.message
-  end
-
-  it "allows including attachment module to non-ActiveRecord models" do
-    klass = Struct.new(:avatar_data)
-    klass.include @uploader.class::Attachment.new(:avatar)
+  def store_translation(key, value)
+    I18n.backend.store_translations(
+      I18n.locale,
+      key.reverse.inject(value) { |object, component| { component => object } }
+    )
   end
 end

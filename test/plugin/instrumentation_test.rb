@@ -177,11 +177,11 @@ describe Shrine::Plugins::Instrumentation do
       end
 
       refute_nil @event
-      assert_equal :store,                 @event[:storage]
-      assert_equal io,                     @event[:io]
-      assert_equal %i[upload_options bar], @event[:options].keys
-      assert_equal @shrine,                @event[:uploader]
-      assert_kind_of Integer,              @event[:time]
+      assert_equal :store,                          @event[:storage]
+      assert_equal io,                              @event[:io]
+      assert_equal %i[upload_options bar metadata], @event[:options].keys
+      assert_equal @shrine,                         @event[:uploader]
+      assert_kind_of Integer,                       @event[:time]
     end
 
     it "instruments & logs download events" do

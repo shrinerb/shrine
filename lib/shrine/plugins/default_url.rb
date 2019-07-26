@@ -6,7 +6,7 @@ class Shrine
     #
     # [doc/plugins/default_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_url.md
     module DefaultUrl
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:default_url] ||= {}
         uploader.opts[:default_url].merge!(opts)
       end

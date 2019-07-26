@@ -8,7 +8,7 @@ describe Shrine::Plugins::UploadOptions do
   end
 
   it "accepts a block" do
-    @shrine.plugin :upload_options, { store: -> (io, context) { Hash[foo: "foo"] } }
+    @shrine.plugin :upload_options, { store: -> (io, **) { Hash[foo: "foo"] } }
     @uploader.storage.expects(:upload).with { |*, **options| options[:foo] == "foo" }
     @uploader.upload(fakeio)
   end
