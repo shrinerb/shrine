@@ -85,8 +85,8 @@ describe Shrine::Plugins::MetadataAttributes do
     @attacher.class.metadata_attributes size: :size, mime_type: :type
 
     model_class = model_class(:file_data)
-    model_class.attr_accessor :file_size
-    model_class.attr_accessor :file_type
+    model_class.send(:attr_accessor, :file_size)
+    model_class.send(:attr_accessor, :file_type)
 
     model = model_class.new
 
