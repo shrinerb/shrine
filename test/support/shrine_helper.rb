@@ -25,7 +25,7 @@ module Support
 
     def model_class(*attributes)
       klass = entity_class(*attributes)
-      klass.attr_writer *attributes
+      klass.send(:attr_writer, *attributes)
       klass
     end
 
