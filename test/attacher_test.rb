@@ -68,74 +68,84 @@ describe Shrine::Attacher do
   end
 
   describe "#attach_cached" do
-    it "caches an IO object" do
-      @attacher.attach_cached(fakeio)
-      assert_equal :cache,  @attacher.file.storage_key
-    end
+    describe "with IO object" do
+      it "caches an IO object" do
+        @attacher.attach_cached(fakeio)
+        assert_equal :cache,  @attacher.file.storage_key
+      end
 
-    it "caches an UploadedFile object" do
-      cached_file = @shrine.upload(fakeio, :cache)
-      @attacher.attach_cached(cached_file)
-      refute_equal cached_file.id, @attacher.file.id
-    end
+      it "caches an UploadedFile object" do
+        cached_file = @shrine.upload(fakeio, :cache)
+        @attacher.attach_cached(cached_file)
+        refute_equal cached_file.id, @attacher.file.id
+      end
 
-    it "accepts JSON data of a cached file" do
-      cached_file = @shrine.upload(fakeio, :cache)
-      @attacher.attach_cached(cached_file.to_json)
-      assert_equal cached_file, @attacher.file
-    end
+      it "returns the attached file" do
+        file = @attacher.attach_cached(fakeio)
+        assert_equal @attacher.file, file
+      end
 
-    it "accepts Hash data of a cached file" do
-      cached_file = @shrine.upload(fakeio, :cache)
-      @attacher.attach_cached(cached_file.data)
-      assert_equal cached_file, @attacher.file
-    end
+      it "uploads to attacher's temporary storage" do
+        @attacher = @shrine::Attacher.new(cache: :other_cache)
+        @attacher.attach_cached(fakeio)
+        assert_equal :other_cache, @attacher.file.storage_key
+      end
 
-    it "uses attacher's temporary storage" do
-      @attacher = @shrine::Attacher.new(cache: :other_cache)
+      it "accepts nils" do
+        @attacher.attach_cached(fakeio)
+        @attacher.attach_cached(nil)
+        assert_nil @attacher.file
+      end
 
-      @attacher.attach_cached(fakeio)
-      assert_equal :other_cache, @attacher.file.storage_key
+      it "passes :action as :cache" do
+        io = fakeio
+        @attacher.shrine_class.expects(:upload).with(io, :cache, { action: :cache })
+        @attacher.attach_cached(io)
+      end
 
-      @attacher.attach_cached(@attacher.file.to_json)
-    end
-
-    it "returns the attached file" do
-      file = @attacher.attach_cached(fakeio)
-      assert_equal @attacher.file, file
-
-      file = @attacher.attach_cached(file.data)
-      assert_equal @attacher.file, file
-    end
-
-    it "changes the attachment" do
-      cached_file = @shrine.upload(fakeio, :cache)
-      @attacher.attach_cached(cached_file.data)
-      assert @attacher.changed?
-    end
-
-    it "rejects non-cached files" do
-      stored_file = @shrine.upload(fakeio, :store)
-      assert_raises(Shrine::Error) do
-        @attacher.attach_cached(stored_file.data)
+      it "forwards additional options for upload" do
+        @attacher.attach_cached(fakeio, location: "foo")
+        assert_equal "foo", @attacher.file.id
       end
     end
 
-    it "accepts nils" do
-      @attacher.attach_cached(fakeio)
-      @attacher.attach_cached(nil)
-      assert_nil @attacher.file
-    end
+    describe "with uploaded file data" do
+      it "accepts JSON data of a cached file" do
+        cached_file = @shrine.upload(fakeio, :cache)
+        @attacher.attach_cached(cached_file.to_json)
+        assert_equal cached_file, @attacher.file
+      end
 
-    it "passes :action as :cache" do
-      io = fakeio
-      @attacher.shrine_class.expects(:upload).with(io, :cache, { action: :cache })
-      @attacher.attach_cached(io)
-    end
+      it "accepts Hash data of a cached file" do
+        cached_file = @shrine.upload(fakeio, :cache)
+        @attacher.attach_cached(cached_file.data)
+        assert_equal cached_file, @attacher.file
+      end
 
-    it "forwards additional options for upload" do
-      @attacher.attach_cached(fakeio, location: "foo")
-      assert_equal "foo", @attacher.file.id
+      it "changes the attachment" do
+        cached_file = @shrine.upload(fakeio, :cache)
+        @attacher.attach_cached(cached_file.data)
+        assert @attacher.changed?
+      end
+
+      it "returns the attached file" do
+        cached_file = @shrine.upload(fakeio, :cache)
+        assert_equal cached_file, @attacher.attach_cached(cached_file.data)
+      end
+
+      it "uses attacher's temporary storage" do
+        @attacher = @shrine::Attacher.new(cache: :other_cache)
+        cached_file = @shrine.upload(fakeio, :other_cache)
+        @attacher.attach_cached(cached_file.data)
+        assert_equal :other_cache, @attacher.file.storage_key
+      end
+
+      it "rejects non-cached files" do
+        stored_file = @shrine.upload(fakeio, :store)
+        assert_raises(Shrine::Error) do
+          @attacher.attach_cached(stored_file.data)
+        end
+      end
     end
   end
 
