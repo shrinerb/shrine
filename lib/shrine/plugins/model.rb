@@ -132,8 +132,9 @@ class Shrine
 
         # Writes uploaded file data into the model.
         def set(*args)
-          super
+          result = super
           write if model?
+          result
         end
 
         # Writes the attachment data into the model attribute.

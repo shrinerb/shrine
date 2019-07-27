@@ -37,6 +37,11 @@ Model:
   -
     name: remove_attachment
     description: Allows you to remove the attachment via a form field.
+
+Validation:
+  -
+    name: validation
+    description: Provides generic file validation interface.
   -
     name: validation_helpers
     description: Gives you convenient methods for validating file's metadata.

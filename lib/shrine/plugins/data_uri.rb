@@ -26,6 +26,10 @@ class Shrine
         }.inspect}"
       end
 
+      def self.load_dependencies(uploader, *)
+        uploader.plugin :validation
+      end
+
       def self.configure(uploader, **opts)
         uploader.opts[:data_uri] ||= { log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:data_uri].merge!(opts)

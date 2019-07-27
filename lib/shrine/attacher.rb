@@ -18,18 +18,6 @@ class Shrine
         "#{shrine_class.inspect}::Attacher"
       end
 
-      # Block that is executed in context of Shrine::Attacher during
-      # validation. Example:
-      #
-      #     Shrine::Attacher.validate do
-      #       if get.size > 5*1024*1024
-      #         errors << "is too big (max is 5 MB)"
-      #       end
-      #     end
-      def validate(&block)
-        private define_method(:run_validations, &block)
-      end
-
       # Initializes the attacher from a data hash generated from `Attacher#data`.
       #
       #     attacher = Attacher.from_data({ "id" => "...", "storage" => "...", "metadata" => { ... } })
@@ -49,17 +37,12 @@ class Shrine
       # Can be modified with additional data to be sent to the uploader.
       attr_reader :context
 
-      # Returns an array of validation errors created on file assignment in
-      # the `Attacher.validate` block.
-      attr_reader :errors
-
       # Initializes the attached file, temporary and permanent storage.
       def initialize(file: nil, cache: :cache, store: :store)
         @file    = file
         @cache   = cache
         @store   = store
         @context = {}
-        @errors  = []
       end
 
       # Returns the uploader that is used for the temporary storage.
@@ -101,7 +84,7 @@ class Shrine
       #     attacher.attach_cached({ "id" => "...", "storage" => "cache", "metadata" => {} })
       def attach_cached(value, **options)
         if value.is_a?(String) || value.is_a?(Hash)
-          change cached(value)
+          change(cached(value), **options)
         else
           attach(value, storage: @cache, action: :cache, **options)
         end
@@ -123,7 +106,7 @@ class Shrine
       def attach(io, storage: @store, **options)
         file = upload(io, storage, **options) if io
 
-        change(file)
+        change(file, **options)
       end
 
       # Deletes any previous file and promotes newly attached cached file.
@@ -223,17 +206,9 @@ class Shrine
       #     attacher.change(uploaded_file)
       #     attacher.file #=> #<Shrine::UploadedFile>
       #     attacher.changed? #=> true
-      def change(file)
+      def change(file, **)
         @previous = dup unless @file == file
-        set file
-        validate
-        file
-      end
-
-      # Runs the validations defined by `Attacher.validate`.
-      def validate
-        errors.clear
-        run_validations if attached?
+        set(file)
       end
 
       # Sets the uploaded file.
@@ -373,12 +348,9 @@ class Shrine
         uploaded_file
       end
 
+      # Returns whether the file is uploaded to specified storage.
       def uploaded?(file, storage_key)
         file&.storage_key == storage_key
-      end
-
-      # Performs validations defined in `Attacher.validate` block.
-      def run_validations
       end
     end
 

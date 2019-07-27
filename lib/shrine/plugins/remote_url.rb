@@ -26,7 +26,11 @@ class Shrine
         end
       end
 
-      def self.configure(uploader, opts = {})
+      def self.load_dependencies(uploader, *)
+        uploader.plugin :validation
+      end
+
+      def self.configure(uploader, **opts)
         uploader.opts[:remote_url] ||= { downloader: DOWNLOADER, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:remote_url].merge!(opts)
 

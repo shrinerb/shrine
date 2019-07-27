@@ -1,5 +1,13 @@
 ## 3.0.0 (unreleased)
 
+* `validation` – Add `Attacher#validate_options` for registering default validation options (@janko)
+
+* `validation` – Allow skipping validations on attaching by passing `validate: false` (@janko)
+
+* `validation` – Add `:validate` option to `Attacher#assign` or `Attacher#attach` for passing options to validation block (@janko)
+
+* `validation` – Extract validation functionality into the new plugin (@janko)
+
 * `upload_options` – Upload options from the block are now merged with passed options instead of replaced (@janko)
 
 * `upload_endpoint` – Stop passing `Rack::Request` object to the uploader (@janko)
@@ -98,7 +106,7 @@
 
 * `attacher` – Remove `Attacher#cache!` and `Attacher#store!`, add `Attacher#upload` (@janko)
 
-* `attacher` – Rename `Attacher#validate_block` to `Attacher#run_validations` (@janko)
+* `attacher` – Rename `Attacher#validate_block` to `Attacher#_validate` (@janko)
 
 * `attacher` – Add `Attacher#attach`, `Attacher#attach_cached`, extracted from `Attacher#assign` (@janko)
 

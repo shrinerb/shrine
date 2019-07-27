@@ -29,8 +29,10 @@ class Shrine
           if shrine_class.opts[:sequel][:validations]
             define_method :validate do
               super()
-              send(:"#{name}_attacher").errors.each do |message|
-                errors.add(name, *message)
+              if send(:"#{name}_attacher").respond_to?(:errors)
+                send(:"#{name}_attacher").errors.each do |message|
+                  errors.add(name, *message)
+                end
               end
             end
           end

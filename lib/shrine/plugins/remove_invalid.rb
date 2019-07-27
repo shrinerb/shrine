@@ -6,8 +6,12 @@ class Shrine
     #
     # [doc/plugins/remove_invalid.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_invalid.md
     module RemoveInvalid
+      def self.load_dependencies(uploader)
+        uploader.plugin :validation
+      end
+
       module AttacherMethods
-        def validate
+        def validate(*)
           super
         ensure
           if errors.any? && changed?

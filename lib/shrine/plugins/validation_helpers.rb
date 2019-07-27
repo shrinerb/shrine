@@ -6,6 +6,10 @@ class Shrine
     #
     # [doc/plugins/validation_helpers.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/validation_helpers.md
     module ValidationHelpers
+      def self.load_dependencies(uploader, *)
+        uploader.plugin :validation
+      end
+
       def self.configure(uploader, opts = {})
         uploader.opts[:validation_default_messages] ||= {}
         uploader.opts[:validation_default_messages].merge!(opts[:default_messages] || {})

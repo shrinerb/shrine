@@ -19,25 +19,6 @@ describe Shrine::Attacher do
     end
   end
 
-  describe ".validate" do
-    it "supports validation inheritance" do
-      @attacher.class.validate { errors << "superclass" }
-
-      shrine   = Class.new(@shrine)
-      attacher = shrine::Attacher.new
-      attacher.class.validate { super(); errors << "subclass" }
-
-      attacher.validate
-      attacher.errors
-    end
-
-    it "keeps the #run_validations method visibility" do
-      assert_includes @attacher.private_methods, :run_validations
-      @attacher.class.validate { errors << "error" }
-      assert_includes @attacher.private_methods, :run_validations
-    end
-  end
-
   describe "#assign" do
     it "attaches a file to cache" do
       @attacher.assign(fakeio)
@@ -381,35 +362,6 @@ describe Shrine::Attacher do
       @attacher.file = @shrine.upload(fakeio, :store)
       @attacher.change(@attacher.file)
       refute @attacher.changed?
-    end
-
-    it "runs validations" do
-      @attacher.class.validate { errors << "error" }
-      @attacher.change @shrine.upload(fakeio, :store)
-      assert_equal ["error"], @attacher.errors
-    end
-  end
-
-  describe "validate" do
-    it "runs validations" do
-      @attacher.file = @shrine.upload(fakeio, :store)
-      @attacher.class.validate { errors << "error" }
-      @attacher.validate
-      assert_equal ["error"], @attacher.errors
-    end
-
-    it "clears previous errors" do
-      @attacher.file = @shrine.upload(fakeio, :store)
-      @attacher.errors << "pervious_error"
-      @attacher.class.validate { errors << "new_error" }
-      @attacher.validate
-      assert_equal ["new_error"], @attacher.errors
-    end
-
-    it "doesn't run validations if no file is attached" do
-      @attacher.class.validate { errors << "error" }
-      @attacher.validate
-      assert_equal [], @attacher.errors
     end
   end
 

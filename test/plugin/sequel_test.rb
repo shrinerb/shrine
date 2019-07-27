@@ -16,6 +16,10 @@ describe Shrine::Plugins::Sequel do
 
   describe "Attachment" do
     describe "validate" do
+      before do
+        @shrine.plugin :validation
+      end
+
       it "adds attacher errors to the record" do
         @user.class.include @shrine::Attachment.new(:avatar)
 

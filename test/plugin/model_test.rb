@@ -233,6 +233,11 @@ describe Shrine::Plugins::Model do
 
         assert_nil model.file_data
       end
+
+      it "still returns set file" do
+        file = @shrine.upload(fakeio, :store)
+        assert_equal file, @attacher.set(file)
+      end
     end
 
     describe "#write" do
