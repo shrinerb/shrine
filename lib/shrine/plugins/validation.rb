@@ -13,7 +13,7 @@ class Shrine
         #       end
         #     end
         def validate(&block)
-          private define_method(:_validate, &block)
+          private define_method(:validate_block, &block)
         end
       end
 
@@ -26,12 +26,16 @@ class Shrine
         def initialize(**options)
           super
           @errors = []
-          @validate_options = {}
         end
 
         # Registers options that will be passed to validation.
-        def validate_options(options)
-          @validate_options.merge!(options)
+        def validate_options(options = nil)
+          if options
+            @validate_options ||= {}
+            @validate_options.merge!(options)
+          else
+            defined?(@validate_options) ? @validate_options : {}
+          end
         end
 
         # Leaves out :validate option when calling `Shrine.upload`.
@@ -49,13 +53,7 @@ class Shrine
         # Runs the validation defined by `Attacher.validate`.
         def validate(**options)
           errors.clear
-          return unless attached?
-
-          if method(:_validate).arity.zero?
-            _validate
-          else
-            _validate(**@validate_options, **options)
-          end
+          _validate(**options) if attached?
         end
 
         private
@@ -69,8 +67,17 @@ class Shrine
           end
         end
 
-        # Overridden by the `Attacher.validate` block.
+        # Calls #validate_block, passing it accepted parameters.
         def _validate(**options)
+          if method(:validate_block).arity.zero?
+            validate_block
+          else
+            validate_block(**validate_options, **options)
+          end
+        end
+
+        # Overridden by the `Attacher.validate` block.
+        def validate_block(**options)
         end
       end
     end
