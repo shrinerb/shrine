@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `attacher_options` – Add new plugin for setting default attacher operation options (@janko)
+
 * `validation` – Add `Attacher#validate_options` for registering default validation options (@janko)
 
 * `validation` – Allow skipping validations on attaching by passing `validate: false` (@janko)

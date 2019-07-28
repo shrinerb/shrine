@@ -127,6 +127,9 @@ Storage:
 
 Other:
   -
+    name: attacher_options
+    description: Allows you to register options that will be forwarded to attacher operations.
+  -
     name: default_url_options
     description: Allows you to specify default URL options for uploaded files.
   -

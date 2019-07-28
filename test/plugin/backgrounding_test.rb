@@ -82,7 +82,7 @@ describe Shrine::Plugins::Backgrounding do
 
         @attacher = @attacher.class.new
         @attacher.attach_cached(fakeio)
-        @attacher.finalize
+        @attacher.promote_cached
 
         assert @attacher.cached?
 
@@ -97,7 +97,7 @@ describe Shrine::Plugins::Backgrounding do
         end
 
         @attacher.attach_cached(fakeio)
-        @attacher.finalize
+        @attacher.promote_cached
 
         assert @attacher.cached?
 
@@ -106,9 +106,22 @@ describe Shrine::Plugins::Backgrounding do
         assert @attacher.stored?
       end
 
+      it "forwards promote options" do
+        @attacher.promote_block do |attacher, **options|
+          @job = Fiber.new { attacher.promote(**options) }
+        end
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote_cached(location: "foo")
+
+        @job.resume
+
+        assert_equal "foo", @attacher.file.id
+      end
+
       it "calls default promotion when no promote blocks are registered" do
         @attacher.attach_cached(fakeio)
-        @attacher.finalize
+        @attacher.promote_cached
 
         assert @attacher.stored?
       end
@@ -119,7 +132,7 @@ describe Shrine::Plugins::Backgrounding do
         end
 
         @attacher.attach(fakeio)
-        @attacher.finalize
+        @attacher.promote_cached
 
         assert @attacher.stored?
         assert_nil @job
@@ -150,7 +163,7 @@ describe Shrine::Plugins::Backgrounding do
         @attacher = @attacher.class.new
         previous_file = @attacher.attach(fakeio)
         @attacher.attach(nil)
-        @attacher.finalize
+        @attacher.destroy_previous
 
         assert previous_file.exists?
 
@@ -166,7 +179,7 @@ describe Shrine::Plugins::Backgrounding do
 
         previous_file = @attacher.attach(fakeio)
         @attacher.attach(nil)
-        @attacher.finalize
+        @attacher.destroy_previous
 
         assert previous_file.exists?
 
@@ -178,7 +191,7 @@ describe Shrine::Plugins::Backgrounding do
       it "calls default destroy when no destroy blocks are registered" do
         previous_file = @attacher.attach(fakeio)
         @attacher.attach(nil)
-        @attacher.finalize
+        @attacher.destroy_previous
 
         refute previous_file.exists?
       end
@@ -226,6 +239,18 @@ describe Shrine::Plugins::Backgrounding do
         @job.resume
 
         refute @attacher.file.exists?
+      end
+
+      it "forwards destroy options" do
+        @attacher.destroy_block do |attacher, **options|
+          assert_equal "bar", options[:foo]
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.destroy_attached(foo: "bar")
+
+        @job.resume
       end
 
       it "calls default destroy when no destroy blocks are registered" do

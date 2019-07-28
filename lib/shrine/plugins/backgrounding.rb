@@ -148,7 +148,7 @@ class Shrine
         # otherwise promotes synchronously.
         def promote(background: false, **options)
           if promote_block && background
-            promote_block.call(self)
+            promote_block.call(self, **options)
           else
             super(**options)
           end
@@ -164,7 +164,7 @@ class Shrine
         # otherwise destroys synchronously.
         def destroy(background: false, **options)
           if destroy_block && background
-            destroy_block.call(self)
+            destroy_block.call(self, **options)
           else
             super(**options)
           end
