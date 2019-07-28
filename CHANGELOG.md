@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `restore_cached_data` – Forward options passed to `Attacher#attach_cached` to metadata extraction (@janko)
+
 * `attacher_options` – Add new plugin for setting default attacher operation options (@janko)
 
 * `validation` – Add `Attacher#validate_options` for registering default validation options (@janko)

@@ -28,17 +28,28 @@ describe Shrine::Plugins::RestoreCachedData do
         end
       end
 
-      it "forwards the context" do
-        context = nil
+      it "forwards options to uploader" do
+        cached_file = @attacher.upload(fakeio, :cache)
 
         @shrine.plugin :add_metadata
-        @shrine.add_metadata(:context) { |io, options| context = options }
+        metadata_options = nil
+        @shrine.add_metadata(:foo) { |io, options| metadata_options = options }
+
+        @attacher.attach_cached(cached_file.data, foo: "bar")
+
+        assert_equal "bar", metadata_options[:foo]
+      end
+
+      it "fowards attacher context to uploader" do
+        @shrine.plugin :add_metadata
+        metadata_options = nil
+        @shrine.add_metadata(:foo) { |io, options| metadata_options = options }
 
         cached_file = @attacher.upload(fakeio, :cache)
         @attacher.context.merge!(foo: "bar")
         @attacher.attach_cached(cached_file.data)
 
-        assert_equal "bar", context[:foo]
+        assert_equal "bar", metadata_options[:foo]
       end
     end
   end

@@ -33,8 +33,8 @@ class Shrine
       # Returns the attached uploaded file.
       attr_reader :file
 
-      # Returns the context that will be sent to the uploader when uploading.
-      # Can be modified with additional data to be sent to the uploader.
+      # Returns options that are automatically forwarded to the uploader.
+      # Can be modified with additional data.
       attr_reader :context
 
       # Initializes the attached file, temporary and permanent storage.
@@ -84,7 +84,7 @@ class Shrine
       #     attacher.attach_cached({ "id" => "...", "storage" => "cache", "metadata" => {} })
       def attach_cached(value, **options)
         if value.is_a?(String) || value.is_a?(Hash)
-          change(cached(value), **options)
+          change(cached(value, **options), **options)
         else
           attach(value, storage: @cache, action: :cache, **options)
         end
@@ -136,8 +136,8 @@ class Shrine
         remove_instance_variable(:@previous) if changed?
       end
 
-      # Plugins can override this if they want something to be done before
-      # save.
+      # Plugins can override this if they want something to be done in a
+      # "before save" callback.
       def save
       end
 
@@ -161,7 +161,7 @@ class Shrine
         set upload(file, storage, **options)
       end
 
-      # Delegates to `Shrine.upload`, passing #context to the uploader.
+      # Delegates to `Shrine.upload`, passing the #context.
       #
       #     # upload file to specified storage
       #     attacher.upload(io, :store) #=> #<Shrine::UploadedFile>
@@ -336,7 +336,7 @@ class Shrine
       #     # from Hash data
       #     attacher.cached({ "id" => "...", "storage" => "cache", "metadata" => { ... } })
       #     #=> #<Shrine::UploadedFile>
-      def cached(value)
+      def cached(value, **)
         uploaded_file = uploaded_file(value)
 
         # reject files not uploaded to temporary storage, because otherwise
