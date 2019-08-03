@@ -23,31 +23,24 @@ class Shrine
     end
 
     module InstanceMethods
-      # The hash of information which defines this uploaded file.
-      attr_reader :data
+      # The location where the file was uploaded to the storage.
+      attr_reader :id
+
+      # The identifier of the storage the file is uploaded to.
+      attr_reader :storage_key
+
+      # A hash of file metadata that was extracted during upload.
+      attr_reader :metadata
 
       # Initializes the uploaded file with the given data hash.
       def initialize(data)
-        raise Error, "#{data.inspect} isn't valid uploaded file data" unless data["id"] && data["storage"]
+        @id          = data["id"]
+        @storage_key = data["storage"]&.to_sym
+        @metadata    = data["metadata"] || {}
 
-        @data = data
-        @data["metadata"] ||= {}
+        fail Error, "#{data.inspect} isn't valid uploaded file data" unless @id && @storage_key
+
         storage # ensure storage is registered
-      end
-
-      # The location where the file was uploaded to the storage.
-      def id
-        @data.fetch("id")
-      end
-
-      # The string identifier of the storage the file is uploaded to.
-      def storage_key
-        @data.fetch("storage").to_sym
-      end
-
-      # A hash of file metadata that was extracted during upload.
-      def metadata
-        @data.fetch("metadata")
       end
 
       # The filename that was extracted from the uploaded file.
@@ -220,6 +213,10 @@ class Shrine
       # Conform to ActiveSupport's JSON interface.
       def as_json(*args)
         data
+      end
+
+      def data
+        { "id" => id, "storage" => storage_key.to_s, "metadata" => metadata }
       end
 
       # Returns true if the other UploadedFile is uploaded to the same

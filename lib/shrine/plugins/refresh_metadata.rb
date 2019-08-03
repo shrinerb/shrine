@@ -22,7 +22,7 @@ class Shrine
               open { uploader.send(:get_metadata, self, metadata: true, **options) }
             end
 
-          @data = @data.merge("metadata" => metadata.merge(refreshed_metadata))
+          @metadata = @metadata.merge(refreshed_metadata)
         end
       end
     end

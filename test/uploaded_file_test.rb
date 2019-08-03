@@ -19,55 +19,40 @@ describe Shrine::UploadedFile do
   end
 
   describe "#initialize" do
-    it "assigns the data hash" do
-      data = {"id" => "foo", "storage" => "store", "metadata" => {"foo" => "bar"}}
-      uploaded_file = uploaded_file(data)
-      assert_equal data, uploaded_file.data
+    it "extracts id, storage, and metadata" do
+      uploaded_file = uploaded_file(
+        "id"       => "foo",
+        "storage"  => "store",
+        "metadata" => {"foo" => "bar"}
+      )
+
+      assert_equal "foo",                uploaded_file.id
+      assert_equal :store,               uploaded_file.storage_key
+      assert_equal Hash["foo" => "bar"], uploaded_file.metadata
     end
 
     it "initializes metadata if absent" do
       uploaded_file = uploaded_file("metadata" => nil)
+
       assert_equal Hash.new, uploaded_file.metadata
     end
 
+    it "allows being initialized with a frozen hash" do
+      uploaded_file = uploaded_file({
+        "id"       => "foo",
+        "storage"  => "store",
+        "metadata" => {"foo" => "bar"}
+      }.freeze)
+    end
+
     it "raises an error if storage is not registered" do
-      data = {"id" => "foo", "storage" => "foo"}
-      assert_raises(Shrine::Error) { uploaded_file(data) }
+      assert_raises(Shrine::Error) { uploaded_file("storage" => "foo") }
     end
 
     it "raises an error on invalid data" do
-      assert_raises(Shrine::Error) { uploaded_file({"id" => nil, "storage" => nil}) }
-      assert_raises(Shrine::Error) { uploaded_file({"id" => nil}) }
-      assert_raises(Shrine::Error) { uploaded_file({"storage" => nil}) }
-    end
-  end
-
-  describe "#id" do
-    it "is fetched from data" do
-      uploaded_file = uploaded_file("id" => "foo")
-      assert_equal "foo", uploaded_file.id
-      uploaded_file.data["id"] = "bar"
-      assert_equal "bar", uploaded_file.id
-    end
-  end
-
-  describe "#storage_key" do
-    it "is fetched from data" do
-      uploaded_file = uploaded_file("storage" => "store")
-      assert_equal :store, uploaded_file.storage_key
-      uploaded_file.data["storage"] = "cache"
-      assert_equal :cache, uploaded_file.storage_key
-    end
-  end
-
-  describe "#metadata" do
-    it "is fetched from data" do
-      uploaded_file = uploaded_file("metadata" => {"foo" => "foo"})
-      assert_equal Hash["foo" => "foo"], uploaded_file.metadata
-      uploaded_file.data["metadata"] = {"bar" => "bar"}
-      assert_equal Hash["bar" => "bar"], uploaded_file.metadata
-      uploaded_file.data["metadata"].replace({"baz" => "baz"})
-      assert_equal Hash["baz" => "baz"], uploaded_file.metadata
+      assert_raises(Shrine::Error) { uploaded_file("id" => nil, "storage" => nil) }
+      assert_raises(Shrine::Error) { uploaded_file("id" => nil) }
+      assert_raises(Shrine::Error) { uploaded_file("storage" => nil) }
     end
   end
 
@@ -466,6 +451,14 @@ describe Shrine::UploadedFile do
       uploaded_file = @uploader.upload(fakeio)
       assert io?(uploaded_file.to_io)
       assert_equal uploaded_file.to_io, uploaded_file.to_io
+    end
+  end
+
+  describe "#data" do
+    it "returns uploaded file data hash" do
+      data = { "id" => "foo", "storage" => "store", "metadata" => {"foo" => "bar"} }
+      uploaded_file = uploaded_file(data)
+      assert_equal data, uploaded_file.data
     end
   end
 

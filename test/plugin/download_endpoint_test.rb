@@ -88,7 +88,7 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "returns 404 for nonexisting file" do
-    @uploaded_file.data["id"] = "nonexistent"
+    @uploaded_file.delete
     response = app.get(@uploaded_file.download_url)
     assert_equal 404,              response.status
     assert_equal "File Not Found", response.body_binary

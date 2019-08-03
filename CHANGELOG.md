@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Change how `Shrine::UploadedFile` sets its state from the given data hash (@janko)
+
 * `core` – Deprecate `Storage#open` not accepting additional options (@janko)
 
 * `refresh_metadata` – Add `Attacher#refresh_metadata!` method which integrates with `model` plugin (@janko)
