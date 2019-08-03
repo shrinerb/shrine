@@ -20,8 +20,7 @@ class Shrine
   # Raised when a file is not a valid IO.
   class InvalidFile < Error
     def initialize(io, missing_methods)
-      super "#{io.inspect} is not a valid IO object (it doesn't respond to \
-        #{missing_methods.map{|m, _|"##{m}"}.join(", ")})"
+      super "#{io.inspect} is not a valid IO object (it doesn't respond to #{missing_methods.map{|m, _|"##{m}"}.join(", ")})"
     end
   end
 
