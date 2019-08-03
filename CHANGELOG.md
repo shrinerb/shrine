@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `instrumentation` – Instrument any `Storage#open` calls in a new `open.shrine` event (@janko)
+
 * `restore_cached_data` – Forward options passed to `Attacher#attach_cached` to metadata extraction (@janko)
 
 * `attacher_options` – Add new plugin for setting default attacher operation options (@janko)

@@ -6,7 +6,7 @@ class Shrine
     #
     # [doc/plugins/instrumentation.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/instrumentation.md
     module Instrumentation
-      EVENTS = %i[upload download exists delete metadata].freeze
+      EVENTS = %i[upload download open exists delete metadata].freeze
 
       # We use a proc in order to be able identify listeners.
       LOG_SUBSCRIBER = -> (event) { LogSubscriber.call(event) }
@@ -102,13 +102,15 @@ class Shrine
 
       module FileMethods
         # Sends a `download.shrine` event.
-        def open(**options)
+        def stream(destination, **options)
+          return super if opened?
+
           shrine_class.instrument(
             :download,
             storage: storage_key,
             location: id,
             download_options: options,
-          ) { super }
+          ) { super(destination, **options, instrument: false) }
         end
 
         # Sends a `exists.shrine` event.
@@ -127,6 +129,20 @@ class Shrine
             storage: storage_key,
             location: id,
           ) { super }
+        end
+
+        private
+
+        # Sends an `open.shrine` event.
+        def _open(instrument: true, **options)
+          return super(**options) unless instrument
+
+          shrine_class.instrument(
+            :open,
+            storage: storage_key,
+            location: id,
+            download_options: options,
+          ) { super(**options) }
         end
       end
 
@@ -248,6 +264,15 @@ class Shrine
 
         def on_download(event)
           log "Download (#{event.duration}ms) – #{format(
+            storage:          event[:storage],
+            location:         event[:location],
+            download_options: event[:download_options],
+            uploader:         event[:uploader],
+          )}"
+        end
+
+        def on_open(event)
+          log "Open (#{event.duration}ms) – #{format(
             storage:          event[:storage],
             location:         event[:location],
             download_options: event[:download_options],

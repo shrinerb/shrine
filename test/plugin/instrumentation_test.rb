@@ -131,13 +131,8 @@ describe Shrine::Plugins::Instrumentation do
 
   describe "events" do
     before do
-      @shrine.plugin :instrumentation, log_events: %i[
-        upload
-        download
-        exists
-        delete
-        metadata
-      ]
+      @shrine.plugin :instrumentation,
+        log_events: Shrine::Plugins::Instrumentation::EVENTS
     end
 
     describe "Shrine#upload" do
@@ -166,11 +161,19 @@ describe Shrine::Plugins::Instrumentation do
         assert_equal %i[bar location metadata process upload_options], @event[:options].keys.sort
       end
 
+      it "still forwards options for uploading" do
+        file = @shrine.upload(fakeio, :store, location: "foo")
+
+        assert_equal "foo", file.id
+      end
+    end
+
+    describe "Shrine#get_metadata" do
       it "instruments & logs metadata event" do
         @notifications.subscribe("metadata.shrine") { |event| @event = event }
 
-        io            = fakeio
-        uploaded_file = assert_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+        io = fakeio
+        assert_logged /^Metadata \(\d+ms\) – \{.+\}/ do
           @shrine.upload(
             io,
             :store,
@@ -187,17 +190,68 @@ describe Shrine::Plugins::Instrumentation do
 
         assert_equal %i[upload_options bar process metadata], @event[:options].keys
       end
+
+      it "skips instrumenting if metadata extraction is skipped" do
+        @notifications.subscribe("metadata.shrine") { |event| @event = event }
+
+        refute_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+          @shrine.upload(fakeio, :store, metadata: false)
+        end
+
+        refute_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+          file = @shrine.upload(fakeio, :store, metadata: false)
+          @shrine.upload(file, :store)
+        end
+
+        assert_nil @event
+
+        assert_logged /^Metadata \(\d+ms\) – \{.+\}/ do
+          file = @shrine.upload(fakeio, :store, metadata: false)
+          @shrine.upload(file, :store, metadata: true)
+        end
+      end
+
+      it "still forwards options for metadata extraction" do
+        file = @shrine.upload(fakeio, :store, metadata: { "foo" => "bar" })
+
+        assert_equal "bar", file.metadata["foo"]
+      end
     end
 
     describe "UploadedFile#download" do
       it "instruments & logs download event" do
         @notifications.subscribe("download.shrine") { |event| @event = event }
 
-        uploaded_file = @shrine.upload(fakeio, :store)
-        @shrine.storages[:store].instance_eval { def open(id, **options); super(id); end }
+        file = @shrine.upload(fakeio, :store)
 
         assert_logged /^Download \(\d+ms\) – \{.+\}$/ do
-          uploaded_file.open(foo: "bar", &:read)
+          file.download(foo: "bar")
+        end
+
+        refute_nil @event
+        assert_equal :store,           @event[:storage]
+        assert_equal file.id,          @event[:location]
+        assert_equal Hash[foo: "bar"], @event[:download_options]
+        assert_equal @shrine,          @event[:uploader]
+        assert_kind_of Integer,        @event[:time]
+      end
+
+      it "still forwards options for downloading" do
+        file = @shrine.upload(fakeio, :store)
+
+        file.storage.expects(:open).with(file.id, foo: "bar").returns(StringIO.new)
+        file.download(foo: "bar")
+      end
+    end
+
+    describe "UploadedFile#stream" do
+      it "instruments & logs download event" do
+        @notifications.subscribe("download.shrine") { |event| @event = event }
+
+        uploaded_file = @shrine.upload(fakeio, :store)
+
+        assert_logged /^Download \(\d+ms\) – \{.+\}$/ do
+          uploaded_file.stream(File::NULL, foo: "bar")
         end
 
         refute_nil @event
@@ -206,6 +260,81 @@ describe Shrine::Plugins::Instrumentation do
         assert_equal Hash[foo: "bar"], @event[:download_options]
         assert_equal @shrine,          @event[:uploader]
         assert_kind_of Integer,        @event[:time]
+      end
+
+      it "skips instrumenting open event" do
+        @notifications.subscribe("open.shrine") { |event| @event = event }
+
+        uploaded_file = @shrine.upload(fakeio, :store)
+
+        refute_logged /^Open \(\d+ms\) – \{.+\}$/ do
+          uploaded_file.stream(File::NULL)
+        end
+
+        assert_nil @event
+      end
+
+      it "doesn't instrument when file already opened" do
+        @notifications.subscribe("download.shrine") { |event| @event = event }
+
+        uploaded_file = @shrine.upload(fakeio, :store)
+        uploaded_file.open
+
+        refute_logged /^Download \(\d+ms\) – \{.+\}$/ do
+          uploaded_file.stream(File::NULL)
+        end
+
+        assert_nil @event
+      end
+
+      it "still forwards options for downloading" do
+        file = @shrine.upload(fakeio, :store)
+
+        file.storage.expects(:open).with(file.id, foo: "bar").returns(StringIO.new)
+        file.stream(File::NULL, foo: "bar")
+      end
+    end
+
+    describe "UploadedFile#open" do
+      it "instruments & logs open event without block" do
+        @notifications.subscribe("open.shrine") { |event| @event = event }
+
+        uploaded_file = @shrine.upload(fakeio, :store)
+
+        assert_logged /^Open \(\d+ms\) – \{.+\}$/ do
+          uploaded_file.open(foo: "bar")
+        end
+
+        refute_nil @event
+        assert_equal :store,           @event[:storage]
+        assert_equal uploaded_file.id, @event[:location]
+        assert_equal Hash[foo: "bar"], @event[:download_options]
+        assert_equal @shrine,          @event[:uploader]
+        assert_kind_of Integer,        @event[:time]
+      end
+
+      it "instruments & logs open event with block" do
+        @notifications.subscribe("open.shrine") { |event| @event = event }
+
+        uploaded_file = @shrine.upload(fakeio, :store)
+
+        assert_logged /^Open \(\d+ms\) – \{.+\}$/ do
+          uploaded_file.open(foo: "bar") {}
+        end
+
+        refute_nil @event
+        assert_equal :store,           @event[:storage]
+        assert_equal uploaded_file.id, @event[:location]
+        assert_equal Hash[foo: "bar"], @event[:download_options]
+        assert_equal @shrine,          @event[:uploader]
+        assert_kind_of Integer,        @event[:time]
+      end
+
+      it "still forwards options for downloading" do
+        file = @shrine.upload(fakeio, :store)
+
+        file.storage.expects(:open).with(file.id, foo: "bar").returns(StringIO.new)
+        file.open(foo: "bar")
       end
     end
 

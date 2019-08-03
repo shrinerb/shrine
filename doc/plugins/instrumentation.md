@@ -79,6 +79,7 @@ The following events are instrumented by the `instrumentation` plugin:
 
 * [`upload.shrine`](#uploadshrine)
 * [`download.shrine`](#downloadshrine)
+* [`open.shrine`](#openshrine)
 * [`exists.shrine`](#existsshrine)
 * [`delete.shrine`](#deleteshrine)
 * [`metadata.shrine`](#metadatashrine)
@@ -99,16 +100,27 @@ following payload:
 
 ### download.shrine
 
-The `download.shrine` event is logged on `UploadedFile#open` (which includes
-`UploadedFile#download` and `UploadedFile#stream` methods as well), and
-contains the following payload:
+The `download.shrine` event is logged on `UploadedFile#stream` (which includes
+`UploadedFile#download`), and contains the following payload:
 
-| Key               | Description                            |
-| :--               | :----                                  |
-| `:storage`        | The storage identifier                 |
-| `:location`       | The location of the uploaded file      |
-| `:download_options` | Any upload options that were specified |
-| `:uploader`       | The uploader class that sent the event |
+| Key                 | Description                              |
+| :--                 | :----                                    |
+| `:storage`          | The storage identifier                   |
+| `:location`         | The location of the uploaded file        |
+| `:download_options` | Any download options that were specified |
+| `:uploader`         | The uploader class that sent the event   |
+
+### open.shrine
+
+The `download.shrine` event is logged on `UploadedFile#open` or when uploaded
+file is implicitly opened on calling an IO method.
+
+| Key                 | Description                              |
+| :--                 | :----                                    |
+| `:storage`          | The storage identifier                   |
+| `:location`         | The location of the uploaded file        |
+| `:download_options` | Any download options that were specified |
+| `:uploader`         | The uploader class that sent the event   |
 
 ### exists.shrine
 
