@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Deprecate `Storage#open` not accepting additional options (@janko)
+
 * `refresh_metadata` – Add `Attacher#refresh_metadata!` method which integrates with `model` plugin (@janko)
 
 * `instrumentation` – Instrument any `Storage#open` calls in a new `open.shrine` event (@janko)
@@ -76,51 +78,51 @@
 
 * `attachment` – Removed any default attachment methods (@janko)
 
-* `shrine` – Require context hash passed as second argument to `Shrine#upload` to have symbol keys (@janko)
+* `core` – Require context hash passed as second argument to `Shrine#upload` to have symbol keys (@janko)
 
-* `shrine` – Change `Shrine.uploaded_file` not to yield files anymore (@janko)
+* `core` – Change `Shrine.uploaded_file` not to yield files anymore (@janko)
 
-* `shrine` – Allow `Shrine.uploaded_file` to accept file data hashes with symbol keys (@janko)
+* `core` – Allow `Shrine.uploaded_file` to accept file data hashes with symbol keys (@janko)
 
-* `shrine` – Remove `Shrine#uploaded?`
+* `core` – Remove `Shrine#uploaded?`
 
-* `shrine` – Remove `Shrine#delete`, `Shrine#_delete`, `Shrine#remove` (@janko)
+* `core` – Remove `Shrine#delete`, `Shrine#_delete`, `Shrine#remove` (@janko)
 
-* `shrine` – Remove `Shrine#store`, `Shrine#_store`, `Shrine#put`, `Shrine#copy` (@janko)
+* `core` – Remove `Shrine#store`, `Shrine#_store`, `Shrine#put`, `Shrine#copy` (@janko)
 
-* `shrine` – Remove `Shrine#processed`, `Shrine#process` (@janko)
+* `core` – Remove `Shrine#processed`, `Shrine#process` (@janko)
 
-* `attacher` – Don't pass `:phase` anymore on uploads (@janko)
+* `core` – Don't pass `:phase` anymore on uploads (@janko)
 
-* `attacher` – Read attachment from the record attribute only on initialization (@janko)
+* `core` – Read attachment from the record attribute only on initialization (@janko)
 
-* `attacher` – Don't require a temporary storage (@janko)
+* `core` – Don't require a temporary storage (@janko)
 
-* `attacher` – Add `Attacher#data` and `Attacher.from_data` for dumping to and loading from a Hash (@janko)
+* `core` – Add `Attacher#data` and `Attacher.from_data` for dumping to and loading from a Hash (@janko)
 
-* `attacher` – Enable `Attacher#assign` to accept cached file data as a Hash (@janko)
+* `core` – Enable `Attacher#assign` to accept cached file data as a Hash (@janko)
 
-* `attacher` – Add `Attacher#file` alias for `Attacher#get` (@janko)
+* `core` – Add `Attacher#file` alias for `Attacher#get` (@janko)
 
-* `attacher` – Change `Attacher#attached?` to return whether a file is attached (@janko)
+* `core` – Change `Attacher#attached?` to return whether a file is attached (@janko)
 
-* `attacher` – Change `Attacher#promote` to always only save promoted file in memory (@janko)
+* `core` – Change `Attacher#promote` to always only save promoted file in memory (@janko)
 
-* `attacher` – Rename `Attacher#replace` to `Attacher#destroy_previous` (@janko)
+* `core` – Rename `Attacher#replace` to `Attacher#destroy_previous` (@janko)
 
-* `attacher` – Remove `Attacher#_promote` and `Attacher#_delete`, add `Attacher#promote_cached` and `Attacher#destroy_attached` (@janko)
+* `core` – Remove `Attacher#_promote` and `Attacher#_delete`, add `Attacher#promote_cached` and `Attacher#destroy_attached` (@janko)
 
-* `attacher` – Rename `Attacher#set` and `Attacher#_set` to `Attacher#change` and `Attacher#set` (@janko)
+* `core` – Rename `Attacher#set` and `Attacher#_set` to `Attacher#change` and `Attacher#set` (@janko)
 
-* `attacher` – Remove `Attacher#cache!` and `Attacher#store!`, add `Attacher#upload` (@janko)
+* `core` – Remove `Attacher#cache!` and `Attacher#store!`, add `Attacher#upload` (@janko)
 
-* `attacher` – Rename `Attacher#validate_block` to `Attacher#_validate` (@janko)
+* `core` – Rename `Attacher#validate_block` to `Attacher#_validate` (@janko)
 
-* `attacher` – Add `Attacher#attach`, `Attacher#attach_cached`, extracted from `Attacher#assign` (@janko)
+* `core` – Add `Attacher#attach`, `Attacher#attach_cached`, extracted from `Attacher#assign` (@janko)
 
-* `attacher` – Remove `Attacher#swap`, `Attacher#update`, `Attacher#read`, `Attacher#write`, `Attacher#data_attribute`, `Attacher#convert_to_data`, `Attacher#convert_before_write`, and `Attacher#convert_after_read` (@janko)
+* `core` – Remove `Attacher#swap`, `Attacher#update`, `Attacher#read`, `Attacher#write`, `Attacher#data_attribute`, `Attacher#convert_to_data`, `Attacher#convert_before_write`, and `Attacher#convert_after_read` (@janko)
 
-* `attacher` – Change `Attacher.new` to not accept a model anymore (@janko)
+* `core` – Change `Attacher.new` to not accept a model anymore (@janko)
 
 * `delete_promoted` – Remove plugin (@janko)
 

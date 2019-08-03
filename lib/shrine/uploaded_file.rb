@@ -260,11 +260,7 @@ class Shrine
       end
 
       def _open(**options)
-        if options.any?
-          storage.open(id, **options)
-        else
-          storage.open(id) # some storage implementations might not accept additional arguments
-        end
+        storage.open(id, **options)
       end
     end
 
