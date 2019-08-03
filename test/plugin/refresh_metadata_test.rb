@@ -4,8 +4,51 @@ require "dry-monitor"
 
 describe Shrine::Plugins::RefreshMetadata do
   before do
-    @uploader = uploader { plugin :refresh_metadata }
+    @attacher = attacher { plugin :refresh_metadata }
+    @uploader = @attacher.store
     @shrine   = @uploader.class
+  end
+
+  describe "Attacher" do
+    describe "#refresh_metadata!" do
+      it "re-extracts metadata" do
+        @attacher.file = @uploader.upload(fakeio("file"), metadata: false)
+        @attacher.refresh_metadata!
+
+        assert_equal 4, @attacher.file.metadata["size"]
+      end
+
+      it "writes file data with model plugin" do
+        @shrine.plugin :model
+
+        model     = model(file_data: nil)
+        @attacher = @shrine::Attacher.from_model(model, :file)
+
+        @attacher.set @uploader.upload(fakeio("file"), metadata: false)
+        @attacher.refresh_metadata!
+
+        file = @shrine.uploaded_file(model.file_data)
+
+        assert_equal 4, file.metadata["size"]
+      end
+
+      it "forwards additional options for metadata extraction" do
+        @attacher.file = @uploader.upload(fakeio("file"))
+
+        @shrine.any_instance.expects(:extract_metadata).with(@attacher.file, { foo: "bar" }).returns({})
+
+        @attacher.refresh_metadata!(foo: "bar")
+      end
+
+      it "forwards attacher context for metadata extraction" do
+        @attacher.file = @uploader.upload(fakeio("file"))
+        @attacher.context[:foo] = "bar"
+
+        @shrine.any_instance.expects(:extract_metadata).with(@attacher.file, { foo: "bar" }).returns({})
+
+        @attacher.refresh_metadata!
+      end
+    end
   end
 
   describe "UploadedFile" do
@@ -31,33 +74,17 @@ describe Shrine::Plugins::RefreshMetadata do
       it "forwards a Shrine::UploadedFile" do
         file = @uploader.upload(fakeio)
 
-        @shrine.class_eval do
-          def extract_metadata(io, **options)
-            metadata = super
-            metadata["file"] = io.is_a?(Shrine::UploadedFile)
-            metadata
-          end
-        end
+        @shrine.any_instance.expects(:extract_metadata).with(file, {}).returns({})
 
         file.refresh_metadata!
-
-        assert_equal true, file.metadata["file"]
       end
 
-      it "accepts additional context and forwards it" do
+      it "forwards additional options for metadata extraction" do
         file = @uploader.upload(fakeio)
 
-        @shrine.class_eval do
-          def extract_metadata(io, foo:, **options)
-            metadata = super
-            metadata["foo"] = foo
-            metadata
-          end
-        end
+        @shrine.any_instance.expects(:extract_metadata).with(file, { foo: "bar" }).returns({})
 
         file.refresh_metadata!(foo: "bar")
-
-        assert_equal "bar", file.metadata["foo"]
       end
 
       it "doesn't re-open an already open uploaded file" do

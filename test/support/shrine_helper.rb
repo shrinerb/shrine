@@ -38,9 +38,14 @@ module Support
       klass
     end
 
-    def struct(attributes)
-      struct_class = entity_class(*attributes.keys)
-      struct_class.new(attributes)
+    def entity(attributes)
+      entity_class = entity_class(*attributes.keys)
+      entity_class.new(attributes)
+    end
+
+    def model(attributes)
+      model_class = model_class(*attributes.keys)
+      model_class.new(attributes)
     end
   end
 end

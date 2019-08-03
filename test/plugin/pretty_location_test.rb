@@ -17,7 +17,7 @@ describe Shrine::Plugins::PrettyLocation do
       it "prepends record identifier and attachmet name" do
         location = @uploader.generate_location(
           fakeio,
-          record: struct(id: 123),
+          record: entity(id: 123),
           name:   :file,
         )
 
@@ -29,7 +29,7 @@ describe Shrine::Plugins::PrettyLocation do
 
         location = @uploader.generate_location(
           fakeio,
-          record: struct(uuid: "xyz"),
+          record: entity(uuid: "xyz"),
           name: :file,
         )
 
@@ -71,7 +71,7 @@ describe Shrine::Plugins::PrettyLocation do
         assert_raises NoMethodError do
           @uploader.generate_location(
             fakeio,
-            record: struct({}),
+            record: entity({}),
             name:   :file,
           )
         end

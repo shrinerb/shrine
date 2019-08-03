@@ -6,6 +6,13 @@ class Shrine
     #
     # [doc/plugins/refresh_metadata.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/refresh_metadata.md
     module RefreshMetadata
+      module AttacherMethods
+        def refresh_metadata!(**options)
+          file.refresh_metadata!(**context, **options)
+          set(file)
+        end
+      end
+
       module FileMethods
         def refresh_metadata!(**options)
           refreshed_metadata =

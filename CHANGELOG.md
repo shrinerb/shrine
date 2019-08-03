@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `refresh_metadata` – Add `Attacher#refresh_metadata!` method which integrates with `model` plugin (@janko)
+
 * `instrumentation` – Instrument any `Storage#open` calls in a new `open.shrine` event (@janko)
 
 * `restore_cached_data` – Forward options passed to `Attacher#attach_cached` to metadata extraction (@janko)
