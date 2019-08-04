@@ -722,8 +722,8 @@ class Shrine
     # result it exists on the storage.
     def call
       uploaded_file = shrine_class::UploadedFile.new(
-        "storage" => upload_storage.to_s,
-        "id"      => upload_location,
+        storage: upload_storage,
+        id:      upload_location,
       )
 
       uploaded_file if uploaded_file.exists?

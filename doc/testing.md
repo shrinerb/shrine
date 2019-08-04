@@ -158,7 +158,7 @@ Regular routing tests in Rails use [Rack::Test], in which case you can create
 `Rack::Test::UploadedFile` objects and pass them as form parameters:
 
 ```rb
-post "/photos", photo: {image: Rack::Test::UploadedFile.new("test/files/image.jpg", "image/jpeg")}
+post "/photos", photo: { image: Rack::Test::UploadedFile.new("test/files/image.jpg", "image/jpeg") }
 ```
 
 ### Rack::TestApp

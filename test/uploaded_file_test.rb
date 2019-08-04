@@ -9,7 +9,7 @@ describe Shrine::UploadedFile do
   end
 
   def uploaded_file(data = {})
-    data = {"id" => "foo", "storage" => "store", "metadata" => {}}.merge(data)
+    data = { id: "foo", storage: "store", metadata: {} }.merge(data)
     @shrine::UploadedFile.new(data)
   end
 
@@ -19,11 +19,11 @@ describe Shrine::UploadedFile do
   end
 
   describe "#initialize" do
-    it "extracts id, storage, and metadata" do
-      uploaded_file = uploaded_file(
-        "id"       => "foo",
-        "storage"  => "store",
-        "metadata" => {"foo" => "bar"}
+    it "accepts data hash with symbol keys" do
+      uploaded_file = @shrine::UploadedFile.new(
+        id:       "foo",
+        storage:  "store",
+        metadata: { "foo" => "bar" },
       )
 
       assert_equal "foo",                uploaded_file.id
@@ -31,61 +31,73 @@ describe Shrine::UploadedFile do
       assert_equal Hash["foo" => "bar"], uploaded_file.metadata
     end
 
+    it "accepts data hash with string keys" do
+      uploaded_file = @shrine::UploadedFile.new(
+        "id"       => "foo",
+        "storage"  => "store",
+        "metadata" => { "foo" => "bar" },
+      )
+
+      assert_equal "foo",                uploaded_file.id
+      assert_equal :store,               uploaded_file.storage_key
+      assert_equal Hash["foo" => "bar"], uploaded_file.metadata
+    end
+
+    it "allows being initialized with a frozen hash" do
+      @shrine::UploadedFile.new({
+        id:       "foo",
+        storage:  "store",
+        metadata: { "foo" => "bar" },
+      }.freeze)
+    end
+
     it "initializes metadata if absent" do
-      uploaded_file = uploaded_file("metadata" => nil)
+      uploaded_file = uploaded_file(metadata: nil)
 
       assert_equal Hash.new, uploaded_file.metadata
     end
 
-    it "allows being initialized with a frozen hash" do
-      uploaded_file = uploaded_file({
-        "id"       => "foo",
-        "storage"  => "store",
-        "metadata" => {"foo" => "bar"}
-      }.freeze)
-    end
-
     it "raises an error if storage is not registered" do
-      assert_raises(Shrine::Error) { uploaded_file("storage" => "foo") }
+      assert_raises(Shrine::Error) { uploaded_file(storage: "foo") }
     end
 
     it "raises an error on invalid data" do
-      assert_raises(Shrine::Error) { uploaded_file("id" => nil, "storage" => nil) }
-      assert_raises(Shrine::Error) { uploaded_file("id" => nil) }
-      assert_raises(Shrine::Error) { uploaded_file("storage" => nil) }
+      assert_raises(Shrine::Error) { uploaded_file(id: nil, storage: nil) }
+      assert_raises(Shrine::Error) { uploaded_file(id: nil) }
+      assert_raises(Shrine::Error) { uploaded_file(storage: nil) }
     end
   end
 
   describe "#original_filename" do
     it "returns filename from metadata" do
-      uploaded_file = uploaded_file("metadata" => {"filename" => "foo.jpg"})
+      uploaded_file = uploaded_file(metadata: { "filename" => "foo.jpg" })
       assert_equal "foo.jpg", uploaded_file.original_filename
 
-      uploaded_file = uploaded_file("metadata" => {"filename" => nil})
+      uploaded_file = uploaded_file(metadata: { "filename" => nil })
       assert_nil uploaded_file.original_filename
 
-      uploaded_file = uploaded_file("metadata" => {})
+      uploaded_file = uploaded_file(metadata: {})
       assert_nil uploaded_file.original_filename
     end
   end
 
   describe "#extension" do
     it "extracts file extension from id" do
-      uploaded_file = uploaded_file("id" => "foo.jpg")
+      uploaded_file = uploaded_file(id: "foo.jpg")
       assert_equal "jpg", uploaded_file.extension
 
-      uploaded_file = uploaded_file("id" => "foo")
+      uploaded_file = uploaded_file(id: "foo")
       assert_nil uploaded_file.extension
     end
 
     it "extracts file extension from filename" do
-      uploaded_file = uploaded_file("metadata" => {"filename" => "foo.jpg"})
+      uploaded_file = uploaded_file(metadata: { "filename" => "foo.jpg" })
       assert_equal "jpg", uploaded_file.extension
 
-      uploaded_file = uploaded_file("metadata" => {"filename" => "foo"})
+      uploaded_file = uploaded_file(metadata: { "filename" => "foo" })
       assert_nil uploaded_file.extension
 
-      uploaded_file = uploaded_file("metadata" => {})
+      uploaded_file = uploaded_file(metadata: {})
       assert_nil uploaded_file.extension
     end
 
@@ -93,85 +105,85 @@ describe Shrine::UploadedFile do
     # so we want to make sure that we take the new extension, and not the
     # extension file had before upload.
     it "prefers extension from id over one from filename" do
-      uploaded_file = uploaded_file("id" => "foo.jpg", "metadata" => {"filename" => "foo.png"})
+      uploaded_file = uploaded_file(id: "foo.jpg", metadata: { "filename" => "foo.png" })
       assert_equal "jpg", uploaded_file.extension
     end
 
     it "downcases the extracted extension" do
-      uploaded_file = uploaded_file("id" => "foo.JPG")
+      uploaded_file = uploaded_file(id: "foo.JPG")
       assert_equal "jpg", uploaded_file.extension
 
-      uploaded_file = uploaded_file("metadata" => {"filename" => "foo.JPG"})
+      uploaded_file = uploaded_file(metadata: { "filename" => "foo.JPG" })
       assert_equal "jpg", uploaded_file.extension
     end
 
     it "does not include query params from shrine-url ids in extension" do
-      uploaded_file = uploaded_file("id" => "http://example.com/path.html?key=value", "storage" => "cache")
+      uploaded_file = uploaded_file(id: "http://example.com/path.html?key=value", storage: "cache")
       assert_equal "html", uploaded_file.extension
 
-      uploaded_file = uploaded_file("id" => "http://example.com/path?key=value", "storage" => "cache")
+      uploaded_file = uploaded_file(id: "http://example.com/path?key=value", storage: "cache")
       assert_nil uploaded_file.extension
     end
 
     it "can still handle non-url extensions with question marks" do
-      uploaded_file = uploaded_file("id" => "foo.?xx")
+      uploaded_file = uploaded_file(id: "foo.?xx")
       assert_equal "?xx", uploaded_file.extension
 
-      uploaded_file = uploaded_file("id" => "foo.x?x")
+      uploaded_file = uploaded_file(id: "foo.x?x")
       assert_equal "x?x", uploaded_file.extension
 
-      uploaded_file = uploaded_file("id" => "foo.xx?")
+      uploaded_file = uploaded_file(id: "foo.xx?")
       assert_equal "xx?", uploaded_file.extension
     end
   end
 
   describe "#size" do
     it "returns size from metadata" do
-      uploaded_file = uploaded_file("metadata" => {"size" => 50})
+      uploaded_file = uploaded_file(metadata: { "size" => 50 })
       assert_equal 50, uploaded_file.size
 
-      uploaded_file = uploaded_file("metadata" => {"size" => nil})
+      uploaded_file = uploaded_file(metadata: { "size" => nil })
       assert_nil uploaded_file.size
 
-      uploaded_file = uploaded_file("metadata" => {})
+      uploaded_file = uploaded_file(metadata: {})
       assert_nil uploaded_file.size
     end
 
     it "converts the value to integer" do
-      uploaded_file = uploaded_file("metadata" => {"size" => "50"})
+      uploaded_file = uploaded_file(metadata: { "size" => "50" })
       assert_equal 50, uploaded_file.size
 
-      uploaded_file = uploaded_file("metadata" => {"size" => "not a number"})
+      uploaded_file = uploaded_file(metadata: { "size" => "not a number" })
       assert_raises(ArgumentError) { uploaded_file.size }
     end
   end
 
   describe "#mime_type" do
     it "returns mime_type from metadata" do
-      uploaded_file = uploaded_file("metadata" => {"mime_type" => "image/jpeg"})
+      uploaded_file = uploaded_file(metadata: { "mime_type" => "image/jpeg" })
       assert_equal "image/jpeg", uploaded_file.mime_type
 
-      uploaded_file = uploaded_file("metadata" => {"mime_type" => nil})
+      uploaded_file = uploaded_file(metadata: { "mime_type" => nil })
       assert_nil uploaded_file.mime_type
 
-      uploaded_file = uploaded_file("metadata" => {})
+      uploaded_file = uploaded_file(metadata: {})
       assert_nil uploaded_file.mime_type
     end
 
     it "has #content_type alias" do
-      uploaded_file = uploaded_file("metadata" => {"mime_type" => "image/jpeg"})
+      uploaded_file = uploaded_file(metadata: { "mime_type" => "image/jpeg" })
       assert_equal "image/jpeg", uploaded_file.content_type
     end
   end
 
   describe "#[]" do
     it "retrieves specified metadata value" do
-      uploaded_file = uploaded_file("metadata" => {"mime_type" => "image/jpeg"})
+      uploaded_file = uploaded_file(metadata: { "mime_type" => "image/jpeg" })
       assert_equal "image/jpeg", uploaded_file["mime_type"]
     end
 
     it "returns nil for missing metadata" do
-      uploaded_file = uploaded_file("metadata" => {})
+      uploaded_file = uploaded_file(metadata: {})
       assert_nil uploaded_file["mime_type"]
     end
   end
@@ -226,13 +238,13 @@ describe Shrine::UploadedFile do
 
   describe "#url" do
     it "delegates to underlying storage" do
-      uploaded_file = uploaded_file("id" => "foo")
+      uploaded_file = uploaded_file(id: "foo")
       assert_equal "memory://foo", uploaded_file.url
     end
 
     it "forwards given options to storage" do
-      uploaded_file = uploaded_file("id" => "foo")
-      uploaded_file.storage.expects(:url).with("foo", {foo: "foo"})
+      uploaded_file = uploaded_file(id: "foo")
+      uploaded_file.storage.expects(:url).with("foo", { foo: "foo" })
       uploaded_file.url(foo: "foo")
     end
   end
@@ -456,9 +468,17 @@ describe Shrine::UploadedFile do
 
   describe "#data" do
     it "returns uploaded file data hash" do
-      data = { "id" => "foo", "storage" => "store", "metadata" => {"foo" => "bar"} }
-      uploaded_file = uploaded_file(data)
-      assert_equal data, uploaded_file.data
+      uploaded_file = uploaded_file(
+        id:       "foo",
+        storage:  "store",
+        metadata: { "foo" => "bar" },
+      )
+
+      assert_equal Hash[
+        "id"       => "foo",
+        "storage"  => "store",
+        "metadata" => { "foo" => "bar" },
+      ], uploaded_file.data
     end
   end
 
@@ -469,22 +489,22 @@ describe Shrine::UploadedFile do
   end
 
   it "implements #to_json" do
-    uploaded_file = uploaded_file("id" => "foo", "storage" => "store", "metadata" => {})
+    uploaded_file = uploaded_file(id: "foo", storage: "store", metadata: {})
     assert_equal '{"id":"foo","storage":"store","metadata":{}}', uploaded_file.to_json
     assert_equal '{"thumb":{"id":"foo","storage":"store","metadata":{}}}', {thumb: uploaded_file}.to_json
   end
 
   it "implements equality" do
     assert_equal uploaded_file, uploaded_file
-    assert_equal uploaded_file("metadata" => {"foo" => "foo"}), uploaded_file("metadata" => {"bar" => "bar"})
-    refute_equal uploaded_file("id" => "foo"), uploaded_file("id" => "bar")
-    refute_equal uploaded_file("storage" => "store"), uploaded_file("storage" => "cache")
+    assert_equal uploaded_file(metadata: { "foo" => "foo" }), uploaded_file(metadata: { "bar" => "bar" })
+    refute_equal uploaded_file(id: "foo"), uploaded_file(id: "bar")
+    refute_equal uploaded_file(storage: "store"), uploaded_file(storage: "cache")
   end
 
   it "implements hash equality" do
     assert_equal 1, Set.new([uploaded_file, uploaded_file]).size
-    assert_equal 2, Set.new([uploaded_file("id" => "foo"), uploaded_file("id" => "bar")]).size
-    assert_equal 2, Set.new([uploaded_file("storage" => "store"), uploaded_file("storage" => "cache")]).size
+    assert_equal 2, Set.new([uploaded_file(id: "foo"), uploaded_file(id: "bar")]).size
+    assert_equal 2, Set.new([uploaded_file(storage: "store"), uploaded_file(storage: "cache")]).size
   end
 
   it "has smarter .inspect" do

@@ -109,8 +109,8 @@ class Shrine
       elsif components.count == 2
         # handle legacy "/:storage/:id" URLs
         uploaded_file = @shrine_class::UploadedFile.new(
-          "storage" => components.first,
-          "id"      => components.last,
+          storage: components.first,
+          id:      components.last,
         )
       end
 

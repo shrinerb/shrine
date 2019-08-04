@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Allow data hash passed to `UploadedFile.new` to have symbol keys (@janko)
+
 * `core` – Change how `Shrine::UploadedFile` sets its state from the given data hash (@janko)
 
 * `core` – Deprecate `Storage#open` not accepting additional options (@janko)

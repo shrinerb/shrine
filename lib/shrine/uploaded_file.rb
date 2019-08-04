@@ -34,9 +34,9 @@ class Shrine
 
       # Initializes the uploaded file with the given data hash.
       def initialize(data)
-        @id          = data["id"]
-        @storage_key = data["storage"]&.to_sym
-        @metadata    = data["metadata"] || {}
+        @id          = data[:id]              || data["id"]
+        @storage_key = data[:storage]&.to_sym || data["storage"]&.to_sym
+        @metadata    = data[:metadata]        || data["metadata"]        || {}
 
         fail Error, "#{data.inspect} isn't valid uploaded file data" unless @id && @storage_key
 

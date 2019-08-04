@@ -455,11 +455,11 @@ describe Shrine do
     end
 
     it "gets extension from shrine-url-style id with query params" do
-      uploaded_file = @shrine.uploaded_file("id" => "http://example.com/path.html?key=value", "storage" => "cache")
+      uploaded_file = @shrine::UploadedFile.new(id: "http://example.com/path.html?key=value", storage: "cache")
       location = @uploader.generate_location(uploaded_file)
       assert_match /\.html$/, location
 
-      uploaded_file = @shrine.uploaded_file("id" => "http://example.com/path?key=value", "storage" => "cache")
+      uploaded_file = @shrine::UploadedFile.new(id: "http://example.com/path?key=value", storage: "cache")
       location = @uploader.generate_location(uploaded_file)
       refute_match /key=value/, location
       assert_match /^[\w-]+$/, location

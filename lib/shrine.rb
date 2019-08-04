@@ -112,7 +112,7 @@ class Shrine
     # Instantiates a Shrine::UploadedFile from a hash, and optionally
     # yields the returned object.
     #
-    #     data = {"storage" => "cache", "id" => "abc123.jpg", "metadata" => {}}
+    #     data = { "storage" => "cache", "id" => "abc123.jpg", "metadata" => {} }
     #     Shrine.uploaded_file(data) #=> #<Shrine::UploadedFile>
     def uploaded_file(object)
       case object
@@ -193,9 +193,9 @@ class Shrine
       _upload(io, **options, location: location, metadata: metadata)
 
       self.class::UploadedFile.new(
-        "id"       => location,
-        "storage"  => storage_key.to_s,
-        "metadata" => metadata,
+        id:       location,
+        storage:  storage_key,
+        metadata: metadata,
       )
     end
 
