@@ -80,6 +80,10 @@ class Shrine
     #       Attachment::PromoteJob.perform_async(attacher.data)
     #     end
     module Backgrounding
+      def self.configure(uploader)
+        uploader.opts[:backgrounding] ||= {}
+      end
+
       module AttacherClassMethods
         # Registers a global promotion block.
         #
@@ -91,8 +95,8 @@ class Shrine
         #       )
         #     end
         def promote_block(&block)
-          @promote_block = block if block
-          @promote_block
+          shrine_class.opts[:backgrounding][:promote_block] = block if block
+          shrine_class.opts[:backgrounding][:promote_block]
         end
 
         # Registers a global deletion block.
@@ -101,8 +105,8 @@ class Shrine
         #       Attachment::DeleteJob.perform_async(attacher.data)
         #     end
         def destroy_block(&block)
-          @destroy_block = block if block
-          @destroy_block
+          shrine_class.opts[:backgrounding][:destroy_block] = block if block
+          shrine_class.opts[:backgrounding][:destroy_block]
         end
       end
 

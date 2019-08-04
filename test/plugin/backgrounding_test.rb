@@ -18,6 +18,15 @@ describe Shrine::Plugins::Backgrounding do
 
         assert_instance_of Proc, @attacher.class.promote_block
       end
+
+      it "survives inheritance" do
+        @attacher.class.promote_block { |attacher| }
+
+        shrine_subclass   = Class.new(@shrine)
+        attacher_subclass = shrine_subclass::Attacher
+
+        assert_equal @attacher.class.promote_block, attacher_subclass.promote_block
+      end
     end
 
     describe ".destroy_block" do
@@ -27,6 +36,15 @@ describe Shrine::Plugins::Backgrounding do
         @attacher.class.destroy_block { |attacher| }
 
         assert_instance_of Proc, @attacher.class.destroy_block
+      end
+
+      it "survives inheritance" do
+        @attacher.class.destroy_block { |attacher| }
+
+        shrine_subclass   = Class.new(@shrine)
+        attacher_subclass = shrine_subclass::Attacher
+
+        assert_equal @attacher.class.destroy_block, attacher_subclass.destroy_block
       end
     end
 
