@@ -54,12 +54,6 @@ Metadata:
 
 Uploading:
   -
-    name: default_storage
-    description: Allows you to change default temporary and permanent storage.
-  -
-    name: dynamic_storage
-    description: Allows you to define storages dynamically based on their identifier.
-  -
     name: presign_endpoint
     description: Provides a Rack application that generates signatures for direct uploads to specified storage.
   -
@@ -113,24 +107,30 @@ Form:
     name: remove_attachment
     description: Allows removing the attachment via a form field.
 
-Options:
+Settings:
   -
-    name: attacher_options
-    description: Allows you to register options that will be forwarded to attacher operations.
+    name: default_storage
+    description: Allows you to change default temporary and permanent storage.
+  -
+    name: default_url
+    description: Allows setting the URL which will be returned on missing attachments.
   -
     name: default_url_options
     description: Allows you to specify default URL options for uploaded files.
+  -
+    name: dynamic_storage
+    description: Allows you to define storages dynamically based on their identifier.
   -
     name: upload_options
     description: Allows dynamically creating and forwarding storage-specific upload options.
 
 Other:
   -
+    name: attacher_options
+    description: Allows you to register options that will be forwarded to attacher operations.
+  -
     name: backgrounding
     description: Adds the ability to put storing and deleting into a background job.
-  -
-    name: default_url
-    description: Allows setting the URL which will be returned on missing attachments.
   -
     name: included
     description: Allows the included attachments to define additional methods on the model.
