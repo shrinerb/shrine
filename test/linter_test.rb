@@ -25,12 +25,15 @@ describe Shrine::Storage::Linter do
 
   describe "open" do
     it "tests that returned object is an IO" do
-      @storage.instance_eval { def open(id); StringIO.new("foo").tap { |io| io.instance_eval{undef rewind} }; end }
+      not_io = StringIO.new("foo")
+      not_io.instance_eval { undef rewind }
+      @storage.stubs(:open).returns(not_io)
       assert_raises(Shrine::LintError) { @linter.call }
     end
 
     it "tests that returned IO is not empty" do
-      @storage.instance_eval { def open(id); StringIO.new; end }
+      empty_io = StringIO.new
+      @storage.stubs(:open).returns(empty_io)
       assert_raises(Shrine::LintError) { @linter.call }
     end
   end

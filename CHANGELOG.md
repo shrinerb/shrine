@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `linter` – Call `Storage#open` with options as second argument (@janko)
+
 * `core` – Allow data hash passed to `UploadedFile.new` to have symbol keys (@janko)
 
 * `core` – Change how `Shrine::UploadedFile` sets its state from the given data hash (@janko)

@@ -54,7 +54,7 @@ class Shrine
       end
 
       def lint_open(id)
-        opened = storage.open(id)
+        opened = storage.open(id, {})
         error :open, "doesn't return a valid IO object" if !io?(opened)
         error :open, "returns an empty IO object" if opened.read.empty?
         opened.close
