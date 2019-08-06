@@ -63,14 +63,14 @@ class Shrine
                 end
               end
             end
-
-            define_method :_refresh do |*args|
-              result = super(*args)
-              instance_variable_set(:"@#{name}_attacher", nil)
-              result
-            end
-            private :_refresh
           end
+
+          define_method :_refresh do |*args|
+            result = super(*args)
+            instance_variable_set(:"@#{name}_attacher", nil)
+            result
+          end
+          private :_refresh
         end
       end
 
