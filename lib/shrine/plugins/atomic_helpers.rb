@@ -45,10 +45,11 @@ class Shrine
         def abstract_atomic_promote(reload:, persist:, **options, &block)
           original_file = file
 
-          promote(**options)
+          result = promote(**options)
 
           begin
             abstract_atomic_persist(original_file, reload: reload, persist: persist, &block)
+            result
           rescue Shrine::AttachmentChanged
             destroy
             raise

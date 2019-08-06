@@ -271,6 +271,15 @@ describe Shrine::Plugins::Activerecord do
         assert_equal :store, @attacher.file.storage_key
       end
 
+      it "returns the promoted file" do
+        @attacher.attach_cached(fakeio)
+        @user.save
+
+        file = @attacher.activerecord_atomic_promote
+
+        assert_equal @attacher.file, file
+      end
+
       it "accepts promote options" do
         @attacher.attach_cached(fakeio)
         @user.save
