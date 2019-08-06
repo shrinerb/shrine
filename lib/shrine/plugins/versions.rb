@@ -42,7 +42,7 @@ class Shrine
 
       module InstanceMethods
         def upload(io, **options)
-          files = process(io, **options)
+          files = process(io, **options) || io
 
           Utils.map_file(files) do |name, version|
             options.merge!(version: name.one? ? name.first : name) if name
@@ -108,15 +108,11 @@ class Shrine
         private
 
         def uploaded?(file, storage_key)
-          return super unless file.is_a?(Hash) || file.is_a?(Array)
-
-          uploaded = true
-
-          Utils.each_file(file) do |_, file|
-            uploaded &&= (file.storage_key == storage_key)
+          if file.is_a?(Hash) || file.is_a?(Array)
+            Utils.each_file(file).all? { |_, f| f.storage_key == storage_key }
+          else
+            super
           end
-
-          uploaded
         end
       end
 
@@ -124,6 +120,8 @@ class Shrine
         module_function
 
         def each_file(object)
+          return enum_for(__method__, object) unless block_given?
+
           map_file(object) do |path, file|
             yield path, file
             file
