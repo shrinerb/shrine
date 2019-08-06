@@ -15,7 +15,11 @@ describe Shrine::UploadedFile do
 
   it "is an IO" do
     uploaded_file = @uploader.upload(fakeio)
-    assert io?(uploaded_file)
+
+    assert_respond_to uploaded_file, :read
+    assert_respond_to uploaded_file, :rewind
+    assert_respond_to uploaded_file, :eof?
+    assert_respond_to uploaded_file, :close
   end
 
   describe "#initialize" do
@@ -262,7 +266,7 @@ describe Shrine::UploadedFile do
   describe "#open" do
     it "returns the underlying IO if no block given" do
       uploaded_file = @uploader.upload(fakeio)
-      assert io?(uploaded_file.open)
+      assert_instance_of StringIO, uploaded_file.open
       refute uploaded_file.open.closed?
       refute_equal uploaded_file, uploaded_file.open
     end
@@ -284,7 +288,7 @@ describe Shrine::UploadedFile do
     it "yields the opened IO" do
       uploaded_file = @uploader.upload(fakeio("file"))
       uploaded_file.open do |io|
-        refute_kind_of Shrine::UploadedFile, io
+        assert_instance_of StringIO, io
         assert_equal "file", io.read
       end
     end
@@ -327,12 +331,8 @@ describe Shrine::UploadedFile do
     end
 
     it "propagates any error raised in Storage#open" do
-      @uploader.storage.instance_eval do
-        def open(id)
-          raise "open error"
-        end
-      end
-      assert_raises(RuntimeError, "open error") do
+      @uploader.storage.expects(:open).raises(SystemStackError.new("open error"))
+      assert_raises(SystemStackError) do
         uploaded_file.open {}
       end
     end
@@ -461,7 +461,7 @@ describe Shrine::UploadedFile do
   describe "#to_io" do
     it "returns the underlying IO" do
       uploaded_file = @uploader.upload(fakeio)
-      assert io?(uploaded_file.to_io)
+      assert_instance_of StringIO, uploaded_file.to_io
       assert_equal uploaded_file.to_io, uploaded_file.to_io
     end
   end

@@ -275,15 +275,11 @@ describe Shrine do
     end
 
     it "forwards options for metadata extraction" do
-      @uploader.instance_eval do
-        def extract_metadata(io, **options)
-          options
-        end
-      end
+      io = fakeio
 
-      file = @uploader.upload(fakeio, foo: "bar")
+      @uploader.expects(:extract_metadata).with(io, foo: "bar").returns({})
 
-      assert_equal "bar", file.metadata[:foo]
+      @uploader.upload(io, foo: "bar")
     end
 
     it "uses result of #generate_location for upload location" do
@@ -323,6 +319,8 @@ describe Shrine do
     end
 
     it "accepts :location" do
+      @uploader.expects(:generate_location).never
+
       file = @uploader.upload(fakeio, location: "foo")
 
       assert_equal "foo", file.id
@@ -341,24 +339,16 @@ describe Shrine do
     end
 
     it "forwards metadata to the storage" do
-      @uploader.storage.instance_eval do
-        def upload(io, id, shrine_metadata: {}, **)
-          fail unless shrine_metadata.keys == %w[filename size mime_type]
-
-          super
-        end
+      @uploader.storage.expects(:upload).with do |io, id, shrine_metadata: {}|
+        shrine_metadata.keys.sort == %w[filename mime_type size]
       end
 
       @uploader.upload(fakeio)
     end
 
     it "forwards :upload_options to the storage" do
-      @uploader.storage.instance_eval do
-        def upload(io, id, shrine_metadata: {}, **upload_options)
-          fail unless upload_options == { foo: "bar" }
-
-          super
-        end
+      @uploader.storage.expects(:upload).with do |io, id, shrine_metadata: {}, **upload_options|
+        upload_options == { foo: "bar" }
       end
 
       @uploader.upload(fakeio, upload_options: { foo: "bar" })
