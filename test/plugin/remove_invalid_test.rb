@@ -47,20 +47,50 @@ describe Shrine::Plugins::RemoveInvalid do
         refute @attacher.changed?
       end
 
-      it "doesn't remove the attachment if it isn't new" do
-        @attacher.file = @shrine.upload(fakeio, :store)
-        @attacher.class.validate { errors << "error" }
-        @attacher.validate
-
-        refute_nil @attacher.file
-      end
-
       it "doesn't remove when validations have passed" do
         @attacher.attach(fakeio)
 
         refute_nil @attacher.file
         assert @attacher.file.exists?
         assert @attacher.changed?
+      end
+
+      it "works with versions" do
+        @shrine.plugin :versions
+
+        file = @shrine.upload(fakeio, :cache)
+        @attacher.class.validate { errors << "error" }
+        @attacher.change(thumb: file)
+
+        assert_nil @attacher.file
+        refute file.exists?
+      end
+
+      it "integrates with backgrounding" do
+        @shrine.plugin :backgrounding
+
+        file = @shrine.upload(fakeio, :cache)
+
+        @attacher.destroy_block do |attacher|
+          assert_equal file, attacher.file
+          @block_called = true
+        end
+
+        @attacher.class.validate { errors << "error" }
+        @attacher.change(file)
+
+        assert_nil @attacher.file
+        assert @block_called
+      end
+    end
+
+    describe "#validate" do
+      it "doesn't remove the attachment if it isn't new" do
+        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.class.validate { errors << "error" }
+        @attacher.validate
+
+        refute_nil @attacher.file
       end
     end
   end
