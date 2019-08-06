@@ -40,6 +40,13 @@ Download (1002ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1
 Delete (700ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
 ```
 
+It uses `Shrine.logger` for logging, which allows you to change where and how
+are the logs going to be written:
+
+```rb
+Shrine.logger = Rails.logger # in Rails apps
+```
+
 You can choose to log only certain events, e.g. we can exclude metadata
 extraction:
 
