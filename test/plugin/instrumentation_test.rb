@@ -158,7 +158,7 @@ describe Shrine::Plugins::Instrumentation do
         assert_equal @shrine,          @event[:uploader]
         assert_kind_of Integer,        @event[:time]
 
-        assert_equal %i[bar location metadata process upload_options], @event[:options].keys.sort
+        assert_equal %i[bar location metadata upload_options], @event[:options].keys.sort
       end
 
       it "still forwards options for uploading" do
@@ -188,7 +188,7 @@ describe Shrine::Plugins::Instrumentation do
         assert_equal @shrine,   @event[:uploader]
         assert_kind_of Integer, @event[:time]
 
-        assert_equal %i[upload_options bar process metadata], @event[:options].keys
+        assert_equal %i[upload_options bar metadata], @event[:options].keys
       end
 
       it "skips instrumenting if metadata extraction is skipped" do
