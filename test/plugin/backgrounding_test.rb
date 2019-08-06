@@ -170,6 +170,19 @@ describe Shrine::Plugins::Backgrounding do
         assert_equal "foo", @attacher.file.id
         assert_nil @job
       end
+
+      it "accepts :background option" do
+        @attacher.promote_block do |attacher|
+          @job = Fiber.new { attacher.promote }
+        end
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote(background: true)
+
+        assert @attacher.cached?
+        @job.resume
+        assert @attacher.stored?
+      end
     end
 
     describe "#destroy_previous" do
@@ -302,6 +315,19 @@ describe Shrine::Plugins::Backgrounding do
 
         refute @attacher.file.exists?
         assert_nil @job
+      end
+
+      it "accepts :background option" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.destroy(background: true)
+
+        assert @attacher.file.exists?
+        @job.resume
+        refute @attacher.file.exists?
       end
     end
   end
