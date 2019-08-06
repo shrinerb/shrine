@@ -628,6 +628,50 @@ describe Shrine::Plugins::Activerecord do
         assert_equal file,    @attacher.file
       end
     end
+
+    describe "#activerecord_persist" do
+      it "persists the record" do
+        file = @shrine.upload(fakeio, :store)
+        @user.avatar_data = file.to_json
+
+        @attacher.activerecord_persist
+
+        assert_equal file.to_json, @user.reload.avatar_data
+      end
+
+      it "persists only changes" do
+        @user.save
+        @user.class.update_all(name: "Janko")
+
+        file = @shrine.upload(fakeio, :store)
+        @user.avatar_data = file.to_json
+
+        @attacher.activerecord_persist
+
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "skips validations" do
+        @user.class.validates_presence_of :name
+
+        @user.name = "Janko"
+        @user.save(validate: false)
+
+        @user.name = nil
+        @attacher.activerecord_persist
+
+        assert_nil @user.reload.name
+      end
+
+      it "is aliased to #persist" do
+        file = @shrine.upload(fakeio, :store)
+        @user.avatar_data = file.to_json
+
+        @attacher.persist
+
+        assert_equal file.to_json, @user.reload.avatar_data
+      end
+    end
   end
 
   def store_translation(key, value)

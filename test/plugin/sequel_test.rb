@@ -604,5 +604,53 @@ describe Shrine::Plugins::Sequel do
         assert_equal file,    @attacher.file
       end
     end
+
+    describe "#sequel_persist" do
+      it "persists the record" do
+        file = @shrine.upload(fakeio, :store)
+        @user.avatar_data = file.to_json
+
+        @attacher.sequel_persist
+
+        assert_equal file.to_json, @user.reload.avatar_data
+      end
+
+      it "persists only changes" do
+        @user.save
+        @user.this.update(name: "Janko")
+
+        file = @shrine.upload(fakeio, :store)
+        @user.avatar_data = file.to_json
+
+        @attacher.sequel_persist
+
+        assert_equal "Janko", @user.reload.name
+      end
+
+      it "skips validations" do
+        @user.instance_eval do
+          def validate
+            errors.add(:name, "must be present")
+          end
+        end
+
+        @user.name = "Janko"
+        @user.save(validate: false)
+
+        @user.name = nil
+        @attacher.sequel_persist
+
+        assert_nil @user.reload.name
+      end
+
+      it "is aliased to #persist" do
+        file = @shrine.upload(fakeio, :store)
+        @user.avatar_data = file.to_json
+
+        @attacher.persist
+
+        assert_equal file.to_json, @user.reload.avatar_data
+      end
+    end
   end
 end
