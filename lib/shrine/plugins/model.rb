@@ -75,7 +75,7 @@ class Shrine
 
           define_method :initialize_copy do |other|
             super(other)
-            instance_variable_set(:"@#{name}_attacher", instance_variable_get(:"@#{name}_attacher").dup)
+            instance_variable_set(:"@#{name}_attacher", instance_variable_get(:"@#{name}_attacher")&.dup)
             self
           end
           private :initialize_copy
