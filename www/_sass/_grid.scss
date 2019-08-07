@@ -20,16 +20,8 @@
   }
 
   @media (min-width: 768px) {
-    .col:nth-child(1) {
+    .col {
       width: (100%/3);
-    }
-
-    .col:nth-child(2) {
-      width: (100%/3*2);
-
-      ul {
-        @include columns(10em 2);
-      }
     }
   }
 }

@@ -34,7 +34,7 @@ class Shrine
         # uploads `io` to the location `id`
       end
 
-      def open(id)
+      def open(id, **options)
         # returns the remote file as an IO-like object
       end
 
@@ -46,7 +46,7 @@ class Shrine
         # deletes the file from the storage
       end
 
-      def url(id, options = {})
+      def url(id, **options)
         # URL to the remote file, accepts options for customizing the URL
       end
     end

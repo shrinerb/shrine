@@ -1,57 +1,70 @@
 -
-  name: Advantages of Shrine
-  path: advantages.md
+  Base:
+    -
+      name: Design of Shrine
+      path: design.md
+    -
+      name: Retrieving Uploads
+      path: retrieving_uploads.md
+    -
+      name: Using Attacher
+      path: attacher.md
+
+  Features:
+    -
+      name: Direct Uploads to S3
+      path: direct_s3.md
+    -
+      name: Extracting Metadata
+      path: metadata.md
+    -
+      name: File Processing
+      path: processing.md
+    -
+      name: File Validation
+      path: validation.md
+
+  Extras:
+    -
+      name: Multiple Files
+      path: multiple_files.md
+    -
+      name: Securing Uploads
+      path: securing_uploads.md
+    -
+      name: Testing with Shrine
+      path: testing.md
+
 -
-  name: Creating a New Plugin
-  path: creating_plugins.md
--
-  name: Creating a New Storage
-  path: creating_storages.md
--
-  name: Design of Shrine
-  path: design.md
--
-  name: Direct Uploads to S3
-  path: direct_s3.md
--
-  name: Extracting Metadata
-  path: metadata.md
--
-  name: File Processing
-  path: processing.md
--
-  name: File Validation
-  path: validation.md
--
-  name: Migrating to Different Location
-  path: changing_location.md
--
-  name: Migrating to Different Storage
-  path: migrating_storage.md
--
-  name: Multiple Files
-  path: multiple_files.md
--
-  name: Reprocessing Versions
-  path: regenerating_versions.md
--
-  name: Retrieving Uploads
-  path: retrieving_uploads.md
--
-  name: Securing Uploads
-  path: securing_uploads.md
--
-  name: Shrine for CarrierWave Users
-  path: carrierwave.md
--
-  name: Shrine for Paperclip Users
-  path: paperclip.md
--
-  name: Shrine for Refile Users
-  path: refile.md
--
-  name: Testing with Shrine
-  path: testing.md
--
-  name: Using Attacher
-  path: attacher.md
+  Migrating:
+    -
+      name: Migrating to Different Location
+      path: changing_location.md
+    -
+      name: Migrating to Different Storage
+      path: migrating_storage.md
+    -
+      name: Reprocessing Versions
+      path: regenerating_versions.md
+
+  Extending:
+    -
+      name: Writing a Plugin
+      path: creating_plugins.md
+    -
+      name: Writing a Storage
+      path: creating_storages.md
+
+  Comparison:
+    -
+      name: Advantages of Shrine
+      path: advantages.md
+    -
+      name: Shrine for CarrierWave Users
+      path: carrierwave.md
+    -
+      name: Shrine for Paperclip Users
+      path: paperclip.md
+    -
+      name: Shrine for Refile Users
+      path: refile.md

@@ -52,15 +52,34 @@
 
         <div class="col">
           <h2>Guides</h2>
+          {% for item in site.data.guides[0] %}
+          <h3>{{ item[0] }}</h3>
           <ul>
-            {% for item in site.data.guides %}
+            {% for guide in item[1] %}
             <li>
               <a href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/doc/{{ item.path }}#readme">
-                {{ item.name }}
+                {{ guide.name }}
               </a>
             </li>
             {% endfor %}
           </ul>
+          {% endfor %}
+        </div>
+
+        <div class="col">
+          <h2>&nbsp;</h2>
+          {% for item in site.data.guides[1] %}
+          <h3>{{ item[0] }}</h3>
+          <ul>
+            {% for guide in item[1] %}
+            <li>
+              <a href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/doc/{{ item.path }}#readme">
+                {{ guide.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endfor %}
         </div>
       </div>
     </section>
