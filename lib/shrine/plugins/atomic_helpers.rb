@@ -54,7 +54,7 @@ class Shrine
             abstract_atomic_persist(original_file, reload: reload, persist: persist, &block)
             result
           rescue Shrine::AttachmentChanged
-            destroy
+            destroy(background: true)
             raise
           end
         end
