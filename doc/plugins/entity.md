@@ -31,7 +31,7 @@ photo.image_url      #=> "https://example.com/image.jpg"
 photo.image_attacher #=> #<ImageUploader::Attacher>
 ```
 
-### `#<name>`
+#### `#<name>`
 
 Calls `Attacher#get`, which returns an `UploadedFile` object instantiated from
 attachment data.
@@ -51,7 +51,7 @@ photo = Photo.new(image_data: nil)
 photo.image #=> nil
 ```
 
-### `#<name>_url`
+#### `#<name>_url`
 
 Calls `Attacher#url`, which returns the URL to the attached file.
 
@@ -67,7 +67,7 @@ photo = Photo.new(image_data: nil)
 photo.image_url #=> nil
 ```
 
-### `#<name>_attacher`
+#### `#<name>_attacher`
 
 Calls `Attacher.from_entity`, which returns an `Attacher` instance backed by
 the entity object.
@@ -104,7 +104,7 @@ attacher.store_key #=> :other_store
 
 ## Attacher
 
-### `.from_entity`
+#### `.from_entity`
 
 The `Attacher.from_entity` method can be used for creating an `Attacher`
 instance backed by an entity object.
@@ -127,7 +127,7 @@ attacher = ImageUploader::Attacher.from_entity(photo, :image, cache: :other_cach
 attacher.cache_key #=> :other_cache
 ```
 
-### `#load_entity`
+#### `#load_entity`
 
 You can also load an entity into an existing attacher with
 `Attacher#load_entity`.
@@ -140,7 +140,7 @@ attacher.load_entity(photo, :image)
 attacher.file #=> #<ImageUploader::UploadedFile>
 ```
 
-### `#reload`
+#### `#reload`
 
 The `Attacher#reload` method reloads attached file from the attachment data on
 the entity attribute.
@@ -158,7 +158,7 @@ attacher.reload
 attacher.file #=> #<ImageUploader::UploadedFile>
 ```
 
-### `#column_values`
+#### `#column_values`
 
 The `Attacher#column_values` method returns a hash with the entity attribute as
 key and current attachment data as value.
@@ -170,7 +170,7 @@ attacher.attach(io)
 attacher.column_values #=> { :image_data => '{"id":"...","storage":"...","metadata":{...}}' }
 ```
 
-### `#attribute`
+#### `#attribute`
 
 The `Attacher#attribute` method returns the entity attribute from which
 attached file data is read.
@@ -180,7 +180,7 @@ attacher = ImageUploader::Attacher.from_entity(Photo.new, :image)
 attacher.attribute #=> :image_data
 ```
 
-### `#record`
+#### `#record`
 
 The `Attacher#record` method returns the entity instance from which the
 attacher was loaded.
@@ -190,7 +190,7 @@ attacher = ImageUploader::Attacher.from_entity(Photo.new, :image)
 attacher.record #=> #<Photo>
 ```
 
-### `#name`
+#### `#name`
 
 The `Attacher#name` method returns the name of the attachment from which the
 attacher was loaded.

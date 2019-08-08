@@ -29,7 +29,7 @@ photo.image_url      #=> "https://example.com/foo.jpg"
 photo.image_attacher #=> #<ImageUploader::Attacher>
 ```
 
-### `#<name>=`
+#### `#<name>=`
 
 Calls `Attacher#assign` by default, which uploads the file to temporary storage
 and attaches it, updating the model attribute.
@@ -65,7 +65,7 @@ photo.image = file
 photo.image.storage_key #=> :store
 ```
 
-### `#<name>_attacher`
+#### `#<name>_attacher`
 
 Returns an `Attacher` instance backed by the model instance, memoized in an
 instance variable.
@@ -97,7 +97,7 @@ end
 
 ## Attacher
 
-### `.from_model`
+#### `.from_model`
 
 The `Attacher.from_model` method can be used for creating an `Attacher`
 instance backed by a model object.
@@ -114,7 +114,7 @@ attacher.attach(io)
 photo.image_data #=> '{"id":"...","storage":"...","metadata":{...}}'
 ```
 
-### `#load_model`
+#### `#load_model`
 
 You can also load an entity into an existing attacher with
 `Attacher#load_model`.
@@ -128,7 +128,7 @@ attacher.load_model(photo, :image)
 attacher.file #=> #<ImageUploader::UploadedFile>
 ```
 
-### `#write`
+#### `#write`
 
 The `Attacher#write` method writes attachment data to the `#<name>_data`
 attribute on the model instance.
