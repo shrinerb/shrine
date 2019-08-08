@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Add `Attacher#cache_key` and `Attacher#store_key` which return storage identifiers (@janko)
+
 * `linter` – Call `Storage#open` with options as second argument (@janko)
 
 * `core` – Allow data hash passed to `UploadedFile.new` to have symbol keys (@janko)

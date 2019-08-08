@@ -28,7 +28,7 @@ describe Shrine::Plugins::AtomicHelpers do
 
           assert_equal @entity,      attacher.record
           assert_equal :file,        attacher.name
-          assert_equal :other_store, attacher.store.storage_key
+          assert_equal :other_store, attacher.store_key
         end
 
         it "forwards additional options to attacher attribute" do
@@ -41,8 +41,8 @@ describe Shrine::Plugins::AtomicHelpers do
             cache:  :other_cache,
           )
 
-          assert_equal :other_cache, attacher.cache.storage_key
-          assert_equal :other_store, attacher.store.storage_key
+          assert_equal :other_cache, attacher.cache_key
+          assert_equal :other_store, attacher.store_key
         end
 
         it "creates entity attacher if attacher attribute is not defined" do
@@ -55,8 +55,8 @@ describe Shrine::Plugins::AtomicHelpers do
           assert_instance_of @shrine::Attacher, attacher
           assert_equal @entity, attacher.record
           assert_equal :file,   attacher.name
-          assert_equal :cache,  attacher.cache.storage_key
-          assert_equal :store,  attacher.store.storage_key
+          assert_equal :cache,  attacher.cache_key
+          assert_equal :store,  attacher.store_key
 
           attacher.attach(fakeio)
 
@@ -71,7 +71,7 @@ describe Shrine::Plugins::AtomicHelpers do
             store:  :other_store,
           )
 
-          assert_equal :other_store, attacher.store.storage_key
+          assert_equal :other_store, attacher.store_key
         end
 
         it "asserts the attachment hasn't changed" do
@@ -111,9 +111,9 @@ describe Shrine::Plugins::AtomicHelpers do
             data:  nil,
           )
 
-          assert_equal @model,      attacher.record
+          assert_equal @model,       attacher.record
           assert_equal :file,        attacher.name
-          assert_equal :other_store, attacher.store.storage_key
+          assert_equal :other_store, attacher.store_key
         end
 
         it "forwards additional options to attacher attribute" do
@@ -126,8 +126,8 @@ describe Shrine::Plugins::AtomicHelpers do
             cache: :other_cache,
           )
 
-          assert_equal :other_cache, attacher.cache.storage_key
-          assert_equal :other_store, attacher.store.storage_key
+          assert_equal :other_cache, attacher.cache_key
+          assert_equal :other_store, attacher.store_key
         end
 
         it "creates model attacher if attacher attribute is not defined" do
@@ -140,8 +140,8 @@ describe Shrine::Plugins::AtomicHelpers do
           assert_instance_of @shrine::Attacher, attacher
           assert_equal @model, attacher.record
           assert_equal :file,  attacher.name
-          assert_equal :cache, attacher.cache.storage_key
-          assert_equal :store, attacher.store.storage_key
+          assert_equal :cache, attacher.cache_key
+          assert_equal :store, attacher.store_key
 
           attacher.attach(fakeio)
 
@@ -156,7 +156,7 @@ describe Shrine::Plugins::AtomicHelpers do
             store: :other_store,
           )
 
-          assert_equal :other_store, attacher.store.storage_key
+          assert_equal :other_store, attacher.store_key
         end
 
         it "asserts the attachment hasn't changed" do

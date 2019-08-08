@@ -18,7 +18,7 @@ describe Shrine::Plugins::Column do
     it "forwards additional options to .new" do
       attacher = @shrine::Attacher.from_column(nil, cache: :other_cache)
 
-      assert_equal :other_cache, attacher.cache.storage_key
+      assert_equal :other_cache, attacher.cache_key
     end
   end
 

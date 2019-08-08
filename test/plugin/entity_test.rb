@@ -30,7 +30,7 @@ describe Shrine::Plugins::Entity do
         entity   = @entity_class.new
         attacher = entity.file_attacher(cache: :other_cache)
 
-        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_cache, attacher.cache_key
       end
 
       it "forwards additional attachment options" do
@@ -39,7 +39,7 @@ describe Shrine::Plugins::Entity do
         entity   = @entity_class.new
         attacher = entity.file_attacher
 
-        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_cache, attacher.cache_key
       end
 
       it "doesn't memoize the attacher" do
@@ -119,7 +119,7 @@ describe Shrine::Plugins::Entity do
         entity   = @entity_class.new
         attacher = @shrine::Attacher.from_entity(entity, :file, cache: :other_cache)
 
-        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_cache, attacher.cache_key
       end
     end
 

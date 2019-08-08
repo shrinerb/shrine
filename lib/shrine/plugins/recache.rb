@@ -14,7 +14,7 @@ class Shrine
 
         def recache
           if cached?
-            result = upload(file, @cache, action: :recache)
+            result = upload(file, cache_key, action: :recache)
 
             set(result)
           end

@@ -14,8 +14,8 @@ describe Shrine::Plugins::DefaultStorage do
 
         attacher = @shrine::Attacher.new
 
-        assert_equal :other_cache, attacher.cache.storage_key
-        assert_equal :other_store, attacher.store.storage_key
+        assert_equal :other_cache, attacher.cache_key
+        assert_equal :other_store, attacher.store_key
       end
 
       it "still allows overriding storage" do
@@ -23,8 +23,8 @@ describe Shrine::Plugins::DefaultStorage do
 
         attacher = @shrine::Attacher.new(cache: :cache, store: :store)
 
-        assert_equal :cache, attacher.cache.storage_key
-        assert_equal :store, attacher.store.storage_key
+        assert_equal :cache, attacher.cache_key
+        assert_equal :store, attacher.store_key
       end
     end
   end

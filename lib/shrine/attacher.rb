@@ -45,10 +45,15 @@ class Shrine
         @context = {}
       end
 
+      # Returns the temporary storage identifier.
+      def cache_key; @cache; end
+      # Returns the permanent storage identifier.
+      def store_key; @store; end
+
       # Returns the uploader that is used for the temporary storage.
-      def cache; shrine_class.new(@cache); end
+      def cache; shrine_class.new(cache_key); end
       # Returns the uploader that is used for the permanent storage.
-      def store; shrine_class.new(@store); end
+      def store; shrine_class.new(store_key); end
 
       # Calls #attach_cached, but skips if value is an empty string (this is
       # useful when the uploaded file comes from form fields). Forwards any
@@ -86,7 +91,7 @@ class Shrine
         if value.is_a?(String) || value.is_a?(Hash)
           change(cached(value, **options), **options)
         else
-          attach(value, storage: @cache, action: :cache, **options)
+          attach(value, storage: cache_key, action: :cache, **options)
         end
       end
 
@@ -103,7 +108,7 @@ class Shrine
       #
       #     # removes the attachment
       #     attacher.attach(nil)
-      def attach(io, storage: @store, **options)
+      def attach(io, storage: store_key, **options)
         file = upload(io, storage, **options) if io
 
         change(file, **options)
@@ -157,7 +162,7 @@ class Shrine
       #     attacher.cached? #=> true
       #     attacher.promote
       #     attacher.stored? #=> true
-      def promote(storage: @store, **options)
+      def promote(storage: store_key, **options)
         set upload(file, storage, **options)
       end
 
@@ -268,7 +273,7 @@ class Shrine
       #     attacher.cached?       # checks current file
       #     attacher.cached?(file) # checks given file
       def cached?(file = self.file)
-        uploaded?(file, @cache)
+        uploaded?(file, cache_key)
       end
 
       # Returns whether the file is uploaded to permanent storage.
@@ -276,7 +281,7 @@ class Shrine
       #     attacher.stored?       # checks current file
       #     attacher.stored?(file) # checks given file
       def stored?(file = self.file)
-        uploaded?(file, @store)
+        uploaded?(file, store_key)
       end
 
       # Generates serializable data for the attachment.

@@ -37,7 +37,7 @@ describe Shrine::Plugins::Model do
 
         attacher = model.file_attacher(cache: :other_cache)
 
-        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_cache, attacher.cache_key
         assert_equal attacher,     model.file_attacher
       end
 
@@ -47,7 +47,7 @@ describe Shrine::Plugins::Model do
         model    = @model_class.new
         attacher = model.file_attacher
 
-        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_cache, attacher.cache_key
       end
 
       it "doesn't memoize attacher for entity attachments" do
@@ -161,7 +161,7 @@ describe Shrine::Plugins::Model do
         model    = @model_class.new
         attacher = @shrine::Attacher.from_model(model, :file, cache: :other_cache)
 
-        assert_equal :other_cache, attacher.cache.storage_key
+        assert_equal :other_cache, attacher.cache_key
       end
     end
 
