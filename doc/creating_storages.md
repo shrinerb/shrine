@@ -1,4 +1,4 @@
-# Creating a New Storage
+# Writing a Storage
 
 Shrine ships with the FileSystem and S3 storages, but it's also easy to create
 your own. A storage is a class which needs to implement `#upload`, `#url`,

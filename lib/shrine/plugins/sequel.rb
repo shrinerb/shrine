@@ -66,6 +66,7 @@ class Shrine
             end
           end
 
+          # reload the attacher on record reload
           define_method :_refresh do |*args|
             result = super(*args)
             instance_variable_set(:"@#{name}_attacher", nil)
