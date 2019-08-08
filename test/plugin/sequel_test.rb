@@ -1,7 +1,6 @@
 require "test_helper"
 require "./test/support/sequel"
 require "shrine/plugins/sequel"
-require "sequel"
 
 describe Shrine::Plugins::Sequel do
   before do

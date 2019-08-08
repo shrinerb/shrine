@@ -1,7 +1,6 @@
 require "test_helper"
 require "./test/support/activerecord"
 require "shrine/plugins/activerecord"
-require "active_record"
 
 describe Shrine::Plugins::Activerecord do
   before do
