@@ -202,6 +202,12 @@ describe Shrine::Plugins::Sequel do
 
         assert_equal @user, @user.reload
       end
+
+      it "keeps private visibility" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        assert_includes @user.class.private_instance_methods, :_refresh
+      end
     end
 
     it "can still be included into non-Sequel classes" do

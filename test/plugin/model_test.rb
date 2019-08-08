@@ -122,6 +122,12 @@ describe Shrine::Plugins::Model do
 
         assert_equal Kernel, @model_class.instance_method(:initialize_copy).owner
       end
+
+      it "keeps private visibility" do
+        @model_class.include @shrine::Attachment.new(:file)
+
+        assert_includes @model_class.private_instance_methods, :initialize_copy
+      end
     end
 
     it "includes other entity methods" do
