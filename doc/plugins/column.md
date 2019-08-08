@@ -46,7 +46,8 @@ attacher.file #=> nil
 Any additional options are forwarded to `Attacher#initialize`.
 
 ```rb
-Shrine::Attacher.from_column('{...}', cache: :other_cache, store: :other_store)
+attacher = Shrine::Attacher.from_column('{...}', store: :other_store)
+attacher.store_key #=> :other_store
 ```
 
 If you want to load attachment data into an existing attacher, use

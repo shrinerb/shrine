@@ -16,12 +16,12 @@ following instance methods:
 * `#<name>_url` – returns the attached file URL
 * `#<name>_attacher` – returns a `Shrine::Attacher` instance
 
-These methods assume the entity has a `#<name>_data` attribute and read
-attachment data from it.
+These methods read attachment data from the `#<name>_data` attribute on the
+entity instance.
 
 ```rb
-class Photo
-  include ImageUploader::Attachment(:file)
+class Photo < Entity(:image_data)
+  include ImageUploader::Attachment(:image)
 end
 ```
 ```rb
@@ -80,17 +80,39 @@ photo.image_attacher.name      #=> :image
 photo.image_attacher.attribute #=> :image_data
 ```
 
+Any additional options will be forwarded to `Attacher#initialize`.
+
+```rb
+photo    = Photo.new
+attacher = photo.image_attacher(cache: :other_cache)
+attacher.cache_key #=> :other_cache
+```
+
+You can also specify default attacher options when including
+`Shrine::Attachment`:
+
+```rb
+class Photo < Entity(:image_data)
+  include ImageUploader::Attachment(:image, store: :other_store)
+end
+```
+```rb
+photo    = Photo.new
+attacher = photo.image_attacher
+attacher.store_key #=> :other_store
+```
+
 ## Attacher
 
 ### `.from_entity`
 
 The `Attacher.from_entity` method can be used for creating an `Attacher`
-instance backed by the entity object.
+instance backed by an entity object.
 
 ```rb
-photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
-
+photo    = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
 attacher = ImageUploader::Attacher.from_entity(photo, :image)
+
 attacher.record    #=> #<Photo>
 attacher.name      #=> :image
 attacher.attribute #=> :image_data
@@ -101,7 +123,8 @@ attacher.file #=> #<ImageUploader::UploadedFile>
 Any additional options are forwarded to `Attacher#initialize`.
 
 ```rb
-ImageUploader::Attacher.from_entity(photo, :image, cache: :other_cache)
+attacher = ImageUploader::Attacher.from_entity(photo, :image, cache: :other_cache)
+attacher.cache_key #=> :other_cache
 ```
 
 ### `#load_entity`
