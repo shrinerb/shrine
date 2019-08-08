@@ -41,11 +41,6 @@ class Shrine
 
           attachment = self
 
-          # Returns an attacher instance.
-          define_method :"#{name}_attacher" do |**options|
-            attachment.attacher(self, options)
-          end
-
           # Returns the attached file.
           define_method :"#{name}" do |*args|
             send(:"#{name}_attacher").get(*args)
@@ -54,6 +49,11 @@ class Shrine
           # Returns the URL to the attached file.
           define_method :"#{name}_url" do |*args|
             send(:"#{name}_attacher").url(*args)
+          end
+
+          # Returns an attacher instance.
+          define_method :"#{name}_attacher" do |**options|
+            attachment.attacher(self, options)
           end
         end
 
@@ -96,7 +96,7 @@ class Shrine
         # Overwrites the current attachment with the one from model attribute.
         #
         #     photo.image_data #=> nil
-        #     attacher = Shrine::Attacher.new(photo, :image)
+        #     attacher = Shrine::Attacher.from_entity(photo, :image)
         #     photo.image_data = uploaded_file.to_json
         #
         #     attacher.file #=> nil

@@ -24,7 +24,7 @@ If there is no attached file, `nil` is returned.
 attacher.column_value #=> nil
 ```
 
-If you want to retrieve this data as a *Hash*, use `Attacher#data` instead.
+If you want to retrieve this data as a Hash, use `Attacher#data` instead.
 
 ## Deserializing
 
@@ -46,8 +46,7 @@ attacher.file #=> nil
 Any additional options are forwarded to `Attacher#initialize`.
 
 ```rb
-attacher = Shrine::Attacher.from_column('{...}', cache: :other_cache, store: :other_store)
-attacher.file #=> nil
+Shrine::Attacher.from_column('{...}', cache: :other_cache, store: :other_store)
 ```
 
 If you want to load attachment data into an existing attacher, use
@@ -59,7 +58,7 @@ attacher.load_column('{"id":"...","storage":"...","metadata":{...}}')
 attacher.file #=> #<Shrine::UploadedFile>
 ```
 
-If you want to load attachment from a *Hash*, use `Attacher.from_data` or
+If you want to load attachment from a Hash, use `Attacher.from_data` or
 `Attacher#load_data` instead.
 
 ## Serializer
