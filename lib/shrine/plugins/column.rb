@@ -4,29 +4,10 @@ require "json"
 
 class Shrine
   module Plugins
-    # This plugin provides methods for parsing and generating column data,
-    # without any logic for actually integrating with an entity instance. The
-    # user can use this functionality if they want to implement their own
-    # integration with their database library.
-    #
-    #     class Photo
-    #       include Shrine::Attachment(:image)
-    #
-    #       extend Dry::Initializer
-    #       option :image_data
-    #     end
-    #
-    #     attacher = Shrine::Attacher.new
-    #     attacher.attach(io)
-    #
-    #     photo = Photo.new(image_data: attacher.column_value)
-    #     photo.image #=> #<Shrine::UploadedFile>
-    #
-    #     # ...
-    #
-    #     attacher = Shrine::Attacher.from_column(photo.image_data)
-    #     attacher.file #=> #<Shrine::UploadedFile>
     module Column
+      # Documentation lives in [doc/plugins/column.md] on GitHub.
+      #
+      # [doc/plugins/column.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/column.md
       def self.configure(uploader, **opts)
         uploader.opts[:column] ||= { serializer: JsonSerializer.new(JSON) }
         uploader.opts[:column].merge!(opts)
