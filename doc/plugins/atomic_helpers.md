@@ -84,9 +84,8 @@ the next section for more details).
 # in the controller
 attacher.attach_cached(io)
 attacher.cached? #=> true
-
-# ...
-
+```
+```rb
 # in a background job
 attacher.abstract_atomic_promote(reload: -> (&block) { ... }, persist: -> { ... })
 attacher.stored? #=> true
