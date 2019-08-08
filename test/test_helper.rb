@@ -12,7 +12,6 @@ ENV["MT_NO_EXPECTATIONS"] = "1" # disable Minitest's expectations monkey-patches
 
 require "minitest/autorun"
 require "minitest/pride"
-require "minitest/hooks/default"
 require "mocha/minitest"
 
 require "shrine"

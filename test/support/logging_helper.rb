@@ -1,6 +1,6 @@
 require "stringio"
 
-class Minitest::HooksSpec
+class Minitest::Test
   def assert_logged(pattern)
     result = nil
     logged = capture_logged { result = yield }
