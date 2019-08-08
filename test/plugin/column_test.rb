@@ -28,6 +28,20 @@ describe Shrine::Plugins::Column do
 
       assert_equal :my_serializer, attacher.column_serializer
     end
+
+    it "accepts nil serializer" do
+      attacher = @shrine::Attacher.new(column_serializer: nil)
+
+      assert_nil attacher.column_serializer
+    end
+
+    it "uses plugin serializer as default" do
+      @shrine.plugin :column, serializer: RubySerializer
+      assert_equal RubySerializer, @shrine::Attacher.new.column_serializer
+
+      @shrine.plugin :column, serializer: nil
+      assert_nil @shrine::Attacher.new.column_serializer
+    end
   end
 
   describe "#load_column" do
@@ -45,17 +59,16 @@ describe Shrine::Plugins::Column do
       assert_nil @attacher.file
     end
 
-    it "uses global serializer" do
-      @shrine.plugin :column, serializer: nil
-      @attacher = @shrine::Attacher.new
+    it "uses custom serializer" do
+      @attacher = @shrine::Attacher.new(column_serializer: RubySerializer)
 
       file = @shrine.upload(fakeio, :store)
-      @attacher.load_column(file.data)
+      @attacher.load_column(file.data.to_s)
 
       assert_equal file, @attacher.file
     end
 
-    it "uses instance serializer" do
+    it "skips serialization if serializer is nil" do
       @attacher = @shrine::Attacher.new(column_serializer: nil)
 
       file = @shrine.upload(fakeio, :store)
@@ -76,22 +89,28 @@ describe Shrine::Plugins::Column do
       assert_nil @attacher.column_value
     end
 
-    it "uses global serializer" do
-      @shrine.plugin :column, serializer: nil
+    it "uses custom serializer" do
+      @attacher = @shrine::Attacher.new(column_serializer: RubySerializer)
+      @attacher.attach(fakeio)
 
-      @attacher = @shrine::Attacher.new
+      assert_equal @attacher.file.data.to_s, @attacher.column_value
+    end
+
+    it "skips serialization if serializer is nil" do
+      @attacher = @shrine::Attacher.new(column_serializer: nil)
       @attacher.attach(fakeio)
 
       assert_equal @attacher.file.data, @attacher.column_value
     end
+  end
 
-    it "uses instance serializer" do
-      @attacher = @shrine::Attacher.new(column_serializer: nil)
+  module RubySerializer
+    def self.dump(data)
+      data.to_s
+    end
 
-      file = @shrine.upload(fakeio, :store)
-      @attacher.load_column(file.data)
-
-      assert_equal file, @attacher.file
+    def self.load(data)
+      eval(data)
     end
   end
 end

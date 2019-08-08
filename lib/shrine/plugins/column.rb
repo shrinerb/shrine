@@ -28,7 +28,7 @@ class Shrine
     #     attacher.file #=> #<Shrine::UploadedFile>
     module Column
       def self.configure(uploader, **opts)
-        uploader.opts[:column] ||= { serializer: JSON }
+        uploader.opts[:column] ||= { serializer: JsonSerializer.new(JSON) }
         uploader.opts[:column].merge!(opts)
       end
 
@@ -83,7 +83,7 @@ class Shrine
         def serialize_column(data)
           return data unless column_serializer && data
 
-          column_serializer.generate(data)
+          column_serializer.dump(data)
         end
 
         # Converts the column data string into a hash (parses JSON by default).
@@ -96,7 +96,24 @@ class Shrine
         def deserialize_column(data)
           return data unless column_serializer && data
 
-          column_serializer.parse(data)
+          column_serializer.load(data)
+        end
+      end
+
+      # JSON.dump and JSON.load shouldn't be used with untrusted input, so we
+      # create this wrapper class which calls JSON.generate and JSON.parse
+      # instead.
+      class JsonSerializer
+        def initialize(json)
+          @json = json
+        end
+
+        def dump(data)
+          @json.generate(data)
+        end
+
+        def load(data)
+          @json.parse(data)
         end
       end
     end
