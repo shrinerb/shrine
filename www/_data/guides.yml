@@ -52,8 +52,8 @@
       name: Writing a Plugin
       path: creating_plugins.md
     -
-      name: Writing an ORM Plugin
-      path: creating_database_plugins.md
+      name: Writing a Persistence Plugin
+      path: creating_persistence_plugins.md
     -
       name: Writing a Storage
       path: creating_storages.md
