@@ -15,6 +15,22 @@ class Shrine
         def initialize(**options)
           super(**shrine_class.opts[:default_storage], **options)
         end
+
+        def cache_key
+          if @cache.respond_to?(:call)
+            @cache.call(record, name)
+          else
+            @cache
+          end
+        end
+
+        def store_key
+          if @store.respond_to?(:call)
+            @store.call(record, name)
+          else
+            @store
+          end
+        end
       end
     end
 

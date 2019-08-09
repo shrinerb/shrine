@@ -46,8 +46,6 @@
 
 * `default_url_options` – Allow overriding passed URL options by deleting them inside the block (@janko)
 
-* `default_storage` – Remove the ability to register a dynamic block (@janko)
-
 * `data_uri` – Remove `Attacher#data_uri=` and `Attacher#data_uri` methods (@janko)
 
 * `cached_attachment_data` – Rename `Attacher#read_cached` to `Attacher#cached_data` (@janko)
