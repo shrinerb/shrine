@@ -153,8 +153,8 @@ which automatically includes `Attacher#assign`, `Attacher#attach_cached`,
 
 By default, attachment data is serialized into JSON using the `JSON` standard
 library. If you want to change how data is serialized, see the
-[`column`][column] plugin docs.
+[`column`][column serializer] plugin docs.
 
 [model]: /lib/shrine/plugins/model.rb
 [entity]: /doc/plugins/entity.md#readme
-[column]: /doc/plugins/column.md#readme
+[column serializer]: /doc/plugins/column.md#serializer
