@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The module_include plugin is deprecated and will be removed in Shrine 4. Override core classes directly instead.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/module_include.md] on GitHub.

@@ -146,6 +146,3 @@ Other:
   -
     name: keep_files
     description: Prevents file deletion when replacing or removing attachment.
-  -
-    name: module_include
-    description: Allows easy extending of core classes for a given uploader.
