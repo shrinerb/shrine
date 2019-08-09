@@ -1,5 +1,7 @@
 ## HEAD
 
+* `store_dimensions` – Ignore dimensions extraction errors by default (@janko)
+
 * `file_system` – Un-deprecate `FileSystem#upload` receiving unrecognized options (@janko)
 
 ## 2.19.2 (2018-07-25)

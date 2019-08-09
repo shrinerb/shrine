@@ -14,7 +14,7 @@ class Shrine
       end
 
       def self.configure(uploader, opts = {})
-        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :warn, log_subscriber: LOG_SUBSCRIBER }
+        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :ignore, log_subscriber: LOG_SUBSCRIBER }
         uploader.opts[:store_dimensions].merge!(opts)
 
         # resolve error strategy

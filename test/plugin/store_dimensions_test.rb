@@ -22,9 +22,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
 
     it "returns nil for non-images" do
-      assert_logged /SHRINE WARNING: Error occurred/ do
-        assert_nil @shrine.extract_dimensions(fakeio)
-      end
+      assert_nil @shrine.extract_dimensions(fakeio)
     end
   end
 
@@ -43,9 +41,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
 
     it "returns nil for non-images" do
-      assert_logged /SHRINE WARNING: Error occurred/ do
-        assert_nil @shrine.extract_dimensions(fakeio)
-      end
+      assert_nil @shrine.extract_dimensions(fakeio)
     end
   end unless ENV["CI"]
 
@@ -64,9 +60,7 @@ describe Shrine::Plugins::StoreDimensions do
     end
 
     it "returns nil for non-images" do
-      assert_logged /SHRINE WARNING: Error occurred/ do
-        assert_nil @shrine.extract_dimensions(fakeio)
-      end
+      assert_nil @shrine.extract_dimensions(fakeio)
     end
   end unless ENV["CI"]
 
