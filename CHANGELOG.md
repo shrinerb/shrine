@@ -1,3 +1,7 @@
+## HEAD
+
+* `file_system` – Un-deprecate `FileSystem#upload` receiving unrecognized options (@janko)
+
 ## 2.19.2 (2018-07-25)
 
 * `default_url_options` – Allow deleting passed options when using a block (@janko)
