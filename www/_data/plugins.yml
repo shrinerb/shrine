@@ -82,6 +82,9 @@ Processing:
     name: derivation_endpoint
     description: Provides a Rack application for processing uploaded files on-the-fly.
   -
+    name: derivatives
+    description: Allows storing a collection of processed files alongside the main file.
+  -
     name: processing
     description: Allows you to define processing performed for a specific action.
   -

@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `derivatives` – Add new plugin for storing processed files (@janko)
+
 * `derivation_endpoint` – Allow using symbol and string derivation names interchangeably (@janko)
 
 * `dynamic_storage` – Remove `Shrine.dynamic_storages` method (@janko)

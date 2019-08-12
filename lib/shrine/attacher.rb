@@ -306,7 +306,7 @@ class Shrine
       #     attacher.file #=> #<Shrine::UploadedFile>
       def file=(file)
         unless file.is_a?(Shrine::UploadedFile) || file.nil?
-          fail ArgumentError, "expected a Shrine::UploadedFile or nil, got #{file.inspect}"
+          fail ArgumentError, "expected file to be a Shrine::UploadedFile or nil, got #{file.inspect}"
         end
 
         @file = file
