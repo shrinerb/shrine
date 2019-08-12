@@ -124,7 +124,7 @@ class Shrine
       when self::UploadedFile
         object
       else
-        fail Error, "cannot convert #{object.inspect} to a #{self}::UploadedFile"
+        fail ArgumentError, "cannot convert #{object.inspect} to a #{self}::UploadedFile"
       end
     end
 

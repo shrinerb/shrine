@@ -123,7 +123,7 @@ describe Shrine do
     end
 
     it "raises an error on invalid input" do
-      assert_raises(Shrine::Error) { @shrine.uploaded_file(:foo) }
+      assert_raises(ArgumentError) { @shrine.uploaded_file(:foo) }
     end
   end
 
