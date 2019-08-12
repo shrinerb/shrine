@@ -97,7 +97,7 @@ end
 
 ## Attacher
 
-#### `.from_model`
+### Loading model
 
 The `Attacher.from_model` method can be used for creating an `Attacher`
 instance backed by a model object.
@@ -114,8 +114,6 @@ attacher.attach(io)
 photo.image_data #=> '{"id":"...","storage":"...","metadata":{...}}'
 ```
 
-#### `#load_model`
-
 You can also load an entity into an existing attacher with
 `Attacher#load_model`.
 
@@ -128,7 +126,7 @@ attacher.load_model(photo, :image)
 attacher.file #=> #<ImageUploader::UploadedFile>
 ```
 
-#### `#write`
+### Writing attachment data
 
 The `Attacher#write` method writes attachment data to the `#<name>_data`
 attribute on the model instance.
@@ -144,10 +142,9 @@ attacher.write
 photo.image_data #=> '{"id":"...","storage":"...","metadata":{...}}'
 ```
 
-The `Attacher#write` method will be automatically called by `Attacher#set`,
-which automatically includes `Attacher#assign`, `Attacher#attach_cached`,
-`Attacher#attach`, `Attacher#promote` and any other attacher method that calls
-`Attacher#set`.
+The `Attacher#write` method is automatically called on `Attacher#set`, as well
+as `Attacher#assign`, `Attacher#attach_cached`, `Attacher#attach`,
+`Attacher#promote` and any other attacher method that calls `Attacher#set`.
 
 ## Serialization
 
