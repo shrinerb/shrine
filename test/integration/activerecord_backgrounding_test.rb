@@ -85,7 +85,21 @@ describe "ActiveRecord Backgrounding" do
 
   specify "destroying during promotion" do
     @user.avatar_attacher.promote_block do |attacher|
+      main = Thread.current
+
       @job = Fiber.new do
+        # JRuby implements fibers using threads, and Active Record locks a
+        # connection to a specific thread. So, the connection that created the
+        # schema will not be reused here, but a new connection will be created
+        # instead. This would be fine otherwise, but since we're using an
+        # in-memory database, that new connection wouldn't have any knowledge
+        # of the schema.
+        #
+        # To work around Active Record's bad connection pool implementation, we
+        # make ActiveRecord think Fiber's thread is the main thread, in order
+        # to force it to keep using the same connection.
+        Thread.stubs(:current).returns(main) if RUBY_ENGINE == "jruby"
+
         record = attacher.record.class.find(attacher.record.id)
 
         attacher.class
