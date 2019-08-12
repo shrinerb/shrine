@@ -17,7 +17,7 @@ describe Shrine::Plugins::RemoveAttachment do
         @shrine.plugin :model
         @model_class.include @shrine::Attachment.new(:file)
 
-        file  = @shrine.upload(fakeio, :store)
+        file  = @attacher.upload(fakeio)
         model = @model_class.new(file_data: file.to_json)
         model.remove_file = "true"
 
@@ -55,7 +55,7 @@ describe Shrine::Plugins::RemoveAttachment do
   describe "Attacher" do
     describe "#remove=" do
       it "deassigns the attached file on truthy value" do
-        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.file = @attacher.upload(fakeio)
         @attacher.remove = "true"
 
         assert_nil @attacher.file
@@ -63,7 +63,7 @@ describe Shrine::Plugins::RemoveAttachment do
       end
 
       it "keeps the file on falsy value" do
-        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.file = @attacher.upload(fakeio)
 
         @attacher.remove = ""
         refute_nil @attacher.file

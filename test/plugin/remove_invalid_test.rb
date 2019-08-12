@@ -30,7 +30,7 @@ describe Shrine::Plugins::RemoveInvalid do
       end
 
       it "reverts the previous attached file" do
-        previous_file = @shrine.upload(fakeio, :store)
+        previous_file = @attacher.upload(fakeio)
         @attacher.file = previous_file
 
         @attacher.class.validate { errors << "error" }
@@ -86,7 +86,7 @@ describe Shrine::Plugins::RemoveInvalid do
 
     describe "#validate" do
       it "doesn't remove the attachment if it isn't new" do
-        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.file = @attacher.upload(fakeio)
         @attacher.class.validate { errors << "error" }
         @attacher.validate
 

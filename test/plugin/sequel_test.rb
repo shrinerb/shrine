@@ -69,7 +69,7 @@ describe Shrine::Plugins::Sequel do
       it "finalizes attacher when attachment changes" do
         @user.class.include @shrine::Attachment.new(:avatar)
 
-        previous_file = @shrine.upload(fakeio, :store)
+        previous_file = @attacher.upload(fakeio)
         @user.avatar_data = previous_file.to_json
 
         @user.avatar = fakeio
@@ -159,7 +159,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
         @user.avatar_attacher # ensure attacher is memoized
 
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.this.update(avatar_data: file.to_json)
 
         @user.reload
@@ -173,7 +173,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
         @user.avatar_attacher # ensure attacher is memoized
 
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.this.update(avatar_data: file.to_json)
 
         @user.refresh
@@ -187,7 +187,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
         @user.avatar_attacher # ensure attacher is memoized
 
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.this.update(avatar_data: file.to_json)
 
         @user.db.transaction { @user.lock! }
@@ -583,7 +583,7 @@ describe Shrine::Plugins::Sequel do
       it "accepts current file" do
         @user.save
 
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.this.update(avatar_data: file.to_json)
 
         assert_raises(Shrine::AttachmentChanged) do
@@ -612,7 +612,7 @@ describe Shrine::Plugins::Sequel do
 
     describe "#sequel_persist" do
       it "persists the record" do
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.avatar_data = file.to_json
 
         @attacher.sequel_persist
@@ -624,7 +624,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
         @user.this.update(name: "Janko")
 
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.avatar_data = file.to_json
 
         @attacher.sequel_persist
@@ -649,7 +649,7 @@ describe Shrine::Plugins::Sequel do
       end
 
       it "is aliased to #persist" do
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         @user.avatar_data = file.to_json
 
         @attacher.persist

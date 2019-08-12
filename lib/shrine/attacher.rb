@@ -173,7 +173,7 @@ class Shrine
       #
       #     # pass additional options for the uploader
       #     attacher.upload(io, :store, metadata: { "foo" => "bar" })
-      def upload(io, storage, **options)
+      def upload(io, storage = store_key, **options)
         shrine_class.upload(io, storage, **context, **options)
       end
 

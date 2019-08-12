@@ -164,7 +164,7 @@ describe Shrine::Plugins::Versions do
   describe "Attacher" do
     describe "#assign" do
       it "assigns versions" do
-        versions = {thumb: @shrine.upload(fakeio, :cache)}
+        versions = { thumb: @shrine.upload(fakeio, :cache) }
         @attacher.assign(versions.to_json)
         assert_equal versions, @attacher.file
 

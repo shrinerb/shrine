@@ -133,7 +133,7 @@ describe Shrine::Plugins::Model do
     it "includes other entity methods" do
       @model_class.include @shrine::Attachment.new(:file)
 
-      file  = @shrine.upload(fakeio, :store)
+      file  = @attacher.upload(fakeio)
       model = @model_class.new(file_data: file.to_json)
 
       assert_equal file,     model.file
@@ -144,7 +144,7 @@ describe Shrine::Plugins::Model do
   describe "Attacher" do
     describe ".from_model" do
       it "loads the file from a model" do
-        file  = @shrine.upload(fakeio, :store)
+        file  = @attacher.upload(fakeio)
         model = @model_class.new(file_data: file.to_json)
 
         attacher = @shrine::Attacher.from_model(model, :file)
@@ -173,7 +173,7 @@ describe Shrine::Plugins::Model do
 
     describe "#load_model" do
       it "loads file from the data attribute" do
-        file  = @shrine.upload(fakeio, :store)
+        file  = @attacher.upload(fakeio)
         model = @model_class.new(file_data: file.to_json)
 
         @attacher.load_model(model, :file)
@@ -226,7 +226,7 @@ describe Shrine::Plugins::Model do
         model = @model_class.new
 
         @attacher.load_model(model, :file)
-        @attacher.set @shrine.upload(fakeio, :store)
+        @attacher.set @attacher.upload(fakeio)
 
         assert_equal @attacher.file.to_json, model.file_data
       end
@@ -235,13 +235,13 @@ describe Shrine::Plugins::Model do
         model = @model_class.new
 
         @attacher.load_entity(model, :file)
-        @attacher.set @shrine.upload(fakeio, :store)
+        @attacher.set @attacher.upload(fakeio)
 
         assert_nil model.file_data
       end
 
       it "still returns set file" do
-        file = @shrine.upload(fakeio, :store)
+        file = @attacher.upload(fakeio)
         assert_equal file, @attacher.set(file)
       end
     end
@@ -251,7 +251,7 @@ describe Shrine::Plugins::Model do
         model = @model_class.new
 
         @attacher.load_model(model, :file)
-        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.file = @attacher.upload(fakeio)
         @attacher.write
 
         assert_equal @attacher.file.to_json, model.file_data

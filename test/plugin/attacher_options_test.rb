@@ -95,13 +95,13 @@ describe Shrine::Plugins::AttacherOptions do
           assert_equal Hash[foo: "bar"], options
         end
         @attacher.destroy_options(foo: "bar")
-        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.file = @attacher.upload(fakeio)
         @attacher.attach(fakeio)
         @attacher.destroy_previous
       end
 
       it "still works without destroy options" do
-        @attacher.file = @shrine.upload(fakeio, :store)
+        @attacher.file = @attacher.upload(fakeio)
         @attacher.attach(fakeio)
         @attacher.destroy_previous
       end

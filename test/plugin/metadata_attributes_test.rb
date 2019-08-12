@@ -18,7 +18,7 @@ describe Shrine::Plugins::MetadataAttributes do
         @entity_class.option :file_type, optional: true
 
         io     = fakeio("file", content_type: "text/plain")
-        file   = @shrine.upload(io, :store)
+        file   = @attacher.upload(io)
         entity = @entity_class.new(file_data: file.to_json)
 
         @attacher.load_entity(entity, :file)
@@ -36,7 +36,7 @@ describe Shrine::Plugins::MetadataAttributes do
         @entity_class.option :original_filename, optional: true
 
         io     = fakeio("file", filename: "nature.jpg")
-        file   = @shrine.upload(io, :store)
+        file   = @attacher.upload(io)
         entity = @entity_class.new(file_data: file.to_json)
 
         @attacher.load_entity(entity, :file)
@@ -51,7 +51,7 @@ describe Shrine::Plugins::MetadataAttributes do
         @attacher.class.metadata_attributes size: :size, mime_type: :type
 
         io     = fakeio("file", content_type: "text/plain")
-        file   = @shrine.upload(io, :store)
+        file   = @attacher.upload(io)
         entity = @entity_class.new(file_data: file.to_json)
 
         @attacher.load_entity(entity, :file)
@@ -66,7 +66,7 @@ describe Shrine::Plugins::MetadataAttributes do
         @entity_class.option :file_type, optional: true
 
         io     = fakeio("file", content_type: "text/plain")
-        file   = @shrine.upload(io, :store)
+        file   = @attacher.upload(io)
         entity = @entity_class.new(file_data: file.to_json)
 
         @attacher.load_entity(entity, :file)
@@ -106,7 +106,7 @@ describe Shrine::Plugins::MetadataAttributes do
     @entity_class.option :file_type, optional: true
 
     io     = fakeio("file", content_type: "text/plain")
-    file   = @shrine.upload(io, :store)
+    file   = @attacher.upload(io)
     entity = @entity_class.new(file_data: file.to_json)
 
     @attacher.load_entity(entity, :file)

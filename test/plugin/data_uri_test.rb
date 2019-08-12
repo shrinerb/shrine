@@ -225,13 +225,13 @@ describe Shrine::Plugins::DataUri do
   describe "UploadedFile" do
     describe "#data_uri" do
       it "generates data URI from file content" do
-        file = @shrine.upload(fakeio("content"), :store)
+        file = @attacher.upload(fakeio("content"))
 
         assert_equal "data:text/plain;base64,Y29udGVudA==", file.data_uri
       end
 
       it "uses existing MIME type" do
-        file = @shrine.upload(fakeio("content"), :store)
+        file = @attacher.upload(fakeio("content"))
         file.metadata["mime_type"] = "image/jpeg"
 
         assert_equal "data:image/jpeg;base64,Y29udGVudA==", file.data_uri
@@ -240,7 +240,7 @@ describe Shrine::Plugins::DataUri do
 
     describe "#base64" do
       it "returns base64-encoded file content" do
-        file = @shrine.upload(fakeio("content"), :store)
+        file = @attacher.upload(fakeio("content"))
 
         assert_equal "Y29udGVudA==", file.base64
       end

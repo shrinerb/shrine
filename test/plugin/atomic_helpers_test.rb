@@ -75,7 +75,7 @@ describe Shrine::Plugins::AtomicHelpers do
         end
 
         it "asserts the attachment hasn't changed" do
-          file    = @shrine.upload(fakeio, :store)
+          file    = @attacher.upload(fakeio)
           @entity = @entity_class.new(file_data: file.to_json)
 
           assert_instance_of @shrine::Attacher, @shrine::Attacher.retrieve(
@@ -160,7 +160,7 @@ describe Shrine::Plugins::AtomicHelpers do
         end
 
         it "asserts the attachment hasn't changed" do
-          file   = @shrine.upload(fakeio, :store)
+          file   = @attacher.upload(fakeio)
           @model = @model_class.new(file_data: file.to_json)
 
           assert_instance_of @shrine::Attacher, @shrine::Attacher.retrieve(

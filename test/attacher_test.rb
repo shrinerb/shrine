@@ -8,7 +8,7 @@ describe Shrine::Attacher do
 
   describe ".from_data" do
     it "instantiates an attacher from file data" do
-      file     = @shrine.upload(fakeio, :store)
+      file     = @attacher.upload(fakeio)
       attacher = @shrine::Attacher.from_data(file.data)
       assert_equal file, attacher.file
     end
@@ -139,15 +139,14 @@ describe Shrine::Attacher do
 
     it "uses attacher's permanent storage" do
       @attacher = @shrine::Attacher.new(store: :other_store)
-
       @attacher.attach(fakeio)
       assert_equal :other_store, @attacher.file.storage_key
     end
 
     it "allows specifying a different storage" do
-      @attacher.attach(fakeio, storage: :cache)
+      @attacher.attach(fakeio, storage: :other_store)
       assert @attacher.file.exists?
-      assert_equal :cache, @attacher.file.storage_key
+      assert_equal :other_store, @attacher.file.storage_key
     end
 
     it "forwards additional options for upload" do
@@ -242,8 +241,8 @@ describe Shrine::Attacher do
 
     it "allows uploading to a different storage" do
       @attacher.attach(fakeio)
-      @attacher.promote(storage: :cache)
-      assert_equal :cache, @attacher.file.storage_key
+      @attacher.promote(storage: :other_store)
+      assert_equal :other_store, @attacher.file.storage_key
       assert @attacher.file.exists?
     end
 
@@ -254,29 +253,34 @@ describe Shrine::Attacher do
     end
 
     it "doesn't change the attachment" do
-      @attacher.file = @shrine.upload(fakeio, :cache)
+      @attacher.file = @attacher.upload(fakeio)
       @attacher.promote
       refute @attacher.changed?
     end
   end
 
   describe "#upload" do
-    it "uploads file to specified storage" do
-      uploaded_file = @attacher.upload(fakeio, :store)
+    it "uploads file to permanent storage" do
+      uploaded_file = @attacher.upload(fakeio)
       assert_instance_of @shrine::UploadedFile, uploaded_file
       assert uploaded_file.exists?
       assert_equal :store, uploaded_file.storage_key
+    end
+
+    it "uploads file to specified storage" do
+      uploaded_file = @attacher.upload(fakeio, :other_store)
+      assert_equal :other_store, uploaded_file.storage_key
     end
 
     it "forwards context hash" do
       @attacher.context[:foo] = "bar"
       io = fakeio
       @attacher.shrine_class.expects(:upload).with(io, :store, @attacher.context)
-      @attacher.upload(io, :store)
+      @attacher.upload(io)
     end
 
     it "forwards additional options" do
-      uploaded_file = @attacher.upload(fakeio, :store, metadata: { "foo" => "bar" })
+      uploaded_file = @attacher.upload(fakeio, metadata: { "foo" => "bar" })
       assert_equal "bar", uploaded_file.metadata["foo"]
     end
   end
@@ -305,7 +309,7 @@ describe Shrine::Attacher do
     end
 
     it "skips when attachment hasn't changed" do
-      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.file = @attacher.upload(fakeio)
       @attacher.destroy_previous
       assert @attacher.file.exists?
     end
@@ -331,7 +335,7 @@ describe Shrine::Attacher do
 
   describe "#destroy" do
     it "deletes attached file" do
-      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.file = @attacher.upload(fakeio)
       @attacher.destroy
     end
 
@@ -342,24 +346,24 @@ describe Shrine::Attacher do
 
   describe "#change" do
     it "sets the uploaded file" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.change(file)
       assert_equal file, @attacher.file
     end
 
     it "returns the uploaded file" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       assert_equal file, @attacher.change(file)
     end
 
     it "marks attacher as changed" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.change(file)
       assert @attacher.changed?
     end
 
     it "doesn't mark attacher as changed on same file" do
-      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.file = @attacher.upload(fakeio)
       @attacher.change(@attacher.file)
       refute @attacher.changed?
     end
@@ -367,18 +371,18 @@ describe Shrine::Attacher do
 
   describe "#set" do
     it "sets the uploaded file" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.set(file)
       assert_equal file, @attacher.file
     end
 
     it "returns the set file" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       assert_equal file, @attacher.set(file)
     end
 
     it "doesn't mark attacher as changed" do
-      @attacher.set @shrine.upload(fakeio, :store)
+      @attacher.set @attacher.upload(fakeio)
       refute @attacher.changed?
     end
   end
@@ -418,13 +422,13 @@ describe Shrine::Attacher do
     end
 
     it "returns true when the attachment has changed to nil" do
-      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.file = @attacher.upload(fakeio)
       @attacher.attach(nil)
       assert_equal true, @attacher.changed?
     end
 
     it "returns false when attachment hasn't changed" do
-      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.file = @attacher.upload(fakeio)
       assert_equal false, @attacher.changed?
     end
   end
@@ -511,13 +515,13 @@ describe Shrine::Attacher do
 
   describe "#load_data" do
     it "loads file from given file data" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.load_data(file.data)
       assert_equal file, @attacher.file
     end
 
     it "handles symbol keys" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.load_data(
         id:       file.id,
         storage:  file.storage_key,
@@ -527,7 +531,7 @@ describe Shrine::Attacher do
     end
 
     it "clears file when given data is nil" do
-      @attacher.file = @shrine.upload(fakeio, :store)
+      @attacher.file = @attacher.upload(fakeio)
       @attacher.load_data(nil)
       assert_nil @attacher.file
     end
@@ -535,7 +539,7 @@ describe Shrine::Attacher do
 
   describe "#file=" do
     it "sets the file" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.file = file
       assert_equal file, @attacher.file
     end
@@ -555,7 +559,7 @@ describe Shrine::Attacher do
 
   describe "#file" do
     it "returns the set file" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.file = file
       assert_equal file, @attacher.file
     end
@@ -563,17 +567,17 @@ describe Shrine::Attacher do
 
   describe "#upload_file" do
     it "instantiates an uploaded file with JSON data" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       assert_equal file, @attacher.uploaded_file(file.to_json)
     end
 
     it "instantiates an uploaded file with Hash data" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       assert_equal file, @attacher.uploaded_file(file.data)
     end
 
     it "returns file with UploadedFile" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       assert_equal file, @attacher.uploaded_file(file)
     end
   end

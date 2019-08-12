@@ -39,8 +39,8 @@ class Shrine
         end
 
         # Leaves out :validate option when calling `Shrine.upload`.
-        def upload(io, storage, validate: nil, **options)
-          super(io, storage, **options)
+        def upload(*args, validate: nil, **options)
+          super(*args, **options)
         end
 
         # Performs validations after changing the file.

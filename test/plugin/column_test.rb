@@ -9,7 +9,7 @@ describe Shrine::Plugins::Column do
 
   describe ".from_column" do
     it "loads file from column data" do
-      file     = @shrine.upload(fakeio, :store)
+      file     = @attacher.upload(fakeio)
       attacher = @shrine::Attacher.from_column(file.to_json)
 
       assert_equal file, attacher.file
@@ -46,7 +46,7 @@ describe Shrine::Plugins::Column do
 
   describe "#load_column" do
     it "loads file from serialized file data" do
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.load_column(file.to_json)
 
       assert_equal file, @attacher.file
@@ -62,7 +62,7 @@ describe Shrine::Plugins::Column do
     it "uses custom serializer" do
       @attacher = @shrine::Attacher.new(column_serializer: RubySerializer)
 
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.load_column(file.data.to_s)
 
       assert_equal file, @attacher.file
@@ -71,7 +71,7 @@ describe Shrine::Plugins::Column do
     it "skips serialization if serializer is nil" do
       @attacher = @shrine::Attacher.new(column_serializer: nil)
 
-      file = @shrine.upload(fakeio, :store)
+      file = @attacher.upload(fakeio)
       @attacher.load_column(file.data)
 
       assert_equal file, @attacher.file

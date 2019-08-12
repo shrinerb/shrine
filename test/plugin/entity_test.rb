@@ -14,7 +14,7 @@ describe Shrine::Plugins::Entity do
       it "returns the attacher from the entity instance" do
         @entity_class.include @shrine::Attachment.new(:file)
 
-        file     = @shrine.upload(fakeio, :store)
+        file     = @attacher.upload(fakeio)
         entity   = @entity_class.new(file_data: file.to_json)
         attacher = entity.file_attacher
 
@@ -56,7 +56,7 @@ describe Shrine::Plugins::Entity do
       it "returns file if it's attached" do
         @entity_class.include @shrine::Attachment.new(:file)
 
-        file   = @shrine.upload(fakeio, :store)
+        file   = @attacher.upload(fakeio)
         entity = @entity_class.new(file_data: file.to_json)
 
         assert_equal file, entity.file
@@ -75,7 +75,7 @@ describe Shrine::Plugins::Entity do
       it "returns the attached file URL" do
         @entity_class.include @shrine::Attachment.new(:file)
 
-        file   = @shrine.upload(fakeio, :store)
+        file   = @attacher.upload(fakeio)
         entity = @entity_class.new(file_data: file.to_json)
 
         assert_equal file.url, entity.file_url
@@ -92,7 +92,7 @@ describe Shrine::Plugins::Entity do
       it "forwards additional options" do
         @entity_class.include @shrine::Attachment.new(:file)
 
-        file   = @shrine.upload(fakeio, :store)
+        file   = @attacher.upload(fakeio)
         entity = @entity_class.new(file_data: file.to_json)
 
         file.storage.expects(:url).with(file.id, foo: "bar")
@@ -105,7 +105,7 @@ describe Shrine::Plugins::Entity do
   describe "Attacher" do
     describe ".from_entity" do
       it "loads the file from an entity" do
-        file   = @shrine.upload(fakeio, :store)
+        file   = @attacher.upload(fakeio)
         entity = @entity_class.new(file_data: file.to_json)
 
         attacher = @shrine::Attacher.from_entity(entity, :file)
@@ -125,7 +125,7 @@ describe Shrine::Plugins::Entity do
 
     describe "#load_entity" do
       it "loads file from the data attribute" do
-        file   = @shrine.upload(fakeio, :store)
+        file   = @attacher.upload(fakeio)
         entity = @entity_class.new(file_data: file.to_json)
 
         @attacher.load_entity(entity, :file)
@@ -136,7 +136,7 @@ describe Shrine::Plugins::Entity do
       it "respects column serializer" do
         @shrine.plugin :column, serializer: nil
 
-        file   = @shrine.upload(fakeio, :store)
+        file   = @attacher.upload(fakeio)
         entity = @entity_class.new(file_data: file.data)
 
         @attacher = @shrine::Attacher.new
