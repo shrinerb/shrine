@@ -516,6 +516,16 @@ describe Shrine::Attacher do
       assert_equal file, @attacher.file
     end
 
+    it "handles symbol keys" do
+      file = @shrine.upload(fakeio, :store)
+      @attacher.load_data(
+        id:       file.id,
+        storage:  file.storage_key,
+        metadata: file.metadata,
+      )
+      assert_equal file, @attacher.file
+    end
+
     it "clears file when given data is nil" do
       @attacher.file = @shrine.upload(fakeio, :store)
       @attacher.load_data(nil)
