@@ -30,14 +30,12 @@ class Shrine
         uploader.plugin :validation
       end
 
-      def self.configure(uploader, **opts)
-        uploader.opts[:data_uri] ||= { log_subscriber: LOG_SUBSCRIBER }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:data_uri] ||= {}
         uploader.opts[:data_uri].merge!(opts)
 
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:data_uri, &uploader.opts[:data_uri][:log_subscriber])
-        end
+        uploader.subscribe(:data_uri, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module AttachmentMethods

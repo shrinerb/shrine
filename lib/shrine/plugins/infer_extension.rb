@@ -15,14 +15,12 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, **opts)
-        uploader.opts[:infer_extension] ||= { inferrer: :mini_mime, log_subscriber: LOG_SUBSCRIBER }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:infer_extension] ||= { inferrer: :mini_mime }
         uploader.opts[:infer_extension].merge!(opts)
 
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:extension, &uploader.opts[:infer_extension][:log_subscriber])
-        end
+        uploader.subscribe(:extension, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module ClassMethods

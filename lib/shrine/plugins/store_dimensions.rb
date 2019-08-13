@@ -13,8 +13,8 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, opts = {})
-        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :warn, log_subscriber: LOG_SUBSCRIBER }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:store_dimensions] ||= { analyzer: :fastimage, on_error: :warn }
         uploader.opts[:store_dimensions].merge!(opts)
 
         # resolve error strategy
@@ -28,9 +28,7 @@ class Shrine
           end
 
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:image_dimensions, &uploader.opts[:store_dimensions][:log_subscriber])
-        end
+        uploader.subscribe(:image_dimensions, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module ClassMethods

@@ -15,14 +15,9 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, opts = {})
-        uploader.opts[:signature] ||= { log_subscriber: LOG_SUBSCRIBER }
-        uploader.opts[:signature].merge!(opts)
-
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER)
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:signature, &uploader.opts[:signature][:log_subscriber])
-        end
+        uploader.subscribe(:signature, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module ClassMethods

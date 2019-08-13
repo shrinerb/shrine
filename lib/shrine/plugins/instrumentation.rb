@@ -11,8 +11,8 @@ class Shrine
       # We use a proc in order to be able identify listeners.
       LOG_SUBSCRIBER = -> (event) { LogSubscriber.call(event) }
 
-      def self.configure(uploader, **opts)
-        uploader.opts[:instrumentation] ||= { log_subscriber: LOG_SUBSCRIBER, log_events: EVENTS }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:instrumentation] ||= { log_events: EVENTS }
         uploader.opts[:instrumentation].merge!(opts)
         uploader.opts[:instrumentation][:notifications] ||= ::ActiveSupport::Notifications
 
@@ -20,7 +20,7 @@ class Shrine
         uploader.opts[:instrumentation_subscribers] ||= Hash.new { |h, k| h[k] = [] }
 
         uploader.opts[:instrumentation][:log_events].each do |event_name|
-          uploader.subscribe(event_name, &uploader.opts[:instrumentation][:log_subscriber])
+          uploader.subscribe(event_name, &log_subscriber)
         end
       end
 
@@ -61,10 +61,6 @@ class Shrine
 
         def notifications
           Notifications.new(opts[:instrumentation][:notifications])
-        end
-
-        def log_subscriber
-          opts[:instrumentation][:log_subscriber]
         end
 
         def subscribers

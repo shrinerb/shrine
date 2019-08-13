@@ -13,14 +13,12 @@ class Shrine
         }.inspect}"
       end
 
-      def self.configure(uploader, **opts)
-        uploader.opts[:determine_mime_type] ||= { analyzer: :file, analyzer_options: {}, log_subscriber: LOG_SUBSCRIBER }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:determine_mime_type] ||= { analyzer: :file, analyzer_options: {} }
         uploader.opts[:determine_mime_type].merge!(opts)
 
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:mime_type, &uploader.opts[:determine_mime_type][:log_subscriber])
-        end
+        uploader.subscribe(:mime_type, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module ClassMethods

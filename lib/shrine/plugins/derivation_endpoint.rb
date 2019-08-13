@@ -25,8 +25,8 @@ class Shrine
         uploader.plugin :_urlsafe_serialization
       end
 
-      def self.configure(uploader, **opts)
-        uploader.opts[:derivation_endpoint_options] ||= { log_subscriber: LOG_SUBSCRIBER }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:derivation_endpoint_options] ||= {}
         uploader.opts[:derivation_endpoint_options].merge!(opts)
 
         uploader.opts[:derivation_endpoint_derivations] ||= {}
@@ -36,9 +36,7 @@ class Shrine
         end
 
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:derivation, &uploader.opts[:derivation_endpoint_options][:log_subscriber])
-        end
+        uploader.subscribe(:derivation, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module ClassMethods

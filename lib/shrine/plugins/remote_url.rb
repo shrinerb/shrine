@@ -30,8 +30,8 @@ class Shrine
         uploader.plugin :validation
       end
 
-      def self.configure(uploader, **opts)
-        uploader.opts[:remote_url] ||= { downloader: DOWNLOADER, log_subscriber: LOG_SUBSCRIBER }
+      def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
+        uploader.opts[:remote_url] ||= { downloader: DOWNLOADER }
         uploader.opts[:remote_url].merge!(opts)
 
         unless uploader.opts[:remote_url].key?(:max_size)
@@ -39,9 +39,7 @@ class Shrine
         end
 
         # instrumentation plugin integration
-        if uploader.respond_to?(:subscribe)
-          uploader.subscribe(:remote_url, &uploader.opts[:remote_url][:log_subscriber])
-        end
+        uploader.subscribe(:remote_url, &log_subscriber) if uploader.respond_to?(:subscribe)
       end
 
       module AttachmentMethods
