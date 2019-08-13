@@ -42,12 +42,7 @@ class Shrine
     # When inheriting Shrine, copy the instance variables into the subclass,
     # and create subclasses of core classes.
     def inherited(subclass)
-      subclass.instance_variable_set(:@opts, opts.dup)
-      subclass.opts.each do |key, value|
-        if value.is_a?(Enumerable) && !value.frozen?
-          subclass.opts[key] = value.dup
-        end
-      end
+      subclass.instance_variable_set(:@opts, deep_dup(opts))
       subclass.instance_variable_set(:@storages, storages.dup)
 
       file_class = Class.new(self::UploadedFile)
@@ -157,6 +152,21 @@ class Shrine
     # Prints a deprecation warning to the logger.
     def deprecation(message)
       Shrine.logger.warn "SHRINE DEPRECATION WARNING: #{message}"
+    end
+
+    private
+
+    # Deep duplicates a nested hash of options.
+    def deep_dup(collection)
+      duplicate_collection = collection.dup
+
+      if duplicate_collection.is_a?(Hash)
+        duplicate_collection.each do |key, value|
+          duplicate_collection[key] = deep_dup(value) if value.is_a?(Enumerable)
+        end
+      end
+
+      duplicate_collection
     end
   end
 

@@ -26,12 +26,10 @@ class Shrine
       end
 
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
-        uploader.opts[:derivation_endpoint_options] ||= {}
-        uploader.opts[:derivation_endpoint_options].merge!(opts)
+        uploader.opts[:derivation_endpoint] ||= { options: {}, derivations: {} }
+        uploader.opts[:derivation_endpoint][:options].merge!(opts)
 
-        uploader.opts[:derivation_endpoint_derivations] ||= {}
-
-        unless uploader.opts[:derivation_endpoint_options][:secret_key]
+        unless uploader.opts[:derivation_endpoint][:options][:secret_key]
           fail Error, "must provide :secret_key option to derivation_endpoint plugin"
         end
 
@@ -78,11 +76,11 @@ class Shrine
         end
 
         def derivations
-          opts[:derivation_endpoint_derivations]
+          opts[:derivation_endpoint][:derivations]
         end
 
         def derivation_options
-          opts[:derivation_endpoint_options]
+          opts[:derivation_endpoint][:options]
         end
       end
 

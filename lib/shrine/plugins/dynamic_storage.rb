@@ -7,16 +7,12 @@ class Shrine
     # [doc/plugins/dynamic_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/dynamic_storage.md
     module DynamicStorage
       def self.configure(uploader)
-        uploader.opts[:dynamic_storages] ||= {}
+        uploader.opts[:dynamic_storage] ||= { resolvers: {} }
       end
 
       module ClassMethods
-        def dynamic_storages
-          opts[:dynamic_storages]
-        end
-
         def storage(regex, &block)
-          dynamic_storages[regex] = block
+          opts[:dynamic_storage][:resolvers][regex] = block
         end
 
         def find_storage(name)
@@ -26,7 +22,7 @@ class Shrine
         private
 
         def resolve_dynamic_storage(name)
-          dynamic_storages.each do |regex, block|
+          opts[:dynamic_storage][:resolvers].each do |regex, block|
             if match = name.to_s.match(regex)
               return block.call(match)
             end

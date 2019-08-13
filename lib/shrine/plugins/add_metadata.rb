@@ -7,12 +7,12 @@ class Shrine
     # [doc/plugins/add_metadata.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/add_metadata.md
     module AddMetadata
       def self.configure(uploader)
-        uploader.opts[:add_metadata_definitions] ||= []
+        uploader.opts[:add_metadata] ||= { definitions: [] }
       end
 
       module ClassMethods
         def add_metadata(name = nil, &block)
-          opts[:add_metadata_definitions] << [name, block]
+          opts[:add_metadata][:definitions] << [name, block]
 
           metadata_method(name) if name
         end
@@ -42,7 +42,7 @@ class Shrine
         private
 
         def extract_custom_metadata(io, **options)
-          opts[:add_metadata_definitions].each do |name, block|
+          opts[:add_metadata][:definitions].each do |name, block|
             result = instance_exec(io, options, &block)
 
             if name

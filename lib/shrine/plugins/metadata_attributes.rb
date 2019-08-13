@@ -11,13 +11,13 @@ class Shrine
       end
 
       def self.configure(uploader, mappings = {})
-        uploader.opts[:metadata_attributes_mappings] ||= {}
-        uploader.opts[:metadata_attributes_mappings].merge!(mappings)
+        uploader.opts[:metadata_attributes] ||= { mappings: {} }
+        uploader.opts[:metadata_attributes][:mappings].merge!(mappings)
       end
 
       module AttacherClassMethods
         def metadata_attributes(mappings)
-          shrine_class.opts[:metadata_attributes_mappings].merge!(mappings)
+          shrine_class.opts[:metadata_attributes][:mappings].merge!(mappings)
         end
       end
 
@@ -25,7 +25,7 @@ class Shrine
         def column_values
           values = super
 
-          shrine_class.opts[:metadata_attributes_mappings].each do |source, destination|
+          shrine_class.opts[:metadata_attributes][:mappings].each do |source, destination|
             metadata_attribute = destination.is_a?(Symbol) ? :"#{name}_#{destination}" : :"#{destination}"
 
             next unless record.respond_to?(metadata_attribute)

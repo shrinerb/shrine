@@ -1,5 +1,9 @@
 ## 3.0.0 (unreleased)
 
+* `dynamic_storage` – Remove `Shrine.dynamic_storages` method (@janko)
+
+* `core` – Deep duplicate `Shrine.opts` on subclassing (@janko)
+
 * `core` – Add `Attacher#file!` which asserts that a file is attached (@janko)
 
 * `core` – Change `Shrine.uploaded_file` to raise `ArgumentError` on invalid input (@janko)

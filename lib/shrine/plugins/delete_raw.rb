@@ -7,7 +7,7 @@ class Shrine
     # [doc/plugins/delete_raw.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/delete_raw.md
     module DeleteRaw
       def self.configure(uploader, **opts)
-        uploader.opts[:delete_raw] = {}
+        uploader.opts[:delete_raw] ||= {}
         uploader.opts[:delete_raw].merge!(opts)
       end
 

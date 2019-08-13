@@ -12,12 +12,9 @@ class Shrine
       LOG_SUBSCRIBER = -> (event) { LogSubscriber.call(event) }
 
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
-        uploader.opts[:instrumentation] ||= { log_events: EVENTS }
+        uploader.opts[:instrumentation] ||= { log_events: EVENTS, subscribers: {} }
         uploader.opts[:instrumentation].merge!(opts)
         uploader.opts[:instrumentation][:notifications] ||= ::ActiveSupport::Notifications
-
-        # we assign it to the top-level so that it's duplicated on subclassing
-        uploader.opts[:instrumentation_subscribers] ||= Hash.new { |h, k| h[k] = [] }
 
         uploader.opts[:instrumentation][:log_events].each do |event_name|
           uploader.subscribe(event_name, &log_subscriber)
@@ -48,12 +45,13 @@ class Shrine
         #     end
         def subscribe(event_name, &subscriber)
           return if subscriber.nil?
-          return if subscribers[event_name].include?(subscriber)
+          return if subscribers[event_name]&.include?(subscriber)
 
           notifications.subscribe("#{event_name}.shrine") do |event|
             subscriber.call(event) if event[:uploader] <= self
           end
 
+          subscribers[event_name] ||= []
           subscribers[event_name] << subscriber
         end
 
@@ -64,7 +62,7 @@ class Shrine
         end
 
         def subscribers
-          opts[:instrumentation_subscribers]
+          opts[:instrumentation][:subscribers]
         end
       end
 

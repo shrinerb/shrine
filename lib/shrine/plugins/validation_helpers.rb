@@ -6,15 +6,6 @@ class Shrine
     #
     # [doc/plugins/validation_helpers.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/validation_helpers.md
     module ValidationHelpers
-      def self.load_dependencies(uploader, *)
-        uploader.plugin :validation
-      end
-
-      def self.configure(uploader, opts = {})
-        uploader.opts[:validation_default_messages] ||= {}
-        uploader.opts[:validation_default_messages].merge!(opts[:default_messages] || {})
-      end
-
       DEFAULT_MESSAGES = {
         max_size:            -> (max)  { "size must not be greater than #{PRETTY_FILESIZE.call(max)}" },
         min_size:            -> (min)  { "size must not be less than #{PRETTY_FILESIZE.call(min)}" },
@@ -28,7 +19,7 @@ class Shrine
         mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
         extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
         extension_exclusion: -> (list) { "extension must not be one of: #{list.join(", ")}" },
-      }
+      }.freeze
 
       FILESIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"].freeze
 
@@ -43,10 +34,18 @@ class Shrine
         "%.1f %s" % [bytes.to_f / 1024 ** exp, FILESIZE_UNITS[exp]]
       end
 
+      def self.load_dependencies(uploader, *)
+        uploader.plugin :validation
+      end
+
+      def self.configure(uploader, default_messages: {}, **opts)
+        uploader.opts[:validation_helpers] ||= { default_messages: DEFAULT_MESSAGES.dup }
+        uploader.opts[:validation_helpers][:default_messages].merge!(default_messages)
+      end
+
       module AttacherClassMethods
         def default_validation_messages
-          @default_validation_messages ||= DEFAULT_MESSAGES.merge(
-            shrine_class.opts[:validation_default_messages])
+          shrine_class.opts[:validation_helpers][:default_messages]
         end
       end
 
