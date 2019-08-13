@@ -72,7 +72,7 @@ class Shrine
         # Registers a derivation block, which is called when the corresponding
         # derivation URL is requested.
         def derivation(name, &block)
-          derivations[name] = block
+          derivations[name.to_sym] = block
         end
 
         def derivations
@@ -123,7 +123,7 @@ class Shrine
     attr_reader :name, :args, :source, :options
 
     def initialize(name:, args:, source:, options:)
-      @name    = name
+      @name    = name.to_sym
       @args    = args
       @source  = source
       @options = options

@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `derivation_endpoint` – Allow using symbol and string derivation names interchangeably (@janko)
+
 * `dynamic_storage` – Remove `Shrine.dynamic_storages` method (@janko)
 
 * `core` – Deep duplicate `Shrine.opts` on subclassing (@janko)

@@ -17,7 +17,6 @@ describe Shrine::Plugins::DerivationEndpoint do
     @shrine.derivation(:gray) do |file, type|
       tempfile = Tempfile.new
       tempfile << ["gray", *type, "content"].join(" ")
-      tempfile.rewind
       tempfile
     end
   end
@@ -926,6 +925,23 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert result.binmode?
         assert_equal "gray content", result.read
         assert_equal "gray content", File.read(result.path)
+      end
+
+      it "handles string derivation names" do
+        tempfile = @uploaded_file.derivation("gray").generate
+        assert_instance_of Tempfile, tempfile
+        assert_equal "gray content", tempfile.read
+      end
+
+      it "handles string derivation blocks" do
+        @shrine.derivation("string") do |file, type|
+          tempfile = Tempfile.new
+          tempfile << "string"
+          tempfile
+        end
+        tempfile = @uploaded_file.derivation(:string).generate
+        assert_instance_of Tempfile, tempfile
+        assert_equal "string", tempfile.read
       end
 
       it "fails when derivative is of unsupported type" do
