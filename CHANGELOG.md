@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Add `Attacher#file!` which asserts that a file is attached (@janko)
+
 * `core` – Change `Shrine.uploaded_file` to raise `ArgumentError` on invalid input (@janko)
 
 * `module_include` – Deprecate plugin over overriding core classes directly (@janko)

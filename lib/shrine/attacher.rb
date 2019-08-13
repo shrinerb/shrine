@@ -312,6 +312,11 @@ class Shrine
         @file = file
       end
 
+      # Returns attached file or raises an exception if no file is attached.
+      def file!
+        file or fail Error, "no file is attached"
+      end
+
       # Converts JSON or Hash data into a Shrine::UploadedFile object.
       #
       #     attacher.uploaded_file('{"id":"...","storage":"...","metadata":{...}}')

@@ -558,10 +558,26 @@ describe Shrine::Attacher do
   end
 
   describe "#file" do
-    it "returns the set file" do
+    it "returns set file" do
       file = @attacher.upload(fakeio)
       @attacher.file = file
       assert_equal file, @attacher.file
+    end
+
+    it "returns nil when no file is set" do
+      assert_nil @attacher.file
+    end
+  end
+
+  describe "#file!" do
+    it "returns set file" do
+      file = @attacher.upload(fakeio)
+      @attacher.file = file
+      assert_equal file, @attacher.file!
+    end
+
+    it "raises exception" do
+      assert_raises(Shrine::Error) { @attacher.file! }
     end
   end
 
