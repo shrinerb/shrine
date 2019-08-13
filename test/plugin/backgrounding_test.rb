@@ -14,13 +14,13 @@ describe Shrine::Plugins::Backgrounding do
       it "registers a promote block" do
         assert_nil @attacher.class.promote_block
 
-        @attacher.class.promote_block { |attacher| }
+        @attacher.class.promote_block {}
 
         assert_instance_of Proc, @attacher.class.promote_block
       end
 
       it "survives inheritance" do
-        @attacher.class.promote_block { |attacher| }
+        @attacher.class.promote_block {}
 
         shrine_subclass   = Class.new(@shrine)
         attacher_subclass = shrine_subclass::Attacher
@@ -33,13 +33,13 @@ describe Shrine::Plugins::Backgrounding do
       it "registers a destroy block" do
         assert_nil @attacher.class.destroy_block
 
-        @attacher.class.destroy_block { |attacher| }
+        @attacher.class.destroy_block {}
 
         assert_instance_of Proc, @attacher.class.destroy_block
       end
 
       it "survives inheritance" do
-        @attacher.class.destroy_block { |attacher| }
+        @attacher.class.destroy_block {}
 
         shrine_subclass   = Class.new(@shrine)
         attacher_subclass = shrine_subclass::Attacher
@@ -52,19 +52,19 @@ describe Shrine::Plugins::Backgrounding do
       it "registers a promote block" do
         assert_nil @attacher.promote_block
 
-        @attacher.promote_block { |attacher| }
+        @attacher.promote_block {}
 
         assert_instance_of Proc, @attacher.promote_block
       end
 
       it "overrides a class-level promote block" do
-        @attacher.class.promote_block { |attacher| }
+        @attacher.class.promote_block {}
 
         @attacher = @attacher.class.new
 
         assert_equal @attacher.class.promote_block, @attacher.promote_block
 
-        @attacher.promote_block { |attacher| }
+        @attacher.promote_block {}
 
         refute_equal @attacher.class.promote_block, @attacher.promote_block
       end
@@ -74,13 +74,13 @@ describe Shrine::Plugins::Backgrounding do
       it "registers a destroy block" do
         assert_nil @attacher.class.destroy_block
 
-        @attacher.class.destroy_block { |attacher| }
+        @attacher.class.destroy_block {}
 
         assert_instance_of Proc, @attacher.class.destroy_block
       end
 
       it "overrides a class-level destroy block" do
-        @attacher.class.destroy_block { |attacher| }
+        @attacher.class.destroy_block {}
 
         @attacher = @attacher.class.new
 
@@ -158,19 +158,6 @@ describe Shrine::Plugins::Backgrounding do
     end
 
     describe "#promote" do
-      it "is still synchronous by default" do
-        @attacher.promote_block do |attacher|
-          @job = Fiber.new { attacher.promote }
-        end
-
-        @attacher.attach_cached(fakeio)
-        @attacher.promote(location: "foo")
-
-        assert @attacher.stored?
-        assert_equal "foo", @attacher.file.id
-        assert_nil @job
-      end
-
       it "accepts :background option" do
         @attacher.promote_block do |attacher|
           @job = Fiber.new { attacher.promote }
@@ -182,6 +169,33 @@ describe Shrine::Plugins::Backgrounding do
         assert @attacher.cached?
         @job.resume
         assert @attacher.stored?
+      end
+
+      it "evaluates promote block without attacher argument inside Attacher instance" do
+        this = nil
+        @attacher.promote_block do |**options|
+          this = self
+          promote
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.promote(background: true)
+
+        assert_equal @attacher, this
+        assert @attacher.stored?
+      end
+
+      it "is still synchronous by default" do
+        @attacher.promote_block do |attacher|
+          @job = Fiber.new { attacher.promote }
+        end
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote(location: "foo")
+
+        assert @attacher.stored?
+        assert_equal "foo", @attacher.file.id
+        assert_nil @job
       end
     end
 
@@ -305,18 +319,6 @@ describe Shrine::Plugins::Backgrounding do
     end
 
     describe "#destroy" do
-      it "is still synchronous by default" do
-        @attacher.destroy_block do |attacher|
-          @job = Fiber.new { attacher.destroy }
-        end
-
-        @attacher.attach(fakeio)
-        @attacher.destroy
-
-        refute @attacher.file.exists?
-        assert_nil @job
-      end
-
       it "accepts :background option" do
         @attacher.destroy_block do |attacher|
           @job = Fiber.new { attacher.destroy }
@@ -328,6 +330,32 @@ describe Shrine::Plugins::Backgrounding do
         assert @attacher.file.exists?
         @job.resume
         refute @attacher.file.exists?
+      end
+
+      it "evaluates destroy block without attacher argument inside Attacher instance" do
+        this = nil
+        @attacher.destroy_block do |**options|
+          this = self
+          destroy
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.destroy(background: true)
+
+        assert_equal @attacher, this
+        refute @attacher.file.exists?
+      end
+
+      it "is still synchronous by default" do
+        @attacher.destroy_block do |attacher|
+          @job = Fiber.new { attacher.destroy }
+        end
+
+        @attacher.attach(fakeio)
+        @attacher.destroy
+
+        refute @attacher.file.exists?
+        assert_nil @job
       end
     end
   end

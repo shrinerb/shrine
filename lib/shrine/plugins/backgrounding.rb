@@ -10,12 +10,8 @@ class Shrine
     #
     # ## Promotion
     #
-    #     attacher.promote_block do |attacher|
-    #       Attachment::PromoteJob.perform_async(
-    #         attacher.record,
-    #         attacher.name,
-    #         attacher.data,
-    #       )
+    #     attacher.promote_block do
+    #       Attachment::PromoteJob.perform_async(record, name, data)
     #     end
     #
     #     attacher.assign(io)
@@ -36,8 +32,8 @@ class Shrine
     #
     # ## Deletion
     #
-    #     attacher.destroy_block do |attacher|
-    #       Attachment::DeleteJob.perform_async(attacher.data)
+    #     attacher.destroy_block do
+    #       Attachment::DestroyJob.perform_async(data)
     #     end
     #
     #     previous_file = attacher.file
@@ -57,7 +53,7 @@ class Shrine
     #
     # The delete worker can be implemented like this:
     #
-    #     class Attachment::DeleteJob
+    #     class Attachment::DestroyJob
     #       def perform(data)
     #         attacher = Shrine::Attacher.from_data(data)
     #         attacher.destroy
@@ -68,16 +64,12 @@ class Shrine
     #
     # You can also register promotion and deletion hooks globally:
     #
-    #     Shrine::Attacher.promote_block do |attacher|
-    #       Attachment::PromoteJob.perform_async(
-    #         attacher.record,
-    #         attacher.name,
-    #         attacher.data,
-    #       )
+    #     Shrine::Attacher.promote_block do
+    #       Attachment::PromoteJob.perform_async(record, name, data)
     #     end
     #
-    #     Shrine::Attacher.destroy_block do |attacher|
-    #       Attachment::PromoteJob.perform_async(attacher.data)
+    #     Shrine::Attacher.destroy_block do
+    #       Attachment::DestroyJob.perform_async(data)
     #     end
     module Backgrounding
       def self.configure(uploader)
@@ -152,7 +144,7 @@ class Shrine
         # otherwise promotes synchronously.
         def promote(background: false, **options)
           if promote_block && background
-            promote_block.call(self, **options)
+            background_block(promote_block, **options)
           else
             super(**options)
           end
@@ -168,9 +160,19 @@ class Shrine
         # otherwise destroys synchronously.
         def destroy(background: false, **options)
           if destroy_block && background
-            destroy_block.call(self, **options)
+            background_block(destroy_block, **options)
           else
             super(**options)
+          end
+        end
+
+        private
+
+        def background_block(block, **options)
+          if block.arity == 1
+            block.call(self, **options)
+          else
+            instance_exec(**options, &block)
           end
         end
       end
