@@ -84,9 +84,6 @@ Processing:
   -
     name: derivatives
     description: Allows storing a collection of processed files alongside the main file.
-  -
-    name: recache
-    description: Allows you to do additional processing before the background job.
 
 Downloading:
   -

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The recache plugin is deprecated and will be removed in Shrine 4. If you were using it with versions plugin, use the new derivatives plugin instead.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/recache.md] on GitHub.

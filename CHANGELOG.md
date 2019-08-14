@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `recache` – Deprecate plugin in favour of `derivatives` (@janko)
+
 * `processing` – Deprecate plugin in favour of `derivatives` (@janko)
 
 * `versions` – Deprecate plugin in favour of `derivatives` (@janko)
