@@ -684,7 +684,7 @@ Shrine::Storage::S3.new(
 The object data can be configured via the `:upload_options` hash:
 
 ```rb
-Shrine::Storage::S3.new(upload_options: {content_disposition: "attachment"}, **options)
+Shrine::Storage::S3.new(upload_options: { content_disposition: "attachment" }, **options)
 ```
 
 #### `:fog_public`
@@ -692,16 +692,16 @@ Shrine::Storage::S3.new(upload_options: {content_disposition: "attachment"}, **o
 The object permissions can be configured with the `:acl` upload option:
 
 ```rb
-Shrine::Storage::S3.new(upload_options: {acl: "private"}, **options)
+Shrine::Storage::S3.new(upload_options: { acl: "private" }, **options)
 ```
 
 #### `:fog_authenticated_url_expiration`
 
 The `#url` method accepts the `:expires_in` option, you can set the default
-expiration with the `default_url_options` plugin:
+expiration with the `url_options` plugin:
 
 ```rb
-plugin :default_url_options, store: {expires_in: 600}
+plugin :url_options, store: { expires_in: 600 }
 ```
 
 #### `:fog_use_ssl_for_aws`, `:fog_aws_accelerate`

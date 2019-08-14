@@ -109,9 +109,6 @@ Settings:
     name: default_url
     description: Allows setting the URL which will be returned on missing attachments.
   -
-    name: default_url_options
-    description: Allows you to specify default URL options for uploaded files.
-  -
     name: dynamic_storage
     description: Allows you to define storages dynamically based on their identifier.
   -
@@ -119,7 +116,10 @@ Settings:
     description: Generates a more organized directory structure on the storage.
   -
     name: upload_options
-    description: Allows dynamically creating and forwarding storage-specific upload options.
+    description: Allows setting default storage-specific upload options.
+  -
+    name: url_options
+    description: Allows setting default storage-specific URL options.
 
 Other:
   -

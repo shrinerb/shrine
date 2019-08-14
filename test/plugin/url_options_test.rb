@@ -1,16 +1,16 @@
 require "test_helper"
-require "shrine/plugins/default_url_options"
+require "shrine/plugins/url_options"
 
-describe Shrine::Plugins::DefaultUrlOptions do
+describe Shrine::Plugins::UrlOptions do
   before do
-    @uploader = uploader { plugin :default_url_options }
+    @uploader = uploader { plugin :url_options }
     @shrine   = @uploader.class
   end
 
   describe "UploadedFile" do
     describe "#url" do
       it "adds default options statically" do
-        @shrine.plugin :default_url_options, store: { foo: "foo" }
+        @shrine.plugin :url_options, store: { foo: "foo" }
 
         file = @uploader.upload(fakeio)
         file.storage.expects(:url).with(file.id, { foo: "foo" })
@@ -20,7 +20,7 @@ describe Shrine::Plugins::DefaultUrlOptions do
       it "adds default options dynamically" do
         minitest = self
 
-        @uploader.class.plugin :default_url_options, store: -> (io, **options) do
+        @uploader.class.plugin :url_options, store: -> (io, **options) do
           minitest.assert_kind_of Shrine::UploadedFile, io
           minitest.assert_equal "bar", options[:bar]
 
@@ -33,7 +33,7 @@ describe Shrine::Plugins::DefaultUrlOptions do
       end
 
       it "merges default options with direct options" do
-        @shrine.plugin :default_url_options, store: { foo: "foo" }
+        @shrine.plugin :url_options, store: { foo: "foo" }
 
         file = @uploader.upload(fakeio)
         file.storage.expects(:url).with(file.id, { foo: "foo", bar: "bar" })
@@ -41,7 +41,7 @@ describe Shrine::Plugins::DefaultUrlOptions do
       end
 
       it "allows direct options to override default options" do
-        @shrine.plugin :default_url_options, store: { foo: "foo" }
+        @shrine.plugin :url_options, store: { foo: "foo" }
 
         file = @uploader.upload(fakeio)
         file.storage.expects(:url).with(file.id, { foo: "overriden" })
@@ -49,13 +49,13 @@ describe Shrine::Plugins::DefaultUrlOptions do
       end
 
       it "handles nil values" do
-        @shrine.plugin :default_url_options, store: nil
+        @shrine.plugin :url_options, store: nil
 
         file = @uploader.upload(fakeio)
         file.storage.expects(:url).with(file.id, { foo: "foo" })
         file.url(foo: "foo")
 
-        @shrine.plugin :default_url_options, store: -> (io, **options) {}
+        @shrine.plugin :url_options, store: -> (io, **options) {}
 
         file = @uploader.upload(fakeio)
         file.storage.expects(:url).with(file.id, { foo: "foo" })
@@ -63,7 +63,7 @@ describe Shrine::Plugins::DefaultUrlOptions do
       end
 
       it "allows overriding passed options" do
-        @shrine.plugin :default_url_options, store: -> (io, options) {
+        @shrine.plugin :url_options, store: -> (io, options) {
           { foo: "#{options.delete(:foo)} bar" }
         }
 

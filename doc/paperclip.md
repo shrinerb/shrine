@@ -552,7 +552,7 @@ You can use the `upload_options` plugin to set upload options dynamically.
 The object metadata can be configured with the `:metadata` upload option:
 
 ```rb
-Shrine::Storage::S3.new(upload_options: {metadata: {"key" => "value"}}, **options)
+Shrine::Storage::S3.new(upload_options: { metadata: { "key" => "value" } }, **options)
 ```
 
 You can use the `upload_options` plugin to set upload options dynamically.
@@ -560,10 +560,10 @@ You can use the `upload_options` plugin to set upload options dynamically.
 #### `:s3_protocol`, `:s3_host_alias`, `:s3_host_name`
 
 The `#url` method accepts a `:host` option for specifying a CDN host. You can
-use the `default_url_options` plugin to set it by default:
+use the `url_options` plugin to set it by default:
 
 ```rb
-Shrine.plugin :default_url_options, store: {host: "http://abc123.cloudfront.net"}
+Shrine.plugin :url_options, store: { host: "http://abc123.cloudfront.net" }
 ```
 
 #### `:path`

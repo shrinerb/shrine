@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `default_url_options` – Rename to just `url_options` (@janko)
+
 * `delete_raw` – Deprecate plugin in favour of `derivatives` (@janko)
 
 * `recache` – Deprecate plugin in favour of `derivatives` (@janko)
