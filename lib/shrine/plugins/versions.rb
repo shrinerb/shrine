@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The versions plugin is deprecated and will be removed in Shrine 4. Use the new derivatives plugin instead.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/versions.md] on GitHub.

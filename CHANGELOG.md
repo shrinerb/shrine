@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `versions` – Deprecate plugin in favour of `derivatives` (@janko)
+
 * `derivatives` – Add new plugin for storing processed files (@janko)
 
 * `derivation_endpoint` – Allow using symbol and string derivation names interchangeably (@janko)

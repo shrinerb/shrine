@@ -90,9 +90,6 @@ Processing:
   -
     name: recache
     description: Allows you to do additional processing before the background job.
-  -
-    name: versions
-    description: Gives uploader class the ability to handle processed versions of a file.
 
 Downloading:
   -
