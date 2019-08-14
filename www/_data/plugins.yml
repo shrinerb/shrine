@@ -133,7 +133,7 @@ Other:
     description: Allows the included attachments to define additional methods on the model.
   -
     name: instrumentation
-    description: Logs expensive events that happen during attachment.
+    description: Publishes and logs events for some main operations.
   -
     name: keep_files
     description: Prevents file deletion when replacing or removing attachment.

@@ -1,7 +1,7 @@
 # Instrumentation
 
-The [`instrumentation`][instrumentation] plugin sends events for various
-operations to a centralized notification component. In addition to that it
+The [`instrumentation`][instrumentation] plugin publishes events for various
+operations to a centralized notification component. In addition to that, it
 provides default logging for these events.
 
 ```rb
