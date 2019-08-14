@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Shrine.deprecation("The processing plugin is deprecated and will be removed in Shrine 4. If you were using it with versions plugin, use the new derivatives plugin instead.")
+
 class Shrine
   module Plugins
     # Documentation lives in [doc/plugins/processing.md] on GitHub.

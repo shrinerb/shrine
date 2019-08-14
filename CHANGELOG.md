@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `processing` – Deprecate plugin in favour of `derivatives` (@janko)
+
 * `versions` – Deprecate plugin in favour of `derivatives` (@janko)
 
 * `derivatives` – Add new plugin for storing processed files (@janko)
