@@ -29,6 +29,14 @@ Flow:
     name: upload_endpoint
     description: Provides a Rack application that forwards file uploads to specified storage.
 
+Processing:
+  -
+    name: derivation_endpoint
+    description: Provides a Rack application for processing uploaded files on-the-fly.
+  -
+    name: derivatives
+    description: Allows storing a collection of processed files alongside the main file.
+
 Source:
   -
     name: data_uri
@@ -73,14 +81,6 @@ Metadata:
   -
     name: store_dimensions
     description: Allows you to store image dimensions as additional metadata.
-
-Processing:
-  -
-    name: derivation_endpoint
-    description: Provides a Rack application for processing uploaded files on-the-fly.
-  -
-    name: derivatives
-    description: Allows storing a collection of processed files alongside the main file.
 
 Downloading:
   -
