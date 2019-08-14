@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `delete_raw` – Deprecate plugin in favour of `derivatives` (@janko)
+
 * `recache` – Deprecate plugin in favour of `derivatives` (@janko)
 
 * `processing` – Deprecate plugin in favour of `derivatives` (@janko)

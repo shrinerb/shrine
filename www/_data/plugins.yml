@@ -76,9 +76,6 @@ Metadata:
 
 Processing:
   -
-    name: delete_raw
-    description: Automatically deletes raw files after they've been uploaded.
-  -
     name: derivation_endpoint
     description: Provides a Rack application for processing uploaded files on-the-fly.
   -
