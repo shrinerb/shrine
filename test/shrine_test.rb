@@ -366,6 +366,12 @@ describe Shrine do
       assert_raises(IOError) { io.read }
     end
 
+    it "accepts :close option" do
+      @uploader.upload(io = fakeio, close: false)
+
+      assert_equal "", io.read
+    end
+
     it "doesn't error when storage already closed the file" do
       @uploader.storage.instance_eval { def upload(io, *); super; io.close; end }
       @uploader.upload(fakeio)

@@ -234,10 +234,10 @@ class Shrine
 
     private
 
-    def _upload(io, location:, metadata:, upload_options: {}, **)
+    def _upload(io, location:, metadata:, upload_options: {}, close: true, **)
       storage.upload(io, location, shrine_metadata: metadata, **upload_options)
     ensure
-      io.close rescue nil
+      io.close rescue nil if close
     end
 
     # Attempts to extract the appropriate filename from the IO object.

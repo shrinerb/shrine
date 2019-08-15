@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – Add `:close` option to `Shrine#upload` for preventing closing file after upload (@janko)
+
 * `memory` – Add `Shrine::Storage::Memory` from `shrine-memory` gem (@janko)
 
 * `default_url_options` – Rename to just `url_options` (@janko)
