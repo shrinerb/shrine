@@ -115,6 +115,30 @@ describe Shrine::Plugins::StoreDimensions do
     end
   end
 
+  it "respects :on_error option" do
+    assert_logged /Error occurred when attempting to extract image dimensions/ do
+      @shrine.extract_dimensions(fakeio)
+    end
+
+    @shrine.plugin :store_dimensions, on_error: :warn
+
+    assert_logged /Error occurred when attempting to extract image dimensions/ do
+      @shrine.extract_dimensions(fakeio)
+    end
+
+    @shrine.plugin :store_dimensions, on_error: :fail
+
+    assert_raises FastImage::FastImageException do
+      @shrine.extract_dimensions(fakeio)
+    end
+
+    @shrine.plugin :store_dimensions, on_error: :ignore
+
+    refute_logged /Error occurred when attempting to extract image dimensions/ do
+      @shrine.extract_dimensions(fakeio)
+    end
+  end
+
   it "automatically extracts dimensions on upload" do
     uploaded_file = @uploader.upload(image)
     assert_equal 100, uploaded_file.metadata["width"]

@@ -2,6 +2,7 @@ require "test_helper"
 require "shrine/plugins/instrumentation"
 require "active_support/notifications"
 require "dry-monitor"
+require "delegate"
 
 describe Shrine::Plugins::Instrumentation do
   before do
@@ -13,6 +14,37 @@ describe Shrine::Plugins::Instrumentation do
   after do
     # clear all subscribers
     ActiveSupport::Notifications.notifier = ActiveSupport::Notifications::Fanout.new
+  end
+
+  class CustomNotifications
+    def initialize
+      @notifications = Dry::Monitor::Notifications.new(:test)
+    end
+
+    def subscribe(event_name, &block)
+      @notifications.register_event(event_name)
+      @notifications.subscribe(event_name) do |event|
+        yield Event.new(event)
+      end
+    end
+
+    def instrument(*args, &block)
+      @notifications.instrument(*args, &block)
+    end
+
+    class Event < SimpleDelegator
+      def name
+        __getobj__.id
+      end
+
+      def duration
+        __getobj__[:time]
+      end
+
+      def payload
+        __getobj__.payload.reject { |k, v| k == :time }
+      end
+    end
   end
 
   describe "Shrine" do
@@ -43,8 +75,8 @@ describe Shrine::Plugins::Instrumentation do
         @shrine.instrument(:my_event, foo: "bar") {}
 
         assert_instance_of ActiveSupport::Notifications::Event, @event
-        assert_equal "bar", @event.payload[:foo]
-        assert_instance_of Float, @event.duration
+        assert_equal "bar",                                     @event.payload[:foo]
+        assert_instance_of Float,                               @event.duration
       end
 
       it "sends notification to Dry::Monitor::Notifications" do
@@ -59,6 +91,18 @@ describe Shrine::Plugins::Instrumentation do
         assert_instance_of Dry::Events::Event, @event
         assert_equal "bar",                    @event[:foo]
         assert_kind_of Integer,                @event[:time]
+      end
+
+      it "sends notification to custom notifications object" do
+        notifications = CustomNotifications.new
+        @shrine.plugin :instrumentation, notifications: notifications
+
+        notifications.subscribe("my_event.shrine") { |event| @event = event }
+        @shrine.instrument(:my_event, foo: "bar") {}
+
+        assert_instance_of CustomNotifications::Event, @event
+        assert_equal "bar",                            @event.payload[:foo]
+        assert_instance_of Integer,                    @event.duration
       end
     end
 
@@ -77,6 +121,18 @@ describe Shrine::Plugins::Instrumentation do
 
       it "yields events for ActiveSupport::Notifications" do
         @shrine.plugin :instrumentation, notifications: ActiveSupport::Notifications
+        @shrine.subscribe(:my_event) { |event| @event = event }
+        @shrine.instrument(:my_event, foo: "bar") {}
+
+        refute_nil @event
+        assert_equal :my_event,        @event.name
+        assert_equal "bar",            @event[:foo]
+        assert_equal %i[foo uploader], @event.payload.keys.sort
+        assert_kind_of Integer,        @event.duration
+      end
+
+      it "yields events for custom notifications object" do
+        @shrine.plugin :instrumentation, notifications: CustomNotifications.new
         @shrine.subscribe(:my_event) { |event| @event = event }
         @shrine.instrument(:my_event, foo: "bar") {}
 

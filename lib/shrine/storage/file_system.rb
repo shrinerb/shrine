@@ -172,10 +172,12 @@ class Shrine
           Dir.empty?(path)
         end
       else
+        # :nocov:
         def dir_empty?(path)
           Dir.foreach(path) { |x| return false unless [".", ".."].include?(x) }
           true
         end
+        # :nocov:
       end
     end
   end

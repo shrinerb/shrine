@@ -101,15 +101,22 @@ class Shrine
           FileBody.new(file, range: range)
         end
 
-        # Parses the value of a "Range" HTTP header.
+        # Retrieves a range value parsed from HTTP "Range" header.
         def parse_content_range(range_header)
-          if Rack.release >= "2.0"
-            ranges = Rack::Utils.get_byte_ranges(range_header, file.size)
-          else
-            ranges = Rack::Utils.byte_ranges({ "HTTP_RANGE" => range_header }, file.size)
-          end
-
+          ranges = get_byte_ranges(range_header)
           ranges.first if ranges && ranges.one?
+        end
+
+        if Rack.release >= "2.0"
+          def get_byte_ranges(range_header)
+            Rack::Utils.get_byte_ranges(range_header, file.size)
+          end
+        else
+          # :nocov:
+          def get_byte_ranges(range_header)
+            Rack::Utils.byte_ranges({ "HTTP_RANGE" => range_header }, file.size)
+          end
+          # :nocov:
         end
       end
 

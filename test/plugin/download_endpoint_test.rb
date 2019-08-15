@@ -96,8 +96,9 @@ describe Shrine::Plugins::DownloadEndpoint do
   end
 
   it "returns 404 for nonexisting storage" do
-    @uploaded_file.delete
-    response = app.get(@uploaded_file.download_url)
+    url = @uploaded_file.download_url
+    @shrine.storages.delete(@uploaded_file.storage_key)
+    response = app.get(url)
     assert_equal 404,              response.status
     assert_equal "File Not Found", response.body_binary
     assert_equal "text/plain",     response.content_type

@@ -51,6 +51,16 @@ describe Shrine::Plugins::RestoreCachedData do
 
         assert_equal "bar", metadata_options[:foo]
       end
+
+      it "works with versions plugin" do
+        @shrine.plugin :versions
+        cached_file = @attacher.upload(fakeio("a" * 1024), :cache)
+        cached_file.metadata["size"] = 5
+
+        @attacher.attach_cached("version" => cached_file.data)
+
+        assert_equal 1024, @attacher.file[:version].metadata["size"]
+      end
     end
   end
 end

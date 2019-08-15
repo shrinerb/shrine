@@ -540,8 +540,10 @@ class Shrine
       if Rack.release > "2"
         server.serving(Rack::Request.new(env), path)
       else
+        # :nocov:
         server.path = path
         server.serving(env)
+        # :nocov:
       end
     end
 
