@@ -107,12 +107,12 @@ class Shrine
           self
         end
 
-        # Returns a hash with entity attribute name and column value.
+        # Returns a hash with entity attribute name and column data.
         #
         #     attacher.column_values
         #     #=> { image_data: '{"id":"...","storage":"...","metadata":{...}}' }
         def column_values
-          { attribute => column_value }
+          { attribute => column_data }
         end
 
         # Returns the entity attribute name used for reading and writing

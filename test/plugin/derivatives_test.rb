@@ -22,7 +22,7 @@ describe Shrine::Plugins::Derivatives do
       it "returns the hash of derivatives" do
         @attacher.add_derivatives(one: fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.derivatives, entity.file_derivatives
       end
@@ -30,7 +30,7 @@ describe Shrine::Plugins::Derivatives do
       it "forward arguments" do
         @attacher.add_derivatives(one: fakeio, two: { three: fakeio })
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.derivatives[:one],         entity.file_derivatives(:one)
         assert_equal @attacher.derivatives[:two][:three], entity.file_derivatives(:two, :three)
@@ -47,7 +47,7 @@ describe Shrine::Plugins::Derivatives do
       it "returns derivatives with arguments" do
         @attacher.add_derivatives(one: fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.derivatives[:one], entity.file(:one)
       end
@@ -55,7 +55,7 @@ describe Shrine::Plugins::Derivatives do
       it "still returns original file without arguments" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.file, entity.file
       end
@@ -63,7 +63,7 @@ describe Shrine::Plugins::Derivatives do
       it "raises exception when #[] is used with symbol key" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_raises(Shrine::Error) { entity.file[:one] }
       end
@@ -71,7 +71,7 @@ describe Shrine::Plugins::Derivatives do
       it "still allows calling #[] with string keys" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.file.size, entity.file["size"]
       end
@@ -81,7 +81,7 @@ describe Shrine::Plugins::Derivatives do
       it "returns derivative URL with arguments" do
         @attacher.add_derivatives(one: fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.derivatives[:one].url, entity.file_url(:one)
         assert_equal @attacher.derivatives[:one].url, entity.file_url(:one, foo: "bar")
@@ -90,7 +90,7 @@ describe Shrine::Plugins::Derivatives do
       it "still returns original file URL without arguments" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_value)
+        entity = @entity_class.new(file_data: @attacher.column_data)
 
         assert_equal @attacher.file.url, entity.file_url
         assert_equal @attacher.file.url, entity.file_url(foo: "bar")
@@ -885,10 +885,10 @@ describe Shrine::Plugins::Derivatives do
         @attacher.load_model(model, :file)
 
         @attacher.attach(fakeio)
-        assert_equal @attacher.column_value, model.file_data
+        assert_equal @attacher.column_data, model.file_data
 
         @attacher.add_derivatives(one: fakeio)
-        assert_equal @attacher.column_value, model.file_data
+        assert_equal @attacher.column_data, model.file_data
       end
     end
 

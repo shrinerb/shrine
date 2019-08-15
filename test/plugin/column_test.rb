@@ -78,29 +78,29 @@ describe Shrine::Plugins::Column do
     end
   end
 
-  describe "#column_value" do
+  describe "#column_data" do
     it "returns serialized file data" do
       @attacher.attach(fakeio)
 
-      assert_equal @attacher.file.to_json, @attacher.column_value
+      assert_equal @attacher.file.to_json, @attacher.column_data
     end
 
     it "returns nil when no file is attached" do
-      assert_nil @attacher.column_value
+      assert_nil @attacher.column_data
     end
 
     it "uses custom serializer" do
       @attacher = @shrine::Attacher.new(column_serializer: RubySerializer)
       @attacher.attach(fakeio)
 
-      assert_equal @attacher.file.data.to_s, @attacher.column_value
+      assert_equal @attacher.file.data.to_s, @attacher.column_data
     end
 
     it "skips serialization if serializer is nil" do
       @attacher = @shrine::Attacher.new(column_serializer: nil)
       @attacher.attach(fakeio)
 
-      assert_equal @attacher.file.data, @attacher.column_value
+      assert_equal @attacher.file.data, @attacher.column_data
     end
   end
 

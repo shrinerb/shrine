@@ -104,7 +104,7 @@
 
 * `column` – Allow changing column serializer from default `JSON` library (@janko)
 
-* `column` – Addd `Attacher#column_value` and `Attacher.from_column` methods (@janko)
+* `column` – Add `Attacher#column_data` and `Attacher.from_column` methods (@janko)
 
 * `column` – Add new plugin for (de)serializing attacher data (@janko)
 

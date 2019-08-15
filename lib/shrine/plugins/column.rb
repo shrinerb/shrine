@@ -44,10 +44,10 @@ class Shrine
           load_data(deserialize_column(data))
         end
 
-        # Returns column data as a serialized string (JSON by default).
+        # Returns attacher data as a serialized string (JSON by default).
         #
-        #     attacher.column_value #=> '{"id":"...","storage":"...","metadata":{...}}'
-        def column_value
+        #     attacher.column_data #=> '{"id":"...","storage":"...","metadata":{...}}'
+        def column_data
           serialize_column(data)
         end
 

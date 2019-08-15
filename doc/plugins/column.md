@@ -10,18 +10,18 @@ plugin :column
 
 ## Serializing
 
-The `Attacher#column_value` method returns attached file data in serialized
+The `Attacher#column_data` method returns attached file data in serialized
 format, ready to be persisted into a database column.
 
 ```rb
 attacher.attach(io)
-attacher.column_value #=> '{"id":"...","storage":"...","metadata":{...}}'
+attacher.column_data #=> '{"id":"...","storage":"...","metadata":{...}}'
 ```
 
 If there is no attached file, `nil` is returned.
 
 ```rb
-attacher.column_value #=> nil
+attacher.column_data #=> nil
 ```
 
 If you want to retrieve this data as a Hash, use `Attacher#data` instead.
