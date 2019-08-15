@@ -238,14 +238,14 @@ class Shrine
         #
         #     attacher.process_derivatives(:thumbnails)
         #     #=> { small: #<File:...>, medium: #<File:...>, large: #<File:...> }
-        def process_derivatives(processor_name, original = nil, **options)
-          processor = derivatives_processor(processor_name)
+        def process_derivatives(processor_name, source = nil, **options)
+          processor    = derivatives_processor(processor_name)
+          fetch_source = source ? source.method(:tap) : file!.method(:download)
+          result       = nil
 
-          if original
-            result = _process_derivatives(processor_name, original, **options)
-          else
-            result = file!.download do |original|
-              _process_derivatives(processor_name, original, **options)
+          fetch_source.call do |source_file|
+            instrument_derivatives(processor_name, options) do
+              result = instance_exec(source_file, **options, &processor)
             end
           end
 
@@ -370,15 +370,6 @@ class Shrine
         end
 
         private
-
-        # Calls the processor with the original file and options.
-        def _process_derivatives(processor_name, original, **options)
-          processor = derivatives_processor(processor_name)
-
-          instrument_derivatives(processor_name, options) do
-            instance_exec(original, **options, &processor)
-          end
-        end
 
         # Sends a `derivatives.shrine` event for instrumentation plugin.
         def instrument_derivatives(processor_name, processor_options, &block)
