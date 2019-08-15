@@ -2,33 +2,9 @@
 
 class Shrine
   module Plugins
-    # The entity plugin allows the attacher to be initialized from an
-    # **immutable** struct.
+    # Documentation lives in [doc/plugins/entity.md] on GitHub.
     #
-    #     class Photo
-    #       attr_reader :image_data
-    #     end
-    #
-    #     photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
-    #
-    #     attacher = Shrine::Attacher.from_entity(photo, :image)
-    #     attacher.file #=> #<Shrine::UploadedFile>
-    #
-    # ## Attachment module
-    #
-    # It's also possible to operate with the attacher through the attachment
-    # module included into the entity.
-    #
-    #     class Photo
-    #       include Shrine::Attachment(:image)
-    #       attr_reader :image_data
-    #     end
-    #
-    #     photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
-    #     photo.image_attacher #=> #<Shrine::Attacher>
-    #
-    #     photo.image     #=> #<Shrine::UploadedFile>
-    #     photo.image_url #=> "..."
+    # [doc/plugins/entity.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/entity.md
     module Entity
       def self.load_dependencies(uploader, **)
         uploader.plugin :column

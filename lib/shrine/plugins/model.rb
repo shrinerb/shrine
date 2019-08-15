@@ -2,43 +2,9 @@
 
 class Shrine
   module Plugins
-    # The model plugin allows the attacher to be backed by a **mutable** struct.
+    # Documentation lives in [doc/plugins/model.md] on GitHub.
     #
-    #     class Photo
-    #       attr_accessor :image_data
-    #     end
-    #
-    #     photo = Photo.new(image_data: uploaded_file.to_json)
-    #
-    #     attacher = Shrine::Attacher.from_model(photo, :image)
-    #     attacher.file #=> #<Shrine::UploadedFile>
-    #
-    #     attacher.attach_cached(io)
-    #     photo.image_data #=> '{"storage":"cache", ...}'
-    #
-    #     attacher.promote
-    #     photo.image_data #=> '{"storage":"store", ...}'
-    #
-    # ## Attachment module
-    #
-    # It's also possible to operate with the attacher through the attachment
-    # module included into the model.
-    #
-    #     class Photo
-    #       include Shrine::Attachment(:image)
-    #       attr_accessor :image_data
-    #     end
-    #
-    #     photo = Photo.new
-    #     photo.image_attacher #=> #<Shrine::Attacher>
-    #
-    #     photo.image = io
-    #     photo.image # cached file
-    #
-    #     photo.image_attacher.promote
-    #     photo.image # stored file
-    #
-    #     photo.image_url #=> "..."
+    # [doc/plugins/model.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/model.md
     module Model
       def self.load_dependencies(uploader, **)
         uploader.plugin :entity

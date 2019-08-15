@@ -4,10 +4,10 @@ require "json"
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/column.md] on GitHub.
+    #
+    # [doc/plugins/column.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/column.md
     module Column
-      # Documentation lives in [doc/plugins/column.md] on GitHub.
-      #
-      # [doc/plugins/column.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/column.md
       def self.configure(uploader, **opts)
         uploader.opts[:column] ||= { serializer: JsonSerializer.new(JSON) }
         uploader.opts[:column].merge!(opts)
