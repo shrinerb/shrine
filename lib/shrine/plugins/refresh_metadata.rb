@@ -15,12 +15,9 @@ class Shrine
 
       module FileMethods
         def refresh_metadata!(**options)
-          refreshed_metadata =
-            if opened?
-              uploader.send(:get_metadata, self, metadata: true, **options)
-            else
-              open { uploader.send(:get_metadata, self, metadata: true, **options) }
-            end
+          return open { refresh_metadata!(**options) } unless opened?
+
+          refreshed_metadata = uploader.send(:get_metadata, self, metadata: true, **options)
 
           @metadata = @metadata.merge(refreshed_metadata)
         end
