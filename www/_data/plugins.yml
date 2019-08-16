@@ -23,9 +23,6 @@ Flow:
     name: presign_endpoint
     description: Provides a Rack application that generates signatures for direct uploads to specified storage.
   -
-    name: remove_invalid
-    description: Automatically deletes and de-assigns a new assigned file if it's invalid.
-  -
     name: upload_endpoint
     description: Provides a Rack application that forwards file uploads to specified storage.
 
@@ -49,6 +46,9 @@ Source:
     description: Allows your models to accept attachments as remote URLs.
 
 Validation:
+  -
+    name: remove_invalid
+    description: Automatically deletes and deassigns a new assigned file if it's invalid.
   -
     name: validation
     description: Provides generic file validation interface.
