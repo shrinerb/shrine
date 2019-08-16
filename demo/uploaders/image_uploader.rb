@@ -33,7 +33,7 @@ class ImageUploader < Shrine
   plugin :remove_attachment
   plugin :pretty_location
   plugin :validation_helpers
-  plugin :store_dimensions, analyzer: :mini_magick
+  plugin :store_dimensions, analyzer: :mini_magick, log_subscriber: nil
   plugin :derivatives, versions_compatibility: true
   plugin :derivation_endpoint, prefix: "derivations/image"
 

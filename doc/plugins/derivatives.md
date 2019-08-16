@@ -112,7 +112,7 @@ photo.image_data #=>
 ```
 
 Any additional options passed to `Attacher#store_derivatives` are forwarded to
-[`Attacher#upload_derivatives`](#upload-derivatives).
+[`Attacher#upload_derivatives`](#uploading-derivatives).
 
 ```rb
 attacher.store_derivatives(:thumbnails, storage: :other_store)                  # specify destination storage
@@ -493,7 +493,8 @@ attacher.upload_derivative :thumb, thumbnail_file,
 ```
 
 A `:derivative` option is automatically passed to the uploader and holds the
-name of the derivative:
+name of the derivative, which you can use when extracting metadata, generating
+location or generating upload options:
 
 ```rb
 class MyUploader < Shrine
