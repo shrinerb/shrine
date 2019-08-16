@@ -25,7 +25,7 @@ class Shrine
           attacher ||= from_model(record, name, **options) if model
           attacher ||= from_entity(record, name, **options) if entity
 
-          if attacher.file != from_data(data).file
+          if attacher.file != attacher.class.from_data(data).file
             fail Shrine::AttachmentChanged, "attachment has changed"
           end
 
