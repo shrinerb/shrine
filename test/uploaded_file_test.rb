@@ -499,6 +499,7 @@ describe Shrine::UploadedFile do
     assert_equal uploaded_file(metadata: { "foo" => "foo" }), uploaded_file(metadata: { "bar" => "bar" })
     refute_equal uploaded_file(id: "foo"), uploaded_file(id: "bar")
     refute_equal uploaded_file(storage: "store"), uploaded_file(storage: "cache")
+    refute_equal StringIO.new, uploaded_file
   end
 
   it "implements hash equality" do

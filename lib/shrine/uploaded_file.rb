@@ -222,8 +222,8 @@ class Shrine
       # Returns true if the other UploadedFile is uploaded to the same
       # storage and it has the same #id.
       def ==(other)
-        other.is_a?(self.class) &&
-        self.id == other.id &&
+        self.class       == other.class       &&
+        self.id          == other.id          &&
         self.storage_key == other.storage_key
       end
       alias eql? ==

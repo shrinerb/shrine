@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `core` – In `UploadedFile#==` require files to be of the same class (@janko)
+
 * `core` – Add `:close` option to `Shrine#upload` for preventing closing file after upload (@janko)
 
 * `memory` – Add `Shrine::Storage::Memory` from `shrine-memory` gem (@janko)
