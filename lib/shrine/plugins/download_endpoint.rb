@@ -102,17 +102,9 @@ class Shrine
     private
 
     def handle_request(request)
-      _, *components = request.path_info.split("/")
+      _, serialized, * = request.path_info.split("/")
 
-      if components.count == 1
-        uploaded_file = get_uploaded_file(components.first)
-      elsif components.count == 2
-        # handle legacy "/:storage/:id" URLs
-        uploaded_file = @shrine_class::UploadedFile.new(
-          storage: components.first,
-          id:      components.last,
-        )
-      end
+      uploaded_file = get_uploaded_file(serialized)
 
       serve_file(uploaded_file, request)
     end
@@ -158,7 +150,8 @@ class Shrine
       uploaded_file.open(**download_options)
     end
 
-    # Returns a Shrine::UploadedFile, or returns 404 if file doesn't exist.
+    # Deserializes a Shrine::UploadedFile from a URL component. Returns 404 if
+    # storage is not found.
     def get_uploaded_file(serialized)
       uploaded_file = @shrine_class::UploadedFile.urlsafe_load(serialized)
       not_found! unless uploaded_file.exists?

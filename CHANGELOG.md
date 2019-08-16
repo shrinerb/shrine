@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `download_endpoint` – Drop support for legacy `/:storage/:id` URLs (@janko)
+
 * `core` – In `UploadedFile#==` require files to be of the same class (@janko)
 
 * `core` – Add `:close` option to `Shrine#upload` for preventing closing file after upload (@janko)

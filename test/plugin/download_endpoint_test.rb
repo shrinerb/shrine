@@ -142,9 +142,4 @@ describe Shrine::Plugins::DownloadEndpoint do
     assert_equal "#<#{@shrine}::DownloadEndpoint>", endpoint.inspect
     assert_equal "#<#{@shrine}::DownloadEndpoint>", endpoint.to_s
   end
-
-  it "supports legacy URLs" do
-    response = app.get("/#{@uploaded_file.storage_key}/#{@uploaded_file.id}")
-    assert_equal @uploaded_file.read, response.body_binary
-  end
 end
