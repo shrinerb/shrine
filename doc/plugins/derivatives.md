@@ -194,8 +194,8 @@ By default, `#<name>_url` method will return `nil` if derivative is not found.
 You can use the [`default_url`][default_url] plugin to set up URL fallbacks:
 
 ```rb
-Attacher.default_url do |derivative:, **|
-  "https://fallbacks.com/#{derivative}.jpg"
+Attacher.default_url do |derivative: nil, **|
+  "https://fallbacks.com/#{derivative}.jpg" if derivative
 end
 ```
 ```rb
@@ -455,15 +455,15 @@ metadata extraction, location generation and upload options generation.
 class MyUploader < Shrine
   plugin :add_metadata
 
-  add_metadata :md5 do |io, derivative:, **|
+  add_metadata :md5 do |io, derivative: nil, **|
     calculate_signature(io, :md5) unless derivative
   end
 
-  def generate_location(io, derivative:, **)
+  def generate_location(io, derivative: nil, **)
     "location/for/#{derivative}"
   end
 
-  plugin :upload_options, store: -> (io, derivative:, **) {
+  plugin :upload_options, store: -> (io, derivative: nil, **) {
     { acl: "public-read" } if derivative
   }
 end
