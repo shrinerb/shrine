@@ -38,14 +38,14 @@
 -
   Migrating:
     -
-      name: Migrating to Different Location
+      name: Changing Derivatives
+      path: changing_derivatives.md
+    -
+      name: Changing Location
       path: changing_location.md
     -
-      name: Migrating to Different Storage
-      path: migrating_storage.md
-    -
-      name: Reprocessing Versions
-      path: regenerating_versions.md
+      name: Changing Storage
+      path: changing_storage.md
 
   Extending:
     -

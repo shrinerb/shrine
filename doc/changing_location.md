@@ -1,31 +1,66 @@
-# Migrating to Different Location
+# Changing Location
 
-You have a production app with already uploaded attachments. However, you've
-realized that the existing store folder structure for attachments isn't working
-for you.
+This guide provides tips for changing location of uploaded files in production,
+with zero downtime.
 
-The first step is to change the location, by overriding `#generate_location` or
-with the pretty_location plugin, and deploy that change. This will make any new
-files upload to the desired location, attachments on old locations will still
-continue to work normally.
-
-The next step is to run a script that will move old files to new locations. The
-easiest way to do that is to reupload them and delete them. Shrine has a method
-exactly for that, `Attacher#promote`, which also handles the situation when
-someone attaches a new file during "moving" (since we're running this script on
-live production).
+The examples will use the [Sequel] ORM, but it should easily translate to
+Active Record. Let's assume we have a `Photo` model with an `image` attachment:
 
 ```rb
-Shrine.plugin :delete_promoted
-
-User.paged_each do |user|
-  attacher = user.avatar_attacher
-  attacher.promote(action: :migrate) if attacher.stored?
-  # use `attacher._promote(action: :migrate)` if you want promoting to be backgrounded
+Shrine.plugin :sequel
+```
+```rb
+class ImageUploader < Shrine
+  # ...
+end
+```
+```rb
+class Photo < Sequel::Model
+  include ImageUploader::Attachment(:image)
 end
 ```
 
-The `:action` is not mandatory, it's just for better introspection when
-monitoring background jobs and logs.
+## 1. Updating location generation
+
+Since Shrine generates location only once during upload, it is safe to change
+the `Shrine#generate_location` method, all existing files will still continue
+to work.
+
+```rb
+class ImageUploader < Shrine
+  def generate_location(io, **options)
+    # change location generation
+  end
+end
+```
+
+We can now deploy this change.
+
+## 2. Moving existing files
+
+To move existing files to new location, we can run the following script:
+
+```rb
+Photo.paged_each do |photo|
+  attacher = photo.image_attacher
+
+  next unless attacher.stored? # move only attachments uploaded to permanent storage
+
+  old_attacher = attacher.dup
+
+  attacher.set             attacher.upload(attacher.file)                    # reupload file
+  attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives) # reupload derivatives
+
+  begin
+    attacher.atomic_persist # persist changes if attachment has not changed in the meantime
+    old_attacher.destroy    # delete files on old location
+  rescue Shrine::AttachmentChanged, # attachment has changed
+         Sequel::NoExistingObject   # record has been deleted
+    attacher.destroy # delete now orphaned files
+  end
+end
+```
 
 Now all your existing attachments should be happily living on new locations.
+
+[Sequel]: http://sequel.jeremyevans.net/
