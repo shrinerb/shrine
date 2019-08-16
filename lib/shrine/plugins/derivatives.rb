@@ -161,6 +161,18 @@ class Shrine
           map_derivative(derivatives) { |_, derivative| derivative.delete }
         end
 
+        # Calls processor and adds returned derivatives.
+        #
+        #     Attacher.derivatives_processor :my_processor do |original|
+        #       # ...
+        #     end
+        #
+        #     attacher.store_derivatives(:my_processor)
+        def store_derivatives(processor_name, **options)
+          files = process_derivatives(processor_name)
+          add_derivatives(files, **options)
+        end
+
         # Uploads given hash of files and adds uploaded files to the
         # derivatives hash.
         #
@@ -174,9 +186,9 @@ class Shrine
         #     #   thumb: #<Shrine::UploadedFile>,
         #     #   cropped: #<Shrine::UploadedFile>,
         #     # }
-        def add_derivatives(files, **options, &block)
+        def add_derivatives(files, **options)
           new_derivatives = upload_derivatives(files, **options)
-          merge_derivatives(new_derivatives, &block)
+          merge_derivatives(new_derivatives)
           new_derivatives
         end
 
@@ -197,13 +209,23 @@ class Shrine
           derivatives[name]
         end
 
+        # Calls processor and uploads returned derivatives.
+        #
+        #     Attacher.derivatives_processor :my_processor do |original|
+        #       # ...
+        #     end
+        #
+        #     attacher.create_derivatives(:my_processor)
+        def create_derivatives(processor_name, **options)
+          files = process_derivatives(processor_name)
+          upload_derivatives(files, **options)
+        end
+
         # Uploads given hash of files.
         #
         #     hash = attacher.upload_derivatives(thumb: thumb)
         #     hash[:thumb] #=> #<Shrine::UploadedFile>
         def upload_derivatives(files, **options)
-          files = process_derivatives(files) if files.is_a?(Symbol)
-
           map_derivative(files) do |path, file|
             path = derivative_path(path)
 
@@ -219,7 +241,7 @@ class Shrine
           storage  ||= derivatives_storage(path)
           derivative = upload(file, storage, derivative: path, **options)
 
-          delete_file(file) if file.respond_to?(:path) && delete
+          delete_derivative_file(file) if file.respond_to?(:path) && delete
 
           derivative
         end
@@ -256,21 +278,14 @@ class Shrine
           result
         end
 
-        # Merges given uploaded derivatives with current derivatives.
+        # Deep merges given uploaded derivatives with current derivatives.
         #
         #     attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
         #     attacher.merge_derivatives(two: uploaded_file)
         #     attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
-        #
-        # An optional block is forwarded to `Hash#merge` and allows for deep
-        # merging.
-        #
-        #     attacher.derivatives #=> { thumbnail: { small: #<Shrine::UploadedFile> } }
-        #     attacher.merge_derivatives(thumbnail: { large: uploaded_file }) { |k, v1, v2| v1.merge(v2) }
-        #     attacher.derivatives #=> { thumbnail: { small: #<Shrine::UploadedFile>, large: #<Shrine::UploadedFile> } }
-        def merge_derivatives(new_derivatives, &block)
+        def merge_derivatives(new_derivatives)
           @derivatives_mutex.synchronize do
-            merged_derivatives = derivatives.merge(new_derivatives, &block)
+            merged_derivatives = deep_merge_derivatives(derivatives, new_derivatives)
             set_derivatives(merged_derivatives)
           end
         end
@@ -480,8 +495,19 @@ class Shrine
           storage
         end
 
+        # Deep merge nested hashes/arrays.
+        def deep_merge_derivatives(o1, o2)
+          if o1.is_a?(Hash) && o2.is_a?(Hash)
+            o1.merge(o2) { |_, v1, v2| deep_merge_derivatives(v1, v2) }
+          elsif o1.is_a?(Array) && o2.is_a?(Array)
+            o1 + o2
+          else
+            o2
+          end
+        end
+
         # Closes and deletes given file, ignoring if it's already deleted.
-        def delete_file(file)
+        def delete_derivative_file(file)
           file.close
           File.unlink(file.path)
         rescue Errno::ENOENT

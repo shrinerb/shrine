@@ -397,12 +397,46 @@ describe Shrine::Plugins::Derivatives do
         refute derivatives[:one].exists?
       end
 
-      it "handles nested derivatives" do
+      it "works with nested derivatives" do
         derivatives = { one: { two: @attacher.upload(fakeio) } }
 
         @attacher.delete_derivatives(derivatives)
 
         refute derivatives[:one][:two].exists?
+      end
+
+      it "works with top level array" do
+        derivatives = [@attacher.upload(fakeio)]
+
+        @attacher.delete_derivatives(derivatives)
+
+        refute derivatives[0].exists?
+      end
+    end
+
+    describe "#store_derivatives" do
+      it "calls processor, then uploads and saves results" do
+        @attacher.class.derivatives_processor :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        @attacher.attach fakeio("file")
+        @attacher.store_derivatives(:reversed)
+
+        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:reversed]
+        assert_equal "elif", @attacher.derivatives[:reversed].read
+      end
+
+      it "forwards additional options for uploading" do
+        @attacher.class.derivatives_processor :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        @attacher.attach fakeio("file")
+        @attacher.store_derivatives(:reversed, storage: :other_store, location: "foo")
+
+        assert_equal :other_store, @attacher.derivatives[:reversed].storage_key
+        assert_equal "foo",        @attacher.derivatives[:reversed].id
       end
     end
 
@@ -413,32 +447,7 @@ describe Shrine::Plugins::Derivatives do
         assert_equal :store, @attacher.derivatives[:one].storage_key
       end
 
-      it "accepts processor name" do
-        @attacher.class.derivatives_processor :reversed do |original|
-          { reversed: StringIO.new(original.read.reverse) }
-        end
-
-        @attacher.attach fakeio("file")
-        @attacher.add_derivatives(:reversed)
-
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:reversed]
-        assert_equal "elif", @attacher.derivatives[:reversed].read
-      end
-
-      it "returns added derivatives" do
-        derivatives = @attacher.add_derivatives(one: fakeio("one"))
-
-        assert_instance_of @shrine::UploadedFile, derivatives[:one]
-        assert_equal "one", derivatives[:one].read
-      end
-
-      it "handles nested derivatives" do
-        @attacher.add_derivatives(one: { two: fakeio })
-
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:one][:two]
-      end
-
-      it "merges files with existing derivatives" do
+      it "merges new derivatives with existing derivatives" do
         @attacher.add_derivatives(one: fakeio)
         @attacher.add_derivatives(two: fakeio)
 
@@ -446,25 +455,16 @@ describe Shrine::Plugins::Derivatives do
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:two]
       end
 
-      it "accepts merge block" do
-        @attacher.add_derivatives(nested: { one: fakeio })
-        @attacher.add_derivatives(nested: { two: fakeio }) { |k, v1, v2| v1.merge(v2) }
+      it "returns added derivatives" do
+        derivatives = @attacher.add_derivatives(one: fakeio("one"))
 
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:nested][:one]
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:nested][:two]
+        assert_equal @attacher.derivatives, derivatives
       end
 
-      it "accepts additional options" do
+      it "forwards additional options for uploading" do
         @attacher.add_derivatives({ one: fakeio }, storage: :other_store)
 
         assert_equal :other_store, @attacher.derivatives[:one].storage_key
-      end
-
-      it "handles string keys" do
-        derivatives = @attacher.add_derivatives("one" => fakeio)
-
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:one]
-        assert_kind_of Shrine::UploadedFile, derivatives[:one]
       end
     end
 
@@ -475,6 +475,14 @@ describe Shrine::Plugins::Derivatives do
         assert_equal :store, @attacher.derivatives[:one].storage_key
       end
 
+      it "merges new derivative with existing derivatives" do
+        @attacher.add_derivative(:one, fakeio)
+        @attacher.add_derivative(:two, fakeio)
+
+        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:one]
+        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:two]
+      end
+
       it "returns added derivative" do
         derivative = @attacher.add_derivative(:one, fakeio("one"))
 
@@ -482,24 +490,36 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "one", derivative.read
       end
 
-      it "accepts additional options" do
+      it "forwards additional options for uploading" do
         @attacher.add_derivative(:one, fakeio, storage: :other_store)
 
         assert_equal :other_store, @attacher.derivatives[:one].storage_key
       end
+    end
 
-      it "handles string keys" do
-        @attacher.add_derivative("one", fakeio)
+    describe "#create_derivatives" do
+      it "calls processor and uploads results" do
+        @attacher.class.derivatives_processor :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
 
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:one]
+        @attacher.attach fakeio("file")
+        derivatives = @attacher.create_derivatives(:reversed)
+
+        assert_kind_of Shrine::UploadedFile, derivatives[:reversed]
+        assert_equal "elif", derivatives[:reversed].read
       end
 
-      it "merges with existing derivatives" do
-        @attacher.add_derivative(:one, fakeio)
-        @attacher.add_derivative(:two, fakeio)
+      it "forwards additional options for uploading" do
+        @attacher.class.derivatives_processor :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
 
-        assert_equal %i[one two], @attacher.derivatives.keys
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:two]
+        @attacher.attach fakeio("file")
+        derivatives = @attacher.create_derivatives(:reversed, storage: :other_store, location: "foo")
+
+        assert_equal :other_store, derivatives[:reversed].storage_key
+        assert_equal "foo",        derivatives[:reversed].id
       end
     end
 
@@ -512,25 +532,13 @@ describe Shrine::Plugins::Derivatives do
         assert derivatives[:one].exists?
       end
 
-      it "accepts processor name" do
-        @attacher.class.derivatives_processor :reversed do |original|
-          { reversed: StringIO.new(original.read.reverse) }
-        end
-
-        @attacher.attach fakeio("file")
-        derivatives = @attacher.upload_derivatives(:reversed)
-
-        assert_kind_of Shrine::UploadedFile, derivatives[:reversed]
-        assert_equal "elif", derivatives[:reversed].read
-      end
-
-      it "passes derivative name for uploading" do
+      it "passes derivative name to the uploader" do
         io = fakeio
-        @shrine.any_instance.expects(:extract_metadata).with(io, derivative: :one).returns({})
+        @shrine.expects(:upload).with(io, :store, derivative: :one)
         @attacher.upload_derivatives(one: io)
 
         io = fakeio
-        @shrine.any_instance.expects(:extract_metadata).with(io, derivative: [:one, :two]).returns({})
+        @shrine.expects(:upload).with(io, :store, derivative: [:one, :two])
         @attacher.upload_derivatives(one: { two: io })
       end
 
@@ -538,11 +546,10 @@ describe Shrine::Plugins::Derivatives do
         derivatives = @attacher.upload_derivatives({ one: fakeio }, storage: :other_store)
 
         assert_equal :other_store, derivatives[:one].storage_key
-
         assert derivatives[:one].exists?
       end
 
-      it "handles nested derivatives" do
+      it "works with nested derivatives" do
         derivatives = @attacher.upload_derivatives(one: { two: fakeio })
 
         assert_kind_of Shrine::UploadedFile, derivatives[:one][:two]
@@ -550,14 +557,12 @@ describe Shrine::Plugins::Derivatives do
         assert derivatives[:one][:two].exists?
       end
 
-      it "handles string keys" do
+      it "coerces string keys" do
         io = fakeio
-        @shrine.any_instance.expects(:extract_metadata).with(io, derivative: :one).returns({})
         derivatives = @attacher.upload_derivatives("one" => io)
         assert_kind_of Shrine::UploadedFile, derivatives[:one]
 
         io = fakeio
-        @shrine.any_instance.expects(:extract_metadata).with(io, derivative: [:one, :two]).returns({})
         derivatives = @attacher.upload_derivatives("one" => { "two" => io })
         assert_kind_of Shrine::UploadedFile, derivatives[:one][:two]
       end
@@ -573,7 +578,7 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "one", derivative.read
       end
 
-      it "uses :storage plugin option" do
+      it "infers destination storage from :storage plugin option" do
         @shrine.plugin :derivatives, storage: :other_store
         derivative = @attacher.upload_derivative(:one, fakeio)
         assert_equal :other_store, derivative.storage_key
@@ -588,7 +593,7 @@ describe Shrine::Plugins::Derivatives do
         assert_equal :other_store, derivative.storage_key
       end
 
-      it "uses Attacher.derivative_storage value" do
+      it "infers destination storage from Attacher.derivative_storage value" do
         @attacher.class.derivatives_storage :other_store
         derivative = @attacher.upload_derivative(:one, fakeio)
         assert_equal :other_store, derivative.storage_key
@@ -603,19 +608,19 @@ describe Shrine::Plugins::Derivatives do
         assert_equal :other_store, derivative.storage_key
       end
 
-      it "allows selecting storage" do
+      it "uses :storage option passed to the method" do
         derivative = @attacher.upload_derivative(:one, fakeio, storage: :other_store)
 
         assert_equal :other_store, derivative.storage_key
       end
 
-      it "forwards derivative name for uploading" do
+      it "passes derivative name to the uploader" do
         io = fakeio
-        @shrine.any_instance.expects(:extract_metadata).with(io, derivative: :one).returns({})
+        @shrine.expects(:upload).with(io, :store, derivative: :one)
         @attacher.upload_derivative(:one, io)
 
         io = fakeio
-        @shrine.any_instance.expects(:extract_metadata).with(io, derivative: [:one, :two]).returns({})
+        @shrine.expects(:upload).with(io, :store, derivative: [:one, :two])
         @attacher.upload_derivative([:one, :two], io)
       end
 
@@ -644,7 +649,7 @@ describe Shrine::Plugins::Derivatives do
         refute File.exist?(file.path)
       end
 
-      it "closes uploaded files before deletion" do
+      it "closes uploaded file on deletion" do
         @attacher.upload_derivative(:one, file = tempfile("file"), close: false)
 
         assert file.closed?
@@ -914,14 +919,17 @@ describe Shrine::Plugins::Derivatives do
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:two]
       end
 
-      it "accepts a block for deep merging" do
-        @attacher.add_derivatives(nested: { one: fakeio })
+      it "does deep merging" do
+        @attacher.add_derivatives(hash: { one: fakeio("one") }, array: [fakeio("0")])
 
-        new_derivatives = @attacher.upload_derivatives(nested: { two: fakeio })
-        @attacher.merge_derivatives(new_derivatives) { |k, v1, v2| v1.merge(v2) }
+        @attacher.merge_derivatives @attacher.upload_derivatives(
+          hash: { two: fakeio("two") }, array: [fakeio("1")]
+        )
 
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:nested][:one]
-        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:nested][:two]
+        assert_equal "one", @attacher.derivatives[:hash][:one].read
+        assert_equal "two", @attacher.derivatives[:hash][:two].read
+        assert_equal "0",   @attacher.derivatives[:array][0].read
+        assert_equal "1",   @attacher.derivatives[:array][1].read
       end
     end
 

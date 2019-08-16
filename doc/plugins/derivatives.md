@@ -10,7 +10,8 @@ plugin :derivatives
 
 ## Contents
 
-* [Creating derivatives](#creating-derivatives)
+* [API overview](#api-overview)
+* [Storing derivatives](#storing-derivatives)
   - [Nesting derivatives](#nesting-derivatives)
 * [Retrieving derivatives](#retrieving-derivatives)
 * [Derivative URL](#derivative-url)
@@ -31,13 +32,28 @@ plugin :derivatives
 * [Parsing derivatives](#parsing-derivatives)
 * [Instrumentation](#instrumentation)
 
-## Creating derivatives
+## API overview
+
+The interface for managing derivatives is implemented on the `Shrine::Attacher`
+class, and it's layered in the following way:
+
+* `Attacher#store_derivatives` – processes, uploads and merges derivatives
+  * `Attacher#create_derivatives` – processes and uploads derivatives
+    * `Attacher#process_derivatives` – processes derivatives
+    * `Attacher#upload_derivatives` – uploads derivatives
+  * `Attacher#add_derivatives` – uploads and merges derivatives
+    * `Attacher#upload_derivatives` – uploads derivatives
+    * `Attacher#merge_derivatives` – merges derivatives
+      * `Attacher#set_derivatives` – sets derivatives
+
+## Storing derivatives
 
 When you have a file attached, you can generate derivatives from it and save
 them alongside the attached file. The simplest way to do this is to define a
-processor which will return processed files, and then call it with
-`Attacher#add_derivatives` when you want to generate the derivatives. Here is
-an example of generating image thumbnails:
+processor which returns the processed files, and then trigger it with
+`Attacher#store_derivatives` when you want to generate the derivatives.
+
+Here is an example of generating image thumbnails:
 
 ```rb
 # Gemfile
@@ -69,7 +85,7 @@ end
 photo.image #=> #<Shrine::UploadedFile>
 photo.image_derivatives #=> {}
 
-photo.image_attacher.add_derivatives(:thumbnails) # calls processor and uploads results
+photo.image_attacher.store_derivatives(:thumbnails) # calls processor and uploads results
 photo.image_derivatives #=>
 # {
 #   small:  #<Shrine::UploadedFile>,
@@ -93,6 +109,14 @@ photo.image_data #=>
 #     "large": { "id": "large.jpg", "storage": "store", "metadata": { ... } },
 #   }
 # }
+```
+
+Any additional options passed to `Attacher#store_derivatives` are forwarded to
+[`Attacher#upload_derivatives`](#upload-derivatives).
+
+```rb
+attacher.store_derivatives(:thumbnails, storage: :other_store)                  # specify destination storage
+attacher.store_derivatives(:thumbnails, upload_options: { acl: "public-read" }) # pass uploader options
 ```
 
 ### Nesting derivatives
@@ -219,26 +243,29 @@ attacher.derivatives[:large].url
 
 ## Processing derivatives
 
-When you've defined a derivatives processor, you can pass the processor name to
-[`Attacher#add_derivatives`](#adding-derivatives) or
-[`Attacher#upload_derivatives`](#uploading-derivatives) to call the processor
-and upload processed files.
+A derivatives processor block takes the original file, and is expected to
+return a hash of processed files. [Nesting](#nesting-derivatives) is allowed
+here.
 
 ```rb
-Attacher.derivatives_processor :thumbnails do |original|
-  # ...
+Attacher.derivatives_processor :my_processor do |original|
+  # return a hash of processed files
 end
 ```
+
+Afterwards you can pass that processor name to `Attacher#store_derivatives`
+or `Attacher#create_derivatives` to call the processor:
+
 ```rb
-attacher.add_derivatives(:thumbnails)
+attacher.store_derivatives(:my_processor) # processes, uploads and merges derivatives
+attacher.create_derivatives(:my_processor) # processed and uploads derivatives
 ```
 
-If you want to separate processing from uploading, you can call
-`Attacher#process_derivatives` separately:
+If you want to separate processing from uploading or pass options to the
+processor, you can call `Attacher#process_derivatives` separately:
 
 ```rb
-files = attacher.process_derivatives(:thumbnails)
-
+files = attacher.process_derivatives(:my_processor)
 attacher.add_derivatives(files)
 ```
 
@@ -248,7 +275,7 @@ The processor block is evaluated in context of the `Shrine::Attacher` instance,
 which allows you to change your processing logic based on the record data.
 
 ```rb
-Attacher.derivatives_processor :thumbnails do |original|
+Attacher.derivatives_processor :my_processor do |original|
   self    #=> #<Shrine::Attacher>
 
   record  #=> #<Photo>
@@ -263,33 +290,34 @@ You can also pass additional options to the processor via
 `Attacher#process_derivatives`:
 
 ```rb
-Attacher.derivatives_processor :thumbnails do |original, **options|
+Attacher.derivatives_processor :my_processor do |original, **options|
   options #=> { :foo => "bar" }
   # ...
 end
 ```
 ```rb
-attacher.process_derivatives(:thumbnails, foo: "bar")
+attacher.process_derivatives(:my_processor, foo: "bar")
 ```
 
 ### Source file
 
-By default, on `Attacher#add_derivatives` and `Attacher#upload_derivatives`,
-attached file will be automatically downloaded and passed to the processor.
+When processing is triggered, the attached file is automatically downloaded and
+passed to the processor:
 
 ```rb
-Attacher.derivatives_processor :thumbnails do |original|
+Attacher.derivatives_processor :my_processor do |original|
   original #=> #<File:...>
   # ...
 end
 ```
 ```rb
-attacher.process_derivatives(:thumbnails)
+attacher.process_derivatives(:my_processor) # downloads attached file and passes it to the processor
 ```
 
 If you already have the source file locally, or if you're calling multiple
-derivatives processors in a row, you can pass the source file as the second
-argument:
+derivatives processors in a row and want to avoid downloading the same source
+file each time, you can pass the source file as the second argument to
+`Attacher#process_derivatives`:
 
 ```rb
 # this way the source file is downloaded only once
@@ -301,8 +329,9 @@ end
 
 ## Adding derivatives
 
-Passing the processor name to `Attacher#add_derivatives` is just a convenience
-layer, you can also pass processed files directly:
+The [`Attacher#store_derivatives`](#storing-derivatives) method internally
+calls `Attacher#add_derivatives`, which you can use directly if you already
+have processed files that you want to save:
 
 ```rb
 attacher.add_derivatives(
@@ -319,7 +348,7 @@ attacher.derivatives #=>
 # }
 ```
 
-Added derivatives will be merged with existing ones:
+Added derivatives will be merged with any existing ones:
 
 ```rb
 attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
@@ -327,13 +356,11 @@ attacher.add_derivatives(two: two_file)
 attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
 ```
 
-This does a shallow merge by default. If you have nested derivatives and want
-to do deep merging, you can pass a block and it will be forwarded to
-`Hash#merge`:
+The merging is deep, so the following will work as well:
 
 ```rb
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
-attacher.add_derivatives(nested: { two: two_file }) { |k, v1, v2| v1.merge(v2) }
+attacher.add_derivatives(nested: { two: two_file })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
 
@@ -348,16 +375,34 @@ Any options passed to `Attacher#add_derivative(s)` will be forwarded to
 [`Attacher#upload_derivatives`](#uploading-derivatives).
 
 ```rb
-attacher.add_derivative(:thumb, thumbnail_file, storage: :thumbnails_store)
+attacher.add_derivative(:thumb, thumbnail_file, storage: :thumbnails_store)             # specify destination storage
+attacher.add_derivative(:thumb, thumbnail_file, upload_options: { acl: "public-read" }) # pass uploader options
 ```
 
 The `Attacher#add_derivative(s)` methods are thread-safe.
 
 ## Uploading derivatives
 
-The `Attacher#add_derivative(s)` methods internally call
-`Attacher#upload_derivatives` to upload given files. This method can also be
-used directly if you want to upload derivatives without setting them:
+If you want to process and upload derivatives without yet setting them, you
+can use `Attacher#create_derivatives`:
+
+```rb
+Attacher.derivatives_processor :thumbnails do |original|
+  { small: small, medium: medium, large: large }
+end
+```
+```rb
+derivatives = attacher.create_derivatives(:thumbnails) # calls the processor and uploads results
+derivatives #=>
+# {
+#   small:  #<Shrine::UploadedFile>,
+#   medium: #<Shrine::UploadedFile>,
+#   large:  #<Shrine::UploadedFile>,
+# }
+```
+
+If you already have processed files that you just want to upload, you can use
+`Attacher#upload_derivatives`:
 
 ```rb
 derivatives = attacher.upload_derivatives(
@@ -448,8 +493,7 @@ attacher.upload_derivative :thumb, thumbnail_file,
 ```
 
 A `:derivative` option is automatically passed to the uploader and holds the
-name of the derivative. This means derivative name will be available during
-metadata extraction, location generation and upload options generation.
+name of the derivative:
 
 ```rb
 class MyUploader < Shrine
@@ -494,20 +538,15 @@ attacher.merge_derivatives attacher.upload_derivatives(two: two_file)
 attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
 ```
 
-This does a shallow merge by default. If you're using nested derivatives and
-want to do deep merging, you can pass a block and it will be forwarded to
-`Hash#merge`:
+This does a deep merge, so the following will work as well:
 
 ```rb
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
-
-new_derivatives = attacher.upload_derivatives(nested: { two: two_file })
-attacher.merge_derivatives(new_derivatives) { |k, v1, v2| v1.merge(v2) }
-
+attacher.merge_derivatives attacher.upload_derivatives(nested: { two: two_file })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
 
-If instead of adding you want to override existing derivatives, you can use
+If instead of adding you want to *override* existing derivatives, you can use
 `Attacher#set_derivatives`:
 
 ```rb
