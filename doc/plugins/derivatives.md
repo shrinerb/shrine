@@ -18,13 +18,14 @@ plugin :derivatives
   - [Dynamic processing](#dynamic-processing)
   - [Source file](#source-file)
 * [Adding derivatives](#adding-derivatives)
+* [Uploading derivatives](#uploading-derivatives)
   - [Derivatives storage](#derivatives-storage)
-  - [Uploading derivatives](#uploading-derivatives)
-    - [Upload options](#upload-options)
-    - [File deletion](#file-deletion)
-  - [Setting derivatives](#setting-derivatives)
-  - [Promoting derivatives](#promoting-derivatives)
+  - [Uploader options](#uploader-options)
+  - [File deletion](#file-deletion)
+* [Setting derivatives](#setting-derivatives)
+* [Promoting derivatives](#promoting-derivatives)
 * [Removing derivatives](#removing-derivatives)
+  * [Deleting derivatives](#deleting-derivatives)
 * [Without original](#without-original)
 * [Iterating derivatives](#iterating-derivatives)
 * [Parsing derivatives](#parsing-derivatives)
@@ -219,8 +220,9 @@ attacher.derivatives[:large].url
 ## Processing derivatives
 
 When you've defined a derivatives processor, you can pass the processor name to
-`Attacher#add_derivatives` or `Attacher#upload_derivatives` to call the
-processor and upload processed files.
+[`Attacher#add_derivatives`](#adding-derivatives) or
+[`Attacher#upload_derivatives`](#uploading-derivatives) to call the processor
+and upload processed files.
 
 ```rb
 Attacher.derivatives_processor :thumbnails do |original|
@@ -232,7 +234,7 @@ attacher.add_derivatives(:thumbnails)
 ```
 
 If you want to separate processing from uploading, you can call
-`Attacher#process_derivatives` directly:
+`Attacher#process_derivatives` separately:
 
 ```rb
 files = attacher.process_derivatives(:thumbnails)
@@ -317,25 +319,33 @@ attacher.derivatives #=>
 # }
 ```
 
-You can also add a single derivative:
+Added derivatives will be merged with existing ones:
+
+```rb
+attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
+attacher.add_derivatives(two: two_file)
+attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
+```
+
+This does a shallow merge by default. If you have nested derivatives and want
+to do deep merging, you can pass a block and it will be forwarded to
+`Hash#merge`:
+
+```rb
+attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
+attacher.add_derivatives(nested: { two: two_file }) { |k, v1, v2| v1.merge(v2) }
+attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
+```
+
+For adding a single derivative, you can also use the singular
+`Attacher#add_derivative`:
 
 ```rb
 attacher.add_derivative(:thumb, thumbnail_file)
 ```
 
-Added derivatives will be merged with existing ones:
-
-```rb
-attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
-attacher.add_derivative(:two, two_file)
-attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
-```
-
-Note that this does a shallow merge. If you need to do deep merging, see the
-[Setting derivatives](#setting-derivatives) section.
-
 Any options passed to `Attacher#add_derivative(s)` will be forwarded to
-`Attacher#upload_derivatives`.
+[`Attacher#upload_derivatives`](#uploading-derivatives).
 
 ```rb
 attacher.add_derivative(:thumb, thumbnail_file, storage: :thumbnails_store)
@@ -343,11 +353,46 @@ attacher.add_derivative(:thumb, thumbnail_file, storage: :thumbnails_store)
 
 The `Attacher#add_derivative(s)` methods are thread-safe.
 
+## Uploading derivatives
+
+The `Attacher#add_derivative(s)` methods internally call
+`Attacher#upload_derivatives` to upload given files. This method can also be
+used directly if you want to upload derivatives without setting them:
+
+```rb
+derivatives = attacher.upload_derivatives(
+  one: file_1,
+  two: file_2,
+  # ...
+)
+
+derivatives #=>
+# {
+#   one: #<Shrine::UploadedFile>,
+#   two: #<Shrine::UploadedFile>,
+#   ...
+# }
+```
+
+For uploading a single derivative, you can also use the singular
+`Attacher#upload_derivative`:
+
+```rb
+attacher.upload_derivative(:thumb, thumbnail_file)
+#=> #<Shrine::UploadedFile>
+```
+
 ### Derivatives storage
 
 By default, derivatives are uploaded to the permanent storage of the attacher
-(`:store` by default). You can choose to have derivatives uploaded to a
-different storage via the `:storage` plugin option:
+(`:store` by default). You can specify a different destination storage for
+`Attacher#upload_derivative(s)` with the `:storage` option:
+
+```rb
+attacher.upload_derivatives(derivatives, storage: :other_store)
+```
+
+You can also set a default derivatives storage on the plugin level:
 
 ```rb
 plugin :derivatives, storage: :other_store
@@ -391,57 +436,43 @@ Attacher.derivatives_storage do |derivative|
 end
 ```
 
-### Uploading derivatives
+### Uploader options
 
-The `Attacher#add_derivative(s)` method internally calls
-`Attacher#upload_derivatives` to upload given files. This method can be used
-directly:
+Any options other than `:storage` will be forwarded to the uploader:
 
 ```rb
-derivatives = attacher.upload_derivatives(
-  one: file_1,
-  two: file_2,
-  # ...
-)
-
-derivatives #=>
-# {
-#   one: #<Shrine::UploadedFile>,
-#   two: #<Shrine::UploadedFile>,
-#   ...
-# }
-```
-
-For uploading a single file you can use `Attacher#upload_derivative`:
-
-```rb
-attacher.upload_derivative(:thumb, thumbnail_file)
-#=> #<Shrine::UploadedFile>
-```
-
-#### Upload options
-
-You can use the `:storage` option to upload to a different storage (this
-overrides the `:storage` plugin option):
-
-```rb
-attacher.upload_derivative(:thumb, thumbnail_file, storage: :other_store)
-```
-
-Any additional options are forwarded to the uploader:
-
-```rb
-attacher.upload_derivative(:thumb, thumbnail_file, upload_options: { acl: "public-read" })
+attacher.upload_derivative :thumb, thumbnail_file,
+  upload_options: { acl: "public-read" },
+  metadata: { "foo" => "bar" }),
+  location: "path/to/derivative"
 ```
 
 A `:derivative` option is automatically passed to the uploader and holds the
-name of the derivative. This means derivative name will be available when using
-plugins such as `add_metadata` and `upload_options`.
+name of the derivative. This means derivative name will be available during
+metadata extraction, location generation and upload options generation.
 
-#### File deletion
+```rb
+class MyUploader < Shrine
+  plugin :add_metadata
+
+  add_metadata :md5 do |io, derivative:, **|
+    calculate_signature(io, :md5) unless derivative
+  end
+
+  def generate_location(io, derivative:, **)
+    "location/for/#{derivative}"
+  end
+
+  plugin :upload_options, store: -> (io, derivative:, **) {
+    { acl: "public-read" } if derivative
+  }
+end
+```
+
+### File deletion
 
 Files given to `Attacher#upload_derivative(s)` are assumed to be temporary, so
-for convenience they're automatically unlinked after the upload.
+for convenience they're automatically closed and unlinked after upload.
 
 If you want to disable this behaviour, pass `delete: false`:
 
@@ -449,56 +480,46 @@ If you want to disable this behaviour, pass `delete: false`:
 attacher.upload_derivative(:thumb, thumbnail_file, delete: false)
 
 File.exist?(thumbnail_file.path) #=> true
+thumbnail_file.closed?           #=> false
 ```
 
-### Setting derivatives
+## Setting derivatives
 
-The `Attacher#set_derivatives` method can be used for assigning a collection of
-`Shrine::UploadedFile` objects (e.g. coming from `Attacher#upload_derivatives`):
+If you want to add already uploaded derivatives, you can use
+`Attacher#merge_derivatives`:
 
 ```rb
-derivatives #=>
-# {
-#   one: #<Shrine::UploadedFile>,
-#   two: #<Shrine::UploadedFile>,
-#   ...
-# }
-
-attacher.set_derivatives { derivatives }
-
-attacher.derivatives #=>
-# {
-#   one: #<Shrine::UploadedFile>,
-#   two: #<Shrine::UploadedFile>,
-#   ...
-# }
+attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
+attacher.merge_derivatives attacher.upload_derivatives(two: two_file)
+attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
 ```
 
-The reason why `Attacher#set_derivatives` takes a block is thread-safety – the
-execution of the given block is wrapped in a mutex.
-
-Current derivatives are yielded to the block, which is useful if you want to
-merge new derivatives with existing ones. This can be used if you wanted to use
-`Attacher#add_derivatives`, but want to do deep merging.
+This does a shallow merge by default. If you're using nested derivatives and
+want to do deep merging, you can pass a block and it will be forwarded to
+`Hash#merge`:
 
 ```rb
-attacher.derivatives
-#=> { thumbnail: { small: #<Shrine::UploadedFile> } }
+attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
 
-new_derivatives = attacher.upload_derivatives(thumbnail: { large: large_file })
+new_derivatives = attacher.upload_derivatives(nested: { two: two_file })
+attacher.merge_derivatives(new_derivatives) { |k, v1, v2| v1.merge(v2) }
 
-attacher.set_derivatives do |derivatives|
-  derivatives.merge(new_derivatives) { |key, v1, v2| v1.merge(v2) }
-end
-
-attacher.derivatives
-#=> { thumbnail: { small: #<Shrine::UploadedFile>, large: #<Shrine::UploadedFile> } }
+attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
 
-If you're using the [`model`][model] plugin, this method will write derivatives
-data into the column attribute.
+If instead of adding you want to override existing derivatives, you can use
+`Attacher#set_derivatives`:
 
-### Promoting derivatives
+```rb
+attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
+attacher.set_derivatives attacher.upload_derivatives(two: two_file)
+attacher.derivatives #=> { two: #<Shrine::UploadedFile> }
+```
+
+If you're using the [`model`][model] plugin, this method will trigger writing
+derivatives data into the column attribute.
+
+## Promoting derivatives
 
 Any assigned derivatives that are uploaded to temporary storage will be
 automatically uploaded to permanent storage on `Attacher#promote`.
@@ -522,36 +543,76 @@ attacher.derivatives[:one].storage_key #=> :store
 ## Removing derivatives
 
 If you want to manually remove certain derivatives, you can do that with
-`Attacher#remove_derivative(s)`. The removed derivatives are not automatically
-deleted, because it's safer to first persist the removal change, and only then
-perform the deletion.
+`Attacher#remove_derivative`.
 
 ```rb
-attacher.derivatives #=> { gray: #<Shrine::UploadedFile>, thumb: #<Shrine::UploadedFile> }
+attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
+attacher.remove_derivative(:two) #=> #<Shrine::UploadedFile> (removed derivative)
+attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
+```
 
-removed_derivative = attacher.remove_derivative(:gray)
-attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
+You can use the plural `Attacher#remove_derivatives` for removing multiple
+derivatives:
+
+```rb
+attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile>, three: #<Shrine::UploadedFile> }
+attacher.remove_derivative(:two, :three) #=> [#<Shrine::UploadedFile>, #<Shrine::UploadedFile>] (removed derivatives)
+attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
+```
+
+You can also remove nested derivatives:
+
+```rb
+attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
+attacher.remove_derivative([:nested, :one]) #=> #<Shrine::UploadedFile> (removed derivative)
+attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
+```
+
+The removed derivatives are not automatically deleted, because it's safer to
+first persist the removal change, and only then perform the deletion.
+
+```rb
+derivative = attacher.remove_derivative(:two)
 
 # ... persist removal change ...
 
-removed_derivative.delete
+derivative.delete
 ```
 
-If you're removing a collection of derivatives, you can delete them using
+If you still want to delete the derivative at the time of removal, you can
+pass `delete: true`:
+
+```rb
+derivative = attacher.remove_derivative(:two, delete: true)
+derivative.exists? #=> false
+```
+
+### Deleting derivatives
+
+If you want to delete a collection of derivatives, you can use
 `Attacher#delete_derivatives`:
 
 ```rb
-attacher.derivatives #=> { thumbnail: { ... }, other: { ... } }
+derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
 
-removed_derivatives = attacher.remove_derivatives(:thumbnail)
-attacher.derivatives #=> { other: { ... } }
+attacher.delete_derivatives(derivatives)
 
-# ... persist removal change ...
-
-attacher.delete_derivatives(removed_derivatives)
+derivatives[:one].exists? #=> false
+derivatives[:two].exists? #=> false
 ```
 
-Derivatives will be automatically deleted on `Attacher#destroy`.
+Without arguments `Attacher#delete_derivatives` deletes current derivatives:
+
+```rb
+attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
+
+attacher.delete_derivatives
+
+attacher.derivatives[:one].exists? #=> false
+attacher.derivatives[:two].exists? #=> false
+```
+
+Derivatives are automatically deleted on `Attacher#destroy`.
 
 ## Without original
 

@@ -41,7 +41,7 @@ class Shrine
       module AttacherClassMethods
         # Registers a derivatives processor on the attacher class.
         #
-        #     Shrine::Attacher.derivatives_processor :thumbnails do |original|
+        #     Attacher.derivatives_processor :thumbnails do |original|
         #       # ...
         #     end
         def derivatives_processor(name, &block)
@@ -50,9 +50,9 @@ class Shrine
 
         # Specifies default storage to which derivatives will be uploaded.
         #
-        #     Shrine::Attacher.derivatives_storage :other_store
+        #     Attacher.derivatives_storage :other_store
         #     # or
-        #     Shrine::Attacher.derivatives_storage do |name|
+        #     Attacher.derivatives_storage do |name|
         #       if name == :thumbnail
         #         :thumbnail_store
         #       else
@@ -139,7 +139,7 @@ class Shrine
             end
           end
 
-          set_derivatives { stored_derivatives } unless derivatives == stored_derivatives
+          set_derivatives(stored_derivatives) unless derivatives == stored_derivatives
         end
 
         # In addition to deleting the main file it also deletes any derivatives.
@@ -174,9 +174,9 @@ class Shrine
         #     #   thumb: #<Shrine::UploadedFile>,
         #     #   cropped: #<Shrine::UploadedFile>,
         #     # }
-        def add_derivatives(files, **options)
+        def add_derivatives(files, **options, &block)
           new_derivatives = upload_derivatives(files, **options)
-          set_derivatives { derivatives.merge(new_derivatives) }
+          merge_derivatives(new_derivatives, &block)
           new_derivatives
         end
 
@@ -226,7 +226,7 @@ class Shrine
 
         # Downloads the attached file and calls the specified processor.
         #
-        #     Shrine::Attacher.derivatives_processor :thumbnails do |original|
+        #     Attacher.derivatives_processor :thumbnails do |original|
         #       processor = ImageProcessing::MiniMagick.source(original)
         #
         #       {
@@ -256,34 +256,102 @@ class Shrine
           result
         end
 
+        # Merges given uploaded derivatives with current derivatives.
+        #
+        #     attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
+        #     attacher.merge_derivatives(two: uploaded_file)
+        #     attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
+        #
+        # An optional block is forwarded to `Hash#merge` and allows for deep
+        # merging.
+        #
+        #     attacher.derivatives #=> { thumbnail: { small: #<Shrine::UploadedFile> } }
+        #     attacher.merge_derivatives(thumbnail: { large: uploaded_file }) { |k, v1, v2| v1.merge(v2) }
+        #     attacher.derivatives #=> { thumbnail: { small: #<Shrine::UploadedFile>, large: #<Shrine::UploadedFile> } }
+        def merge_derivatives(new_derivatives, &block)
+          @derivatives_mutex.synchronize do
+            merged_derivatives = derivatives.merge(new_derivatives, &block)
+            set_derivatives(merged_derivatives)
+          end
+        end
+
         # Removes derivatives with specified name from the derivatives hash.
+        #
+        #     attacher.derivatives
+        #     #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile>, three: #<Shrine::UploadedFile> }
+        #
+        #     attacher.remove_derivatives(:two, :three)
+        #     #=> [#<Shrine::UploadedFile>, #<Shrine::UploadedFile>] (removed derivatives)
+        #
+        #     attacher.derivatives
+        #     #=> { one: #<Shrine::UploadedFile> }
+        #
+        # Nested derivatives are also supported:
+        #
+        #     attacher.derivatives
+        #     #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile>, three: #<Shrine::UploadedFile> } }
+        #
+        #     attacher.remove_derivatives([:nested, :two], [:nested, :three])
+        #     #=> [#<Shrine::UploadedFile>, #<Shrine::UploadedFile>] (removed derivatives)
+        #
+        #     attacher.derivatives
+        #     #=> { nested: { one: #<Shrine::UploadedFile> } }
+        #
+        # The :delete option can be passed for deleting removed derivatives:
+        #
+        #     attacher.derivatives
+        #     #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile>, three: #<Shrine::UploadedFile> }
+        #
+        #     two, three = attacher.remove_derivatives(:two, :three, delete: true)
+        #
+        #     two.exists?   #=> false
+        #     three.exists? #=> false
+        def remove_derivatives(*paths, delete: false)
+          removed_derivatives = paths.map do |path|
+            path = Array(path)
+
+            if path.one?
+              derivatives.delete(path.first)
+            else
+              derivatives.dig(*path[0..-2]).delete(path[-1])
+            end
+          end
+
+          set_derivatives derivatives
+
+          delete_derivatives(removed_derivatives) if delete
+
+          removed_derivatives
+        end
+
+        # Removes derivative with specified name from the derivatives hash.
         #
         #     attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
         #     attacher.remove_derivative(:one) #=> #<Shrine::UploadedFile> (removed derivative)
         #     attacher.derivatives #=> { two: #<Shrine::UploadedFile> }
-        def remove_derivatives(*path)
-          removed_derivatives = derivatives.dig(*path)
-          set_derivatives do
-            if path.one?
-              derivatives.delete(*path)
-            else
-              derivatives.dig(*path[0..-2]).delete(path[-1])
-            end
-            derivatives
-          end
-          removed_derivatives
+        #
+        # Nested derivatives are also supported:
+        #
+        #     attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
+        #     attacher.remove_derivative([:nested, :one]) #=> #<Shrine::UploadedFile> (removed derivative)
+        #     attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
+        #
+        # The :delete option can be passed for deleting removed derivative:
+        #
+        #     attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
+        #     derivative = attacher.remove_derivatives(:two, delete: true)
+        #     derivative.exists? #=> false
+        def remove_derivative(path, **options)
+          remove_derivatives(path, **options).first
         end
-        alias remove_derivative remove_derivatives
 
         # Sets the given hash of uploaded files as derivatives.
         #
-        #     attacher.set_derivatives { { thumb: uploaded_file } }
+        #     attacher.set_derivatives(thumb: uploaded_file)
         #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
-        def set_derivatives
-          @derivatives_mutex.synchronize do
-            self.derivatives = yield derivatives
-            set file # trigger model writing
-          end
+        def set_derivatives(derivatives)
+          self.derivatives = derivatives
+          set file # trigger model writing
           derivatives
         end
 
@@ -353,7 +421,7 @@ class Shrine
         #     attacher.derivatives #=> {}
         def change(*args)
           result = super
-          set_derivatives { Hash.new }
+          set_derivatives({})
           result
         end
 
