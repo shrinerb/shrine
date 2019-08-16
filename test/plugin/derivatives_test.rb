@@ -618,8 +618,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "deletes uploaded files" do
-        file = tempfile("file")
-        @attacher.upload_derivative(:one, File.open(file.path))
+        @attacher.upload_derivative(:one, file = tempfile("file"))
 
         refute File.exist?(file.path)
       end
@@ -631,7 +630,21 @@ describe Shrine::Plugins::Derivatives do
             File.delete(io.path)
           end
         end
+
+        @attacher.upload_derivative(:one, file = tempfile("file"))
+
+        refute File.exist?(file.path)
+      end
+
+      it "closes uploaded files before deletion" do
+        @attacher.upload_derivative(:one, file = tempfile("file"), close: false)
+
+        assert file.closed?
+      end
+
+      it "deletes File objects just fine" do
         file = tempfile("file")
+
         @attacher.upload_derivative(:one, File.open(file.path))
 
         refute File.exist?(file.path)
