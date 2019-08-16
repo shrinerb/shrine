@@ -21,7 +21,7 @@ describe Shrine::Plugins::PrettyLocation do
           name:   :file,
         )
 
-        assert_match %r{^123/file/[\w-]+$}, location
+        assert_match %r{^123/file/\w+$}, location
       end
 
       it "allows overriding :identifier on the plugin level" do
@@ -33,7 +33,7 @@ describe Shrine::Plugins::PrettyLocation do
           name: :file,
         )
 
-        assert_match %r{^xyz/file/[\w-]+$}, location
+        assert_match %r{^xyz/file/\w+$}, location
       end
 
       it "prepends version name to basic location" do
@@ -42,7 +42,30 @@ describe Shrine::Plugins::PrettyLocation do
           version: :thumb
         )
 
-        assert_match %r{^thumb-[\w-]+$}, location
+        assert_match %r{^thumb-\w+$}, location
+
+        location = @uploader.generate_location(
+          fakeio,
+          version: [:thumb, :medium]
+        )
+
+        assert_match %r{^thumb-medium-[\w-]+$}, location
+      end
+
+      it "prepends derivative name to basic location" do
+        location = @uploader.generate_location(
+          fakeio,
+          derivative: :thumb
+        )
+
+        assert_match %r{^thumb-\w+$}, location
+
+        location = @uploader.generate_location(
+          fakeio,
+          derivative: [:thumb, :medium]
+        )
+
+        assert_match %r{^thumb-medium-[\w-]+$}, location
       end
 
       it "includes only the inner class by default" do
@@ -52,7 +75,7 @@ describe Shrine::Plugins::PrettyLocation do
           name: :file,
         )
 
-        assert_match %r{^entity/123/file/[\w-]+$}, location
+        assert_match %r{^entity/123/file/\w+$}, location
       end
 
       it "includes class namespace when :namespace is set" do
@@ -64,7 +87,7 @@ describe Shrine::Plugins::PrettyLocation do
           name: :file,
         )
 
-        assert_match %r{^namespaced_entity/123/file/[\w-]+$}, location
+        assert_match %r{^namespaced_entity/123/file/\w+$}, location
       end
 
       it "fails when record does not respond to default identifier" do

@@ -16,14 +16,14 @@ class Shrine
           pretty_location(io, options)
         end
 
-        def pretty_location(io, name: nil, record: nil, version: nil, identifier: nil, metadata: {}, **)
+        def pretty_location(io, name: nil, record: nil, version: nil, derivative: nil, identifier: nil, metadata: {}, **)
           if record
             namespace    = record_namespace(record)
             identifier ||= record_identifier(record)
           end
 
           basename = basic_location(io, metadata: metadata)
-          basename = "#{version}-#{basename}" if version
+          basename = [*(version || derivative), basename].join("-")
 
           [*namespace, *identifier, *name, basename].join("/")
         end
