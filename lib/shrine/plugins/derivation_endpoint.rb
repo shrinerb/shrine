@@ -5,6 +5,7 @@ require "content_disposition"
 
 require "openssl"
 require "tempfile"
+require "pathname"
 
 class Shrine
   module Plugins
@@ -159,8 +160,8 @@ class Shrine
 
     # Uploads the derivation result to a dedicated destination on the specified
     # Shrine storage.
-    def upload(file = nil)
-      Derivation::Upload.new(self).call(file)
+    def upload(file = nil, **options)
+      Derivation::Upload.new(self).call(file, **options)
     end
 
     # Returns a Shrine::UploadedFile object pointing to the uploaded derivative
@@ -508,16 +509,10 @@ class Shrine
 
       unless uploaded_file
         derivative    = derivation.generate
-        uploaded_file = derivation.upload(derivative)
+        uploaded_file = derivation.upload(derivative, delete: upload_redirect)
       end
 
       if upload_redirect
-        # we don't need the local derivation result here
-        if derivative
-          derivative.close
-          File.delete(derivative.path)
-        end
-
         redirect_url = uploaded_file.url(upload_redirect_url_options)
 
         [302, { "Location" => redirect_url }, []]
@@ -617,29 +612,23 @@ class Shrine
     # Massages the derivation result, ensuring it's opened in binary mode,
     # rewinded and flushed to disk.
     def normalize(derivative)
-      if derivative.is_a?(Tempfile)
-        derivative.open
-      elsif derivative.is_a?(File)
-        derivative.close
-        derivative = File.open(derivative.path)
-      elsif derivative.is_a?(String)
-        derivative = File.open(derivative)
-      elsif defined?(Pathname) && derivative.is_a?(Pathname)
-        derivative = derivative.open
-      else
-        fail Error, "unexpected derivation result: #{derivation.inspect} (expected File, Tempfile, String, or Pathname object)"
-      end
+      derivative =
+        case derivative
+        when Tempfile         then derivative.tap(&:open)
+        when File             then File.open(derivative.tap(&:close))
+        when String, Pathname then File.open(derivative)
+        else
+          fail Error, "unexpected derivation result: #{derivation.inspect} (expected File, Tempfile, String, or Pathname object)"
+        end
 
       derivative.binmode
       derivative
     end
 
     def with_downloaded(file, &block)
-      if file
-        yield file
-      else
-        download_source(&block)
-      end
+      return yield(file) if file
+
+      download_source(&block)
     end
 
     # Downloads the source uploaded file from the storage.
@@ -660,37 +649,21 @@ class Shrine
     # Uploads the derivation result to the dedicated location on the storage.
     # If a file object is given, uploads that to the storage, otherwise calls
     # the derivation block and uploads the result.
-    def call(derivative = nil)
-      with_derivative(derivative) do |uploadable|
-        shrine_class.upload uploadable, upload_storage,
-          location:       upload_location,
-          upload_options: upload_options
+    def call(derivative = nil, **options)
+      if derivative
+        upload(derivative, **options)
+      else
+        upload(derivation.generate, delete: true, **options)
       end
     end
 
     private
 
-    def with_derivative(derivative)
-      if derivative
-        begin
-          # we want to keep the provided file open and rewinded
-          File.open(derivative.path, binmode: true) do |file|
-            yield file
-          end
-        ensure
-          # close the file handler if the file was deleted during upload
-          derivative.close if !File.exist?(derivative.path)
-        end
-      else
-        # generate the derivative and delete it afterwards
-        begin
-          file = derivation.generate
-          yield file
-        ensure
-          file.close
-          File.delete(file.path)
-        end
-      end
+    def upload(io, **options)
+      shrine_class.upload io, upload_storage,
+        location:       upload_location,
+        upload_options: upload_options,
+        **options
     end
   end
 

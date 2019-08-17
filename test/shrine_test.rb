@@ -372,6 +372,23 @@ describe Shrine do
       assert_equal "", io.read
     end
 
+    it "accepts :delete option" do
+      @uploader.upload(file = tempfile("file"))
+      assert File.exist?(file.path)
+
+      @uploader.upload(file = tempfile("file"), delete: true)
+      refute File.exist?(file.path)
+
+      @uploader.upload(file = tempfile("file").tap(&File.method(:unlink)), delete: true)
+      refute File.exist?(file.path)
+
+      @uploader.upload(file = File.open(tempfile("file").path), delete: true)
+      refute File.exist?(file.path)
+
+      @uploader.upload(fakeio, delete: true)
+      refute File.exist?(file.path)
+    end
+
     it "doesn't error when storage already closed the file" do
       @uploader.storage.instance_eval { def upload(io, *); super; io.close; end }
       @uploader.upload(fakeio)

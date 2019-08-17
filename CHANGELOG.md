@@ -1,5 +1,15 @@
 ## 3.0.0 (unreleased)
 
+* `derivation_endpoint` – Allow passing generic IO objects to `Derivation#upload` (@janko)
+
+* `derivation_endpoint` – Accept additional uploader options in `Derivation#upload` (@janko)
+
+* `derivation_endpoint` – Close the uploaded file in `Derivation#upload` (@janko)
+
+* `core` – Stop rescuing `IO#close` exceptions in `Shrine#upload` (@janko)
+
+* `core` – Add `:delete` option to `Shrine#upload` for deleting uploaded file (@janko)
+
 * `s3` – Stop returning `:object` in `Down::ChunkedIO#data` in `S3#open` (@janko)
 
 * `s3` – Eliminate `#head_object` request in `S3#open` (@janko)

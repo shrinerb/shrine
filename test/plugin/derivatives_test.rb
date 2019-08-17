@@ -533,13 +533,11 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "passes derivative name to the uploader" do
-        io = fakeio
-        @shrine.expects(:upload).with(io, :store, derivative: :one)
-        @attacher.upload_derivatives(one: io)
+        @shrine.expects(:upload).with { |*args, derivative:, **| derivative == :one }
+        @attacher.upload_derivatives(one: fakeio)
 
-        io = fakeio
-        @shrine.expects(:upload).with(io, :store, derivative: [:one, :two])
-        @attacher.upload_derivatives(one: { two: io })
+        @shrine.expects(:upload).with { |*args, derivative:, **| derivative == [:one, :two] }
+        @attacher.upload_derivatives(one: { two: fakeio })
       end
 
       it "accepts additional options" do
@@ -615,13 +613,8 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "passes derivative name to the uploader" do
-        io = fakeio
-        @shrine.expects(:upload).with(io, :store, derivative: :one)
-        @attacher.upload_derivative(:one, io)
-
-        io = fakeio
-        @shrine.expects(:upload).with(io, :store, derivative: [:one, :two])
-        @attacher.upload_derivative([:one, :two], io)
+        @shrine.expects(:upload).with { |*args, derivative:, **| derivative == :one }
+        @attacher.upload_derivative(:one, fakeio)
       end
 
       it "forwards additional options for uploading" do
@@ -636,36 +629,8 @@ describe Shrine::Plugins::Derivatives do
         refute File.exist?(file.path)
       end
 
-      it "handles file being moved on upload" do
-        @shrine.storages[:store].instance_eval do
-          def upload(io, id, **options)
-            super
-            File.delete(io.path)
-          end
-        end
-
-        @attacher.upload_derivative(:one, file = tempfile("file"))
-
-        refute File.exist?(file.path)
-      end
-
-      it "closes uploaded file on deletion" do
-        @attacher.upload_derivative(:one, file = tempfile("file"), close: false)
-
-        assert file.closed?
-      end
-
-      it "deletes File objects just fine" do
-        file = tempfile("file")
-
-        @attacher.upload_derivative(:one, File.open(file.path))
-
-        refute File.exist?(file.path)
-      end
-
       it "skips deletion when :delete is false" do
-        file = tempfile("file")
-        @attacher.upload_derivative(:one, File.open(file.path), delete: false)
+        @attacher.upload_derivative(:one, file = tempfile("file"), delete: false)
 
         assert File.exist?(file.path)
       end

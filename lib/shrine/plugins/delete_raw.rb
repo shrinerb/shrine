@@ -17,16 +17,8 @@ class Shrine
         private
 
         # Deletes the file that was uploaded, unless it's an UploadedFile.
-        def _upload(io, delete: nil, **options)
-          super(io, **options)
-
-          if io.respond_to?(:path) && io.path && delete_raw? && delete != false
-            begin
-              File.delete(io.path)
-            rescue Errno::ENOENT
-              # file might already be deleted if it was moved
-            end
-          end
+        def _upload(io, delete: delete_raw?, **options)
+          super(io, delete: delete, **options)
         end
 
         def delete_raw?

@@ -15,9 +15,7 @@ describe Shrine::Plugins::DerivationEndpoint do
     @storage       = @uploader.storage
 
     @shrine.derivation(:gray) do |file, type|
-      tempfile = Tempfile.new
-      tempfile << ["gray", *type, "content"].join(" ")
-      tempfile
+      FileHelper.tempfile ["gray", *type, "content"].join(" ")
     end
   end
 
@@ -552,19 +550,16 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       it "closes and deletes derivation result" do
-        tempfile = Tempfile.new
-        tempfile.write "file content"
-        tempfile.flush
-
-        file = File.open(tempfile.path)
+        tempfile = tempfile("file content")
 
         derivation = @uploaded_file.derivation(:gray)
-        derivation.expects(:generate).returns(file)
+        derivation.expects(:generate).returns(file = File.open(tempfile.path))
 
         response = derivation.response({})
         assert_equal "file content", response[2].enum_for(:each).to_a.join
 
         response[2].close
+
         assert file.closed?
         refute File.exist?(file.path)
       end
@@ -691,10 +686,9 @@ describe Shrine::Plugins::DerivationEndpoint do
       it "closes and deletes derivation result on :upload_redirect" do
         @shrine.plugin :derivation_endpoint, upload_redirect: true
         tempfile = Tempfile.new
-        file     = File.open(tempfile.path)
 
         derivation = @uploaded_file.derivation(:gray)
-        derivation.expects(:generate).returns(file)
+        derivation.expects(:generate).returns(file = File.open(tempfile.path))
 
         derivation.response({})
 
@@ -872,9 +866,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       it "accepts Pathname paths" do
-        tempfile = Tempfile.new
-        tempfile << "gray content"
-        tempfile.open
+        tempfile = tempfile("gray content")
         @shrine.derivation(:gray) { Pathname(tempfile.path) }
         result = @uploaded_file.derivation(:gray).generate
         assert_instance_of File, result
@@ -891,11 +883,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       it "handles string derivation blocks" do
-        @shrine.derivation("string") do |file, type|
-          tempfile = Tempfile.new
-          tempfile << "string"
-          tempfile
-        end
+        @shrine.derivation("string") { |file, type| FileHelper.tempfile("string") }
         tempfile = @uploaded_file.derivation(:string).generate
         assert_instance_of Tempfile, tempfile
         assert_equal "string", tempfile.read
@@ -971,13 +959,10 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       it "deletes the generated derivation result" do
-        tempfile = Tempfile.new
-        tempfile << "content"
-        tempfile.open
+        tempfile = tempfile("content")
 
-        file = File.open(tempfile.path)
         derivation = @uploaded_file.derivation(:gray)
-        derivation.expects(:generate).returns(file)
+        derivation.expects(:generate).returns(file = File.open(tempfile.path))
 
         derivation.upload
 
@@ -987,14 +972,10 @@ describe Shrine::Plugins::DerivationEndpoint do
 
       it "allows uploading already generated derivative" do
         @shrine.derivation(:gray) { fail "this should not be called" }
-        file = Tempfile.new
-        file << "content"
-        file.open
+        file = tempfile("content")
         uploaded_file = @uploaded_file.derivation(:gray).upload(file)
         assert_equal "content", uploaded_file.read
-        refute file.closed?
         assert File.exist?(file.path)
-        assert_equal 0, file.pos
       end
 
       it "applies :upload_options" do
@@ -1004,6 +985,13 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @storage.expects(:upload).with { |*, **options| options[:bar] == "bar" }
         @uploaded_file.derivation(:gray, upload_options: { bar: "bar" }).upload
+      end
+
+      it "accepts additional uploader options" do
+        derivation = @uploaded_file.derivation(:gray)
+
+        assert_equal "foo", derivation.upload(location: "foo").id
+        assert_equal "foo", derivation.upload(fakeio, location: "foo").id
       end
 
       it "applies :upload_location" do

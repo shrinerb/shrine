@@ -1,6 +1,6 @@
 require "stringio"
 
-class Minitest::Test
+module LoggingHelper
   def assert_logged(pattern)
     result = nil
     logged = capture_logged { result = yield }
@@ -32,3 +32,5 @@ class Minitest::Test
     Shrine.logger = previous_logger
   end
 end
+
+Minitest::Test.include LoggingHelper

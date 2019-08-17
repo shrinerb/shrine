@@ -498,11 +498,9 @@ sense.
 
 ### Deleting derivatives
 
-When you use the `:upload` options and upload the derivatives to storage, there
-will come a time when you need to delete the derivatives because the original
-file is being replaced, deleted, or some other reason. In this case, you can
-delete the derivatives before deleting the record or updating the record with
-the new original file.
+When the original attachment is deleted, its uploaded derivatives will not be
+automatically deleted, you will need to do the deletion manually. You can do
+that by calling `Shrine::Derivation#delete` for each derivation you're using:
 
 ```rb
 # photo is the model and image is the file attachment
@@ -712,7 +710,14 @@ uploaded_file    #=> #<Shrine::UploadedFile>
 uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
 ```
 
-If not given any arguments, it generates the derivative before uploading it.
+It can also be called without arguments, in which case it will generate a new
+derivative and upload it.
+
+```rb
+derivation.upload # generates derivative and uploads it
+```
+
+Any additional options will be passed to the uploader.
 
 ### `#retrieve`
 

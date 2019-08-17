@@ -237,13 +237,10 @@ class Shrine
         #
         #     hash = attacher.upload_derivative(:thumb, thumb)
         #     hash[:thumb] #=> #<Shrine::UploadedFile>
-        def upload_derivative(path, file, storage: nil, delete: true, **options)
-          storage  ||= derivatives_storage(path)
-          derivative = upload(file, storage, derivative: path, **options)
+        def upload_derivative(path, file, storage: nil, **options)
+          storage ||= derivative_storage(path)
 
-          delete_derivative_file(file) if file.respond_to?(:path) && delete
-
-          derivative
+          upload(file, storage, derivative: path, delete: true, **options)
         end
 
         # Downloads the attached file and calls the specified processor.
@@ -487,7 +484,7 @@ class Shrine
         end
 
         # Storage to which derivatives will be uploaded to by default.
-        def derivatives_storage(path)
+        def derivative_storage(path)
           storage = shrine_class.opts[:derivatives][:storage]
           storage = instance_exec(path, &storage) if storage.respond_to?(:call)
           storage
@@ -502,13 +499,6 @@ class Shrine
           else
             o2
           end
-        end
-
-        # Closes and deletes given file, ignoring if it's already deleted.
-        def delete_derivative_file(file)
-          file.close
-          File.unlink(file.path)
-        rescue Errno::ENOENT
         end
       end
 
