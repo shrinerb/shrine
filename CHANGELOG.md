@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `derivation_endpoint` – Evaluate derivation block in context of `Shrine::Derivation` (@janko)
+
 * `derivation_endpoint` – Remove `:download_errors` option (@janko)
 
 * `memory` – Raise `Shrine::FileNotFound` on nonexistent file in `Memory#open` (@janko)

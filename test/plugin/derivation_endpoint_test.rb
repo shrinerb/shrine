@@ -780,6 +780,15 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "gray content", tempfile.read
       end
 
+      it "evalutes derivation block in context of Shrine::Derivation instance" do
+        minitest = self
+        @shrine.derivation(:gray) do |file|
+          minitest.assert_instance_of Shrine::Derivation, self
+          Tempfile.new
+        end
+        @uploaded_file.derivation(:gray).generate
+      end
+
       it "allows passing already downloaded file" do
         tempfile = Tempfile.new
         minitest = self
@@ -824,7 +833,7 @@ describe Shrine::Plugins::DerivationEndpoint do
 
         @shrine.derivation(:gray) do |file, uploaded_file, *args|
           minitest.assert_instance_of Tempfile, file
-          minitest.assert_instance_of self.class::UploadedFile, uploaded_file
+          minitest.assert_instance_of shrine_class::UploadedFile, uploaded_file
           minitest.assert_equal ["dark"], args
 
           Tempfile.new
@@ -838,7 +847,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         minitest = self
 
         @shrine.derivation(:gray) do |uploaded_file, *args|
-          minitest.assert_instance_of self.class::UploadedFile, uploaded_file
+          minitest.assert_instance_of shrine_class::UploadedFile, uploaded_file
           minitest.refute uploaded_file.opened?
           minitest.assert_equal ["dark"], args
 

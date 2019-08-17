@@ -601,7 +601,7 @@ class Shrine
     # Calls the derivation block.
     def derive(*args)
       instrument_derivation do
-        uploader.instance_exec(*args, &derivation_block)
+        derivation.instance_exec(*args, &derivation_block)
       end
     end
 
@@ -656,10 +656,6 @@ class Shrine
     def derivation_block
       shrine_class.derivations[name] or fail Derivation::NotFound, "derivation #{name.inspect} is not defined"
     end
-
-    def uploader
-      source.uploader
-    end
   end
 
   class Derivation::Upload < Derivation::Command
@@ -670,7 +666,7 @@ class Shrine
     # the derivation block and uploads the result.
     def call(derivative = nil)
       with_derivative(derivative) do |uploadable|
-        uploader.upload uploadable,
+        shrine_class.upload uploadable, upload_storage,
           location:       upload_location,
           upload_options: upload_options
       end
@@ -699,10 +695,6 @@ class Shrine
           File.delete(file.path)
         end
       end
-    end
-
-    def uploader
-      shrine_class.new(upload_storage)
     end
   end
 

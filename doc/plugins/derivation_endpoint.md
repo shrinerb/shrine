@@ -102,10 +102,14 @@ derivation URLs, preventing potential DoS attacks.
 
 The derivation endpoint then extracts the source file data, derivation name and
 arguments from the request URL, and calls the corresponding derivation block,
-passing the downloaded source file and derivation arguments.
+passing the downloaded source file and derivation arguments. The derivation
+block is evaluated within the context of a
+[`Shrine::Derivation`](#derivation-api) instance.
 
 ```rb
 derivation :thumbnail do |file, arg1, arg2, ...|
+  self #=> #<Shrine::Derivation>
+
   file #=> #<Tempfile:...> (source file downloaded to disk)
   arg1 #=> "600" (first derivation argument in #derivation_url)
   arg2 #=> "400" (second derivation argument in #derivation_url)
