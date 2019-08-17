@@ -61,6 +61,8 @@ class Shrine
       # `File.open` arguments.
       def open(id, **options)
         path(id).open(binmode: true, **options)
+      rescue Errno::ENOENT
+        raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
 
       # Returns true if the file exists on the filesystem.

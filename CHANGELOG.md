@@ -1,5 +1,13 @@
 ## 3.0.0 (unreleased)
 
+* `memory` – Raise `Shrine::FileNotFound` on nonexistent file in `Memory#open` (@janko)
+
+* `file_system` – Raise `Shrine::FileNotFound` on nonexistent file in `FileSystem#open` (@janko)
+
+* `s3` – Raise `Shrine::FileNotFound` on nonexistent object in `S3#open` (@janko)
+
+* `core` – Add `Shrine::FileNotFound` exception and require storages to raise it on `Storage#open` (janko)
+
 * `instrumentation` – Remove `:metadata` from `:options` in `metadata.shrine` event (@janko)
 
 * `instrumentation` – Remove `:location`, `:upload_options` and `:metadata` from `:options` in `upload.shrine` event (@janko)

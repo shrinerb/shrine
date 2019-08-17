@@ -176,6 +176,10 @@ describe Shrine::Storage::FileSystem do
       @storage.upload(fakeio, "foo.jpg")
       @storage.open("foo.jpg", external_encoding: "utf-8")
     end
+
+    it "raises Shrine::FileNotFound when file is not found" do
+      assert_raises(Shrine::FileNotFound) { @storage.open("nonexisting") }
+    end
   end
 
   describe "#delete" do

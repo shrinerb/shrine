@@ -285,6 +285,11 @@ describe Shrine::Storage::S3 do
       assert_equal :get_object,  @s3.client.api_requests[1][:operation_name]
       assert_equal "prefix/foo", @s3.client.api_requests[1][:params][:key]
     end
+
+    it "returns Shrine::FileNotFound when object was not found" do
+      @s3.client.stub_responses(:get_object, "NoSuchKey")
+      assert_raises(Shrine::FileNotFound) { @s3.open("nonexisting") }
+    end
   end
 
   describe "#exists?" do

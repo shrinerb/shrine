@@ -24,6 +24,10 @@ class Shrine
     end
   end
 
+  # Raised by the storage in the #open method.
+  class FileNotFound < Error
+  end
+
   @opts = {}
   @storages = {}
   @logger = Logger.new(STDOUT)

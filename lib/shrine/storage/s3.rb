@@ -110,6 +110,8 @@ class Shrine
           size:       object.content_length,
           data:       { object: object },
         )
+      rescue Aws::S3::Errors::NoSuchKey
+        raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
 
       # Returns true file exists on S3.

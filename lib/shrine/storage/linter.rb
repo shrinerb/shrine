@@ -58,6 +58,14 @@ class Shrine
         error :open, "doesn't return a valid IO object" if !io?(opened)
         error :open, "returns an empty IO object" if opened.read.empty?
         opened.close
+
+        begin
+          storage.open("nonexisting", {})
+          error :open, "should raise an exception on nonexisting file"
+        rescue Shrine::FileNotFound
+        rescue => exception
+          error :open, "should raise Shrine::FileNotFound on nonexisting file"
+        end
       end
 
       def lint_exists(id)

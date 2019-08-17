@@ -18,6 +18,8 @@ class Shrine
 
       def open(id, *)
         StringIO.new(store.fetch(id))
+      rescue KeyError
+        raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
 
       def exists?(id)

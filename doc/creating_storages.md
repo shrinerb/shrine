@@ -122,6 +122,8 @@ The storage can support additional options to customize how the file will be
 opened, `Shrine::UploadedFile#open` and `Shrine::UploadedFile#download` will
 forward any given options to `#open`.
 
+When file is not found, `Shrine::FileNotFound` exception should be raised.
+
 ## Url
 
 The `#url` storage method is called by `Shrine::UploadedFile#url`, it accepts a
