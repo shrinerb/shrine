@@ -716,12 +716,24 @@ If not given any arguments, it generates the derivative before uploading it.
 
 ### `#retrieve`
 
-`Derivation#retrieve` method returns the uploaded derivative file. If the file
-exists on the storage, it returns an `UploadedFile` object, otherwise `nil` is
-returned.
+`Derivation#retrieve` method returns `Shrine::UploadedFile` object pointing to
+the uploaded derivative if it exists. If the uploaded derivative does not
+exist, `nil` is returned.
 
 ```rb
 uploaded_file = derivation.retrieve
+uploaded_file    #=> #<Shrine::UploadedFile>
+uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
+```
+
+### `#opened`
+
+`Derivation#opened` method returns opened `Shrine::UploadedFile` object pointing
+to the uploaded derivative if it exists. If the uploaded derivative does not
+exist, `nil` is returned.
+
+```rb
+uploaded_file = derivation.opened
 uploaded_file    #=> #<Shrine::UploadedFile>
 uploaded_file.id #=> "bcfd0d67e4a8ec2dc9a6d7ddcf3825a1/thumbnail-500-500"
 ```

@@ -596,23 +596,6 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "gray content", response[2].enum_for(:each).to_a.join
       end
 
-      # this is the case with the :move option for FileSystem storage
-      it "returns uploaded file response the first time when file was deleted during upload" do
-        @uploader.storage.instance_eval do
-          def upload(file, *)
-            super
-            File.delete(file.path)
-          end
-        end
-        @uploaded_file.derivation_response(:gray, env: {})
-
-        response = @uploaded_file.derivation_response(:gray, env: {})
-
-        assert_equal 200,            response[0]
-        assert_equal "12",           response[1]["Content-Length"]
-        assert_equal "gray content", response[2].enum_for(:each).to_a.join
-      end
-
       it "applies :type" do
         @uploaded_file.derivation_response(:gray, env: {})
 

@@ -163,10 +163,16 @@ class Shrine
       Derivation::Upload.new(self).call(file)
     end
 
-    # Returns a Shrine::UploadedFile object pointing to the uploaded derivation
-    # result.
+    # Returns a Shrine::UploadedFile object pointing to the uploaded derivative
+    # if it exists.
     def retrieve
       Derivation::Retrieve.new(self).call
+    end
+
+    # Returns opened Shrine::UploadedFile object pointing to the uploaded
+    # derivative if it exists.
+    def opened
+      Derivation::Opened.new(self).call
     end
 
     # Deletes the derivation result from the storage.
@@ -498,7 +504,7 @@ class Shrine
     # uploads the result. If the derivation result is already uploaded, uses
     # the `rack_response` plugin to generate a Rack response triple.
     def upload_response(env)
-      uploaded_file = derivation.retrieve
+      uploaded_file = upload_redirect ? derivation.retrieve : derivation.opened
 
       unless uploaded_file
         derivative    = derivation.generate
@@ -516,10 +522,9 @@ class Shrine
 
         [302, { "Location" => redirect_url }, []]
       else
-        if derivative && File.exist?(derivative.path)
+        if derivative
           file_response(derivative, env)
         else
-          uploaded_file.open(**upload_open_options)
           uploaded_file.to_rack_response(
             type:        type,
             disposition: disposition,
@@ -690,17 +695,26 @@ class Shrine
   end
 
   class Derivation::Retrieve < Derivation::Command
-    delegate :upload_location, :upload_storage
+    delegate :upload_storage, :upload_location
 
-    # Returns a Shrine::UploadedFile object pointing to the uploaded derivation
-    # result it exists on the storage.
+    # Returns a Shrine::UploadedFile object pointing to the uploaded derivative
+    # if it exists on the storage.
     def call
-      uploaded_file = shrine_class::UploadedFile.new(
-        storage: upload_storage,
-        id:      upload_location,
-      )
-
+      uploaded_file = shrine_class.uploaded_file(storage: upload_storage, id: upload_location)
       uploaded_file if uploaded_file.exists?
+    end
+  end
+
+  class Derivation::Opened < Derivation::Command
+    delegate :upload_storage, :upload_location, :upload_open_options
+
+    # Returns opened Shrine::UploadedFile object pointing to the uploaded if
+    # it exists on the storage.
+    def call
+      uploaded_file = shrine_class.uploaded_file(storage: upload_storage, id: upload_location)
+      uploaded_file.open(**upload_open_options)
+      uploaded_file
+    rescue Shrine::FileNotFound
     end
   end
 
