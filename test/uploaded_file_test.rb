@@ -400,7 +400,7 @@ describe Shrine::UploadedFile do
     it "deletes the Tempfile in case of exceptions" do
       tempfile = Tempfile.new("")
       Tempfile.stubs(:new).returns(tempfile)
-      assert_raises(KeyError) { uploaded_file.download }
+      assert_raises(Shrine::FileNotFound) { uploaded_file.download }
       assert tempfile.closed?
       assert_nil tempfile.path
     end
