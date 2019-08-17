@@ -605,15 +605,8 @@ disk for you, you can set `:download` to `false`.
 
 ```rb
 plugin :derivation_endpoint, download: false
-```
 
-In this case the `UploadedFile` object is yielded to the derivation block
-instead of the raw file:
-
-```rb
-derivation :thumbnail do |uploaded_file, width, height|
-  uploaded_file #=> #<Shrine::UploadedFile>
-
+derivation :thumbnail do |width, height| # source file is not downloaded
   # ...
 end
 ```
@@ -623,10 +616,10 @@ One use case for this is delegating processing to a 3rd-party service:
 ```rb
 require "down/http"
 
-derivation :thumbnail do |uploaded_file, width, height|
+derivation :thumbnail do |width, height|
   # generate the thumbnail using ImageOptim.com
   down = Down::Http.new(method: :post)
-  down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{uploaded_file.url}")
+  down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{source.url}")
 end
 ```
 

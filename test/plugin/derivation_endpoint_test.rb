@@ -831,9 +831,8 @@ describe Shrine::Plugins::DerivationEndpoint do
       it "applies :download" do
         minitest = self
 
-        @shrine.derivation(:gray) do |uploaded_file, *args|
-          minitest.assert_instance_of shrine_class::UploadedFile, uploaded_file
-          minitest.refute uploaded_file.opened?
+        @shrine.derivation(:gray) do |*args|
+          minitest.refute source.opened?
           minitest.assert_equal ["dark"], args
 
           Tempfile.new

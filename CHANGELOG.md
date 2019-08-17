@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `derivation_endpoint` - Don't pass source `UploadedFile` object when `:download` is `false` (@janko)
+
 * `derivation_endpoint` – Remove `:include_uploaded_file` option (@janko)
 
 * `derivation_endpoint` – Evaluate derivation block in context of `Shrine::Derivation` (@janko)

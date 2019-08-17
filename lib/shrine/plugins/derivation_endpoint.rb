@@ -585,7 +585,7 @@ class Shrine
       if download
         with_downloaded(file) { |file| derive(file, *args) }
       else
-        derive(source, *args)
+        derive(*args)
       end
     end
 
