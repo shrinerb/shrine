@@ -1146,6 +1146,18 @@ describe Shrine::Plugins::Derivatives do
       end
     end
 
+    describe "#map_derivative" do
+      it "iterates over nested derivatives" do
+        derivatives = { one: fakeio, two: { three: fakeio } }
+        yielded     = @attacher.map_derivative(derivatives).to_a
+
+        assert_equal [
+          [[:one],         derivatives[:one]],
+          [[:two, :three], derivatives[:two][:three]],
+        ], yielded
+      end
+    end
+
     describe "versions compatibility" do
       before do
         @shrine.plugin :derivatives, versions_compatibility: true

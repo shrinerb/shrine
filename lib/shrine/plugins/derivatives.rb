@@ -452,6 +452,13 @@ class Shrine
           @derivatives = derivatives
         end
 
+        # Iterates through nested derivatives and maps results.
+        #
+        #     attacher.map_derivative(derivatives) { |path, file| ... }
+        def map_derivative(*args, &block)
+          shrine_class.map_derivative(*args, &block)
+        end
+
         private
 
         # Sends a `derivatives.shrine` event for instrumentation plugin.
@@ -470,15 +477,6 @@ class Shrine
         def derivatives_processor(name)
           shrine_class.opts[:derivatives][:processors][name.to_sym] or
             fail Error, "derivatives processor #{name.inspect} not registered"
-        end
-
-        # Iterates through nested derivatives and maps results.
-        #
-        #     attacher.map_derivative { |name, file| ... }
-        #     # or
-        #     attacher.map_derivative(files) { |name, file| ... }
-        def map_derivative(*args, &block)
-          shrine_class.map_derivative(*args, &block)
         end
 
         # Returns symbolized array or single key.

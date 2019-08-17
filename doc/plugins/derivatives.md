@@ -678,7 +678,7 @@ them manually as needed.
 
 If you want to iterate over a nested hash of derivatives (which can be
 `Shrine::UploadedFile` objects or raw files), you can use
-`Shrine.map_derivative`:
+`Attacher#map_derivative` or `Shrine.map_derivative`:
 
 ```rb
 derivatives #=>
@@ -688,8 +688,7 @@ derivatives #=>
 #   four: [#<Shrine::UploadedFile>],
 # }
 
-# or MyUploader.map_derivative
-Shrine.map_derivative(derivatives) do |name, file|
+attacher.map_derivative(derivatives) do |name, file|
   puts "#{name}, #{file}"
 end
 
