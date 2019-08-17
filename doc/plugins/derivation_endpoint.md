@@ -76,7 +76,7 @@ Now we can generate "derivation" URLs from attached files, which on request
 will call the derivation block we defined.
 
 ```rb
-photo.image.derivation_url(:thumbnail, "600", "400")
+photo.image.derivation_url(:thumbnail, 600, 400)
 #=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
 ```
 

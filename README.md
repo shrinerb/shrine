@@ -639,7 +639,7 @@ Now we can generate URLs from attached files that will perform the desired
 processing:
 
 ```rb
-photo.image.derivation_url(:thumbnail, "600", "400")
+photo.image.derivation_url(:thumbnail, 600, 400)
 #=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
 ```
 

@@ -196,7 +196,7 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-photo.image.derivation_url(:thumbnail, "600", "400")
+photo.image.derivation_url(:thumbnail, 600, 400)
 #=> ".../thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
 ```
 
