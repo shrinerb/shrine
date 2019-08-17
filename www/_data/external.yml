@@ -223,6 +223,9 @@
     title: Libraries
     items:
       -
+        name: ckeditor
+        url: https://github.com/galetahub/ckeditor
+      -
         name: imgproxy
         url: https://github.com/imgproxy/imgproxy.rb
       -
