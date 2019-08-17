@@ -1,283 +1,453 @@
 # Using Attacher
 
-The most convenient way to use Shrine is through the model, using the interface
-provided by Shrine's attachment module. This way you can interact with the
-attachment just like with any other column attribute, and adding attachment
-fields to the form just works.
+This guide explains what is `Shrine::Attacher` and how to use it.
+
+## Contents
+
+* [Introduction](#introduction)
+* [Storage](#storage)
+* [Attaching](#attaching)
+  - [Attaching cached](#attaching-cached)
+  - [Attaching stored](#attaching-stored)
+  - [Uploading](#uploading)
+  - [Changes](#changes)
+* [Finalizing](#finalizing)
+  - [Promoting](#promoting)
+  - [Replacing](#replacing)
+* [Retrieving](#retreiving)
+  - [File](#file)
+  - [Attached](#attached)
+  - [URL](#url)
+  - [Data](#data)
+* [Deleting](#deleting)
+* [Context](#context)
+
+## Introduction
+
+The attachment logic is handled by a `Shrine::Attacher` object. The
+`Shrine::Attachment` module simply provides a convenience layer around a
+`Shrine::Attacher` object, which can be accessed via the `#<name>_attacher`
+attribute.
 
 ```rb
-class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image)
+class Photo
+  include ImageUploader::Attachment(:image)
+end
+```
+```rb
+photo = Photo.new
+photo.image_attacher #=> #<ImageUploader::Attacher>
+```
+
+We can also instantiate the same `Shrine::Attacher` object directly:
+
+```rb
+attacher = ImageUploader::Attacher.from_model(photo, :image)
+attacher.file # called by `photo.image`
+attacher.url  # called by `photo.image_url`
+```
+
+The `model`, `entity`, and `column` plugins provide additional
+`Shrine::Attacher` methods (such as `Shrine::Attacher.from_model` we see
+above), but in this guide we'll focus only on the core `Shrine::Attacher`
+methods.
+
+So, we'll assume a `Shrine::Attacher` object not backed by any model/entity:
+
+```rb
+attacher = Shrine::Attacher.new
+```
+
+## Storage
+
+By default, an `Attacher` will use the `:cache` storage as the **temporary**
+storage, and the `:store` storage as the **permanent** storage.
+
+```rb
+Shrine.storages = {
+  cache: Shrine::Storage::Memory.new,
+  store: Shrine::Storage::Memory.new,
+}
+```
+```rb
+attacher = Shrine::Attacher.new
+attacher.cache_key #=> :cache
+attacher.store_key #=> :store
+```
+
+We can also change the default storage:
+
+```rb
+attacher = Shrine::Attacher.new(cache: :other_cache, store: :other_store)
+attacher.cache_key #=> :other_cache
+attacher.store_key #=> :other_store
+```
+
+You can also change default attacher options on the `Shrine::Attachment`
+module:
+
+```rb
+class Photo
+  include ImageUploader::Attachment(:image, cache: :other_cache, store: :other_store)
 end
 ```
 
-However, if you don't want to add additional methods on the model and prefer
-explicitness, or you need more control, you can achieve the same behaviour
-using the `Shrine::Attacher` object, which is what the attachment interface
-uses under the hood.
+The `Attacher#cache` and `Attacher#store` methods will retrieve corresponding
+uploaders:
 
 ```rb
-attacher = ImageUploader::Attacher.new(photo, :image) # equivalent to `photo.image_attacher`
-attacher.assign(file)                                 # equivalent to `photo.image = file`
-attacher.get                                          # equivalent to `photo.image`
+attacher.cache #=> #<MyUploader @storage_key=:cache>
+attacher.store #=> #<MyUploader @storage_key=:store>
 ```
 
-The attacher will use the `<attachment>_data` attribute for storing information
-about the attachment.
+## Attaching
+
+### Attaching cached
+
+For attaching files submitted via a web form, `Attacher#assign` can be used:
 
 ```rb
-attacher.data_attribute #=> :image_data
+attacher.assign(file)
 ```
 
-## Initializing
-
-The attacher object exposes the objects it uses:
+If given a raw file, it will upload it to temporary storage:
 
 ```rb
-attacher.record #=> #<Photo>
-attacher.name   #=> :image
-attacher.cache  #=> #<ImageUploader @storage_key=:cache>
-attacher.store  #=> #<ImageUploader @storage_key=:store>
+attacher.assign(file)
+attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg", @storage_key=:cache>
 ```
 
-The attacher will automatically use `:cache` and `:store` storages, but you can
-also tell it to use different temporary and permanent storage:
+If given cached file data (JSON or Hash), it will set the cached file:
 
 ```rb
-ImageUploader::Attacher.new(photo, :image, cache: :other_cache, store: :other_store)
-
-# OR
-
-photo.image_attacher(cache: :other_cache, store: :other_store)
-photo.image = file # uploads to :other_cache storage
-photo.save         # promotes to :other_store storage
+attacher.assign('{"id":"asdf.jpg","storage":"cache","metadata":{...}}')
+attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg", @storage_key=:cache>
 ```
 
-You can pass the `:cache` and `:store` options via `Attachment.new` too:
+If given an empty string, it will no-op:
 
 ```rb
-class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image, cache: :other_cache, store: :other_store)
-end
+attacher.assign("") # no-op
 ```
 
-Note that it's not necessary to use the temporary storage, see the next section
-for more details.
-
-## Assignment
-
-The `#assign` method accepts either an IO object to be cached, or an already
-cached file in form of a JSON string, and assigns the cached result to record's
-`<attachment>_data` attribute.
+If given `nil`, it will clear the attached file:
 
 ```rb
-# uploads the `io` object to temporary storage, and writes to the data column
-attacher.assign(io)
-
-# writes the given cached file to the data column
-attacher.assign('{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{ ... }}')
+attacher.file #=> <Shrine::UploadedFile>
+attacher.assign(nil)
+attacher.file #=> nil
 ```
 
-When assigning an IO object, any additional options passed to `#assign` will be
-forwarded to `Shrine#upload`. This allows you to do things like overriding
-metadata, setting upload location, or passing upload options:
+This plays nicely with the recommended HTML form fields for the attachment. If
+you're not using the `hidden` form field (and therefore don't need empty
+strings to be handled), you can also use `Attacher#attach_cached`:
 
 ```rb
-attacher.assign io,
-  metadata:       { "filename" => "myfile.txt" },
-  location:       "custom/location",
-  upload_options: { acl: "public-read" }
+# uploads file to cache
+attacher.attach_cached(file)
+
+# sets cached file
+attacher.attach_cached('{"id":"asdf.jpg","storage":"cache","metadata":{...}}')
+attacher.attach_cached("id" => "asdf.jpg", "storage" => "cache", "metadata" => { ... })
+attacher.attach_cached(id: "asdf.jpg", storage: "cache", metadata: { ... })
+
+# unsets attached file
+attacher.attach_cached(nil)
 ```
 
-If you're attaching a cached file and want to override its metadata before
-assignment, you can do it like so:
+### Attaching stored
+
+The `Attacher#attach` method uploads a given file to permanent storage:
 
 ```rb
-cached_file = Shrine.uploaded_file('{"id":"9260ea09d8effd.jpg","storage":"cache","metadata":{ ... }}')
-cached_file.metadata["filename"] = "myfile.txt"
-
-attacher.assign(cached_file.to_json)
+attacher.attach(file)
+attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg" @storage=:store>
 ```
 
-For security reasons `#assign` doesn't accept files uploaded to permanent
-storage, but you can use `#set` to attach any `Shrine::UploadedFile` object.
-You can use this to skip temporary storage altogether and upload files directly
-to permanent storage:
+This method is useful when attaching files from scripts, where validation
+doesn't need to be performed, and where temporary storage can be skipped.
+
+You can specify a different destination storage with the `:storage` option:
 
 ```rb
-uploaded_file = attacher.store!(file) # upload a file directly to permanent storage
-attacher.set(uploaded_file)          # attach the uploaded file
+attacher.attach(file, storage: :other_store)
+attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg" @storage=:other_store>
 ```
 
-## Retrieval
-
-The `#get` method reads record's `<attachment>_data` attribute, and constructs
-a `Shrine::UploadedFile` object from it.
+Any additional options passed to `Attacher#attach`, `Attacher#attach_cached`
+and `Attacher#assign` are forwarded to the uploader:
 
 ```rb
-attacher.get #=> #<Shrine::UploadedFile>
+attacher.attach(file, metadata: { "foo" => "bar" })       # adding metadata
+attacher.attach(file, upload_options: { acl: "private" }) # setting upload options
+attacher.attach(file, location: "path/to/file")           # setting upload location
 ```
 
-The `#read` method will just return the value of the underlying
-`<attachment>_data` attribute.
+### Uploading
+
+If you want to upload a file to without attaching it, you can use
+`Attacher#upload`:
 
 ```rb
-attacher.read #=> '{"id":"dsg024lfs.jpg","storage":"cache","metadata":{...}}'
+attacher.upload(file)               #=> #<Shrine::UploadedFile @storage=:store ...>
+attacher.upload(file, :cache)       #=> #<Shrine::UploadedFile @storage=:cache ...>
+attacher.upload(file, :other_store) #=> #<Shrine::UploadedFile @storage=:other_store ...>
 ```
 
-In general you can use `#uploaded_file` to contruct a `Shrine::UploadedFile`
-from a JSON string.
+This is useful if you want to attacher [context](#context) such as `:record`
+and `:name` to be automatically passed to the uploader.
+
+You can also pass additional options for `Shrine#upload`:
 
 ```rb
-attachment_data = '{"id":"dsg024lfs.jpg","storage":"cache","metadata":{...}}'
-attacher.uploaded_file(attachment_data) #=> #<Shrine::UploadedFile>
+attacher.upload(file, metadata: { "foo" => "bar" })       # adding metadata
+attacher.upload(file, upload_options: { acl: "private" }) # setting upload options
+attacher.upload(file, location: "path/to/file")           # setting upload location
 ```
 
-## URL
+### Changes
 
-The `#url` method returns the URL to the attached file, and returns `nil` if
-no file is attached.
+When a new file is attached, calling [`Attacher#finalize`](#finalization) will
+perform additional actions such as promotion and deleting any previous file.
+It will also trigger [validation].
+
+You can check whether a new file has been attached with `Attacher#changed?`:
 
 ```rb
-attacher.url # calls `attacher.get.url`
+attacher.changed? #=> true
 ```
 
-## State
-
-You can ask the attacher whether the currently attached file is cached or
-stored.
+You can use `Attacher#change` to attach an `UploadedFile` object as is:
 
 ```rb
-attacher.cached?
-attacher.stored?
+uploaded_file #=> #<Shrine::UploadedFile>
+attacher.change(uploaded_file)
+attacher.file #=> #<Shrine::UploadedFile> (same object)
+attacher.changed? #=> true
+
 ```
 
-## Validations
-
-Whenever a file is assigned via `#assign` or `#set`, the file validations are
-automatically run, and you can access the validation errors through `#errors`:
+If you want to attach a file without triggering dirty tracking or validation,
+you can use `Attacher#set`:
 
 ```rb
-attacher.assign(large_file)
-attacher.errors #=> ["is larger than 10 MB"]
+uploaded_file #=> #<Shrine::UploadedFile>
+attacher.set(uploaded_file)
+attacher.file #=> #<Shrine::UploadedFile> (same object)
+attacher.changed? #=> false
 ```
 
-## Promoting
+## Finalizing
 
-After the attachment is assigned and you run validations, it should be promoted
-to permanent storage after the record is saved. You can use `#finalize` for
-that, since that will also automatically delete any previously attached files.
+After the file is attached (with `Attacher#assign`, `Attacher#attach_cached`,
+or `Attacher#attach`), and data has been validated, the attachment can be
+"finalized":
 
 ```rb
-# Replaces previous attachment and replaces new
 attacher.finalize
 ```
 
-This is normally automatically added to a callback by the ORM plugin when going
-through the model. Internally this calls `#promote`, which uploads a given
-`Shrine::UploadedFile` to permanent storage, and swaps it with the current
-attachment, unless a new file was attached in the meanwhile.
+The `Attacher#finalize` method performs [promoting](#promoting) and
+[replacing](#replacing). It also clears dirty tracking:
 
 ```rb
-# uploads cached file to permanent storage and replaces the current one
-attacher.promote(cached_file, action: :custom_name)
+attacher.changed? #=> true
+attacher.finalize
+attacher.changed? #=> false
 ```
 
-The `:action` parameter is optional; it can be used for triggering a certain
-processing block, or for additional context during instrumentation.
+### Promoting
 
-As a matter of fact, all additional options passed to `#promote` will be
-forwarded to `Shrine#upload`. So unless you're generating versions, you can do
-things like override metadata, set upload location, or pass upload options:
+`Attacher#finalize` checks if the attached file has been uploaded to temporary
+storage, and in this case uploads it to permanent storage.
 
 ```rb
-attacher.promote cached_file,
-  metadata:       { "filename" => "myfile.txt" },
-  location:       "custom/location",
-  upload_options: { acl: "public-read" }
+attacher.attach_cached(io)
+attacher.finalize # uploads attached file to permanent storage
+attacher.file #=> #<Shrine::UploadedFile @storage=:store ...>
 ```
 
-Internally `#promote` calls `#swap`, which will update the record with any
-uploaded file, but will reload the record to check if the current attachment
-hasn't changed (if the `backgrounding` plugin is loaded).
+Internally it calls `Attacher#promote_cached`, which you can call directly if
+you want to pass any promote options:
 
 ```rb
-attacher.swap(uploaded_file)
+attacher.file #=> #<Shrine::UploadedFile @storage=:cache ...>
+attacher.promote_cached # uploads attached file to permanent storage if new and cached
+attacher.file #=> #<Shrine::UploadedFile @storage=:store ...>
 ```
 
-Both `#promote` and `#swap` are useful for [file migrations].
-
-## Backgrounding
-
-When the `backgrounding` plugin is loaded, it allows you to promote and delete
-files in the background, and the corresponding methods are prefixed with `_`:
+You can also call `Attacher#promote` if you want to upload attached file to
+permanent storage, regardless of whether it's cached or newly attached:
 
 ```rb
-Shrine.plugin :backgrounding
-Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
-Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
-```
-```rb
-attacher._promote(cached_file)  # calls the registered `Attacher.promote` block
-attacher._delete(uploaded_file) # calls the registered `Attacher.delete` block
+attacher.promote
 ```
 
-These are automatically used when using Shrine through models.
+Any options passed to `Attacher#promote_cached` or `Attacher#promote` will be
+forwarded to `Shrine#upload`.
 
-## Context
+### Replacing
 
-The attacher sends `#context` to each upload/delete call to the uploader. By
-default it will hold `:record` and `:name`:
+`Attacher#finalize` also deletes the previous attached file if any:
 
 ```rb
-attacher.context #=>
+previous_file = attacher.file
+
+attacher.attach(io)
+attacher.finalize
+
+previous_file.exists? #=> false
+```
+
+Internally it calls `Attacher#destroy_previous` to do this:
+
+```rb
+attacher.destroy_previous
+```
+
+## Retrieving
+
+### File
+
+The `Attacher#file` is used to retrieve the attached file:
+
+```rb
+attacher.file #=> #<Shrine::UploadedFile>
+```
+
+If no file is attached, `Attacher#file` returns nil:
+
+```rb
+attacher.file #=> nil
+```
+
+If you want to assert a file is attached, you can use `Attacher#file!`:
+
+```rb
+attacher.file! #~> Shrine::Error: no file is attached
+```
+
+### Attached
+
+You can also check whether a file is attached with `Attacher#attached?`:
+
+```rb
+attacher.attached? # returns whether file is attached
+```
+
+If you want to check to which storage a file is uploaded to, you can use
+`Attacher#cached?` and `Attacher#stored?`:
+
+```rb
+attacher.attach(io)
+attacher.stored?                #=> true (checks current file)
+attacher.stored?(attacher.file) #=> true (checks given file)
+```
+```rb
+attacher.attach_cached(io)
+attacher.cached?                #=> true (checks current file)
+attacher.cached?(attacher.file) #=> true (checks given file)
+```
+
+### URL
+
+The attached file URL can be retrieved with `Attacher#url`:
+
+```rb
+attacher.url #=> "https://example.com/file.jpg"
+```
+
+If no file is attached, `Attacher#url` returns `nil`:
+
+```rb
+attacher.url #=> nil
+```
+
+### Data
+
+You can retrieve plain attached file data with `Attacher#data`:
+
+```rb
+attacher.data #=>
 # {
-#   record: #<Photo...>,
-#   name:   :image,
+#   "id" => "abc123.jpg",
+#   "storage" => "store",
+#   "metadata" => {
+#     "size" => 223984,
+#     "filename" => "nature.jpg",
+#     "mime_type" => "image/jpeg",
+#   }
 # }
 ```
 
-However, you can change/add additional context to be sent when calling the
-uploaders:
+This data can be stored somewhere, and later the attached file can be loaded
+from it:
+
+```rb
+# new attacher
+attacher = Shrine::Attacher.from_data(data)
+attacher.file #=> #<Shrine::UploadedFile>
+
+# existing attacher
+attacher.file #=> nil
+attacher.load_data(data)
+attacher.file #=> #<Shrine::UploadedFile>
+```
+
+Internally `Attacher#uploaded_file` is used to convert uploaded file data into
+a `Shrine::UploadedFile` object:
+
+```rb
+attacher.uploaded_file("id" => "...", "storage" => "...", "metadata" => { ... }) #=> #<Shrine::UploadedFile>
+attacher.uploaded_file(id: "...", storage: "...", metadata: { ... })             #=> #<Shrine::UploadedFile>
+attacher.uploaded_file('{"id":"...","storage":"...","metadata":{...}}')          #=> #<Shrine::UploadedFile>
+```
+
+You will likely want to use a higher level abstraction for saving and loading
+this data, see [`column`][column], [`entity`][entity] and [`model`][model]
+plugins for more details.
+
+## Deleting
+
+The attached file can be deleted via `Attacher#destroy_attached`:
+
+```rb
+attacher.destroy_attached
+```
+
+This will not delete cached files, to not interrupt any potential
+[backgrounding] that might be in process.
+
+If you want to delete the attached file regardless of storage it's uploaded to,
+you can use `Attacher#destroy`:
+
+```rb
+attacher.destroy
+```
+
+## Context
+
+The `Attacher#context` hash is automatically forwarded to the uploader on
+`Attacher#upload`. When [`model`][model] or [`entity`][model] plugin is loaded,
+this will include `:record` and `:name` values:
+
+```rb
+attacher = Shrine::Attacher.from_model(photo, :image)
+attacher.context #=> { record: #<Photo>, name: :image }
+```
+
+You can add here any other parameters you want to forward to the uploader:
 
 ```rb
 attacher.context[:foo] = "bar"
 ```
 
-This is useful for example if you have immutable model instances, and you want
-to assign a new updated instance. For example both foreground and background
-`#promote` requires that the record is persisted (and its `#id` is present).
+However, it's generally better practice to pass uploader options directly to
+`Attacher#assign`, `Attacher#attach`, `Attacher#promote` or any other method
+that's calling `Attacher#upload`.
 
-## Uploading and deleting
-
-Normally you can upload and delete directly by using the uploader.
-
-```rb
-uploader = ImageUploader.new(:store)
-uploaded_file = uploader.upload(image) # uploads the file to `:store` storage
-uploader.delete(uploaded_file)         # deletes the uploaded file from `:store`
-```
-
-But the attacher also has wrapper methods for uploading and deleting, which
-also automatically pass in the attacher `#context` (which includes `:record`
-and `:name`):
-
-```rb
-attacher.cache!(file) # uploads file to temporary storage
-# => #<Shrine::UploadedFile: @data={"storage" => "cache", ...}>
-attacher.store!(file) # uploads file to permanent storage
-# => #<Shrine::UploadedFile: @data={"storage" => "store", ...}>
-attacher.delete!(uploaded_file) # deletes uploaded file from storage
-```
-
-These methods only upload/delete files, they don't write to record's data
-column. You can also pass additional options for `Shrine#upload` and
-`Shrine#delete`:
-
-```rb
-attacher.cache!(file, upload_options: { acl: "public-read" })
-attacher.store!(file, location: "custom/location")
-attacher.delete!(uploaded_file, foo: "bar")
-```
-
-[file migrations]: /doc/migrating_storage.md#readme
+[validation]: /doc/plugins/validation.md#readme
+[column]: /doc/plugins/column.md#readme
+[entity]: /doc/plugins/entity.md#readme
+[model]: /doc/plugins/model.md#readme
+[backgrounding]: /doc/plugins/backgrounding.md#readme
