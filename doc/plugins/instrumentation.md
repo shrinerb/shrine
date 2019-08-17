@@ -102,7 +102,8 @@ following payload:
 | `:location`       | The location of the uploaded file      |
 | `:io`             | The uploaded IO object                 |
 | `:upload_options` | Any upload options that were specified |
-| `:options`        | Some additional context information    |
+| `:metadata`       | Metadata extracted during upload       |
+| `:options`        | Any additional uploader options        |
 | `:uploader`       | The uploader class that sent the event |
 
 ### download.shrine
@@ -160,7 +161,7 @@ following payload:
 | :--               | :----                                  |
 | `:storage`        | The storage identifier                 |
 | `:io`             | The uploaded IO object                 |
-| `:options`        | Some additional context information    |
+| `:options`        | Any options sent to the uploader       |
 | `:uploader`       | The uploader class that sent the event |
 
 ## API

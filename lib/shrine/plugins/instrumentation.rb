@@ -70,13 +70,14 @@ class Shrine
         private
 
         # Sends a `upload.shrine` event.
-        def _upload(io, **options)
+        def _upload(io, location:, metadata:, upload_options: {}, **options)
           self.class.instrument(
             :upload,
             storage: storage_key,
-            location: options[:location],
+            location: location,
             io: io,
-            upload_options: options[:upload_options] || {},
+            upload_options: upload_options,
+            metadata: metadata,
             options: options,
           ) { super }
         end
@@ -89,7 +90,7 @@ class Shrine
             :metadata,
             storage: storage_key,
             io: io,
-            options: options.merge(metadata: metadata),
+            options: options,
           ) { super }
         end
       end

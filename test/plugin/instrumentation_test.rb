@@ -202,19 +202,19 @@ describe Shrine::Plugins::Instrumentation do
             io,
             :store,
             upload_options: { foo: "bar" },
-            bar: "baz",
+            baz: "quux",
           )
         end
 
         refute_nil @event
-        assert_equal :store,           @event[:storage]
-        assert_equal uploaded_file.id, @event[:location]
-        assert_equal io,               @event[:io]
-        assert_equal Hash[foo: "bar"], @event[:upload_options]
-        assert_equal @shrine,          @event[:uploader]
-        assert_kind_of Integer,        @event[:time]
-
-        assert_equal %i[bar location metadata upload_options], @event[:options].keys.sort
+        assert_equal :store,                      @event[:storage]
+        assert_equal uploaded_file.id,            @event[:location]
+        assert_equal io,                          @event[:io]
+        assert_equal "bar",                       @event[:upload_options][:foo]
+        assert_equal %w[filename mime_type size], @event[:metadata].keys.sort
+        assert_equal Hash[baz: "quux"],           @event[:options]
+        assert_equal @shrine,                     @event[:uploader]
+        assert_kind_of Integer,                   @event[:time]
       end
 
       it "still forwards options for uploading" do
@@ -234,17 +234,18 @@ describe Shrine::Plugins::Instrumentation do
             io,
             :store,
             upload_options: { foo: "bar" },
-            bar: "baz",
+            baz: "quux",
           )
         end
 
         refute_nil @event
         assert_equal :store,    @event[:storage]
         assert_equal io,        @event[:io]
+        assert_equal "bar",     @event[:options][:upload_options][:foo]
+        assert_equal "quux",    @event[:options][:baz]
         assert_equal @shrine,   @event[:uploader]
         assert_kind_of Integer, @event[:time]
 
-        assert_equal %i[upload_options bar metadata], @event[:options].keys
       end
 
       it "skips instrumenting if metadata extraction is skipped" do

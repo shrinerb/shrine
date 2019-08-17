@@ -1,5 +1,11 @@
 ## 3.0.0 (unreleased)
 
+* `instrumentation` – Remove `:metadata` from `:options` in `metadata.shrine` event (@janko)
+
+* `instrumentation` – Remove `:location`, `:upload_options` and `:metadata` from `:options` in `upload.shrine` event (@janko)
+
+* `instrumentation` – Add `:metadata` to the `upload.shrine` event (@janko)
+
 * `download_endpoint` – Drop support for legacy `/:storage/:id` URLs (@janko)
 
 * `core` – In `UploadedFile#==` require files to be of the same class (@janko)
