@@ -189,7 +189,6 @@ class Shrine
     option :expires_in
     option :filename,                    default: -> { default_filename }
     option :host
-    option :include_uploaded_file,       default: -> { false }
     option :metadata,                    default: -> { [] }
     option :prefix
     option :secret_key
@@ -569,9 +568,7 @@ class Shrine
   end
 
   class Derivation::Generate < Derivation::Command
-    delegate :name, :args, :source,
-             :download, :download_options,
-             :include_uploaded_file
+    delegate :name, :args, :source, :download, :download_options
 
     def call(file = nil)
       derivative = generate(file)
@@ -586,13 +583,7 @@ class Shrine
     # file.
     def generate(file)
       if download
-        with_downloaded(file) do |file|
-          if include_uploaded_file
-            derive(file, source, *args)
-          else
-            derive(file, *args)
-          end
-        end
+        with_downloaded(file) { |file| derive(file, *args) }
       else
         derive(source, *args)
       end

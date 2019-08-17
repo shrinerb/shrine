@@ -542,50 +542,38 @@ uploaded_file.derivation_url(:thumbnail, version: 1)
 
 ## Accessing source file
 
-If you want to access the source `UploadedFile` object when deriving, you can
-set `:include_uploaded_file` to `true`.
+Inside the derivation block we can access the source `UploadedFile` object via
+`Shrine::Derivation#source`:
 
 ```rb
-plugin :derivation_endpoint, include_uploaded_file: true
-```
-
-Now the source `UploadedFile` will be passed as the second argument of the
-derivation block:
-
-```rb
-derivation :thumbnail do |file, uploaded_file, width, height|
-  uploaded_file             #=> #<Shrine::UploadedFile>
-  uploaded_file.id          #=> "9a7d1bfdad24a76f9cfaff137fe1b5c7.jpg"
-  uploaded_file.storage_key #=> :store
-  uploaded_file.metadata    #=> {}
+derivation :thumbnail do |file, width, height|
+  source             #=> #<Shrine::UploadedFile>
+  source.id          #=> "9a7d1bfdad24a76f9cfaff137fe1b5c7.jpg"
+  source.storage_key #=> :store
+  source.metadata    #=> {}
 
   # ...
 end
 ```
 
-By default original metadata that were extracted on attachment won't be
-available in the derivation block. This is because metadata we want to have
-available would need to be serialized into the derivation URL, which would make
-it longer. However, you can opt in for the metadata you need with the
-`:metadata` option:
+By default, when using the derivation endpoint, original metadata of the source
+file won't be available in the derivation block. This is because any metadata
+we would want to have available would need to be serialized into the derivation
+URL, which would make it longer. Instead, you can opt in for the metadata you
+want to have available:
 
 ```rb
 plugin :derivation_endpoint, metadata: ["filename", "mime_type"]
-```
 
-Now `filename` and `mime_type` metadata values will be available in the
-derivation block:
-
-```rb
-derivation :thumbnail do |file, uploaded_file, width, height|
-  uploaded_file.metadata #=>
+derivation :thumbnail do |file, width, height|
+  source.metadata #=>
   # {
   #  "filename" => "nature.jpg",
   #  "mime_type" => "image/jpeg"
   # }
 
-  uploaded_file.original_filename #=> "nature.jpg"
-  uploaded_file.mime_type         #=> "image/jpeg"
+  source.original_filename #=> "nature.jpg"
+  source.mime_type         #=> "image/jpeg"
 
   # ...
 end
@@ -774,7 +762,6 @@ derivation.option(:upload_location)
 | `:expires_in`                  | Number of seconds after which the URL will not be available anymore                                                                   | `nil`                                                |
 | `:filename`                    | Filename the browser will assume when the derivative is downloaded to disk                                                            | `<name>-<args>-<source id basename>`                 |
 | `:host`                        | URL host to use when generated URLs                                                                                                   | `nil`                                                |
-| `:include_uploaded_file`       | Whether to include the source uploaded file in the derivation block arguments                                                         | `false`                                              |
 | `:metadata`                    | List of metadata keys the source uploaded file should include in the derivation block                                                 | `[]`                                                 |
 | `:prefix`                      | Path prefix added to the URLs                                                                                                         | `nil`                                                |
 | `:secret_key`                  | Key used to sign derivation URLs in order to prevent tampering                                                                        | required                                             |

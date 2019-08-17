@@ -828,21 +828,6 @@ describe Shrine::Plugins::DerivationEndpoint do
         @uploaded_file.derivation(:gray, download_options: { bar: "bar" }).generate
       end
 
-      it "applies :include_uploaded_file" do
-        minitest = self
-
-        @shrine.derivation(:gray) do |file, uploaded_file, *args|
-          minitest.assert_instance_of Tempfile, file
-          minitest.assert_instance_of shrine_class::UploadedFile, uploaded_file
-          minitest.assert_equal ["dark"], args
-
-          Tempfile.new
-        end
-
-        @shrine.plugin :derivation_endpoint, include_uploaded_file: true
-        @uploaded_file.derivation(:gray, "dark").generate
-      end
-
       it "applies :download" do
         minitest = self
 
