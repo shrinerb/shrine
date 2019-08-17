@@ -1,5 +1,9 @@
 ## 3.0.0 (unreleased)
 
+* `s3` – Stop returning `:object` in `Down::ChunkedIO#data` in `S3#open` (@janko)
+
+* `s3` – Eliminate `#head_object` request in `S3#open` (@janko)
+
 * `download_endpoint` – Remove extra `Storage#exists?` check (@janko)
 
 * `derivation_endpoint` – Remove support for derivative being deleted during upload (@janko)

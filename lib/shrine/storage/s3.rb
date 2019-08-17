@@ -100,16 +100,9 @@ class Shrine
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def open(id, rewindable: true, **options)
-        object = object(id)
+        chunks, length = get_object(object(id), options)
 
-        load_data(object, **options)
-
-        Down::ChunkedIO.new(
-          chunks:     object.enum_for(:get, **options),
-          rewindable: rewindable,
-          size:       object.content_length,
-          data:       { object: object },
-        )
+        Down::ChunkedIO.new(chunks: chunks, rewindable: rewindable, size: length)
       rescue Aws::S3::Errors::NoSuchKey
         raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
@@ -255,21 +248,18 @@ class Shrine
         end
       end
 
-      # Aws::S3::Object#load doesn't support passing options to #head_object,
-      # so we call #head_object ourselves and assign the response data
-      def load_data(object, **options)
-        # filter out #get_object options that are not valid #head_object options
-        options = options.select do |key, value|
-          client.config.api.operation(:head_object).input.shape.member?(key)
-        end
+      # Aws::S3::Object#get doesn't allow us to get the content length of the
+      # object before the content is downloaded, so we hack our way around it.
+      def get_object(object, params)
+        req = client.build_request(:get_object, **params, bucket: bucket.name, key: object.key)
 
-        response = client.head_object(
-          bucket: bucket.name,
-          key: object.key,
-          **options
-        )
+        body = req.enum_for(:send_request)
+        body.peek # start the request
 
-        object.instance_variable_set(:@data, response.data)
+        content_length = Integer(req.context.http_response.headers["Content-Length"])
+        chunks         = Enumerator.new { |y| loop { y << body.next } }
+
+        [chunks, content_length]
       end
 
       # The file is copyable if it's on S3 and on the same Amazon account.
