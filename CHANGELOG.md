@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `derivation_endpoint` – Remove `:download_errors` option (@janko)
+
 * `memory` – Raise `Shrine::FileNotFound` on nonexistent file in `Memory#open` (@janko)
 
 * `file_system` – Raise `Shrine::FileNotFound` on nonexistent file in `FileSystem#open` (@janko)

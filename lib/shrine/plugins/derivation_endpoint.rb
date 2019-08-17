@@ -185,7 +185,6 @@ class Shrine
     option :cache_control,               default: -> { default_cache_control }
     option :disposition,                 default: -> { "inline" }
     option :download,                    default: -> { true }
-    option :download_errors,             default: -> { [] }
     option :download_options,            default: -> { {} }
     option :expires_in
     option :filename,                    default: -> { default_filename }
@@ -395,10 +394,10 @@ class Shrine
 
       begin
         status, headers, body = derivation.response(request.env)
-      rescue Derivation::NotFound
-        error!(404, "Unknown derivation \"#{name}\"")
       rescue Derivation::SourceNotFound
         error!(404, "Source file not found")
+      rescue Derivation::NotFound
+        error!(404, "Unknown derivation \"#{name}\"")
       end
 
       # tell clients to cache the derivation result if it was successful
@@ -571,7 +570,7 @@ class Shrine
 
   class Derivation::Generate < Derivation::Command
     delegate :name, :args, :source,
-             :download, :download_errors, :download_options,
+             :download, :download_options,
              :include_uploaded_file
 
     def call(file = nil)
@@ -648,16 +647,10 @@ class Shrine
     end
 
     # Downloads the source uploaded file from the storage.
-    def download_source
-      begin
-        file = source.download(**download_options)
-      rescue *download_errors
-        raise Derivation::SourceNotFound, "source file \"#{source.id}\" was not found on storage :#{source.storage_key}"
-      end
-
-      yield file
-    ensure
-      file.close! if file
+    def download_source(&block)
+      source.download(**download_options, &block)
+    rescue Shrine::FileNotFound
+      raise Derivation::SourceNotFound, "source file \"#{source.id}\" was not found on storage :#{source.storage_key}"
     end
 
     def derivation_block

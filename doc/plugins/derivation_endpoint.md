@@ -602,17 +602,9 @@ plugin :derivation_endpoint, download_options: {
 }
 ```
 
-If the source file has been deleted, the error the storage raises when
-attempting to download it will be propagated by default. For
-`Shrine.derivation_endpoint` and `Shrine.derivation_response` you can have
-these errors converted to 404 responses by adding them to `:download_errors`:
-
-```rb
-plugin :derivation_endpoint, download_errors: [
-  Errno::ENOENT,             # raised by Shrine::Storage::FileSystem
-  Aws::S3::Errors::NotFound, # raised by Shrine::Storage::S3
-]
-```
+If the source file was not found, `Shrine::Derivation::SourceNotFound`
+exception is raised. In a derivation response this is converted into a `404 Not
+Found` response.
 
 ### Skipping download
 
@@ -774,7 +766,6 @@ derivation.option(:upload_location)
 | `:cache_control`               | Hash of directives for the `Cache-Control` response header                                                                            | `{ public: true, max_age: 365*24*60*60 }`            |
 | `:disposition`                 | Whether the browser should attempt to render the derivative (`inline`) or prompt the user to download the file to disk (`attachment`) | `inline`                                             |
 | `:download`                    | Whether the source uploaded file should be downloaded to disk when the derivation block is called                                     | `true`                                               |
-| `:download_errors`             | List of error classes that will be converted to a `404 Not Found` response by the derivation endpoint                                 | `[]`                                                 |
 | `:download_options`            | Additional options to pass when downloading the source uploaded file                                                                  | `{}`                                                 |
 | `:expires_in`                  | Number of seconds after which the URL will not be available anymore                                                                   | `nil`                                                |
 | `:filename`                    | Filename the browser will assume when the derivative is downloaded to disk                                                            | `<name>-<args>-<source id basename>`                 |

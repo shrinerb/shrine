@@ -40,6 +40,7 @@ Shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:
 Shrine.plugin :determine_mime_type, analyzer: :marcel, log_subscriber: nil
 Shrine.plugin :cached_attachment_data
 Shrine.plugin :restore_cached_data
+Shrine.plugin :derivation_endpoint, secret_key: "secret"
 
 if ENV["RACK_ENV"] == "production"
   Shrine.plugin :presign_endpoint, presign_options: -> (request) {
@@ -56,10 +57,6 @@ if ENV["RACK_ENV"] == "production"
 else
   Shrine.plugin :upload_endpoint
 end
-
-Shrine.plugin :derivation_endpoint,
-  secret_key: "secret",
-  download_errors: [defined?(Aws) ? Aws::S3::Errors::NotFound : Errno::ENOENT]
 
 # delay promoting and deleting files to a background job (`backgrounding` plugin)
 Shrine.plugin :backgrounding

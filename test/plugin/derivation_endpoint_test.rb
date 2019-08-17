@@ -293,23 +293,13 @@ describe Shrine::Plugins::DerivationEndpoint do
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
     end
 
-    it "returns 404 when error from :download_errors is raised" do
-      @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
+    it "returns 404 when source was not found" do
       @uploaded_file.delete
       derivation_url = @uploaded_file.derivation_url(:gray)
       response = app.get(derivation_url)
       assert_equal 404,                              response.status
       assert_match "Source file not found",          response.body_binary
       assert_equal response.body_binary.length.to_s, response.headers["Content-Length"]
-    end
-
-    it "propagates download errors when :download_errors is not specified" do
-      @shrine.plugin :derivation_endpoint
-      derivation_url = @uploaded_file.derivation_url(:gray)
-      @uploaded_file.delete
-      assert_raises(KeyError) do
-        app.get(derivation_url)
-      end
     end
 
     it "successfully handles expiring links that have not yet expired" do
@@ -860,18 +850,9 @@ describe Shrine::Plugins::DerivationEndpoint do
         @uploaded_file.derivation(:gray, "dark").generate
       end
 
-      it "raises SourceNotFound on error from :download_errors raised on downloading" do
-        @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
+      it "raises SourceNotFound on error when file was not found" do
         @uploaded_file.delete
         assert_raises(Shrine::Derivation::SourceNotFound) do
-          @uploaded_file.derivation(:gray).generate
-        end
-      end
-
-      it "propagates errors from :download_errors raised in derivation block" do
-        @shrine.plugin :derivation_endpoint, download_errors: [KeyError]
-        @shrine.derivation(:gray) { raise KeyError }
-        assert_raises(KeyError) do
           @uploaded_file.derivation(:gray).generate
         end
       end
