@@ -1,10 +1,12 @@
 ## 3.0.0 (unreleased)
 
+* `download_endpoint` – Remove extra `Storage#exists?` check (@janko)
+
 * `derivation_endpoint` – Remove support for derivative being deleted during upload (@janko)
 
 * `derivation_endpoint` – Add `Derivation#opened` for retrieving an opened derivation result (@janko)
 
-* `derivation_endpoint` – Remove `Storage#exists?` extra check when `:upload` is enabled but not `:upload_redirect` (@janko)
+* `derivation_endpoint` – Remove extra `Storage#exists?` check when `:upload` is enabled but not `:upload_redirect` (@janko)
 
 * `derivation_endpoint` - Don't pass source `UploadedFile` object when `:download` is `false` (@janko)
 

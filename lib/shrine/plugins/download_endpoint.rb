@@ -148,14 +148,14 @@ class Shrine
       download_options = download_options.call(uploaded_file, request) if download_options.respond_to?(:call)
 
       uploaded_file.open(**download_options)
+    rescue Shrine::FileNotFound
+      not_found!
     end
 
     # Deserializes a Shrine::UploadedFile from a URL component. Returns 404 if
     # storage is not found.
     def get_uploaded_file(serialized)
-      uploaded_file = @shrine_class::UploadedFile.urlsafe_load(serialized)
-      not_found! unless uploaded_file.exists?
-      uploaded_file
+      @shrine_class::UploadedFile.urlsafe_load(serialized)
     rescue Shrine::Error # storage not found
       not_found!
     end
