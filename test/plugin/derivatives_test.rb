@@ -414,14 +414,14 @@ describe Shrine::Plugins::Derivatives do
       end
     end
 
-    describe "#store_derivatives" do
+    describe "#create_derivatives" do
       it "calls processor, then uploads and saves results" do
         @attacher.class.derivatives_processor :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
         @attacher.attach fakeio("file")
-        @attacher.store_derivatives(:reversed)
+        @attacher.create_derivatives(:reversed)
 
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:reversed]
         assert_equal "elif", @attacher.derivatives[:reversed].read
@@ -433,7 +433,7 @@ describe Shrine::Plugins::Derivatives do
         end
 
         @attacher.attach fakeio("file")
-        @attacher.store_derivatives(:reversed, storage: :other_store, location: "foo")
+        @attacher.create_derivatives(:reversed, storage: :other_store, location: "foo")
 
         assert_equal :other_store, @attacher.derivatives[:reversed].storage_key
         assert_equal "foo",        @attacher.derivatives[:reversed].id
@@ -494,32 +494,6 @@ describe Shrine::Plugins::Derivatives do
         @attacher.add_derivative(:one, fakeio, storage: :other_store)
 
         assert_equal :other_store, @attacher.derivatives[:one].storage_key
-      end
-    end
-
-    describe "#create_derivatives" do
-      it "calls processor and uploads results" do
-        @attacher.class.derivatives_processor :reversed do |original|
-          { reversed: StringIO.new(original.read.reverse) }
-        end
-
-        @attacher.attach fakeio("file")
-        derivatives = @attacher.create_derivatives(:reversed)
-
-        assert_kind_of Shrine::UploadedFile, derivatives[:reversed]
-        assert_equal "elif", derivatives[:reversed].read
-      end
-
-      it "forwards additional options for uploading" do
-        @attacher.class.derivatives_processor :reversed do |original|
-          { reversed: StringIO.new(original.read.reverse) }
-        end
-
-        @attacher.attach fakeio("file")
-        derivatives = @attacher.create_derivatives(:reversed, storage: :other_store, location: "foo")
-
-        assert_equal :other_store, derivatives[:reversed].storage_key
-        assert_equal "foo",        derivatives[:reversed].id
       end
     end
 

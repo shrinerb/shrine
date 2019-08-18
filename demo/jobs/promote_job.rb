@@ -8,7 +8,7 @@ class PromoteJob
     record       = record_class.with_pk!(record_id)
 
     attacher = Shrine::Attacher.retrieve(model: record, name: name, data: data)
-    attacher.store_derivatives(:thumbnails) if record_class == Album
+    attacher.create_derivatives(:thumbnails) if record_class == Album
     attacher.atomic_promote
   rescue Shrine::AttachmentChanged
     # attachment has changed, so nothing to do

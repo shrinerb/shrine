@@ -167,8 +167,8 @@ class Shrine
         #       # ...
         #     end
         #
-        #     attacher.store_derivatives(:my_processor)
-        def store_derivatives(processor_name, **options)
+        #     attacher.create_derivatives(:my_processor)
+        def create_derivatives(processor_name, **options)
           files = process_derivatives(processor_name)
           add_derivatives(files, **options)
         end
@@ -207,18 +207,6 @@ class Shrine
         def add_derivative(name, file, **options)
           add_derivatives({ name => file }, **options)
           derivatives[name]
-        end
-
-        # Calls processor and uploads returned derivatives.
-        #
-        #     Attacher.derivatives_processor :my_processor do |original|
-        #       # ...
-        #     end
-        #
-        #     attacher.create_derivatives(:my_processor)
-        def create_derivatives(processor_name, **options)
-          files = process_derivatives(processor_name)
-          upload_derivatives(files, **options)
         end
 
         # Uploads given hash of files.
