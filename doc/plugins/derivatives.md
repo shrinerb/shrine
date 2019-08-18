@@ -28,9 +28,10 @@ plugin :derivatives
 * [Promoting derivatives](#promoting-derivatives)
 * [Removing derivatives](#removing-derivatives)
   * [Deleting derivatives](#deleting-derivatives)
-* [Without original](#without-original)
-* [Iterating derivatives](#iterating-derivatives)
-* [Parsing derivatives](#parsing-derivatives)
+* [Miscellaneous](#miscellaneous)
+  * [Without original](#without-original)
+  * [Iterating derivatives](#iterating-derivatives)
+  * [Parsing derivatives](#parsing-derivatives)
 * [Instrumentation](#instrumentation)
 
 ## API overview
@@ -81,15 +82,15 @@ class Photo < Model(:image_data)
 end
 ```
 ```rb
-photo.image #=> #<Shrine::UploadedFile>
+photo.image #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
 photo.image_derivatives #=> {}
 
 photo.image_attacher.create_derivatives(:thumbnails) # calls processor and uploads results
 photo.image_derivatives #=>
 # {
-#   small:  #<Shrine::UploadedFile>,
-#   medium: #<Shrine::UploadedFile>,
-#   large:  #<Shrine::UploadedFile>,
+#   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store ...>,
+#   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store ...>,
+#   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store ...>,
 # }
 ```
 
@@ -523,6 +524,8 @@ attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
 attacher.merge_derivatives attacher.upload_derivatives(nested: { two: two_file })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
+
+The `Attacher#merge_derivatives` method is thread-safe.
 
 ### Setting derivatives
 

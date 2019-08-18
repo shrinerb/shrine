@@ -153,14 +153,6 @@ class Shrine
           delete_derivatives unless background
         end
 
-        # Deletes given hash of uploaded files.
-        #
-        #     attacher.delete_derivatives(thumb: uploaded_file)
-        #     uploaded_file.exists? #=> false
-        def delete_derivatives(derivatives = self.derivatives)
-          map_derivative(derivatives) { |_, derivative| derivative.delete }
-        end
-
         # Calls processor and adds returned derivatives.
         #
         #     Attacher.derivatives_processor :my_processor do |original|
@@ -345,6 +337,14 @@ class Shrine
           remove_derivatives(path, **options).first
         end
 
+        # Deletes given hash of uploaded files.
+        #
+        #     attacher.delete_derivatives(thumb: uploaded_file)
+        #     uploaded_file.exists? #=> false
+        def delete_derivatives(derivatives = self.derivatives)
+          map_derivative(derivatives) { |_, derivative| derivative.delete }
+        end
+
         # Sets the given hash of uploaded files as derivatives.
         #
         #     attacher.set_derivatives(thumb: uploaded_file)
@@ -494,13 +494,13 @@ class Shrine
         # Converts data into a Hash of derivatives.
         #
         #     Shrine.derivatives('{"thumb":{"id":"foo","storage":"store","metadata":{}}}')
-        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage="store" @metadata={}> }
+        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage_key="store" @metadata={}> }
         #
         #     Shrine.derivatives({ "thumb" => { "id" => "foo", "storage" => "store", "metadata" => {} } })
-        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage="store" @metadata={}> }
+        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage_key="store" @metadata={}> }
         #
         #     Shrine.derivatives({ thumb: { id: "foo", storage: "store", metadata: {} } })
-        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage="store" @metadata={}> }
+        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage_key="store" @metadata={}> }
         def derivatives(object)
           if object.is_a?(String)
             derivatives JSON.parse(object)
@@ -556,6 +556,7 @@ class Shrine
         end
       end
 
+      # Adds compatibility with how the versions plugin stores processed files.
       module VersionsCompatibility
         def load_data(data)
           return super if data.nil?
