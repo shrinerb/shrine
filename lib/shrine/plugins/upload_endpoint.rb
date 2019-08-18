@@ -166,23 +166,26 @@ class Shrine
     # a Rack response triple - an array consisting of a status number, hash
     # of headers, and a body enumerable. If a `:rack_response` option is
     # given, calls that instead.
-    def make_response(object, request)
+    def make_response(uploaded_file, request)
       if @rack_response
-        @rack_response.call(object, request)
+        @rack_response.call(uploaded_file, request)
       else
         if @url
-          url = case @url
-                when true then object.url
-                when Hash then object.url(**@url)
-                else           @url.call(object, request)
-                end
-
-          body = { data: object, url: url }.to_json
+          url  = resolve_url(uploaded_file, request)
+          body = { data: uploaded_file, url: url }.to_json
         else
-          body = object.to_json
+          body = uploaded_file.to_json
         end
 
         [200, { "Content-Type" => CONTENT_TYPE_JSON }, [body]]
+      end
+    end
+
+    def resolve_url(uploaded_file, request)
+      case @url
+      when true then uploaded_file.url
+      when Hash then uploaded_file.url(**@url)
+      else           @url.call(uploaded_file, request)
       end
     end
 
