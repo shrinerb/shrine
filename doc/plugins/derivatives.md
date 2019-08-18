@@ -42,7 +42,7 @@ class, and it's layered in the following way:
   * [`Attacher#process_derivatives`](#processing-derivatives) – processes derivatives
   * [`Attacher#add_derivatives`](#adding-derivatives) – uploads and merges derivatives
     * [`Attacher#upload_derivatives`](#uploading-derivatives) – uploads derivatives
-    * [`Attacher#merge_derivatives`](#merging derivatives) – merges derivatives
+    * [`Attacher#merge_derivatives`](#merging-derivatives) – merges derivatives
       * [`Attacher#set_derivatives`](#setting-derivatives) – overrides derivatives
 
 ## Creating derivatives
@@ -258,9 +258,8 @@ the processor and upload results.
 attacher.create_derivatives(:my_processor)
 ```
 
-Internally this calls `Attacher#process_derivatives` – which calls the
-processor – and [`Attacher#add_derivatives`](#adding-derivatives) to store the
-processed files.
+Internally this calls `Attacher#process_derivatives`, which calls the
+processor and returns processed files:
 
 ```rb
 files = attacher.process_derivatives(:my_processor)
@@ -284,7 +283,7 @@ Attacher.derivatives_processor :my_processor do |original|
 end
 ```
 
-Additionally, any options passed to `Attacher#process_derivatives` will be
+Moreover, any options passed to `Attacher#process_derivatives` will be
 forwarded to the processor:
 
 ```rb
