@@ -98,6 +98,9 @@ Form:
     name: cached_attachment_data
     description: Adds a model method for the hidden form cache field.
   -
+    name: form_assign
+    description: Allows attaching file from form params without a form object.
+  -
     name: remove_attachment
     description: Allows removing the attachment via a form field.
 

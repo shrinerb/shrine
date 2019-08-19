@@ -1,5 +1,7 @@
 ## 3.0.0 (unreleased)
 
+* `form_assign` – Add new plugin for assigning attachment from form params without a form object (@janko)
+
 * `derivation_endpoint` – Allow passing generic IO objects to `Derivation#upload` (@janko)
 
 * `derivation_endpoint` – Accept additional uploader options in `Derivation#upload` (@janko)
