@@ -11,14 +11,18 @@ class Shrine
       end
 
       module AttacherMethods
-        def validate(*)
+        def change(*)
           super
         ensure
-          if errors.any? && changed?
-            destroy(background: true)
-            set @previous.file
-            remove_instance_variable(:@previous)
-          end
+          revert_change if errors.any?
+        end
+
+        private
+
+        def revert_change
+          destroy(background: true)
+          set @previous.file
+          remove_instance_variable(:@previous)
         end
       end
     end

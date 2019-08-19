@@ -83,15 +83,5 @@ describe Shrine::Plugins::RemoveInvalid do
         assert @block_called
       end
     end
-
-    describe "#validate" do
-      it "doesn't remove the attachment if it isn't new" do
-        @attacher.file = @attacher.upload(fakeio)
-        @attacher.class.validate { errors << "error" }
-        @attacher.validate
-
-        refute_nil @attacher.file
-      end
-    end
   end
 end
