@@ -1,4 +1,4 @@
-## 3.0.0 (unreleased)
+## 3.0.0.alpha (2019-08-19)
 
 * `form_assign` – Add new plugin for assigning attachment from form params without a form object (@janko)
 
