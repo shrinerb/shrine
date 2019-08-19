@@ -145,7 +145,7 @@ attacher.abstract_atomic_persist(original_file, **options)
 If you want to execute some code before persistence, you can pass a block:
 
 ```rb
-attacher.abstract_atomic_persist(**options) do
+attacher.abstract_atomic_persist(**options) do |reloaded_attacher|
   # this will be executed before persistence
 end
 ```
