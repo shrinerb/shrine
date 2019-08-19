@@ -23,14 +23,20 @@ class Shrine
 
       module AttacherMethods
         def column_values
-          values = super
+          super.merge(metadata_attributes)
+        end
+
+        private
+
+        def metadata_attributes
+          values = {}
 
           shrine_class.opts[:metadata_attributes][:mappings].each do |source, destination|
             metadata_attribute = destination.is_a?(Symbol) ? :"#{name}_#{destination}" : :"#{destination}"
 
             next unless record.respond_to?(metadata_attribute)
 
-            values[metadata_attribute] = file && file.metadata[source.to_s]
+            values[metadata_attribute] = file&.metadata[source.to_s]
           end
 
           values
