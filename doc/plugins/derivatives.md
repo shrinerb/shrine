@@ -12,6 +12,7 @@ plugin :derivatives
 
 * [API overview](#api-overview)
 * [Creating derivatives](#creating-derivatives)
+  - [Derivatives storage](#derivatives-storage)
   - [Nesting derivatives](#nesting-derivatives)
 * [Retrieving derivatives](#retrieving-derivatives)
 * [Derivative URL](#derivative-url)
@@ -20,7 +21,6 @@ plugin :derivatives
   - [Source file](#source-file)
 * [Adding derivatives](#adding-derivatives)
 * [Uploading derivatives](#uploading-derivatives)
-  - [Derivatives storage](#derivatives-storage)
   - [Uploader options](#uploader-options)
   - [File deletion](#file-deletion)
 * [Merging derivatives](#merging-derivatives)
@@ -117,6 +117,54 @@ Any additional options passed to `Attacher#create_derivatives` are forwarded to
 ```rb
 attacher.create_derivatives(:thumbnails, storage: :other_store)                  # specify destination storage
 attacher.create_derivatives(:thumbnails, upload_options: { acl: "public-read" }) # pass uploader options
+```
+
+### Derivatives storage
+
+By default, derivatives are uploaded to the permanent storage of the attacher.
+You can change the default destination storage with the `:storage` plugin
+option:
+
+```rb
+plugin :derivatives, storage: :other_store
+```
+
+The storage can be dynamic based on the derivative name:
+
+```rb
+plugin :derivatives, storage: -> (derivative) do
+  if derivative == :thumb
+    :thumbnail_store
+  else
+    :store
+  end
+end
+```
+
+You can also set this option with `Attacher.derivatives_storage`:
+
+```rb
+Attacher.derivatives_storage :other_store
+# or
+Attacher.derivatives_storage do |derivative|
+  if derivative == :thumb
+    :thumbnail_store
+  else
+    :store
+  end
+end
+```
+
+The storage block is evaluated in the context of a `Shrine::Attacher` instance:
+
+```rb
+Attacher.derivatives_storage do |derivative|
+  self   #=> #<Shrine::Attacher>
+
+  record  #=> #<Photo>
+  name    #=> :image
+  context #=> { ... }
+end
 ```
 
 ### Nesting derivatives
@@ -406,63 +454,18 @@ attacher.upload_derivative(:thumb, thumbnail_file)
 #=> #<Shrine::UploadedFile>
 ```
 
-### Derivatives storage
-
-By default, derivatives are uploaded to the permanent storage of the attacher
-(`:store` by default). You can specify a different destination storage for
-`Attacher#upload_derivative(s)` with the `:storage` option:
-
-```rb
-attacher.upload_derivatives(derivatives, storage: :other_store)
-```
-
-You can also set a default derivatives storage on the plugin level:
-
-```rb
-plugin :derivatives, storage: :other_store
-```
-
-The storage can be dynamic based on the derivative name:
-
-```rb
-plugin :derivatives, storage: -> (derivative) do
-  if derivative == :thumb
-    :thumbnail_store
-  else
-    :store
-  end
-end
-```
-
-You can also set this option with `Attacher.derivatives_storage`:
-
-```rb
-Attacher.derivatives_storage :other_store
-# or
-Attacher.derivatives_storage do |derivative|
-  if derivative == :thumb
-    :thumbnail_store
-  else
-    :store
-  end
-end
-```
-
-The storage block is evaluated in the context of a `Shrine::Attacher` instance:
-
-```rb
-Attacher.derivatives_storage do |derivative|
-  self   #=> #<Shrine::Attacher>
-
-  record  #=> #<Photo>
-  name    #=> :image
-  context #=> { ... }
-end
-```
-
 ### Uploader options
 
-Any options other than `:storage` will be forwarded to the uploader:
+You can specify the destination storage by passing `:storage` option to
+`Attacher#upload_derivative(s)`. This will override the [default derivatives
+storage](#derivatives-storage) setting.
+
+```rb
+attacher.upload_derivative(:thumb, thumnbail_file, storage: :other_store)
+#=> #<Shrine::UploadedFile @id="thumb.jpg" @storage_key=:other_store ...>
+```
+
+Any other options will be forwarded to the uploader:
 
 ```rb
 attacher.upload_derivative :thumb, thumbnail_file,
