@@ -1,3 +1,7 @@
+## HEAD
+
+* `derivatives` – Change `#create_derivatives` to forward all arguments to `#process_derivatives` (@janko)
+
 ## 3.0.0.alpha (2019-08-19)
 
 * `form_assign` – Add new plugin for assigning attachment from form params without a form object (@janko)

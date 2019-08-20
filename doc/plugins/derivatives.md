@@ -111,14 +111,6 @@ photo.image_data #=>
 # }
 ```
 
-Any additional options passed to `Attacher#create_derivatives` are forwarded to
-[`Attacher#upload_derivatives`](#uploading-derivatives).
-
-```rb
-attacher.create_derivatives(:thumbnails, storage: :other_store)                  # specify destination storage
-attacher.create_derivatives(:thumbnails, upload_options: { acl: "public-read" }) # pass uploader options
-```
-
 ### Derivatives storage
 
 By default, derivatives are uploaded to the permanent storage of the attacher.
@@ -332,8 +324,8 @@ Attacher.derivatives_processor :my_processor do |original|
 end
 ```
 
-Moreover, any options passed to `Attacher#process_derivatives` will be
-forwarded to the processor:
+Moreover, any options passed to `Attacher#process_derivatives` (or
+`Attacher#create_derivatives`) will be forwarded to the processor:
 
 ```rb
 attacher.process_derivatives(:my_processor, foo: "bar")
@@ -363,7 +355,7 @@ attacher.process_derivatives(:my_processor) # downloads attached file and passes
 If you already have the source file locally, or if you're calling multiple
 processors in a row and want to avoid downloading the same source file each
 time, you can pass the source file as the second argument to
-`Attacher#process_derivatives`:
+`Attacher#process_derivatives` (or `Attacher#create_derivatives`):
 
 ```rb
 # this way the source file is downloaded only once

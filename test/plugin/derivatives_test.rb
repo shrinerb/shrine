@@ -427,16 +427,25 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "elif", @attacher.derivatives[:reversed].read
       end
 
-      it "forwards additional options for uploading" do
+      it "forwards original file to processor" do
         @attacher.class.derivatives_processor :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
-        @attacher.attach fakeio("file")
-        @attacher.create_derivatives(:reversed, storage: :other_store, location: "foo")
+        @attacher.create_derivatives(:reversed, fakeio("file"))
 
-        assert_equal :other_store, @attacher.derivatives[:reversed].storage_key
-        assert_equal "foo",        @attacher.derivatives[:reversed].id
+        assert_equal "elif", @attacher.derivatives[:reversed].read
+      end
+
+      it "forwards additional options to processor" do
+        @attacher.class.derivatives_processor :options do |original, **options|
+          { options: StringIO.new(options.to_s) }
+        end
+
+        @attacher.attach fakeio("file")
+        @attacher.create_derivatives(:options, foo: "bar")
+
+        assert_equal '{:foo=>"bar"}', @attacher.derivatives[:options].read
       end
     end
 

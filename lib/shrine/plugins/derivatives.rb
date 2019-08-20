@@ -160,9 +160,9 @@ class Shrine
         #     end
         #
         #     attacher.create_derivatives(:my_processor)
-        def create_derivatives(processor_name, **options)
-          files = process_derivatives(processor_name)
-          add_derivatives(files, **options)
+        def create_derivatives(*args)
+          files = process_derivatives(*args)
+          add_derivatives(files)
         end
 
         # Uploads given hash of files and adds uploaded files to the
