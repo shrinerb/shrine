@@ -36,6 +36,18 @@ class Shrine
             send(:"#{name}_attacher").get_derivatives(*args)
           end
         end
+
+        def included(klass)
+          super
+
+          return unless options[:type] == :model
+
+          name = attachment_name
+
+          define_method(:"#{name}_derivatives!") do |*args|
+            send(:"#{name}_attacher").create_derivatives(*args)
+          end
+        end
       end
 
       module AttacherClassMethods

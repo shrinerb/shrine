@@ -50,8 +50,8 @@ class, and it's layered in the following way:
 
 When you have a file attached, you can generate derivatives from it and save
 them alongside the attached file. The simplest way to do this is to define a
-processor which returns the processed files, and then trigger it with
-`Attacher#create_derivatives` when you want to generate the derivatives.
+processor which returns the processed files, and then trigger it when you want
+to create derivatives.
 
 Here is an example of generating image thumbnails:
 
@@ -85,7 +85,7 @@ end
 photo.image #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
 photo.image_derivatives #=> {}
 
-photo.image_attacher.create_derivatives(:thumbnails) # calls processor and uploads results
+photo.image_derivatives!(:thumbnails) # calls registered processor and uploads results
 photo.image_derivatives #=>
 # {
 #   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store ...>,
@@ -108,6 +108,22 @@ photo.image_data #=>
 #     "medium": { "id": "medium.jpg", "storage": "store", "metadata": { ... } },
 #     "large": { "id": "large.jpg", "storage": "store", "metadata": { ... } },
 #   }
+# }
+```
+
+When using `Shrine::Attacher` directly, derivatives are created using
+`Attacher#create_derivatives`:
+
+```rb
+attacher.file #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
+attacher.derivatives #=> {}
+
+attacher.create_derivatives(:thumbnails) # calls registered processor and uploads results
+attacher.derivatives #=>
+# {
+#   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store ...>,
+#   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store ...>,
+#   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store ...>,
 # }
 ```
 

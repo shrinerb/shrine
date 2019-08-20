@@ -10,36 +10,80 @@ describe Shrine::Plugins::Derivatives do
 
   describe "Attachment" do
     before do
-      @shrine.plugin :entity
+      @shrine.plugin :model
 
       @attacher = @shrine::Attacher.new
 
-      @entity_class = entity_class(:file_data)
-      @entity_class.include @shrine::Attachment.new(:file)
+      @model_class = model_class(:file_data)
+      @model_class.include @shrine::Attachment.new(:file)
     end
 
     describe "#<name>_derivatives" do
       it "returns the hash of derivatives" do
         @attacher.add_derivatives(one: fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.derivatives, entity.file_derivatives
+        assert_equal @attacher.derivatives, model.file_derivatives
       end
 
       it "forward arguments" do
         @attacher.add_derivatives(one: fakeio, two: { three: fakeio })
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.derivatives[:one],         entity.file_derivatives(:one)
-        assert_equal @attacher.derivatives[:two][:three], entity.file_derivatives(:two, :three)
+        assert_equal @attacher.derivatives[:one],         model.file_derivatives(:one)
+        assert_equal @attacher.derivatives[:two][:three], model.file_derivatives(:two, :three)
       end
 
       it "returns empty hash for no derivatives" do
-        entity = @entity_class.new(file_data: nil)
+        model = @model_class.new(file_data: nil)
 
-        assert_equal Hash.new, entity.file_derivatives
+        assert_equal Hash.new, model.file_derivatives
+      end
+    end
+
+    describe "#<name>_derivatives!" do
+      it "creates derivatives" do
+        @attacher.class.derivatives_processor :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        file  = @attacher.upload(fakeio("file"))
+        model = @model_class.new(file_data: file.to_json)
+        model.file_derivatives!(:reversed)
+
+        assert_equal "elif", model.file_derivatives[:reversed].read
+      end
+
+      it "accepts original file" do
+        @attacher.class.derivatives_processor :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        model = @model_class.new(file_data: nil)
+        model.file_derivatives!(:reversed, fakeio("file"))
+
+        assert_equal "elif", model.file_derivatives[:reversed].read
+      end
+
+      it "accepts processor options" do
+        @attacher.class.derivatives_processor :options do |original, **options|
+          { options: StringIO.new(options.to_s) }
+        end
+
+        file  = @attacher.upload(fakeio("file"))
+        model = @model_class.new(file_data: file.to_json)
+        model.file_derivatives!(:options, foo: "bar")
+
+        assert_equal '{:foo=>"bar"}', model.file_derivatives[:options].read
+      end
+
+      it "is not defined for entity attachments" do
+        @model_class = model_class(:file_data)
+        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+
+        refute @model_class.method_defined?(:file_derivatives!)
       end
     end
 
@@ -47,33 +91,33 @@ describe Shrine::Plugins::Derivatives do
       it "returns derivatives with arguments" do
         @attacher.add_derivatives(one: fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.derivatives[:one], entity.file(:one)
+        assert_equal @attacher.derivatives[:one], model.file(:one)
       end
 
       it "still returns original file without arguments" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.file, entity.file
+        assert_equal @attacher.file, model.file
       end
 
       it "raises exception when #[] is used with symbol key" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_raises(Shrine::Error) { entity.file[:one] }
+        assert_raises(Shrine::Error) { model.file[:one] }
       end
 
       it "still allows calling #[] with string keys" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.file.size, entity.file["size"]
+        assert_equal @attacher.file.size, model.file["size"]
       end
     end
 
@@ -81,19 +125,19 @@ describe Shrine::Plugins::Derivatives do
       it "returns derivative URL with arguments" do
         @attacher.add_derivatives(one: fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.derivatives[:one].url, entity.file_url(:one)
-        assert_equal @attacher.derivatives[:one].url, entity.file_url(:one, foo: "bar")
+        assert_equal @attacher.derivatives[:one].url, model.file_url(:one)
+        assert_equal @attacher.derivatives[:one].url, model.file_url(:one, foo: "bar")
       end
 
       it "still returns original file URL without arguments" do
         @attacher.attach(fakeio)
 
-        entity = @entity_class.new(file_data: @attacher.column_data)
+        model = @model_class.new(file_data: @attacher.column_data)
 
-        assert_equal @attacher.file.url, entity.file_url
-        assert_equal @attacher.file.url, entity.file_url(foo: "bar")
+        assert_equal @attacher.file.url, model.file_url
+        assert_equal @attacher.file.url, model.file_url(foo: "bar")
       end
     end
   end

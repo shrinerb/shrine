@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivatives` – Add `#<name>_derivatives!` module method which delegates to `#create_derivatives` (@janko)
+
 * `derivatives` – Change `#create_derivatives` to forward all arguments to `#process_derivatives` (@janko)
 
 ## 3.0.0.alpha (2019-08-19)
