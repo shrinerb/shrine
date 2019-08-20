@@ -43,7 +43,7 @@ class Shrine
       #
       #     Shrine::Attachment.new(:image).to_s #=> "#<Shrine::Attachment(image)>"
       def inspect
-        "#<#{self.class.inspect}(#{attachment_name})>"
+        "#<#{self.class.inspect}(#{@name})>"
       end
       alias to_s inspect
 

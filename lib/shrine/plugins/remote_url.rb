@@ -43,12 +43,8 @@ class Shrine
       end
 
       module AttachmentMethods
-        def included(klass)
-          super
-
-          return unless options[:type] == :model
-
-          name = attachment_name
+        def define_model_methods(name)
+          super if defined?(super)
 
           define_method :"#{name}_remote_url=" do |url|
             send(:"#{name}_attacher").assign_remote_url(url)

@@ -14,6 +14,7 @@ class Shrine
       module AttachmentMethods
         def included(klass)
           super
+
           klass.instance_exec(@name, &shrine_class.opts[:included][:block])
         end
       end

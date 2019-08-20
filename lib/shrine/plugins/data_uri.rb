@@ -39,12 +39,8 @@ class Shrine
       end
 
       module AttachmentMethods
-        def included(klass)
-          super
-
-          return unless options[:type] == :model
-
-          name = attachment_name
+        def define_model_methods(name)
+          super if defined?(super)
 
           define_method :"#{name}_data_uri=" do |uri|
             send(:"#{name}_attacher").assign_data_uri(uri)

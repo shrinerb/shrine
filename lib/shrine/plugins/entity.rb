@@ -11,9 +11,15 @@ class Shrine
       end
 
       module AttachmentMethods
-        # Defines `#<name>`, `#<name>_url`, and `#<name>_attacher` methods.
         def initialize(name, **options)
           super
+
+          define_entity_methods(name)
+        end
+
+        # Defines `#<name>`, `#<name>_url`, and `#<name>_attacher` methods.
+        def define_entity_methods(name)
+          super if defined?(super)
 
           attachment = self
 

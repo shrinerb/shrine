@@ -24,7 +24,7 @@ class Shrine
 
           return unless model < ::ActiveRecord::Base
 
-          name = attachment_name
+          name = @name
 
           if shrine_class.opts[:activerecord][:validations]
             model.validate do

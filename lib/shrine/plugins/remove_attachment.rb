@@ -7,12 +7,8 @@ class Shrine
     # [doc/plugins/remove_attachment.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_attachment.md
     module RemoveAttachment
       module AttachmentMethods
-        def included(klass)
-          super
-
-          return unless options[:type] == :model
-
-          name = attachment_name
+        def define_model_methods(name)
+          super if defined?(super)
 
           define_method :"remove_#{name}=" do |value|
             send(:"#{name}_attacher").remove = value

@@ -26,19 +26,27 @@ class Shrine
           super(name, type: :model, **options)
         end
 
-        # We define the setter dynamically on inclusion to allow other plugins
-        # to still have time to override attachment type on inclusion.
+        # We define model methods only on inclusion, if the attachment type is
+        # still "model". This gives other plugins the ability to force
+        # attachment type to "entity" for certain classes, and we can skip
+        # defining model methods in this case.
         def included(klass)
           super
 
           return unless options[:type] == :model
 
-          name = attachment_name
+          define_model_methods(@name)
+        end
+
+        # Defines attachment setter and enhances the copy constructor.
+        def define_model_methods(name)
+          super if defined?(super)
 
           define_method :"#{name}=" do |value|
             send(:"#{name}_attacher").model_assign(value)
           end
 
+          # The copy constructor that's called on #dup and #clone.
           define_method :initialize_copy do |other|
             super(other)
             instance_variable_set(:"@#{name}_attacher", instance_variable_get(:"@#{name}_attacher")&.dup)
@@ -51,12 +59,10 @@ class Shrine
         def attacher(record, options)
           return super unless @options[:type] == :model
 
-          name = attachment_name
-
-          if !record.instance_variable_get(:"@#{name}_attacher") || options.any?
-            record.instance_variable_set(:"@#{name}_attacher", super)
+          if !record.instance_variable_get(:"@#{@name}_attacher") || options.any?
+            record.instance_variable_set(:"@#{@name}_attacher", super)
           else
-            record.instance_variable_get(:"@#{name}_attacher")
+            record.instance_variable_get(:"@#{@name}_attacher")
           end
         end
       end

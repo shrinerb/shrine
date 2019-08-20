@@ -29,20 +29,16 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(name, **options)
-          super
+        def define_entity_methods(name)
+          super if defined?(super)
 
           define_method(:"#{name}_derivatives") do |*args|
             send(:"#{name}_attacher").get_derivatives(*args)
           end
         end
 
-        def included(klass)
-          super
-
-          return unless options[:type] == :model
-
-          name = attachment_name
+        def define_model_methods(name)
+          super if defined?(super)
 
           define_method(:"#{name}_derivatives!") do |*args|
             send(:"#{name}_attacher").create_derivatives(*args)

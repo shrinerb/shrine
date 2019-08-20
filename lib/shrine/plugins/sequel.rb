@@ -24,7 +24,7 @@ class Shrine
 
           return unless model < ::Sequel::Model
 
-          name = attachment_name
+          name = @name
 
           if shrine_class.opts[:sequel][:validations]
             define_method :validate do
