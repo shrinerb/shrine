@@ -104,8 +104,6 @@
 
 * `attacher_options` – Add new plugin for setting default attacher operation options (@janko)
 
-* `validation` – Add `Attacher#validate_options` for registering default validation options (@janko)
-
 * `validation` – Allow skipping validations on attaching by passing `validate: false` (@janko)
 
 * `validation` – Add `:validate` option to `Attacher#assign` or `Attacher#attach` for passing options to validation block (@janko)

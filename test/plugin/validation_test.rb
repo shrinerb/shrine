@@ -138,16 +138,6 @@ describe Shrine::Plugins::Validation do
         @attacher.validate(foo: "bar")
         assert_equal Hash[foo: "bar"], validate_options
       end
-
-      it "fowards registered validate options to the validation block" do
-        validate_options = nil
-        @attacher.class.validate { |**options| validate_options = options }
-        @attacher.file = @attacher.upload(fakeio)
-        @attacher.validate_options(foo: "bar")
-        @attacher.validate_options(baz: "quux")
-        @attacher.validate
-        assert_equal Hash[foo: "bar", baz: "quux"], validate_options
-      end
     end
   end
 end

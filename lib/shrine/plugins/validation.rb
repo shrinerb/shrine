@@ -28,16 +28,6 @@ class Shrine
           @errors = []
         end
 
-        # Registers options that will be passed to validation.
-        def validate_options(options = nil)
-          if options
-            @validate_options ||= {}
-            @validate_options.merge!(options)
-          else
-            defined?(@validate_options) ? @validate_options : {}
-          end
-        end
-
         # Leaves out :validate option when calling `Shrine.upload`.
         def upload(*args, validate: nil, **options)
           super(*args, **options)
@@ -72,7 +62,7 @@ class Shrine
           if method(:validate_block).arity.zero?
             validate_block
           else
-            validate_block(**validate_options, **options)
+            validate_block(**options)
           end
         end
 
