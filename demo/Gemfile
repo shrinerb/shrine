@@ -19,10 +19,7 @@ gem "aws-sdk-s3", "~> 1.14"
 gem "dotenv"
 gem "image_processing", "~> 1.0"
 gem "marcel"
-
-# dry-*
 gem "dry-monitor"
-gem "dry-initializer"
 
 # Background jobs
 gem "sucker_punch", "~> 2.0"

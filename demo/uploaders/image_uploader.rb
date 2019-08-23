@@ -3,32 +3,11 @@
 
 require "./config/shrine"
 require "image_processing/mini_magick"
-require "dry-initializer"
 
 class ImageUploader < Shrine
   ALLOWED_TYPES  = %w[image/jpeg image/png image/webp]
   MAX_SIZE       = 10*1024*1024 # 10 MB
   MAX_DIMENSIONS = [5000, 5000] # 5000x5000
-
-  THUMBNAIL_SIZES = {
-    small:  [300, 300],
-    medium: [600, 600],
-    large:  [800, 800],
-  }
-
-  class ThumbnailGenerator
-    extend Dry::Initializer
-
-    option :processor, default: proc { ImageProcessing::MiniMagick }
-
-    def call(original, width, height)
-      processor
-        .source(original)
-        .resize_to_limit!(width, height)
-    end
-  end
-
-  THUMBNAILER = ThumbnailGenerator.new
 
   plugin :remove_attachment
   plugin :pretty_location
@@ -36,6 +15,18 @@ class ImageUploader < Shrine
   plugin :store_dimensions, analyzer: :mini_magick, log_subscriber: nil
   plugin :derivatives, versions_compatibility: true
   plugin :derivation_endpoint, prefix: "derivations/image"
+
+  THUMBNAILS = {
+    small:  [300, 300],
+    medium: [600, 600],
+    large:  [800, 800],
+  }
+
+  THUMBNAILER = -> (file, width, height) do
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width, height)
+  end
 
   # File validations (requires `validation_helpers` plugin)
   Attacher.validate do
@@ -48,16 +39,14 @@ class ImageUploader < Shrine
 
   # Thumbnails processor (requires `derivatives` plugin)
   Attacher.derivatives_processor :thumbnails do |original|
-    {
-      small:  THUMBNAILER.call(original, *THUMBNAIL_SIZES.fetch(:small)),
-      medium: THUMBNAILER.call(original, *THUMBNAIL_SIZES.fetch(:medium)),
-      large:  THUMBNAILER.call(original, *THUMBNAIL_SIZES.fetch(:large)),
-    }
+    THUMBNAILS.inject({}) do |result, (name, (width, height))|
+      result.merge! name => THUMBNAILER.call(original, width, height)
+    end
   end
 
   # Default to dynamic thumbnail URL (requires `default_url` plugin)
   Attacher.default_url do |derivative: nil, **|
-    file&.derivation_url(:thumbnail, *THUMBNAIL_SIZES.fetch(derivative)) if derivative
+    file&.derivation_url(:thumbnail, *THUMBNAILS.fetch(derivative)) if derivative
   end
 
   # Dynamic thumbnail definition (requires `derivation_endpoint` plugin)
