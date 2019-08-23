@@ -1,5 +1,7 @@
 ## HEAD
 
+* `model` – Add `#<name>_changed?` method to attachment module (@janko)
+
 * `core` – Make it easier for plugins to define entity and model attachment methods (@janko)
 
 * `derivatives` – Add `#<name>_derivatives!` module method which delegates to `#create_derivatives` (@janko)

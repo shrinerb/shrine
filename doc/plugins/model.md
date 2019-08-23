@@ -41,6 +41,17 @@ photo.image.storage_key #=> :cache
 photo.image_data        #=> '{"id":"...","storage":"cache","metadata":{...}}'
 ```
 
+#### `#<name>_changed?`
+
+Calls `Attacher#changed?` which returns whether the attachment has changed.
+
+```rb
+photo = Photo.new
+photo.image_changed? #=> false
+photo.image = file
+photo.image_changed? #=> true
+```
+
 #### Disabling caching
 
 If you don't want to use temporary storage, you can have `#<name>=` upload

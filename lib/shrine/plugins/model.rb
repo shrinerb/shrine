@@ -46,6 +46,10 @@ class Shrine
             send(:"#{name}_attacher").model_assign(value)
           end
 
+          define_method :"#{name}_changed?" do
+            send(:"#{name}_attacher").changed?
+          end
+
           # The copy constructor that's called on #dup and #clone.
           define_method :initialize_copy do |other|
             super(other)

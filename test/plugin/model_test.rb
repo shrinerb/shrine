@@ -97,6 +97,32 @@ describe Shrine::Plugins::Model do
       end
     end
 
+    describe "#<name>_changed?" do
+      it "returns true if attachment has changed" do
+        @model_class.include @shrine::Attachment.new(:file)
+
+        model = @model_class.new
+        model.file = fakeio
+
+        assert_equal true, model.file_changed?
+      end
+
+      it "returns false if attachment has not changed" do
+        @model_class.include @shrine::Attachment.new(:file)
+
+        file  = @attacher.upload(fakeio)
+        model = @model_class.new(file_data: file.to_json)
+
+        assert_equal false, model.file_changed?
+      end
+
+      it "isn't defined on entity attachments" do
+        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+
+        refute @model_class.method_defined?(:file_changed?)
+      end
+    end
+
     describe "#initialize_copy" do
       it "duplicates the attacher" do
         @model_class.include @shrine::Attachment.new(:file)
