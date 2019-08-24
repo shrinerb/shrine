@@ -12,13 +12,13 @@ class Shrine
       end
 
       module InstanceMethods
+        private
+
         def _upload(io, **options)
           upload_options = get_upload_options(io, options)
 
           super(io, **options, upload_options: upload_options)
         end
-
-        private
 
         def get_upload_options(io, options)
           upload_options = opts[:upload_options][storage_key] || {}

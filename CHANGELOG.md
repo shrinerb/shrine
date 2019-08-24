@@ -1,5 +1,7 @@
 ## HEAD
 
+* `upload_options` – Keep `Shrine#_upload` private (@janko)
+
 * `infer_extension` – Keep `Shrine#basic_location` private (@janko)
 
 * `model` – Add `#<name>_changed?` method to attachment module (@janko)
