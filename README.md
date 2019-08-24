@@ -240,7 +240,7 @@ particular storage.
 
 ```rb
 class MyUploader < Shrine
-  # image attachent logic
+  # image attachment logic
 end
 ```
 
