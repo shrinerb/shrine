@@ -1,5 +1,7 @@
 ## HEAD
 
+* `infer_extension` – Keep `Shrine#basic_location` private (@janko)
+
 * `model` – Add `#<name>_changed?` method to attachment module (@janko)
 
 * `core` – Make it easier for plugins to define entity and model attachment methods (@janko)

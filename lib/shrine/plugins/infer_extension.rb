@@ -53,6 +53,8 @@ class Shrine
       end
 
       module InstanceMethods
+        private
+
         def basic_location(io, metadata:)
           location = Pathname(super)
 
