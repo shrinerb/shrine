@@ -75,18 +75,6 @@ class Shrine
         #   * #atomic_promote (calls #activerecord_lock, #activerecord_persist and #activerecord?)
         private
 
-        # Saves changes to the model instance, skipping validations. Used by
-        # the _persistence plugin.
-        def activerecord_persist
-          record.save(validate: false)
-        end
-
-        # Locks the database row and yields the reloaded record. Used by the
-        # _persistence plugin.
-        def activerecord_reload
-          record.transaction { yield record.clone.reload(lock: true) }
-        end
-
         # ActiveRecord JSON column attribute needs to be assigned with a Hash.
         def serialize_column(data)
           activerecord_json_column? ? data : super
@@ -98,6 +86,18 @@ class Shrine
           return false unless column = record.class.columns_hash[attribute.to_s]
 
           [:json, :jsonb].include?(column.type)
+        end
+
+        # Saves changes to the model instance, skipping validations. Used by
+        # the _persistence plugin.
+        def activerecord_persist
+          record.save(validate: false)
+        end
+
+        # Locks the database row and yields the reloaded record. Used by the
+        # _persistence plugin.
+        def activerecord_reload
+          record.transaction { yield record.clone.reload(lock: true) }
         end
 
         # Returns whether the record is an ActiveRecord model. Used by the

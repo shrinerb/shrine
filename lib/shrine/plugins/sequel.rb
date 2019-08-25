@@ -85,18 +85,6 @@ class Shrine
         #   * #atomic_promote (calls #sequel_lock, #sequel_persist and #sequel?)
         private
 
-        # Saves changes to the model instance, skipping validations. Used by
-        # the _persistence plugin.
-        def sequel_persist
-          record.save_changes(validate: false)
-        end
-
-        # Locks the database row and yields the reloaded record. Used by the
-        # _persistence plugin.
-        def sequel_reload
-          record.db.transaction { yield record.dup.lock! }
-        end
-
         # Sequel JSON column attribute with `pg_json` Sequel extension loaded
         # returns a `Sequel::Postgres::JSONHashBase` object will be returned,
         # which we convert into a Hash.
@@ -117,6 +105,18 @@ class Shrine
           return false unless column = record.class.db_schema[attribute]
 
           [:json, :jsonb].include?(column[:type])
+        end
+
+        # Saves changes to the model instance, skipping validations. Used by
+        # the _persistence plugin.
+        def sequel_persist
+          record.save_changes(validate: false)
+        end
+
+        # Locks the database row and yields the reloaded record. Used by the
+        # _persistence plugin.
+        def sequel_reload
+          record.db.transaction { yield record.dup.lock! }
         end
 
         # Returns whether the record is a Sequel model. Used by the

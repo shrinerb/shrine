@@ -72,7 +72,7 @@ end
 ## Attacher
 
 To help define persistence methods on the `Attacher` according to the
-convention, load the `:_persistence` plugin as a dependency:
+convention, load the `_persistence` plugin as a dependency:
 
 ```rb
 module Shrine::Plugins::Raptor

@@ -94,6 +94,15 @@ attacher.stored? #=> true
 If the attachment has changed during promotion, the promoted file is deleted and
 a `Shrine::AttachmentChanged` exception is raised.
 
+If you want to execute some code after the attachment change check but before
+persistence, you can pass a block:
+
+```rb
+attacher.abstract_atomic_promote(**options) do |reloaded_attacher|
+  # this will be executed before persistence
+end
+```
+
 Any additional options to `Attacher#abstract_atomic_promote` are forwarded to
 `Attacher#promote`.
 
@@ -142,7 +151,8 @@ attacher.set(new_file)
 attacher.abstract_atomic_persist(original_file, **options)
 ```
 
-If you want to execute some code before persistence, you can pass a block:
+If you want to execute some code after the attachment change check but before
+persistence, you can pass a block:
 
 ```rb
 attacher.abstract_atomic_persist(**options) do |reloaded_attacher|

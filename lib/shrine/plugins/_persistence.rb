@@ -41,8 +41,8 @@ class Shrine
             )
           end
 
-          define_method :persist do |*args, &block|
-            return super(*args, &block) unless send(:"#{plugin_name}?")
+          define_method :persist do
+            return super() unless send(:"#{plugin_name}?")
 
             send(:"#{plugin_name}_persist")
           end
