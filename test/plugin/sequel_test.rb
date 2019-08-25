@@ -221,12 +221,12 @@ describe Shrine::Plugins::Sequel do
   end
 
   describe "Attacher" do
-    describe "#sequel_atomic_promote" do
+    describe "#atomic_promote" do
       it "promotes cached file to permanent storage" do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_promote
+        @attacher.atomic_promote
 
         assert_equal :store, @attacher.file.storage_key
       end
@@ -235,7 +235,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_promote
+        @attacher.atomic_promote
 
         @attacher.reload
         assert_equal :store, @attacher.file.storage_key
@@ -249,7 +249,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        file = @attacher.sequel_atomic_promote
+        file = @attacher.atomic_promote
 
         assert_equal @attacher.file, file
       end
@@ -258,7 +258,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_promote(location: "foo")
+        @attacher.atomic_promote(location: "foo")
 
         assert_equal "foo", @attacher.file.id
       end
@@ -268,7 +268,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_promote
+        @attacher.atomic_promote
 
         assert_equal "Janko", @user.name
         assert_equal "Janko", @user.reload.name
@@ -278,7 +278,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_promote { @user.name = "Janko" }
+        @attacher.atomic_promote { @user.name = "Janko" }
 
         assert_equal "Janko", @user.name
         assert_equal "Janko", @user.reload.name
@@ -291,7 +291,7 @@ describe Shrine::Plugins::Sequel do
         @user.this.update(avatar_data: nil)
 
         assert_raises(Shrine::AttachmentChanged) do
-          @attacher.sequel_atomic_promote { @block_called = true }
+          @attacher.atomic_promote { @block_called = true }
         end
 
         @user.reload
@@ -312,25 +312,12 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_promote
+        @attacher.atomic_promote
 
         @user.reload
         @attacher.reload
 
         assert_equal :store, @attacher.file.storage_key
-      end
-
-      it "accepts :fetch reload strategy" do
-        @attacher.attach_cached(fakeio)
-        @user.save
-
-        @user.name = "Janko"
-        @attacher.sequel_atomic_promote(reload: :fetch)
-
-        @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
-        assert_equal "Janko", @user.name
       end
 
       it "accepts custom reload strategy" do
@@ -340,7 +327,7 @@ describe Shrine::Plugins::Sequel do
         @user.this.update(avatar_data: nil) # this change will not be detected
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_promote(reload: -> (&block) {
+        @attacher.atomic_promote(reload: -> (&block) {
           block.call @user.class.new(avatar_data: cached_file.to_json)
         })
 
@@ -358,7 +345,7 @@ describe Shrine::Plugins::Sequel do
         @user.this.update(avatar_data: nil) # this change will not be detected
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_promote(reload: false)
+        @attacher.atomic_promote(reload: false)
 
         @user.reload
         @attacher.reload
@@ -371,7 +358,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach_cached(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_promote(persist: -> {
+        @attacher.atomic_promote(persist: -> {
           @user.name = "Janko"
           @user.save
         })
@@ -388,7 +375,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_promote(persist: false)
+        @attacher.atomic_promote(persist: false)
 
         assert_equal :store, @attacher.file.storage_key
         assert_equal "Janko", @user.name
@@ -400,26 +387,22 @@ describe Shrine::Plugins::Sequel do
         assert_nil @user.name
       end
 
-      it "is aliased to #atomic_promote" do
-        @attacher.attach_cached(fakeio)
-        @user.save
+      it "raises NotImplementedError for non-Sequel attacher" do
+        @attacher = @shrine::Attacher.new
 
-        @attacher.atomic_promote
-
-        @user.reload
-        @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert_raises NotImplementedError do
+          @attacher.atomic_promote
+        end
       end
     end
 
-    describe "#sequel_atomic_persist" do
+    describe "#atomic_persist" do
       it "persists the record" do
         file = @attacher.attach(fakeio)
         @user.save
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_persist
+        @attacher.atomic_persist
 
         assert_equal "Janko", @user.name
         assert_equal "Janko", @user.reload.name
@@ -430,7 +413,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_persist { @user.name = "Janko" }
+        @attacher.atomic_persist { @user.name = "Janko" }
 
         assert_equal "Janko", @user.name
         assert_equal "Janko", @user.reload.name
@@ -444,7 +427,7 @@ describe Shrine::Plugins::Sequel do
 
         @user.name = "Janko"
         assert_raises(Shrine::AttachmentChanged) do
-          @attacher.sequel_atomic_persist { @block_called = true }
+          @attacher.atomic_persist { @block_called = true }
         end
 
         @user.reload
@@ -467,22 +450,12 @@ describe Shrine::Plugins::Sequel do
         @user.save
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_persist
+        @attacher.atomic_persist
 
         @user.reload
         @attacher.reload
 
         assert_equal "Janko", @user.name
-      end
-
-      it "accepts :fetch reload strategy" do
-        @attacher.attach(fakeio)
-        @user.save
-
-        @user.name = "Name"
-        @attacher.sequel_atomic_persist(reload: :fetch)
-
-        assert_equal "Name", @user.name
       end
 
       it "accepts custom reload strategy" do
@@ -492,7 +465,7 @@ describe Shrine::Plugins::Sequel do
         @user.this.update(avatar_data: nil) # this change will not be detected
 
         @user.name = "Name"
-        @attacher.sequel_atomic_persist(reload: -> (&block) { block.call(@user) })
+        @attacher.atomic_persist(reload: -> (&block) { block.call(@user) })
 
         assert_equal "Name", @user.reload.name
       end
@@ -504,7 +477,7 @@ describe Shrine::Plugins::Sequel do
         @user.this.update(avatar_data: nil) # this change will not be detected
 
         @user.name = "Name"
-        @attacher.sequel_atomic_persist(reload: false)
+        @attacher.atomic_persist(reload: false)
 
         assert_equal "Name", @user.reload.name
       end
@@ -521,7 +494,7 @@ describe Shrine::Plugins::Sequel do
         @user.save(validate: false)
 
         @user.name = nil
-        @attacher.sequel_atomic_persist
+        @attacher.atomic_persist
 
         assert_nil @user.reload.name
       end
@@ -532,7 +505,7 @@ describe Shrine::Plugins::Sequel do
         file = @attacher.attach(fakeio)
         @user.this.update(name: "Janko")
 
-        @attacher.sequel_atomic_persist(nil)
+        @attacher.atomic_persist(nil)
 
         @user.reload
         @attacher.reload
@@ -551,7 +524,7 @@ describe Shrine::Plugins::Sequel do
         end
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_persist
+        @attacher.atomic_persist
 
         assert after_save_called
       end
@@ -560,7 +533,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.attach(fakeio)
         @user.save
 
-        @attacher.sequel_atomic_persist(persist: -> {
+        @attacher.atomic_persist(persist: -> {
           @user.name = "Janko"
           @user.save
         })
@@ -574,7 +547,7 @@ describe Shrine::Plugins::Sequel do
         @user.save
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_persist(persist: false)
+        @attacher.atomic_persist(persist: false)
 
         assert_equal "Janko", @user.name
         assert_nil @user.reload.name
@@ -587,35 +560,31 @@ describe Shrine::Plugins::Sequel do
         @user.this.update(avatar_data: file.to_json)
 
         assert_raises(Shrine::AttachmentChanged) do
-          @attacher.sequel_atomic_persist
+          @attacher.atomic_persist
         end
 
         @user.name = "Janko"
-        @attacher.sequel_atomic_persist(file)
+        @attacher.atomic_persist(file)
 
         assert_equal "Janko", @user.name
         assert_equal "Janko", @user.reload.name
       end
 
-      it "is aliased to #atomic_persist" do
-        file = @attacher.attach(fakeio)
-        @user.save
+      it "raises NotImplementedError for non-Sequel attacher" do
+        @attacher = @shrine::Attacher.new
 
-        @user.name = "Janko"
-        @attacher.atomic_persist
-
-        assert_equal "Janko", @user.name
-        assert_equal "Janko", @user.reload.name
-        assert_equal file,    @attacher.file
+        assert_raises NotImplementedError do
+          @attacher.atomic_persist
+        end
       end
     end
 
-    describe "#sequel_persist" do
+    describe "#persist" do
       it "persists the record" do
         file = @attacher.upload(fakeio)
         @user.avatar_data = file.to_json
 
-        @attacher.sequel_persist
+        @attacher.persist
 
         assert_equal file.to_json, @user.reload.avatar_data
       end
@@ -627,7 +596,7 @@ describe Shrine::Plugins::Sequel do
         file = @attacher.upload(fakeio)
         @user.avatar_data = file.to_json
 
-        @attacher.sequel_persist
+        @attacher.persist
 
         assert_equal "Janko", @user.reload.name
       end
@@ -643,18 +612,17 @@ describe Shrine::Plugins::Sequel do
         @user.save(validate: false)
 
         @user.name = nil
-        @attacher.sequel_persist
+        @attacher.persist
 
         assert_nil @user.reload.name
       end
 
-      it "is aliased to #persist" do
-        file = @attacher.upload(fakeio)
-        @user.avatar_data = file.to_json
+      it "raises NotImplementedError for non-Sequel attacher" do
+        @attacher = @shrine::Attacher.new
 
-        @attacher.persist
-
-        assert_equal file.to_json, @user.reload.avatar_data
+        assert_raises NotImplementedError do
+          @attacher.persist
+        end
       end
     end
   end

@@ -71,95 +71,52 @@ end
 
 ## Attacher
 
-### Persistence
-
-It's recommended to implement an `Attacher#persist` method which persists
-the attached file to the record.
-
-```rb
-module Shrine::Plugins::Raptor
-  # ...
-  module AttacherMethods
-    # ...
-    def persist(...)
-      # persist attachment data
-    end
-    # ...
-  end
-  # ...
-end
-```
-
-This way other 3rd-party plugins can use `Attacher#persist` and know it will do
-the right thing regardless of which persistence plugin is used.
-
-### Atomic promotion & persistence
-
-When using [`backgrounding`][backgrounding] plugin, it's useful to be able to
-make promotion/persistence atomic. The [`atomic_helpers`][atomic_helpers]
-plugin provides the abstract interface, and in your persistence plugin you can
-provide wrappers.
+To help define persistence methods on the `Attacher` according to the
+convention, load the `:_persistence` plugin as a dependency:
 
 ```rb
 module Shrine::Plugins::Raptor
   def self.load_dependencies(uploader, **)
     # ...
-    uploader.plugin :atomic_helpers
-  end
-  # ...
-  module AttacherMethods
-    # ...
-    def atomic_promote(...)
-      # call #abstract_atomic_promote from atomic_helpers plugin
-    end
-
-    def atomic_persist(...)
-      # call #abstract_atomic_persist from atomic_helpers plugin
-    end
-    # ...
+    uploader.plugin :_persistence, plugin: self
   end
   # ...
 end
 ```
 
-See the [`activerecord`][activerecord]/[`sequel`][sequel] plugin source code on
-how this integration should look like.
+This will define the following attacher methods:
 
-### With other persistence plugins
+* `Attacher#persist`
+* `Attacher#atomic_persist`
+* `Attacher#atomic_promote`
 
-It's recommended to prefix each of the above methods with the name of the
-database library, and make non-prefixed versions aliases.
+For those methods to work, we'll need to implement the following methods:
+
+* `Attacher#<library>_persist`
+* `Attacher#<library>_reload`
+* `Attacher#<library>?`
 
 ```rb
 module Shrine::Plugins::Raptor
   # ...
   module AttacherMethods
     # ...
-    def raptor_atomic_promote(...)
-      # ...
-    end
-    alias atomic_promote raptor_atomic_promote
+    private
 
-    def raptor_atomic_persist(...)
-      # ...
+    def raptor_persist
+      # persist attached file to the record
     end
-    alias atomic_persist raptor_atomic_persist
 
-    def raptor_persist(...)
-      # ...
+    def raptor_reload
+      # yield reloaded record (see atomic_helpers plugin)
     end
-    alias persist raptor_persist
-    # ...
+
+    def raptor?
+      # returns whether current model/entity belongs to Raptor
+    end
   end
-  # ...
 end
 ```
-
-That way the user can always specify from which persistence plugin they're
-calling a certain method, even when multiple persistence plugins are loaded
-simultaneously. The latter can be the case if the user is using multiple
-database libraries in a single application, or if they're transitioning from
-one library to another.
 
 [Writing a Plugin]: /doc/creating_plugins.md#readme
 [Active Record pattern]: https://www.martinfowler.com/eaaCatalog/activeRecord.html

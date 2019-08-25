@@ -10,7 +10,7 @@ class Shrine
     module Sequel
       def self.load_dependencies(uploader, **)
         uploader.plugin :model
-        uploader.plugin :atomic_helpers
+        uploader.plugin :_persistence, plugin: self
       end
 
       def self.configure(uploader, **opts)
@@ -27,13 +27,14 @@ class Shrine
           name = @name
 
           if shrine_class.opts[:sequel][:validations]
+            # add validation plugin integration
             define_method :validate do
               super()
-              # validation plugin integration
-              if send(:"#{name}_attacher").respond_to?(:errors)
-                send(:"#{name}_attacher").errors.each do |message|
-                  errors.add(name, *message)
-                end
+
+              return unless send(:"#{name}_attacher").respond_to?(:errors)
+
+              send(:"#{name}_attacher").errors.each do |message|
+                errors.add(name, *message)
               end
             end
           end
@@ -51,7 +52,7 @@ class Shrine
               if send(:"#{name}_attacher").changed?
                 db.after_commit do
                   send(:"#{name}_attacher").finalize
-                  send(:"#{name}_attacher").sequel_persist
+                  send(:"#{name}_attacher").persist
                 end
               end
             end
@@ -77,76 +78,23 @@ class Shrine
       end
 
       module AttacherMethods
-        # Promotes cached file to permanent storage in an atomic way. It's
-        # intended to be called from a background job.
+        # The _persistence plugin defines the following methods:
         #
-        #     attacher.assign(file)
-        #     attacher.cached? #=> true
-        #
-        #     # ... in background job ...
-        #
-        #     attacher.atomic_promote
-        #     attacher.stored? #=> true
-        #
-        # It accepts `:reload` and `:persist` strategies:
-        #
-        #     attacher.atomic_promote(reload: :lock)    # uses database locking (default)
-        #     attacher.atomic_promote(reload: :fetch)   # reloads with no locking
-        #     attacher.atomic_promote(reload: ->(&b){}) # custom reloader
-        #     attacher.atomic_promote(reload: false)    # skips reloading
-        #
-        #     attacher.atomic_promote(persist: :save) # persists stored file (default)
-        #     attacher.atomic_promote(persist: ->{})  # custom persister
-        #     attacher.atomic_promote(persist: false) # skips persistence
-        def sequel_atomic_promote(**options, &block)
-          abstract_atomic_promote(sequel_strategies(**options), &block)
-        end
-        alias atomic_promote sequel_atomic_promote
-
-        # Persist the the record only if the attachment hasn't changed.
-        # Optionally yields reloaded attacher to the block before persisting.
-        # It's intended to be called from a background job.
-        #
-        #     # ... in background job ...
-        #
-        #     attacher.file.metadata["foo"] = "bar"
-        #     attacher.write
-        #
-        #     attacher.atomic_persist
-        def sequel_atomic_persist(*args, **options, &block)
-          abstract_atomic_persist(*args, sequel_strategies(**options), &block)
-        end
-        alias atomic_persist sequel_atomic_persist
-
-        # Called in the `after_commit` callback after finalization.
-        def sequel_persist
-          sequel_save
-        end
-        alias persist sequel_persist
-
+        #   * #persist (calls #sequel_persist and #sequel?)
+        #   * #atomic_persist (calls #sequel_lock, #sequel_persist and #sequel?)
+        #   * #atomic_promote (calls #sequel_lock, #sequel_persist and #sequel?)
         private
 
-        # Resolves strategies for atomic promotion and persistence.
-        def sequel_strategies(reload: :lock, persist: :save, **options)
-          reload  = method(:"sequel_#{reload}")  if reload.is_a?(Symbol)
-          persist = method(:"sequel_#{persist}") if persist.is_a?(Symbol)
-
-          { reload: reload, persist: persist, **options }
-        end
-
-        # Implements the "fetch" reload strategy for #sequel_promote.
-        def sequel_fetch
-          yield record.dup.refresh
-        end
-
-        # Implements the "lock" reload strategy for #sequel_promote.
-        def sequel_lock
-          record.db.transaction { yield record.dup.lock! }
-        end
-
-        # Implements the "save" persist strategy for #sequel_promote.
-        def sequel_save
+        # Saves changes to the model instance, skipping validations. Used by
+        # the _persistence plugin.
+        def sequel_persist
           record.save_changes(validate: false)
+        end
+
+        # Locks the database row and yields the reloaded record. Used by the
+        # _persistence plugin.
+        def sequel_reload
+          record.db.transaction { yield record.dup.lock! }
         end
 
         # Sequel JSON column attribute with `pg_json` Sequel extension loaded
@@ -165,10 +113,16 @@ class Shrine
 
         # Returns true if the data attribute represents a JSON or JSONB column.
         def sequel_json_column?
-          return false unless record.is_a?(::Sequel::Model)
+          return false unless sequel?
           return false unless column = record.class.db_schema[attribute]
 
           [:json, :jsonb].include?(column[:type])
+        end
+
+        # Returns whether the record is a Sequel model. Used by the
+        # _persistence plugin.
+        def sequel?
+          record.is_a?(::Sequel::Model)
         end
       end
     end
