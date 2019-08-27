@@ -153,11 +153,13 @@ describe Shrine::Plugins::Entity do
 
         assert_nil @attacher.file
       end
+    end
 
+    describe "#set_entity" do
       it "saves record and name" do
         entity = @entity_class.new
 
-        @attacher.load_entity(entity, :file)
+        @attacher.set_entity(entity, :file)
 
         assert_equal entity, @attacher.record
         assert_equal :file,  @attacher.name
@@ -166,7 +168,7 @@ describe Shrine::Plugins::Entity do
       it "coerces string name into a symbol" do
         entity = @entity_class.new
 
-        @attacher.load_entity(entity, "file")
+        @attacher.set_entity(entity, "file")
 
         assert_equal :file, @attacher.name
       end
@@ -174,7 +176,7 @@ describe Shrine::Plugins::Entity do
       it "merges record and name into context" do
         entity = @entity_class.new
 
-        @attacher.load_entity(entity, :file)
+        @attacher.set_entity(entity, :file)
 
         assert_equal Hash[record: entity, name: :file], @attacher.context
       end

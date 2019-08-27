@@ -1,5 +1,11 @@
 ## HEAD
 
+* `model` – Add `Attacher#set_model` for setting model without loading attachment (@janko)
+
+* `entity` – Add `Attacher#set_entity` for setting entity without loading attachment (@janko)
+
+* `core` – Define `#<name>_attacher` class method when including `Shrine::Attachment` (@janko)
+
 * `derivation_endpoint` – Send only `:derivation` in the instrumentation event payload (@janko)
 
 * `default_storage` – Add `Attacher.default_cache` and `Attacher.default_store` for settings (@janko)

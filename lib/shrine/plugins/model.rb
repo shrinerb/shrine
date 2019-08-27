@@ -33,7 +33,7 @@ class Shrine
         def included(klass)
           super
 
-          return unless options[:type] == :model
+          return unless type == :model
 
           define_model_methods(@name)
         end
@@ -61,10 +61,13 @@ class Shrine
 
         # Memoizes the attacher instance into an instance variable.
         def attacher(record, options)
-          return super unless @options[:type] == :model
+          return super unless type == :model
 
           if !record.instance_variable_get(:"@#{@name}_attacher") || options.any?
-            record.instance_variable_set(:"@#{@name}_attacher", super)
+            attacher = super
+            attacher.set_model(record, @name)
+
+            record.instance_variable_set(:"@#{@name}_attacher", attacher)
           else
             record.instance_variable_get(:"@#{@name}_attacher")
           end
@@ -78,9 +81,9 @@ class Shrine
         #
         #     attacher = Attacher.from_model(photo, :image)
         #     attacher.file #=> #<Shrine::UploadedFile>
-        def from_model(record, name, type: :model, **options)
+        def from_model(record, name, **options)
           attacher = new(**options)
-          attacher.load_model(record, name, type: type)
+          attacher.load_model(record, name)
           attacher
         end
       end
@@ -93,8 +96,16 @@ class Shrine
 
         # Saves record and name and initializes attachment from the model
         # attribute. Called from `Attacher.from_model`.
-        def load_model(record, name, type: :model)
-          load_entity(record, name, type: type)
+        def load_model(record, name)
+          set_model(record, name)
+          read
+        end
+
+        # Saves record and name without loading attachment from the model
+        # attribute.
+        def set_model(record, name)
+          set_entity(record, name)
+          @model = true
         end
 
         # Called by the attachment attribute setter on the model.
@@ -137,7 +148,7 @@ class Shrine
         # This allows users to still use the attacher with an entity instance
         # or without any record instance.
         def model?
-          type == :model
+          instance_variable_defined?(:@model)
         end
       end
     end

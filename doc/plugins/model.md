@@ -129,12 +129,21 @@ You can also load an entity into an existing attacher with
 `Attacher#load_model`.
 
 ```rb
-photo    = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
-attacher = ImageUploader::Attacher.from_model(photo, :image)
+photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
 
 attacher.file #=> nil
 attacher.load_model(photo, :image)
 attacher.file #=> #<ImageUploader::UploadedFile>
+```
+
+Or just `Attacher#set_model` if you don't want to load attachment data:
+
+```rb
+photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
+
+attacher.file #=> nil
+attacher.set_model(photo, :image) # doesn't load attachment data
+attacher.file #=> nil
 ```
 
 ### Writing attachment data

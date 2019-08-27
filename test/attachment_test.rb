@@ -19,6 +19,30 @@ describe Shrine::Attachment do
     end
   end
 
+  describe ".<name>_attacher" do
+    before do
+      @class = Class.new
+    end
+
+    it "returns attacher instance" do
+      @class.include @shrine::Attachment.new(:file)
+
+      assert_instance_of @shrine::Attacher, @class.file_attacher
+    end
+
+    it "applies attachment options" do
+      @class.include @shrine::Attachment.new(:file, store: :other_store)
+
+      assert_equal :other_store, @class.file_attacher.store_key
+    end
+
+    it "accepts attacher options" do
+      @class.include @shrine::Attachment.new(:file, store: :other_store)
+
+      assert_equal :store, @class.file_attacher(store: :store).store_key
+    end
+  end
+
   describe "#inspect" do
     it "is simplified" do
       attachment = @shrine::Attachment.new(:file)

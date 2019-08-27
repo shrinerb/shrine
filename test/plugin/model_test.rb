@@ -217,6 +217,26 @@ describe Shrine::Plugins::Model do
       end
     end
 
+    describe "#set_model" do
+      it "sets record and name" do
+        model = @model_class.new
+
+        @attacher.set_model(model, :file)
+
+        assert_equal model, @attacher.record
+        assert_equal :file, @attacher.name
+      end
+
+      it "makes attacher model type" do
+        model = @model_class.new
+
+        @attacher.set_model(model, :file)
+        @attacher.attach(fakeio)
+
+        assert_equal @attacher.file.to_json, model.file_data
+      end
+    end
+
     describe "#model_assign" do
       it "assigns the file by default" do
         @attacher.load_model(@model_class.new, :file)

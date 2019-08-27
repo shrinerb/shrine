@@ -11,8 +11,11 @@ class Shrine
       end
 
       module AttachmentMethods
-        def initialize(name, **options)
-          super
+        attr_reader :type
+
+        def initialize(name, type: :entity, **options)
+          super(name, **options)
+          @type = type
 
           define_entity_methods(name)
         end
@@ -42,7 +45,9 @@ class Shrine
         # Creates an instance of the corresponding Attacher subclass. It's not
         # memoized because the entity object could be frozen.
         def attacher(record, options)
-          shrine_class::Attacher.from_entity(record, @name, @options.merge(options))
+          attacher = record.class.send(:"#{@name}_attacher", options)
+          attacher.load_entity(record, @name)
+          attacher
         end
       end
 
@@ -53,9 +58,9 @@ class Shrine
         #
         #     attacher = Attacher.from_entity(photo, :image)
         #     attacher.file #=> #<Shrine::UploadedFile>
-        def from_entity(record, name, type: :entity, **options)
+        def from_entity(record, name, **options)
           attacher = new(**options)
-          attacher.load_entity(record, name, type: type)
+          attacher.load_entity(record, name)
           attacher
         end
       end
@@ -65,14 +70,18 @@ class Shrine
 
         # Saves record and name and initializes attachment from the entity
         # attribute. Called from `Attacher.from_entity`.
-        def load_entity(record, name, type: :entity)
+        def load_entity(record, name)
+          set_entity(record, name)
+          read
+        end
+
+        # Sets record and name without loading the attachment from the entity
+        # attribute.
+        def set_entity(record, name)
           @record = record
           @name   = name.to_sym
-          @type   = type
 
           @context.merge!(record: record, name: name)
-
-          read
         end
 
         # Overwrites the current attachment with the one from model attribute.
@@ -119,13 +128,6 @@ class Shrine
         def read_attribute
           record.public_send(attribute)
         end
-
-        # Returns whether the attacher has been loaded from an entity instance.
-        def entity?
-          type == :entity
-        end
-
-        attr_reader :type
       end
     end
 

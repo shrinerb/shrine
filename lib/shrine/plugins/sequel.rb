@@ -30,7 +30,6 @@ class Shrine
             # add validation plugin integration
             define_method :validate do
               super()
-
               return unless send(:"#{name}_attacher").respond_to?(:errors)
 
               send(:"#{name}_attacher").errors.each do |message|

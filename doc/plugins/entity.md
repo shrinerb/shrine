@@ -102,6 +102,19 @@ attacher = photo.image_attacher
 attacher.store_key #=> :other_store
 ```
 
+You can retrieve an `Attacher` instance from the entity *class* as well. In
+this case it will not be initialized with any entity instance.
+
+```rb
+attacher = Photo.image_attacher
+attacher #=> #<ImageUploader::Attacher>
+attacher.record #=> nil
+attacher.name   #=> nil
+
+attacher = Photo.image_attacher(store: :other_store)
+attacher.store_key #=> :other_store
+```
+
 ## Attacher
 
 ### Loading entity
@@ -133,9 +146,21 @@ You can also load an entity into an existing attacher with
 ```rb
 photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
 
-attacher.file #=> nil
 attacher.load_entity(photo, :image)
-attacher.file #=> #<ImageUploader::UploadedFile>
+attacher.record #=> #<Photo>
+attacher.name   #=> :image
+attacher.file   #=> #<ImageUploader::UploadedFile>
+```
+
+Or just `Attacher#set_entity` if you don't want to load attachment data:
+
+```rb
+photo = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
+
+attacher.set_entity(photo, :image) # doesn't load attachment data
+attacher.record #=> #<Photo>
+attacher.name   #=> :image
+attacher.file   #=> nil
 ```
 
 ### Reloading
