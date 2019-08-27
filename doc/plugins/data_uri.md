@@ -7,23 +7,22 @@ This plugin is useful for example when using [HTML5 Canvas].
 plugin :data_uri
 ```
 
-If your attachment is called "avatar", this plugin will add `#avatar_data_uri`
-and `#avatar_data_uri=` methods to your model.
+The plugin will add the `#<name>_data_uri` writer to your model, which parses
+the given data URI string and uploads it to temporary storage:
 
 ```rb
-user.avatar #=> nil
-user.avatar_data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
-user.avatar #=> #<Shrine::UploadedFile>
-
-user.avatar.mime_type         #=> "image/png"
-user.avatar.size              #=> 43423
+photo.image_data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+photo.image.mime_type #=> "image/png"
+photo.image.size      #=> 43423
 ```
 
-You can also use `#data_uri=` and `#data_uri` methods directly on the
-`Shrine::Attacher` (which the model methods just delegate to):
+If you're using `Shrine::Attacher` directly, you can use
+`Attacher#assign_data_uri`:
 
 ```rb
-attacher.data_uri = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA"
+attacher.assign_data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
+attacher.file.mime_type #=> "image/png"
+attacher.file.size      #=> 43423
 ```
 
 ## Errors
@@ -36,13 +35,13 @@ plugin :data_uri, error_message: "data URI was invalid"
 plugin :data_uri, error_message: ->(uri) { I18n.t("errors.data_uri_invalid") }
 ```
 
-## Upload options
+## Uploader options
 
-If you want to pass additional options for `Shrine#upload`, you can use
-`#assign_data_uri`:
+Any options passed to `Attacher#assign_data_uri` will be forwarded to
+`Attacher#assign` (and `Shrine#upload`):
 
 ```rb
-attacher.assign_data_uri(uri, metadata: { "mime_type" => "text/plain" })
+attacher.assign_data_uri(uri, metadata: { "filename" => "nature.jpg" })
 ```
 
 ## File extension
@@ -56,9 +55,7 @@ load the `infer_extension` plugin to infer it from the MIME type.
 plugin :infer_extension
 ```
 
-## API
-
-### `Shrine.data_uri`
+## Parsing data URI
 
 If you just want to parse the data URI and create an IO object from it, you can
 do that with `Shrine.data_uri`. If the data URI cannot be parsed, a
@@ -90,7 +87,7 @@ io = Shrine.data_uri("data:,content", filename: "foo.txt")
 io.original_filename #=> "foo.txt"
 ```
 
-### `UploadedFile#data_uri` and `UploadedFile#base64`
+### Generating data URI
 
 This plugin also adds `UploadedFile#data_uri` method, which returns a
 base64-encoded data URI of the file content, and `UploadedFile#base64`, which

@@ -13,13 +13,13 @@ cached file as JSON, and should be used to set the value of the hidden form
 field.
 
 ```rb
-@user.cached_avatar_data #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
+photo.cached_image_data #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
 ```
 
-This method delegates to `Attacher#read_cached`:
+This method delegates to `Attacher#cached_data`:
 
 ```rb
-attacher.read_cached #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
+attacher.cached_data #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
 ```
 
 [cached_attachment_data]: /lib/shrine/plugins/cached_attachment_data.rb

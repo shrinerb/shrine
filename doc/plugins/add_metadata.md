@@ -6,7 +6,7 @@ extracting and adding custom metadata values.
 ```rb
 plugin :add_metadata
 
-add_metadata :exif do |io, context|
+add_metadata :exif do |io|
   begin
     Exif::Data.new(io).to_h
   rescue Exif::NotReadable # not a valid image
@@ -16,7 +16,7 @@ end
 ```
 
 The above will add "exif" to the metadata hash, and also create the `#exif`
-reader method on Shrine::UploadedFile.
+reader method on `Shrine::UploadedFile`.
 
 ```rb
 image.metadata["exif"]
@@ -24,11 +24,13 @@ image.metadata["exif"]
 image.exif
 ```
 
+## Multiple values
+
 You can also extract multiple metadata values at once, by using `add_metadata`
 without an argument and returning a hash of metadata.
 
 ```rb
-add_metadata do |io, context|
+add_metadata do |io|
   begin
     data = Exif::Data.new(io)
   rescue Exif::NotReadable # not a valid image
@@ -50,12 +52,14 @@ metadata on Shrine::UploadedFile, but you can create them via
 metadata_method :date_time, :flash
 ```
 
+## Ensuring file
+
 The `io` might not always be a file object, so if you're using an analyzer
 which requires the source file to be on disk, you can use `Shrine.with_file` to
 ensure you have a file object.
 
 ```rb
-add_metadata do |io, context|
+add_metadata do |io|
   movie = Shrine.with_file(io) { |file| FFMPEG::Movie.new(file.path) }
 
   { "duration"   => movie.duration,
@@ -65,11 +69,29 @@ add_metadata do |io, context|
 end
 ```
 
-Any previously extracted metadata can be accessed via `context[:metadata]`:
+## Uploader options
+
+Uploader options are also yielded to the block, you can access them for more
+context:
 
 ```rb
-add_metadata :foo do |io, context|
-  context[:metadata] #=>
+add_metadata do |io, **options|
+  options #=>
+  # {
+  #   record:   #<Photo>,
+  #   name:     :image,
+  #   action:   :store,
+  #   metadata: { ... },
+  #   ...
+  # }
+end
+```
+
+The `:metadata` option holds metadata that was extracted so far:
+
+```rb
+add_metadata :foo do |io, metadata:, **|
+  metadata #=>
   # {
   #   "size"      => 239823,
   #   "filename"  => "nature.jpg",
@@ -79,8 +101,8 @@ add_metadata :foo do |io, context|
   "foo"
 end
 
-add_metadata :bar do |io, context|
-  context[:metadata] #=>
+add_metadata :bar do |io, metadata:, **|
+  metadata #=>
   # {
   #   "size"      => 239823,
   #   "filename"  => "nature.jpg",

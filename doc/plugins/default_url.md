@@ -1,7 +1,7 @@
 # Default URL
 
 The [`default_url`][default_url] plugin allows setting the URL which will be
-returned when the attachment is missing.
+returned when there is no attached file.
 
 ```rb
 plugin :default_url
@@ -11,13 +11,24 @@ Attacher.default_url do |options|
 end
 ```
 
-`Attacher#url` returns the default URL when attachment is missing. Any passed
-in URL options will be present in the `options` hash.
+The `Attacher#url` method will return the default URL when attachment is
+missing:
 
 ```rb
-attacher.url #=> "/avatar/missing.jpg"
-# or
 user.avatar_url #=> "/avatar/missing.jpg"
+# or
+attacher.url #=> "/avatar/missing.jpg"
+```
+
+Any URL options passed will be available in the default URL block:
+
+```rb
+attacher.url(foo: "bar")
+```
+```rb
+Attacher.default_url do |options|
+  options #=> { foo: "bar" }
+end
 ```
 
 The default URL block is evaluated in the context of an instance of
@@ -25,10 +36,11 @@ The default URL block is evaluated in the context of an instance of
 
 ```rb
 Attacher.default_url do |options|
-  self #=> #<Shrine::Attacher>
+  self    #=> #<Shrine::Attacher>
 
-  name   #=> :avatar
-  record #=> #<User>
+  name    #=> :avatar
+  record  #=> #<User>
+  context #=> { ... }
 end
 ```
 
@@ -41,7 +53,7 @@ option:
 plugin :default_url, host: "https://example.com"
 ```
 ```rb
-user.avatar_url #=> "https://example.com/avatar/missing.jpg"
+attacher.url #=> "https://example.com/avatar/missing.jpg"
 ```
 
 [default_url]: /lib/shrine/plugins/default_url.rb

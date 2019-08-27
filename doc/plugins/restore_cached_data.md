@@ -11,6 +11,8 @@ extracted on the client side.
 plugin :restore_cached_data
 ```
 
-It uses the `refresh_metadata` plugin to re-extract metadata.
+It uses the [`refresh_metadata`][refresh_metadata] plugin to re-extract
+metadata.
 
 [restore_cached_data]: /lib/shrine/plugins/restore_cached_data.rb
+[refresh_metadata]: /doc/plugins/refresh_metadata.md#readme

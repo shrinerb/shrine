@@ -7,40 +7,58 @@ location.
 plugin :remote_url, max_size: 20*1024*1024
 ```
 
-If for example your attachment is called "avatar", this plugin will add
-`#avatar_remote_url` and `#avatar_remote_url=` methods to your model.
+The plugin will add the `#<name>_remote_url` writer to your model, which
+downloads the remote file and uploads it to temporary storage.
 
 ```rb
-user.avatar #=> nil
-user.avatar_remote_url = "http://example.com/cool-image.png"
-user.avatar #=> #<Shrine::UploadedFile>
-
-user.avatar.mime_type         #=> "image/png"
-user.avatar.size              #=> 43423
-user.avatar.original_filename #=> "cool-image.png"
+photo.image_remote_url = "http://example.com/cool-image.png"
+photo.image.mime_type         #=> "image/png"
+photo.image.size              #=> 43423
+photo.image.original_filename #=> "cool-image.png"
 ```
 
-You can also use `#remote_url=` and `#remote_url` methods directly on the
-`Shrine::Attacher`:
+If you're using `Shrine::Attacher` directly, you can use
+`Attacher#assign_remote_url`:
 
 ```rb
-attacher.remote_url = "http://example.com/cool-image.png"
+attacher.assign_remote_url("http://example.com/cool-image.png")
+attacher.file.mime_type         #=> "image/png"
+attacher.file.size              #=> 43423
+attacher.file.original_filename #=> "cool-image.png"
 ```
+
+## Downloading
 
 By default, the file will be downloaded using `Down.download` from the [Down]
-gem. This will use the `Down::NetHttp` backend by default, which is a wrapper
+gem. This will use the [Down::NetHttp] backend by default, which is a wrapper
 around [open-uri].
 
-## Dynamic options
-
-You can dynamically pass options to the downloader by using
-`Attacher#assign_remote_url`:
+You can pass options to the downloader via the `:downloader` option:
 
 ```rb
 attacher.assign_remote_url(url, downloader: { 'Authorization' => 'Basic ...' })
 ```
 
-You can also pass any other `Shrine#upload` options:
+You can also change the downloader:
+
+```rb
+# Gemfile
+gem "http"
+```
+```rb
+require "down/http"
+
+down = Down::Http.new do |client|
+  client.follow(max_hops: 2).timeout(connect: 2, read: 2)
+end
+
+plugin :remote_url, downloader: down.method(:download), ...
+```
+
+## Uploader options
+
+Any additional options passed to `Attacher#assign_remote_url` will be forwarded
+to `Attacher#assign` (and `Shrine#upload`):
 
 ```rb
 attacher.assign_remote_url(url, metadata: { "mime_type" => "text/plain" })
@@ -63,28 +81,6 @@ you don't want to limit the maximum file size, you can set `:max_size` to nil:
 plugin :remote_url, max_size: nil
 ```
 
-## Custom downloader
-
-If you want to customize how the file is downloaded, you can override the
-`:downloader` parameter and provide your own implementation. For example, you
-can use the [http.rb] Down backend for downloading:
-
-```rb
-# Gemfile
-gem "http"
-```
-```rb
-require "down/http"
-
-down = Down::Http.new do |client|
-  client
-    .follow(max_hops: 2)
-    .timeout(connect: 2, read: 2)
-end
-
-plugin :remote_url, max_size: 20*1024*1024, downloader: down.method(:download)
-```
-
 ## Errors
 
 If download errors, the error is rescued and a validation error is added equal
@@ -103,11 +99,10 @@ file ID, and pair that with the `backgrounding` plugin.
 
 ## File extension
 
-When attaching from a remote URL, the uploaded file location will have the
-extension inferred from the URL. However, some URLs might not have an
-extension, in which case the uploaded file location also won't have the
-extension. If you want the upload location to always have an extension, you can
-load the `infer_extension` plugin to infer it from the MIME type.
+When attaching from a remote URL, the uploaded file location will inherit the
+extension from the URL. However, some URLs might not have an extension. To
+handle this case, you can use the `infer_extension` plugin to infer the
+extension from the MIME type.
 
 ```rb
 plugin :infer_extension
@@ -158,6 +153,7 @@ plugin :remote_url, log_subscriber: nil
 
 [remote_url]: /lib/shrine/plugins/remote_url.rb
 [Down]: https://github.com/janko/down
+[Down::NetHttp]: https://github.com/janko/down#downnethttp
 [open-uri]: https://ruby-doc.org/stdlib/libdoc/open-uri/rdoc/OpenURI.html
 [http.rb]: https://github.com/httprb/http
 [shrine-url]: https://github.com/shrinerb/shrine-url

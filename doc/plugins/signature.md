@@ -39,7 +39,7 @@ calculated hash.
 ```rb
 plugin :add_metadata
 
-add_metadata :md5 do |io, context|
+add_metadata :md5 do |io|
   calculate_signature(io, :md5)
 end
 ```
@@ -48,8 +48,8 @@ This will generate a hash for each uploaded file, but if you want to generate
 one only for the original file, you can add a conditional:
 
 ```rb
-add_metadata :md5 do |io, context|
-  calculate_signature(io, :md5) if context[:action] == :cache
+add_metadata :md5 do |io, action: nil, **|
+  calculate_signature(io, :md5) if action == :cache
 end
 ```
 

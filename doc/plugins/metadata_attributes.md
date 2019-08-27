@@ -7,7 +7,9 @@ method:
 
 ```rb
 plugin :metadata_attributes, :size => :size, :mime_type => :type
+
 # or
+
 plugin :metadata_attributes
 Attacher.metadata_attributes :size => :size, :mime_type => :type
 ```
@@ -28,19 +30,32 @@ user.avatar_size #=> nil
 user.avatar_type #=> nil
 ```
 
+If you're using the [`entity`][entity] plugin, metadata attributes will be
+added to `Attacher#column_values`:
+
+```rb
+attacher.assign(io)
+attacher.column_values #=>
+# {
+#   :image_data => '{ ... }',
+#   :image_size => 95724,
+#   :image_type => "image/jpeg",
+# }
+```
+
 If you want to specify the full record attribute name, pass the record
 attribute name as a string instead of a symbol.
 
 ```rb
 Attacher.metadata_attributes :filename => "original_filename"
-
-# ...
-
+```
+```rb
 photo.image = image
 photo.original_filename #=> "nature.jpg"
 ```
 
-If any corresponding metadata attribute doesn't exist on the record, that
-metadata sync will be silently skipped.
+Any metadata attributes that were declared but are missing on the record will
+be skipped.
 
 [metadata_attributes]: /lib/shrine/plugins/metadata_attributes.rb
+[entity]: /doc/plugins/entity.md#readme
