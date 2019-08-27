@@ -53,7 +53,12 @@ class Shrine
         #       # ...
         #     end
         def derivatives_processor(name, &block)
-          shrine_class.opts[:derivatives][:processors][name.to_sym] = block
+          if block
+            shrine_class.opts[:derivatives][:processors][name.to_sym] = block
+          else
+            shrine_class.opts[:derivatives][:processors][name.to_sym] or
+              fail Error, "derivatives processor #{name.inspect} not registered"
+          end
         end
 
         # Specifies default storage to which derivatives will be uploaded.
@@ -68,9 +73,11 @@ class Shrine
         #       end
         #     end
         def derivatives_storage(storage_key = nil, &block)
-          fail ArgumentError, "storage key or block needs to be provided" unless storage_key || block
-
-          shrine_class.opts[:derivatives][:storage] = storage_key || block
+          if storage_key || block
+            shrine_class.opts[:derivatives][:storage] = storage_key || block
+          else
+            shrine_class.opts[:derivatives][:storage]
+          end
         end
       end
 
@@ -246,7 +253,7 @@ class Shrine
         #     attacher.process_derivatives(:thumbnails)
         #     #=> { small: #<File:...>, medium: #<File:...>, large: #<File:...> }
         def process_derivatives(processor_name, source = nil, **options)
-          processor    = derivatives_processor(processor_name)
+          processor    = self.class.derivatives_processor(processor_name)
           fetch_source = source ? source.method(:tap) : file!.method(:download)
           result       = nil
 
@@ -466,12 +473,6 @@ class Shrine
           )
         end
 
-        # Retrieves derivatives processor with specified name.
-        def derivatives_processor(name)
-          shrine_class.opts[:derivatives][:processors][name.to_sym] or
-            fail Error, "derivatives processor #{name.inspect} not registered"
-        end
-
         # Returns symbolized array or single key.
         def derivative_path(path)
           path = path.map { |key| key.is_a?(String) ? key.to_sym : key }
@@ -481,7 +482,7 @@ class Shrine
 
         # Storage to which derivatives will be uploaded to by default.
         def derivative_storage(path)
-          storage = shrine_class.opts[:derivatives][:storage]
+          storage = self.class.derivatives_storage
           storage = instance_exec(path, &storage) if storage.respond_to?(:call)
           storage
         end
