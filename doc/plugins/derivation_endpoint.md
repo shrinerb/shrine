@@ -28,6 +28,7 @@ process them on-the-fly.
   - [Skipping download](#skipping-download)
 * [Derivation API](#derivation-api)
 * [Plugin Options](#plugin-options)
+* [Instrumentation](#instrumentation)
 
 ## Quick start
 
@@ -784,6 +785,53 @@ derivation.option(:upload_location)
 | `:upload_redirect_url_options` | Additional options to be passed when generating the URL for the uploaded derivative                                                   | `{}`                                                 |
 | `:upload_storage`              | Storage to which the derivations will be uploaded                                                                                     | same storage as the source file                      |
 | `:version`                     | Version number to append to the URL for cache busting                                                                                 | `nil`                                                |
+
+## Instrumentation
+
+If the `instrumentation` plugin has been loaded, the `determine_mime_type` plugin
+adds instrumentation around derivation processing.
+
+```rb
+# instrumentation plugin needs to be loaded *before* derivation_endpoint
+plugin :instrumentation
+plugin :derivation_endpoint
+```
+
+Derivation processing will trigger a `derivation.shrine` event with the
+following payload:
+
+| Key           | Description                                     |
+| :--           | :----                                           |
+| `:derivation` | `Shrine::Derivation` object for this processing |
+| `:uploader`   | The uploader class that sent the event          |
+
+A default log subscriber is added as well which logs these events:
+
+```
+Derivation (492ms) – {:name=>:thumbnail, :args=>[600, 600], :uploader=>Shrine}
+```
+
+You can also use your own log subscriber:
+
+```rb
+plugin :derivation_endpoint, log_subscriber: -> (event) {
+  Shrine.logger.info JSON.generate(
+    name:     event.name,
+    duration: event.duration,
+    name:     event[:derivation].name,
+    args:     event[:derivation].args,
+  )
+}
+```
+```
+{"name":"derivation","duration":492,"name":"thumbnail","args":[600,600],"uploader":"Shrine"}
+```
+
+Or disable logging altogether:
+
+```rb
+plugin :derivation_endpoint, log_subscriber: nil
+```
 
 [derivation_endpoint]: /lib/shrine/plugins/derivation_endpoint.rb
 [ImageProcessing]: https://github.com/janko/image_processing

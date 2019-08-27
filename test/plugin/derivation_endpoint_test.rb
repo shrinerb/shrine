@@ -924,8 +924,6 @@ describe Shrine::Plugins::DerivationEndpoint do
 
           refute_nil @event
           assert_equal :derivation,              @event.name
-          assert_equal :gray,                    @event[:name]
-          assert_equal ["dark"],                 @event[:args]
           assert_instance_of Shrine::Derivation, @event[:derivation]
           assert_equal @shrine,                  @event[:uploader]
           assert_kind_of Integer,                @event.duration
@@ -934,7 +932,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         it "allows swapping log subscriber" do
           @shrine.plugin :derivation_endpoint, log_subscriber: -> (event) { @event = event }
 
-          refute_logged /^Signature/ do
+          refute_logged /^Derivation/ do
             @uploaded_file.derivation(:gray).generate
           end
 
@@ -944,7 +942,7 @@ describe Shrine::Plugins::DerivationEndpoint do
         it "allows disabling log subscriber" do
           @shrine.plugin :derivation_endpoint, log_subscriber: nil
 
-          refute_logged /^Signature/ do
+          refute_logged /^Derivation/ do
             @uploaded_file.derivation(:gray).generate
           end
         end

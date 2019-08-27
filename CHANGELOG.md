@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivation_endpoint` – Send only `:derivation` in the instrumentation event payload (@janko)
+
 * `default_storage` – Add `Attacher.default_cache` and `Attacher.default_store` for settings (@janko)
 
 * `default_storage` – Deprecate `record` & `name` arguments to storage block (@janko)

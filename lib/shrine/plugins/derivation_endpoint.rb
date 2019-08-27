@@ -15,8 +15,8 @@ class Shrine
     module DerivationEndpoint
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Derivation (#{event.duration}ms) – #{{
-          name:     event[:name],
-          args:     event[:args],
+          name:     event[:derivation].name,
+          args:     event[:derivation].args,
           uploader: event[:uploader],
         }.inspect}"
       end
@@ -600,13 +600,7 @@ class Shrine
     def instrument_derivation(&block)
       return yield unless shrine_class.respond_to?(:instrument)
 
-      shrine_class.instrument(
-        :derivation,
-        name:       derivation.name,
-        args:       derivation.args,
-        derivation: derivation,
-        &block
-      )
+      shrine_class.instrument(:derivation, derivation: derivation, &block)
     end
 
     # Massages the derivation result, ensuring it's opened in binary mode,
