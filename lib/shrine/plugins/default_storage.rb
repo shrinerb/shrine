@@ -11,6 +11,22 @@ class Shrine
         uploader.opts[:default_storage].merge!(opts)
       end
 
+      module AttacherClassMethods
+        def default_cache(value = nil, &block)
+          default_storage.merge!(cache: value || block)
+        end
+
+        def default_store(value = nil, &block)
+          default_storage.merge!(store: value || block)
+        end
+
+        private
+
+        def default_storage
+          shrine_class.opts[:default_storage]
+        end
+      end
+
       module AttacherMethods
         def initialize(**options)
           super(**shrine_class.opts[:default_storage], **options)
@@ -18,7 +34,12 @@ class Shrine
 
         def cache_key
           if @cache.respond_to?(:call)
-            @cache.call(record, name)
+            if @cache.arity == 2
+              Shrine.deprecation("Passing record & name argument to default storage block is deprecated and will be removed in Shrine 4. Use a block without arguments instead.")
+              @cache.call(record, name)
+            else
+              instance_exec(&@cache)
+            end
           else
             @cache
           end
@@ -26,7 +47,12 @@ class Shrine
 
         def store_key
           if @store.respond_to?(:call)
-            @store.call(record, name)
+            if @store.arity == 2
+              Shrine.deprecation("Passing record & name argument to default storage block is deprecated and will be removed in Shrine 4. Use a block without arguments instead.")
+              @store.call(record, name)
+            else
+              instance_exec(&@store)
+            end
           else
             @store
           end

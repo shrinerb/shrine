@@ -8,48 +8,74 @@ describe Shrine::Plugins::DefaultStorage do
   end
 
   describe "Attacher" do
-    describe "#initialize" do
-      it "inherits default temporary and permanent storage" do
-        @shrine.plugin :default_storage, cache: :other_cache, store: :other_store
+    [:cache, :store].each do |storage_key|
+      describe "##{storage_key}_key" do
+        it "returns static plugin setting" do
+          @shrine.plugin :default_storage, storage_key => :"other_#{storage_key}"
 
-        attacher = @shrine::Attacher.new
+          attacher = @shrine::Attacher.new
 
-        assert_equal :other_cache, attacher.cache_key
-        assert_equal :other_store, attacher.store_key
-      end
+          assert_equal :"other_#{storage_key}", attacher.public_send(:"#{storage_key}_key")
+        end
 
-      it "still allows overriding storage" do
-        @shrine.plugin :default_storage, cache: :other_cache, store: :other_store
+        it "returns static attacher setting" do
+          @shrine.plugin :default_storage
+          @shrine::Attacher.public_send(:"default_#{storage_key}", :"other_#{storage_key}")
 
-        attacher = @shrine::Attacher.new(cache: :cache, store: :store)
+          attacher = @shrine::Attacher.new
 
-        assert_equal :cache, attacher.cache_key
-        assert_equal :store, attacher.store_key
-      end
+          assert_equal :"other_#{storage_key}", attacher.public_send(:"#{storage_key}_key")
+        end
 
-      it "allows passing dynamic block" do
-        @shrine.plugin :entity
-
-        entity = entity(file_data: nil)
-
-        @shrine.plugin :default_storage,
-          cache: -> (record, name) {
-            assert_equal entity, record
-            assert_equal :file,  name
-
-            :other_cache
-          },
-          store: -> (record, name) {
-            assert_equal entity, record
-            assert_equal :file,  name
-
-            :other_store
+        it "returns dynamic plugin setting" do
+          this = nil
+          @shrine.plugin :default_storage, storage_key => -> {
+            this = self
+            :"other_#{storage_key}"
           }
 
-        attacher = @shrine::Attacher.from_entity(entity, :file)
+          attacher = @shrine::Attacher.new
 
-        assert_equal :other_cache, attacher.cache_key
-        assert_equal :other_store, attacher.store_key
+          assert_equal :"other_#{storage_key}", attacher.public_send(:"#{storage_key}_key")
+          assert_equal attacher, this
+        end
+
+        it "returns dynamic attacher setting" do
+          this = nil
+          @shrine.plugin :default_storage
+          @shrine::Attacher.public_send(:"default_#{storage_key}") do
+            this = self
+            :"other_#{storage_key}"
+          end
+
+          attacher = @shrine::Attacher.new
+
+          assert_equal :"other_#{storage_key}", attacher.public_send(:"#{storage_key}_key")
+          assert_equal attacher, this
+        end
+
+        it "returns deprecated dynamic plugin setting" do
+          @shrine.plugin :entity
+          @shrine.plugin :default_storage, storage_key => -> (record, name) {
+            :"other_#{storage_key}"
+          }
+
+          attacher = @shrine::Attacher.new
+
+          assert_equal :"other_#{storage_key}", attacher.public_send(:"#{storage_key}_key")
+        end
+
+        it "still allows overriding storage" do
+          @shrine.plugin :default_storage, storage_key => :"other_#{storage_key}"
+
+          attacher = @shrine::Attacher.new(storage_key => storage_key)
+
+          assert_equal storage_key, attacher.public_send(:"#{storage_key}_key")
+        end
+
+        it "still returns default storage without settings" do
+          assert_equal storage_key, @attacher.public_send(:"#{storage_key}_key")
+        end
       end
     end
   end

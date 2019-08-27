@@ -1,5 +1,11 @@
 ## HEAD
 
+* `default_storage` – Add `Attacher.default_cache` and `Attacher.default_store` for settings (@janko)
+
+* `default_storage` – Deprecate `record` & `name` arguments to storage block (@janko)
+
+* `default_storage` – Evaluate storage block in context of `Attacher` instance (@janko)
+
 * Simplify persistence interface (@janko)
 
 * `upload_options` – Keep `Shrine#_upload` private (@janko)
