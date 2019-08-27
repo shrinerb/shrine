@@ -13,7 +13,7 @@
   <tbody>
     <% albums.each do |album| %>
       <tr>
-        <td><img src="<%= album.cover_photo_url(:thumbnail) %>" width=100 class="img-thumbnail" /></td>
+        <td><img src="<%= album.cover_photo_url(:small) %>" width=100 class="img-thumbnail" /></td>
         <td><%= album.name %></td>
         <td><a href="<%= album_path(album) %>" class="btn btn-default">Edit</a></td>
       </tr>
