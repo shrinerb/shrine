@@ -10,14 +10,18 @@ class Shrine
         uploader.plugin :entity
       end
 
-      def self.configure(uploader, mappings = {})
-        uploader.opts[:metadata_attributes] ||= { mappings: {} }
-        uploader.opts[:metadata_attributes][:mappings].merge!(mappings)
+      def self.configure(uploader, **opts)
+        uploader.opts[:metadata_attributes] ||= {}
+        uploader.opts[:metadata_attributes].merge!(opts)
       end
 
       module AttacherClassMethods
-        def metadata_attributes(mappings)
-          shrine_class.opts[:metadata_attributes][:mappings].merge!(mappings)
+        def metadata_attributes(mappings = nil)
+          if mappings
+            shrine_class.opts[:metadata_attributes].merge!(mappings)
+          else
+            shrine_class.opts[:metadata_attributes]
+          end
         end
       end
 
@@ -31,7 +35,7 @@ class Shrine
         def metadata_attributes
           values = {}
 
-          shrine_class.opts[:metadata_attributes][:mappings].each do |source, destination|
+          self.class.metadata_attributes.each do |source, destination|
             metadata_attribute = destination.is_a?(Symbol) ? :"#{name}_#{destination}" : :"#{destination}"
 
             next unless record.respond_to?(metadata_attribute)
