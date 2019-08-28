@@ -11,7 +11,7 @@ class Shrine
     # ## Promotion
     #
     #     attacher.promote_block do
-    #       Attachment::PromoteJob.perform_async(record, name, data)
+    #       Attachment::PromoteJob.perform_async(record, name, file_data)
     #     end
     #
     #     attacher.assign(io)
@@ -24,8 +24,8 @@ class Shrine
     # The promote worker can be implemented like this:
     #
     #     class Attachment::PromoteJob
-    #       def perform(record, name, data)
-    #         attacher = Shrine::Attacher.retrieve(model: record, name: name, data: data)
+    #       def perform(record, name, file_data)
+    #         attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
     #         attacher.atomic_promote
     #       end
     #     end
@@ -65,7 +65,7 @@ class Shrine
     # You can also register promotion and deletion hooks globally:
     #
     #     Shrine::Attacher.promote_block do
-    #       Attachment::PromoteJob.perform_async(record, name, data)
+    #       Attachment::PromoteJob.perform_async(record, name, file_data)
     #     end
     #
     #     Shrine::Attacher.destroy_block do
@@ -83,7 +83,7 @@ class Shrine
         #       Attachment::PromoteJob.perform_async(
         #         attacher.record,
         #         attacher.name,
-        #         attacher.data,
+        #         attacher.file_data,
         #       )
         #     end
         def promote_block(&block)
@@ -94,7 +94,7 @@ class Shrine
         # Registers a global deletion block.
         #
         #     Shrine::Attacher.destroy_block do |attacher|
-        #       Attachment::DeleteJob.perform_async(attacher.data)
+        #       Attachment::DestroyJob.perform_async(attacher.data)
         #     end
         def destroy_block(&block)
           shrine_class.opts[:backgrounding][:destroy_block] = block if block
@@ -116,7 +116,7 @@ class Shrine
         #       Attachment::PromoteJob.perform_async(
         #         attacher.record,
         #         attacher.name
-        #         attacher.data,
+        #         attacher.file_data,
         #       )
         #     end
         def promote_block(&block)
@@ -127,7 +127,7 @@ class Shrine
         # Registers an instance-level deletion hook.
         #
         #     attacher.destroy_block do |attacher|
-        #       Attachment::DeleteJob.perform_async(attacher.data)
+        #       Attachment::DestroyJob.perform_async(attacher.data)
         #     end
         def destroy_block(&block)
           @destroy_block = block if block

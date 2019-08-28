@@ -18,9 +18,9 @@ given attachment data matches the attached file on the record.
 ```rb
 # with a model instance
 Shrine::Attacher.retrieve(
-  model:  photo,
-  name:   :image,
-  data:   { "id" => "...", "storage" => "...", "metadata" => { ... } },
+  model: photo,
+  name:  :image,
+  file:  { "id" => "abc123", "storage" => "cache" },
 )
 #=> #<Shrine::Attacher ...>
 
@@ -28,7 +28,7 @@ Shrine::Attacher.retrieve(
 Shrine::Attacher.retrieve(
   entity: photo,
   name:   :image,
-  data:   { "id" => "...", "storage" => "...", "metadata" => { ... } },
+  file:   { "id" => "abc123", "storage" => "cache" },
 )
 #=> #<Shrine::Attacher ...>
 ```
@@ -42,7 +42,7 @@ class Photo
 end
 ```
 ```rb
-Shrine::Attacher.retrieve(model: photo, name: :image, data: { ... })
+Shrine::Attacher.retrieve(model: photo, name: :image, file: { ... })
 #=> #<ImageUploader::Attacher ...>
 ```
 
@@ -51,7 +51,7 @@ Otherwise it will call `Attacher.from_model`/`Attacher.from_entity` from the
 `Attacher.retrieve` on the appropriate attacher class.
 
 ```rb
-ImageUploader::Attacher.retrieve(entity: photo, name: :image, data: { ... })
+ImageUploader::Attacher.retrieve(entity: photo, name: :image, file: { ... })
 #=> #<ImageUploader::Attacher ...>
 ```
 
@@ -60,15 +60,29 @@ a `Shrine::AttachmentChanged` exception is raised. Note that metadata is
 allowed to differ, Shrine will only compare location and storage of the file.
 
 ```rb
-photo.image_data #=> '{"id":"foo","storage":"cache","metadata":{...}}'
+photo.image_data #=> '{"id":"foo","storage":"store","metadata":{...}}'
 
 Shrine::Attacher.retrieve(
   model: photo,
   name: :image,
-  data: { "id" => "bar", "storage" => "cache", "metadata" => { ... } },
+  file: { "id" => "bar", "storage" => "store" },
 )
 # ~> Shrine::AttachmentChanged: attachment has changed
 ```
+
+### File data
+
+The `Attacher#file_data` method can be used for sending the attached file data
+into a background job. It returns only location and storage of the attached
+file, leaving out any metadata or derivatives data that `Attacher#data` would
+return. This way the background job payload is kept light.
+
+```rb
+attacher.file_data #=> { "id" => "abc123", "storage" => "store" }
+```
+
+This value can then be passed as the `:file` argument to
+`Shrine::Attacher.retrieve`.
 
 ## Promoting
 

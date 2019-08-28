@@ -13,8 +13,10 @@ describe Shrine::Plugins::AtomicHelpers do
         before do
           @shrine.plugin :entity
 
+          @file = @attacher.upload(fakeio)
+
           @entity_class = entity_class(:file_data)
-          @entity       = @entity_class.new
+          @entity       = @entity_class.new(file_data: @file.to_json)
         end
 
         it "reads attacher attribute on an entity" do
@@ -23,7 +25,7 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             entity: @entity,
             name:   :file,
-            data:   nil,
+            file:   @file,
           )
 
           assert_equal @entity,      attacher.record
@@ -37,7 +39,7 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             entity: @entity,
             name:   :file,
-            data:   nil,
+            file:   @file,
             cache:  :other_cache,
           )
 
@@ -49,7 +51,7 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             entity: @entity,
             name:   :file,
-            data:   nil,
+            file:   @file,
           )
 
           assert_instance_of @shrine::Attacher, attacher
@@ -58,60 +60,60 @@ describe Shrine::Plugins::AtomicHelpers do
           assert_equal :cache,  attacher.cache_key
           assert_equal :store,  attacher.store_key
 
-          attacher.attach(fakeio)
-
-          assert_nil @entity.file_data # entity attachers don't write
+          attacher.set(nil) # attacher doesn't attempt to write
         end
 
         it "forwards additional options when creating attacher" do
           attacher = @shrine::Attacher.retrieve(
             entity: @entity,
             name:   :file,
-            data:   nil,
+            file:   @file,
             store:  :other_store,
           )
 
           assert_equal :other_store, attacher.store_key
         end
 
-        it "asserts the attachment hasn't changed (attacher)" do
-          file    = @attacher.upload(fakeio)
-          @entity = @entity_class.new(file_data: file.to_json)
-
-          assert_instance_of @shrine::Attacher, @shrine::Attacher.retrieve(
-            entity: @entity,
-            name:   :file,
-            data:   file.data,
-          )
+        it "fails when attached file is different" do
+          different_file = @attacher.upload(fakeio)
 
           assert_raises Shrine::AttachmentChanged do
             @shrine::Attacher.retrieve(
               entity: @entity,
               name:   :file,
-              data:   nil,
+              file:   different_file.data,
+            )
+          end
+
+          @entity_class.include @shrine::Attachment.new(:file)
+
+          assert_raises Shrine::AttachmentChanged do
+            @shrine::Attacher.retrieve(
+              entity: @entity,
+              name:   :file,
+              file:   different_file.data,
             )
           end
         end
 
-        it "asserts the attachment hasn't changed (attachment)" do
-          @entity_class.include @shrine::Attachment.new(:file)
-
-          file    = @attacher.upload(fakeio)
-          @entity = @entity_class.new(file_data: file.to_json)
-
-          attacher_subclass = Class.new(@shrine)::Attacher
-
-          assert_instance_of @shrine::Attacher, attacher_subclass.retrieve(
-            entity: @entity,
-            name:   :file,
-            data:   file.data,
-          )
+        it "fails when there is no attached file" do
+          @entity = @entity_class.new(file_data: nil)
 
           assert_raises Shrine::AttachmentChanged do
-            attacher_subclass.retrieve(
+            @shrine::Attacher.retrieve(
               entity: @entity,
               name:   :file,
-              data:   nil,
+              file:   @file.data,
+            )
+          end
+
+          @entity_class.include @shrine::Attachment.new(:file)
+
+          assert_raises Shrine::AttachmentChanged do
+            @shrine::Attacher.retrieve(
+              entity: @entity,
+              name:   :file,
+              file:   @file.data,
             )
           end
         end
@@ -121,8 +123,10 @@ describe Shrine::Plugins::AtomicHelpers do
         before do
           @shrine.plugin :model
 
+          @file = @attacher.upload(fakeio)
+
           @model_class = model_class(:file_data)
-          @model       = @model_class.new
+          @model       = @model_class.new(file_data: @file.to_json)
         end
 
         it "reads attacher attribute on a model" do
@@ -131,7 +135,7 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             model: @model,
             name:  :file,
-            data:  nil,
+            file:  @file,
           )
 
           assert_equal @model,       attacher.record
@@ -145,7 +149,7 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             model: @model,
             name:  :file,
-            data:  nil,
+            file:  @file,
             cache: :other_cache,
           )
 
@@ -157,7 +161,7 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             model: @model,
             name:  :file,
-            data:  nil,
+            file:  @file,
           )
 
           assert_instance_of @shrine::Attacher, attacher
@@ -175,51 +179,53 @@ describe Shrine::Plugins::AtomicHelpers do
           attacher = @shrine::Attacher.retrieve(
             model: @model,
             name:  :file,
-            data:  nil,
+            file:  @file,
             store: :other_store,
           )
 
           assert_equal :other_store, attacher.store_key
         end
 
-        it "asserts the attachment hasn't changed (attacher)" do
-          file   = @attacher.upload(fakeio)
-          @model = @model_class.new(file_data: file.to_json)
-
-          assert_instance_of @shrine::Attacher, @shrine::Attacher.retrieve(
-            model: @model,
-            name:  :file,
-            data:  file.data,
-          )
+        it "fails when attached file is different" do
+          different_file = @attacher.upload(fakeio)
 
           assert_raises Shrine::AttachmentChanged do
             @shrine::Attacher.retrieve(
               model: @model,
               name:  :file,
-              data:  nil,
+              file:  different_file.data,
+            )
+          end
+
+          @model_class.include @shrine::Attachment.new(:file)
+
+          assert_raises Shrine::AttachmentChanged do
+            @shrine::Attacher.retrieve(
+              model: @model,
+              name:   :file,
+              file:   different_file.data,
             )
           end
         end
 
-        it "asserts the attachment hasn't changed (attachment)" do
-          @model_class.include @shrine::Attachment.new(:file)
-
-          file   = @attacher.upload(fakeio)
-          @model = @model_class.new(file_data: file.to_json)
-
-          attacher_subclass = Class.new(@shrine)::Attacher
-
-          assert_instance_of @shrine::Attacher, attacher_subclass.retrieve(
-            model: @model,
-            name:  :file,
-            data:  file.data,
-          )
+        it "fails when there is no attached file" do
+          @model = @model_class.new(file_data: nil)
 
           assert_raises Shrine::AttachmentChanged do
-            attacher_subclass.retrieve(
+            @shrine::Attacher.retrieve(
               model: @model,
               name:  :file,
-              data:  nil,
+              file:  @file.data,
+            )
+          end
+
+          @model_class.include @shrine::Attachment.new(:file)
+
+          assert_raises Shrine::AttachmentChanged do
+            @shrine::Attacher.retrieve(
+              model: @model,
+              name:  :file,
+              file:  @file.data,
             )
           end
         end
@@ -229,7 +235,7 @@ describe Shrine::Plugins::AtomicHelpers do
         assert_raises ArgumentError do
           @shrine::Attacher.retrieve(
             name: :file,
-            data: nil,
+            file: @file,
           )
         end
       end
@@ -241,6 +247,21 @@ describe Shrine::Plugins::AtomicHelpers do
 
     describe "#abstract_atomic_persist" do
       # tested in activerecord & sequel plugin tests
+    end
+
+    describe "#file_data" do
+      it "returns file data without metadata or derivatives" do
+        @shrine.plugin :derivatives
+        @attacher = @shrine::Attacher.new
+
+        @attacher.attach(fakeio, metadata: { "foo" => "bar" })
+        @attacher.add_derivatives(one: fakeio, two: fakeio)
+
+        assert_equal Hash[
+          "id"      => @attacher.file.id,
+          "storage" => @attacher.file.storage_key.to_s,
+        ], @attacher.file_data
+      end
     end
   end
 end

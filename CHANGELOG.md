@@ -1,5 +1,9 @@
 ## HEAD
 
+* `atomic_helpers` – Rename `:data` argument to `:file` in `Attacher.retrieve` (@janko)
+
+* `atomic_helpers` – Add `Attacher#file_data` which returns only main file data without metadata (@janko)
+
 * `model` – Add `Attacher#set_model` for setting model without loading attachment (@janko)
 
 * `entity` – Add `Attacher#set_entity` for setting entity without loading attachment (@janko)

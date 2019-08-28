@@ -14,9 +14,9 @@ class Shrine
         # the attachment hasn't changed. It raises `Shrine::AttachmentChanged`
         # exception if the attached file doesn't match.
         #
-        #     Shrine::Attacher.retrieve(model: photo, name: :image, data: data)
+        #     Shrine::Attacher.retrieve(model: photo, name: :image, file: file_data)
         #     #=> #<ImageUploader::Attacher>
-        def retrieve(model: nil, entity: nil, name:, data:, **options)
+        def retrieve(model: nil, entity: nil, name:, file:, **options)
           fail ArgumentError, "either :model or :entity is required" unless model || entity
 
           record = model || entity
@@ -25,7 +25,7 @@ class Shrine
           attacher ||= from_model(record, name, **options) if model
           attacher ||= from_entity(record, name, **options) if entity
 
-          if attacher.file != attacher.class.from_data(data).file
+          if attacher.file != attacher.uploaded_file(file)
             fail Shrine::AttachmentChanged, "attachment has changed"
           end
 
@@ -80,6 +80,16 @@ class Shrine
 
             abstract_persist(persist)
           end
+        end
+
+        # Return only needed main file data, without the metadata. This allows
+        # you to avoid bloating your background job payload when you have
+        # derivatives or lots of metadata, by only sending data you need for
+        # atomic persitence.
+        #
+        #     attacher.file_data #=> { "id" => "abc123.jpg", "storage" => "store" }
+        def file_data
+          file!.data.reject { |key, value| key == "metadata" }
         end
 
         protected

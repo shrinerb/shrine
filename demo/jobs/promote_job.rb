@@ -3,9 +3,9 @@ require "sucker_punch"
 class PromoteJob
   include SuckerPunch::Job
 
-  def perform(record_class, record_id, name, data)
+  def perform(record_class, record_id, name, file_data)
     record   = Object.const_get(record_class.to_s).with_pk!(record_id)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, data: data)
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
 
     attacher.create_derivatives(:thumbnails) if record.is_a?(Album)
     attacher.atomic_promote

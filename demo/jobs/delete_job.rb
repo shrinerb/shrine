@@ -1,10 +1,10 @@
 require "sucker_punch"
 
-class DeleteJob
+class DestroyJob
   include SuckerPunch::Job
 
-  def perform(data)
-    attacher = Shrine::Attacher.from_data(data)
+  def perform(attacher_class, data)
+    attacher = Object.const_get(attacher_class.to_s).from_data(data)
     attacher.destroy
   end
 end

@@ -22,7 +22,7 @@ describe "Sequel Backgrounding" do
       record = attacher.record.class.with_pk!(attacher.record.id)
 
       attacher.class
-        .retrieve(model: record, name: attacher.name, data: attacher.data)
+        .retrieve(model: record, name: attacher.name, file: attacher.file_data)
         .atomic_promote
     end
 
@@ -83,7 +83,7 @@ describe "Sequel Backgrounding" do
         record = attacher.record.class.with_pk!(attacher.record.id)
 
         attacher.class
-          .retrieve(model: record, name: attacher.name, data: attacher.data)
+          .retrieve(model: record, name: attacher.name, file: attacher.file_data)
           .atomic_promote
       end
     end
