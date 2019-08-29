@@ -1,4 +1,4 @@
-## HEAD
+## 3.0.0.beta (2019-08-29)
 
 * `atomic_helpers` – Rename `:data` argument to `:file` in `Attacher.retrieve` (@janko)
 
