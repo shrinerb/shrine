@@ -252,9 +252,9 @@ class Shrine
         #
         #     attacher.process_derivatives(:thumbnails)
         #     #=> { small: #<File:...>, medium: #<File:...>, large: #<File:...> }
-        def process_derivatives(processor_name, source = nil, **options)
+        def process_derivatives(processor_name, source = file!, **options)
           processor    = self.class.derivatives_processor(processor_name)
-          fetch_source = source ? source.method(:tap) : file!.method(:download)
+          fetch_source = source.is_a?(UploadedFile) ? source.method(:download) : source.method(:tap)
           result       = nil
 
           fetch_source.call do |source_file|

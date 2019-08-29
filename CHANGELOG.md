@@ -1,3 +1,7 @@
+## HEAD
+
+* `derivatives` – Auto-download `UploadedFile` objects passed to `Attacher#process_derivatives` (@janko)
+
 ## 3.0.0.beta (2019-08-29)
 
 * `atomic_helpers` – Rename `:data` argument to `:file` in `Attacher.retrieve` (@janko)

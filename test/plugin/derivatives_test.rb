@@ -702,6 +702,17 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "rehto", files[:reversed].read
       end
 
+      it "downloads source UploadedFile" do
+        @attacher.class.derivatives_processor :path do |original|
+          { path: StringIO.new(original.path) }
+        end
+
+        file   = @attacher.upload(fakeio("file"))
+        result = @attacher.process_derivatives(:path, file)
+
+        assert_match /^#{Dir.tmpdir}/, result[:path].read
+      end
+
       it "forwards additional options" do
         @attacher.class.derivatives_processor :options do |original, **options|
           { options: StringIO.new(options.to_s) }

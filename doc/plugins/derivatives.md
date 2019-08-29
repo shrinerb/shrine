@@ -111,8 +111,9 @@ photo.image_data #=>
 # }
 ```
 
-When using `Shrine::Attacher` directly, derivatives are created using
-`Attacher#create_derivatives`:
+The `#<name>_derivatives!` model method delegates to
+`Attacher#create_derivatives`, which you can use if you're using
+`Shrine::Attacher` directly:
 
 ```rb
 attacher.file #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
@@ -125,6 +126,18 @@ attacher.derivatives #=>
 #   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store ...>,
 #   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store ...>,
 # }
+```
+
+By default, the `Attacher#create_derivatives` method downloads the attached
+file, calls the processor, uploads results to attacher's permanent storage, and
+saves uploaded files on the attacher.
+
+Any additional arguments are forwarded to
+[`Attacher#process_derivatives`](#processing-derivatives):
+
+```rb
+attacher.create_derivatives(:thumbnails, different_source) # pass a different source file
+attacher.create_derivatives(:thumbnails, foo: "bar")       # pass custom options to the processor
 ```
 
 ### Derivatives storage
@@ -308,15 +321,8 @@ Attacher.derivatives_processor :my_processor do |original|
 end
 ```
 
-The [`Attacher#create_derivatives`](#creating-derivatives) method will call
-the processor and upload results.
-
-```rb
-attacher.create_derivatives(:my_processor)
-```
-
-Internally this calls `Attacher#process_derivatives`, which calls the
-processor and returns processed files:
+The `Attacher#create_derivatives` method internally calls
+`Attacher#process_derivatives`, which in turn calls the processor:
 
 ```rb
 files = attacher.process_derivatives(:my_processor)
@@ -340,8 +346,8 @@ Attacher.derivatives_processor :my_processor do |original|
 end
 ```
 
-Moreover, any options passed to `Attacher#process_derivatives` (or
-`Attacher#create_derivatives`) will be forwarded to the processor:
+Moreover, any options passed to `Attacher#process_derivatives` will be
+forwarded to the processor:
 
 ```rb
 attacher.process_derivatives(:my_processor, foo: "bar")
@@ -355,7 +361,7 @@ end
 
 ### Source file
 
-The `Attacher#process_derivatives` method will automatically download the
+By default, the `Attacher#process_derivatives` method will download the
 attached file and pass it to the processor:
 
 ```rb
@@ -368,10 +374,9 @@ end
 attacher.process_derivatives(:my_processor) # downloads attached file and passes it to the processor
 ```
 
-If you already have the source file locally, or if you're calling multiple
-processors in a row and want to avoid downloading the same source file each
-time, you can pass the source file as the second argument to
-`Attacher#process_derivatives` (or `Attacher#create_derivatives`):
+If you want to use a different source file, or if you're calling multiple
+processors in a row and want to avoid re-downloading the same source file each
+time, you can pass the source file as the second argument:
 
 ```rb
 # this way the source file is downloaded only once
