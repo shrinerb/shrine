@@ -20,7 +20,7 @@ These methods read attachment data from the `#<name>_data` attribute on the
 entity instance.
 
 ```rb
-class Photo < Entity(:image_data)
+class Photo < Entity(:image_data) # has `image_data` reader
   include ImageUploader::Attachment(:image)
 end
 ```
@@ -116,6 +116,29 @@ attacher.store_key #=> :other_store
 ```
 
 ## Attacher
+
+You can also use `Shrine::Attacher` directly (with or without the
+`Shrine::Attachment` module):
+
+```rb
+class Photo < Entity(:image_data) # has `image_data` reader
+end
+```
+```rb
+photo    = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
+attacher = ImageUploader::Attacher.from_entity(photo, :image)
+
+attacher.file #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:store ...>
+
+attacher.attach(file)
+attacher.file          #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+attacher.column_values #=> { image_data: '{"id":"397eca.jpg","storage":"store","metadata":{...}}' }
+
+photo    = Photo.new(attacher.column_values)
+attacher = ImageUploader::Attacher.from_entity(photo, :image)
+
+attacher.file #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+```
 
 ### Loading entity
 

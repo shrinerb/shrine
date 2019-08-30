@@ -1,6 +1,6 @@
 # Model
 
-The [`model`][model] plugin provides integration for handling atatchments on
+The [`model`][model] plugin provides integration for handling attachment on
 mutable structs. It is built on top of the [`entity`][entity] plugin.
 
 ```rb
@@ -9,24 +9,28 @@ plugin :model
 
 ## Attachment
 
-Including a `Shrine::Attachment` module into a model class will, in addition to
-methods from the `entity` plugin, add the `#<name>=` method for attaching
-files.
+Including a `Shrine::Attachment` module into a model class will:
 
-These methods read and write attachment data to the `#<name>_data` attribute on
-the model instance.
+* add [entity] attachment methods
+* add `#<name>=` and `#<name>_changed?` methods
 
 ```rb
-class Photo < Model(:image_data)
+class Photo < Model(:image_data) # has `image_data` accessor
   include ImageUploader::Attachment(:image)
 end
 ```
 ```rb
 photo = Photo.new
+
 photo.image = file
-photo.image          #=> #<ImageUploader::UploadedFile>
-photo.image_url      #=> "https://example.com/foo.jpg"
-photo.image_attacher #=> #<ImageUploader::Attacher>
+
+photo.image      #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
+
+photo.image_attacher.finalize
+
+photo.image      #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 ```
 
 #### `#<name>=`
@@ -107,6 +111,28 @@ end
 ```
 
 ## Attacher
+
+You can also use `Shrine::Attacher` directly (with or without the
+`Shrine::Attachment` module):
+
+```rb
+class Photo < Model(:image_data) # has `image_data` accessor
+end
+```
+```rb
+photo    = Photo.new
+attacher = ImageUploader::Attacher.from_model(photo, :image)
+
+attacher.assign(file) # cache
+
+attacher.file    #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
+
+attacher.finalize # promote
+
+attacher.file    #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
+```
 
 ### Loading model
 

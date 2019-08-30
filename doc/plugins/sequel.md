@@ -9,17 +9,32 @@ plugin :sequel
 
 ## Attachment
 
-When `Shrine::Attachment` module is included into a `Sequel::Model` subclass,
-additional [hooks] are added to tie the attachment process to the record
-lifecycle.
+Including a `Shrine::Attachment` module into a `Sequel::Model` subclass will:
+
+* add [model] attachment methods
+* add [validations](#validations) and [hooks](#hooks) to tie attachment process
+  to the record lifecycle
 
 ```rb
-class Photo < Sequel::Model
-  include ImageUploader::Attachment(:image) # adds callbacks & validations
+class Photo < Sequel::Model # has `image_data` column
+  include ImageUploader::Attachment(:image) # adds methods, callbacks & validations
 end
 ```
+```rb
+photo = Photo.new
 
-### Callbacks
+photo.image = file # cache
+
+photo.image      #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
+
+photo.save # persist, promote, then persist again
+
+photo.image      #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
+```
+
+### Hooks
 
 #### After Save
 
@@ -52,13 +67,13 @@ photo.destroy
 photo.image.exists? #=> false
 ```
 
-#### Skipping Callbacks
+#### Skipping Hooks
 
-If you don't want the attachment module to add any callbacks to your Sequel
-model, you can set `:callbacks` to `false`:
+If you don't want the attachment module to add any hooks to your Sequel model,
+you can set `:hooks` to `false`:
 
 ```rb
-plugin :sequel, callbacks: false
+plugin :sequel, hooks: false
 ```
 
 ### Validations
@@ -89,9 +104,7 @@ presence validator:
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image)
-
-  plugin :validation_helpers
+  include ImageUploader::Attachment(:image)
 
   def validate
     super
@@ -111,10 +124,33 @@ plugin :sequel, validations: false
 
 ## Attacher
 
-This section will cover methods added to the `Shrine::Attacher` instance. If
-you're not familar with how to obtain it, see the [`model`][model] plugin docs.
+You can also use `Shrine::Attacher` directly (with or without the
+`Shrine::Attachment` module):
 
-The following persistence methods are added to the attacher:
+```rb
+class Photo < Sequel::Model # has `image_data` column
+end
+```
+```rb
+photo    = Photo.new
+attacher = ImageUploader::Attacher.from_model(photo, :image)
+
+attacher.assign(file) # cache
+
+attacher.file    #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
+
+photo.save        # persist
+attacher.finalize # promote
+photo.save        # persist
+
+attacher.file    #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
+```
+
+### Pesistence
+
+The following persistence methods are added to `Shrine::Attacher`:
 
 | Method                    | Description                                                            |
 | :-----                    | :----------                                                            |
@@ -127,6 +163,5 @@ See [persistence] docs for more details.
 [sequel]: /lib/shrine/plugins/sequel.rb
 [Sequel]: https://sequel.jeremyevans.net/
 [model]: /doc/plugins/model.md#readme
-[hooks]: http://sequel.jeremyevans.net/rdoc/files/doc/model_hooks_rdoc.html
 [validation]: /doc/plugins/validation.md#readme
 [persistence]: /doc/plugins/persistence.md#readme

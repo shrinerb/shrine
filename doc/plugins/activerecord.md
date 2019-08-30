@@ -9,14 +9,30 @@ plugin :activerecord
 
 ## Attachment
 
-When `Shrine::Attachment` module is included into an `ActiveRecord::Base`
-subclass, additional [callbacks] are added to tie the attachment process to the
-record lifecycle.
+Including a `Shrine::Attachment` module into an `ActiveRecord::Base` subclass
+will:
+
+* add [model] attachment methods
+* add [validations](#validations) and [callbacks](#callbacks) to tie attachment
+  process to the record lifecycle
 
 ```rb
-class Photo < ActiveRecord::Base
-  include ImageUploader::Attachment(:image) # adds callbacks & validations
+class Photo < ActiveRecord::Base # has `image_data` column
+  include ImageUploader::Attachment(:image) # adds methods, callbacks & validations
 end
+```
+```rb
+photo = Photo.new
+
+photo.image = file # cache
+
+photo.image      #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
+
+photo.save # persist, promote, then persist again
+
+photo.image      #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 ```
 
 ### Callbacks
@@ -104,7 +120,8 @@ presence validator:
 
 ```rb
 class Photo < ActiveRecord::Base
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
+
   validates_presence_of :image
 end
 ```
@@ -147,10 +164,33 @@ plugin :activerecord, validations: false
 
 ## Attacher
 
-This section will cover methods added to the `Shrine::Attacher` instance. If
-you're not familar with how to obtain it, see the [`model`][model] plugin docs.
+You can also use `Shrine::Attacher` directly (with or without the
+`Shrine::Attachment` module):
 
-The following persistence methods are added to the attacher:
+```rb
+class Photo < ActiveRecord::Base # has `image_data` column
+end
+```
+```rb
+photo    = Photo.new
+attacher = ImageUploader::Attacher.from_model(photo, :image)
+
+attacher.assign(file) # cache
+
+attacher.file    #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
+
+photo.save        # persist
+attacher.finalize # promote
+photo.save        # persist
+
+attacher.file    #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
+```
+
+### Persistence
+
+The following persistence methods are added to `Shrine::Attacher`:
 
 | Method                    | Description                                                            |
 | :-----                    | :----------                                                            |
