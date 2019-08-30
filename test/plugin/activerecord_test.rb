@@ -253,7 +253,9 @@ describe Shrine::Plugins::Activerecord do
 
         @attacher.atomic_promote
 
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
+        @attacher.reload
+        assert @attacher.stored?
       end
 
       it "updates the record with promoted file" do
@@ -262,12 +264,9 @@ describe Shrine::Plugins::Activerecord do
 
         @attacher.atomic_promote
 
-        @attacher.reload
-        assert_equal :store, @attacher.file.storage_key
-
         @user.reload
         @attacher.reload
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
       end
 
       it "returns the promoted file" do
@@ -315,6 +314,7 @@ describe Shrine::Plugins::Activerecord do
 
         @user.class.update_all(avatar_data: nil)
 
+        @user.name = "Janko"
         assert_raises(Shrine::AttachmentChanged) do
           @attacher.atomic_promote { @block_called = true }
         end
@@ -323,6 +323,7 @@ describe Shrine::Plugins::Activerecord do
         @attacher.reload
 
         assert_nil @attacher.file
+        assert_nil @user.name
         refute @block_called
       end
 
@@ -341,8 +342,7 @@ describe Shrine::Plugins::Activerecord do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
       end
 
       it "accepts custom reload strategy" do
@@ -358,8 +358,7 @@ describe Shrine::Plugins::Activerecord do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
       end
 
@@ -374,14 +373,13 @@ describe Shrine::Plugins::Activerecord do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
       end
 
       it "accepts custom persist strategy" do
         @attacher.attach_cached(fakeio)
-        @user.save(validate: false)
+        @user.save
 
         @attacher.atomic_promote(persist: -> {
           @user.name = "Janko"
@@ -390,8 +388,7 @@ describe Shrine::Plugins::Activerecord do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
       end
 
@@ -402,13 +399,12 @@ describe Shrine::Plugins::Activerecord do
         @user.name = "Janko"
         @attacher.atomic_promote(persist: false)
 
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
 
         @user.reload
         @attacher.reload
-
-        assert_equal :cache, @attacher.file.storage_key
+        assert @attacher.cached?
         assert_nil @user.name
       end
 
@@ -479,7 +475,6 @@ describe Shrine::Plugins::Activerecord do
 
         @user.reload
         @attacher.reload
-
         assert_equal "Janko", @user.name
       end
 
@@ -505,46 +500,6 @@ describe Shrine::Plugins::Activerecord do
         @attacher.atomic_persist(reload: false)
 
         assert_equal "Name", @user.reload.name
-      end
-
-      it "skips validations when persisting" do
-        @user.class.validates_presence_of :name
-
-        @attacher.attach(fakeio)
-        @user.name = "Janko"
-        @user.save(validate: false)
-
-        @user.name = nil
-        @attacher.atomic_persist
-
-        assert_nil @user.reload.name
-      end
-
-      it "persists only changed attributes" do
-        @user.save
-
-        file = @attacher.attach(fakeio)
-        @user.class.update_all(name: "Janko")
-
-        @attacher.atomic_persist(nil)
-
-        @user.reload
-        @attacher.reload
-
-        assert_equal file, @attacher.file
-        assert_equal "Janko", @user.name
-      end
-
-      it "triggers callbacks when persisting" do
-        @user.save
-
-        after_save_called = false
-        @user.class.after_save { after_save_called = true }
-
-        @user.name = "Janko"
-        @attacher.atomic_persist
-
-        assert after_save_called
       end
 
       it "accepts custom persist strategy" do
@@ -629,6 +584,18 @@ describe Shrine::Plugins::Activerecord do
         @attacher.persist
 
         assert_nil @user.reload.name
+      end
+
+      it "triggers callbacks when persisting" do
+        @user.save
+
+        after_save_called = false
+        @user.class.after_save { after_save_called = true }
+
+        @user.name = "Janko"
+        @attacher.persist
+
+        assert after_save_called
       end
 
       it "raises NotImplementedError for non-ActiveRecord attacher" do

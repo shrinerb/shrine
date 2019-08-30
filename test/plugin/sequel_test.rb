@@ -228,7 +228,9 @@ describe Shrine::Plugins::Sequel do
 
         @attacher.atomic_promote
 
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
+        @attacher.reload
+        assert @attacher.stored?
       end
 
       it "updates the record with promoted file" do
@@ -237,12 +239,9 @@ describe Shrine::Plugins::Sequel do
 
         @attacher.atomic_promote
 
-        @attacher.reload
-        assert_equal :store, @attacher.file.storage_key
-
         @user.reload
         @attacher.reload
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
       end
 
       it "returns the promoted file" do
@@ -290,6 +289,7 @@ describe Shrine::Plugins::Sequel do
 
         @user.this.update(avatar_data: nil)
 
+        @user.name = "Janko"
         assert_raises(Shrine::AttachmentChanged) do
           @attacher.atomic_promote { @block_called = true }
         end
@@ -298,6 +298,7 @@ describe Shrine::Plugins::Sequel do
         @attacher.reload
 
         assert_nil @attacher.file
+        assert_nil @user.name
         refute @block_called
       end
 
@@ -316,8 +317,7 @@ describe Shrine::Plugins::Sequel do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
       end
 
       it "accepts custom reload strategy" do
@@ -333,8 +333,7 @@ describe Shrine::Plugins::Sequel do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
       end
 
@@ -349,8 +348,7 @@ describe Shrine::Plugins::Sequel do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
       end
 
@@ -365,8 +363,7 @@ describe Shrine::Plugins::Sequel do
 
         @user.reload
         @attacher.reload
-
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
       end
 
@@ -377,13 +374,12 @@ describe Shrine::Plugins::Sequel do
         @user.name = "Janko"
         @attacher.atomic_promote(persist: false)
 
-        assert_equal :store, @attacher.file.storage_key
+        assert @attacher.stored?
         assert_equal "Janko", @user.name
 
         @user.reload
         @attacher.reload
-
-        assert_equal :cache, @attacher.file.storage_key
+        assert @attacher.cached?
         assert_nil @user.name
       end
 
@@ -454,7 +450,6 @@ describe Shrine::Plugins::Sequel do
 
         @user.reload
         @attacher.reload
-
         assert_equal "Janko", @user.name
       end
 
@@ -480,53 +475,6 @@ describe Shrine::Plugins::Sequel do
         @attacher.atomic_persist(reload: false)
 
         assert_equal "Name", @user.reload.name
-      end
-
-      it "skips validations when persisting" do
-        @user.instance_eval do
-          def validate
-            errors.add(:name, "must be present")
-          end
-        end
-
-        @attacher.attach(fakeio)
-        @user.name = "Janko"
-        @user.save(validate: false)
-
-        @user.name = nil
-        @attacher.atomic_persist
-
-        assert_nil @user.reload.name
-      end
-
-      it "persists only changed attributes" do
-        @user.save
-
-        file = @attacher.attach(fakeio)
-        @user.this.update(name: "Janko")
-
-        @attacher.atomic_persist(nil)
-
-        @user.reload
-        @attacher.reload
-
-        assert_equal file, @attacher.file
-        assert_equal "Janko", @user.name
-      end
-
-      it "triggers callbacks when persisting" do
-        @user.save
-
-        after_save_called = false
-        @user.class.send(:define_method, :after_save) do
-          super()
-          after_save_called = true
-        end
-
-        @user.name = "Janko"
-        @attacher.atomic_persist
-
-        assert after_save_called
       end
 
       it "accepts custom persist strategy" do
@@ -615,6 +563,18 @@ describe Shrine::Plugins::Sequel do
         @attacher.persist
 
         assert_nil @user.reload.name
+      end
+
+      it "triggers callbacks when persisting" do
+        @user.save
+
+        after_save_called = false
+        @user.class.send(:define_method, :after_save) { after_save_called = true }
+
+        @user.name = "Janko"
+        @attacher.persist
+
+        assert after_save_called
       end
 
       it "raises NotImplementedError for non-Sequel attacher" do
