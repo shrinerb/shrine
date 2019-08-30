@@ -55,8 +55,8 @@ describe Shrine::Plugins::Sequel do
         @user.save
       end
 
-      it "is skipped when callbacks are disabled" do
-        @shrine.plugin :sequel, callbacks: false
+      it "is skipped when hooks are disabled" do
+        @shrine.plugin :sequel, hooks: false
         @user.class.include @shrine::Attachment.new(:avatar)
 
         @user.avatar = fakeio
@@ -116,8 +116,8 @@ describe Shrine::Plugins::Sequel do
         assert_equal :store, @user.avatar.storage_key
       end
 
-      it "is skipped when callbacks are disabled" do
-        @shrine.plugin :sequel, callbacks: false
+      it "is skipped when hooks are disabled" do
+        @shrine.plugin :sequel, hooks: false
         @user.class.include @shrine::Attachment.new(:avatar)
 
         @user.avatar = fakeio
@@ -139,8 +139,8 @@ describe Shrine::Plugins::Sequel do
         refute @user.avatar.exists?
       end
 
-      it "is skipped when callbacks are disabled" do
-        @shrine.plugin :sequel, callbacks: false
+      it "is skipped when hooks are disabled" do
+        @shrine.plugin :sequel, hooks: false
         @user.class.include @shrine::Attachment.new(:avatar)
 
         @attacher.attach(fakeio)
@@ -565,7 +565,7 @@ describe Shrine::Plugins::Sequel do
         assert_nil @user.reload.name
       end
 
-      it "triggers callbacks when persisting" do
+      it "triggers hooks when persisting" do
         @user.save
 
         after_save_called = false

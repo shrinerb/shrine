@@ -14,7 +14,12 @@ class Shrine
       end
 
       def self.configure(uploader, **opts)
-        uploader.opts[:sequel] ||= { callbacks: true, validations: true }
+        if opts.key?(:callbacks)
+          Shrine.deprecation("The :callbacks option in sequel plugin has been renamed to :hooks. The :callbacks alias will be removed in Shrine 4.")
+          opts[:hooks] = opts.delete(:callbacks)
+        end
+
+        uploader.opts[:sequel] ||= { hooks: true, validations: true }
         uploader.opts[:sequel].merge!(opts)
       end
 
@@ -38,7 +43,7 @@ class Shrine
             end
           end
 
-          if shrine_class.opts[:sequel][:callbacks]
+          if shrine_class.opts[:sequel][:hooks]
             define_method :before_save do
               super()
               if send(:"#{name}_attacher").changed?
