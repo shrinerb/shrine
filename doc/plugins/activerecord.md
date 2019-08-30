@@ -24,15 +24,19 @@ end
 ```rb
 photo = Photo.new
 
-photo.image = file # cache
+photo.image = file # cache attachment
 
 photo.image      #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
 photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
 
-photo.save # persist, promote, then persist again
+photo.save # persist, promote attachment, then persist again
 
 photo.image      #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
 photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
+
+photo.destroy # delete attachment
+
+photo.image.exists? #=> false
 ```
 
 ### Callbacks
@@ -85,8 +89,8 @@ module *after* they have all been defined.
 
 #### Skipping Callbacks
 
-If you don't want the attachment module to add any callbacks to your Active
-Record model, you can set `:callbacks` to `false`:
+If you don't want the attachment module to add any callbacks to your model, you
+can set `:callbacks` to `false`:
 
 ```rb
 plugin :activerecord, callbacks: false

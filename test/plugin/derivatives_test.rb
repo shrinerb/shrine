@@ -81,7 +81,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "is not defined for entity attachments" do
         @model_class = model_class(:file_data)
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:file_derivatives!)
       end

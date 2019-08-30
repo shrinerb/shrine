@@ -26,7 +26,7 @@ describe Shrine::Plugins::RemoveAttachment do
 
       it "is not defined for entity attachments" do
         @shrine.plugin :model
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:remove_file=)
       end
@@ -45,7 +45,7 @@ describe Shrine::Plugins::RemoveAttachment do
 
       it "is not defined for entity attachments" do
         @shrine.plugin :model
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:remove_file)
       end

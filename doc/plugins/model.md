@@ -102,11 +102,11 @@ photo.image_attacher.cache_key #=> :other_cache
 ### Entity
 
 If you still want to include `Shrine::Attachment` modules to immutable
-entities, you can disable "model" behaviour by passing `type: :entity`:
+entities, you can disable "model" behaviour by passing `model: false`:
 
 ```rb
 class Photo < Entity(:image_data)
-  include ImageUploader::Attachment(:image, type: :entity)
+  include ImageUploader::Attachment(:image, model: false)
 end
 ```
 

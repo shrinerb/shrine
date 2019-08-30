@@ -16,27 +16,24 @@ class Shrine
       end
 
       module AttachmentMethods
-        # Allows specifying whether the attachment should be for a model
-        # (default) or an entity.
+        # Allows disabling model behaviour:
         #
-        #     Shrine::Attachment.new(:image)                # model (default)
-        #     Shrine::Attachment.new(:image, type: :model)  # model
-        #     Shrine::Attachment.new(:image, type: :entity) # entity
-        def initialize(name, **options)
-          super(name, type: :model, **options)
+        #     Shrine::Attachment.new(:image)               # model (default)
+        #     Shrine::Attachment.new(:image, model: false) # entity
+        def initialize(name, model: true, **options)
+          super(name, **options)
+          @model = model
         end
 
-        # We define model methods only on inclusion, if the attachment type is
-        # still "model". This gives other plugins the ability to force
-        # attachment type to "entity" for certain classes, and we can skip
-        # defining model methods in this case.
+        # We define model methods only on inclusion. This gives other plugins
+        # the ability to disable model behaviour for entity classes. In this
+        # case we want to skip defining model methods as well.
         def included(klass)
           super
-
-          return unless type == :model
-
-          define_model_methods(@name)
+          define_model_methods(@name) if model?
         end
+
+        private
 
         # Defines attachment setter and enhances the copy constructor.
         def define_model_methods(name)
@@ -61,16 +58,20 @@ class Shrine
 
         # Memoizes the attacher instance into an instance variable.
         def attacher(record, options)
-          return super unless type == :model
+          return super unless model?
 
           if !record.instance_variable_get(:"@#{@name}_attacher") || options.any?
-            attacher = super
-            attacher.set_model(record, @name)
+            attacher = record.class.send(:"#{@name}_attacher", options)
+            attacher.load_model(record, @name)
 
             record.instance_variable_set(:"@#{@name}_attacher", attacher)
           else
             record.instance_variable_get(:"@#{@name}_attacher")
           end
+        end
+
+        def model?
+          @model
         end
       end
 
@@ -92,6 +93,7 @@ class Shrine
         def initialize(model_cache: shrine_class.opts[:model][:cache], **options)
           super(**options)
           @model_cache = model_cache
+          @model       = nil
         end
 
         # Saves record and name and initializes attachment from the model
@@ -148,7 +150,7 @@ class Shrine
         # This allows users to still use the attacher with an entity instance
         # or without any record instance.
         def model?
-          instance_variable_defined?(:@model)
+          @model
         end
       end
     end

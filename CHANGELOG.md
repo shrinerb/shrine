@@ -1,5 +1,7 @@
 ## HEAD
 
+* `model` – Change disabling model attachment behaviour from `type: :entity` to `model: false` (@janko)
+
 * `sequel` – Rename `:callbacks` option to `:hooks` (@janko)
 
 * `derivatives` – Auto-download `UploadedFile` objects passed to `Attacher#process_derivatives` (@janko)

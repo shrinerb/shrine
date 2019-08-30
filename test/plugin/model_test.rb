@@ -51,7 +51,7 @@ describe Shrine::Plugins::Model do
       end
 
       it "doesn't memoize attacher for entity attachments" do
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         model = @model_class.new
 
@@ -59,7 +59,7 @@ describe Shrine::Plugins::Model do
       end
 
       it "returns entity attacher for entity attachments" do
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         model = @model_class.new
         model.file_attacher.attach(fakeio)
@@ -91,7 +91,7 @@ describe Shrine::Plugins::Model do
       end
 
       it "isn't defined on entity attachments" do
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:file=)
       end
@@ -117,7 +117,7 @@ describe Shrine::Plugins::Model do
       end
 
       it "isn't defined on entity attachments" do
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:file_changed?)
       end
@@ -144,7 +144,7 @@ describe Shrine::Plugins::Model do
       end
 
       it "isn't overridden on entity attachments" do
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         assert_equal Kernel, @model_class.instance_method(:initialize_copy).owner
       end

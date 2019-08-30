@@ -28,7 +28,7 @@ describe Shrine::Plugins::DataUri do
 
       it "is not defined on entity attachment" do
         @shrine.plugin :model
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:file_data_uri=)
       end
@@ -46,7 +46,7 @@ describe Shrine::Plugins::DataUri do
 
       it "is not defined on entity attachment" do
         @shrine.plugin :model
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:file_data_uri)
       end

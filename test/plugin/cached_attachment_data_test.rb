@@ -25,7 +25,7 @@ describe Shrine::Plugins::CachedAttachmentData do
 
       it "is not defined for entity attachments" do
         @shrine.plugin :model
-        @model_class.include @shrine::Attachment.new(:file, type: :entity)
+        @model_class.include @shrine::Attachment.new(:file, model: false)
 
         refute @model_class.method_defined?(:cached_file_data)
       end

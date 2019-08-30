@@ -11,14 +11,13 @@ class Shrine
       end
 
       module AttachmentMethods
-        attr_reader :type
-
-        def initialize(name, type: :entity, **options)
+        def initialize(name, **options)
           super(name, **options)
-          @type = type
 
           define_entity_methods(name)
         end
+
+        private
 
         # Defines `#<name>`, `#<name>_url`, and `#<name>_attacher` methods.
         def define_entity_methods(name)
@@ -38,7 +37,7 @@ class Shrine
 
           # Returns an attacher instance.
           define_method :"#{name}_attacher" do |**options|
-            attachment.attacher(self, options)
+            attachment.send(:attacher, self, options)
           end
         end
 
