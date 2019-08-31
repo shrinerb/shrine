@@ -9,24 +9,18 @@ class ImageUploader < Shrine
   MAX_SIZE       = 10*1024*1024 # 10 MB
   MAX_DIMENSIONS = [5000, 5000] # 5000x5000
 
-  plugin :remove_attachment
-  plugin :pretty_location
-  plugin :validation_helpers
-  plugin :store_dimensions, analyzer: :mini_magick, log_subscriber: nil
-  plugin :derivatives, versions_compatibility: true
-  plugin :derivation_endpoint, prefix: "derivations/image"
-
   THUMBNAILS = {
     small:  [300, 300],
     medium: [600, 600],
     large:  [800, 800],
   }
 
-  THUMBNAILER = -> (file, width, height) do
-    ImageProcessing::MiniMagick
-      .source(file)
-      .resize_to_limit!(width, height)
-  end
+  plugin :remove_attachment
+  plugin :pretty_location
+  plugin :validation_helpers
+  plugin :store_dimensions, log_subscriber: nil
+  plugin :derivatives
+  plugin :derivation_endpoint, prefix: "derivations/image"
 
   # File validations (requires `validation_helpers` plugin)
   Attacher.validate do
@@ -52,5 +46,11 @@ class ImageUploader < Shrine
   # Dynamic thumbnail definition (requires `derivation_endpoint` plugin)
   derivation :thumbnail do |file, width, height|
     THUMBNAILER.call(file, width.to_i, height.to_i)
+  end
+
+  THUMBNAILER = -> (file, width, height) do
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width, height)
   end
 end

@@ -19,6 +19,7 @@ gem "aws-sdk-s3", "~> 1.14"
 gem "dotenv"
 gem "image_processing", "~> 1.0"
 gem "marcel"
+gem "fastimage"
 gem "dry-monitor"
 
 # Background jobs

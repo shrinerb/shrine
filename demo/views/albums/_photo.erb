@@ -1,6 +1,7 @@
 <li class="album-photo">
   <div class="media">
     <div class="media-left">
+      <!-- dynamic link that will generate a thumbnail "on-the-fly" -->
       <img src="<%= photo.image.derivation_url(:thumbnail, 300, 300) %>"
            width=150
            class="img-thumbnail media-object" />
