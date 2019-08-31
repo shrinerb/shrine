@@ -119,9 +119,10 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-Let's now add the form fields which will use this virtual attribute. We need
-(1) a file field for choosing files, and (2) a hidden field for retaining the
-uploaded file in case of validation errors and for potential [direct uploads].
+Let's now add the form fields which will use this virtual attribute (which is
+`image`, NOT `image_data`). We need (1) a file field for choosing files, and
+(2) a hidden field for retaining the uploaded file in case of validation errors
+and for potential [direct uploads].
 
 ```rb
 # with Rails form builder:
