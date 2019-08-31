@@ -1,10 +1,12 @@
-# Changing Location
+# Migrating File Locations
 
-This guide provides tips for changing location of uploaded files in production,
-with zero downtime.
+This guide shows how to migrate the location of uploaded files on the same 
+storage in production, with zero downtime.
 
-The examples will use the [Sequel] ORM, but it should easily translate to
-Active Record. Let's assume we have a `Photo` model with an `image` attachment:
+_Note: The examples use the [Sequel] ORM, but it should easily translate to
+Active Record._ 
+
+Let's assume we have a `Photo` model with an `image` file attachment:
 
 ```rb
 Shrine.plugin :sequel
@@ -20,11 +22,11 @@ class Photo < Sequel::Model
 end
 ```
 
-## 1. Updating location generation
+## 1. Update the location generation
 
-Since Shrine generates location only once during upload, it is safe to change
-the `Shrine#generate_location` method, all existing files will still continue
-to work.
+Since Shrine generates the location only once during upload, it is safe to change
+the `Shrine#generate_location` method. All the existing files will still continue
+to work with the previously stored urls because the files have not been migrated.
 
 ```rb
 class ImageUploader < Shrine
@@ -34,11 +36,15 @@ class ImageUploader < Shrine
 end
 ```
 
-We can now deploy this change.
+We can now deploy this change to production so new file uploads will be stored in 
+the new location.
 
-## 2. Moving existing files
+## 2. Move existing files
 
-To move existing files to new location, we can run the following script:
+To move existing files to new location, run the following script. It fetches
+the photos in batches, downloads the image, and re-uploads it to the new location.
+We only need to migrate the files in `:store` storage need to be migrated as the files
+in `:cache` storage will be uploaded to the new location on promotion.
 
 ```rb
 Photo.paged_each do |photo|
@@ -49,14 +55,14 @@ Photo.paged_each do |photo|
   old_attacher = attacher.dup
 
   attacher.set             attacher.upload(attacher.file)                    # reupload file
-  attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives) # reupload derivatives
+  attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives) # reupload derivatives if you have derivatives
 
   begin
-    attacher.atomic_persist # persist changes if attachment has not changed in the meantime
-    old_attacher.destroy    # delete files on old location
+    attacher.atomic_persist         # persist changes if attachment has not changed in the meantime
+    old_attacher.destroy            # delete files on old location
   rescue Shrine::AttachmentChanged, # attachment has changed
          Sequel::NoExistingObject   # record has been deleted
-    attacher.destroy # delete now orphaned files
+    attacher.destroy                # delete now orphaned files
   end
 end
 ```
