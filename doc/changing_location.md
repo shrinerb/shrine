@@ -41,7 +41,7 @@ the new location.
 
 ## 2. Move existing files
 
-To move existing files to new location, run the following script. It will fetches
+To move existing files to new location, run the following script. It fetches
 the photos in batches, downloads the image, and re-uploads it to the new location.
 We only need to migrate the files in `:store` storage need to be migrated as the files
 in `:cache` storage will be uploaded to the new location on promotion.
