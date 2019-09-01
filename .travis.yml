@@ -17,6 +17,7 @@ before_install:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-9.2.8.0 # temporary
     - rvm: jruby-head
 
 script: bundle exec rake test
