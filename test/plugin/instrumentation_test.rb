@@ -102,7 +102,7 @@ describe Shrine::Plugins::Instrumentation do
 
         assert_instance_of CustomNotifications::Event, @event
         assert_equal "bar",                            @event.payload[:foo]
-        assert_instance_of Integer,                    @event.duration
+        assert_kind_of Integer,                        @event.duration
       end
     end
 
