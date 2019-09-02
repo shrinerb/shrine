@@ -1,5 +1,7 @@
 ## HEAD
 
+* `mirroring` – Add new plugin for replicating uploads and deletes to other storages (@janko)
+
 * `model` – Change disabling model attachment behaviour from `type: :entity` to `model: false` (@janko)
 
 * `sequel` – Rename `:callbacks` option to `:hooks` (@janko)

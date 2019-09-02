@@ -140,3 +140,6 @@ Other:
   -
     name: keep_files
     description: Prevents file deletion when replacing or removing attachment.
+  -
+    name: mirroring
+    description: Enables replicating uploads and deletes to other storages.
