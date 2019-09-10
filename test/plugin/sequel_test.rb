@@ -221,6 +221,38 @@ describe Shrine::Plugins::Sequel do
   end
 
   describe "Attacher" do
+    describe "JSON columns" do
+      after do
+        @user.class.db_schema[:avatar_data][:type] = :string # revert schema change
+      end
+
+      it "handles json type" do
+        @user.class.db_schema[:avatar_data][:type] = :json
+
+        @attacher.load_model(@user, :avatar)
+        @attacher.attach(fakeio)
+
+        assert_equal @attacher.file.data, @user.avatar_data
+
+        @attacher.reload
+
+        assert_equal @attacher.file.data, @user.avatar_data
+      end
+
+      it "handles jsonb type" do
+        @user.class.db_schema[:avatar_data][:type] = :jsonb
+
+        @attacher.load_model(@user, :avatar)
+        @attacher.attach(fakeio)
+
+        assert_equal @attacher.file.data, @user.avatar_data
+
+        @attacher.reload
+
+        assert_equal @attacher.file.data, @user.avatar_data
+      end
+    end
+
     describe "#atomic_promote" do
       it "promotes cached file to permanent storage" do
         @attacher.attach_cached(fakeio)
@@ -303,13 +335,7 @@ describe Shrine::Plugins::Sequel do
       end
 
       it "respects column serializer" do
-        # make avatar_data column read and write hashes
-        @user.instance_eval do
-          def avatar_data;         super && JSON.parse(super);          end
-          def avatar_data=(value); super value && JSON.generate(value); end
-        end
-
-        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: nil)
+        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: RubySerializer)
         @attacher.attach_cached(fakeio)
         @user.save
 
@@ -435,13 +461,7 @@ describe Shrine::Plugins::Sequel do
       end
 
       it "respects column serializer" do
-        # make avatar_data column read and write hashes
-        @user.instance_eval do
-          def avatar_data;         super && JSON.parse(super);          end
-          def avatar_data=(value); super value && JSON.generate(value); end
-        end
-
-        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: nil)
+        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: RubySerializer)
         @attacher.attach(fakeio)
         @user.save
 

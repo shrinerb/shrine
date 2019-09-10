@@ -246,6 +246,46 @@ describe Shrine::Plugins::Activerecord do
   end
 
   describe "Attacher" do
+    describe "JSON columns" do
+      before do
+        # work around Active Record casting assigned values into a string
+        @user.class.class_eval { attr_accessor :avatar_data }
+      end
+
+      after do
+        @user.class.columns_hash["avatar_data"].sql_type_metadata
+          .instance_variable_set(:@type, :text) # revert schema change
+      end
+
+      it "handles json type" do
+        @user.class.columns_hash["avatar_data"].sql_type_metadata
+          .instance_variable_set(:@type, :json)
+
+        @attacher.load_model(@user, :avatar)
+        @attacher.attach(fakeio)
+
+        assert_equal @attacher.file.data, @user.avatar_data
+
+        @attacher.reload
+
+        assert_equal @attacher.file.data, @user.avatar_data
+      end
+
+      it "handles jsonb type" do
+        @user.class.columns_hash["avatar_data"].sql_type_metadata
+          .instance_variable_set(:@type, :jsonb)
+
+        @attacher.load_model(@user, :avatar)
+        @attacher.attach(fakeio)
+
+        assert_equal @attacher.file.data, @user.avatar_data
+
+        @attacher.reload
+
+        assert_equal @attacher.file.data, @user.avatar_data
+      end
+    end
+
     describe "#atomic_promote" do
       it "promotes cached file to permanent storage" do
         @attacher.attach_cached(fakeio)
@@ -328,13 +368,7 @@ describe Shrine::Plugins::Activerecord do
       end
 
       it "respects column serializer" do
-        # make avatar_data column read and write hashes
-        @user.instance_eval do
-          def avatar_data;         super && JSON.parse(super);          end
-          def avatar_data=(value); super value && JSON.generate(value); end
-        end
-
-        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: nil)
+        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: RubySerializer)
         @attacher.attach_cached(fakeio)
         @user.save
 
@@ -460,13 +494,7 @@ describe Shrine::Plugins::Activerecord do
       end
 
       it "respects column serializer" do
-        # make avatar_data column read and write hashes
-        @user.instance_eval do
-          def avatar_data;         super && JSON.parse(super);          end
-          def avatar_data=(value); super value && JSON.generate(value); end
-        end
-
-        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: nil)
+        @attacher = @shrine::Attacher.from_model(@user, :avatar, column_serializer: RubySerializer)
         @attacher.attach(fakeio)
         @user.save
 

@@ -103,14 +103,4 @@ describe Shrine::Plugins::Column do
       assert_equal @attacher.file.data, @attacher.column_data
     end
   end
-
-  module RubySerializer
-    def self.dump(data)
-      data.to_s
-    end
-
-    def self.load(data)
-      eval(data)
-    end
-  end
 end

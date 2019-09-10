@@ -67,26 +67,15 @@ class Shrine
         end
       end
 
+      # The _persistence plugin uses #activerecord_persist,
+      # #activerecord_reload and #activerecord? to implement the following
+      # methods:
+      #
+      #   * Attacher#persist
+      #   * Attacher#atomic_persist
+      #   * Attacher#atomic_promote
       module AttacherMethods
-        # The _persistence plugin defines the following methods:
-        #
-        #   * #persist (calls #activerecord_persist and #activerecord?)
-        #   * #atomic_persist (calls #activerecord_lock, #activerecord_persist and #activerecord?)
-        #   * #atomic_promote (calls #activerecord_lock, #activerecord_persist and #activerecord?)
         private
-
-        # ActiveRecord JSON column attribute needs to be assigned with a Hash.
-        def serialize_column(data)
-          activerecord_json_column? ? data : super
-        end
-
-        # Returns true if the data attribute represents a JSON or JSONB column.
-        def activerecord_json_column?
-          return false unless activerecord?
-          return false unless column = record.class.columns_hash[attribute.to_s]
-
-          [:json, :jsonb].include?(column.type)
-        end
 
         # Saves changes to the model instance, skipping validations. Used by
         # the _persistence plugin.
@@ -98,6 +87,14 @@ class Shrine
         # _persistence plugin.
         def activerecord_reload
           record.transaction { yield record.clone.reload(lock: true) }
+        end
+
+        # Returns true if the data attribute represents a JSON or JSONB column.
+        # Used by the _persistence plugin to determine whether serialization
+        # should be skipped.
+        def activerecord_hash_attribute?
+          column = record.class.columns_hash[attribute.to_s]
+          column && [:json, :jsonb].include?(column.type)
         end
 
         # Returns whether the record is an ActiveRecord model. Used by the

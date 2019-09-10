@@ -23,3 +23,13 @@ Mocha::Configuration.prevent(:stubbing_non_existent_method)
 require "./test/support/shrine_helper"
 require "./test/support/file_helper"
 require "./test/support/logging_helper"
+
+class RubySerializer
+  def self.dump(data)
+    data.to_s
+  end
+
+  def self.load(data)
+    eval(data)
+  end
+end

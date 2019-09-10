@@ -81,35 +81,14 @@ class Shrine
         end
       end
 
+      # The _persistence plugin uses #sequel_persist, #sequel_reload and
+      # #sequel? to implement the following methods:
+      #
+      #   * Attacher#persist
+      #   * Attacher#atomic_persist
+      #   * Attacher#atomic_promote
       module AttacherMethods
-        # The _persistence plugin defines the following methods:
-        #
-        #   * #persist (calls #sequel_persist and #sequel?)
-        #   * #atomic_persist (calls #sequel_lock, #sequel_persist and #sequel?)
-        #   * #atomic_promote (calls #sequel_lock, #sequel_persist and #sequel?)
         private
-
-        # Sequel JSON column attribute with `pg_json` Sequel extension loaded
-        # returns a `Sequel::Postgres::JSONHashBase` object will be returned,
-        # which we convert into a Hash.
-        def deserialize_column(data)
-          sequel_json_column? ? data&.to_hash : super
-        end
-
-        # Sequel JSON column attribute with `pg_json` Sequel extension loaded
-        # can receive a Hash object, so there is no need to generate a JSON
-        # string.
-        def serialize_column(data)
-          sequel_json_column? ? data : super
-        end
-
-        # Returns true if the data attribute represents a JSON or JSONB column.
-        def sequel_json_column?
-          return false unless sequel?
-          return false unless column = record.class.db_schema[attribute]
-
-          [:json, :jsonb].include?(column[:type])
-        end
 
         # Saves changes to the model instance, skipping validations. Used by
         # the _persistence plugin.
@@ -121,6 +100,14 @@ class Shrine
         # _persistence plugin.
         def sequel_reload
           record.db.transaction { yield record.dup.lock! }
+        end
+
+        # Returns true if the data attribute represents a JSON or JSONB column.
+        # Used by the _persistence plugin to determine whether serialization
+        # should be skipped.
+        def sequel_hash_attribute?
+          column = record.class.db_schema[attribute]
+          column && [:json, :jsonb].include?(column[:type])
         end
 
         # Returns whether the record is a Sequel model. Used by the
