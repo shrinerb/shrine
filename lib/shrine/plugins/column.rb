@@ -9,7 +9,7 @@ class Shrine
     # [doc/plugins/column.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/column.md
     module Column
       def self.configure(uploader, **opts)
-        uploader.opts[:column] ||= { serializer: JsonSerializer.new(JSON) }
+        uploader.opts[:column] ||= { serializer: JsonSerializer }
         uploader.opts[:column].merge!(opts)
       end
 
@@ -85,16 +85,12 @@ class Shrine
       # create this wrapper class which calls JSON.generate and JSON.parse
       # instead.
       class JsonSerializer
-        def initialize(json)
-          @json = json
+        def self.dump(data)
+          JSON.generate(data)
         end
 
-        def dump(data)
-          @json.generate(data)
-        end
-
-        def load(data)
-          @json.parse(data)
+        def self.load(data)
+          JSON.parse(data)
         end
       end
     end
