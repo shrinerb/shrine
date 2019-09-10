@@ -1,5 +1,6 @@
 require "test_helper"
 require "shrine/plugins/column"
+require "delegate"
 
 describe Shrine::Plugins::Column do
   before do
@@ -57,6 +58,22 @@ describe Shrine::Plugins::Column do
       @attacher.load_column(nil)
 
       assert_nil @attacher.file
+    end
+
+    it "handles hashes" do
+      file = @attacher.attach(fakeio)
+      @attacher.load_column(file.data)
+
+      assert_equal file, @attacher.file
+    end
+
+    it "handles hash-like objects" do
+      file = @attacher.attach(fakeio)
+      hash = DelegateClass(Hash).new(file.data)
+
+      @attacher.load_column(hash)
+
+      assert_equal file, @attacher.file
     end
 
     it "uses custom serializer" do

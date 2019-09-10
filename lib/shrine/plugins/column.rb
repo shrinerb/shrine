@@ -62,9 +62,11 @@ class Shrine
         #     Attacher.serialize_column(nil)
         #     #=> nil
         def serialize_column(data)
-          return data unless column_serializer && data
-
-          column_serializer.dump(data)
+          if column_serializer && data
+            column_serializer.dump(data)
+          else
+            data
+          end
         end
 
         # Converts the column data string into a hash (parses JSON by default).
@@ -75,9 +77,11 @@ class Shrine
         #     Attacher.deserialize_column(nil)
         #     #=> nil
         def deserialize_column(data)
-          return data unless column_serializer && data
-
-          column_serializer.load(data)
+          if column_serializer && data.is_a?(String)
+            column_serializer.load(data)
+          else
+            data&.to_hash
+          end
         end
       end
 
