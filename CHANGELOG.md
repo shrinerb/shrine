@@ -1,5 +1,9 @@
 ## HEAD
 
+* `column` – Allow `Attacher#load_column` to receive a hash (@janko)
+
+* `activerecord` – Fix integration not working with JSON columns (@janko)
+
 * `mirroring` – Add new plugin for replicating uploads and deletes to other storages (@janko)
 
 * `model` – Change disabling model attachment behaviour from `type: :entity` to `model: false` (@janko)
