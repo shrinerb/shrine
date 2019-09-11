@@ -1,4 +1,4 @@
-## HEAD
+## 3.0.0.beta2 (2019-09-11)
 
 * `column` – Allow `Attacher#load_column` to receive a hash (@janko)
 
