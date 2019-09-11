@@ -26,23 +26,25 @@ end
 
 ## Contents
 
-* [Introducing derivatives](#introducing-derivatives)
+* [Adding derivatives](#adding-derivatives)
 * [Reprocessing all derivatives](#reprocessing-all-derivatives)
 * [Reprocessing certain derivatives](#reprocessing-certain-derivatives)
-* [Adding derivatives](#adding-derivatives)
+* [Adding more derivatives](#adding-more-derivatives)
 * [Removing derivatives](#removing-derivatives)
 
-## Introducing derivatives
+## Adding derivatives
 
 *Scenario: Your app is currently working only with original files, and you want
 to introduce derivatives.*
 
-#### 1. Add `derivatives` plugin and `image_processing` gem
+Start by loading the `derivatives` plugin in the uploader and load any processing
+libraries or gems needed for your scenario. In our example, the 
+`image_processing` gem is required to process images and therefore is
+loaded in the Gemfile. 
 
-Start by loading the `derivatives` plugin in the uploader and the 
-`image_processing` gem, and then define the processing logic. In this example, 
-we are creating a `thumbnails` derivatives processor which will be responsible 
-to create `small`, `medium`, and `large` thumbnails of the original `image`.
+Next, we define the processing logic. In this example, we are creating a 
+`thumbnails` derivatives processor which will be responsible to create 
+`small`, `medium`, and `large` thumbnails of the original `image`.
 
 ```rb
 # Gemfile
@@ -71,19 +73,17 @@ end
 attachments will have thumbnails generated, existing attachments will 
 only have the original file.*
 
-We can deploy this change to production.
+Now deploy this change to production.
 
-#### 2. Generate derivatives for existing attachments
-
-To generate derivatives for all existing attachments in production, run
-the following script. It fetches the photos in batches, downloads the image 
-in `:store` storage, creates derivatives, and persist the changes. 
+Next we will run the following script to generate derivatives for all existing 
+attachments in production. It fetches the photos in batches, downloads the image 
+into the permanent storage, creates derivatives, and persist the changes. 
 
 ```rb
 Photo.paged_each do |photo|
   attacher = photo.image_attacher
 
-  next unless attacher.stored? # reprocess only attachments uploaded to permanent storage
+  next unless attacher.stored?      # reprocess only attachments uploaded to permanent storage
 
   attacher.create_derivatives(:thumbnails)
 
@@ -96,7 +96,7 @@ Photo.paged_each do |photo|
 end
 ```
 
-Now all attachments should have correctly generated derivatives
+Now all attachments should have correctly generated derivatives.
 
 ## Reprocessing all derivatives
 
@@ -105,7 +105,7 @@ want to reprocess them for existing attachments.*
 
 Deploy the processing logic change to production and then run the following
 script to reprocess all derivatives. It fetches the photos in batches, 
-downloads the image in `:store` storage, reprocesses new derivatives, persist 
+downloads the image into the permanent storage, reprocesses new derivatives, persist 
 the changes, and deletes old derivatives. 
 
 ```rb
@@ -116,15 +116,15 @@ Photo.paged_each do |photo|
 
   old_derivatives = attacher.derivatives
 
-  attacher.set_derivatives({})              # clear derivatives
-  attacher.create_derivatives(:thumbnails)  # reprocess derivatives
+  attacher.set_derivatives({})                    # clear derivatives
+  attacher.create_derivatives(:thumbnails)        # reprocess derivatives
 
   begin
-    attacher.atomic_persist           # persist changes if attachment has not changed in the meantime
+    attacher.atomic_persist                       # persist changes if attachment has not changed in the meantime
     attacher.delete_derivatives(old_derivatives)  # delete old derivatives
-  rescue Shrine::AttachmentChanged,   # attachment has changed
-         Sequel::NoExistingObject     # record has been deleted
-    attacher.delete_derivatives       # delete now orphaned derivatives
+  rescue Shrine::AttachmentChanged,               # attachment has changed
+         Sequel::NoExistingObject                 # record has been deleted
+    attacher.delete_derivatives                   # delete now orphaned derivatives
   end
 end
 ```
@@ -151,7 +151,7 @@ end
 ```
 
 Run the following script to reprocess the derivative for all existing photos. 
-It fetches the photos in batches, downloads the image in `:store` storage, 
+It fetches the photos in batches, downloads the image into the permanent storage, 
 reprocesses the specific derivative, persist the change, and deletes old derivative.
 
 ```rb
@@ -170,7 +170,7 @@ Photo.paged_each do |photo|
   attacher.add_derivative(:medium, new_medium)
 
   begin
-    attacher.atomic_persist     # persist changes if attachment has not changed in the meantime
+    attacher.atomic_persist               # persist changes if attachment has not changed in the meantime
     old_medium.delete
   rescue Shrine::AttachmentChanged,       # attachment has changed
          Sequel::NoExistingObject         # record has been deleted
@@ -179,7 +179,7 @@ Photo.paged_each do |photo|
 end
 ```
 
-## Adding derivatives
+## Adding more derivatives
 
 *Scenario: A new derivative has been added to the processor, and now
 you want to add it to existing attachments.*
@@ -201,7 +201,7 @@ end
 ```
 
 Run the following script to add the new derivative for all existing photos. 
-It fetches the photos in batches, downloads the image in `:store` storage, 
+It fetches the photos in batches, downloads the image into permanent storage, 
 creates the new derivative, and persists the changes.
 
 ```rb
@@ -219,7 +219,7 @@ Photo.paged_each do |photo|
   attacher.add_derivative(:x_large, x_large)
 
   begin
-    attacher.atomic_persist       # persist changes if attachment has not changed in the meantime
+    attacher.atomic_persist                 # persist changes if attachment has not changed in the meantime
   rescue Shrine::AttachmentChanged,         # attachment has changed
          Sequel::NoExistingObject           # record has been deleted
     attacher.derivatives[:x_large].delete   # delete now orphaned derivative
@@ -264,7 +264,7 @@ Photo.paged_each do |photo|
   x_large = attacher.remove_derivative(:x_large)
 
   begin
-    attacher.atomic_persist       # persist changes if attachment has not changed in the meantime
+    attacher.atomic_persist           # persist changes if attachment has not changed in the meantime
     x_large.delete
   rescue Shrine::AttachmentChanged,   # attachment has changed
          Sequel::NoExistingObject     # record has been deleted
