@@ -196,6 +196,14 @@ describe Shrine do
       assert_equal @uploader.storage, uploader.storage
     end
 
+    it "fetches storage lazily" do
+      uploader = @shrine.new(:store)
+
+      @shrine.storages[:store] = Shrine::Storage::Memory.new
+
+      assert_equal @shrine.storages[:store], uploader.storage
+    end
+
     it "raises an error on unknown storage" do
       assert_raises(Shrine::Error) { @shrine.new(:foo) }
     end

@@ -178,15 +178,18 @@ class Shrine
     # The symbol identifier for the storage used by the uploader.
     attr_reader :storage_key
 
-    # The storage object used by the uploader.
-    attr_reader :storage
-
     # Accepts a storage symbol registered in `Shrine.storages`.
     #
     #     Shrine.new(:store)
     def initialize(storage_key)
-      @storage     = self.class.find_storage(storage_key)
       @storage_key = storage_key.to_sym
+
+      storage # ensure storage is registered
+    end
+
+    # Returns the storage object referenced by the identifier.
+    def storage
+      self.class.find_storage(storage_key)
     end
 
     # The main method for uploading files. Takes an IO-like object and an
