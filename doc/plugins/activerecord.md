@@ -74,18 +74,9 @@ photo.image.exists? #=> false
 
 #### Caveats
 
-Active Record versions prior to 5.x silence errors that occur in callbacks,
-which can make debugging more difficult, so it's recommended that you disable
-this behaviour:
-
-```rb
-# This is the default in ActiveRecord 5
-ActiveRecord::Base.raise_in_transactional_callbacks = true
-```
-
-Active Record also currently has a [bug with transaction callbacks], so if
-you have any "after commit" callbacks, make sure to include Shrine's attachment
-module *after* they have all been defined.
+Active Record currently has a [bug with transaction callbacks], so if you have
+any "after commit" callbacks, make sure to include Shrine's attachment module
+*after* they have all been defined.
 
 #### Skipping Callbacks
 

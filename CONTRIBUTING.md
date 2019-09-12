@@ -115,8 +115,6 @@ end
 
 ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
 ActiveRecord::Base.connection.create_table(:posts) { |t| t.text :image_data }
-# make errors propagate when raised in callbacks
-ActiveRecord::Base.raise_in_transactional_callbacks = true
 
 class Post < ActiveRecord::Base
   include MyUploader::Attachment.new(:image)
