@@ -2,8 +2,7 @@ Issue Guidelines
 ================
 
 1. Issues should only be created for things that are definitely bugs.  If you
-   are not sure that the behavior is a bug, ask about it on the [ruby-shrine]
-   Google Group.
+   are not sure that the behavior is a bug, ask about it on the [forum].
 
 2. If you are sure it is a bug, then post a complete description of the issue,
    the simplest possible self-contained example showing the problem (see
@@ -125,7 +124,7 @@ post = Post.create(image: Down.download("https://example.com/image-from-internet
 # Your code for reproducing
 ```
 
-[ruby-shrine]: https://groups.google.com/forum/#!forum/ruby-shrine
+[forum]: https://discourse.shrinerb.com
 [Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
 [SQLite]: https://www.sqlite.org

@@ -16,14 +16,14 @@ If you're curious how it compares to other file attachment libraries, see the [A
 
 ## Resources
 
-| Resource          | URL                                                                                        |
-| :---------------- | :----------------------------------------------------------------------------------------- |
-| Website           | [shrinerb.com](https://shrinerb.com)                                                       |
-| Demo code         | [Roda][roda demo] / [Rails][rails demo]                                                    |
-| Source            | [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)                           |
-| Wiki              | [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)                 |
-| Bugs              | [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues)             |
-| Help & Discussion | [groups.google.com/group/ruby-shrine](https://groups.google.com/forum/#!forum/ruby-shrine) |
+| Resource          | URL                                                                            |
+| :---------------- | :----------------------------------------------------------------------------- |
+| Website           | [shrinerb.com](https://shrinerb.com)                                           |
+| Demo code         | [Roda][roda demo] / [Rails][rails demo]                                        |
+| Source            | [github.com/shrinerb/shrine](https://github.com/shrinerb/shrine)               |
+| Wiki              | [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)     |
+| Bugs              | [github.com/shrinerb/shrine/issues](https://github.com/shrinerb/shrine/issues) |
+| Help & Discussion | [discourse.shrinerb.com](https://discourse.shrinerb.com)                       |
 
 ## Contents
 

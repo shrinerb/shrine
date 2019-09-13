@@ -1,5 +1,5 @@
 - Issues are for bug reports only.
-- Have a question or unsure if it's a bug, then please inquire on the [ruby-shrine Google Group](https://groups.google.com/forum/#!forum/ruby-shrine).
+- Have a question or unsure if it's a bug, then please inquire on the [forum](https://discourse.shrinerb.com).
 ---
 
 ### Brief Description

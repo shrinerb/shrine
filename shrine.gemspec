@@ -26,7 +26,7 @@ direct uploads for fully asynchronous user experience.
     "bug_tracker_uri"   => "https://github.com/shrinerb/shrine/issues",
     "changelog_uri"     => "https://github.com/shrinerb/shrine/blob/master/CHANGELOG.md",
     "documentation_uri" => "https://shrinerb.com",
-    "mailing_list_uri"  => "https://groups.google.com/forum/#!forum/ruby-shrine",
+    "mailing_list_uri"  => "https://discourse.shrinerb.com",
     "source_code_uri"   => "https://github.com/shrinerb/shrine",
   }
 
