@@ -69,8 +69,8 @@ class ImageUploader < Shrine
 end
 ```
 
-*Note: we cannot update our attachment URLs yet, because only new
-attachments will have thumbnails generated, existing attachments will 
+*Note: we cannot update our attachment URLs to use derivatives yet, because 
+only new attachments will have thumbnails generated, existing attachments will 
 only have the original file.*
 
 Now deploy this change to production.
@@ -96,7 +96,8 @@ Photo.paged_each do |photo|
 end
 ```
 
-Now all attachments should have correctly generated derivatives.
+Now all attachments should have correctly generated derivatives and you can update
+the attachment URLs to use derivatives where needed.
 
 ## Reprocessing all derivatives
 
