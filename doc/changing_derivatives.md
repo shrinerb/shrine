@@ -96,8 +96,8 @@ Photo.paged_each do |photo|
 end
 ```
 
-Now all attachments should have correctly generated derivatives and you can update
-the attachment URLs to use derivatives where needed.
+Now all attachments should have correctly generated derivatives. You can update
+the attachment URLs to use derivatives as needed.
 
 ## Reprocessing all derivatives
 
