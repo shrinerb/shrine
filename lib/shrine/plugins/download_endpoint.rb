@@ -25,6 +25,32 @@ class Shrine
             **options,
           )
         end
+
+        # Calls the download endpoint passing the request information, and
+        # returns the Rack response triple.
+        #
+        # It uses a trick where it removes the download path prefix from the
+        # path info before calling the Rack app, which is what web framework
+        # routers do before they're calling a mounted Rack app.
+        def download_response(env, **options)
+          script_name = env["SCRIPT_NAME"]
+          path_info   = env["PATH_INFO"]
+
+          prefix = opts[:download_endpoint][:prefix]
+          match  = path_info.match(/^\/#{prefix}/)
+
+          fail Error, "request path must start with \"/#{prefix}\", but is \"#{path_info}\"" unless match
+
+          begin
+            env["SCRIPT_NAME"] += match.to_s
+            env["PATH_INFO"]    = match.post_match
+
+            download_endpoint(**options).call(env)
+          ensure
+            env["SCRIPT_NAME"] = script_name
+            env["PATH_INFO"]   = path_info
+          end
+        end
       end
 
       module FileMethods

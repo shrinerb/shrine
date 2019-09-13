@@ -38,7 +38,7 @@ You can also configure the plugin in the uploader directly - just make sure to m
 
 ```rb
 class ImageUploader  < Shrine
-  plugin :download_endpoint, prefix: "attachments"
+  plugin :download_endpoint, prefix: "images"
 end
 ```
 
@@ -46,11 +46,44 @@ end
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
   # ...
-  mount ImageUploader.download_endpoint => "/attachments"
+  mount ImageUploader.download_endpoint => "/images"
 end
 ```
 
 *Hint: For shrine versions 2.x -> ensure that you don't include the plugin twice (globally and in your uploader class - see #408)*
+
+## Calling from a controller
+
+If you want to run additional code around the download (such as authentication),
+mounting the download endpoint in your router might be limiting. You can instead
+create a custom controller action and handle download requests there using
+`Shrine.download_response`:
+
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  get "/attachments/*rest", to: "downloads#image"
+end
+```
+```rb
+# app/controllers/downloads_controller.rb (Rails)
+class DownloadsController < ApplicationController
+  def image
+    # ... we can perform authentication here ...
+
+    set_rack_response ImageUploader.download_response(request.env)
+  end
+
+  private
+
+  def set_rack_response((status, headers, body))
+    self.status = status
+    self.headers.merge!(headers)
+    self.response_body = body
+  end
+end
+```
 
 ## Host
 

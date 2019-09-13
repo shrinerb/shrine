@@ -1,6 +1,8 @@
 ## HEAD
 
-* `core` - Fetch storage object lazily in `Shrine` instance (@janko)
+* `download_endpoint` – Add `Shrine.download_response` for calling in controller (@janko)
+
+* `core` – Fetch storage object lazily in `Shrine` instance (@janko)
 
 ## 3.0.0.beta2 (2019-09-11)
 

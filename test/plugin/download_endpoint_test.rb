@@ -1,6 +1,7 @@
 require "test_helper"
 require "shrine/plugins/download_endpoint"
 require "rack/test_app"
+require "uri"
 
 describe Shrine::Plugins::DownloadEndpoint do
   def app
@@ -136,6 +137,87 @@ describe Shrine::Plugins::DownloadEndpoint do
     @uploaded_file.data["metadata"] = { "mime_type" => "b", "size" => "c", "filename" => "a" }
     url2 = @uploaded_file.url
     assert_equal url1, url2
+  end
+
+  describe "Shrine.download_response" do
+    it "works in the main app" do
+      @shrine.plugin :download_endpoint, prefix: "attachments"
+
+      download_uri = URI.parse(@uploaded_file.download_url)
+
+      env = {
+        "REQUEST_METHOD" => "GET",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => download_uri.path,
+        "QUERY_STRING"   => download_uri.query,
+        "rack.input"     => StringIO.new,
+      }
+
+      status, headers, body = @shrine.download_response(env)
+
+      assert_equal 200,                      status
+      assert_equal @uploaded_file.size.to_s, headers["Content-Length"]
+      assert_equal @uploaded_file.read,      body.enum_for(:each).to_a.join
+
+      assert_equal "",                env["SCRIPT_NAME"]
+      assert_equal download_uri.path, env["PATH_INFO"]
+    end
+
+    it "works in a mounted app" do
+      @shrine.plugin :download_endpoint, prefix: "attachments"
+
+      download_uri = URI.parse(@uploaded_file.download_url)
+
+      env = {
+        "REQUEST_METHOD" => "GET",
+        "SCRIPT_NAME"    => "/foo",
+        "PATH_INFO"      => download_uri.path,
+        "QUERY_STRING"   => download_uri.query,
+        "rack.input"     => StringIO.new,
+      }
+
+      status, headers, body = @shrine.download_response(env)
+
+      assert_equal 200,    status
+      assert_equal "/foo", env["SCRIPT_NAME"]
+    end
+
+    it "accepts additional options" do
+      @shrine.plugin :download_endpoint, prefix: "attachments"
+
+      download_uri = URI.parse(@uploaded_file.download_url)
+
+      env = {
+        "REQUEST_METHOD" => "GET",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => download_uri.path,
+        "QUERY_STRING"   => download_uri.query,
+        "rack.input"     => StringIO.new,
+      }
+
+      status, headers, body = @shrine.download_response(env, disposition: "attachment")
+
+      assert_equal 200,             status
+      assert_match /^attachment; /, headers["Content-Disposition"]
+    end
+
+    it "fails when request path doesn't start with prefix" do
+      @shrine.plugin :download_endpoint, prefix: "attachments"
+
+      download_uri = URI.parse(@uploaded_file.download_url)
+
+      env = {
+        "REQUEST_METHOD" => "GET",
+        "SCRIPT_NAME"    => "",
+        "PATH_INFO"      => download_uri.path.sub(/^\/attachments/, ""),
+        "QUERY_STRING"   => download_uri.query,
+        "rack.input"     => StringIO.new,
+      }
+
+      assert_raises(Shrine::Error) do
+        @shrine.download_response(env)
+      end
+    end
   end
 
   it "defines #inspect and #to_s" do

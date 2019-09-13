@@ -60,7 +60,7 @@ create a custom controller action and handle presign requests there using
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
   # ...
-  post "/images/presign", to: "presigns#image"
+  get "/images/presign", to: "presigns#image"
 end
 ```
 ```rb
