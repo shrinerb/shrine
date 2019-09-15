@@ -248,5 +248,6 @@ By default, attachment data is serialized into JSON using the `JSON` standard
 library. If you want to change how data is serialized, see the
 [`column`][column serializer] plugin docs.
 
+[column]: /doc/plugins/column.md#readme
 [entity]: /lib/shrine/plugins/entity.rb
 [column serializer]: /doc/plugins/column.md#serializer
