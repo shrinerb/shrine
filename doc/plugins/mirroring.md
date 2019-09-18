@@ -49,16 +49,15 @@ You can have mirroring performed in a background job:
 
 ```rb
 Shrine.mirror_upload_block do |file|
-  Attachment::MirrorUploadJob.perform_async(file.shrine_class, file.data)
+  MirrorUploadJob.perform_later(file.shrine_class, file.data)
 end
 
 Shrine.mirror_delete_block do |file|
-  Attachment::MirrorDeleteJob.perform_async(file.shrine_class, file.data)
+  MirrorDeleteJob.perform_later(file.shrine_class, file.data)
 end
 ```
 ```rb
-class MirrorUploadJob
-  include Sidekiq::Worker
+class MirrorUploadJob < ActiveJob::Base
   def perform(shrine_class, file_data)
     file = Object.const_get(shrine_class).uploaded_file(file_data)
     file.mirror_upload
@@ -66,8 +65,7 @@ class MirrorUploadJob
 end
 ```
 ```rb
-class MirrorDeleteJob
-  include Sidekiq::Worker
+class MirrorDeleteJob < ActiveJob::Base
   def perform(shrine_class, file_data)
     file = Object.const_get(shrine_class).uploaded_file(file_data)
     file.mirror_delete

@@ -10,11 +10,12 @@ Let's assume we have a `Photo` model with an `image` file attachment stored
 in AWS S3 storage:
 
 ```rb
-Shrine.plugin :sequel
 Shrine.storages = {
   cache: Shrine::Storage::S3.new(...),
   store: Shrine::Storage::S3.new(...),
 }
+
+Shrine.plugin :sequel
 ```
 ```rb
 class ImageUploader < Shrine
@@ -27,40 +28,30 @@ class Photo < Sequel::Model
 end
 ```
 
-Let's also assume we're migrating from AWS S3 to Google Cloud Storage. We will use
-a `new_storage` local variable to hold the new storage object whenever we need:
+Let's also assume that we're migrating from AWS S3 to Google Cloud Storage, and
+we've added the new storage to `Shrine.storages`:
 
 ```rb
-new_storage = Shrine::Storage::GoogleCloudStorage.new(...)
+Shrine.storages = {
+  ...
+  store: Shrine::Storage::S3.new(...),
+  gcs:   Shrine::Storage::GoogleCloudStorage.new(...),
+}
 ```
 
 ## 1. Mirror upload and delete operations
 
 The first step is to start mirroring uploads and deletes made on your current
-storage to the new storage. We can do this by subscribing to upload and delete
-events using the `instrumentation` plugin:
+storage to the new storage. We can do this by loading the `mirroring` plugin:
 
 ```rb
-Shrine.plugin :instrumentation
-
-Shrine.subscribe(:upload) do |event|
-  next unless event[:storage] == :store # mirror only uploads on permanent storage
-
-  file = Shrine.uploaded_file(storage: event[:storage], id: event[:location])
-
-  new_storage = Shrine::Storage::GoogleCloudStorage.new(...)
-  new_storage.upload(file, file.id, shrine_metadata: event[:metadata])
-end
-
-Shrine.subscribe(:delete) do |event|
-  next unless event[:storage] == :store # mirror only deletes on permanent storage
-
-  new_storage = Shrine::Storage::GoogleCloudStorage.new(...)
-  new_storage.delete(event[:location])
-end
+Shrine.plugin :mirroring, mirror: { store: :gcs }
 ```
 
 Put the above code in an initializer and deploy it.
+
+You can additionally delay the mirroring into a [background job][mirroring
+backgrounding] for better performance.
 
 ## 2. Copy the files
 
@@ -74,17 +65,11 @@ Photo.paged_each do |photo|
 
   next unless attacher.stored?
 
-  files = [attacher.file]
-  new_storage = Shrine::Storage::GoogleCloudStorage.new(...)
+  attacher.file.trigger_mirror_upload
 
   # if using derivatives
-  attacher.map_derivative(attacher.derivatives) do |path, derivative|
-    files << derivative
-  end
-
-  # stores the files in same location on new storage
-  files.each do |file|
-    new_storage.upload(file, file.id, shrine_metadata: file.metadata)
+  attacher.map_derivative(attacher.derivatives) do |_, derivative|
+    derivative.trigger_mirror_upload
   end
 end
 ```
@@ -92,22 +77,35 @@ end
 Now the new storage should have all files the current storage has, and new
 uploads will continue being mirrored to the new storage.
 
-## 3. Updating storage
+## 3. Update storage
 
-Once all the files are copied over to the new storage, everything is ready 
-for us to change the storage in the Shrine configuration:
+Once all the files are copied over to the new storage, everything should be
+ready for us to update the storage in the Shrine configuration. We can keep
+mirroring, in case the change would need to reverted.
+
+```rb
+Shrine.storages = {
+  ...
+  store: Shrine::Storage::GoogleCloudStorage.new(...),
+  s3:    Shrine::Storage::S3.new(...),
+}
+
+Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage
+```
+
+## 4. Remove mirroring
+
+Once everything is looking good, we can remove the mirroring:
 
 ```diff
 Shrine.storages = {
-  cache: Shrine::Storage::S3.new(...),
-- store: Shrine::Storage::S3.new(...),
-+ store: Shrine::Storage::GoogleCloudStorage.new(...),
+  ...
+  store: Shrine::Storage::GoogleCloudStorage.new(...),
+- s3:    Shrine::Storage::S3.new(...),
 }
+
+- Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage
 ```
 
-## 4. Remove the mirroring operations
-
-Remove the mirroring upload and delete operations code we created in step 1 
-and deploy to production.
-
 [Sequel]: http://sequel.jeremyevans.net/
+[mirroring backgrounding]: /doc/plugins/mirroring.md#backgrounding
