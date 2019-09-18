@@ -328,7 +328,7 @@ describe Shrine::Plugins::Derivatives do
         @attacher.attach_cached(fakeio)
         @attacher.add_derivative(:one, fakeio, storage: :cache)
 
-        @attacher.promote(background: true)
+        @attacher.promote_cached
 
         assert_equal :cache, @attacher.file.storage_key
         assert_equal :cache, @attacher.derivatives[:one].storage_key
@@ -412,7 +412,7 @@ describe Shrine::Plugins::Derivatives do
         @attacher.attach(fakeio)
         @attacher.add_derivatives(one: fakeio)
 
-        @attacher.destroy(background: true)
+        @attacher.destroy_attached
 
         assert @attacher.file.exists?
         assert @attacher.derivatives[:one].exists?

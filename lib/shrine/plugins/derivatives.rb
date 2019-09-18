@@ -139,9 +139,9 @@ class Shrine
         #     attacher.add_derivative(:thumb, file, storage: :cache)
         #     attacher.promote
         #     attacher.stored?(attacher.derivatives[:thumb]) #=> true
-        def promote(background: false, **options)
+        def promote(**options)
           super
-          promote_derivatives unless background
+          promote_derivatives
         end
 
         # Uploads any cached derivatives to permanent storage.
@@ -163,9 +163,9 @@ class Shrine
         #     attacher.derivatives[:thumb].exists? #=> true
         #     attacher.destroy
         #     attacher.derivatives[:thumb].exists? #=> false
-        def destroy(background: false, **options)
+        def destroy
           super
-          delete_derivatives unless background
+          delete_derivatives
         end
 
         # Calls processor and adds returned derivatives.

@@ -1,5 +1,9 @@
 ## HEAD
 
+* `backgrounding` – Move `Attacher#destroy(background: true)` to `Attacher#destroy_background` (@janko)
+
+* `backgrounding` – Move `Attacher#promote(background: true)` to `Attacher#promote_background` (@janko)
+
 * `download_endpoint` – Add `Shrine.download_response` for calling in controller (@janko)
 
 * `core` – Fetch storage object lazily in `Shrine` instance (@janko)

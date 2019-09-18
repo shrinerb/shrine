@@ -154,7 +154,7 @@ class Shrine
       #     attacher.promote_cached
       #     attacher.stored? #=> true
       def promote_cached(**options)
-        promote(action: :store, **options) if changed? && cached?
+        promote(action: :store, **options) if promote?
       end
 
       # Uploads current file to permanent storage and sets the stored file.
@@ -183,8 +183,8 @@ class Shrine
       #     attacher.attach(file)
       #     attacher.destroy_previous
       #     previous_file.exists? #=> false
-      def destroy_previous(**options)
-        @previous.destroy_attached(**options) if changed?
+      def destroy_previous
+        @previous.destroy_attached if changed?
       end
 
       # Destroys the attached file if it exists and is uploaded to permanent
@@ -193,8 +193,8 @@ class Shrine
       #     attacher.file.exists? #=> true
       #     attacher.destroy_attached
       #     attacher.file.exists? #=> false
-      def destroy_attached(**options)
-        destroy(**options) if attached? && !cached?
+      def destroy_attached
+        destroy if destroy?
       end
 
       # Destroys the attachment.
@@ -202,7 +202,7 @@ class Shrine
       #     attacher.file.exists? #=> true
       #     attacher.destroy
       #     attacher.file.exists? #=> false
-      def destroy(**options)
+      def destroy
         file&.delete
       end
 
@@ -356,6 +356,16 @@ class Shrine
         end
 
         uploaded_file
+      end
+
+      # Whether attached file should be uploaded to permanent storage.
+      def promote?
+        changed? && cached?
+      end
+
+      # Whether attached file should be deleted.
+      def destroy?
+        attached? && !cached?
       end
 
       # Returns whether the file is uploaded to specified storage.

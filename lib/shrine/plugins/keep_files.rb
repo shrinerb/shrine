@@ -7,8 +7,8 @@ class Shrine
     # [doc/plugins/keep_files.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/keep_files.md
     module KeepFiles
       module AttacherMethods
-        def destroy_attached(*)
-          # don't delete files
+        def destroy?
+          false
         end
       end
     end

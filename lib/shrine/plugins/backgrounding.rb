@@ -134,36 +134,36 @@ class Shrine
           @destroy_block
         end
 
-        # Signals the #promote method that it should use backgrounding if
-        # registered.
+        # Does a background promote if promote block was registered.
         def promote_cached(**options)
-          super(background: true, **options)
-        end
-
-        # Calls the promotion hook if registered and called via #promote_cached,
-        # otherwise promotes synchronously.
-        def promote(background: false, **options)
-          if promote_block && background
-            background_block(promote_block, **options)
+          if promote? && promote_block
+            promote_background(**options)
           else
-            super(**options)
+            super
           end
         end
 
-        # Signals the #destroy method that it should use backgrounding if
-        # registered.
-        def destroy_attached(**options)
-          super(background: true, **options)
+        # Calls the registered promote block.
+        def promote_background(**options)
+          fail Error, "promote block is not registered" unless promote_block
+
+          background_block(promote_block, **options)
         end
 
-        # Calls the destroy hook if registered and called via #destroy_attached,
-        # otherwise destroys synchronously.
-        def destroy(background: false, **options)
-          if destroy_block && background
-            background_block(destroy_block, **options)
+        # Does a background destroy if destroy block was registered.
+        def destroy_attached
+          if destroy? && destroy_block
+            destroy_background
           else
-            super(**options)
+            super
           end
+        end
+
+        # Calls the registered destroy block.
+        def destroy_background
+          fail Error, "destroy block is not registered" unless destroy_block
+
+          background_block(destroy_block)
         end
 
         private

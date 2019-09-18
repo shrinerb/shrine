@@ -20,7 +20,7 @@ class Shrine
         private
 
         def revert_change
-          destroy(background: true)
+          destroy
           set @previous.file
           remove_instance_variable(:@previous)
         end

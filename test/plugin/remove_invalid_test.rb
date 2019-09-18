@@ -65,23 +65,6 @@ describe Shrine::Plugins::RemoveInvalid do
         assert_nil @attacher.file
         refute file.exists?
       end
-
-      it "integrates with backgrounding" do
-        @shrine.plugin :backgrounding
-
-        file = @shrine.upload(fakeio, :cache)
-
-        @attacher.destroy_block do |attacher|
-          assert_equal file, attacher.file
-          @block_called = true
-        end
-
-        @attacher.class.validate { errors << "error" }
-        @attacher.change(file)
-
-        assert_nil @attacher.file
-        assert @block_called
-      end
     end
   end
 end

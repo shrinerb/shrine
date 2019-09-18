@@ -215,6 +215,7 @@ class Shrine
         data
       end
 
+      # Returns serializable hash representation of the uploaded file.
       def data
         { "id" => id, "storage" => storage_key.to_s, "metadata" => metadata }
       end

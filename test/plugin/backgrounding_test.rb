@@ -157,20 +157,7 @@ describe Shrine::Plugins::Backgrounding do
       end
     end
 
-    describe "#promote" do
-      it "accepts :background option" do
-        @attacher.promote_block do |attacher|
-          @job = Fiber.new { attacher.promote }
-        end
-
-        @attacher.attach_cached(fakeio)
-        @attacher.promote(background: true)
-
-        assert @attacher.cached?
-        @job.resume
-        assert @attacher.stored?
-      end
-
+    describe "#promote_background" do
       it "evaluates promote block without attacher argument inside Attacher instance" do
         this = nil
         @attacher.promote_block do |**options|
@@ -178,24 +165,42 @@ describe Shrine::Plugins::Backgrounding do
           promote
         end
 
-        @attacher.attach(fakeio)
-        @attacher.promote(background: true)
+        @attacher.attach_cached(fakeio)
+        @attacher.promote_background
 
         assert_equal @attacher, this
         assert @attacher.stored?
       end
 
-      it "is still synchronous by default" do
-        @attacher.promote_block do |attacher|
-          @job = Fiber.new { attacher.promote }
+      it "calls promote block with attacher argument" do
+        this = nil
+        @attacher.promote_block do |attacher, **options|
+          this = self
+          attacher.promote
         end
 
         @attacher.attach_cached(fakeio)
-        @attacher.promote(location: "foo")
+        @attacher.promote_background
 
+        assert_equal self, this
         assert @attacher.stored?
+      end
+
+      it "accepts additional options" do
+        @attacher.promote_block { |**options| promote(**options) }
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote_background(location: "foo")
+
         assert_equal "foo", @attacher.file.id
-        assert_nil @job
+      end
+
+      it "raises exception when promote block is not registered" do
+        @attacher.attach_cached(fakeio)
+
+        assert_raises Shrine::Error do
+          @attacher.promote_background
+        end
       end
     end
 
@@ -286,18 +291,6 @@ describe Shrine::Plugins::Backgrounding do
         refute @attacher.file.exists?
       end
 
-      it "forwards destroy options" do
-        @attacher.destroy_block do |attacher, **options|
-          assert_equal "bar", options[:foo]
-          @job = Fiber.new { attacher.destroy }
-        end
-
-        @attacher.attach(fakeio)
-        @attacher.destroy_attached(foo: "bar")
-
-        @job.resume
-      end
-
       it "calls default destroy when no destroy blocks are registered" do
         @attacher.attach(fakeio)
         @attacher.destroy_attached
@@ -318,44 +311,41 @@ describe Shrine::Plugins::Backgrounding do
       end
     end
 
-    describe "#destroy" do
-      it "accepts :background option" do
-        @attacher.destroy_block do |attacher|
-          @job = Fiber.new { attacher.destroy }
-        end
-
-        @attacher.attach(fakeio)
-        @attacher.destroy(background: true)
-
-        assert @attacher.file.exists?
-        @job.resume
-        refute @attacher.file.exists?
-      end
-
+    describe "#destroy_background" do
       it "evaluates destroy block without attacher argument inside Attacher instance" do
         this = nil
-        @attacher.destroy_block do |**options|
+        @attacher.destroy_block do
           this = self
           destroy
         end
 
         @attacher.attach(fakeio)
-        @attacher.destroy(background: true)
+        @attacher.destroy_background
 
         assert_equal @attacher, this
         refute @attacher.file.exists?
       end
 
-      it "is still synchronous by default" do
+      it "calls destroy block with attacher argument" do
+        this = nil
         @attacher.destroy_block do |attacher|
-          @job = Fiber.new { attacher.destroy }
+          this = self
+          attacher.destroy
         end
 
         @attacher.attach(fakeio)
-        @attacher.destroy
+        @attacher.destroy_background
 
+        assert_equal self, this
         refute @attacher.file.exists?
-        assert_nil @job
+      end
+
+      it "raises exception when destroy block is not registered" do
+        @attacher.attach(fakeio)
+
+        assert_raises do
+          @attacher.destroy_background
+        end
       end
     end
   end
