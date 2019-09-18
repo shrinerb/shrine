@@ -1,5 +1,7 @@
 ## HEAD
 
+* `attacher_options` – Remove plugin (@janko)
+
 * `backgrounding` – Move `Attacher#destroy(background: true)` to `Attacher#destroy_background` (@janko)
 
 * `backgrounding` – Move `Attacher#promote(background: true)` to `Attacher#promote_background` (@janko)

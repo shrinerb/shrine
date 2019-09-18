@@ -129,9 +129,6 @@ Other:
     name: atomic_helpers
     description: Provides methods for retrieving and persisting attachments in a concurrency-safe way.
   -
-    name: attacher_options
-    description: Allows you to register options that will be forwarded to attacher operations.
-  -
     name: included
     description: Allows the included attachments to define additional methods on the model.
   -
