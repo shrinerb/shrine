@@ -7,7 +7,7 @@ require "dry-monitor"
 
 # needed by `backgrounding` plugin
 require "./jobs/promote_job"
-require "./jobs/delete_job"
+require "./jobs/destroy_job"
 
 # use S3 for production and local file for other environments
 if ENV["RACK_ENV"] == "production"
