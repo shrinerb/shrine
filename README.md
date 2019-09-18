@@ -84,7 +84,7 @@ will use to store all information about the attachment:
 ```rb
 Sequel.migration do
   change do
-    add_column :photos, :image_data, :text
+    add_column :photos, :image_data, :text # or :jsonb
   end
 end
 ```
@@ -97,7 +97,7 @@ $ rails generate migration add_image_data_to_photos image_data:text
 ```rb
 class AddImageDataToPhotos < ActiveRecord::Migration
   def change
-    add_column :photos, :image_data, :text
+    add_column :photos, :image_data, :text # or :jsonb
   end
 end
 ```
