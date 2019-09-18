@@ -19,47 +19,87 @@ describe Shrine::Plugins::Mirroring do
         assert mirrored_file.exists?
       end
 
-      it "uses custom mirroring block" do
-        block_called = false
-        @shrine.mirror_upload do |uploaded_file|
-          assert_instance_of @shrine::UploadedFile, uploaded_file
-          block_called = true
-        end
+      it "doesn't mirror if :mirror is false" do
+        file = @uploader.upload(fakeio, mirror: false)
 
-        file = @uploader.upload(fakeio)
-
-        assert block_called
+        assert_equal :store, file.storage_key
 
         mirrored_file = @shrine.uploaded_file(id: file.id, storage: :other_store)
 
         refute mirrored_file.exists?
-      end
-
-      it "allows disabling mirroring" do
-        @shrine.plugin :mirroring, upload: false
-
-        file = @uploader.upload(fakeio)
-
-        mirrored_file = @shrine.uploaded_file(id: file.id, storage: :other_store)
-
-        refute mirrored_file.exists?
-      end
-
-      it "handles no mirroring" do
-        @shrine.plugin :mirroring, mirror: {}
-
-        @uploader.upload(fakeio)
       end
     end
   end
 
   describe "UploadedFile" do
+    before do
+      @file          = @uploader.upload(fakeio("file"), mirror: false)
+      @mirrored_file = @shrine.uploaded_file(id: @file.id, storage: :other_store)
+    end
+
+    describe "#trigger_mirror_upload" do
+      it "uploads to mirror storages" do
+        @file.trigger_mirror_upload
+
+        assert @mirrored_file.exists?
+      end
+
+      it "calls mirror upload block" do
+        @shrine.mirror_upload_block do |file|
+          assert_instance_of @shrine::UploadedFile, file
+          @job = Fiber.new { file.mirror_upload }
+        end
+
+        @file.trigger_mirror_upload
+
+        refute @mirrored_file.exists?
+
+        @job.resume
+
+        assert @mirrored_file.exists?
+      end
+
+      it "skips mirroring if :upload is set to false" do
+        @shrine.plugin :mirroring, upload: false
+
+        @file.trigger_mirror_upload
+
+        refute @mirrored_file.exists?
+      end
+
+      it "skips mirroring if no mirrors are defined" do
+        @shrine.plugin :mirroring, mirror: {}
+
+        @file.trigger_mirror_upload
+      end
+    end
+
+    describe "#mirror_upload_background" do
+      it "calls mirror upload block" do
+        @shrine.mirror_upload_block do |file|
+          assert_instance_of @shrine::UploadedFile, file
+          @job = Fiber.new { file.mirror_upload }
+        end
+
+        @file.mirror_upload_background
+
+        refute @mirrored_file.exists?
+
+        @job.resume
+
+        assert @mirrored_file.exists?
+      end
+
+      it "raises exception if mirror upload block is not registered" do
+        assert_raises Shrine::Error do
+          @file.mirror_upload_background
+        end
+      end
+    end
+
     describe "#mirror_upload" do
       before do
         @shrine.plugin :mirroring, upload: false
-
-        @file          = @uploader.upload(fakeio("file"))
-        @mirrored_file = @shrine.uploaded_file(id: @file.id, storage: :other_store)
       end
 
       it "uploads to mirror storages" do
@@ -132,8 +172,7 @@ describe Shrine::Plugins::Mirroring do
 
     describe "#delete" do
       before do
-        @file          = @uploader.upload(fakeio)
-        @mirrored_file = @shrine.uploaded_file(id: @file.id, storage: :other_store)
+        @file.mirror_upload
       end
 
       it "mirrors deletes" do
@@ -142,41 +181,84 @@ describe Shrine::Plugins::Mirroring do
         refute @mirrored_file.exists?
       end
 
-      it "uses custom mirroring block" do
-        block_called = false
-        @shrine.mirror_delete do |uploaded_file|
-          assert_instance_of @shrine::UploadedFile, uploaded_file
-          block_called = true
+      it "doesn't mirror if :mirror is false" do
+        @file.delete(mirror: false)
+
+        assert @mirrored_file.exists?
+      end
+    end
+
+    describe "#trigger_mirror_delete" do
+      before do
+        @file.mirror_upload
+      end
+
+      it "mirrors deletes" do
+        @file.trigger_mirror_delete
+
+        refute @mirrored_file.exists?
+      end
+
+      it "calls mirror delete block" do
+        @shrine.mirror_delete_block do |file|
+          assert_instance_of @shrine::UploadedFile, file
+          @job = Fiber.new { file.mirror_delete }
         end
 
-        @file.delete
-
-        assert block_called
+        @file.trigger_mirror_delete
 
         assert @mirrored_file.exists?
+
+        @job.resume
+
+        refute @mirrored_file.exists?
       end
 
-      it "allows disabling mirroring" do
+      it "skips mirroring if :delete is set to false" do
         @shrine.plugin :mirroring, delete: false
 
-        @file.delete
+        @file.trigger_mirror_delete
 
         assert @mirrored_file.exists?
       end
 
-      it "handles no mirroring" do
+      it "skips mirroring if no mirrors are defined" do
         @shrine.plugin :mirroring, mirror: {}
 
-        @file.delete
+        @file.trigger_mirror_delete
+      end
+    end
+
+    describe "#mirror_delete_background" do
+      before do
+        @file.mirror_upload
+      end
+
+      it "calls mirror delete block" do
+        @shrine.mirror_delete_block do |file|
+          assert_instance_of @shrine::UploadedFile, file
+          @job = Fiber.new { file.mirror_delete }
+        end
+
+        @file.mirror_delete_background
+
+        assert @mirrored_file.exists?
+
+        @job.resume
+
+        refute @mirrored_file.exists?
+      end
+
+      it "raises exception if mirror delete block is not registered" do
+        assert_raises Shrine::Error do
+          @file.mirror_delete_background
+        end
       end
     end
 
     describe "#mirror_delete" do
       before do
-        @shrine.plugin :mirroring, delete: false
-
-        @file          = @uploader.upload(fakeio("file"))
-        @mirrored_file = @shrine.uploaded_file(id: @file.id, storage: :other_store)
+        @file.mirror_upload
       end
 
       it "deletes from mirror storages" do

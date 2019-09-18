@@ -1,5 +1,11 @@
 ## HEAD
 
+* `mirroring` – Allow skipping mirroring by passing `mirror: false` to `#upload` and `#delete` (@janko)
+
+* `mirroring` – Rename `Shrine.mirror_(upload|delete)` to `Shrine.mirror_(upload|delete)_block` (@janko)
+
+* `mirroring` – Add `UploadedFile#mirror_(upload|delete)_background` (@janko)
+
 * `attacher_options` – Remove plugin (@janko)
 
 * `backgrounding` – Move `Attacher#destroy(background: true)` to `Attacher#destroy_background` (@janko)
