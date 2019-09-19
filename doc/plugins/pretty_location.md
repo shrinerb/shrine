@@ -40,6 +40,21 @@ plugin :pretty_location, identifier: :email
 # "user/foo@bar.com/profile_picture/493g82jf23.jpg"
 ```
 
+By default, class name will be transform by downcase. We can change this behavoir by pass in the method name or proc to transform that class name.
+
+```ruby
+plugin :pretty_location
+# "blogpost/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
+
+plugin :pretty_location, class_transform: :underscore
+# "blog_post/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
+
+plugin :pretty_location, class_transform: ->(class_name){ "prefix_" + class_name.underscore }
+# "prefix_blog_post/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
+```
+
+
+
 For a more custom identifier logic, you can overwrite the method
 `#generate_location` and call `#pretty_location` with the identifier you have
 calculated.

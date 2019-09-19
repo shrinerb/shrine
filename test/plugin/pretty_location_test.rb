@@ -90,6 +90,31 @@ describe Shrine::Plugins::PrettyLocation do
         assert_match %r{^namespaced_entity/123/file/\w+$}, location
       end
 
+      it "transform class name with underscore when :class_transform is set to underscore" do
+        @shrine.plugin :pretty_location, class_transform: :underscore
+
+        location = @uploader.generate_location(
+          fakeio,
+          record: NameSpaced::Entity.new(123),
+          name: :file,
+        )
+
+        assert_match %r{^name_spaced/entity/123/file/\w+$}, location
+      end
+
+      it "transform class name with given proc when :class_transform is a proc" do
+        @shrine.plugin :pretty_location, class_transform: ->(class_name){ "prefix_" + class_name.underscore }
+
+        location = @uploader.generate_location(
+          fakeio,
+          record: NameSpaced::Entity.new(123),
+          name: :file,
+        )
+
+        assert_match %r{^prefix_name_spaced/entity/123/file/\w+$}, location
+      end
+
+
       it "fails when record does not respond to default identifier" do
         assert_raises NoMethodError do
           @uploader.generate_location(

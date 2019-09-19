@@ -7,7 +7,7 @@ class Shrine
     # [doc/plugins/pretty_location.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/pretty_location.md
     module PrettyLocation
       def self.configure(uploader, **opts)
-        uploader.opts[:pretty_location] ||= { identifier: :id }
+        uploader.opts[:pretty_location] ||= { identifier: :id, class_transform: :downcase }
         uploader.opts[:pretty_location].merge!(opts)
       end
 
@@ -34,9 +34,19 @@ class Shrine
           record.public_send(opts[:pretty_location][:identifier])
         end
 
+        def transform_class_name(class_name)
+          class_transform = opts[:pretty_location][:class_transform]
+
+          if class_transform.respond_to?(:call)
+            class_transform.call(class_name)
+          else
+            class_name.send(class_transform)
+          end
+        end
+
         def record_namespace(record)
           class_name = record.class.name or return
-          parts      = class_name.downcase.split("::")
+          parts      = transform_class_name(class_name).split("::")
 
           if separator = opts[:pretty_location][:namespace]
             parts.join(separator)
