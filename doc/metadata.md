@@ -84,10 +84,10 @@ By default, the `mime_type` metadata will be copied over from the
 `#content_type` value comes from the `Content-Type` header of the upload
 request, it's *not guaranteed* to hold the actual MIME type of the file (browser
 determines this header based on file extension). Moreover, only
-`ActionDispatch::Http::UploadedFile`, `Shrine::Plugins::RackFile::UploadedFile`,
-and `Shrine::Plugins::DataUri::DataFile` objects have `#content_type` defined,
-so, when uploading simple file objects, `mime_type` will be nil. That makes
-relying on `#content_type` both a security risk and limiting.
+`ActionDispatch::Http::UploadedFile`, `Shrine::RackFile`, and
+`Shrine::DataFile` objects have `#content_type` defined, so, when uploading
+simple file objects, `mime_type` will be nil. That makes relying on
+`#content_type` both a security risk and limiting.
 
 To remedy that, Shrine comes with a
 [`determine_mime_type`][determine_mime_type] plugin which is able to extract
@@ -117,7 +117,11 @@ default, the plugin uses [FastImage] to analyze dimensions, but you can also
 have it use [MiniMagick] or [ruby-vips]:
 
 ```rb
-Shrine.plugin :store_dimensions, analyzer: :mini_magick
+# Gemfile
+gem "fastimage"
+```
+```rb
+Shrine.plugin :store_dimensions
 ```
 ```rb
 uploaded_file = uploader.upload(image)
@@ -138,18 +142,18 @@ any custom metadata, using the `add_metadata` plugin (which extends
 from images:
 
 ```rb
-require "mini_magick"
+# Gemfile
+gem "exiftool"
+```
+```rb
+require "exiftool"
 
 class ImageUploader < Shrine
   plugin :add_metadata
 
   add_metadata :exif do |io, context|
     Shrine.with_file(io) do |file|
-      begin
-        MiniMagick::Image.new(file.path).exif
-      rescue MiniMagick::Error
-        # not a valid image
-      end
+      Exiftool.new(file.path).to_hash
     end
   end
 end
@@ -163,6 +167,10 @@ uploaded_file.exif             #=> {...}
 Or, if you're uploading videos, you might want to extract some video-specific
 meatadata:
 
+```rb
+# Gemfile
+gem "streamio-ffmpeg"
+```
 ```rb
 require "streamio-ffmpeg"
 
@@ -192,11 +200,10 @@ uploaded_file.metadata #=>
 ```
 
 The yielded `io` object will not always be an object that responds to `#path`.
-If you're using the `data_uri` plugin, the `io` will be a `StringIO` wrapper.
-With `restore_cached_data` or `refresh_metadata` plugins, `io` might be a
-`Shrine::UploadedFile` object. If you're using a metadata analyzer that
-requires the source file to be on disk, you can use `Shrine.with_file` to
-ensure you have a file object.
+For example, with the `data_uri` plugin the `io` can be a `StringIO` wrapper,
+with `restore_cached_data` or `refresh_metadata` plugins the `io` might be a
+`Shrine::UploadedFile` object. So we're using `Shrine.with_file` to ensure we
+have a file object.
 
 ## Metadata columns
 
@@ -227,9 +234,7 @@ you want to validate the extracted metadata or have it immediately available
 for any other reason), you can load the `restore_cached_data` plugin:
 
 ```rb
-class ImageUploader < Shrine
-  plugin :restore_cached_data # automatically extract metadata from cached files on assignment
-end
+Shrine.plugin :restore_cached_data # automatically extract metadata from cached files on assignment
 ```
 ```rb
 photo.image = '{"id":"ks9elsd.jpg","storage":"cache","metadata":{}}' # metadata is extracted
@@ -241,100 +246,112 @@ photo.image.metadata #=>
 # }
 ```
 
-On the other hand, if you're using backgrounding, you can extract metadata
-during background promotion using the `refresh_metadata` plugin (which the
-`restore_cached_data` plugin uses internally):
+### Backgrounding
+
+If you're using [backgrounding], you can extract metadata during background
+promotion using the `refresh_metadata` plugin (which the `restore_cached_data`
+plugin uses internally):
 
 ```rb
-class ImageUploader < Shrine
-  plugin :refresh_metadata
-  plugin :processing
-
-  # this will be called in the background if using backgrounding plugin
-  process(:store) do |io, context|
-    io.refresh_metadata!(context) # extracts metadata and updates `io.metadata`
-    io
+Shrine.plugin :refresh_metadata # allow re-extracting metadata
+Shrine.plugin :backgrounding
+Shrine::Attacher.promote_block { PromoteJob.perform_later(record, name, file_data) }
+```
+```rb
+class PromoteJob < ActiveJob::Base
+  def perform(record, name, file_data)
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+    attacher.refresh_metadata!
+    attacher.atomic_promote
   end
 end
 ```
 
-If you have metadata that is cheap to extract in the foreground, but also have
-additional metadata that can be extracted asynchronously, you can combine the
-two approaches. For example, if you're attaching video files, you might want to
-extract MIME type upfront and video-specific metadata in a background job, which
-can be done as follows (provided that `backgrounding` plugin is used):
+You can also extract metadata in the background separately from promotion:
+
+```rb
+MetadataJob.perform_later(
+  attacher.record,
+  attacher.name,
+  attacher.file_data,
+)
+```
+```rb
+class MetadataJob < ActiveJob::Base
+  def perform(record, name, file_data)
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+    attacher.refresh_metadata!
+    attacher.atomic_persist
+  end
+end
+```
+
+If you have some metadata that you want to extract in the foreground and some
+that you want to extract in the background, you can use the uploader context:
 
 ```rb
 class MyUploader < Shrine
-  plugin :determine_mime_type # this will be called in the foreground
-  plugin :restore_cached_data
-  plugin :refresh_metadata
   plugin :add_metadata
-  plugin :processing
 
-  # this will be called in the background if using backgrounding plugin
-  process(:store) do |io, context|
-    io.refresh_metadata!(context)
-    io
-  end
+  add_metadata do |io, **options|
+    next unless options[:background] # proceed only when `background: true` was specified
 
-  add_metadata do |io, context|
-    next unless context[:action] == :store # this will be the case during promotion
+    # example of metadata extraction
+    movie = Shrine.with_file(io) { |file| FFMPEG::Movie.new(file.path) }
 
-    Shrine.with_file(io) do |file|
-      # example of metadata extraction
-      movie = FFMPEG::Movie.new(file.path) # uses the streamio-ffmpeg gem
-
-      { "duration"   => movie.duration,
-        "bitrate"    => movie.bitrate,
-        "resolution" => movie.resolution,
-        "frame_rate" => movie.frame_rate }
-    end
+    { "duration"   => movie.duration,
+      "bitrate"    => movie.bitrate,
+      "resolution" => movie.resolution,
+      "frame_rate" => movie.frame_rate }
   end
 end
 ```
+```rb
+class MetadataJob < ActiveJob::Base
+  def perform(record, name, file_data)
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+    attacher.refresh_metadata!(background: true)
+    attacher.atomic_persist
+  end
+end
+```
+
+### Optimizations
 
 If you want to do both metadata extraction and file processing during
 promotion, you can wrap both in an `UploadedFile#open` block to make
 sure the file content is retrieved from the storage only once.
 
 ```rb
-class MyUploader < Shrine
-  plugin :refresh_metadata
-  plugin :processing
+class PromoteJob < ActiveJob::Base
+  def perform(record, name, file_data)
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
 
-  process(:store) do |io, context|
-    io.open do |io, context|
-      io.refresh_metadata!(context)
-
-      original = io.download # reuses already open uploaded file
-      # ... processing ...
+    attacher.file.open do
+      attacher.refresh_metadata!
+      attacher.create_derivatives
     end
+
+    attacher.atomic_promote
   end
 end
 ```
 
-If you're dealing with large files, it's recommended to also use the `tempfile`
-plugin to make sure the same copy of the uploaded file is used for metadata
-extraction (`Shrine.with_file`) and processing (`UploadedFile#tempfile`).
+If you're dealing with large files and have metadata extractors that use
+`Shrine.with_file`, you might want to use the `tempfile` plugin to make sure
+the same copy of the uploaded file is reused for both metadata extraction and
+file processing.
 
 ```rb
 Shrine.plugin :tempfile # load it globally so that it overrides `Shrine.with_file`
 ```
 ```rb
-class MyUploader < Shrine
-  plugin :refresh_metadata
-  plugin :processing
-
-  process(:store) do |io, context|
-    io.open do |io, context|
-      io.refresh_metadata!(context)
-
-      original = io.tempfile # used the cached tempfile
-      # ... processing ...
-    end
-  end
+# ...
+attacher.file.open do
+  attacher.refresh_metadata!
+  attacher.create_derivatives(attacher.file.tempfile)
 end
+# ...
 ```
 
 [`file`]: http://linux.die.net/man/1/file
@@ -345,3 +362,4 @@ end
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [tus server]: https://github.com/janko/tus-ruby-server
 [determine_mime_type]: /doc/plugins/determine_mime_type.md#readme
+[backgrounding]: /doc/plugins/backgrounding.md#readme

@@ -63,14 +63,13 @@ the `#upload` storage method. First the storage needs to be registered under a
 name:
 
 ```rb
-Shrine.storages[:file_system] = Shrine::Storage::FileSystem.new("uploads")
+Shrine.storages[:disk] = Shrine::Storage::FileSystem.new("uploads")
 ```
 
-Now we can instantiate an uploader with this identifier and upload files:
+Now we can upload files to the registered storage:
 
 ```rb
-uploader = Shrine.new(:file_system)
-uploaded_file = uploader.upload(file)
+uploaded_file = Shrine.upload(file, :disk)
 uploaded_file #=> #<Shrine::UploadedFile>
 ```
 
@@ -155,14 +154,14 @@ A `Shrine::Attacher` is instantiated with a model instance and an attachment
 name (an "image" attachment will be saved to `image_data` field):
 
 ```rb
-attacher = Shrine::Attacher.new(photo, :image)
+attacher = Shrine::Attacher.from_model(photo, :image)
 
 attacher.assign(file)
-attacher.get #=> #<Shrine::UploadedFile>
+attacher.file #=> #<Shrine::UploadedFile @storage_key=:cache ...>
 attacher.record.image_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
 
-attacher._promote
-attacher.get #=> #<Shrine::UploadedFile>
+attacher.finalize
+attacher.file #=> #<Shrine::UploadedFile @storage_key=:store ...>
 attacher.record.image_data #=> "{\"storage\":\"store\",\"id\":\"ksdf02lr9sf3la.jpg\",\"metadata\":{...}}"
 ```
 

@@ -104,12 +104,12 @@ In the Photo model, create a Shrine attachment attribute named `image`
 ```rb
 # with Sequel:
 class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 
 # with Active Record:
 class Photo < ActiveRecord::Base
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 ```
 
@@ -257,7 +257,7 @@ class ImageUploader < Shrine
 
   Attacher.validate do
     validate_max_size 10*1024*1024
-    validate_mime_type_inclusion %w[image/jpeg image/png]
+    validate_mime_type %w[image/jpeg image/png image/webp]
   end
 end
 ```

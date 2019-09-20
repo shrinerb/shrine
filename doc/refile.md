@@ -32,14 +32,14 @@ configured differently depending on the types of files you're uploading:
 
 ```rb
 class ImageUploader < Shrine
-  add_metadata :exif do |io, context|
+  add_metadata :exif do |io|
     MiniMagick::Image.new(io).exif
   end
 end
 ```
 ```rb
 class VideoUploader < Shrine
-  add_metadata :duration do |io, context|
+  add_metadata :duration do |io|
     FFMPEG::Movie.new(io.path).duration
   end
 end
@@ -47,42 +47,34 @@ end
 
 ### Processing
 
-Refile implements on-the-fly processing, serving all files through the Rack
-endpoint. However, it doesn't offer any abilities for processing on upload.
-Shrine, on the other hand, generates URLs to specific storages and offers
-processing on upload (like CarrierWave and Paperclip), but doesn't support
-on-the-fly processing.
+Shrine provides on-the-fly processing via the
+[`derivation_endpoint`][derivation_endpoint] plugin:
 
-The reason for this decision is that an image server is a completely separate
-responsibility, and it's better to use any of the generic services for
-on-the-fly processing. Shrine already has integrations for many such services:
-[shrine-cloudinary], [shrine-imgix], and [shrine-uploadcare]. There is even
-an open-source solution, [Attache], which you can also use with Shrine.
-
-This is how you would process multiple versions in Shrine:
-
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  mount ImageUploader.derivation_endpoint => "/derivations/image"
+end
+```
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
+  plugin :derivation_endpoint,
+    secret_key: "<YOUR SECRET KEY>",
+    prefix:     "derivations/image" # needs to match the mount point in routes
 
-  process(:store) do |io, context|
-    versions = { original: io } # retain original
-
-    io.download do |original|
-      pipeline = ImageProcessing::MiniMagick.source(original)
-
-      versions[:large]  = pipeline.resize_to_limit!(800, 800)
-      versions[:medium] = pipeline.resize_to_limit!(500, 500)
-      versions[:small]  = pipeline.resize_to_limit!(300, 300)
-    end
-
-    versions # return the hash of processed files
+  derivation :thumbnail do |file, width, height|
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
   end
 end
 ```
+
+Shrine also support processing up front using the [`derivatives`][derivatives]
+plugin.
 
 ### URL
 
@@ -99,7 +91,7 @@ Refile.attachment_url(@photo, :image) #=> "/attachments/cache/50dfl833lfs0gfh.jp
 
 If you're using storage which don't expose files over URL (e.g. a database
 storage), or you want to secure your downloads, you can also serve files
-through your app using the download_endpoint plugin.
+through your app using the [`download_endpoint`][download_endpoint] plugin.
 
 ## Attachments
 
@@ -118,11 +110,10 @@ end
 ```rb
 class ImageUploader < Shrine
   plugin :sequel
-  plugin :keep_files, destroyed: true
 end
 
 class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 ```
 
@@ -178,16 +169,16 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension_inclusion %w[jpg jpeg png gif]
-    validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
-    validate_max_size 10*1024*1024 unless record.admin?
+    validate_extension %w[jpg jpeg png gif]
+    validate_mime_type %w[image/jpeg image/png image/gif]
+    validate_max_size 10*1024*1024
   end
 end
 ```
 
 Refile extracts the MIME type from the file extension, which means it can
 easily be spoofed (just give a PHP file a `.jpg` extension). Shrine has the
-determine_mime_type plugin for determining MIME type from file *content*.
+`determine_mime_type` plugin for determining MIME type from file *content*.
 
 ### Multiple uploads
 
@@ -229,23 +220,37 @@ can be done by including the below module to all models that have Refile
 attachments:
 
 ```rb
+require "shrine"
+
+Shrine.storages = {
+  cache: ...,
+  store: ...,
+}
+
+Shrine.plugin :model
+```
+```rb
 module RefileShrineSynchronization
   def write_shrine_data(name)
-    if read_attribute("#{name}_id").present?
-      data = {
-        storage: :store,
-        id: send("#{name}_id"),
-        metadata: {
-          size: (send("#{name}_size") if respond_to?("#{name}_size")),
-          filename: (send("#{name}_filename") if respond_to?("#{name}_filename")),
-          mime_type: (send("#{name}_content_type") if respond_to?("#{name}_content_type")),
-        }
-      }
+    attacher = Shrine::Attacher.from_model(self, name)
 
-      write_attribute(:"#{name}_data", data.to_json)
+    if read_attribute("#{name}_id").present?
+      attacher.set shrine_file(name)
     else
-      write_attribute(:"#{name}_data", nil)
+      attacher.set nil
     end
+  end
+
+  def shrine_file(name)
+    Shrine.uploaded_file(
+      storage:  :store,
+      id:       send("#{name}_id"),
+      metadata: {
+        "size"      => (send("#{name}_size") if respond_to?("#{name}_size")),
+        "filename"  => (send("#{name}_filename") if respond_to?("#{name}_filename")),
+        "mime_type" => (send("#{name}_content_type") if respond_to?("#{name}_content_type")),
+      }
+    )
   end
 end
 ```
@@ -293,8 +298,9 @@ Shrine.storages = {
 
 #### `.app`, `.mount_point`, `.automount`
 
-The `upload_endpoint` and `presign_endpoint` plugins provide methods for
-generating Rack apps, but you need to mount them explicitly:
+The `upload_endpoint`, `presign_endpoint`, and `derivation_endpoint` plugins
+provide methods for generating Rack apps, but you need to mount them
+explicitly:
 
 ```rb
 # config/routes.rb
@@ -318,10 +324,10 @@ Shrine.logger
 #### `.processors`, `.processor`
 
 ```rb
-class MyUploader < Shrine
-  plugin :processing
+class ImageUploader < Shrine
+  plugin :derivatives
 
-  process(:store) do |io, context|
+  derivation :thumbnail do |file, width, height|
     # ...
   end
 end
@@ -329,7 +335,7 @@ end
 
 #### `.types`
 
-In Shrine validations are done by calling `.validate` on the attacher class:
+In Shrine, validations are done by calling `.validate` on the attacher class:
 
 ```rb
 class MyUploader < Shrine
@@ -375,8 +381,8 @@ Shrine's equivalent to calling the attachment is including an attachment module
 of an uploader:
 
 ```rb
-class User
-  include ImageUploader::Attachment.new(:avatar)
+class Photo
+  include ImageUploader::Attachment(:image)
 end
 ```
 
@@ -390,8 +396,8 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension_inclusion %w[jpg jpeg png]
-    validate_mime_type_inclusion %w[image/jpeg image/png]
+    validate_extension %w[jpg jpeg png]
+    validate_mime_type %w[image/jpeg image/png]
   end
 end
 ```
@@ -477,12 +483,11 @@ form_for @user do |form|
 end
 ```
 
-[shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
-[shrine-imgix]: https://github.com/shrinerb/shrine-imgix
-[shrine-uploadcare]: https://github.com/shrinerb/shrine-uploadcare
-[Attache]: https://github.com/choonkeat/attache
 [image_processing]: https://github.com/janko/image_processing
 [Uppy]: https://uppy.io
 [Direct Uploads to S3]: /doc/direct_s3.md#readme
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
 [Multiple Files]: /doc/multiple_files.md#readme
+[derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
+[download_endpoint]: /doc/plugins/download_endpoint.md#readme
+[derivatives]: /doc/plugins/derivatives.md#readme

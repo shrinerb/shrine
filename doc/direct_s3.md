@@ -308,8 +308,8 @@ backgrounding library to perform the job with a delay:
 ```rb
 Shrine.plugin :backgrounding
 
-Shrine::Attacher.promote do |data|
-  PromoteJob.perform_in(3, data) # tells a Sidekiq worker to perform in 3 seconds
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_in(3, record.class, record.id, name, file_data) # tells a Sidekiq worker to perform in 3 seconds
 end
 ```
 

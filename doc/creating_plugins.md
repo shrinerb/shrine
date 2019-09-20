@@ -94,7 +94,7 @@ If your plugin depends on other plugins, you can load them inside of
 ```rb
 module MyPlugin
   def self.load_dependencies(uploader, *)
-    uploader.plugin :versions # depends on the versions plugin
+    uploader.plugin :derivatives # depends on the derivatives plugin
   end
 end
 ```

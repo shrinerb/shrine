@@ -14,7 +14,7 @@ is called on attachment:
 ```rb
 class VideoUploader < Shrine
   Attacher.validate do
-    if file.duration > 300
+    if file.duration > 5*60*60
       errors << "duration must not be longer than 5 hours"
     end
   end
@@ -52,7 +52,7 @@ end
 ```rb
 class ImageUploader < ApplicationUploader
   Attacher.validate do
-    super() # empty braces are required
+    super() # empty parentheses are required
     validate_mime_type %w[image/jpeg image/png image/webp]
   end
 end

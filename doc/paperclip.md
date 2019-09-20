@@ -65,7 +65,7 @@ class ImageUploader < Shrine
 end
 
 class Photo < ActiveRecord::Base
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 ```
 
@@ -81,8 +81,9 @@ uploaded_file.url #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
 ### Processing
 
 In contrast to Paperclip's static options, in Shrine you define and perform
-processing on instance-level. The result of processing can be a single file
-or a hash of versions:
+processing on instance-level. You also have the descriptive method names
+provided by the [image_processing] gem.
+
 
 ```rb
 class Photo < ActiveRecord::Base
@@ -99,34 +100,26 @@ end
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
+  plugin :derivatives
 
-  process(:store) do |io, context|
-    versions = { original: io } # retain original
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
 
-    io.download do |original|
-      pipeline = ImageProcessing::MiniMagick.source(original)
-
-      versions[:large]  = pipeline.resize_to_limit!(800, 800)
-      versions[:medium] = pipeline.resize_to_limit!(500, 500)
-      versions[:small]  = pipeline.resize_to_limit!(300, 300)
-    end
-
-    versions # return the hash of processed files
+    {
+      large:  magick.resize_to_limit!(800, 800),
+      medium: magick.resize_to_limit!(500, 500),
+      small:  magick.resize_to_limit!(300, 300),
+    }
   end
 end
 ```
-
-This allows you to fully optimize processing, because you can easily specify
-which files are processed from which, and even add parallelization.
 
 #### Reprocessing versions
 
 Shrine doesn't have a built-in way of regenerating versions, because that has
 to be written and optimized differently depending on whether you're adding or
 removing a version, what ORM are you using, how many records there are in the
-database etc. The [Reprocessing versions] guide provides some useful tips on
+database etc. The [Managing Derivatives] guide provides some useful tips on
 this task.
 
 ### Validations
@@ -148,8 +141,8 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_mime_type_inclusion %w[image/jpeg image/gif image/png]
-    validate_max_size 10*1024*1024 unless record.admin?
+    validate_mime_type %w[image/jpeg image/gif image/png]
+    validate_max_size 10*1024*1024
   end
 end
 ```
@@ -212,7 +205,7 @@ gives your models similar set of methods that Paperclip gives:
 
 ```rb
 class Photo < Sequel::Model
-  include ImageUploader::Attachment.new(:image)
+  include ImageUploader::Attachment(:image)
 end
 ```
 
@@ -243,11 +236,11 @@ Unlike Paperclip, Shrine will store this information for each processed
 version, making them first-class citizens:
 
 ```rb
-photo.image[:original]       #=> #<Shrine::UploadedFile>
-photo.image[:original].width #=> 800
+photo.image               #=> #<Shrine::UploadedFile>
+photo.image.width         #=> 800
 
-photo.image[:thumb]          #=> #<Shrine::UploadedFile>
-photo.image[:thumb].width    #=> 300
+photo.image(:thumb)       #=> #<Shrine::UploadedFile>
+photo.image(:thumb).width #=> 300
 ```
 
 Also, since Paperclip stores only the filename, it has to recalculate the full
@@ -255,28 +248,6 @@ location each time it wants to generate the URL. That makes it really difficult
 to move files to a new location, because changing how the location is generated
 will now cause incorrect URLs to be generated for all existing files. Shrine
 calculates the whole location only once and saves it to the column.
-
-### Hooks/Callbacks
-
-Shrine's `hooks` plugin provides callbacks for Shrine, so to get Paperclip's
-`(before|after)_post_process`, you can override `#before_process` and
-`#after_process` methods:
-
-```rb
-class ImageUploader < Shrine
-  plugin :hooks
-
-  def before_process(io, context)
-    # ...
-    super
-  end
-
-  def after_process(io, context)
-    super
-    # ...
-  end
-end
-```
 
 ## Migrating from Paperclip
 
@@ -293,6 +264,17 @@ can be done by including the below module to all models that have Paperclip
 attachments:
 
 ```rb
+require "shrine"
+
+Shrine.storages = {
+  cache: ...,
+  store: ...,
+}
+
+Shrine.plugin :model
+Shrine.plugin :derivatives
+```
+```rb
 module PaperclipShrineSynchronization
   def self.included(model)
     model.before_save do
@@ -304,49 +286,53 @@ module PaperclipShrineSynchronization
 
   def write_shrine_data(name)
     attachment = send(name)
+    attacher   = Shrine::Attacher.from_model(self, name)
 
     if attachment.size.present?
-      data = attachment_to_shrine_data(attachment)
+      attacher.set shrine_file(attachment)
 
-      if attachment.styles.any?
-        data = {original: data}
-        attachment.styles.each do |name, style|
-          data[name] = style_to_shrine_data(style)
-        end
+      attachment.styles.each do |name, style|
+        attacher.merge_derivatives(name => shrine_file(style))
       end
-
-      write_attribute(:"#{name}_data", data.to_json)
     else
-      write_attribute(:"#{name}_data", nil)
+      attacher.set nil
     end
   end
 
   private
 
+  def shrine_file(object)
+    if object.is_a?(Paperclip::Attachment)
+      shrine_attachment_file(object)
+    else
+      shrine_style_file(object)
+    end
+  end
+
   # If you'll be using a `:prefix` on your Shrine storage, or you're storing
   # files on the filesystem, make sure to subtract the appropriate part
   # from the path assigned to `:id`.
-  def attachment_to_shrine_data(attachment)
-    {
-      storage: :store,
-      id: attachment.path,
+  def shrine_attachment_file(attachment)
+    Shrine.uploaded_file(
+      storage:  :store,
+      id:       attachment.path,
       metadata: {
-        size: attachment.size,
-        filename: attachment.original_filename,
-        mime_type: attachment.content_type,
+        "size"      => attachment.size,
+        "filename"  => attachment.original_filename,
+        "mime_type" => attachment.content_type,
       }
-    }
+    )
   end
 
   # If you'll be using a `:prefix` on your Shrine storage, or you're storing
   # files on the filesystem, make sure to subtract the appropriate part
   # from the path assigned to `:id`.
   def style_to_shrine_data(style)
-    {
-      storage: :store,
-      id: style.attachment.path(style.name),
-      metadata: {}
-    }
+    Shrine.uploaded_file(
+      storage:  :store,
+      id:       style.attachment.path(style.name),
+      metadata: {},
+    )
   end
 end
 ```
@@ -383,8 +369,8 @@ metadata defined in your Shrine uploader:
 Shrine.plugin :refresh_metadata
 
 Photo.find_each do |photo|
-  attachment = ImageUploader.uploaded_file(photo.image, &:refresh_metadata!)
-  photo.update(image_data: attachment.to_json)
+  photo.image_attacher.refresh_metadata!
+  photo.save
 end
 ```
 
@@ -396,8 +382,8 @@ As mentioned above, Shrine's equivalent of `has_attached_file` is including
 an attachment module:
 
 ```rb
-class User < Sequel::Model
-  include ImageUploader::Attachment.new(:avatar) # adds `avatar`, `avatar=` and `avatar_url` methods
+class Photo < Sequel::Model
+  include ImageUploader::Attachment(:image) # adds `image`, `image=` and `image_url` methods
 end
 ```
 
@@ -420,8 +406,23 @@ You can change that for a specific uploader with the `default_storage` plugin.
 
 #### `:styles`, `:processors`, `:convert_options`
 
-As explained in the "Processing" section, processing is done by overriding the
-`Shrine#process` method.
+Processing is defined by using the `derivatives` plugin:
+
+```rb
+class ImageUploader < Shrine
+  plugin :derivatives
+
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(image)
+
+    {
+      large:  magick.resize_to_limit!(800, 800),
+      medium: magick.resize_to_limit!(500, 500),
+      small:  magick.resize_to_limit!(300, 300),
+    }
+  end
+end
+```
 
 #### `:default_url`
 
@@ -443,7 +444,7 @@ Shrine provides a `keep_files` plugin which allows you to keep files that would
 otherwise be deleted:
 
 ```rb
-Shrine.plugin :keep_files, destroyed: true
+Shrine.plugin :keep_files
 ```
 
 #### `:path`, `:url`, `:interpolator`, `:url_generator`
@@ -460,7 +461,7 @@ Alternatively, if you want to generate locations yourself you can override the
 
 ```rb
 class ImageUploader < Shrine
-  def generate_location(io, context)
+  def generate_location(io, **options)
     # ...
   end
 end
@@ -481,17 +482,16 @@ If you're generating versions in Shrine, the attachment will be a hash of
 uploaded files:
 
 ```rb
-user.avatar.class #=> Hash
-user.avatar #=>
+photo.image_derivatives #=>
 # {
 #   small:  #<Shrine::UploadedFile>,
 #   medium: #<Shrine::UploadedFile>,
 #   large:  #<Shrine::UploadedFile>,
 # }
 
-user.avatar[:small].url #=> "..."
+photo.image(:small).url #=> "..."
 # or
-user.avatar_url(:small) #=> "..."
+photo.image_url(:small) #=> "..."
 ```
 
 #### `#path`
@@ -500,12 +500,12 @@ Shrine doesn't have this because storages are abstract and this would be
 specific to the filesystem, but the closest is probably `#id`:
 
 ```rb
-user.avatar.id #=> "users/342/avatar/398543qjfdsf.jpg"
+photo.image.id #=> "photo/342/image/398543qjfdsf.jpg"
 ```
 
 #### `#reprocess!`
 
-Shrine doesn't have an equivalent to this, but the [Reprocessing versions]
+Shrine doesn't have an equivalent to this, but the [Managing Derivatives]
 guide provides some useful tips on how to do this.
 
 ### `Paperclip::Storage::S3`
@@ -532,7 +532,7 @@ Shrine::Storage::S3.new(
 The object data can be configured via the `:upload_options` hash:
 
 ```rb
-Shrine::Storage::S3.new(upload_options: {content_disposition: "attachment"}, **options)
+Shrine::Storage::S3.new(upload_options: { content_disposition: "attachment" }, **options)
 ```
 
 You can use the `upload_options` plugin to set upload options dynamically.
@@ -542,7 +542,7 @@ You can use the `upload_options` plugin to set upload options dynamically.
 The object permissions can be configured with the `:acl` upload option:
 
 ```rb
-Shrine::Storage::S3.new(upload_options: {acl: "private"}, **options)
+Shrine::Storage::S3.new(upload_options: { acl: "private" }, **options)
 ```
 
 You can use the `upload_options` plugin to set upload options dynamically.
@@ -581,6 +581,7 @@ The Shrine storage has no replacement for the `:url` Paperclip option, and it
 isn't needed.
 
 [file]: http://linux.die.net/man/1/file
-[Reprocessing versions]: /doc/regenerating_versions.md#readme
+[Managing Derivatives]: /doc/changing_derivatives.md#readme
 [direct S3 uploads]: /doc/direct_s3.md#readme
 [`Shrine::Storage::S3`]: /doc/storage/s3.md#readme
+[image_processing]: https://github.com/janko/image_processing

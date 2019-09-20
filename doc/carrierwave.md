@@ -65,26 +65,27 @@ deleting files, they also represent the uploaded file. Shrine has a separate
 uploaded_file = ImageUploader.upload(file, :store)
 uploaded_file          #=> #<Shrine::UploadedFile>
 uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
-uploaded_file.download #=> #<Tempfile>
+uploaded_file.download #=> #<File:/tmp/path/to/file>
 ```
 
-### Processing
+## Processing
 
 In contrast to CarrierWave's class-level DSL, in Shrine processing is defined
-and performed on the instance-level. The result of processing can be a single
-file or a hash of versions:
+and performed on the instance-level.
 
 ```rb
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  process resize_to_limit: [800, 800]
+  version :large do
+    process resize_to_limit: [800, 800]
+  end
 
   version :medium do
     process resize_to_limit: [500, 500]
   end
 
-  version :small, from_version: :medium do
+  version :small do
     process resize_to_limit: [300, 300]
   end
 end
@@ -94,39 +95,27 @@ end
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :processing
-  plugin :versions
+  plugin :derivatives
 
-  process(:store) do |io, context|
-    versions = {}
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
 
-    io.download do |original|
-      pipeline = ImageProcessing::MiniMagick.source(original)
-
-      versions[:original]  = pipeline.resize_to_limit!(800, 800)
-      versions[:medium] = pipeline.resize_to_limit!(500, 500)
-      versions[:small]  = pipeline.resize_to_limit!(300, 300)
-    end
-
-    versions # return the hash of processed files
+    {
+      large:  magick.resize_to_limit!(800, 800),
+      medium: magick.resize_to_limit!(500, 500),
+      small:  magick.resize_to_limit!(300, 300),
+    }
   end
 end
 ```
 
-This allows you to fully optimize processing, because you can easily specify
-which files are processed from which, and even add parallelization.
-
 CarrierWave performs processing before validations, which is a huge security
 issue, as it allows users to give arbitrary files to your processing tool, even
-if you have validations. Shrine performs processing after validations.
+if you have validations. With Shrine you can perform processing after
+validations.
 
-#### Reprocessing versions
-
-Shrine doesn't have a built-in way of regenerating versions, because that has
-to be written and optimized differently depending on whether you're adding or
-removing a version, what ORM are you using, how many records there are in the
-database etc. The [Reprocessing versions] guide provides some useful tips on
-this task.
+Shrine doesn't have a built-in way of regenerating versions, but there is an
+extensive [Managing Derivatives] guide.
 
 ### Validations
 
@@ -154,9 +143,9 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension_inclusion %w[jpg jpeg gif png]
-    validate_mime_type_inclusion %w[image/jpeg image/gif image/png]
-    validate_max_size 10*1024*1024 unless record.admin?
+    validate_extension %w[jpg jpeg gif png]
+    validate_mime_type %w[image/jpeg image/gif image/png]
+    validate_max_size 10*1024*1024
   end
 end
 ```
@@ -184,7 +173,7 @@ end
 ```
 ```rb
 class Photo < ActiveRecord::Base
-  include ImageUploader::Attachment.new(:avatar)
+  include ImageUploader::Attachment(:image)
 end
 ```
 
@@ -196,12 +185,12 @@ uses to save storage, location, and metadata of the uploaded file.
 ```rb
 photo.image_data #=>
 # {
-#   "storage" => "store",
-#   "id" => "photo/1/image/0d9o8dk42.png",
-#   "metadata" => {
-#     "filename"  => "nature.png",
-#     "size"      => 49349138,
-#     "mime_type" => "image/png"
+#   "storage": "store",
+#   "id": "photo/1/image/0d9o8dk42.png",
+#   "metadata": {
+#     "filename":  "nature.png",
+#     "size":      49349138,
+#     "mime_type": "image/png"
 #   }
 # }
 
@@ -218,11 +207,11 @@ Unlike CarrierWave, Shrine will store this information for each processed
 version, making them first-class citizens:
 
 ```rb
-photo.image[:original]       #=> #<Shrine::UploadedFile>
-photo.image[:original].width #=> 800
+photo.image               #=> #<Shrine::UploadedFile>
+photo.image.width         #=> 800
 
-photo.image[:thumb]          #=> #<Shrine::UploadedFile>
-photo.image[:thumb].width    #=> 300
+photo.image(:thumb)       #=> #<Shrine::UploadedFile>
+photo.image(:thumb).width #=> 300
 ```
 
 Also, since CarrierWave stores only the filename, it has to recalculate the
@@ -255,6 +244,17 @@ can be done by including the below module to all models that have CarrierWave
 attachments:
 
 ```rb
+require "shrine"
+
+Shrine.storages = {
+  cache: ...,
+  store: ...,
+}
+
+Shrine.plugin :model
+Shrine.plugin :derivatives
+```
+```rb
 module CarrierwaveShrineSynchronization
   def self.included(model)
     model.before_save do
@@ -266,22 +266,16 @@ module CarrierwaveShrineSynchronization
 
   def write_shrine_data(name)
     uploader = send(name)
+    attacher = Shrine::Attacher.form_model(self, name)
 
     if read_attribute(name).present?
-      data = uploader_to_shrine_data(uploader)
+      attacher.set shrine_file(uploader)
 
-      if uploader.versions.any?
-        data = {original: data}
-        uploader.versions.each do |name, version|
-          data[name] = uploader_to_shrine_data(version)
-        end
+      uploader.versions.each do |name, version|
+        attacher.merge_derivatives(name => shrine_file(version))
       end
-
-      # Remove the `.to_json` if you're using a JSON column, otherwise the JSON
-      # object will be saved as an escaped string.
-      write_attribute(:"#{name}_data", data.to_json)
     else
-      write_attribute(:"#{name}_data", nil)
+      attacher.set nil
     end
   end
 
@@ -289,15 +283,16 @@ module CarrierwaveShrineSynchronization
 
   # If you'll be using `:prefix` on your Shrine storage, make sure to
   # subtract it from the path assigned as `:id`.
-  def uploader_to_shrine_data(uploader)
-    filename = read_attribute(uploader.mounted_as)
+  def shrine_file(uploader)
+    name     = uploader.mounted_as
+    filename = read_attribute(name)
     path     = uploader.store_path(filename)
 
-    {
-      storage: :store,
-      id: path,
-      metadata: { filename: filename }
-    }
+    Shrine.uploaded_file(
+      storage:  :store,
+      id:       path,
+      metadata: { "filename" => filename },
+    )
   end
 end
 ```
@@ -332,8 +327,8 @@ your Shrine uploader:
 Shrine.plugin :refresh_metadata
 
 Photo.find_each do |photo|
-  attachment = ImageUploader.uploaded_file(photo.image, &:refresh_metadata!)
-  photo.update(image_data: attachment.to_json)
+  photo.image_attacher.refresh_metadata!
+  photo.save
 end
 ```
 
@@ -358,25 +353,27 @@ end
 
 #### `.process`, `.version`
 
-As explained in the "Processing" section, processing is done by overriding the
-`Shrine#process` method.
-
-#### `.before`, `.after`
-
-In Shrine you can get callbacks by loading the `hooks` plugin. Unlike
-CarrierWave, and much like Sequel, Shrine implements callbacks by overriding
-instance methods:
+Processing is defined by using the `derivatives` plugin:
 
 ```rb
 class ImageUploader < Shrine
-  plugin :hooks
+  plugin :derivatives
 
-  def after_upload(io, context)
-    super
-    # do something
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(image)
+
+    {
+      large:  magick.resize_to_limit!(800, 800),
+      medium: magick.resize_to_limit!(500, 500),
+      small:  magick.resize_to_limit!(300, 300),
+    }
   end
 end
 ```
+
+#### `.before`, `.after`
+
+There is no Shrine equivalent for CarrierWave's callbacks.
 
 #### `#store!`, `#cache!`
 
@@ -406,8 +403,9 @@ uploaded_file.download #=> #<Tempfile:/path/to/file>
 In Shrine you call `#url` on uploaded files:
 
 ```rb
-user.avatar #=> #<Shrine::UploadedFile>
-user.avatar.url #=> "/uploads/398454ujedfggf.jpg"
+photo.image     #=> #<Shrine::UploadedFile>
+photo.image.url #=> "/uploads/398454ujedfggf.jpg"
+photo.image_url #=> "/uploads/398454ujedfggf.jpg" (shorthand)
 ```
 
 #### `#identifier`
@@ -415,8 +413,8 @@ user.avatar.url #=> "/uploads/398454ujedfggf.jpg"
 This method corresponds to `#original_filename` on the uploaded file:
 
 ```rb
-user.avatar #=> #<Shrine::UploadedFile>
-user.avatar.original_filename #=> "avatar.jpg"
+photo.image                   #=> #<Shrine::UploadedFile>
+photo.image.original_filename #=> "avatar.jpg"
 ```
 
 #### `#store_dir`, `#cache_dir`
@@ -426,15 +424,14 @@ storages:
 
 ```rb
 class ImageUploader < Shrine
-  def generate_location(io, context)
-    "#{context[:record].class}/#{context[:record].id}/#{io.original_filename}"
+  def generate_location(io, record: nil, **)
+    "#{record.class}/#{record.id}/#{io.original_filename}"
   end
 end
 ```
 
-The `context` variable holds the additional data, like the attacment name and
-the record instance. You might also want to use the `pretty_location` plugin
-for automatically generating an organized folder structure.
+You might also want to use the `pretty_location` plugin for automatically
+generating an organized folder structure.
 
 #### `#default_url`
 
@@ -450,12 +447,9 @@ class ImageUploader < Shrine
 end
 ```
 
-The `context` variable holds the name of the attachment, record instance and
-in some cases the `:version`.
-
 #### `#extension_white_list`, `#extension_black_list`
 
-In Shrine extension whitelisting/blacklisting is a part of validations, and is
+In Shrine, extension whitelisting/blacklisting is a part of validations, and is
 provided by the `validation_helpers` plugin:
 
 ```rb
@@ -471,7 +465,7 @@ end
 
 #### `#blacklist_mime_type_pattern`, `#whitelist_mime_type_pattern`, `#content_type_whitelist`, `#content_type_blacklist`
 
-In Shrine MIME type whitelisting/blacklisting is part of validations, and is
+In Shrine, MIME type whitelisting/blacklisting is part of validations, and is
 provided by the `validation_helpers` plugin, though it doesn't support regexes:
 
 ```rb
@@ -490,14 +484,12 @@ end
 In Shrine file size validations are typically done using the
 `validation_helpers` plugin:
 
-
 ```rb
 class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_min_size 0
-    validate_max_size 5*1024*1024 # 5 MB
+    validate_size 0..5*1024*1024 # 5 MB
   end
 end
 ```
@@ -506,13 +498,13 @@ end
 
 Shrine doesn't have a built-in way of regenerating versions, because that's
 very individual and depends on what versions you want regenerated, what ORM are
-you using, how many records there are in your database etc. The [Regenerating
-versions] guide provides some useful tips on this task.
+you using, how many records there are in your database etc. The [Managing
+Derivatives] guide provides some useful tips on this task.
 
 ### Models
 
 The only thing that Shrine requires from your models is a `<attachment>_data`
-column (e.g. if your attachment is "avatar", you need the `avatar_data` column).
+column (e.g. if your attachment is "image", you need the `image_data` column).
 
 #### `.mount_uploader`
 
@@ -523,7 +515,7 @@ Shrine.plugin :sequel
 ```
 ```rb
 class User < Sequel::Model
-  include ImageUploader::Attachment.new(:avatar)
+  include ImageUploader::Attachment(:avatar)
 end
 ```
 
@@ -532,7 +524,7 @@ end
 The attachment module adds an attachment setter:
 
 ```rb
-user.avatar = File.open("avatar.jpg")
+photo.image = File.open("avatar.jpg", "rb")
 ```
 
 Note that unlike CarrierWave, you cannot pass in file paths, the input needs to
@@ -544,8 +536,8 @@ CarrierWave returns the uploader, but Shrine returns a `Shrine::UploadedFile`,
 a representation of the file uploaded to the storage:
 
 ```rb
-user.avatar #=> #<Shrine::UploadedFile>
-user.avatar.methods #=> [:url, :download, :read, :exists?, :delete, ...]
+photo.image #=> #<Shrine::UploadedFile>
+photo.image.methods #=> [:url, :download, :read, :exists?, :delete, ...]
 ```
 
 If attachment is missing, nil is returned.
@@ -556,13 +548,13 @@ This method is simply a shorthand for "if attachment is present, call `#url`
 on it, otherwise return nil":
 
 ```rb
-user.avatar_url #=> nil
-user.avatar = File.open("avatar.jpg")
-user.avatar_url #=> "/uploads/ksdf934rt.jpg"
+photo.image_url #=> nil
+photo.image = File.open("avatar.jpg", "rb")
+photo.image_url #=> "/uploads/ksdf934rt.jpg"
 ```
 
-The `versions` plugin extends this method to also accept a version name as the
-argument (`user.avatar_url(:thumb)`).
+The `derivatives` plugin extends this method to also accept a version name as
+the argument (`photo.image_url(:thumb)`).
 
 #### `#<attachment>_cache`
 
@@ -573,9 +565,9 @@ that you can use for retaining the cached file:
 Shrine.plugin :cached_attachment_data
 ```
 ```rb
-form_for @user do |f|
-  f.hidden_field :avatar, value: @user.cached_avatar_data
-  f.file_field :avatar
+form_for @photo do |f|
+  f.hidden_field :image, value: @photo.cached_image_data
+  f.file_field :image
 end
 ```
 
@@ -608,7 +600,7 @@ By default Shrine deletes cached and replaced files, but you can choose to keep
 those files by loading the `keep_files` plugin:
 
 ```rb
-Shrine.plugin :keep_files, cached: true, replaced: true
+Shrine.plugin :keep_files
 ```
 
 #### `move_to_cache`, `move_to_store`
@@ -632,8 +624,8 @@ class ImageUploader < Shrine
   Attacher.validate do
     # Evaluated inside an instance of Shrine::Attacher.
     if record.guest?
-      validate_max_size 2*1024*1024, message: "is too large (max is 2 MB)"
-      validate_mime_type_inclusion %w[image/jpg image/png image/gif]
+      validate_max_size 2*1024*1024, message: "must not be larger than 2 MB"
+      validate_mime_type %w[image/jpg image/png image/webp]
     end
   end
 end
@@ -709,12 +701,12 @@ plugin :url_options, store: { expires_in: 600 }
 Shrine allows you to override the S3 endpoint:
 
 ```rb
-Shrine::Storage::S3.new(endpoint: "https://s3-accelerate.amazonaws.com", **options)
+Shrine::Storage::S3.new(use_accelerate_endpoint: true, **options)
 ```
 
 [image_processing]: https://github.com/janko/image_processing
 [demo app]: https://github.com/shrinerb/shrine/tree/master/demo
-[Reprocessing versions]: /doc/regenerating_versions.md#readme
+[Managing Derivatives]: /doc/changing_derivatives.md#readme
 [shrine-fog]: https://github.com/shrinerb/shrine-fog
 [direct uploads]: /doc/direct_s3.md#readme
 [`Shrine::Storage::S3`]: /doc/storage/s3.md#readme

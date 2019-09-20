@@ -43,8 +43,8 @@ backgrounding blocks only for a specific uploader:
 ```rb
 class MyUploader < Shrine
   # register backgrounding blocks only for this uploader
-  Attacher.promote_block { PromoteJob.perform_async(record.class, record.id, name, file_data) }
-  Attacher.destroy_block { DestroyJob.perform_async(self.class, data) }
+  Attacher.promote_block { PromoteJob.perform_later(record.class, record.id, name, file_data) }
+  Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
 end
 ```
 

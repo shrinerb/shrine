@@ -5,8 +5,8 @@ Shrine is a toolkit for file attachments in Ruby applications. Some highlights:
 * **Modular design** – the [plugin system] allows you to load only the functionality you need
 * **Memory friendly** – streaming uploads and [downloads][Retrieving Uploads] make it work great with large files
 * **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and [others][external]
-* **ORM integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [Hanami::Model][hanami plugin] and [Mongoid][mongoid plugin]
-* **Flexible processing** – generate thumbnails [on upload] or [on-the-fly] using [ImageMagick][ImageProcessing::MiniMagick] or [libvips][ImageProcessing::Vips]
+* **Persistence integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [ROM][rom plugin], [Hanami::Model][hanami plugin] and [Mongoid][mongoid plugin]
+* **Flexible processing** – generate thumbnails [up front] or [on-the-fly] using [ImageMagick][ImageProcessing::MiniMagick] or [libvips][ImageProcessing::Vips]
 * **Metadata validation** – [validate files][validation] based on [extracted metadata][metadata]
 * **Direct uploads** – upload asynchronously [to your app][simple upload] or [to the cloud][presigned upload] using [Uppy]
 * **Resumable uploads** – make large file uploads [resumable][resumable upload] on [S3][uppy-s3_multipart] or [tus][tus-ruby-server]
@@ -40,7 +40,7 @@ If you're curious how it compares to other file attachment libraries, see the [A
   * [MIME type](#mime-type)
   * [Other metadata](#other-metadata)
 * [Processing](#processing)
-  * [Processing on upload](#processing-on-upload)
+  * [Processing up front](#processing-up-front)
   * [Processing on-the-fly](#processing-on-the-fly)
 * [Validation](#validation)
 * [Location](#location)
@@ -119,10 +119,10 @@ class Photo < Sequel::Model # ActiveRecord::Base
 end
 ```
 
-Let's now add the form fields which will use this virtual attribute (which is
-`image`, NOT `image_data`). We need (1) a file field for choosing files, and
-(2) a hidden field for retaining the uploaded file in case of validation errors
-and for potential [direct uploads].
+Let's now add the form fields which will use this virtual attribute (NOT the
+`<attachment>_data` column attribute). We need (1) a file field for choosing
+files, and (2) a hidden field for retaining the uploaded file in case of
+validation errors and for potential [direct uploads].
 
 ```rb
 # with Rails form builder:
@@ -251,7 +251,7 @@ organize them in any way you like.
 
 ### Uploading
 
-The main method of the uploader is `#upload`, which takes an [IO-like
+The main method of the uploader is `Shrine.upload`, which takes an [IO-like
 object][io abstraction] and a storage identifier on the input, and returns a
 representation of the [uploaded file] on the output.
 
@@ -259,8 +259,8 @@ representation of the [uploaded file] on the output.
 MyUploader.upload(file, :store) #=> #<Shrine::UploadedFile>
 ```
 
-Internally this instantiates the uploader with the storage and calls `#upload`
-on it:
+Internally this instantiates the uploader with the storage and calls
+`Shrine#upload`:
 
 ```rb
 uploader = MyUploader.new(:store)
@@ -269,13 +269,12 @@ uploader.upload(file) #=> #<Shrine::UploadedFile>
 
 Some of the tasks performed by `#upload` include:
 
-* any defined [file processing][on upload]
 * extracting [metadata]
 * generating [location]
 * uploading (this is where the [storage] is called)
 * closing the uploaded file
 
-The second argument is a `context` hash which is forwarded to places like
+The second argument is a "context" hash which is forwarded to places like
 metadata extraction and location generation, but it has a few special options:
 
 ```rb
@@ -434,10 +433,10 @@ photo.image_attacher #=> #<Shrine::Attacher>
 The `Shrine::Attacher` object can be instantiated and used directly:
 
 ```rb
-attacher = ImageUploader::Attacher.new(photo, :image)
+attacher = ImageUploader::Attacher.from_model(photo, :image)
 
 attacher.assign(file) # equivalent to `photo.image = file`
-attacher.get          # equivalent to `photo.image`
+attacher.file         # equivalent to `photo.image`
 attacher.url          # equivalent to `photo.image_url`
 ```
 
@@ -521,79 +520,65 @@ the [Extracting Metadata] guide for more details.
 
 ## Processing
 
-Shrine allows you to process attached files either "on upload" or
-"on-the-fly". For example, if your app is accepting image uploads, you can
-generate a pre-defined set of of thumbnails as soon as the image is attached to
-a record ("on upload"), or you can generate necessary thumbnails dynamically as
-they're needed ("on-the-fly").
+Shrine allows you to process attached files up front or on-the-fly. For
+example, if your app is accepting image uploads, you can generate a predefined
+set of of thumbnails when the image is attached to a record, or you can have
+thumbnails generated dynamically as they're needed.
 
-For image processing it's recommended to use the **[ImageProcessing]** gem,
+For image processing, it's recommended to use the **[ImageProcessing]** gem,
 which is a high-level wrapper for processing with [ImageMagick] (via
 [MiniMagick]) or [libvips] (via [ruby-vips]).
 
-### Processing on upload
-
-For processing "on upload", you can intercept when a cached file is being
-uploaded to permanent storage, and perform any file processing you might want.
-The [`processing`][processing plugin] plugin provides the promotion hook, while
-the [`versions`][versions plugin] plugin enables handling a hash of versions.
-
 ```sh
-$ brew install imagemagick
+$ brew install imagemagick vips
 ```
+
+### Processing up front
+
+You can use the [`derivatives`][derivatives plugin] plugin to generate a set of
+pre-defined processed files:
+
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.8"
+```
+```rb
+Shrine.plugin :derivatives
 ```
 ```rb
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :processing # allows hooking into promoting
-  plugin :versions   # enable Shrine to handle a hash of files
-  plugin :delete_raw # delete processed files after uploading
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
 
-  process(:store) do |io, context|
-    versions = { original: io } # retain original
-
-    io.download do |original|
-      pipeline = ImageProcessing::MiniMagick.source(original)
-
-      versions[:large]  = pipeline.resize_to_limit!(800, 800)
-      versions[:medium] = pipeline.resize_to_limit!(500, 500)
-      versions[:small]  = pipeline.resize_to_limit!(300, 300)
-    end
-
-    versions # return the hash of processed files
+    {
+      large:  magick.resize_to_limit!(800, 800),
+      medium: magick.resize_to_limit!(500, 500),
+      small:  magick.resize_to_limit!(300, 300),
+    }
   end
 end
 ```
-
-After the files are uploaded, their data is saved into the `<attachment>_data`
-column, and the attachment getter will read them as a Hash of
-[`Shrine::UploadedFile`][uploaded file] objects.
-
 ```rb
-photo = Photo.create(image: file) # processing is triggered
-photo.image #=>
-# {
-#   :original => #<Shrine::UploadedFile @data={"id"=>"9sd84.jpg", ...}>,
-#   :large    => #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
-#   :medium   => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
-#   :small    => #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
-# }
-
-photo.image[:medium]           #=> #<Shrine::UploadedFile>
-photo.image[:medium].url       #=> "/uploads/store/lg043.jpg"
-photo.image[:medium].size      #=> 5825949
-photo.image[:medium].mime_type #=> "image/jpeg"
-
-photo.image_url(:large) # returns version URL with fallbacks in case version is missing
+photo = Photo.new(image: file)
+photo.image_derivatives! # calls derivatives processor
+photo.save
 ```
 
-By default processing is executed synchronously, but you can choose to delay it
-into a [background job][backgrounding]. You can also do any other type of file
-processing you want, see the [File Processing] guide for more details.
+After the processed files are uploaded, their data is saved into the
+`<attachment>_data` column. You can then retrieve the derivatives as
+[`Shrine::UploadedFile`][uploaded file] objects:
+
+```rb
+photo.image(:large)            #=> #<Shrine::UploadedFile ...>
+photo.image(:large).url        #=> "/uploads/store/lg043.jpg"
+photo.image(:large).size       #=> 5825949
+photo.image(:large).mime_type  #=> "image/jpeg"
+```
+
+For more details, see the [`derivatives`][derivatives plugin] plugin
+documentation and the [File Processing] guide.
 
 ### Processing on-the-fly
 
@@ -606,12 +591,9 @@ To set it up, we mount the Rack app in our router on a chosen path prefix,
 configure the plugin with a secret key and that path prefix, and define
 processing we want to perform:
 
-```sh
-$ brew install imagemagick
-```
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.8"
 ```
 ```rb
 # config/routes.rb (Rails)
@@ -650,17 +632,19 @@ more details.
 
 ## Validation
 
-Shrine can perform file validations for files assigned to the model, with
-[`validation_helpers`][validation_helpers plugin] plugin providing some common
-validation methods:
+The [`validation`][validation plugin] plugin allows performing validation for
+attached files. For common validations, the
+[`validation_helpers`][validation_helpers plugin] plugin provides useful
+validators for built in metadata:
 
 ```rb
+Shrine.plugin :validation_helpers
+```
+```rb
 class DocumentUploader < Shrine
-  plugin :validation_helpers
-
   Attacher.validate do
     validate_max_size 5*1024*1024, message: "is too large (max is 5 MB)"
-    validate_mime_type_inclusion %w[application/pdf]
+    validate_mime_type %w[application/pdf]
   end
 end
 ```
@@ -685,9 +669,9 @@ plugin provides a good default hierarchy, but you can also override
 
 ```rb
 class ImageUploader < Shrine
-  def generate_location(io, context)
-    type  = context[:record].class.name.downcase if context[:record]
-    style = context[:version] == :original ? "originals" : "thumbs" if context[:version]
+  def generate_location(io, record: nil, derivative: nil, **)
+    type  = record.class.name.downcase if record
+    style = derivative ? "thumbs" : "originals"
     name  = super # the default unique identifier
 
     [type, style, name].compact.join("/")
@@ -706,7 +690,7 @@ uploads/
 
 Note that there should always be a random component in the location, so that
 the ORM dirty tracking is detected properly. Inside `#generate_location` you
-can also access the extracted metadata through `context[:metadata]`.
+can also access the extracted metadata through the `:metadata` option.
 
 ## Direct uploads
 
@@ -857,8 +841,8 @@ choice][Backgrounding Libraries]:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_async(record.class, record.id, name, file_data) }
-Shrine::Attacher.destroy_block { DestroyJob.perform_async(self.class, data) }
+Shrine::Attacher.promote_block { PromoteJob.perform_later(record.class, record.id, name, file_data) }
+Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
 ```
 ```rb
 class PromoteJob < ActiveJob::Base
@@ -993,7 +977,7 @@ The gem is available as open source under the terms of the [MIT License].
 [io abstraction]: #io-abstraction
 [location]: #location
 [metadata]: #metadata
-[on upload]: #processing-on-upload
+[up front]: #processing-up-front
 [on-the-fly]: #processing-on-the-fly
 [plugin system]: #plugin-system
 [simple upload]: #simple-direct-upload
@@ -1045,20 +1029,21 @@ The gem is available as open source under the terms of the [MIT License].
 [add_metadata plugin]: /doc/plugins/add_metadata.md#readme
 [backgrounding plugin]: /doc/plugins/backgrounding.md#readme
 [derivation_endpoint plugin]: /doc/plugins/derivation_endpoint.md#readme
+[derivatives plugin]: /doc/plugins/derivatives.md#readme
 [determine_mime_type plugin]: /doc/plugins/determine_mime_type.md#readme
 [instrumentation plugin]: /doc/plugins/instrumentation.md#readme
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [presign_endpoint plugin]: /doc/plugins/presign_endpoint.md#readme
 [pretty_location plugin]: /doc/plugins/pretty_location.md#readme
-[processing plugin]: /doc/plugins/processing.md#readme
 [rack_file plugin]: /doc/plugins/rack_file.md#readme
+[rom plugin]: https://github.com/shrinerb/shrine-rom
 [sequel plugin]: /doc/plugins/sequel.md#readme
 [signature plugin]: /doc/plugins/signature.md#readme
 [store_dimensions plugin]: /doc/plugins/store_dimensions.md#readme
 [upload_endpoint plugin]: /doc/plugins/upload_endpoint.md#readme
 [validation_helpers plugin]: /doc/plugins/validation_helpers.md#readme
-[versions plugin]: /doc/plugins/versions.md#readme
+[validation]: /doc/plugins/validation.md#readme
 
 <!-- Demos -->
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example

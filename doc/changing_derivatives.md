@@ -48,7 +48,7 @@ Next, we define the processing logic. In this example, we are creating a
 
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.8"
 ```
 ```rb
 require "image_processing/mini_magick"

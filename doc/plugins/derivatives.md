@@ -58,7 +58,7 @@ Here is an example of generating image thumbnails:
 
 ```rb
 # Gemfile
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 1.8"
 ```
 ```rb
 require "image_processing/mini_magick"

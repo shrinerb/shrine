@@ -6,9 +6,9 @@ attachments implemented with Shrine in your application.
 ## Callbacks
 
 When you first try to test file attachments, you might experience that files
-are simply not being promoted (uploaded from temporary to permanent storage).
-This is because your tests are likely setup to be wrapped inside database
-transactions, and that doesn't work with Shrine callbacks.
+are not being promoted to permanent storage. This is because your tests are
+likely setup to be wrapped inside database transactions, and that doesn't work
+with Shrine callbacks.
 
 Specifically, Shrine uses "after commit" callbacks for promoting and deleting
 attached files. This means that if your tests are wrapped inside transactions,
@@ -18,7 +18,7 @@ happens only after the test has already finished.
 ```rb
 # Promoting will happen only after the test transaction commits
 it "can attach images" do
-  photo = Photo.create(image: image_file)
+  photo = Photo.create(image: file)
   photo.image.storage_key #=> :cache (we expected it to be promoted to permanent storage)
 end
 ```
@@ -37,15 +37,10 @@ end
 ## Storage
 
 If you're using FileSystem storage and your tests run in a single process,
-you can switch to [memory storage][shrine-memory], which is both faster and
-doesn't require you to clean up anything between tests.
+you can switch to `Shrine::Storage::Memory`, which is both faster and doesn't
+require you to clean up anything between tests.
 
 ```rb
-# Gemfile
-gem "shrine-memory"
-```
-```rb
-# test/test_helper.rb
 require "shrine/storage/memory"
 
 Shrine.storages = {
@@ -100,41 +95,88 @@ subdomains when generating URLs.
 
 ## Test data
 
-If you're creating test data dynamically using libraries like [factory_bot],
-you can have the test file assigned dynamically when the record is created:
+We want to keep our tests fast, so when we're setting up files for tests, we
+want to avoid expensive operations such as file processing and metadata
+extraction.
+
+We can start by creating a method which would generate fake attachment data:
+
+```rb
+module TestData
+  module_function
+
+  def image_data
+    attacher = Shrine::Attacher.new
+    attacher.set(uploaded_image)
+
+    # if you're processing derivatives
+    attacher.set_derivatives(
+      large:  uploaded_image,
+      medium: uploaded_image,
+      small:  uploaded_image,
+    )
+
+    attacher.column_data
+  end
+
+  def uploaded_image
+    file = File.open("test/files/image.jpg", binmode: true)
+
+    # for performance we skip metadata extraction and assign test metadata
+    uploaded_file = Shrine.upload(file, :store, metadata: false)
+    uploaded_file.metadata.merge!(
+      "size"      => file.size,
+      "mime_type" => "image/jpeg",
+      "filename"  => "test.jpg",
+    )
+
+    uploaded_file
+  end
+end
+```
+```rb
+TestData.image_data #=> '{"id":"...","storage":"...","metadata":{...},"derivatives":{...}}'
+```
+
+With [factory_bot] you can then assign the test attachment data like this:
 
 ```rb
 factory :photo do
-  image { File.open("test/files/image.jpg") }
+  image_data { TestData.image_data }
 end
 ```
 
-On the other hand, if you're setting up test data using Rails' YAML fixtures,
-you unfortunately won't be able to use them for assigning files. This is
-because Rails fixtures only allow assigning primitive data types, and don't
-allow you to specify Shrine attributes - you can only assign to columns
-directly.
+With [Rails' YAML fixtures][fixtures] it would look like this:
 
-## Background jobs
-
-If you're using background jobs with Shrine, you probably want to make them
-synchronous in tests. Your favourite backgrounding library should already
-support this, examples:
-
-```rb
-# Sidekiq
-require "sidekiq/testing"
-Sidekiq::Testing.inline!
+```erb
+photo:
+  image_data: <%= TestData.image_data %>
 ```
 
-```rb
-# SuckerPunch
-require "sucker_punch/testing/inline"
-```
+## Unit tests
+
+For testing attachment in your unit tests, you can assign plain `File` objects:
 
 ```rb
-# ActiveJob
-ActiveJob::Base.queue_adapter = :inline
+RSpec.describe ImageUploader do
+  let(:image)       { photo.image }
+  let(:derivatives) { photo.image_derivatives }
+  let(:photo)       { Photo.create(image: File.open("test/files/image.png", "rb")) }
+
+  it "extracts metadata" do
+    expect(image.mime_type).to eq("image/png")
+    expect(image.extension).to eq("png")
+    expect(image.size).to be_instance_of(Integer)
+    expect(image.width).to be_instance_of(Integer)
+    expect(image.height).to be_instance_of(Integer)
+  end
+
+  it "generates derivatives" do
+    expect(derivatives[:small]).to  be_kind_of(Shrine::UploadedFile)
+    expect(derivatives[:medium]).to be_kind_of(Shrine::UploadedFile)
+    expect(derivatives[:large]).to  be_kind_of(Shrine::UploadedFile)
+  end
+end
 ```
 
 ## Acceptance tests
@@ -170,119 +212,61 @@ With [Rack::TestApp] you can create multipart file upload requests by using the
 http.post "/photos", multipart: {"photo[image]" => File.open("test/files/image.jpg")}
 ```
 
-## Attachment
+## Background jobs
 
-Even though all the file attachment logic is usually encapsulated in your
-uploader classes, in general it's still best to test this logic through models.
-
-In your controller the attachment attribute using the uploaded file from the
-controller, in Rails case it's an `ActionDispatch::Http::UploadedFile`.
-However, you can also assign plain `File` objects, or any other kind of IO-like
-objects.
+If you're using background jobs with Shrine, you probably want to make them
+synchronous in tests. See your backgrounding library docs for how to make jobs
+synchronous.
 
 ```rb
-describe ImageUploader do
-  it "generates image thumbnails" do
-    photo = Photo.create(image: File.open("test/files/image.png"))
-    assert_equal [:small, :medium, :large], photo.image.keys
-  end
-end
+# ActiveJob
+ActiveJob::Base.queue_adapter = :inline
 ```
-
-If you want test with an IO object that closely resembles the kind of IO that
-is assigned by your web framework, you can use this:
-
 ```rb
-require "forwardable"
-require "stringio"
-
-class FakeIO
-  attr_reader :original_filename, :content_type
-
-  def initialize(content, filename: nil, content_type: nil)
-    @io = StringIO.new(content)
-    @original_filename = filename
-    @content_type = content_type
-  end
-
-  extend Forwardable
-  delegate %i[read rewind eof? close size] => :@io
-end
+# Sidekiq
+require "sidekiq/testing"
+Sidekiq::Testing.inline!
 ```
-
 ```rb
-describe ImageUploader do
-  it "generates image thumbnails" do
-    photo = Photo.create(image: FakeIO.new(File.read("test/files/image.png")))
-    assert_equal [:small, :medium, :large], photo.image.keys
-  end
-end
+# SuckerPunch
+require "sucker_punch/testing/inline"
 ```
 
 ## Processing
 
-In tests you usually don't want to perform processing, or at least don't want
-it to be performed by default (only when you're actually testing it).
-
-If you're processing only single files, you can override the `Shrine#process`
-method in tests to return nil:
+If you're testing your attachment flow which includes processing [derivatives],
+you might want to disable the processing for certain tests. You can do this by
+temporarily overriding the processor:
 
 ```rb
-class ImageUploader
-  def process(io, context)
-    # don't do any processing
-  end
-end
-```
+module TestMode
+  module_function
 
-If you're processing versions, you can override `Shrine#process` to simply
-return a hash of unprocessed original files:
-
-```rb
-class ImageUploader
-  def process(io, context)
-    if context[:action] == :store
-      {small: io.download, medium: io.download, large: io.download}
+  def disable_processing(attacher, processor_name = :default)
+    attacher.class.instance_exec do
+      original_processor = derivatives_processor
+      derivatives_processor(processor_name) { Hash.new }
+      yield
+      derivatives_processor(processor_name, &original_processor)
     end
   end
 end
 ```
-
-However, it's even better to design your processing code in such a way that
-it's easier to swap out in tests. In your *application* code you could extract
-processing into a single `#call`-able object, and register it inside uploader
-generic `opts` hash.
-
 ```rb
-class ImageUploader < Shrine
-  opts[:processor] = ImageThumbnailsGenerator
-
-  process(:store) do |io, context|
-    opts[:processor].call(io, context)
-  end
+TestMode.disable_processing(Photo.image_attacher) do
+  photo = Photo.new
+  photo.file = File.open("test/files/image.png", "rb")
+  photo.save
 end
 ```
-
-Now in your tests you can easily swap out `ImageThumbnailsGenerator` with
-"fake" processing, which just returns the result in correct format (single file
-or hash of versions). Since the only requirement of the processor is that it
-responds to `#call`, we can just swap it out for a proc or a lambda:
-
-```rb
-ImageUploader.opts[:processor] = proc do |io, context|
-  # return unprocessed file(s)
-end
-```
-
-This also has the benefit of allowing you to test `ImageThumbnailsGenerator` in
-isolation.
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
-[shrine-memory]: https://github.com/shrinerb/shrine-memory
 [factory_bot]: https://github.com/thoughtbot/factory_bot
+[fixtures]: https://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures
 [Capybara]: https://github.com/jnicklas/capybara
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
 [Rack::Test]: https://github.com/brynary/rack-test
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
 [aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
 [MinIO]: https://min.io/
+[derivatives]: /doc/plugins/derivatives.md#readme

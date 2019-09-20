@@ -2,8 +2,8 @@
 
 Shrine does a lot to make your file uploads secure, but there are still a lot
 of security measures that could be added by the user on the application's side.
-This guide will try to cover all the well-known security issues, ranging from
-the obvious ones to not-so-obvious ones, and try to provide solutions.
+This guide will try to cover some well-known security issues, ranging from the
+obvious ones to not-so-obvious ones, and try to provide solutions.
 
 ## Validate file type
 
@@ -12,17 +12,21 @@ idea to create a whitelist (or a blacklist) of extensions and MIME types.
 
 By default Shrine stores the MIME type derived from the extension, which means
 it's not guaranteed to hold the actual MIME type of the the file. However, you
-can load the `determine_mime_type` plugin which by default uses the [file]
-utility to determine the MIME type from magic file headers.
+can load the `determine_mime_type` plugin to determine MIME type from magic
+file headers.
 
 ```rb
+# Gemfile
+gem "marcel", "~> 0.3"
+```
+```rb
 class MyUploader < Shrine
+  plugin :determine_mime_type, analyzer: :marcel
   plugin :validation_helpers
-  plugin :determine_mime_type
 
   Attacher.validate do
-    validate_extension_inclusion %w[jpg jpeg png gif]
-    validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
+    validate_extension %w[jpg jpeg png webp]
+    validate_mime_type %w[image/jpeg image/png image/webp]
   end
 end
 ```
@@ -31,22 +35,23 @@ end
 
 It's a good idea to generally limit the filesize of uploaded files, so that
 attackers cannot easily flood your storage. There are various layers at which
-you can apply filesize limits, depending on how you're accepting uploads.
-Firstly, you should probably add a filesize validation to prevent large files
-from being uploaded to `:store`:
+you can apply filesize limits, depending on how you're accepting uploads. For
+starters you can add a filesize validation to prevent large files from being
+uploaded to `:store`:
 
 ```rb
 class MyUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_max_size 20*1024*1024 # 20 MB
+    validate_max_size 100*1024*1024 # 100 MB
   end
 end
 ```
 
-In the following sections we talk about various strategies to prevent files from
-being uploaded to cache and the temporary directory.
+In the following sections we talk about various strategies to prevent files
+from being uploaded to Shrine's temporary storage and the system's temporary
+directory.
 
 ### Limiting filesize in direct uploads
 
@@ -55,7 +60,7 @@ in the `:max_size` option to reject files that are larger than the specified
 limit:
 
 ```rb
-plugin :upload_endpoint, max_size: 20*1024*1024 # 20 MB
+plugin :upload_endpoint, max_size: 100*1024*1024 # 20 MB
 ```
 
 If you're doing direct uploads to Amazon S3 using the `presign_endpoint`
@@ -63,7 +68,7 @@ plugin, you can pass in the `:content_length_range` presign option:
 
 ```rb
 plugin :presign_endpoint, presign_options: -> (request) do
-  { content_length_range: 0..20*1024*1024 }
+  { content_length_range: 0..100*1024*1024 }
 end
 ```
 
@@ -92,20 +97,17 @@ loading the `remove_invalid` plugin.
 plugin :remove_invalid
 ```
 
-### Paranoid filesize limiting
+### Failsafe filesize limiting
 
-If you want to make sure that no large files ever get to your storages, and
-you don't really care about the error message, you can use the `hooks` plugin
-and raise an error:
+If you want to make sure that no large files ever get to your storages, and you
+don't really care about the error message, you can override `Shrine#upload`:
 
 ```rb
-class MyUploader
-  plugin :hooks
+class MyUploader < Shrine
+  def upload(io, **options)
+    fail FileTooLarge if io.size >= 100*1024*1024
 
-  def before_upload(io, context)
-    if io.respond_to?(:read)
-      raise FileTooLarge if io.size >= 20*1024*1024
-    end
+    super
   end
 end
 ```
@@ -118,24 +120,43 @@ image processing, since processing them can take a lot of time and memory. This
 makes it trivial to DoS the application which doesn't have any protection
 against them.
 
-Shrine uses the [fastimage] gem for determining image dimensions which has
-built-in protection against image bombs (ImageMagick for example doesn't), but
-you still need to prevent those files from being attached and processed:
+So, in addition to validating filesize, we should also validate image
+dimensions:
 
 ```rb
-class MyUploader < Shrine
+# Gemfile
+gem "fastimage"
+```
+```rb
+class ImageUploader < Shrine
   plugin :store_dimensions
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_max_width  2500
-    validate_max_height 2500
+    validate_max_size 100*1024*1024
+
+    if validate_mime_type %w[image/jpeg image/png image/webp]
+      validate_max_dimensions [5000, 5000]
+    end
   end
 end
 ```
 
-If you're doing processing on caching, you can use the fastimage gem directly
-in a conditional.
+If you want to be extra safe, you can add a failsafe before performing
+processing:
+
+```rb
+class ImageUploader < Shrine
+  # ...
+  Attacher.derivatives_processor do |original|
+    width, height = Shrine.dimensions(original)
+
+    fail ImageBombError if width > 5000 || height > 5000
+
+    # ...
+  end
+end
+```
 
 ## Prevent metadata tampering
 
@@ -153,7 +174,7 @@ app. To guard yourself from such attacks, you can load the
 cached files on assignment and override the received metadata.
 
 ```rb
-plugin :restore_cached_data
+Shrine.plugin :restore_cached_data
 ```
 
 ## Limit number of files
@@ -172,6 +193,7 @@ class MyUploader < Shrine
 
   Attacher.validate do
     validate_min_size 10*1024 # 10 KB
+    # ...
   end
 end
 ```
@@ -183,6 +205,4 @@ end
 * [AppSec: 8 Basic Rules to Implement Secure File Uploads](https://software-security.sans.org/blog/2009/12/28/8-basic-rules-to-implement-secure-file-uploads/)
 
 [image bombs]: https://www.bamsoftware.com/hacks/deflate.html
-[fastimage]: https://github.com/sdsykes/fastimage
-[file]: http://linux.die.net/man/1/file
 [rack-attack]: https://github.com/kickstarter/rack-attack
