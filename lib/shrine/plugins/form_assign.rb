@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/form_assign.md] on GitHub.
+    #
+    # [doc/plugins/form_assign.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/form_assign.md
     module FormAssign
       def self.load_dependencies(uploader)
         uploader.plugin :entity
@@ -77,8 +80,8 @@ class Shrine
           return fields unless changed?
 
           case result_type
-          when :params     then fields[name]            = file&.to_json
-          when :attributes then fields[:"#{name}_data"] = column_data
+          when :params     then fields[name]      = file&.to_json
+          when :attributes then fields[attribute] = column_data
           else
             fail ArgumentError, "unrecognized result type: #{result_type.inspect}"
           end
@@ -93,7 +96,7 @@ class Shrine
           shrine_subclass.plugin :model
 
           # create a model class with attachment methods
-          form_class = Struct.new(:"#{name}_data")
+          form_class = Struct.new(attribute)
           form_class.include shrine_subclass::Attachment(name)
 
           # instantiate form object
