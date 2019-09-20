@@ -35,13 +35,14 @@ describe Shrine::Plugins::DataUri do
     end
 
     describe "#<name>_data_uri" do
-      it "returns nil" do
+      it "returns assigned data URI" do
         @shrine.plugin :model
         @model_class.include @shrine::Attachment.new(:file)
 
         model = @model_class.new
+        model.file_data_uri = "data:image/png,content"
 
-        assert_nil model.file_data_uri
+        assert_equal "data:image/png,content", model.file_data_uri
       end
 
       it "is not defined on entity attachment" do

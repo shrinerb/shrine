@@ -43,11 +43,11 @@ class Shrine
           super if defined?(super)
 
           define_method :"#{name}_data_uri=" do |uri|
-            send(:"#{name}_attacher").assign_data_uri(uri)
+            send(:"#{name}_attacher").data_uri = uri
           end
 
           define_method :"#{name}_data_uri" do
-            # form builders require the reader method
+            send(:"#{name}_attacher").data_uri
           end
         end
       end
@@ -113,6 +113,17 @@ class Shrine
         rescue ParseError => error
           errors.clear << data_uri_error_messsage(uri, error)
           false
+        end
+
+        # Used by `<name>_data_uri=` attachment method.
+        def data_uri=(uri)
+          assign_data_uri(uri)
+          @data_uri = uri
+        end
+
+        # Used by `<name>_data_uri` attachment method.
+        def data_uri
+          @data_uri
         end
 
         private

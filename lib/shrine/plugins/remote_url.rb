@@ -47,11 +47,11 @@ class Shrine
           super if defined?(super)
 
           define_method :"#{name}_remote_url=" do |url|
-            send(:"#{name}_attacher").assign_remote_url(url)
+            send(:"#{name}_attacher").remote_url = url
           end
 
           define_method :"#{name}_remote_url" do
-            # form builders require the reader method
+            send(:"#{name}_attacher").remote_url
           end
         end
       end
@@ -90,6 +90,17 @@ class Shrine
         rescue DownloadError => error
           errors.clear << remote_url_error_message(url, error)
           false
+        end
+
+        # Used by `<name>_data_uri=` attachment method.
+        def remote_url=(url)
+          assign_remote_url(url)
+          @remote_url = url
+        end
+
+        # Used by `<name>_data_uri` attachment method.
+        def remote_url
+          @remote_url
         end
 
         private

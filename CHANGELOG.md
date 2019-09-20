@@ -1,5 +1,9 @@
 ## HEAD
 
+* `remote_url` – Bring back `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
+
+* `data_uri` – Bring back `Attacher#data_uri=` and `Attacher#data_uri` (@janko)
+
 * `mirroring` – Allow skipping mirroring by passing `mirror: false` to `#upload` and `#delete` (@janko)
 
 * `mirroring` – Rename `Shrine.mirror_(upload|delete)` to `Shrine.mirror_(upload|delete)_block` (@janko)

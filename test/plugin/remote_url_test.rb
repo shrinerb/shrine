@@ -37,13 +37,14 @@ describe Shrine::Plugins::RemoteUrl do
     end
 
     describe "#<name>_remote_url" do
-      it "returns nil" do
+      it "returns assigned remote URL" do
         @shrine.plugin :model
         @model_class.include @shrine::Attachment.new(:file)
 
         model = @model_class.new
+        model.file_remote_url = good_url
 
-        assert_nil model.file_remote_url
+        assert_equal good_url, model.file_remote_url
       end
 
       it "is not defined for entity attachments" do
