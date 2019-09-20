@@ -2,75 +2,9 @@
 
 class Shrine
   module Plugins
-    # The backgrounding plugin allows delaying promotion and deletion into a
-    # background job.
+    # Documentation lives in [doc/plugins/backgrounding.md] on GitHub.
     #
-    # You can register promotion and deletion blocks on an instance of the
-    # attacher, and they will be called as needed.
-    #
-    # ## Promotion
-    #
-    #     attacher.promote_block do
-    #       Attachment::PromoteJob.perform_async(record, name, file_data)
-    #     end
-    #
-    #     attacher.assign(io)
-    #     attacher.finalize # promote block called
-    #
-    #     attacher.file # cached file
-    #     # ... background job finishes ...
-    #     attacher.file # stored file
-    #
-    # The promote worker can be implemented like this:
-    #
-    #     class Attachment::PromoteJob
-    #       def perform(record, name, file_data)
-    #         attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
-    #         attacher.atomic_promote
-    #       end
-    #     end
-    #
-    # ## Deletion
-    #
-    #     attacher.destroy_block do
-    #       Attachment::DestroyJob.perform_async(data)
-    #     end
-    #
-    #     previous_file = attacher.file
-    #
-    #     attacher.attach(io)
-    #     attacher.finalize # delete hook called
-    #
-    #     previous_file.exists? #=> true
-    #     # ... background job finishes ...
-    #     previous_file.exists? #=> false
-    #
-    #     attacher.destroy_attached
-    #
-    #     attacher.file.exists? #=> true
-    #     # ... background job finishes ...
-    #     attacher.file.exists? #=> false
-    #
-    # The delete worker can be implemented like this:
-    #
-    #     class Attachment::DestroyJob
-    #       def perform(data)
-    #         attacher = Shrine::Attacher.from_data(data)
-    #         attacher.destroy
-    #       end
-    #     end
-    #
-    # ## Global hooks
-    #
-    # You can also register promotion and deletion hooks globally:
-    #
-    #     Shrine::Attacher.promote_block do
-    #       Attachment::PromoteJob.perform_async(record, name, file_data)
-    #     end
-    #
-    #     Shrine::Attacher.destroy_block do
-    #       Attachment::DestroyJob.perform_async(data)
-    #     end
+    # [doc/plugins/backgrounding.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/backgrounding.md
     module Backgrounding
       def self.configure(uploader)
         uploader.opts[:backgrounding] ||= {}

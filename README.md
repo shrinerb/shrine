@@ -851,29 +851,29 @@ resumable uploads from scratch, it includes a complete JavaScript example
 
 ## Backgrounding
 
-Shrine allows you to put file deletion and promotion of cached files to
-permanent storage into a background job. The [`backgrounding`][backgrounding
-plugin] plugin provides hooks for plugging in your [favourite backgrounding
-library][Backgrounding Libraries].
+The [`backgrounding`][backgrounding plugin] allows you to move file promotion
+and deletion into a background job, using the backgrounding library [of your
+choice][Backgrounding Libraries]:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
-Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
+Shrine::Attacher.promote_block { PromoteJob.perform_async(record.class, record.id, name, file_data) }
+Shrine::Attacher.destroy_block { DestroyJob.perform_async(self.class, data) }
 ```
 ```rb
-class PromoteJob
-  include Sidekiq::Worker
-  def perform(data)
-    Shrine::Attacher.promote(data)
+class PromoteJob < ActiveJob::Base
+  def perform(record_class, record_id, name, file_data)
+    record   = Object.const_get(record_class).find(record_id) # if using Active Record
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+    attacher.atomic_promote
   end
 end
 ```
 ```rb
-class DeleteJob
-  include Sidekiq::Worker
-  def perform(data)
-    Shrine::Attacher.delete(data)
+class DestroyJob < ActiveJob::Base
+  def perform(attacher_class, data)
+    attacher = Object.const_get(attacher_class).from_data(data)
+    attacher.destroy
   end
 end
 ```

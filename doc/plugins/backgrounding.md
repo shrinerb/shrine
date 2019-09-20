@@ -1,150 +1,160 @@
 # Backgrounding
 
 The [`backgrounding`][backgrounding] plugin enables you to move promoting and
-deleting of files from record's lifecycle into background jobs. This is
-especially useful if you're doing processing and/or you're storing files on an
-external storage service.
-
-The plugin provides `Attacher.promote` and `Attacher.delete` methods, which
-allow you to hook up to promoting and deleting and spawn background jobs, by
-passing a block.
+deleting of files into background jobs. This is especially useful if you're
+processing [derivatives] and storing files to a remote storage service.
 
 ```rb
-Shrine.plugin :backgrounding
-
-# makes all uploaders use background jobs
-Shrine::Attacher.promote { |data| PromoteJob.perform_async(data) }
-Shrine::Attacher.delete { |data| DeleteJob.perform_async(data) }
+Shrine.plugin :backgrounding # load the plugin globally
 ```
 
-If you don't want to apply backgrounding for all uploaders, you can declare the
-hooks only for specific uploaders (in this case it's still recommended to keep
-the plugin loaded globally).
+The plugin provides `Attacher.promote_block` and `Attacher.destroy_block`
+methods, which allow you to register blocks that will get executed in place of
+synchronous promotion and deletion. Inside them you can spawn your background
+jobs:
+
+```rb
+# register backgrounding blocks for all uploaders
+Shrine::Attacher.promote_block { PromoteJob.perform_later(record.class, record.id, name, file_data) }
+Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
+```
+```rb
+class PromoteJob < ActiveJob::Base
+  def perform(record_class, record_id, name, file_data)
+    record   = Object.const_get(record_class).find(record_id) # if using Active Record
+    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+    attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # ignore attachment change or record deletion during promotion
+  end
+end
+
+class DestroyJob < ActiveJob::Base
+  def perform(attacher_class, data)
+    attacher = Object.const_get(attacher_class).from_data(data)
+    attacher.destroy
+  end
+end
+```
+
+If you don't want to apply backgrounding for all uploaders, you can register
+backgrounding blocks only for a specific uploader:
 
 ```rb
 class MyUploader < Shrine
-  # makes this uploader use background jobs
-  Attacher.promote { |data| PromoteJob.perform_async(data) }
-  Attacher.delete { |data| DeleteJob.perform_async(data) }
+  # register backgrounding blocks only for this uploader
+  Attacher.promote_block { PromoteJob.perform_async(record.class, record.id, name, file_data) }
+  Attacher.destroy_block { DestroyJob.perform_async(self.class, data) }
 end
 ```
 
-The yielded `data` variable is a serializable hash containing all context
-needed for promotion/deletion. Now you just need to declare the job classes,
-and inside them call `Attacher.promote` or `Attacher.delete`, this time with
-the received data.
+Backgrounding will automatically get triggered as part of your attachment flow
+if you're using `Shrine::Attachment` with a persistence plugin such as
+`activerecord` or `sequel`:
 
 ```rb
-class PromoteJob
-  include Sidekiq::Worker
-  def perform(data)
-    Shrine::Attacher.promote(data)
-  end
-end
-
-class DeleteJob
-  include Sidekiq::Worker
-  def perform(data)
-    Shrine::Attacher.delete(data)
-  end
-end
+photo = Photo.new
+photo.image = file
+photo.save    # spawns promote job
+photo.destroy # spawns destroy job
 ```
 
-This example used Sidekiq, but obviously you could just as well use any other
-backgrounding library. This setup will be applied globally for all uploaders.
-
-If you're generating versions, and you want to process some versions in the
-foreground before kicking off a background job, you can use the `recache`
-plugin.
-
-In your application you can use `Attacher#cached?` and `Attacher#stored?`
-to differentiate between your background job being in progress and
-having completed.
+In terms of `Shrine::Attacher`, the background jobs are spawned on
+`Attacher#promote_cached` (called on `Attacher#finalize`) and
+`Attacher#destroy_attached`:
 
 ```rb
-if user.avatar_attacher.cached? # background job is still in progress
-  # ...
-elsif user.avatar_attacher.stored? # background job has finished
-  # ...
-end
+attacher.assign(file)
+attacher.finalize         # spawns promote job
+attacher.destroy_attached # spawns destroy job
 ```
 
-## `Attacher.promote` and `Attacher.delete`
+## Promotion
 
-In background jobs, `Attacher.promote` and `Attacher.delete` will resolve all
-necessary objects, and do the promotion/deletion. If `Attacher.find_record` is
-defined (which comes with ORM plugins), model instances will be treated as
-database records, with the `#id` attribute assumed to represent the primary
-key. Then promotion will have the following behaviour:
-
-1. retrieves the database record
-  * if record is not found, it finishes
-  * if record is found but attachment has changed, it finishes
-2. uploads cached file to permanent storage
-3. reloads the database record
-  * if record is not found, it deletes the promoted files and finishes
-  * if record is found but attachment has changed, it deletes the promoted files and finishes
-4. updates the record with the promoted files
-
-Both `Attacher.promote` and `Attacher.delete` return a `Shrine::Attacher`
-instance (if the action hasn't aborted), so you can use it to perform
-additional tasks:
+While background deletion acts only on file data, background promotion is more
+complex as it deals with persistence and concurrency safety:
 
 ```rb
-def perform(data)
-  attacher = Shrine::Attacher.promote(data)
-  attacher.record.update(published: true) if attacher && attacher.record.is_a?(Post)
-end
+attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+attacher.atomic_promote
 ```
 
-### Plain models
+The `Attacher.retrieve` and `Attacher#atomic_promote` methods are provided by
+the [`atomic_helpers`][atomic_helpers] plugin, which is automatically loaded
+by your persistence plugin (`activerecord`, `sequel`). They add concurrency
+safety by verifying that the attachment hasn't changed on the outside during
+promotion.
 
-You can also do backgrounding with plain models which don't represent database
-records; the plugin will use that mode if `Attacher.find_record` is not
-defined. In that case promotion will have the following behaviour:
-
-1. instantiates the model
-2. uploads cached file to permanent storage
-3. writes promoted files to the model instance
-
-You can then retrieve the promoted files via the attacher object that
-`Attacher.promote` returns, and do any additional tasks if you need to.
-
-## `Attacher#_promote` and `Attacher#_delete`
-
-The plugin modifies `Attacher#_promote` and `Attacher#_delete` to call the
-registered blocks with serializable attacher data, and these methods are
-internally called by the attacher. `Attacher#promote` and `Attacher#delete!`
-remain synchronous.
+When we remove the concurrency safety, promotion would look like this:
 
 ```rb
-# asynchronous (spawn background jobs)
-attacher._promote
-attacher._delete(attachment)
-
-# synchronous
+attacher = record.send(:"#{name}_attacher")
 attacher.promote
-attacher.delete!(attachment)
+attacher.persist
 ```
 
-## `Attacher.dump` and `Attacher.load`
-
-The plugin adds `Attacher.dump` and `Attacher.load` methods for serializing
-attacher object and loading it back up. You can use them to spawn background
-jobs for custom tasks.
+If you're not using the `Shrine::Attachment` module, you'll need to make sure
+to use the attacher class for the correct uploader:
 
 ```rb
-data = Shrine::Attacher.dump(attacher)
-SomethingJob.perform_async(data)
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_later(self.class, record.class, record.id, name, file_data)
+end
+```
+```rb
+class PromoteJob < ActiveJob::Base
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id)
 
-# ...
-
-class SomethingJob
-  def perform(data)
-    attacher = Shrine::Attacher.load(data)
-    # ...
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+    attacher.atomic_promote
   end
 end
+```
+
+## Backgrounding blocks
+
+The blocks registered by `Attacher.promote_block` and `Attacher#destroy_block`
+are by default evaluated in context of a `Shrine::Attacher` instance. You can
+also use the explicit version by declaring an attacher argument:
+
+```rb
+Shrine::Attacher.promote_block do |attacher|
+  PromoteJob.perform_later(
+    attacher.record.class,
+    attacher.record.id,
+    attacher.name,
+    attacher.file_data,
+  )
+end
+
+Shrine::Attacher.destroy_block do |attacher|
+  PromoteJob.perform_later(
+    attacher.class,
+    attacher.data,
+  )
+end
+```
+
+You can also register backgrounding blocks on attacher *instances* for more
+flexibility:
+
+```rb
+photo.image_attacher.promote_block do |attacher|
+  PromoteJob.perform_later(
+    attacher.record.class,
+    attacher.record.id,
+    attacher.name,
+    attacher.file_data,
+    current_user.id, # pass arguments known at the controller level
+  )
+end
+
+photo.image = file
+photo.save # executes the promote block above
 ```
 
 [backgrounding]: /lib/shrine/plugins/backgrounding.rb
+[derivatives]: /doc/plugins/derivatives.md#readme
+[atomic_helpers]: /doc/plugins/atomic_helpers.md#readme
