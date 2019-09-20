@@ -18,13 +18,7 @@ class Shrine
         }.inspect}"
       end
 
-      DOWNLOADER = -> (url, options) do
-        begin
-          Down.download(url, options)
-        rescue Down::Error => error
-          raise DownloadError, error.message
-        end
-      end
+      DOWNLOADER = -> (url, options) { Down.download(url, options) }
 
       def self.load_dependencies(uploader, *)
         uploader.plugin :validation
@@ -64,11 +58,21 @@ class Shrine
           options = { max_size: opts[:remote_url][:max_size] }.merge(options)
 
           instrument_remote_url(url, options) do
-            opts[:remote_url][:downloader].call(url, options)
+            download_remote_url(url, options)
           end
         end
 
         private
+
+        def download_remote_url(url, options)
+          opts[:remote_url][:downloader].call(url, options)
+        rescue Down::NotFound
+          fail DownloadError, "remote file not found"
+        rescue Down::TooLarge
+          fail DownloadError, "remote file too large"
+        rescue DownloadError
+          fail
+        end
 
         # Sends a `remote_url.shrine` event for instrumentation plugin.
         def instrument_remote_url(url, options, &block)

@@ -1,5 +1,7 @@
 ## HEAD
 
+* `remote_url` – Convert only `Down::Error` and `DownloadError` exceptions into validation errors (@janko)
+
 * `remote_url` – Bring back `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
 
 * `data_uri` – Bring back `Attacher#data_uri=` and `Attacher#data_uri` (@janko)
@@ -176,7 +178,7 @@
 
 * `upload_endpoint` – Stop passing `Rack::Request` object to the uploader (@janko)
 
-* `remote_url` – Require custom downlodaers to raise `Shrine::Plugins::RemoteUrl::DownloadError` for conversion into a validation error (@janko)
+* `remote_url` – Require custom downloaders to raise `Shrine::Plugins::RemoteUrl::DownloadError` for conversion into a validation error (@janko)
 
 * `remote_url` – Remove `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
 

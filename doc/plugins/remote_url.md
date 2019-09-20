@@ -48,11 +48,26 @@ gem "http"
 ```rb
 require "down/http"
 
-down = Down::Http.new do |client|
-  client.follow(max_hops: 2).timeout(connect: 2, read: 2)
-end
+plugin :remote_url, downloader: -> (url, **options) {
+  Down::Http.download(url, **options) do |client|
+    client.follow(max_hops: 2).timeout(connect: 2, read: 2)
+  end
+}
+```
 
-plugin :remote_url, downloader: down.method(:download), ...
+Any `Down::NotFound` and `Down::TooLarge` exceptions will be rescued and
+converted into validation errors. If you want to convert any other exceptions
+into validation errors, you can raise them as
+`Shrine::Plugins::RemoteUrl::DownloadError`:
+
+```rb
+plugin :remote_url, downloader: -> (url, **options) {
+  begin
+    RestClient.get(url)
+  rescue RestClient::ExceptionWithResponse => error
+    raise Shrine::Plugins::RemoteUrl::DownloadError, "remote file not found"
+  end
+}
 ```
 
 ## Uploader options

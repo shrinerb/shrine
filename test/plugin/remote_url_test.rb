@@ -8,7 +8,7 @@ describe Shrine::Plugins::RemoteUrl do
     @shrine   = @attacher.shrine_class
 
     Down.stubs(:download).with(good_url, max_size: nil).returns(StringIO.new("remote file"))
-    Down.stubs(:download).with(bad_url, max_size: nil).raises(Down::Error.new("file not found"))
+    Down.stubs(:download).with(bad_url, max_size: nil).raises(Down::NotFound.new("file not found"))
   end
 
   describe "Attachment" do
@@ -79,6 +79,44 @@ describe Shrine::Plugins::RemoteUrl do
         file = @shrine.remote_url("foo")
 
         assert_equal "foo", file.read
+      end
+
+      it "re-raises Down::NotFound errors" do
+        @shrine.plugin :remote_url, downloader: -> (url, **) { raise Down::NotFound }
+
+        error = assert_raises Shrine::Plugins::RemoteUrl::DownloadError do
+          @shrine.remote_url("foo")
+        end
+
+        assert_equal "remote file not found", error.message
+      end
+
+      it "re-raises Down::TooLarge errors" do
+        @shrine.plugin :remote_url, downloader: -> (url, **) { raise Down::TooLarge }
+
+        error = assert_raises Shrine::Plugins::RemoteUrl::DownloadError do
+          @shrine.remote_url("foo")
+        end
+
+        assert_equal "remote file too large", error.message
+      end
+
+      it "re-raises DownloadError errors" do
+        @shrine.plugin :remote_url, downloader: -> (url, **) { raise Shrine::Plugins::RemoteUrl::DownloadError, "custom message" }
+
+        error = assert_raises Shrine::Plugins::RemoteUrl::DownloadError do
+          @shrine.remote_url("foo")
+        end
+
+        assert_equal "custom message", error.message
+      end
+
+      it "propagates other exceptions" do
+        @shrine.plugin :remote_url, downloader: -> (url, **) { raise KeyError }
+
+        assert_raises KeyError do
+          @shrine.remote_url("foo")
+        end
       end
 
       describe "with instrumentation" do
@@ -178,11 +216,11 @@ describe Shrine::Plugins::RemoteUrl do
           assert_empty @attacher.errors
 
           @attacher.assign_remote_url(bad_url)
-          assert_equal ["download failed: file not found"], @attacher.errors
+          assert_equal ["download failed: remote file not found"], @attacher.errors
 
           Down.stubs(:download).with(bad_url, max_size: nil).raises(Down::TooLarge.new("file is too large"))
           @attacher.assign_remote_url(bad_url)
-          assert_equal ["download failed: file is too large"], @attacher.errors
+          assert_equal ["download failed: remote file too large"], @attacher.errors
         end
 
         it "accepts custom validation error message" do
@@ -196,7 +234,7 @@ describe Shrine::Plugins::RemoteUrl do
 
           @shrine.plugin :remote_url, error_message: -> (url, error) { error.message }
           @attacher.assign_remote_url(bad_url)
-          assert_equal ["file not found"], @attacher.errors
+          assert_equal ["remote file not found"], @attacher.errors
         end
 
         it "clears any previous errors" do
