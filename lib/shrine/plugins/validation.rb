@@ -2,6 +2,9 @@
 
 class Shrine
   module Plugins
+    # Documentation lives in [doc/plugins/validation.md] on GitHub.
+    #
+    # [doc/plugins/validation.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/validation.md
     module Validation
       module AttacherClassMethods
         # Block that is executed in context of Shrine::Attacher during

@@ -140,7 +140,7 @@ end
 class ImageUploader < ApplicationUploader
   Attacher.validate do
     super() # empty braces are required
-    validate_mime_type_inclusion %w[image/jpeg image/jpg image/png]
+    validate_mime_type %w[image/jpeg image/png image/webp]
   end
 end
 ```
