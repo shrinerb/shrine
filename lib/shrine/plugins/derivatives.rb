@@ -6,6 +6,8 @@ class Shrine
     #
     # [doc/plugins/derivatives.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/derivatives.md
     module Derivatives
+      NOOP_PROCESSOR = -> (*) { Hash.new }
+
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Derivatives (#{event.duration}ms) – #{{
           processor:         event[:processor],
@@ -52,12 +54,16 @@ class Shrine
         #     Attacher.derivatives_processor :thumbnails do |original|
         #       # ...
         #     end
-        def derivatives_processor(name, &block)
+        def derivatives_processor(name = :default, &block)
           if block
             shrine_class.opts[:derivatives][:processors][name.to_sym] = block
           else
-            shrine_class.opts[:derivatives][:processors][name.to_sym] or
-              fail Error, "derivatives processor #{name.inspect} not registered"
+            processor   = shrine_class.opts[:derivatives][:processors][name.to_sym]
+            processor ||= NOOP_PROCESSOR if name == :default
+
+            fail Error, "derivatives processor #{name.inspect} not registered" unless processor
+
+            processor
           end
         end
 
@@ -252,22 +258,22 @@ class Shrine
         #
         #     attacher.process_derivatives(:thumbnails)
         #     #=> { small: #<File:...>, medium: #<File:...>, large: #<File:...> }
-        def process_derivatives(processor_name, source = file!, **options)
-          processor    = self.class.derivatives_processor(processor_name)
-          fetch_source = source.is_a?(UploadedFile) ? source.method(:download) : source.method(:tap)
-          result       = nil
+        def process_derivatives(processor_name = :default, source = nil, **options)
+          # handle receiving only source file without a processor
+          unless processor_name.respond_to?(:to_sym)
+            source         = processor_name
+            processor_name = :default
+          end
 
-          fetch_source.call do |source_file|
-            instrument_derivatives(processor_name, options) do
-              result = instance_exec(source_file, **options, &processor)
+          source ||= file!
+
+          if source.is_a?(UploadedFile)
+            source.download do |file|
+              _process_derivatives(processor_name, file, **options)
             end
+          else
+            _process_derivatives(processor_name, source, **options)
           end
-
-          unless result.is_a?(Hash)
-            fail Error, "expected derivatives processor #{processor_name.inspect} to return a Hash, got #{result.inspect}"
-          end
-
-          result
         end
 
         # Deep merges given uploaded derivatives with current derivatives.
@@ -460,6 +466,21 @@ class Shrine
         end
 
         private
+
+        # Calls the derivatives processor with the source file and options.
+        def _process_derivatives(processor_name, source, **options)
+          processor = self.class.derivatives_processor(processor_name)
+
+          result = instrument_derivatives(processor_name, options) do
+            instance_exec(source, **options, &processor)
+          end
+
+          unless result.is_a?(Hash)
+            fail Error, "expected derivatives processor #{processor_name.inspect} to return a Hash, got #{result.inspect}"
+          end
+
+          result
+        end
 
         # Sends a `derivatives.shrine` event for instrumentation plugin.
         def instrument_derivatives(processor_name, processor_options, &block)

@@ -5,13 +5,14 @@ the main attached file. The processed file data will be saved together with the
 main attachment data in the same record attribute.
 
 ```rb
-plugin :derivatives
+Shrine.plugin :derivatives
 ```
 
 ## Contents
 
 * [API overview](#api-overview)
 * [Creating derivatives](#creating-derivatives)
+  - [Naming processors](#naming-processors)
   - [Derivatives storage](#derivatives-storage)
   - [Nesting derivatives](#nesting-derivatives)
 * [Retrieving derivatives](#retrieving-derivatives)
@@ -63,15 +64,13 @@ gem "image_processing", "~> 1.2"
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  plugin :derivatives
-
-  Attacher.derivatives_processor :thumbnails do |original|
-    processor = ImageProcessing::MiniMagick.source(original)
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
 
     {
-      small:  processor.resize_to_limit!(300, 300),
-      medium: processor.resize_to_limit!(500, 500),
-      large:  processor.resize_to_limit!(800, 800),
+      small:  magick.resize_to_limit!(300, 300),
+      medium: magick.resize_to_limit!(500, 500),
+      large:  magick.resize_to_limit!(800, 800),
     }
   end
 end
@@ -82,20 +81,13 @@ class Photo < Model(:image_data)
 end
 ```
 ```rb
-photo.image #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
-photo.image_derivatives #=> {}
-
-photo.image_derivatives!(:thumbnails) # calls registered processor and uploads results
-photo.image_derivatives #=>
-# {
-#   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store ...>,
-#   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store ...>,
-#   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store ...>,
-# }
+photo = Photo.new(image: file)
+photo.image_derivatives! # calls derivatives processor and uploads results
+photo.save
 ```
 
-The derivatives data is stored in the `#<name>_data` record attribute alongside
-the main file data:
+Once derivatives have been created, their data is stored in the `#<name>_data`
+record attribute alongside the main file data:
 
 ```rb
 photo.image_data #=>
@@ -111,16 +103,23 @@ photo.image_data #=>
 # }
 ```
 
+You can then retrieve derivatives as follows:
+
+```rb
+photo.image(:large)           #=> #<Shrine::UploadedFile>
+photo.image(:large).url       #=> "https://s3.amazonaws.com/path/to/large.jpg"
+photo.image(:large).size      #=> 43843
+photo.image(:large).mime_type #=> "image/jpeg"
+```
+
 The `#<name>_derivatives!` model method delegates to
 `Attacher#create_derivatives`, which you can use if you're using
 `Shrine::Attacher` directly:
 
 ```rb
-attacher.file #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
-attacher.derivatives #=> {}
-
-attacher.create_derivatives(:thumbnails) # calls registered processor and uploads results
-attacher.derivatives #=>
+attacher.file               #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
+attacher.create_derivatives # calls registered processor and uploads results
+attacher.derivatives        #=>
 # {
 #   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store ...>,
 #   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store ...>,
@@ -130,14 +129,39 @@ attacher.derivatives #=>
 
 By default, the `Attacher#create_derivatives` method downloads the attached
 file, calls the processor, uploads results to attacher's permanent storage, and
-saves uploaded files on the attacher.
-
-Any additional arguments are forwarded to
+saves uploaded files on the attacher. Any additional arguments are forwarded to
 [`Attacher#process_derivatives`](#processing-derivatives):
 
 ```rb
-attacher.create_derivatives(:thumbnails, different_source) # pass a different source file
-attacher.create_derivatives(:thumbnails, foo: "bar")       # pass custom options to the processor
+attacher.create_derivatives(different_source) # pass a different source file
+attacher.create_derivatives(foo: "bar")       # pass custom options to the processor
+```
+
+### Naming processors
+
+If you want to have multiple processors for an uploader, you can assign each
+processor a name. Then when creating derivatives you can specify the name of
+the desired processor.
+
+```rb
+class ImageUploader < Shrine
+  Attacher.derivatives_processor :thumbnails do |original|
+    # ...
+  end
+
+  Attacher.derivatives_processor :crop do |original|
+    # ...
+  end
+
+  # ...
+end
+```
+```rb
+# ...
+photo.image_derivatives!(:thumbnails)
+# or
+attacher.create_derivatives(:thumbnails)
+# ...
 ```
 
 ### Derivatives storage
@@ -244,7 +268,7 @@ photo.image_derivatives #=> { thumbnail: { small: ..., medium: ..., large: ... }
 
 photo.image_derivatives.dig(:thumbnail, :small) #=> #<Shrine::UploadedFile>
 photo.image_derivatives(:thumbnail, :small)     #=> #<Shrine::UploadedFile>
-photo.image(:thumbnails :small)                 #=> #<Shrine::UploadedFile>
+photo.image(:thumbnails, :small)                #=> #<Shrine::UploadedFile>
 ```
 
 When using `Shrine::Attacher` directly, you can retrieve derivatives using

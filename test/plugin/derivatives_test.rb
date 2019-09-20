@@ -56,6 +56,18 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "elif", model.file_derivatives[:reversed].read
       end
 
+      it "creates default derivatives" do
+        @attacher.class.derivatives_processor do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        file  = @attacher.upload(fakeio("file"))
+        model = @model_class.new(file_data: file.to_json)
+        model.file_derivatives!
+
+        assert_equal "elif", model.file_derivatives[:reversed].read
+      end
+
       it "accepts original file" do
         @attacher.class.derivatives_processor :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
@@ -471,6 +483,18 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "elif", @attacher.derivatives[:reversed].read
       end
 
+      it "calls default processor" do
+        @attacher.class.derivatives_processor do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        @attacher.attach fakeio("file")
+        @attacher.create_derivatives
+
+        assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:reversed]
+        assert_equal "elif", @attacher.derivatives[:reversed].read
+      end
+
       it "forwards original file to processor" do
         @attacher.class.derivatives_processor :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
@@ -676,6 +700,18 @@ describe Shrine::Plugins::Derivatives do
         assert_equal "elif", files[:reversed].read
       end
 
+      it "calls the default processor" do
+        @attacher.class.derivatives_processor do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        @attacher.attach fakeio("file")
+        files = @attacher.process_derivatives
+
+        assert_instance_of StringIO, files[:reversed]
+        assert_equal "elif", files[:reversed].read
+      end
+
       it "passes downloaded attached file" do
         minitest = self
         @attacher.class.derivatives_processor :reversed do |original|
@@ -693,10 +729,18 @@ describe Shrine::Plugins::Derivatives do
           { reversed: StringIO.new(original.read.reverse) }
         end
 
-        @attacher.attach fakeio("file")
-        @attacher.file.expects(:download).never
-
         files = @attacher.process_derivatives(:reversed, fakeio("other"))
+
+        assert_instance_of StringIO, files[:reversed]
+        assert_equal "rehto", files[:reversed].read
+      end
+
+      it "allows passing source file with default processor" do
+        @attacher.class.derivatives_processor do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        files = @attacher.process_derivatives(fakeio("other"))
 
         assert_instance_of StringIO, files[:reversed]
         assert_equal "rehto", files[:reversed].read
@@ -771,6 +815,13 @@ describe Shrine::Plugins::Derivatives do
         assert_raises Shrine::Error do
           @attacher.process_derivatives(:unknown)
         end
+      end
+
+      it "doesn't fail for missing default processor" do
+        @attacher.attach(fakeio)
+        @attacher.process_derivatives
+
+        assert_equal Hash.new, @attacher.derivatives
       end
 
       it "fails if no file is attached" do

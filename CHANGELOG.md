@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivatives` – Add support for default processors (@janko)
+
 * `remote_url` – Convert only `Down::Error` and `DownloadError` exceptions into validation errors (@janko)
 
 * `remote_url` – Bring back `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
