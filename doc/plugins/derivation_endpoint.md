@@ -117,13 +117,12 @@ derivation :thumbnail do |file, arg1, arg2, ...|
 
   # ... do processing ...
 
-  # return result as a File/Tempfile object or String/Pathname path
+  # return result as a File or Tempfile object
 end
 ```
 
-The derivation block is expected to return the processed file is a
-`File`/`Tempfile` object or a `String`/`Pathname` path. The resulting file is
-then rendered in the HTTP response.
+The derivation block is expected to return the processed file as a `File` or
+`Tempfile` object. The resulting file is then rendered in the HTTP response.
 
 ### Performance
 

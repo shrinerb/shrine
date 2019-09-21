@@ -839,38 +839,11 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "gray content", File.read(result.path)
       end
 
-      it "rewinds, flushes, and binmodes Files" do
-        tempfile = Tempfile.new
-        file = File.open(tempfile.path, "w")
-        file << "gray content"
-        @shrine.derivation(:gray) { file }
-        result = @uploaded_file.derivation(:gray).generate
-        assert_instance_of File, result
-        refute result.closed?
-        assert result.binmode?
-        assert_equal "gray content", result.read
-        assert_equal "gray content", File.read(result.path)
-      end
-
-      it "accepts String paths" do
-        tempfile = Tempfile.new
-        tempfile << "gray content"
-        tempfile.open
-        @shrine.derivation(:gray) { tempfile.path }
-        result = @uploaded_file.derivation(:gray).generate
-        assert_instance_of File, result
-        refute result.closed?
-        assert result.binmode?
-        assert_equal "gray content", result.read
-        assert_equal "gray content", File.read(result.path)
-      end
-
-      it "accepts Pathname paths" do
+      it "binmodes files" do
         tempfile = tempfile("gray content")
-        @shrine.derivation(:gray) { Pathname(tempfile.path) }
+        @shrine.derivation(:gray) { File.open(tempfile.path) }
         result = @uploaded_file.derivation(:gray).generate
         assert_instance_of File, result
-        refute result.closed?
         assert result.binmode?
         assert_equal "gray content", result.read
         assert_equal "gray content", File.read(result.path)

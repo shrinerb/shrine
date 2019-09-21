@@ -1,5 +1,9 @@
 ## HEAD
 
+* `derivation_endpoint` – Stop re-opening `File` objects returned in derivation result (@janko)
+
+* `derivation_endpoint` – Allow only `File` or `Tempfile` object as derivation result (@janko)
+
 * `derivatives` – Add support for default processors (@janko)
 
 * `remote_url` – Convert only `Down::Error` and `DownloadError` exceptions into validation errors (@janko)

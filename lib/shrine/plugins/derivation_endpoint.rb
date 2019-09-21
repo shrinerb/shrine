@@ -606,16 +606,12 @@ class Shrine
     # Massages the derivation result, ensuring it's opened in binary mode,
     # rewinded and flushed to disk.
     def normalize(derivative)
-      derivative =
-        case derivative
-        when Tempfile         then derivative.tap(&:open)
-        when File             then File.open(derivative.tap(&:close))
-        when String, Pathname then File.open(derivative)
-        else
-          fail Error, "unexpected derivation result: #{derivation.inspect} (expected File, Tempfile, String, or Pathname object)"
-        end
+      unless derivative.is_a?(File) || derivative.is_a?(Tempfile)
+        fail Error, "expected File or Tempfile object as derivation result, got #{derivative.inspect}"
+      end
 
-      derivative.binmode
+      derivative.open if derivative.is_a?(Tempfile) # refresh file descriptor
+      derivative.binmode # ensure binary mode
       derivative
     end
 
