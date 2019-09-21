@@ -56,7 +56,7 @@ require "image_processing/mini_magick"
 class ImageUploader < Shrine
   plugin :derivatives
 
-  Attacher.derivatives_processor :thumbnails do |original|
+  Attacher.derivatives_processor do |original|
     processor = ImageProcessing::MiniMagick.source(original)
 
     # generate the thumbnails you want here
@@ -139,7 +139,7 @@ Let's assume we want to change the size of the `medium` thumbnail and have
 deployed the following change: 
 
 ```diff
-Attacher.derivatives_processor :thumbnails do |original|
+Attacher.derivatives_processor do |original|
   processor = ImageProcessing::MiniMagick.source(original)
 
   {
@@ -189,7 +189,7 @@ Let's assume we added a new derivative `x_large` to `thumbnails` processor
 and have deployed the following change: 
 
 ```diff
-Attacher.derivatives_processor :thumbnails do |original|
+Attacher.derivatives_processor do |original|
   processor = ImageProcessing::MiniMagick.source(original)
 
   {
@@ -240,7 +240,7 @@ Let's assume we removed the `x_large` derivative in the `thumbnails` processor
 and have deployed the following change:
 
 ```diff
-Attacher.derivatives_processor :thumbnails do |original|
+Attacher.derivatives_processor do |original|
   processor = ImageProcessing::MiniMagick.source(original)
 
   {

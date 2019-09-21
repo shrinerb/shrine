@@ -19,7 +19,6 @@ class ImageUploader < Shrine
   plugin :pretty_location
   plugin :validation_helpers
   plugin :store_dimensions, log_subscriber: nil
-  plugin :derivatives
   plugin :derivation_endpoint, prefix: "derivations/image"
 
   # File validations (requires `validation_helpers` plugin)
@@ -32,7 +31,7 @@ class ImageUploader < Shrine
   end
 
   # Thumbnails processor (requires `derivatives` plugin)
-  Attacher.derivatives_processor :thumbnails do |original|
+  Attacher.derivatives_processor do |original|
     THUMBNAILS.inject({}) do |result, (name, (width, height))|
       result.merge! name => THUMBNAILER.call(original, width, height)
     end

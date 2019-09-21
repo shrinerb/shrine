@@ -165,7 +165,7 @@ background job:
 
 ```rb
 class ImageUploader < Shrine
-  Attacher.derivatives_processor :thumbnails do |original|
+  Attacher.derivatives_processor do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {

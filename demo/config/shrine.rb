@@ -41,6 +41,7 @@ Shrine.plugin :determine_mime_type, analyzer: :marcel, log_subscriber: nil
 Shrine.plugin :cached_attachment_data
 Shrine.plugin :restore_cached_data
 Shrine.plugin :derivation_endpoint, secret_key: "secret"
+Shrine.plugin :derivatives
 
 if ENV["RACK_ENV"] == "production"
   Shrine.plugin :presign_endpoint, presign_options: -> (request) {
