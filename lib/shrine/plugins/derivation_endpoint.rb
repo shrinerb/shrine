@@ -605,14 +605,14 @@ class Shrine
 
     # Massages the derivation result, ensuring it's opened in binary mode,
     # rewinded and flushed to disk.
-    def normalize(derivative)
-      unless derivative.is_a?(File) || derivative.is_a?(Tempfile)
-        fail Error, "expected File or Tempfile object as derivation result, got #{derivative.inspect}"
+    def normalize(file)
+      unless file.is_a?(File) || file.is_a?(Tempfile)
+        fail Error, "expected File or Tempfile object as derivation result, got #{file.inspect}"
       end
 
-      derivative.open if derivative.is_a?(Tempfile) # refresh file descriptor
-      derivative.binmode # ensure binary mode
-      derivative
+      file.open if file.is_a?(Tempfile) # refresh file descriptor
+      file.binmode                      # ensure binary mode
+      file
     end
 
     def with_downloaded(file, &block)

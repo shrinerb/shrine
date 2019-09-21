@@ -1,5 +1,9 @@
 ## HEAD
 
+* `derivatives` – Ensure binary mode for `File` and `Tempfile` objects (@janko)
+
+* `derivatives` – Ensure refreshed file descriptor for `Tempfile` objects (@janko)
+
 * `derivation_endpoint` – Stop re-opening `File` objects returned in derivation result (@janko)
 
 * `derivation_endpoint` – Allow only `File` or `Tempfile` object as derivation result (@janko)

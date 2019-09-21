@@ -663,6 +663,21 @@ describe Shrine::Plugins::Derivatives do
         assert_equal :other_store, derivative.storage_key
       end
 
+      it "refreshes Tempfile descriptor" do
+        tempfile = Tempfile.new
+        File.write(tempfile.path, "content")
+
+        derivative = @attacher.upload_derivative(:one, tempfile)
+
+        assert_equal "content", derivative.read
+      end
+
+      it "ensures binary mode" do
+        @attacher.store.storage.expects(:upload).with { |file, *| file.binmode? }
+
+        @attacher.upload_derivative(:one, Tempfile.new)
+      end
+
       it "passes derivative name to the uploader" do
         @shrine.expects(:upload).with { |*args, derivative:, **| derivative == :one }
         @attacher.upload_derivative(:one, fakeio)

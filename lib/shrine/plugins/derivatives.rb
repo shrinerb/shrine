@@ -241,6 +241,9 @@ class Shrine
         def upload_derivative(path, file, storage: nil, **options)
           storage ||= derivative_storage(path)
 
+          file.open    if file.is_a?(Tempfile)       # refresh file descriptor
+          file.binmode if file.respond_to?(:binmode) # ensure binary mode
+
           upload(file, storage, derivative: path, delete: true, **options)
         end
 
