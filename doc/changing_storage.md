@@ -3,9 +3,6 @@
 This guides shows how to move file attachments to a different storage in 
 production, with zero downtime.
 
-_Note: The examples use the [Sequel] ORM, but it should easily translate to
-Active Record._
-
 Let's assume we have a `Photo` model with an `image` file attachment stored
 in AWS S3 storage:
 
@@ -15,7 +12,7 @@ Shrine.storages = {
   store: Shrine::Storage::S3.new(...),
 }
 
-Shrine.plugin :sequel
+Shrine.plugin :activerecord
 ```
 ```rb
 class ImageUploader < Shrine
@@ -23,7 +20,7 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-class Photo < Sequel::Model
+class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image)
 end
 ```
@@ -60,7 +57,7 @@ storage using the following script. It fetches the photos in batches, downloads
 the image, and re-uploads it to the new storage. 
 
 ```rb
-Photo.paged_each do |photo|
+Photo.find_each do |photo|
   attacher = photo.image_attacher
 
   next unless attacher.stored?
@@ -107,5 +104,4 @@ Shrine.storages = {
 - Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage
 ```
 
-[Sequel]: http://sequel.jeremyevans.net/
 [mirroring backgrounding]: /doc/plugins/mirroring.md#backgrounding

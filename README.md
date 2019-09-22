@@ -841,22 +841,23 @@ choice][Backgrounding Libraries]:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(record.class, record.id, name, file_data) }
+Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
 Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
 ```
 ```rb
 class PromoteJob < ActiveJob::Base
-  def perform(record_class, record_id, name, file_data)
-    record   = Object.const_get(record_class).find(record_id) # if using Active Record
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment has changed or the record has been deleted, nothing to do
   end
 end
 ```
 ```rb
 class DestroyJob < ActiveJob::Base
   def perform(attacher_class, data)
-    attacher = Object.const_get(attacher_class).from_data(data)
+    attacher = attacher_class.from_data(data)
     attacher.destroy
   end
 end

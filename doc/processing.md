@@ -73,27 +73,32 @@ photo.image(:large).mime_type  #=> "image/jpeg"
 
 Since file processing can be time consuming, it's recommended to move it into a
 background job. The simplest way is to use the [`backgrounding`][backgrounding]
-plugin to move promotion into a background job, and then generate derivatives
+plugin to move promotion into a background job, and then create derivatives
 as part of promotion:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(record, name, file_data) }
+Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
 ```
 ```rb
 class PromoteJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # calls derivatives processor
     attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment has changed or the record has been deleted, nothing to do
   end
 end
 ```
 
-Derivatives can also be processed separately from promotion:
+Derivatives don't need to be created as part of the attachment flow, you can
+create them at any point:
 
 ```rb
+# ...
 DerivativesJob.perform_later(
+  attacher.class,
   attacher.record,
   attacher.name,
   attacher.file_data,
@@ -101,10 +106,12 @@ DerivativesJob.perform_later(
 ```
 ```rb
 class DerivativesJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # calls derivatives processor
     attacher.atomic_persist
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    attacher&.destroy_attached # delete now orphaned derivatives
   end
 end
 ```

@@ -3,13 +3,10 @@
 This guide shows how to migrate the location of uploaded files on the same 
 storage in production, with zero downtime.
 
-_Note: The examples use the [Sequel] ORM, but it should easily translate to
-Active Record._ 
-
 Let's assume we have a `Photo` model with an `image` file attachment:
 
 ```rb
-Shrine.plugin :sequel
+Shrine.plugin :activerecord
 ```
 ```rb
 class ImageUploader < Shrine
@@ -17,7 +14,7 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-class Photo < Sequel::Model
+class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image)
 end
 ```
@@ -47,7 +44,7 @@ We only need to migrate the files in `:store` storage need to be migrated as the
 in `:cache` storage will be uploaded to the new location on promotion.
 
 ```rb
-Photo.paged_each do |photo|
+Photo.find_each do |photo|
   attacher = photo.image_attacher
 
   next unless attacher.stored? # move only attachments uploaded to permanent storage
@@ -58,15 +55,48 @@ Photo.paged_each do |photo|
   attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives) # reupload derivatives if you have derivatives
 
   begin
-    attacher.atomic_persist         # persist changes if attachment has not changed in the meantime
-    old_attacher.destroy            # delete files on old location
-  rescue Shrine::AttachmentChanged, # attachment has changed
-         Sequel::NoExistingObject   # record has been deleted
-    attacher.destroy                # delete now orphaned files
+    attacher.atomic_persist           # persist changes if attachment has not changed in the meantime
+    old_attacher.destroy              # delete files on old location
+  rescue Shrine::AttachmentChanged,   # attachment has changed during reuploading
+         ActiveRecord::RecordNotFound # record has been deleted during reuploading
+    attacher.destroy                  # delete now orphaned files
   end
 end
 ```
 
 Now all your existing attachments should be happily living on new locations.
 
-[Sequel]: http://sequel.jeremyevans.net/
+### Backgrounding
+
+For faster migration, we can also delay moving files into a background job:
+
+```rb
+Photo.find_each do |photo|
+  attacher = photo.image_attacher
+
+  next unless attacher.stored? # move only attachments uploaded to permanent storage
+
+  MoveFilesJob.perform_later(
+    attacher.class,
+    attacher.record,
+    attacher.name,
+    attacher.file_data,
+  )
+end
+```
+```rb
+class MoveFilesJob < ActiveJob::Base
+  def perform(attacher_class, record, name, file_data)
+    attacher     = attacher_class.retrieve(model: record, name: name, file: file_data)
+    old_attacher = attacher.dup
+
+    attacher.set             attacher.upload(attacher.file)
+    attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives)
+
+    attacher.atomic_persist
+    old_attacher.destroy
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    attacher&.destroy
+  end
+end
+```

@@ -255,12 +255,12 @@ plugin uses internally):
 ```rb
 Shrine.plugin :refresh_metadata # allow re-extracting metadata
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(record, name, file_data) }
+Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
 ```
 ```rb
 class PromoteJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.refresh_metadata!
     attacher.atomic_promote
   end
@@ -271,6 +271,7 @@ You can also extract metadata in the background separately from promotion:
 
 ```rb
 MetadataJob.perform_later(
+  attacher.class,
   attacher.record,
   attacher.name,
   attacher.file_data,
@@ -278,8 +279,8 @@ MetadataJob.perform_later(
 ```
 ```rb
 class MetadataJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.refresh_metadata!
     attacher.atomic_persist
   end

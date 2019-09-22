@@ -59,7 +59,7 @@ end
 ```rb
 class MirrorUploadJob < ActiveJob::Base
   def perform(shrine_class, file_data)
-    file = Object.const_get(shrine_class).uploaded_file(file_data)
+    file = shrine_class.uploaded_file(file_data)
     file.mirror_upload
   end
 end
@@ -67,7 +67,7 @@ end
 ```rb
 class MirrorDeleteJob < ActiveJob::Base
   def perform(shrine_class, file_data)
-    file = Object.const_get(shrine_class).uploaded_file(file_data)
+    file = shrine_class.uploaded_file(file_data)
     file.mirror_delete
   end
 end

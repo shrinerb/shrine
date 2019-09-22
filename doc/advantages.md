@@ -310,14 +310,14 @@ library][backgrounding libraries].
 
 ```rb
 Shrine::Attacher.promote_block do
-  PromoteJob.perform_later(record, name, file_data)
+  PromoteJob.perform_later(self.class, record, name, file_data)
 end
 ```
 ```rb
 class PromoteJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
-    attacher.create_derivatives(:thumbnails) # perform processing
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+    attacher.create_derivatives # perform processing
     attacher.atomic_promote
   end
 end
