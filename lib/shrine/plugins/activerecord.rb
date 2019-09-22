@@ -27,34 +27,24 @@ class Shrine
           name = @name
 
           if shrine_class.opts[:activerecord][:validations]
-            # add validation plugin integration
             model.validate do
-              next unless send(:"#{name}_attacher").respond_to?(:errors)
-
-              send(:"#{name}_attacher").errors.each do |message|
-                errors.add(name, *message)
-              end
+              send(:"#{name}_attacher").send(:activerecord_validate)
             end
           end
 
           if shrine_class.opts[:activerecord][:callbacks]
             model.before_save do
-              if send(:"#{name}_attacher").changed?
-                send(:"#{name}_attacher").save
-              end
+              send(:"#{name}_attacher").send(:activerecord_before_save)
             end
 
             [:create, :update].each do |action|
               model.after_commit on: action do
-                if send(:"#{name}_attacher").changed?
-                  send(:"#{name}_attacher").finalize
-                  send(:"#{name}_attacher").persist
-                end
+                send(:"#{name}_attacher").send(:activerecord_after_save)
               end
             end
 
             model.after_commit on: :destroy do
-              send(:"#{name}_attacher").destroy_attached
+              send(:"#{name}_attacher").send(:activerecord_after_destroy)
             end
           end
 
@@ -76,6 +66,35 @@ class Shrine
       #   * Attacher#atomic_promote
       module AttacherMethods
         private
+
+        # Adds file validation errors to the model. Called on model validation.
+        def activerecord_validate
+          return unless respond_to?(:errors)
+
+          errors.each do |message|
+            record.errors.add(name, *message)
+          end
+        end
+
+        # Calls Attacher#save. Called before model save.
+        def activerecord_before_save
+          return unless changed?
+
+          save
+        end
+
+        # Finalizes attachment and persists changes. Called after model save.
+        def activerecord_after_save
+          return unless changed?
+
+          finalize
+          persist
+        end
+
+        # Deletes attached files. Called after model destroy.
+        def activerecord_after_destroy
+          destroy_attached
+        end
 
         # Saves changes to the model instance, skipping validations. Used by
         # the _persistence plugin.

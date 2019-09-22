@@ -32,42 +32,26 @@ class Shrine
           name = @name
 
           if shrine_class.opts[:sequel][:validations]
-            # add validation plugin integration
             define_method :validate do
               super()
-              return unless send(:"#{name}_attacher").respond_to?(:errors)
-
-              send(:"#{name}_attacher").errors.each do |message|
-                errors.add(name, *message)
-              end
+              send(:"#{name}_attacher").send(:sequel_validate)
             end
           end
 
           if shrine_class.opts[:sequel][:hooks]
             define_method :before_save do
               super()
-              if send(:"#{name}_attacher").changed?
-                send(:"#{name}_attacher").save
-              end
+              send(:"#{name}_attacher").send(:sequel_before_save)
             end
 
             define_method :after_save do
               super()
-              if send(:"#{name}_attacher").changed?
-                db.after_commit do
-                  send(:"#{name}_attacher").finalize
-                  send(:"#{name}_attacher").persist
-                end
-              end
+              send(:"#{name}_attacher").send(:sequel_after_save)
             end
 
             define_method :after_destroy do
               super()
-              if send(:"#{name}_attacher").attached?
-                db.after_commit do
-                  send(:"#{name}_attacher").destroy_attached
-                end
-              end
+              send(:"#{name}_attacher").send(:sequel_after_destroy)
             end
           end
 
@@ -89,6 +73,41 @@ class Shrine
       #   * Attacher#atomic_promote
       module AttacherMethods
         private
+
+        # Adds file validation errors to the model. Called on model validation.
+        def sequel_validate
+          return unless respond_to?(:errors)
+
+          errors.each do |message|
+            record.errors.add(name, *message)
+          end
+        end
+
+        # Calls Attacher#save. Called before model save.
+        def sequel_before_save
+          return unless changed?
+
+          save
+        end
+
+        # Finalizes attachment and persists changes. Called after model save.
+        def sequel_after_save
+          return unless changed?
+
+          record.db.after_commit do
+            finalize
+            persist
+          end
+        end
+
+        # Deletes attached files. Called after model destroy.
+        def sequel_after_destroy
+          return unless attached?
+
+          record.db.after_commit do
+            destroy_attached
+          end
+        end
 
         # Saves changes to the model instance, skipping validations. Used by
         # the _persistence plugin.

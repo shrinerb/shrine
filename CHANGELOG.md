@@ -1,5 +1,9 @@
 ## HEAD
 
+* `sequel` – Extract callback code into attacher methods that can be overridden (@janko)
+
+* `activerecord` – Extract callback code into attacher methods that can be overridden (@janko)
+
 * `derivatives` – Ensure binary mode for `File` and `Tempfile` objects (@janko)
 
 * `derivatives` – Ensure refreshed file descriptor for `Tempfile` objects (@janko)

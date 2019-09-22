@@ -131,7 +131,7 @@ describe Shrine::Plugins::Sequel do
       it "deletes attached files" do
         @user.class.include @shrine::Attachment.new(:avatar)
 
-        @attacher.attach(fakeio)
+        @attacher.set @attacher.upload(fakeio)
         @user.save
 
         @user.destroy
@@ -143,7 +143,7 @@ describe Shrine::Plugins::Sequel do
         @shrine.plugin :sequel, hooks: false
         @user.class.include @shrine::Attachment.new(:avatar)
 
-        @attacher.attach(fakeio)
+        @attacher.set @attacher.upload(fakeio)
         @user.save
 
         @user.destroy
