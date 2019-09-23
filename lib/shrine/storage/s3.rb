@@ -15,6 +15,9 @@ class Shrine
     class S3
       attr_reader :client, :bucket, :prefix, :upload_options, :signer, :public
 
+      MAX_MULTIPART_PARTS = 10_000
+      MIN_PART_SIZE       = 5*1024*1024
+
       MULTIPART_THRESHOLD = { upload: 15*1024*1024, copy: 100*1024*1024 }
 
       # Initializes a storage for uploading to S3. All options are forwarded to
@@ -242,9 +245,21 @@ class Shrine
         if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
           object(id).put(body: io, **options)
         else # multipart upload
-          object(id).upload_stream(**options) do |write_stream|
+          object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
             IO.copy_stream(io, write_stream)
           end
+        end
+      end
+
+      # Determins the part size that should be used when uploading the given IO
+      # object via multipart upload.
+      def part_size(io)
+        return unless io.respond_to?(:size) && io.size
+
+        if io.size <= MIN_PART_SIZE * MAX_MULTIPART_PARTS # <= 50 GB
+          MIN_PART_SIZE
+        else # > 50 GB
+          (io.size.to_f / MAX_MULTIPART_PARTS).ceil
         end
       end
 
