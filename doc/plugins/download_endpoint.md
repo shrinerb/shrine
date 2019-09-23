@@ -71,7 +71,6 @@ end
 class DownloadsController < ApplicationController
   def image
     # ... we can perform authentication here ...
-
     set_rack_response ImageUploader.download_response(request.env)
   end
 

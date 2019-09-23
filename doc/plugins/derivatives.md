@@ -86,6 +86,13 @@ photo.image_derivatives! # calls derivatives processor and uploads results
 photo.save
 ```
 
+If the attached file can be later updated for existing records, make sure to
+create derivatives only if the attachment has changed:
+
+```rb
+photo.image_derivatives! if photo.image_changed?
+```
+
 Once derivatives have been created, their data is stored in the `#<name>_data`
 record attribute alongside the main file data:
 
