@@ -238,32 +238,6 @@ thumbnail = ImageProcessing::Vips
 thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
 ```
 
-### Optimizing thumbnails
-
-If you're generating image thumbnails, you can additionally use the
-[image_optim] gem to further reduce their filesize:
-
-```rb
-# Gemfile
-gem "image_processing", "~> 1.8"
-gem "image_optim"
-gem "image_optim_pack" # precompiled binaries
-```
-
-```rb
-require "image_processing/mini_magick"
-
-thumbnail = ImageProcessing::MiniMagick
-  .source(image)
-  .resize_to_limit!(600, 400)
-
-image_optim = ImageOptim.new
-image_optim.optimize_image!(thumbnail.path)
-
-thumbnail.open # refresh file descriptor
-thumbnail
-```
-
 ### External processing
 
 Since processing is so dynamic, you're not limited to using the ImageProcessing
@@ -336,7 +310,6 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [GraphicsMagick]: http://www.graphicsmagick.org
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
-[image_optim]: https://github.com/toy/image_optim
 [ImageOptim.com]: https://imageoptim.com/api
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [Managing Derivatives]: /doc/changing_derivatives.md#readme
