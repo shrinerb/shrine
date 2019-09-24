@@ -72,9 +72,13 @@ photo.image(:large).mime_type  #=> "image/jpeg"
 ### Backgrounding
 
 Since file processing can be time consuming, it's recommended to move it into a
-background job. The simplest way is to use the [`backgrounding`][backgrounding]
-plugin to move promotion into a background job, and then create derivatives
-as part of promotion:
+background job.
+
+#### With promotion
+
+The simplest way is to use the [`backgrounding`][backgrounding] plugin to move
+promotion into a background job, and then create derivatives as part of
+promotion:
 
 ```rb
 Shrine.plugin :backgrounding
@@ -92,11 +96,12 @@ class PromoteJob < ActiveJob::Base
 end
 ```
 
+#### Separate from promotion
+
 Derivatives don't need to be created as part of the attachment flow, you can
-create them at any point:
+create them at any point after promotion:
 
 ```rb
-# ...
 DerivativesJob.perform_later(
   attacher.class,
   attacher.record,
@@ -112,6 +117,53 @@ class DerivativesJob < ActiveJob::Base
     attacher.atomic_persist
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
     attacher&.destroy_attached # delete now orphaned derivatives
+  end
+end
+```
+
+#### Concurrent processing
+
+You can also generate derivatives concurrently:
+
+```rb
+class ImageUploader < Shrine
+  THUMBNAILS = {
+    large:  [800, 800],
+    medium: [500, 500],
+    small:  [300, 300],
+  }
+
+  Attacher.derivatives_processor do |original, name:|
+    thumbnail = ImageProcessing::MiniMagick
+      .source(original)
+      .resize_to_limit!(*THUMBNAILS.fetch(name))
+
+    { name => thumbnail }
+  end
+end
+```
+```rb
+ImageUploader::THUMBNAILS.each_key do |derivative_name|
+  DerivativeJob.perform_later(
+    attacher.class,
+    attacher.record,
+    attacher.name,
+    attacher.file_data,
+    derivative_name,
+  )
+end
+```
+```rb
+class DerivativeJob < ActiveJob::Base
+  def perform(attacher_class, record, name, file_data, derivative_name)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+    attacher.create_derivatives(name: derivative_name)
+    attacher.atomic_persist do |reloaded_attacher|
+      # make sure we don't override derivatives created in other jobs
+      attacher.merge_derivatives(reloaded_attacher.derivatives)
+    end
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    attacher.derivatives[derivative_name].delete # delete now orphaned derivative
   end
 end
 ```
