@@ -115,6 +115,9 @@ Settings:
     name: dynamic_storage
     description: Allows you to define storages dynamically based on their identifier.
   -
+    name: multi_cache
+    description: Allows the attacher to accept files from additional temporary storages.
+  -
     name: pretty_location
     description: Generates a more organized directory structure on the storage.
   -
