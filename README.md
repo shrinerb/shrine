@@ -562,8 +562,15 @@ end
 ```
 ```rb
 photo = Photo.new(image: file)
-photo.image_derivatives! # calls derivatives processor
+photo.image_derivatives! # calls derivatives processor and uploads results
 photo.save
+```
+
+If you're allowing the attached file to be updated later on, in your update
+route make sure to create derivatives for new attachments:
+
+```rb
+photo.image_derivatives! if photo.image_changed?
 ```
 
 After the processed files are uploaded, their data is saved into the

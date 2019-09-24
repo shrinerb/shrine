@@ -86,8 +86,8 @@ photo.image_derivatives! # calls derivatives processor and uploads results
 photo.save
 ```
 
-If the attached file can be later updated for existing records, make sure to
-create derivatives only if the attachment has changed:
+If you're allowing the attached file to be updated later on, in your update
+route make sure to create derivatives for new attachments:
 
 ```rb
 photo.image_derivatives! if photo.image_changed?
