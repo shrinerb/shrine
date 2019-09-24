@@ -290,6 +290,29 @@ thumbnail = ImageProcessing::Vips
 thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
 ```
 
+### Parallelize uploading
+
+If you're generating derivatives, you can parallelize the uploads using the
+[concurrent-ruby] gem:
+
+```rb
+# Gemfile
+gem "concurrent-ruby"
+```
+```rb
+require "concurrent"
+
+derivatives = attacher.process_derivatives
+
+tasks = derivatives.map do |name, file|
+  Concurrent::Promises.future(name, file) do |name, file|
+    attacher.add_derivative(name, file)
+  end
+end
+
+Concurrent::Promises.zip(*tasks).wait!
+```
+
 ### External processing
 
 Since processing is so dynamic, you're not limited to using the ImageProcessing
@@ -373,3 +396,4 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
 [derivation_endpoint performance]: /doc/plugins/derivation_endpoint.md#performance
 [derivatives]: /doc/plugins/derivatives.md#readme
+[concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
