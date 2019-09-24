@@ -1051,7 +1051,7 @@ The gem is available as open source under the terms of the [MIT License].
 [store_dimensions plugin]: /doc/plugins/store_dimensions.md#readme
 [upload_endpoint plugin]: /doc/plugins/upload_endpoint.md#readme
 [validation_helpers plugin]: /doc/plugins/validation_helpers.md#readme
-[validation]: /doc/plugins/validation.md#readme
+[validation plugin]: /doc/plugins/validation.md#readme
 
 <!-- Demos -->
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
