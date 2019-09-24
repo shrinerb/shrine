@@ -1,0 +1,538 @@
+# Upgrading to Shrine 3.x
+
+This guide provides instructions for upgrading Shrine in your apps to version
+3.x. We will cover the following areas:
+
+* [Attacher](#attacher)
+* [Backgrounding](#backgrounding)
+* [Versions](#versions)
+* [Miscellaneous](#miscellaneous)
+  - [Logging](#logging)
+  - [Backup](#backup)
+  - [Copy](#copy)
+  - [Moving](#moving)
+  - [Memory](#memory)
+
+## Attacher
+
+The `Shrine::Attacher` class has been rewritten in Shrine 3.0, though much of
+the main API remained the same.
+
+### Model
+
+The main change is that `Attacher.new` is now used for initializing the
+attacher without a model:
+
+```rb
+attacher = Shrine::Attacher.new
+# ...
+
+attacher = Shrine::Attacher.new(photo, :image)
+# ~> ArgumentError: invalid number of arguments
+```
+
+To initialize an attacher with a model, use `Attacher.from_model` provided by
+the new [`model`][model] plugin (which is automatically loaded by
+`activerecord` and `sequel` plugins):
+
+```rb
+attacher = Shrine::Attacher.from_model(photo, :image)
+# ...
+```
+
+If you're using the `Shrine::Attachment` module with POROs, make sure to load
+the `model` plugin.
+
+```rb
+Shrine.plugin :model
+```
+```rb
+class Photo < Struct.new(:image_data)
+  include Shrine::Attachment(:image)
+end
+```
+
+### Data attribute
+
+The `Attacher#read` method has been removed. If you want to generate serialized
+attachment data, use `Attacher#column_data`. Otherwise if you want to generate
+hash attachment data, use `Attacher#data`.
+
+```rb
+attacher.column_data #=> '{"id":"...","storage":"...","metadata":{...}}'
+attacher.data        #=> { "id" => "...", "storage" => "...", "metadata" => { ... } }
+```
+
+The `Attacher#data_attribute` has been renamed to `Attacher#attribute`.
+
+### State
+
+The attacher now maintains its own state, so if you've previously modified the
+`#<name>_data` record attribute and expected the changes to be picked up by the
+attacher, you'll now need to call `Attacher#reload` for that:
+
+```rb
+attacher.file #=> nil
+record.image_data = '{"id":"...","storage":"...","metadata":{...}}'
+attacher.file #=> nil
+attacher.reload
+attacher.file #=> #<Shrine::UploadedFile ...>
+```
+
+### Validation
+
+The validation functionality has been extracted into the `validation` plugin.
+If you're using the `validation_helpers` plugin, it will automatically load
+`validation` for you. Otherwise you'll have to load it explicitly:
+
+```rb
+Shrine.plugin :validation
+```
+```rb
+class MyUploader < Shrine
+  Attacher.validate do
+    # ...
+  end
+end
+```
+
+### Setting
+
+The `Attacher#set` method has been renamed to `Attacher#change`, and the
+private `Attacher#_set` method has been renamed to `Attacher#set` and made
+public:
+
+```rb
+attacher.change(uploaded_file) # sets file, remembers previous file, runs validations
+attacher.set(uploaded_file)    # sets file
+```
+
+If you've previously used `Attacher#replace` directly to delete previous file,
+it has now been renamed to `Attacher#destroy_previous`.
+
+Also note that `Attacher#attached?` now returns whether a file is attached,
+while `Attacher#changed?` continues to return whether the attachment has
+changed.
+
+### Uploading and deleting
+
+The `Attacher#store!` and `Attacher#cache!` methods have been removed, you
+should now use `Attacher#upload` instead:
+
+```rb
+attacher.upload(io)               # uploads to permanent storage
+attacher.upload(io, :cache)       # uploads to temporary storage
+attacher.upload(io, :other_store) # uploads to another storage
+```
+
+The `Attacher#delete!` method has been removed as well, you should instead just
+delete the file directly via `UploadedFile#delete`.
+
+### Promoting
+
+If you were promoting manually, the `Attacher#promote` method will now only
+save promoted file in memory, it won't persist the changes.
+
+```rb
+attacher.promote
+# ...
+record.save # you need to persist the changes
+```
+
+If you want the concurrenct-safe promotion with persistence, use the new
+`Attacher#atomic_promote` method.
+
+```rb
+attacher.atomic_promote
+```
+
+The `Attacher#swap` method has been removed. If you were using it directly, you
+can use `Attacher#set` and `Attacher#atomic_persist` instead:
+
+```rb
+current_file = attacher.file
+attacher.set(new_file)
+attacher.atomic_persist(current_file)
+```
+
+## Backgrounding
+
+The `backgrounding` plugin has been rewritten in Shrine 3.0 and has a new API.
+
+```rb
+Shrine.plugin :backgrounding
+Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
+Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
+```
+```rb
+class PromoteJob < ActiveJob::Base
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+    attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment has changed or record has been deleted, nothing to do
+  end
+end
+```
+```rb
+class DestroyJob < ActiveJob::Base
+  def perform(attacher_class, data)
+    attacher = attacher_class.from_data(data)
+    attacher.destroy
+  end
+end
+```
+
+### Dual support
+
+When you're making the switch in production, there might still be jobs in the
+queue that have the old argument format. So, we'll initially want to handle
+both argument formats, and then switch to the new one once the jobs with old
+format have been drained.
+
+```rb
+class PromoteJob < ActiveJob::Base
+  def perform(*args)
+    if args.one?
+      file_data, (record_class, record_id), name, shrine_class =
+        args.first.values_at("attachment", "record", "name", "shrine_class")
+
+      record         = Object.const_get(record_class).find(record_id)
+      attacher_class = Object.const_get(shrine_class)::Attacher
+    else
+      attacher_class, record, name, file_data = args
+    end
+
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+    attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment has changed or record has been deleted, nothing to do
+  end
+and
+```
+```rb
+class DestroyJob < ActiveJob::Base
+  def perform(*args)
+    if args.one?
+      data, shrine_class = args.first.values_at("attachment", "shrine_class")
+
+      data           = JSON.parse(data)
+      attacher_class = Object.const_get(shrine_class)::Attacher
+    else
+      attacher_class, data = args
+    end
+
+    attacher = attacher_class.from_data(data)
+    attacher.destroy
+  end
+and
+```
+
+### Attacher backgrounding
+
+In Shrine 2.x, `Attacher#_promote` and `Attacher#_delete` methods could be used
+to spawn promote and delete jobs. This is now done by `Attacher#promote_cached`
+and `Attacher#destroy_attached`:
+
+```rb
+attacher.promote_cached   # will spawn background job if registered
+attacher.destroy_attached # will spawn background job if registered
+```
+
+If you want to explicitly call backgrounding blocks, you can use
+`Attacher#promote_background` and `Attacher#destroy_background`:
+
+```rb
+attacher.promote_background # calls promote block
+attacher.destroy_background # calls destroy block
+```
+
+## Versions
+
+The `versions`, `processing`, `recache`, and `delete_raw` plugins have been
+deprecated in favour of the new [`derivatives`][derivatives] plugin. Let's
+assume you have the following `versions` code:
+
+```rb
+class ImageUploader < Shrine
+  plugin :processing
+  plugin :versions
+  plugin :delete_raw
+
+  process(:store) do |file, context|
+    versions = { original: file }
+
+    file.download do |original|
+      magick = ImageProcessing::MiniMagick.source(original)
+
+      versions[:large]  = magick.resize_to_limit!(800, 800)
+      versions[:medium] = magick.resize_to_limit!(500, 500)
+      versions[:small]  = magick.resize_to_limit!(300, 300)
+    end
+
+    versions
+  end
+end
+```
+```rb
+photo = Photo.new(photo_params)
+
+if photo.valid?
+  photo.save # automatically calls processing block
+  # ...
+else
+  # ...
+end
+```
+
+With `derivatives` it becomes this:
+
+```rb
+Shrine.plugin :derivatives, versions_compatibility: true # handle versions column format
+```
+```rb
+class ImageUploader < Shrine
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    {
+      large:  magick.resize_to_limit!(800, 800),
+      medium: magick.resize_to_limit!(500, 500),
+      small:  magick.resize_to_limit!(300, 300),
+    }
+  end
+end
+```
+```rb
+photo = Photo.new(photo_params)
+
+if photo.valid?
+  photo.image_derivatives! if photo.image_changed? # create derivatives
+  photo.save # automatically calls processing block
+  # ...
+else
+  # ...
+end
+```
+
+The derivative URLs are accessed in the same way as versions:
+
+```rb
+photo.image_url(:small)
+```
+
+But the derivatives themselves are accessed differently:
+
+```rb
+# versions
+photo.image #=>
+# {
+#   original: #<Shrine::UploadedFile ...>,
+#   large: #<Shrine::UploadedFile ...>,
+#   medium: #<Shrine::UploadedFile ...>,
+#   small: #<Shrine::UploadedFile ...>,
+# }
+photo.image[:medium] #=> #<Shrine::UploadedFile ...>
+```
+```rb
+# derivatives
+photo.image_derivatives #=>
+# {
+#   large: #<Shrine::UploadedFile ...>,
+#   medium: #<Shrine::UploadedFile ...>,
+#   small: #<Shrine::UploadedFile ...>,
+# }
+photo.image(:medium) #=> #<Shrine::UploadedFile ...>
+```
+
+### Migrating versions
+
+The `versions` and `derivatives` plugins save processed file data to the
+database column in different formats:
+
+```rb
+# versions
+{
+  "original": { "id": "...", "storage": "...", "metadata": { ... } },
+  "large":    { "id": "...", "storage": "...", "metadata": { ... } },
+  "medium":   { "id": "...", "storage": "...", "metadata": { ... } },
+  "small":    { "id": "...", "storage": "...", "metadata": { ... } }
+}
+```
+```rb
+# derivatives
+{
+  "id": "...",
+  "storage": "...",
+  "metadata": { ... },
+  "derivatives": {
+    "large":  { "id": "...", "storage": "...", "metadata": { ... } },
+    "medium": { "id": "...", "storage": "...", "metadata": { ... } },
+    "small":  { "id": "...", "storage": "...", "metadata": { ... } }
+  }
+}
+```
+
+The `:versions_compatibility` flag to the `derivatives` plugin enables it to
+read the `versions` format, which aids in transition. Once the `derivatives`
+plugin has been deployed to production, you can switch existing records to the
+new column format:
+
+```rb
+Photo.find_each do |photo|
+  photo.image_attacher.write
+  photo.image_attacher.atomic_persist
+end
+```
+
+Afterwards you should be able to remove the `:versions_compatibility` flag.
+
+### Backgrounding derivatives
+
+If you're using the `backgrounding` plugin, you can trigger derivatives
+creation in the `PromoteJob` instead of the controller:
+
+```rb
+class PromoteJob < ActiveJob::Base
+  def perform(attacher_class, record, name, file_data)
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
+    attacher.create_derivatives # call derivatives processor
+    attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment has changed or record has beeen deleted, nothing to do
+  end
+end
+```
+
+#### Recache
+
+If you were using the `recache` plugin, you can replicate the behaviour by
+creating another derivatives processor that you will trigger in the controller:
+
+```rb
+class ImageUploader < Shrine
+  Attacher.derivatives_processor do |original|
+    # this will be triggered in the background job
+  end
+
+  Attacher.derivatives_processor :foreground do |original|
+    # this will be triggered in the controller
+  end
+end
+```
+```rb
+photo = Photo.new(photo_params)
+
+if photo.valid?
+  photo.image_derivatives!(:foreground) if photo.image_changed?
+  photo.save
+  # ...
+else
+  # ...
+end
+```
+
+#### Parallelize
+
+The `parallelize` plugin has been removed. The `derivatives` plugin is
+thread-safe, so you can parallelize uploading processed files manually:
+
+```rb
+# Gemfile
+gem "concurrent-ruby"
+```
+```rb
+require "concurrent"
+
+derivatives = attacher.process_derivatives
+
+tasks = derivatives.map do |name, file|
+  Concurrent::Promises.future(name, file) do |name, file|
+    attacher.add_derivative(name, file)
+  end
+end
+
+Concurrent::Promises.zip(*tasks).wait!
+```
+
+#### Default URL
+
+The `derivatives` plugin integrates with the `default_url` plugin:
+
+```rb
+Attacher.default_url do |derivative: nil, **|
+  "https://my-app.com/fallbacks/#{derivative}.jpg" if derivative
+end
+```
+
+However, it doesn't implement any other URL fallbacks that the `versions`
+plugin has for missing derivatives.
+
+## Miscellaneous
+
+### Logging
+
+The `logging` plugin has been removed in favour of the
+[`instrumentation`][instrumentation] plugin. You can replace
+
+```rb
+Shrine.plugin :logging, logger: Rails.logger
+```
+
+with
+
+```rb
+Shrine.logger = Rails.logger
+
+Shrine.plugin :instrumentation
+```
+
+### Backup
+
+The `backup` plugin has been removed in favour of the new
+[`mirroring`][mirroring] plugin. You can replace
+
+```rb
+Shrine.plugin :backup, storage: :backup_store
+```
+
+with
+
+```rb
+Shrine.plugin :mirroring, mirror: { store: :backup_store }
+```
+
+### Copy
+
+The `copy` plugin has been removed. You can replace
+
+```rb
+Shrine.plugin :copy
+```
+```rb
+attacher.copy(other_attacher)
+```
+
+with
+
+```rb
+attacher.attach other_attacher.file
+attacher.add_derivatives other_attacher.derivatives # if using derivatives
+```
+
+### Moving
+
+The `moving` plugin has been removed in favour of the `:move` option for
+`FileSystem#upload`. You can set up moving in basic places with the
+`upload_options` plugin:
+
+```rb
+Shrine.plugin :upload_options,
+  cache: -> (io, action: nil, **) { { move: true } if action == :cache },
+  store: -> (io, action: nil, **) { { move: true } if action == :store }
+```
+
+[model]: /doc/plugins/model.md#readme
+[derivatives]: /doc/plugins/derivatives.md#readme
+[instrumentation]: /doc/plugins/instrumentation.md#readme
+[mirroring]: /doc/plugins/mirroring.md#readme
