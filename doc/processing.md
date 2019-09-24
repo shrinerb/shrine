@@ -335,7 +335,7 @@ class ImageUploader < Shrine
     prefix:     "derivations/image",
     download:   false
 
-  derivation :thumbnail do |source, width, height|
+  derivation :thumbnail do |width, height|
     # generate thumbnails using ImageOptim.com
     down = Down::Http.new(method: :post)
     down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{source.url}")
