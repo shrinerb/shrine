@@ -1,5 +1,7 @@
 ## HEAD
 
+* `multi_cache` – Add new plugin for whitelisting additional temporary storages (@janko, @jrochkind)
+
 * `s3` – Allow uploading files larger than 50 GB (@janko)
 
 * `sequel` – Extract callback code into attacher methods that can be overridden (@janko)
