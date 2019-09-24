@@ -918,6 +918,7 @@ Some plugins add their own instrumentation as well when they detect that the
 | Plugin                | Instrumentation                         |
 | :-----                | :--------------                         |
 | `derivation_endpoint` | instruments file processing             |
+| `derivatives`         | instruments file processing             |
 | `determine_mime_type` | instruments analyzing MIME type         |
 | `store_dimensions`    | instruments extracting image dimensions |
 | `signature`           | instruments calculating signature       |
