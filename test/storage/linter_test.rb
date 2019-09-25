@@ -86,6 +86,20 @@ describe Shrine::Storage::Linter do
     end
   end
 
+  describe "delete_prefixed" do
+    it "tests that files get cleared" do
+      @storage.instance_eval { def delete_prefixed(p); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "doesn't require #clear! to be defined" do
+      if @storage.respond_to?(:delete_prefixed)
+        @storage.instance_eval { undef delete_prefixed }
+      end
+      @linter.call
+    end
+  end
+
   describe "#presign" do
     before do
       @storage.instance_eval { def presign(id, **options); { method: "post", url: "foo" }; end }

@@ -43,6 +43,17 @@ class Shrine
         lint_url(id)
         lint_delete(id)
 
+        if storage.respond_to?(:delete_prefixed)
+          storage.upload(io_factory.call, "a/a/a")
+          storage.upload(io_factory.call, "a/a/b")
+          storage.upload(io_factory.call, "a/aaa/a")
+
+          lint_delete_prefixed(prefix: "a/a/",
+                               expect_deleted: ["a/a/a", "a/a/b"],
+                               expect_remaining: ["a/aaa/a"])
+          storage.delete("a/aaa/a")
+        end
+
         if storage.respond_to?(:clear!)
           storage.upload(io_factory.call, id = "quux".dup)
           lint_clear(id)
@@ -98,6 +109,18 @@ class Shrine
         error :presign, "result should be a Hash" unless data.respond_to?(:to_h)
         error :presign, "result should include :method key" unless data.to_h.key?(:method)
         error :presign, "result should include :url key" unless data.to_h.key?(:url)
+      end
+
+      def lint_delete_prefixed(prefix:, expect_deleted:, expect_remaining:)
+        storage.delete_prefixed(prefix)
+
+        expect_deleted.each do |key|
+          error :delete_prefixed, "#{key} still #exists? after #clear_prefix('a/a/')" if storage.exists?(key)
+        end
+
+        expect_remaining.each do |key|
+          error :delete_prefixed, "#{key} not #exists? but should after #clear_prefix('a/a/')" unless storage.exists?(key)
+        end
       end
 
       private
