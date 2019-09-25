@@ -470,14 +470,8 @@ label {
     width: 50%;
     margin-bottom: 0; } }
 @media (min-width: 768px) {
-  .core-guides .col:nth-child(1) {
-    width: 33.3333333333%; }
-  .core-guides .col:nth-child(2) {
-    width: 66.6666666667%; }
-    .core-guides .col:nth-child(2) ul {
-      -webkit-columns: 10em 2;
-      -moz-columns: 10em 2;
-      columns: 10em 2; } }
+  .core-guides .col {
+    width: 33.3333333333%; } }
 
 @media (min-width: 768px) {
   .external .row {
