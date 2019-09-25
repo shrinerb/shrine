@@ -51,6 +51,8 @@ class Shrine
         if storage.respond_to?(:presign)
           lint_presign(id)
         end
+
+        true
       end
 
       def lint_open(id)
