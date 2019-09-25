@@ -218,6 +218,16 @@ class Shrine
         delete_objects(objects_to_delete)
       end
 
+      # Delete files at keys starting with the prefix.
+      #
+      #    s3.delete_prefixed("somekey/derivatives/")
+      def delete_prefixed(delete_prefix)
+        # We need to make sure to combine with storage prefix, and
+        # that it ends in '/' cause S3 can be squirrely about matching interior.
+        normalized_prefix = [*prefix, delete_prefix.chomp("/"), ""].join("/")
+        bucket.objects(prefix: normalized_prefix).batch_delete!
+      end
+
       # Returns an `Aws::S3::Object` for the given id.
       def object(id)
         bucket.object([*prefix, id].join("/"))
