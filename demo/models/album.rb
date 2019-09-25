@@ -6,7 +6,7 @@ class Album < Sequel::Model
   nested_attributes :photos, destroy: true
   add_association_dependencies photos: :destroy
 
-  include ImageUploader::Attachment.new(:cover_photo)  # ImageUploader will attach and manage `cover_photo`
+  include ImageUploader::Attachment(:cover_photo)  # ImageUploader will attach and manage `cover_photo`
 
   def validate
     super

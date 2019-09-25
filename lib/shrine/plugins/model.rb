@@ -18,8 +18,8 @@ class Shrine
       module AttachmentMethods
         # Allows disabling model behaviour:
         #
-        #     Shrine::Attachment.new(:image)               # model (default)
-        #     Shrine::Attachment.new(:image, model: false) # entity
+        #     Shrine::Attachment(:image)               # model (default)
+        #     Shrine::Attachment(:image, model: false) # entity
         def initialize(name, model: true, **options)
           super(name, **options)
           @model = model

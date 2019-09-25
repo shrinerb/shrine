@@ -195,7 +195,7 @@ We can include this module to a model:
 
 ```rb
 class Photo
-  include Shrine::Attachment.new(:image)
+  include Shrine::Attachment(:image)
 end
 ```
 ```rb

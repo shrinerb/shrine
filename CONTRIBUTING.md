@@ -83,7 +83,7 @@ DB.create_table :posts do
 end
 
 class Post < Sequel::Model
-  include MyUploader::Attachment.new(:image)
+  include MyUploader::Attachment(:image)
 end
 
 post = Post.create(image: Down.download("https://example.com/image-from-internet.jpg"))
@@ -116,7 +116,7 @@ ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:"
 ActiveRecord::Base.connection.create_table(:posts) { |t| t.text :image_data }
 
 class Post < ActiveRecord::Base
-  include MyUploader::Attachment.new(:image)
+  include MyUploader::Attachment(:image)
 end
 
 post = Post.create(image: Down.download("https://example.com/image-from-internet.jpg"))
