@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>upgrading_to_3.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>upgrading_to_3.md
+</h1>
+<div class='paths'>
+doc/upgrading_to_3.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2019-09-24 14:14:35 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-Upgrading+to+Shrine+3.x">Upgrading to <a href="../../classes/Shrine.html"><code>Shrine</code></a> 3.x<span><a href="#label-Upgrading+to+Shrine+3.x">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>This guide provides instructions for upgrading <a href="../../classes/Shrine.html"><code>Shrine</code></a> in your apps to version 3.x. We will cover the following areas:</p>
+<ul><li>
+<p><a href="#attacher">Attacher</a></p>
+</li><li>
+<p><a href="#backgrounding">Backgrounding</a></p>
+</li><li>
+<p><a href="#versions">Versions</a></p>
+</li><li>
+<p><a href="#miscellaneous">Miscellaneous</a></p>
+</li><li>
+<p><a href="#logging">Logging</a></p>
+</li><li>
+<p><a href="#backup">Backup</a></p>
+</li><li>
+<p><a href="#copy">Copy</a></p>
+</li><li>
+<p><a href="#moving">Moving</a></p>
+</li><li>
+<p><a href="#memory">Memory</a></p>
+</li></ul>
+
+<h2 id="label-Attacher">Attacher<span><a href="#label-Attacher">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <code>Shrine::Attacher</code> class has been rewritten in <a href="../../classes/Shrine.html"><code>Shrine</code></a> 3.0, though much of the main API remained the same.</p>
+
+<h3 id="label-Model">Model<span><a href="#label-Model">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The main change is that <code>Attacher.new</code> is now used for initializing the attacher without a model:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-comment"># ~&gt; ArgumentError: invalid number of arguments</span></pre>
+
+<p>To initialize an attacher with a model, use <code>Attacher.from_model</code> provided by the new <a href="/doc/plugins/model.md#readme">model</a> plugin (which is automatically loaded by <code>activerecord</code> and <code>sequel</code> plugins):</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-comment"># ...</span></pre>
+
+<p>If you&#39;re using the <code>Shrine::Attachment</code> module with POROs, make sure to load the <code>model</code> plugin.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:model</span></pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Struct</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image_data</span>)&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-Data+attribute">Data attribute<span><a href="#label-Data+attribute">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>Attacher#read</code> method has been removed. If you want to generate serialized attachment data, use <code>Attacher#column_data</code>. Otherwise if you want to generate hash attachment data, use <code>Attacher#data</code>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">data</span>        <span class="ruby-comment">#=&gt; { &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } }</span></pre>
+
+<p>The <code>Attacher#data_attribute</code> has been renamed to <code>Attacher#attribute</code>.</p>
+
+<h3 id="label-State">State<span><a href="#label-State">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The attacher now maintains its own state, so if you&#39;ve previously modified the <code>#&lt;name&gt;_data</code> record attribute and expected the changes to be picked up by the attacher, you&#39;ll now need to call <code>Attacher#reload</code> for that:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">record</span>.<span class="ruby-identifier">image_data</span> = <span class="ruby-string">&#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...}}&#39;</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; nil</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">reload</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span></pre>
+
+<h3 id="label-Validation">Validation<span><a href="#label-Validation">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The validation functionality has been extracted into the <code>validation</code> plugin. If you&#39;re using the <code>validation_helpers</code> plugin, it will automatically load <code>validation</code> for you. Otherwise you&#39;ll have to load it explicitly:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span></pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-Setting">Setting<span><a href="#label-Setting">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>Attacher#set</code> method has been renamed to <code>Attacher#change</code>, and the private <code>Attacher#_set</code> method has been renamed to <code>Attacher#set</code> and made public:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">change</span>(<span class="ruby-identifier">uploaded_file</span>) <span class="ruby-comment"># sets file, remembers previous file, runs validations</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_file</span>)    <span class="ruby-comment"># sets file</span></pre>
+
+<p>If you&#39;ve previously used <code>Attacher#replace</code> directly to delete previous file, it has now been renamed to <code>Attacher#destroy_previous</code>.</p>
+
+<p>Also note that <code>Attacher#attached?</code> now returns whether a file is attached, while <code>Attacher#changed?</code> continues to return whether the attachment has changed.</p>
+
+<h3 id="label-Uploading+and+deleting">Uploading and deleting<span><a href="#label-Uploading+and+deleting">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>Attacher#store!</code> and <code>Attacher#cache!</code> methods have been removed, you should now use <code>Attacher#upload</code> instead:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>)               <span class="ruby-comment"># uploads to permanent storage</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:cache</span>)       <span class="ruby-comment"># uploads to temporary storage</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">:other_store</span>) <span class="ruby-comment"># uploads to another storage</span></pre>
+
+<p>The <code>Attacher#delete!</code> method has been removed as well, you should instead just delete the file directly via <code>UploadedFile#delete</code>.</p>
+
+<h3 id="label-Promoting">Promoting<span><a href="#label-Promoting">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>If you were promoting manually, the <code>Attacher#promote</code> method will now only save promoted file in memory, it won&#39;t persist the changes.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-identifier">record</span>.<span class="ruby-identifier">save</span> <span class="ruby-comment"># you need to persist the changes</span></pre>
+
+<p>If you want the concurrenct-safe promotion with persistence, use the new <code>Attacher#atomic_promote</code> method.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_promote</span></pre>
+
+<p>The <code>Attacher#swap</code> method has been removed. If you were using it directly, you can use <code>Attacher#set</code> and <code>Attacher#atomic_persist</code> instead:</p>
+
+<pre class="ruby"><span class="ruby-identifier">current_file</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">new_file</span>)&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_persist</span>(<span class="ruby-identifier">current_file</span>)</pre>
+
+<h2 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <code>backgrounding</code> plugin has been rewritten in <a href="../../classes/Shrine.html"><code>Shrine</code></a> 3.0 and has a new API.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> { <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_later</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>) }&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">destroy_block</span> { <span class="ruby-constant">DestroyJob</span>.<span class="ruby-identifier">perform_later</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">data</span>) }</pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PromoteJob</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">retrieve</span>(<span class="ruby-value">model:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">file:</span> <span class="ruby-identifier">file_data</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_promote</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>, <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>&#x000A;    <span class="ruby-comment"># attachment has changed or record has been deleted, nothing to do</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">DestroyJob</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">from_data</span>(<span class="ruby-identifier">data</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-Dual+support">Dual support<span><a href="#label-Dual+support">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>When you&#39;re making the switch in production, there might still be jobs in the queue that have the old argument format. So, we&#39;ll initially want to handle both argument formats, and then switch to the new one once the jobs with old format have been drained.</p>
+
+<pre>class PromoteJob &lt; ActiveJob::Base&#x000A;  def perform(*args)&#x000A;    if args.one?&#x000A;      file_data, (record_class, record_id), name, shrine_class =&#x000A;        args.first.values_at(&quot;attachment&quot;, &quot;record&quot;, &quot;name&quot;, &quot;shrine_class&quot;)&#x000A;      record         = Object.const_get(record_class).find(record_id)&#x000A;      attacher_class = Object.const_get(shrine_class)::Attacher&#x000A;    else&#x000A;      attacher_class, record, name, file_data = args&#x000A;    end&#x000A;&#x000A;    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)&#x000A;    attacher.atomic_promote&#x000A;  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound&#x000A;    # attachment has changed or record has been deleted, nothing to do&#x000A;  end&#x000A;and</pre>
+
+<pre>class DestroyJob &lt; ActiveJob::Base&#x000A;  def perform(*args)&#x000A;    if args.one?&#x000A;      data, shrine_class = args.first.values_at(&quot;attachment&quot;, &quot;shrine_class&quot;)&#x000A;      data           = JSON.parse(data)&#x000A;      attacher_class = Object.const_get(shrine_class)::Attacher&#x000A;    else&#x000A;      attacher_class, data = args&#x000A;    end&#x000A;&#x000A;    attacher = attacher_class.from_data(data)&#x000A;    attacher.destroy&#x000A;  end&#x000A;and</pre>
+
+<h3 id="label-Attacher+backgrounding">Attacher backgrounding<span><a href="#label-Attacher+backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> 2.x, <code>Attacher#_promote</code> and <code>Attacher#_delete</code> methods could be used to spawn promote and delete jobs. This is now done by <code>Attacher#promote_cached</code> and <code>Attacher#destroy_attached</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote_cached</span>   <span class="ruby-comment"># will spawn background job if registered</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_attached</span> <span class="ruby-comment"># will spawn background job if registered</span></pre>
+
+<p>If you want to explicitly call backgrounding blocks, you can use <code>Attacher#promote_background</code> and <code>Attacher#destroy_background</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">promote_background</span> <span class="ruby-comment"># calls promote block</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">destroy_background</span> <span class="ruby-comment"># calls destroy block</span></pre>
+
+<h2 id="label-Versions">Versions<span><a href="#label-Versions">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <code>versions</code>, <code>processing</code>, <code>recache</code>, and <code>delete_raw</code> plugins have been deprecated in favour of the new <a href="/doc/plugins/derivatives.md#readme">derivatives</a> plugin. Let&#39;s assume you have the following <code>versions</code> code:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">versions</span> = { <span class="ruby-value">original:</span> <span class="ruby-identifier">file</span> }&#x000A;&#x000A;    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:large</span>]  = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:medium</span>] = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:small</span>]  = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">versions</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">valid?</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span> <span class="ruby-comment"># automatically calls processing block</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">else</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>With <code>derivatives</code> it becomes this:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span>, <span class="ruby-value">versions_compatibility:</span> <span class="ruby-keyword">true</span> <span class="ruby-comment"># handle versions column format</span></pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    {&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">valid?</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_changed?</span> <span class="ruby-comment"># create derivatives</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span> <span class="ruby-comment"># automatically calls processing block</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">else</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>The derivative URLs are accessed in the same way as versions:</p>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>(<span class="ruby-value">:small</span>)</pre>
+
+<p>But the derivatives themselves are accessed differently:</p>
+
+<pre class="ruby"><span class="ruby-comment"># versions</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   original: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment">#   large: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment">#   medium: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment">#   small: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>[<span class="ruby-value">:medium</span>] <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span></pre>
+
+<pre class="ruby"><span class="ruby-comment"># derivatives</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives</span> <span class="ruby-comment">#=&gt;</span>&#x000A;<span class="ruby-comment"># {</span>&#x000A;<span class="ruby-comment">#   large: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment">#   medium: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment">#   small: #&lt;Shrine::UploadedFile ...&gt;,</span>&#x000A;<span class="ruby-comment"># }</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:medium</span>) <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span></pre>
+
+<h3 id="label-Migrating+versions">Migrating versions<span><a href="#label-Migrating+versions">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>versions</code> and <code>derivatives</code> plugins save processed file data to the database column in different formats:</p>
+
+<pre># versions&#x000A;{&#x000A;  &quot;original&quot;: { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } },&#x000A;  &quot;large&quot;:    { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } },&#x000A;  &quot;medium&quot;:   { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } },&#x000A;  &quot;small&quot;:    { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } }&#x000A;}</pre>
+
+<pre># derivatives&#x000A;{&#x000A;  &quot;id&quot;: &quot;...&quot;,&#x000A;  &quot;storage&quot;: &quot;...&quot;,&#x000A;  &quot;metadata&quot;: { ... },&#x000A;  &quot;derivatives&quot;: {&#x000A;    &quot;large&quot;:  { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } },&#x000A;    &quot;medium&quot;: { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } },&#x000A;    &quot;small&quot;:  { &quot;id&quot;: &quot;...&quot;, &quot;storage&quot;: &quot;...&quot;, &quot;metadata&quot;: { ... } }&#x000A;  }&#x000A;}</pre>
+
+<p>The <code>:versions_compatibility</code> flag to the <code>derivatives</code> plugin enables it to read the <code>versions</code> format, which aids in transition. Once the <code>derivatives</code> plugin has been deployed to production, you can switch existing records to the new column format:</p>
+
+<pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>.<span class="ruby-identifier">write</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span>.<span class="ruby-identifier">atomic_persist</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>Afterwards you should be able to remove the <code>:versions_compatibility</code> flag.</p>
+
+<h3 id="label-Backgrounding+derivatives">Backgrounding derivatives<span><a href="#label-Backgrounding+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>If you&#39;re using the <code>backgrounding</code> plugin, you can trigger derivatives creation in the <code>PromoteJob</code> instead of the controller:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PromoteJob</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">perform</span>(<span class="ruby-identifier">attacher_class</span>, <span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">attacher_class</span>.<span class="ruby-identifier">retrieve</span>(<span class="ruby-value">model:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>, <span class="ruby-value">file:</span> <span class="ruby-identifier">file_data</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">create_derivatives</span> <span class="ruby-comment"># call derivatives processor</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">atomic_promote</span>&#x000A;  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>, <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">RecordNotFound</span>&#x000A;    <span class="ruby-comment"># attachment has changed or record has beeen deleted, nothing to do</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h4 id="label-Recache">Recache<span><a href="#label-Recache">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<p>If you were using the <code>recache</code> plugin, you can replicate the behaviour by creating another derivatives processor that you will trigger in the controller:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># this will be triggered in the background job</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-value">:foreground</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># this will be triggered in the controller</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">valid?</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span>(<span class="ruby-value">:foreground</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_changed?</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">else</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h4 id="label-Parallelize">Parallelize<span><a href="#label-Parallelize">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<p>The <code>parallelize</code> plugin has been removed. The <code>derivatives</code> plugin is thread-safe, so you can parallelize uploading processed files manually:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;concurrent-ruby&quot;</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;concurrent&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">derivatives</span> = <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">process_derivatives</span>&#x000A;&#x000A;<span class="ruby-identifier">tasks</span> = <span class="ruby-identifier">derivatives</span>.<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">Concurrent</span><span class="ruby-operator">::</span><span class="ruby-constant">Promises</span>.<span class="ruby-identifier">future</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">file</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">file</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivative</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">file</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span>&#x000A;&#x000A;<span class="ruby-constant">Concurrent</span><span class="ruby-operator">::</span><span class="ruby-constant">Promises</span>.<span class="ruby-identifier">zip</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">tasks</span>).<span class="ruby-identifier">wait!</span></pre>
+
+<h4 id="label-Default+URL">Default URL<span><a href="#label-Default+URL">&para;</a> <a href="#top">&uarr;</a></span></h4>
+
+<p>The <code>derivatives</code> plugin integrates with the <code>default_url</code> plugin:</p>
+
+<pre class="ruby"><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-value">derivative:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-node">&quot;https://my-app.com/fallbacks/#{derivative}.jpg&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">derivative</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>However, it doesn&#39;t implement any other URL fallbacks that the <code>versions</code> plugin has for missing derivatives.</p>
+
+<h2 id="label-Miscellaneous">Miscellaneous<span><a href="#label-Miscellaneous">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="label-Logging">Logging<span><a href="#label-Logging">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>logging</code> plugin has been removed in favour of the <a href="/doc/plugins/instrumentation.md#readme">instrumentation</a> plugin. You can replace</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:logging</span>, <span class="ruby-value">logger:</span> <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">logger</span></pre>
+
+<p>with</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">logger</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:instrumentation</span></pre>
+
+<h3 id="label-Backup">Backup<span><a href="#label-Backup">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>backup</code> plugin has been removed in favour of the new <a href="/doc/plugins/mirroring.md#readme">mirroring</a> plugin. You can replace</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span></pre>
+
+<p>with</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:mirroring</span>, <span class="ruby-value">mirror:</span> { <span class="ruby-value">store:</span> <span class="ruby-value">:backup_store</span> }</pre>
+
+<h3 id="label-Copy">Copy<span><a href="#label-Copy">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>copy</code> plugin has been removed. You can replace</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:copy</span></pre>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">copy</span>(<span class="ruby-identifier">other_attacher</span>)</pre>
+
+<p>with</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">attach</span> <span class="ruby-identifier">other_attacher</span>.<span class="ruby-identifier">file</span>&#x000A;<span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">add_derivatives</span> <span class="ruby-identifier">other_attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-comment"># if using derivatives</span></pre>
+
+<h3 id="label-Moving">Moving<span><a href="#label-Moving">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>moving</code> plugin has been removed in favour of the <code>:move</code> option for <code>FileSystem#upload</code>. You can set up moving in basic places with the <code>upload_options</code> plugin:</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>,&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-value">action:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>) { { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-value">:cache</span> },&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-value">action:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>) { { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-value">:store</span> }</pre>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

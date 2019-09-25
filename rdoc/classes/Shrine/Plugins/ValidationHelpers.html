@@ -42,6 +42,7 @@ Shrine::Plugins::ValidationHelpers
 <h3>Public Class</h3>
 <ol>
 <li><a href="#method-c-configure">configure</a></li>
+<li><a href="#method-c-load_dependencies">load_dependencies</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -74,7 +75,7 @@ mime_type_inclusion: -> (list) { "type must be one of: #{list.join(", ")}" },
 mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
 extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
 extension_exclusion: -> (list) { "extension must not be one of: #{list.join(", ")}" },
-}</td>
+}.freeze</td>
 <td>&nbsp;</td>
 <td class='context-item-desc'></td>
 </tr>
@@ -110,7 +111,7 @@ end</td>
 <a name='method-c-configure'></a>
 <div class='synopsis'>
 <span class='name'>configure</span>
-<span class='arguments'>(uploader, opts = {})</span>
+<span class='arguments'>(uploader, default_messages: {}, **opts)</span>
 
 </div>
 <div class='description'>
@@ -120,7 +121,24 @@ end</td>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_default_messages</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_messages</span>] <span class="ruby-operator">||</span> {})&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">default_messages:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">default_messages:</span> <span class="ruby-constant">DEFAULT_MESSAGES</span>.<span class="ruby-identifier">dup</span> }&#x000A;<span class="line-num">43</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers</span>][<span class="ruby-value">:default_messages</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">default_messages</span>)&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-load_dependencies'>
+<a name='method-c-load_dependencies'></a>
+<div class='synopsis'>
+<span class='name'>load_dependencies</span>
+<span class='arguments'>(uploader, *)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

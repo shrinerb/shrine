@@ -59,7 +59,7 @@ Shrine::Plugins::DynamicStorage
 <a name='method-c-configure'></a>
 <div class='synopsis'>
 <span class='name'>configure</span>
-<span class='arguments'>(uploader, options = {})</span>
+<span class='arguments'>(uploader)</span>
 
 </div>
 <div class='description'>
@@ -69,7 +69,7 @@ Shrine::Plugins::DynamicStorage
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">options</span> = {})&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storages</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/dynamic_storage.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:dynamic_storage</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">resolvers:</span> {} }&#x000A;<span class="line-num">11</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

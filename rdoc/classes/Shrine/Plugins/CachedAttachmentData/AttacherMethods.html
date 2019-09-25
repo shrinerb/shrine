@@ -39,7 +39,7 @@ Shrine::Plugins::CachedAttachmentData::AttacherMethods
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#method-i-read_cached">read_cached</a></li>
+<li><a href="#method-i-cached_data">cached_data</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -47,10 +47,10 @@ Shrine::Plugins::CachedAttachmentData::AttacherMethods
 <div id='section'>
 <div id='methods'>
 <h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-read_cached'>
-<a name='method-i-read_cached'></a>
+<div class='method public-instance' id='method-method-i-cached_data'>
+<a name='method-i-cached_data'></a>
 <div class='synopsis'>
-<span class='name'>read_cached</span>
+<span class='name'>cached_data</span>
 <span class='arguments'>()</span>
 
 </div>
@@ -58,10 +58,10 @@ Shrine::Plugins::CachedAttachmentData::AttacherMethods
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-read_cached-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cached_data-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-read_cached-source'>   <span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">read_cached</span>&#x000A;<span class="line-num">28</span>   <span class="ruby-identifier">get</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">changed?</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cached_data-source'>   <span class="ruby-comment"># File lib/shrine/plugins/cached_attachment_data.rb</span>&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cached_data</span>&#x000A;<span class="line-num">21</span>   <span class="ruby-identifier">file</span>.<span class="ruby-identifier">to_json</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">changed?</span>&#x000A;<span class="line-num">22</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

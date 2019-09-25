@@ -42,6 +42,7 @@ Shrine::Plugins::RemoteUrl
 <h3>Public Class</h3>
 <ol>
 <li><a href="#method-c-configure">configure</a></li>
+<li><a href="#method-c-load_dependencies">load_dependencies</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -52,6 +53,7 @@ Shrine::Plugins::RemoteUrl
 <li><a href="RemoteUrl/AttacherMethods.html">Shrine::Plugins::RemoteUrl::AttacherMethods</a></li>
 <li><a href="RemoteUrl/AttachmentMethods.html">Shrine::Plugins::RemoteUrl::AttachmentMethods</a></li>
 <li><a href="RemoteUrl/ClassMethods.html">Shrine::Plugins::RemoteUrl::ClassMethods</a></li>
+<li><a href="RemoteUrl/DownloadError.html">Shrine::Plugins::RemoteUrl::DownloadError</a></li>
 </ol>
 </div>
 <div id='section'>
@@ -59,6 +61,13 @@ Shrine::Plugins::RemoteUrl
 <h2>Constants</h2>
 <div class='name-list'>
 <table summary='Constants'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>DOWNLOADER</td>
+<td>=</td>
+<td class='context-item-value'>-> (url, options) { Down.download(url, options) }</td>
+<td>&nbsp;</td>
+<td class='context-item-desc'></td>
+</tr>
 <tr class='top-aligned-row context-row'>
 <td class='context-item-name'>LOG_SUBSCRIBER</td>
 <td>=</td>
@@ -81,7 +90,7 @@ end</td>
 <a name='method-c-configure'></a>
 <div class='synopsis'>
 <span class='name'>configure</span>
-<span class='arguments'>(uploader, opts = {})</span>
+<span class='arguments'>(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)</span>
 
 </div>
 <div class='description'>
@@ -91,7 +100,24 @@ end</td>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-identifier">opts</span> = {})&#x000A;<span class="line-num">20</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">downloader:</span> <span class="ruby-constant">Down</span>.<span class="ruby-identifier">method</span>(<span class="ruby-value">:download</span>), <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span> }&#x000A;<span class="line-num">21</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">22</span> &#x000A;<span class="line-num">23</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>].<span class="ruby-identifier">key?</span>(<span class="ruby-value">:max_size</span>)&#x000A;<span class="line-num">24</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :max_size option is required for remote_url plugin&quot;</span>&#x000A;<span class="line-num">25</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">26</span> &#x000A;<span class="line-num">27</span>   <span class="ruby-comment"># instrumentation plugin integration</span>&#x000A;<span class="line-num">28</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:subscribe</span>)&#x000A;<span class="line-num">29</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:remote_url</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>][<span class="ruby-value">:log_subscriber</span>])&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">28</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">downloader:</span> <span class="ruby-constant">DOWNLOADER</span> }&#x000A;<span class="line-num">29</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">30</span> &#x000A;<span class="line-num">31</span>   <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>].<span class="ruby-identifier">key?</span>(<span class="ruby-value">:max_size</span>)&#x000A;<span class="line-num">32</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;The :max_size option is required for remote_url plugin&quot;</span>&#x000A;<span class="line-num">33</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">34</span> &#x000A;<span class="line-num">35</span>   <span class="ruby-comment"># instrumentation plugin integration</span>&#x000A;<span class="line-num">36</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:remote_url</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:subscribe</span>)&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-load_dependencies'>
+<a name='method-c-load_dependencies'></a>
+<div class='synopsis'>
+<span class='name'>load_dependencies</span>
+<span class='arguments'>(uploader, *)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">23</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">24</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

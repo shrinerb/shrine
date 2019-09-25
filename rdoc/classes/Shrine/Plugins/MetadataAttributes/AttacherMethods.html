@@ -39,7 +39,7 @@ Shrine::Plugins::MetadataAttributes::AttacherMethods
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#method-i-assign">assign</a></li>
+<li><a href="#method-i-column_values">column_values</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -47,21 +47,21 @@ Shrine::Plugins::MetadataAttributes::AttacherMethods
 <div id='section'>
 <div id='methods'>
 <h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-assign'>
-<a name='method-i-assign'></a>
+<div class='method public-instance' id='method-method-i-column_values'>
+<a name='method-i-column_values'></a>
 <div class='synopsis'>
-<span class='name'>assign</span>
-<span class='arguments'>(value, **options)</span>
+<span class='name'>column_values</span>
+<span class='arguments'>()</span>
 
 </div>
 <div class='description'>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-column_values-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/metadata_attributes.rb</span>&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">22</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">23</span>   <span class="ruby-identifier">cached_file</span> = <span class="ruby-identifier">get</span>&#x000A;<span class="line-num">24</span> &#x000A;<span class="line-num">25</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:metadata_attributes_mappings</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">source</span>, <span class="ruby-identifier">destination</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">26</span>     <span class="ruby-identifier">attribute_name</span> = <span class="ruby-identifier">destination</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Symbol</span>) <span class="ruby-operator">?</span> <span class="ruby-value">:&quot;#{name}_#{destination}&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-value">:&quot;#{destination}&quot;</span>&#x000A;<span class="line-num">27</span> &#x000A;<span class="line-num">28</span>     <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:&quot;#{attribute_name}=&quot;</span>)&#x000A;<span class="line-num">29</span> &#x000A;<span class="line-num">30</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">cached_file</span>&#x000A;<span class="line-num">31</span>       <span class="ruby-identifier">record</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{attribute_name}=&quot;</span>, <span class="ruby-identifier">cached_file</span>.<span class="ruby-identifier">metadata</span>[<span class="ruby-identifier">source</span>.<span class="ruby-identifier">to_s</span>])&#x000A;<span class="line-num">32</span>     <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">33</span>       <span class="ruby-identifier">record</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{attribute_name}=&quot;</span>, <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">34</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">35</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">36</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-column_values-source'>   <span class="ruby-comment"># File lib/shrine/plugins/metadata_attributes.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_values</span>&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">super</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">metadata_attributes</span>)&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

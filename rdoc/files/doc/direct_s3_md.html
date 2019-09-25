@@ -30,7 +30,7 @@ doc/direct_s3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 18:13:05 +0200</span>
+<span class='datetime'>2019-09-22 14:21:31 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -130,21 +130,6 @@ Last Update:
 
 <p>See <a href="/doc/metadata.md#direct-uploads">this section</a> or the rationale and instructions on how to opt in.</p>
 
-<h2 id="label-Object+data">Object data<span><a href="#label-Object+data">&para;</a> <a href="#top">&uarr;</a></span></h2>
-
-<p>When the cached S3 object is copied to permanent storage, the destination S3 object will by default inherit any object data that was assigned to the cached object via presign parameters. However, S3 will by default also ignore any new object parameters that are given to the copy request.</p>
-
-<p>Whether object data will be copied or replaced depends on the value of the <code>:metadata_directive</code> parameter:</p>
-<ul><li>
-<p><code>&quot;COPY&quot;</code> - destination object will inherit source object data and any new data will be ignored (default)</p>
-</li><li>
-<p><code>&quot;REPLACE&quot;</code> - destination object will not inherit any of the source object data and will accept new data</p>
-</li></ul>
-
-<p>You can use the <code>upload_options</code> plugin to change the <code>:metadata_directive</code> option when S3 objects are copied:</p>
-
-<pre class="ruby"><span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span>) <span class="ruby-keyword">do</span>&#x000A;  { <span class="ruby-value">metadata_directive:</span> <span class="ruby-string">&quot;REPLACE&quot;</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">io</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-
 <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Directly uploaded files won&#39;t automatically be deleted from your temporary storage, so you&#39;ll want to periodically clear them. One way to do that is by setting up recurring script which calls <code>Shrine::Storage::S3#clear!</code>:</p>
@@ -165,7 +150,7 @@ Last Update:
 
 <p>This means that in certain cases copying from cache to store can fail if it happens immediately after uploading to cache. If you start noticing these errors, and you&#39;re using <code>backgrounding</code> plugin, you can tell your backgrounding library to perform the job with a delay:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">data</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_in</span>(<span class="ruby-value">3</span>, <span class="ruby-identifier">data</span>) <span class="ruby-comment"># tells a Sidekiq worker to perform in 3 seconds</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># tells a Sidekiq worker to perform in 3 seconds</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_in</span>(<span class="ruby-value">3</span>, <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Checksums">Checksums<span><a href="#label-Checksums">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

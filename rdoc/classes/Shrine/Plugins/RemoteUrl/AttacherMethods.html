@@ -65,7 +65,7 @@ Shrine::Plugins::RemoteUrl::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_remote_url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-assign_remote_url-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">73</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-value">downloader:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">74</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">url</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">75</span> &#x000A;<span class="line-num">76</span>   <span class="ruby-keyword">begin</span>&#x000A;<span class="line-num">77</span>     <span class="ruby-identifier">downloaded_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">downloader</span>)&#x000A;<span class="line-num">78</span>   <span class="ruby-keyword">rescue</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">error</span>&#x000A;<span class="line-num">79</span>     <span class="ruby-identifier">download_error</span> = <span class="ruby-identifier">error</span>&#x000A;<span class="line-num">80</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">81</span> &#x000A;<span class="line-num">82</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">downloaded_file</span>&#x000A;<span class="line-num">83</span>     <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">downloaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">84</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">85</span>     <span class="ruby-identifier">message</span> = <span class="ruby-identifier">download_error_message</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">download_error</span>)&#x000A;<span class="line-num">86</span>     <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">replace</span> [<span class="ruby-identifier">message</span>]&#x000A;<span class="line-num">87</span>     <span class="ruby-ivar">@remote_url</span> = <span class="ruby-identifier">url</span>&#x000A;<span class="line-num">88</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">89</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-assign_remote_url-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">89</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-value">downloader:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">90</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">url</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">url</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">91</span> &#x000A;<span class="line-num">92</span>   <span class="ruby-identifier">downloaded_file</span> = <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">downloader</span>)&#x000A;<span class="line-num">93</span>   <span class="ruby-identifier">attach_cached</span>(<span class="ruby-identifier">downloaded_file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">94</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">DownloadError</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">error</span>&#x000A;<span class="line-num">95</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">remote_url_error_message</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">error</span>)&#x000A;<span class="line-num">96</span>   <span class="ruby-keyword">false</span>&#x000A;<span class="line-num">97</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-remote_url'>
@@ -77,14 +77,14 @@ Shrine::Plugins::RemoteUrl::AttacherMethods
 </div>
 <div class='description'>
 
-<p>Form builders require the reader as well.</p>
+<p>Used by <code>&lt;name&gt;_data_uri</code> attachment method.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-remote_url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-remote_url-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">97</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">remote_url</span>&#x000A;<span class="line-num">98</span>   <span class="ruby-ivar">@remote_url</span>&#x000A;<span class="line-num">99</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-remote_url-source'>    <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">106</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">remote_url</span>&#x000A;<span class="line-num">107</span>   <span class="ruby-ivar">@remote_url</span>&#x000A;<span class="line-num">108</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-remote_url-3D'>
@@ -96,14 +96,14 @@ Shrine::Plugins::RemoteUrl::AttacherMethods
 </div>
 <div class='description'>
 
-<p>Alias for <a href="AttacherMethods.html#method-i-assign_remote_url"><code>assign_remote_url</code></a>.</p>
+<p>Used by <code>&lt;name&gt;_data_uri=</code> attachment method.</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-remote_url-3D-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-remote_url-3D-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">92</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">remote_url=</span>(<span class="ruby-identifier">url</span>)&#x000A;<span class="line-num">93</span>   <span class="ruby-identifier">assign_remote_url</span>(<span class="ruby-identifier">url</span>)&#x000A;<span class="line-num">94</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-remote_url-3D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">100</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">remote_url=</span>(<span class="ruby-identifier">url</span>)&#x000A;<span class="line-num">101</span>   <span class="ruby-identifier">assign_remote_url</span>(<span class="ruby-identifier">url</span>)&#x000A;<span class="line-num">102</span>   <span class="ruby-ivar">@remote_url</span> = <span class="ruby-identifier">url</span>&#x000A;<span class="line-num">103</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

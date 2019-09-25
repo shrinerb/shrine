@@ -89,7 +89,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">182</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">183</span>   <span class="ruby-ivar">@event</span> = <span class="ruby-identifier">event</span>&#x000A;<span class="line-num">184</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">193</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">event</span>)&#x000A;<span class="line-num">194</span>   <span class="ruby-ivar">@event</span> = <span class="ruby-identifier">event</span>&#x000A;<span class="line-num">195</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -107,7 +107,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-5B-5D-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-5B-5D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">194</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">195</span>   <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">196</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-5B-5D-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">205</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">[]</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">206</span>   <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">207</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-duration'>
@@ -124,7 +124,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-duration-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-duration-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">198</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">duration</span>&#x000A;<span class="line-num">199</span>   <span class="ruby-identifier">library_send</span>(<span class="ruby-value">:duration</span>)&#x000A;<span class="line-num">200</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-duration-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">209</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">duration</span>&#x000A;<span class="line-num">210</span>   <span class="ruby-identifier">library_send</span>(<span class="ruby-value">:duration</span>)&#x000A;<span class="line-num">211</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-name'>
@@ -141,7 +141,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-name-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-name-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">186</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">name</span>&#x000A;<span class="line-num">187</span>   <span class="ruby-identifier">library_send</span>(<span class="ruby-value">:name</span>).<span class="ruby-identifier">chomp</span>(<span class="ruby-string">&quot;.shrine&quot;</span>).<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">188</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-name-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">197</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">name</span>&#x000A;<span class="line-num">198</span>   <span class="ruby-identifier">library_send</span>(<span class="ruby-value">:name</span>).<span class="ruby-identifier">chomp</span>(<span class="ruby-string">&quot;.shrine&quot;</span>).<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">199</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-payload'>
@@ -158,7 +158,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-payload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-payload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">190</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">payload</span>&#x000A;<span class="line-num">191</span>   <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span>&#x000A;<span class="line-num">192</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-payload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">201</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">payload</span>&#x000A;<span class="line-num">202</span>   <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span>&#x000A;<span class="line-num">203</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

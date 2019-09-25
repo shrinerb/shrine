@@ -30,13 +30,13 @@ doc/creating_plugins.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 18:13:05 +0200</span>
+<span class='datetime'>2019-09-20 20:55:43 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Creating+a+New+Plugin">Creating a New Plugin<span><a href="#label-Creating+a+New+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<h1 id="label-Writing+a+Plugin">Writing a Plugin<span><a href="#label-Writing+a+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> has a lot of plugins built-in, but you can also easily create your own. Simply put, a plugin is a module:</p>
 
@@ -66,7 +66,7 @@ Last Update:
 
 <p>If your plugin depends on other plugins, you can load them inside of <code>.load_dependencies</code> (which is given the same arguments as <code>.configure</code>):</p>
 
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span> <span class="ruby-comment"># depends on the versions plugin</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">MyPlugin</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span> <span class="ruby-comment"># depends on the derivatives plugin</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

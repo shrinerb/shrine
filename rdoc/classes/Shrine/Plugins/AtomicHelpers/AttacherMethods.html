@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::AtomicHelpers::AttacherMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::AtomicHelpers::AttacherMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/atomic_helpers_rb.html">lib/shrine/plugins/atomic_helpers.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-abstract_atomic_persist">abstract_atomic_persist</a></li>
+<li><a href="#method-i-abstract_atomic_promote">abstract_atomic_promote</a></li>
+<li><a href="#method-i-file_data">file_data</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-abstract_atomic_persist'>
+<a name='method-i-abstract_atomic_persist'></a>
+<div class='synopsis'>
+<span class='name'>abstract_atomic_persist</span>
+<span class='arguments'>(original_file = file, reload:, persist:)</span>
+
+</div>
+<div class='description'>
+
+<p>Reloads the record to check whether the attachment has changed. If it hasn&#39;t, it persists the record. Otherwise it raises <code>Shrine::AttachmentChanged</code> exception.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">abstract_atomic_persist</span>(&#x000A;  <span class="ruby-value">reload:</span>  <span class="ruby-identifier">reload_strategy</span>,&#x000A;  <span class="ruby-value">persist:</span> <span class="ruby-identifier">persist_strategy</span>,&#x000A;)</pre>
+
+<p>This more convenient to use with ORM plugins, which provide defaults for reloading and persistence.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-abstract_atomic_persist-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-abstract_atomic_persist-source'>   <span class="ruby-comment"># File lib/shrine/plugins/atomic_helpers.rb</span>&#x000A;<span class="line-num">73</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">abstract_atomic_persist</span>(<span class="ruby-identifier">original_file</span> = <span class="ruby-identifier">file</span>, <span class="ruby-value">reload:</span>, <span class="ruby-value">persist:</span>)&#x000A;<span class="line-num">74</span>   <span class="ruby-identifier">abstract_reload</span>(<span class="ruby-identifier">reload</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">attacher</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">75</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">attacher</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">original_file</span>&#x000A;<span class="line-num">76</span>       <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>, <span class="ruby-string">&quot;attachment has changed&quot;</span>&#x000A;<span class="line-num">77</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">78</span> &#x000A;<span class="line-num">79</span>     <span class="ruby-keyword">yield</span> <span class="ruby-identifier">attacher</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>&#x000A;<span class="line-num">80</span> &#x000A;<span class="line-num">81</span>     <span class="ruby-identifier">abstract_persist</span>(<span class="ruby-identifier">persist</span>)&#x000A;<span class="line-num">82</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">83</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-abstract_atomic_promote'>
+<a name='method-i-abstract_atomic_promote'></a>
+<div class='synopsis'>
+<span class='name'>abstract_atomic_promote</span>
+<span class='arguments'>(reload:, persist:, **options, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Like promote, but additionally persists the promoted file atomically. You need to specify <code>:reload</code> and <code>:persist</code> strategies when calling the method:</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">abstract_atomic_promote</span>(&#x000A;  <span class="ruby-value">reload:</span>  <span class="ruby-identifier">reload_strategy</span>,&#x000A;  <span class="ruby-value">persist:</span> <span class="ruby-identifier">persist_strategy</span>,&#x000A;)</pre>
+
+<p>This more convenient to use with ORM plugins, which provide defaults for reloading and persistence.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-abstract_atomic_promote-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-abstract_atomic_promote-source'>   <span class="ruby-comment"># File lib/shrine/plugins/atomic_helpers.rb</span>&#x000A;<span class="line-num">48</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">abstract_atomic_promote</span>(<span class="ruby-value">reload:</span>, <span class="ruby-value">persist:</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">49</span>   <span class="ruby-identifier">original_file</span> = <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">50</span> &#x000A;<span class="line-num">51</span>   <span class="ruby-identifier">result</span> = <span class="ruby-identifier">promote</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">52</span> &#x000A;<span class="line-num">53</span>   <span class="ruby-keyword">begin</span>&#x000A;<span class="line-num">54</span>     <span class="ruby-identifier">abstract_atomic_persist</span>(<span class="ruby-identifier">original_file</span>, <span class="ruby-value">reload:</span> <span class="ruby-identifier">reload</span>, <span class="ruby-value">persist:</span> <span class="ruby-identifier">persist</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">55</span>     <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">56</span>   <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">AttachmentChanged</span>&#x000A;<span class="line-num">57</span>     <span class="ruby-identifier">destroy_attached</span>&#x000A;<span class="line-num">58</span>     <span class="ruby-identifier">raise</span>&#x000A;<span class="line-num">59</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">60</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-file_data'>
+<a name='method-i-file_data'></a>
+<div class='synopsis'>
+<span class='name'>file_data</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Return only needed main file data, without the metadata. This allows you to avoid bloating your background job payload when you have derivatives or lots of metadata, by only sending data you need for atomic persitence.</p>
+
+<pre class="ruby"><span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">file_data</span> <span class="ruby-comment">#=&gt; { &quot;id&quot; =&gt; &quot;abc123.jpg&quot;, &quot;storage&quot; =&gt; &quot;store&quot; }</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-file_data-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-file_data-source'>   <span class="ruby-comment"># File lib/shrine/plugins/atomic_helpers.rb</span>&#x000A;<span class="line-num">91</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">file_data</span>&#x000A;<span class="line-num">92</span>   <span class="ruby-identifier">file!</span>.<span class="ruby-identifier">data</span>.<span class="ruby-identifier">reject</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;metadata&quot;</span> }&#x000A;<span class="line-num">93</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

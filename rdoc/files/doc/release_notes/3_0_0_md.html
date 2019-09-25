@@ -1,0 +1,570 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>3.0.0.md</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='file' id='wrapper'>
+<div class='header'>
+<h1 class='name'>3.0.0.md
+</h1>
+<div class='paths'>
+doc/release_notes/3.0.0.md
+</div>
+<div class='last-update'>
+Last Update:
+<span class='datetime'>2019-09-24 14:16:25 +0200</span>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'>
+<h1 id="label-Shrine+3.0.0"><a href="../../../classes/Shrine.html"><code>Shrine</code></a> 3.0.0<span><a href="#label-Shrine+3.0.0">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>This guide covers all the changes in the 3.0.0 version of <a href="../../../classes/Shrine.html"><code>Shrine</code></a>. If you&#39;re currently using <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.x, see <a href="/doc/upgrading_to_3.md#readme">Upgrading to Shrine 3.x</a> for instructions on how to upgrade.</p>
+
+<h2 id="label-Major+features">Major features<span><a href="#label-Major+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The new <strong><a href="/doc/plugins/derivatives.md#readme">derivatives</a></strong> plugin has been added for storing  additional processed files alongside the main file.</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :derivatives </code>  “`rb  class ImageUploader &lt; <a href="../../../classes/Shrine.html"><code>Shrine</code></a>  Attacher.derivatives_processor do |original|  magick = ImageProcessing::MiniMagick.source(original)</p>
+
+<pre>  {&#x000A;    large:  magick.resize_to_limit!(800, 800),&#x000A;    medium: magick.resize_to_limit!(500, 500),&#x000A;    small:  magick.resize_to_limit!(300, 300),&#x000A;  }&#x000A;end</pre>
+
+<p>end  <code> </code>rb  photo = Photo.new(photo_params)  photo.image_derivatives! # creates derivatives  photo.save  “`</p>
+
+<p>This is a rewrite of the <a href="/doc/plugins/versions.md#readme">versions</a> plugin, bringing numerous  improvements:</p>
+<ul><li>
+<p>processed files are separated from the main file</p>
+</li><li>
+<p>processing is decoupled from promotion</p>
+</li><li>
+<p>ability to add or remove processed files at any point</p>
+</li><li>
+<p>possibility of storing processed files on a separate storage</p>
+</li><li>
+<p>The <a href="/doc/attacher.md#readme">Shrine::Attacher</a> class has been rewritten and can now be  used without models:</p>
+</li></ul>
+
+<p><code>rb   attacher = Shrine::Attacher.new   attacher.attach(file)   attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt; </code></p>
+
+<p>The <code>Attacher#data</code>, <code>Attacher#load_data</code>, and <code>Attacher.from_data</code> methods  have been added for dumping and loading the attached file:</p>
+
+<p><code>rb   # dump attached file into a serializable Hash   data = attacher.data #=&gt; { &quot;id&quot; =&gt; &quot;abc123.jpg&quot;, &quot;storage&quot; =&gt; &quot;store&quot;, &quot;metadata&quot; =&gt; { ... } } </code>  “`rb  # initialize attacher from attached file data…  attacher = Shrine::Attacher.from_data(data)  attacher.file #=&gt; #&lt;Shrine::UploadedFile @id=“abc123.jpg” @storage_key=:store @metadata={…}&gt;</p>
+
+<p># …or load attached file into an existing attacher  attacher = <a href="../../../classes/Shrine/Attacher/InstanceMethods.html#method-c-new"><code>Shrine::Attacher.new</code></a>  attacher.load_data(data)  attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;  “`</p>
+
+<p>Several more methods have been added:</p>
+<ul><li>
+<p><code>Attacher#attach</code> – attaches the file directly to permanent storage</p>
+</li><li>
+<p><code>Attacher#attach_cached</code> – extracted from <code>Attacher#assign</code></p>
+</li><li>
+<p><code>Attacher#upload</code> – calls <code>Shrine#upload</code>, passing <code>:record</code> and <code>:name</code> context</p>
+</li><li>
+<p><code>Attacher#file</code> – alias for <code>Attacher#get</code></p>
+</li><li>
+<p><code>Attacher#cache_key</code> – returns temporary storage key (<code>:cache</code> by default)</p>
+</li><li>
+<p><code>Attacher#store_key</code> – returns permanent storage key (<code>:store</code> by default)</p>
+</li><li>
+<p>The new <a href="/doc/plugins/column.md#readme">column</a> plugin adds the ability to serialize attached file  data, in format suitable for writing into a database column.</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :column </code>  <code>rb   # dump attached file data into a JSON string   data = attacher.column_data #=&gt; &#39;{&quot;id&quot;:&quot;abc123.jpg&quot;,&quot;storage&quot;:&quot;store&quot;,&quot;metadata&quot;:{...}}&#39; </code>  “`rb  # initialize attacher from attached file data…  attacher = Shrine::Attacher.from_column(data)  attacher.file #=&gt; #&lt;Shrine::UploadedFile @id=“abc123.jpg” @storage_key=:store @metadata={…}&gt;</p>
+
+<p># …or load attached file into an existing attacher  attacher = <a href="../../../classes/Shrine/Attacher/InstanceMethods.html#method-c-new"><code>Shrine::Attacher.new</code></a>  attacher.load_column(data)  attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;  “`</p>
+<ul><li>
+<p>The new <a href="/doc/plugins/entity.md#readme">entity</a> plugin adds support for immutable structs, which  are commonly used with ROM, Hanami and dry-rb.</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :entity </code>  <code>rb   class Photo &lt; Hanami::Entity     include Shrine::Attachment(:image)   end </code>  <code>rb   photo = Photo.new(image_data: &#39;{&quot;id&quot;:&quot;abc123.jpg&quot;,&quot;storage&quot;:&quot;store&quot;,&quot;metadata&quot;:{...}}&#39;)   photo.image #=&gt; #&lt;Shrine::UploadedFile @id=&quot;abc123.jpg&quot; @storage_key=:store ...&gt; </code></p>
+<ul><li>
+<p>The new <a href="/doc/plugins/model.md#readme">model</a> plugin adds support for mutable structs, which is  used for <code>activerecord</code> and <code>sequel</code> plugins.</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :model </code>  <code>rb   class Photo &lt; Struct.new(:image_data)     include Shrine::Attachment(:image)   end </code>  <code>rb   photo = Photo.new   photo.image = file   photo.image #=&gt; #&lt;Shrine::UploadedFile @id=&quot;abc123.jpg&quot; @storage_key=:cache ...&gt;   photo.image_data #=&gt; #=&gt; &#39;{&quot;id&quot;:&quot;abc123.jpg&quot;, &quot;storage&quot;:&quot;cache&quot;, &quot;metadata&quot;:{...}}&#39; </code></p>
+<ul><li>
+<p>The <a href="/doc/plugins/backgrounding.md#readme">backgrounding</a> plugin has been rewritten for more  flexibility and simplicity. The new usage is much more explicit:</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :backgrounding   Shrine::Attacher.promote_block { PromoteJob.promote_later(self.class, record, name, file_data) }   Shrine::Attacher.destroy_block { DestroyJob.promote_later(self.class, data) } </code>  <code>rb   class PromoteJob &lt; ActiveJob::Base     def perform(attacher_class, record, name, file_data)       attacher = attacher_class.retrieve(model: record, name: name, file: file_data)       attacher.atomic_promote # promote if attachment hasn&#39;t changed     rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound       # attachment has changed or record has been deleted, nothing to do     end   end </code>  <code>rb   class DestroyJob &lt; ActiveJob::Base     def perform(attacher_class, data)       attacher = attacher_class.from_data(data)       attacher.destroy     end   end </code></p>
+
+<p>There are several main differences compared to the old implementation:</p>
+<ul><li>
+<p>we are in charge of passing the record to the background job</p>
+</li><li>
+<p>we can access the attacher before promotion</p>
+</li><li>
+<p>we can react to errors that caused promotion to abort</p>
+</li></ul>
+
+<p>We can now also register backgrounding hooks on an attacher instance, allowing  us to pass additional parameters to the background job:</p>
+
+<p>“`rb  photo = Photo.new(photo_params)</p>
+
+<p>photo.image_attacher.promote_block do |attacher|  PromoteJob.perform_later(  attacher.class,  attacher.record,  attacher.name,  attacher.file_data,  current_user.id, # &lt;== parameters from the controller  )  end</p>
+
+<p>photo.save # will call our instance-level backgrounding hook  “`</p>
+<ul><li>
+<p>The persistence plugins (<code>activerecord</code>, <code>sequel</code>) now implement a unified  <a href="/doc/plugins/persistence.md#readme">persistence</a> interface:</p>
+</li></ul>
+
+<p>| Method | Description |  | :—————– | :———- |  | <code>Attacher#persist</code> | persists attachment data |  | <code>Attacher#atomic_persist</code> | persists attachment data if attachment hasn’t changed |  | <code>Attacher#atomic_promote</code> | promotes cached file and atomically persists changes |</p>
+
+<p>The “atomic” methods use the new <a href="/doc/plugins/atomic_helpers.md#readme">atomic_helpers</a> plugin,  and are useful for background jobs. For example, this is how we&#39;d use them to  implement metadata extraction in the background in a concurrency-safe way:</p>
+
+<p><code>rb   MetadataJob.perform_later(     attacher.class,     attacher.record,     attacher.name,     attacher.file_data,   ) </code>  <code>rb   class MetadataJob &lt; ActiveJob::Base     def perform(attacher_class, record, name, file_data)       attacher = attacher_class.retrieve(model: record, name: name, file: file_data)       attacher.refresh_metadata! # extract metadata       attacher.atomic_persist    # persist if attachment hasn&#39;t changed     rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound       # attachment has changed or record has been deleted, nothing to do     end   end </code></p>
+
+<h2 id="label-Other+features">Other features<span><a href="#label-Other+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The new <a href="/doc/plugins/mirroring.md#readme">mirroring</a> plugin has been added for replicating  uploads and deletes to other storages.</p>
+</li></ul>
+
+<p>“`rb  Shrine.storages = { cache: …, store: …, backup: … }</p>
+
+<p>Shrine.plugin :mirroring, mirror: { store: :backup }  <code> </code>rb  file = <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :store) # uploads to :store and :backup  file.delete # deletes from :store and :backup  “`</p>
+<ul><li>
+<p>The new [<code>multi_cache][multi_cache]</code> plugin has been added for allowing an  attacher to accept files from additional temporary storages.</p>
+</li></ul>
+
+<p>“`rb  Shrine.storages = { cache: …, cache_one: …, cache_two: …, store: … }</p>
+
+<p>Shrine.plugin :multi_cache, additional_cache: [:cache_one, :cache_two]  <code> </code>rb  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache”, “metadata” =&gt; { … } }  photo.image.storage_key #=&gt; :cache  # or  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache_one”, “metadata” =&gt; { … } }  photo.image.storage_key #=&gt; :cache_one  # or  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache_two”, “metadata” =&gt; { … } }  photo.image.storage_key #=&gt; :cache_two  “`</p>
+<ul><li>
+<p>The new <a href="/doc/plugins/form_assign.md#readme">form_assign</a> plugin has been added for assigning  files directly from form params.</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :form_assign </code>  <code>rb   attacher = photo.image_attacher   attacher.form_assign(&quot;image&quot; =&gt; file, &quot;title&quot; =&gt; &quot;...&quot;, &quot;description&quot; =&gt; &quot;...&quot;)   attacher.file #=&gt; #&lt;Shrine::UploadedFile @id=&quot;...&quot; @storage_key=:cache ...&gt; </code></p>
+<ul><li>
+<p>Model file assignment can now be configured to upload directly to permanent  storage.</p>
+</li></ul>
+
+<p><code>rb   Shrine.plugin :model, cache: false </code>  <code>rb   photo.image = file   photo.image.storage_key #=&gt; :store (permanent storage) </code></p>
+<ul><li>
+<p>New <code>Shrine.download_response</code> method has been added to the  <code>download_endpoint</code> plugin for generating file response from the controller.</p>
+</li></ul>
+
+<p><code>rb   Rails.application.routes.draw do     get &quot;/attachments&quot; =&gt; &quot;files#download&quot;   end </code>  “`rb  class FilesController &lt; ApplicationController  def download  # … we can now perform things like authentication here …  set_rack_response Shrine.download_response(env)  end</p>
+
+<pre class="ruby"><span class="ruby-identifier">private</span>&#x000A;&#x000A;<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_rack_response</span>((<span class="ruby-identifier">status</span>, <span class="ruby-identifier">headers</span>, <span class="ruby-identifier">body</span>))&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">status</span> = <span class="ruby-identifier">status</span>&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">headers</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">headers</span>)&#x000A;  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">response_body</span> = <span class="ruby-identifier">body</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>end  “`</p>
+<ul><li>
+<p>The <code>Attacher#refresh_metadata!</code> method has been added to <code>refresh_metadata</code>  plugin. It refreshes metadata and writes new attached file data back into the  data attribute.</p>
+</li></ul>
+
+<p><code>rb   attacher.file.refresh_metadata!   attacher.write   # can now be shortened to   attacher.refresh_metadata! </code></p>
+<ul><li>
+<p>Including a <code>Shrine::Attachment</code> module now defines a <code>.&lt;name&gt;_attacher</code>  class method on the target class.</p>
+</li></ul>
+
+<p>“`rb  class Photo  include ImageUploader::Attachment(:image)</p>
+
+<pre class="ruby"><span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;ImageUploader::Attacher ...&gt;</span></pre>
+
+<p>end  “`</p>
+<ul><li>
+<p>The attachment data serializer is now configurable (by default <code>JSON</code>  standard library is used):</p>
+</li></ul>
+
+<p>“`rb  require “oj” # <a href="https://github.com/ohler55/oj">github.com/ohler55/oj</a></p>
+
+<p>Shrine.plugin :column, serializer: Oj  “`</p>
+<ul><li>
+<p>It&#39;s now possible to pass options to the validate block via the <code>:validate</code>  option:</p>
+</li></ul>
+
+<p><code>rb   attacher.assign(file, validate: { foo: &quot;bar&quot; }) </code>  <code>rb   class MyUploader &lt; Shrine     Attacher.validate do |**options|       options #=&gt; { foo: &quot;bar&quot; }     end   end </code></p>
+<ul><li>
+<p>Validation can now be skipped on assignment by passing <code>validate: false</code>.</p>
+</li></ul>
+
+<p><code>rb   attacher.attach(file, validate: false) # skip validation </code></p>
+<ul><li>
+<p>Closing the uploaded file can now be prevented by passing <code>close: false</code> to  <code>Shrine#upload</code>.</p>
+</li><li>
+<p>Uploaded file can now be automatically deleted by passing <code>delete: true</code> to  <code>Shrine#upload</code>.</p>
+</li><li>
+<p>New <code>Attacher#file!</code> method has been added for retrieving the attached file  and raising and exception if it doesn&#39;t exist.</p>
+</li><li>
+<p>New <code>Derivation#opened</code> method has been added for retrieving an opened  derivative in <code>derivation_endpoint</code> plugin.</p>
+</li></ul>
+
+<h2 id="label-Performance+improvements">Performance improvements<span><a href="#label-Performance+improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The attached file is now parsed and loaded from record column only once,  which can greatly improve performance if the same attached file is being  accessed multiple times.</p>
+</li></ul>
+
+<p><code>rb   photo = Photo.find(photo_id)   photo.image # parses and loads attached file   photo.image # returns memoized attached file </code></p>
+<ul><li>
+<p>The <code>S3#open</code> method doesn&#39;t perform a <code>#head_obect</code> request anymore.</p>
+</li><li>
+<p>The <code>derivation_endpoint</code> plugin doesn&#39;t perform a <code>Storage#exists?</code> call  anymore when <code>:upload</code> is enabled.</p>
+</li><li>
+<p>The <code>download_endpoint</code> plugin doesn&#39;t perform a <code>Storage#exists?</code> call  anymore.</p>
+</li></ul>
+
+<h2 id="label-Other+Improvements">Other Improvements<span><a href="#label-Other+Improvements">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p>The <code>Attacher#assign</code> method now accepts cached file data as a Hash.</p>
+</li></ul>
+
+<p>“`rb  photo.image = { “id” =&gt; “…”, “storage” =&gt; “cache”, “metadata” =&gt; { … } }  ““</p>
+<ul><li>
+<p>An <code>UploadedFile</code> object can now be initialized with symbol keys.</p>
+</li></ul>
+
+<p><code>rb   Shrine.uploaded_file(id: &quot;...&quot;, storage: :store, metadata: { ... }) </code></p>
+<ul><li>
+<p>The temporary storage doesn&#39;t need to be defined anymore if it&#39;s not used.</p>
+</li><li>
+<p>The memory storage from the <a href="https://github.com/shrinerb/shrine-memory">shrine-memory</a> gem has been merged into core.</p>
+</li></ul>
+
+<p><code>rb   # Gemfile   gem &quot;shrine-memory&quot; # this can be removed </code></p>
+<ul><li>
+<p>When copying the S3 object to another location, any specified upload options  will now be applied.</p>
+</li><li>
+<p>The <code>url_options</code> plugin now allows you to override URL options by deleting  them.</p>
+</li></ul>
+
+<p><code>rb   uploaded_file.url(response_content_disposition: &quot;attachment&quot;) </code>  “`rb  plugin :url_options, store: -&gt; (io, options) {  disposition = options.delete(:response_content_disposition, “inline”)</p>
+
+<pre class="ruby">{&#x000A;  <span class="ruby-value">response_content_disposition:</span> <span class="ruby-constant">ContentDisposition</span>.<span class="ruby-identifier">format</span>(&#x000A;    <span class="ruby-value">disposition:</span> <span class="ruby-identifier">disposition</span>,&#x000A;    <span class="ruby-value">filename:</span>    <span class="ruby-identifier">io</span>.<span class="ruby-identifier">original_filename</span>,&#x000A;  )&#x000A;}</pre>
+
+<p>}  “`</p>
+<ul><li>
+<p>The <code>:upload_options</code> hash passed to the uploader is now merged with any  options defined with the <code>upload_options</code> plugin.</p>
+</li><li>
+<p>The <code>default_storage</code> now evaluates the storage block in context of the  <code>Attacher</code> instance.</p>
+</li><li>
+<p>New <code>Attacher.default_cache</code> and <code>Attacher.default_store</code> methods have been  added to the <code>default_storage</code> plugin for declaratively setting default  storage.</p>
+</li></ul>
+
+<p><code>rb   Attacher.default_cache { ... }   Attacher.default_store { ... } </code></p>
+<ul><li>
+<p>The <code>derivation_endpoint</code> plugin now handles string derivation names.</p>
+</li><li>
+<p>The <code>Derivation#upload</code> method from <code>derivation_endpoint</code> plugin now accepts  additional uploader options</p>
+</li><li>
+<p>The <code>Derivation#upload</code> method from <code>derivation_endpoint</code> plugin now accepts  any IO-like object.</p>
+</li><li>
+<p>The <code>instrumentation</code> plugin now instruments <code>UploadedFile#open</code> calls as a  new <code>open.shrine</code> event. <code>UploadedFile#download</code> is still instrumented as  <code>download.shrine</code>.</p>
+</li><li>
+<p>The <code>upload.shrine</code> event now has <code>:metadata</code> on the top level in  <code>instrumentation</code> plugin.</p>
+</li><li>
+<p>The width &amp; height validators in <code>store_dimensions</code> plugin don&#39;t require  <code>UploadedFile#width</code> and <code>UploadedFile#height</code> methods to be defined anymore,  only that the corresponding metadata exists.</p>
+</li><li>
+<p>Any options passed to <code>Attacher#attach_cached</code> are now forwarded to metadata  extraction when <code>restore_cached_data</code> plugin is loaded.</p>
+</li><li>
+<p>Deprecation of passing unknown options to <code>FileSystem#open</code> has been  reverted. This allows users to continue using <code>FileSystem</code> storage in tests  as a mock storage.</p>
+</li><li>
+<p>The <code>activerecord</code> plugin now works with Active Record 3.</p>
+</li><li>
+<p><a href="../../../classes/Shrine.html"><code>Shrine</code></a> now works again with MRI 2.3.</p>
+</li><li>
+<p>The <code>infer_extension</code> plugin now works correctly with <code>pretty_location</code>  plugin when <code>pretty_location</code> was loaded after <code>infer_extension</code>.</p>
+</li><li>
+<p>The <code>derivation_endpoint</code> plugin doesn&#39;t re-open <code>File</code> objects returned in  derivation block anymore.</p>
+</li><li>
+<p>Any changes to <code>Shrine.storages</code> will now be applied to existing <code>Shrine</code> and  <code>Attacher</code> instances.</p>
+</li><li>
+<p>Callback code from <code>activerecord</code> and <code>sequel</code> plugin has been moved into  attacher methods, allowing the user to override them.</p>
+</li><li>
+<p>The <code>Shrine.opts</code> hash is now deep-copied on subclassing. This allows plugins  to freely mutate hashes and arrays in <code>Shrine.opts</code>, knowing they won&#39;t be  shared across subclasses.</p>
+</li></ul>
+
+<h2 id="label-Backwards+compatibility">Backwards compatibility<span><a href="#label-Backwards+compatibility">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="label-Plugin+deprecation+and+removal">Plugin deprecation and removal<span><a href="#label-Plugin+deprecation+and+removal">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The <code>backgrounding</code> plugin has been rewritten and has a new API. While the  new API works in a similar way, no backwards compatibility has been kept with  the previous API.</p>
+</li><li>
+<p>The <code>versions</code>, <code>processing</code>, <code>recache</code>, and <code>delete_raw</code> plugins have been  deprecated in favor of the new <code>derivatives</code> plugin.</p>
+</li><li>
+<p>The <code>module_include</code> plugin has been deprecated over overriding core classes  directly.</p>
+</li><li>
+<p>The <code>hooks</code>, <code>parallelize</code>, <code>parsed_json</code>, and <code>delete_promoted</code> plugins have  been removed.</p>
+</li><li>
+<p>The deprecated <code>copy</code>, <code>backup</code>, <code>multi_delete</code>, <code>moving</code>, <code>logging</code>,  <code>direct_upload</code> <code>background_helpers</code>, and <code>migration_helpers</code> plugins have  been removed.</p>
+</li><li>
+<p>The <code>default_url_options</code> plugin has been renamed to <code>url_options</code>.</p>
+</li></ul>
+
+<h3 id="label-Attacher+API">Attacher API<span><a href="#label-Attacher+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The <code>Attacher.new</code> method now only accepts a hash of options.</p>
+</li></ul>
+
+<p>“`rb  # this doesn&#39;t work anymore  <a href="../../../classes/Shrine/Attacher/InstanceMethods.html#method-c-new"><code>Shrine::Attacher.new</code></a>(photo, :image) # ~&gt; ArgumentError: invalid number of arguments</p>
+
+<p># this should be used instead  Shrine::Attacher.from_model(photo, :image)  “`</p>
+<ul><li>
+<p>The attacher won&#39;t detect direct data attribute changes anymore. If you&#39;re  updating the data attribute and are expecting to see the change applied to  the attacher, you&#39;ll need to call <code>Attacher#reload</code>.</p>
+</li></ul>
+
+<p><code>rb   attacher = photo.image_attacher   photo.image_data = &#39;...&#39;   attacher.reload </code></p>
+<ul><li>
+<p>The <code>Attacher#promote</code> method now only saves the promoted file in memory,  it doesn&#39;t persist the changes.</p>
+</li><li>
+<p>The <code>Attacher#_set</code> and <code>Attacher#set</code> methods have been renamed to  <code>Attacher#set</code> and <code>Attacher#changed</code>.</p>
+</li><li>
+<p>The <code>Attacher#cache!</code>, <code>Attacher#store!</code>, and <code>Attacher#delete!</code> methods have  been removed.</p>
+</li><li>
+<p>The <code>Attacher#_promote</code> and <code>Attacher#_delete</code> methods have been removed.</p>
+</li><li>
+<p>The <code>Attacher#swap</code>, <code>Attacher#update</code>, <code>Attacher#read</code>, <code>Attacher#write</code>,  <code>Attacher#convert_to_data</code>, <code>Attacher#convert_before_write</code>, and  <code>Attache#convert_after_read</code> methods have been removed.</p>
+</li><li>
+<p>The <code>Attacher.validate</code>, <code>Attacher#validate</code> and <code>Attacher#errors</code> methods  have been extracted into the new <code>validation</code> plugin.</p>
+</li><li>
+<p>The <code>Attacher#data_attribute</code> method has been renamed to <code>Attacher#attribute</code>.</p>
+</li><li>
+<p>The <code>Attacher#replace</code> method has been renamed to  <code>Attacher#destroy_previous</code>.</p>
+</li><li>
+<p>The <code>Attacher#attached?</code> method now returns whether a file is attached,  regardless of whether it was changed or not.</p>
+</li></ul>
+
+<h3 id="label-Attachment+API">Attachment API<span><a href="#label-Attachment+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The <code>Shrine::Attachment</code> module doesn&#39;t define any instance methods by itself  anymore. This has been moved into <code>entity</code> and <code>model</code> plugins.</p>
+</li></ul>
+
+<h3 id="label-Uploader+API">Uploader API<span><a href="#label-Uploader+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The <code>:phase</code> option has been removed.</p>
+</li><li>
+<p>The <code>Shrine#process</code> and <code>Shrine#processed</code> methods have been removed.</p>
+</li><li>
+<p>The <code>Shrine#store</code>, <code>Shrine#_store</code>, <code>Shrine#put</code>, and <code>Shrine#copy</code> methods  have been removed.</p>
+</li><li>
+<p>The <code>Shrine#delete</code>, <code>Shrine#_delete</code>, and <code>Shrine#remove</code> methods have been  removed.</p>
+</li><li>
+<p>The <code>Shrine#uploaded?</code> method has been removed.</p>
+</li><li>
+<p>The <code>Shrine.uploaded_file</code> method doesn&#39;t yield files anymore by default.</p>
+</li><li>
+<p>The options for <code>Shrine#upload</code> and <code>Shrine#extract_metadata</code> are now  required to have symbol keys.</p>
+</li><li>
+<p>The <code>Shrine.uploaded_file</code> method now raises <code>ArgumentError</code> on invalid  arguments.</p>
+</li><li>
+<p>The <code>Shrine#upload</code> method doesn&#39;t rescue exceptions that happen in  <code>IO#close</code> anymore.</p>
+</li><li>
+<p>The deprecated <code>Shrine::IO_METHODS</code> constant has been removed.</p>
+</li></ul>
+
+<h3 id="label-Uploaded+File+API">Uploaded File API<span><a href="#label-Uploaded+File+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The <code>UploadedFile</code> method now extracts data from the given hash on  initialization, it doesn&#39;t store the whole hash anymore. This means the  following potential code won&#39;t work anymore:</p>
+</li></ul>
+
+<p><code>rb   uploaded_file.id #=&gt; &quot;foo&quot;   uploaded_file.data["id"] = &quot;bar&quot;   uploaded_file.id #=&gt; &quot;foo&quot; </code></p>
+<ul><li>
+<p>The <code>UploadedFile#storage_key</code> method now returns a Symbol instead of a  String.</p>
+</li></ul>
+
+<p>“`rb  # previous behaviour  uploaded_file.storage_key #=&gt; “store”</p>
+
+<p># new behaviour  uploaded_file.storage_key #=&gt; :store  “`</p>
+<ul><li>
+<p>The <code>UploadedFile#==</code> method now requires both uploaded file objects to be  of the same class.</p>
+</li></ul>
+
+<h3 id="label-Storage+API">Storage API<span><a href="#label-Storage+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The <code>Storage#open</code> method is now required to accept additional options.</p>
+</li></ul>
+
+<p>“`rb  # this won&#39;t work anymore  def open(id)  # …  end</p>
+
+<p># this is now required  def open(id, **options)  # …  end  “`</p>
+<ul><li>
+<p>The <code>Storage#open</code> method is now required to raise <code>Shrine::FileNotFound</code>  exception when the file is missing.</p>
+</li></ul>
+
+<h3 id="label-S3+API">S3 API<span><a href="#label-S3+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>The support for <code>aws-sdk</code> 2.x and <code>aws-sdk-s3</code> lower than 1.14 has been  removed.</p>
+</li><li>
+<p><code>S3#open</code> now raises <code>Shrine::FileNotFound</code> exception when S3 object doesn&#39;t  exist on the bucket.</p>
+</li><li>
+<p>The <code>S3#upload</code> method will now override any S3 object data when copying  from another S3 object. If you were relying on S3 object data being inherited  on copy, you will need to update your code.</p>
+</li><li>
+<p>The <code>:host</code> option in <code>S3#initialize</code> has been removed.</p>
+</li><li>
+<p>The <code>:download</code> option in <code>S3#url</code> has been removed.</p>
+</li><li>
+<p>Specifying <code>:multipart_threshold</code> as an integer is not supported anymore.</p>
+</li><li>
+<p>Non URI-escaped <code>:content_disposition</code> and <code>:response_content_disposition</code>  values are not supported anymore.</p>
+</li><li>
+<p>The <code>S3#presign</code> method now returns a hash instead of an object for default  POST method.</p>
+</li><li>
+<p>The deprecated <code>S3#stream</code>, <code>S3#download</code>, and <code>S3#s3</code> methods have been  removed.</p>
+</li><li>
+<p>The <code>S3#open</code> method doesn&#39;t include an <code>:object</code> in <code>Down::ChunkedIO#data</code>  anymore.</p>
+</li></ul>
+
+<h3 id="label-FileSystem+API">FileSystem API<span><a href="#label-FileSystem+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p><code>FileSystem#open</code> now raises <code>Shrine::FileNotFound</code> exception when file does  not exist on the filesystem.</p>
+</li><li>
+<p>The deprecated <code>:host</code> option in <code>FileSystem#initialize</code> has been removed.</p>
+</li><li>
+<p>The deprecated <code>:older_than</code> option in <code>FileSystem#clear!</code> has been removed.</p>
+</li><li>
+<p>The deprecated <code>FileSystem#download</code> method has been removed.</p>
+</li><li>
+<p>The <code>FileSystem#movable?</code> and <code>FileSystem#move</code> methods have been made  private.</p>
+</li><li>
+<p>The <code>FileSystem#open</code> method doesn&#39;t accept a block anymore.</p>
+</li></ul>
+
+<h3 id="label-Plugins+API">Plugins API<span><a href="#label-Plugins+API">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p><code>remote_url</code></p>
+</li><li>
+<p>A custom downloader is now required to raise <code>Shrine::Plugins::RemoteUrl::DownloadError</code> in order for the exception to be converted into a validation error. <code>Down::NotFound</code> and <code>Down::TooLarge</code> exceptions are converted by default. All other exceptions are propagated.</p>
+</li><li>
+<p><code>upload_endpoint</code></p>
+</li><li>
+<p>The deprecated <code>Shrine::Plugins::UploadEndpoint::App</code> constant has been removed.</p>
+</li><li>
+<p>The <code>:request</code> option holding the <code>Rack::Request</code> object isn&#39;t passed to the uploader anymore.</p>
+</li><li>
+<p><code>presign_endpoint</code></p>
+</li><li>
+<p><code>Storage#presign</code> results that cannot coerce themselves into a Hash are not supported anymore.</p>
+</li><li>
+<p>The deprecated <code>Shrine::Plugins::PresignEndpoint::App</code> constant has been removed.</p>
+</li><li>
+<p><code>derivation_endpoint</code></p>
+</li><li>
+<p>The derivation block is now evaluated in context of a <code>Shrine::Derivation</code> instance.</p>
+</li><li>
+<p>The derivation block can now return only <code>File</code> and <code>Tempfile</code> objects.</p>
+</li><li>
+<p>The <code>:download_errors</code> option has been removed, as it&#39;s now obsolete.</p>
+</li><li>
+<p>The <code>:include_uploaded_file</code> option has been removed, as it&#39;s now obsolete.</p>
+</li><li>
+<p>The source <code>UploadedFile</code> is not passed to the derivation block anymore on <code>download: false</code>.</p>
+</li><li>
+<p>The <code>Derivation#upload</code> method now closes the uploaded file.</p>
+</li><li>
+<p>Uploader deleting the uploaded derivative isn&#39;t supported anymore (e.g. <code>delete_raw</code> plugin).</p>
+</li><li>
+<p>The <code>derivation.upload</code> instrumentation event payload now includes only <code>:derivation</code> key.</p>
+</li><li>
+<p><code>download_endpoint</code></p>
+</li><li>
+<p>Support for legacy <code>/:storage/:id</code> URLs has been dropped.</p>
+</li><li>
+<p>The <code>:storages</code> plugin option has been removed.</p>
+</li><li>
+<p>The <code>Shrine::Plugins::DownloadEndpoint::App</code> constant has been removed.</p>
+</li><li>
+<p><code>data_uri</code></p>
+</li><li>
+<p>The deprecated <code>:filename</code> plugin option has been removed.</p>
+</li><li>
+<p>The deprecated <code>Shrine::Plugins::DataUri::DataFile</code> constant has been removed.</p>
+</li><li>
+<p><code>rack_file</code></p>
+</li><li>
+<p>The deprecated <code>Shrine::Plugins::RackFile::UploadedFile</code> constant has been removed.</p>
+</li><li>
+<p>Passing a Rack uploaded file hash to <code>Shrine#upload</code> is not supported anymore.</p>
+</li><li>
+<p><code>cached_attachment_data</code></p>
+</li><li>
+<p>The <code>#&lt;name&gt;_cached_data=</code> model method has been removed.</p>
+</li><li>
+<p>The <code>Attacher#read_cached</code> method has been renamed to <code>Attacher#cached_data</code>.</p>
+</li><li>
+<p><code>default_url</code></p>
+</li><li>
+<p>Passing a block when loading the plugin is not supported anymore.</p>
+</li><li>
+<p><code>determine_mime_type</code></p>
+</li><li>
+<p>The deprecated <code>:default</code> analyzer alias has been removed.</p>
+</li><li>
+<p>The private <code>Shrine#mime_type_analyzers</code> method has been removed.</p>
+</li><li>
+<p><code>store_dimensions</code></p>
+</li><li>
+<p>Failing to extract dimensions now prints out a warning by default.</p>
+</li><li>
+<p>The private <code>Shrine#extract_dimensions</code> and <code>Shrine#dimensions_analyzers</code> methods have been removed.</p>
+</li><li>
+<p><code>infer_extension</code></p>
+</li><li>
+<p>The <code>:mini_mime</code> inferrer is now the default inferrer, which requires the <code>mini_mime</code> gem.</p>
+</li><li>
+<p>The private <code>Shrine#infer_extension</code> method has been removed.</p>
+</li><li>
+<p><code>validation_helpers</code></p>
+</li><li>
+<p>The width &amp; height validators will now raise an exception if <code>width</code> or <code>height</code> metadata is missing.</p>
+</li><li>
+<p>Support for regexes has been dropped for MIME type and extension validators.</p>
+</li><li>
+<p><code>versions</code></p>
+</li><li>
+<p>The deprecated <code>:version_names</code>, <code>Shrine.version_names</code> and <code>Shrine.version?</code> have been removed from <code>versions</code> plugin.</p>
+</li><li>
+<p><code>keep_files</code></p>
+</li><li>
+<p>The plugin will now always prevent deletion of both replaced and destroyed attachments. The <code>:replaced</code> and <code>:destroyed</code> options don&#39;t have effect anymore.</p>
+</li><li>
+<p><code>dynamic_storage</code></p>
+</li><li>
+<p>The <code>Shrine.dynamic_storages</code> method has been removed.</p>
+</li><li>
+<p><code>instrumentation</code></p>
+</li><li>
+<p>The <code>:location</code>, <code>:upload_options</code>, and <code>:metadata</code> keys have been removed from <code>:options</code> in <code>upload.shrine</code> event payload.</p>
+</li><li>
+<p>The <code>:metadata</code> key has been removed from <code>metadata.shrine</code> event payload.</p>
+</li><li>
+<p><code>default_storage</code></p>
+</li><li>
+<p>Passing <code>record</code> &amp; <code>name</code> arguments to the storage block has been deprecated over evaluating the block in context of the attacher instance.</p>
+</li><li>
+<p><code>sequel</code></p>
+</li><li>
+<p>The <code>:callbacks</code> plugin option has been renamed to <code>:hooks</code>.</p>
+</li></ul>
+</div>
+<div id='context'>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

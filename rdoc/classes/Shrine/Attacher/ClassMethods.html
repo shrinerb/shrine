@@ -39,9 +39,9 @@ Shrine::Attacher::ClassMethods
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
+<li><a href="#method-i-from_data">from_data</a></li>
 <li><a href="#method-i-inspect">inspect</a></li>
 <li><a href="#attribute-i-shrine_class">shrine_class</a></li>
-<li><a href="#method-i-validate">validate</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -65,6 +65,27 @@ Shrine::Attacher::ClassMethods
 </div>
 <div id='methods'>
 <h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-from_data'>
+<a name='method-i-from_data'></a>
+<div class='synopsis'>
+<span class='name'>from_data</span>
+<span class='arguments'>(data, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Initializes the attacher from a data hash generated from <code>Attacher#data</code>.</p>
+
+<pre>attacher = Attacher.from_data({ &quot;id&quot; =&gt; &quot;...&quot;, &quot;storage&quot; =&gt; &quot;...&quot;, &quot;metadata&quot; =&gt; { ... } })&#x000A;attacher.file #=&gt; #&lt;Shrine::UploadedFile&gt;</pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-from_data-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-from_data-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">from_data</span>(<span class="ruby-identifier">data</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-identifier">attacher</span> = <span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">27</span>   <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">load_data</span>(<span class="ruby-identifier">data</span>)&#x000A;<span class="line-num">28</span>   <span class="ruby-identifier">attacher</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
 <div class='method public-instance' id='method-method-i-inspect'>
 <a name='method-i-inspect'></a>
 <div class='synopsis'>
@@ -82,27 +103,6 @@ Shrine::Attacher::ClassMethods
 [show source]
 </a>
 <pre id='method-i-inspect-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inspect</span>&#x000A;<span class="line-num">18</span>   <span class="ruby-node">&quot;#{shrine_class.inspect}::Attacher&quot;</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-<div class='method public-instance' id='method-method-i-validate'>
-<a name='method-i-validate'></a>
-<div class='synopsis'>
-<span class='name'>validate</span>
-<span class='arguments'>(&block)</span>
-
-</div>
-<div class='description'>
-
-<p>Block that is executed in context of <a href="../Attacher.html"><code>Shrine::Attacher</code></a> during validation. Example:</p>
-
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-keyword">if</span> <span class="ruby-identifier">get</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">5</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span><span class="ruby-operator">*</span><span class="ruby-value">1024</span>&#x000A;    <span class="ruby-identifier">errors</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-string">&quot;is too big (max is 5 MB)&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-validate-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">define_method</span>(<span class="ruby-value">:validate_block</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">31</span>   <span class="ruby-identifier">private</span> <span class="ruby-value">:validate_block</span>&#x000A;<span class="line-num">32</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

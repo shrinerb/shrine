@@ -35,36 +35,9 @@ Shrine::Plugins::InferExtension::InstanceMethods
 <div id='content'>
 <div id='text'>
 <div id='description'></div>
-<div id='method-list'>
-<h2>Methods</h2>
-<h3>Public Instance</h3>
-<ol>
-<li><a href="#method-i-generate_location">generate_location</a></li>
-</ol>
-</div>
 <div id='context'>
 </div>
 <div id='section'>
-<div id='methods'>
-<h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-generate_location'>
-<a name='method-i-generate_location'></a>
-<div class='synopsis'>
-<span class='name'>generate_location</span>
-<span class='arguments'>(io, context = {})</span>
-
-</div>
-<div class='description'>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-generate_location-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-generate_location-source'>   <span class="ruby-comment"># File lib/shrine/plugins/infer_extension.rb</span>&#x000A;<span class="line-num">56</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span> = {})&#x000A;<span class="line-num">57</span>   <span class="ruby-identifier">mime_type</span> = (<span class="ruby-identifier">context</span>[<span class="ruby-value">:metadata</span>] <span class="ruby-operator">||</span> {})[<span class="ruby-string">&quot;mime_type&quot;</span>]&#x000A;<span class="line-num">58</span> &#x000A;<span class="line-num">59</span>   <span class="ruby-identifier">location</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">60</span>   <span class="ruby-identifier">current_extension</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">extname</span>(<span class="ruby-identifier">location</span>)&#x000A;<span class="line-num">61</span> &#x000A;<span class="line-num">62</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">current_extension</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:infer_extension</span>][<span class="ruby-value">:force</span>]&#x000A;<span class="line-num">63</span>     <span class="ruby-identifier">inferred_extension</span> = <span class="ruby-identifier">infer_extension</span>(<span class="ruby-identifier">mime_type</span>)&#x000A;<span class="line-num">64</span>     <span class="ruby-identifier">location</span> = <span class="ruby-identifier">location</span>.<span class="ruby-identifier">chomp</span>(<span class="ruby-identifier">current_extension</span>) <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">inferred_extension</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">inferred_extension</span>.<span class="ruby-identifier">empty?</span>&#x000A;<span class="line-num">65</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">66</span> &#x000A;<span class="line-num">67</span>   <span class="ruby-identifier">location</span>&#x000A;<span class="line-num">68</span> <span class="ruby-keyword">end</span></pre>
-</div>
-</div>
-</div>
 </div>
 
 </div>

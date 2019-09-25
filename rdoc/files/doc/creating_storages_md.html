@@ -30,13 +30,13 @@ doc/creating_storages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-07-16 00:36:13 +0200</span>
+<span class='datetime'>2019-09-18 12:32:13 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Creating+a+New+Storage">Creating a New Storage<span><a href="#label-Creating+a+New+Storage">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<h1 id="label-Writing+a+Storage">Writing a Storage<span><a href="#label-Writing+a+Storage">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> ships with the FileSystem and S3 storages, but it&#39;s also easy to create your own. A storage is a class which needs to implement <code>#upload</code>, <code>#url</code>, <code>#open</code>, <code>#exists?</code>, and <code>#delete</code> methods.</p>
 
@@ -73,6 +73,8 @@ Last Update:
 <p>It&#39;s recommended to use the <a href="https://github.com/janko/down">Down</a> gem for this. If the storage exposes its files over HTTP, you can use <code>Down.open</code>, otherwise if it&#39;s possible to stream chunks of content from the storage, that can be wrapped in a <code>Down::ChunkedIO</code>. It&#39;s recommended to use the <a href="https://github.com/janko/down#httprb">Down::Http</a> backend, as the <a href="https://github.com/httprb/http">HTTP.rb</a> gem allocates an order of magnitude less memory when reading the response body compared to <code>Net::HTTP</code>.</p>
 
 <p>The storage can support additional options to customize how the file will be opened, <code>Shrine::UploadedFile#open</code> and <code>Shrine::UploadedFile#download</code> will forward any given options to <code>#open</code>.</p>
+
+<p>When file is not found, <code>Shrine::FileNotFound</code> exception should be raised.</p>
 
 <h2 id="label-Url">Url<span><a href="#label-Url">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

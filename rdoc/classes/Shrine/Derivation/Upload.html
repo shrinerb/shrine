@@ -55,7 +55,7 @@ Superclass:
 <a name='method-i-call'></a>
 <div class='synopsis'>
 <span class='name'>call</span>
-<span class='arguments'>(derivative = nil)</span>
+<span class='arguments'>(derivative = nil, **options)</span>
 
 </div>
 <div class='description'>
@@ -67,7 +67,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-call-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">680</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">derivative</span> = <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">681</span>   <span class="ruby-identifier">with_derivative</span>(<span class="ruby-identifier">derivative</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">uploadable</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">682</span>     <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-identifier">uploadable</span>,&#x000A;<span class="line-num">683</span>       <span class="ruby-value">location:</span>       <span class="ruby-identifier">upload_location</span>,&#x000A;<span class="line-num">684</span>       <span class="ruby-value">upload_options:</span> <span class="ruby-identifier">upload_options</span>&#x000A;<span class="line-num">685</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">686</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-call-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">642</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">call</span>(<span class="ruby-identifier">derivative</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">643</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">derivative</span>&#x000A;<span class="line-num">644</span>     <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">derivative</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">645</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">646</span>     <span class="ruby-identifier">upload</span>(<span class="ruby-identifier">derivation</span>.<span class="ruby-identifier">generate</span>, <span class="ruby-value">delete:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">647</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">648</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

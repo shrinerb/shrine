@@ -39,9 +39,8 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#method-i-assign_download_endpoint">assign_download_endpoint</a></li>
 <li><a href="#method-i-download_endpoint">download_endpoint</a></li>
-<li><a href="#method-i-inherited">inherited</a></li>
+<li><a href="#method-i-download_response">download_response</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -49,25 +48,6 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 <div id='section'>
 <div id='methods'>
 <h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-assign_download_endpoint'>
-<a name='method-i-assign_download_endpoint'></a>
-<div class='synopsis'>
-<span class='name'>assign_download_endpoint</span>
-<span class='arguments'>(app_class)</span>
-
-</div>
-<div class='description'>
-
-<p>Assigns the subclassed endpoint as the <code>DownloadEndpoint</code> constant.</p>
-
-</div>
-<div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign_download_endpoint-source&#39;); return false'>
-[show source]
-</a>
-<pre id='method-i-assign_download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">36</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign_download_endpoint</span>(<span class="ruby-identifier">app_class</span>)&#x000A;<span class="line-num">37</span>   <span class="ruby-ivar">@download_endpoint</span> = <span class="ruby-identifier">new_download_endpoint</span>(<span class="ruby-identifier">app_class</span>)&#x000A;<span class="line-num">38</span> &#x000A;<span class="line-num">39</span>   <span class="ruby-identifier">const_set</span>(<span class="ruby-value">:DownloadEndpoint</span>, <span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="line-num">40</span>   <span class="ruby-identifier">deprecate_constant</span>(<span class="ruby-value">:DownloadEndpoint</span>)&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">end</span></pre>
-</div>
-</div>
 <div class='method public-instance' id='method-method-i-download_endpoint'>
 <a name='method-i-download_endpoint'></a>
 <div class='synopsis'>
@@ -84,26 +64,28 @@ Shrine::Plugins::DownloadEndpoint::ClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-download_endpoint-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-identifier">new_download_endpoint</span>(<span class="ruby-constant">App</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-download_endpoint-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">22</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">DownloadEndpoint</span>.<span class="ruby-identifier">new</span>(&#x000A;<span class="line-num">23</span>     <span class="ruby-value">shrine_class:</span> <span class="ruby-keyword">self</span>,&#x000A;<span class="line-num">24</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint</span>],&#x000A;<span class="line-num">25</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>,&#x000A;<span class="line-num">26</span>   )&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-instance' id='method-method-i-inherited'>
-<a name='method-i-inherited'></a>
+<div class='method public-instance' id='method-method-i-download_response'>
+<a name='method-i-download_response'></a>
 <div class='synopsis'>
-<span class='name'>inherited</span>
-<span class='arguments'>(subclass)</span>
+<span class='name'>download_response</span>
+<span class='arguments'>(env, **options)</span>
 
 </div>
 <div class='description'>
 
-<p>Assigns the subclass a copy of the download endpoint class.</p>
+<p>Calls the download endpoint passing the request information, and returns the Rack response triple.</p>
+
+<p>It uses a trick where it removes the download path prefix from the path info before calling the Rack app, which is what web framework routers do before they&#39;re calling a mounted Rack app.</p>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-inherited-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-download_response-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-inherited-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">inherited</span>(<span class="ruby-identifier">subclass</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">27</span>   <span class="ruby-identifier">subclass</span>.<span class="ruby-identifier">assign_download_endpoint</span>(<span class="ruby-ivar">@download_endpoint</span>)&#x000A;<span class="line-num">28</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-download_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">download_response</span>(<span class="ruby-identifier">env</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">36</span>   <span class="ruby-identifier">script_name</span> = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>]&#x000A;<span class="line-num">37</span>   <span class="ruby-identifier">path_info</span>   = <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]&#x000A;<span class="line-num">38</span> &#x000A;<span class="line-num">39</span>   <span class="ruby-identifier">prefix</span> = <span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint</span>][<span class="ruby-value">:prefix</span>]&#x000A;<span class="line-num">40</span>   <span class="ruby-identifier">match</span>  = <span class="ruby-identifier">path_info</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^\/#{prefix}/</span>)&#x000A;<span class="line-num">41</span> &#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-node">&quot;request path must start with \&quot;/#{prefix}\&quot;, but is \&quot;#{path_info}\&quot;&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">match</span>&#x000A;<span class="line-num">43</span> &#x000A;<span class="line-num">44</span>   <span class="ruby-keyword">begin</span>&#x000A;<span class="line-num">45</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] <span class="ruby-operator">+=</span> <span class="ruby-identifier">match</span>.<span class="ruby-identifier">to_s</span>&#x000A;<span class="line-num">46</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]    = <span class="ruby-identifier">match</span>.<span class="ruby-identifier">post_match</span>&#x000A;<span class="line-num">47</span> &#x000A;<span class="line-num">48</span>     <span class="ruby-identifier">download_endpoint</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">49</span>   <span class="ruby-keyword">ensure</span>&#x000A;<span class="line-num">50</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;SCRIPT_NAME&quot;</span>] = <span class="ruby-identifier">script_name</span>&#x000A;<span class="line-num">51</span>     <span class="ruby-identifier">env</span>[<span class="ruby-string">&quot;PATH_INFO&quot;</span>]   = <span class="ruby-identifier">path_info</span>&#x000A;<span class="line-num">52</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">53</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

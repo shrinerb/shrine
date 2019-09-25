@@ -30,7 +30,7 @@ doc/release_notes/2.15.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-06-24 18:13:05 +0200</span>
+<span class='datetime'>2019-09-18 12:32:13 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -43,7 +43,7 @@ Last Update:
 
 <p>Rather than encoding processing steps in the URL (like Dragonfly and Active  Storage do), with <code>derivation_endpoint</code> you generate URLs to named  “derivation” blocks, passing any arguments you need for the processing.</p>
 
-<p><code>rb   photo.image.derivation_url(:thumbnail, &quot;600&quot;, &quot;400&quot;)   #=&gt; &quot;derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=...&quot; </code></p>
+<p><code>rb   photo.image.derivation_url(:thumbnail, 600, 400)   #=&gt; &quot;derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=...&quot; </code></p>
 
 <p>When the URL is requested, it&#39;s routed to a Rack app that you mount in your  router, which knows how to resolve the HTTP request, call the appropriate  processing, and generate an HTTP response.</p>
 
