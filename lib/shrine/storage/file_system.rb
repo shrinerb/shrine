@@ -106,6 +106,13 @@ class Shrine
         end
       end
 
+      # Delete files at keys starting with the prefix.
+      #
+      #    file_system.delete_prefixed("somekey/derivatives/")
+      def delete_prefixed(prefix)
+        FileUtils.rm_rf(directory.join(prefix))
+      end
+
       # Returns the full path to the file.
       def path(id)
         directory.join(id.gsub("/", File::SEPARATOR))
