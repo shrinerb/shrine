@@ -8,6 +8,6 @@ describe Shrine::Storage::Memory do
   end
 
   it "passes the linter" do
-    Shrine::Storage::Linter.call(@memory)
+    assert Shrine::Storage::Linter.call(@memory)
   end
 end
