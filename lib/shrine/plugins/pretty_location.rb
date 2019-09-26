@@ -34,9 +34,17 @@ class Shrine
           record.public_send(opts[:pretty_location][:identifier])
         end
 
+        def transform_class_name(class_name)
+          if opts[:pretty_location][:class_underscore]
+            class_name.gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2').gsub(/([a-z])([A-Z])/, '\1_\2').downcase
+          else
+            class_name.downcase
+          end
+        end
+
         def record_namespace(record)
           class_name = record.class.name or return
-          parts      = class_name.downcase.split("::")
+          parts      = transform_class_name(class_name).split("::")
 
           if separator = opts[:pretty_location][:namespace]
             parts.join(separator)

@@ -90,6 +90,18 @@ describe Shrine::Plugins::PrettyLocation do
         assert_match %r{^namespaced_entity/123/file/\w+$}, location
       end
 
+      it "transform class name with underscore when :class_underscore is set to true" do
+        @shrine.plugin :pretty_location, class_underscore: :true, namespace: "/"
+
+        location = @uploader.generate_location(
+          fakeio,
+          record: NameSpaced::Entity.new(123),
+          name: :file,
+        )
+
+        assert_match %r{^name_spaced/entity/123/file/\w+$}, location
+      end
+
       it "fails when record does not respond to default identifier" do
         assert_raises NoMethodError do
           @uploader.generate_location(
