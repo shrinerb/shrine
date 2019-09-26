@@ -1,3 +1,7 @@
+## HEAD
+
+* Update `down` dependency to `~> 5.0` (@janko)
+
 ## 3.0.0.beta3 (2019-09-25)
 
 * `multi_cache` – Add new plugin for whitelisting additional temporary storages (@janko, @jrochkind)

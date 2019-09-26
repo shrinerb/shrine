@@ -81,16 +81,6 @@ describe Shrine::Plugins::RemoteUrl do
         assert_equal "foo", file.read
       end
 
-      it "re-raises Down::NotFound errors" do
-        @shrine.plugin :remote_url, downloader: -> (url, **) { raise Down::NotFound }
-
-        error = assert_raises Shrine::Plugins::RemoteUrl::DownloadError do
-          @shrine.remote_url("foo")
-        end
-
-        assert_equal "remote file not found", error.message
-      end
-
       it "re-raises Down::TooLarge errors" do
         @shrine.plugin :remote_url, downloader: -> (url, **) { raise Down::TooLarge }
 
@@ -99,6 +89,16 @@ describe Shrine::Plugins::RemoteUrl do
         end
 
         assert_equal "remote file too large", error.message
+      end
+
+      it "re-raises other Down::Error exceptions" do
+        @shrine.plugin :remote_url, downloader: -> (url, **) { raise Down::TimeoutError }
+
+        error = assert_raises Shrine::Plugins::RemoteUrl::DownloadError do
+          @shrine.remote_url("foo")
+        end
+
+        assert_equal "remote file not found", error.message
       end
 
       it "re-raises DownloadError errors" do
