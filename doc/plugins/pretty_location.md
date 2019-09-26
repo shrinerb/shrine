@@ -40,17 +40,14 @@ plugin :pretty_location, identifier: :email
 # "user/foo@bar.com/profile_picture/493g82jf23.jpg"
 ```
 
-By default, class name will be transform by downcase. We can change this behavoir by pass in the method name or proc to transform that class name.
+By default, class name will be transform by downcase. We can change this behavoir to pass in option `class_underscore`. It transform class name to underscore.
 
 ```ruby
 plugin :pretty_location
 # "blogpost/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
 
-plugin :pretty_location, class_transform: :underscore
+plugin :pretty_location, class_underscore: :true
 # "blog_post/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
-
-plugin :pretty_location, class_transform: ->(class_name){ "prefix_" + class_name.underscore }
-# "prefix_blog_post/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
 ```
 
 
