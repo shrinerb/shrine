@@ -437,53 +437,58 @@ describe Shrine do
 
   describe "#generate_location" do
     it "creates a unique location" do
-      location1 = @uploader.generate_location(fakeio)
-      location2 = @uploader.generate_location(fakeio)
+      file1 = @uploader.upload(fakeio)
+      file2 = @uploader.upload(fakeio)
 
-      refute location1 == location2
+      refute file1.id == file2.id
     end
 
     it "preserves the extension" do
       # Rails file
-      location = @uploader.generate_location(fakeio(filename: "avatar.jpg"))
-      assert_match /\.jpg$/, location
+      file = @uploader.upload(fakeio(filename: "avatar.jpg"))
+      assert_match /\.jpg$/, file.id
 
       # Uploaded file
       uploaded_file = @uploader.upload(fakeio, location: "avatar.jpg")
-      location = @uploader.generate_location(uploaded_file)
-      assert_match /\.jpg$/, location
+      file = @uploader.upload(uploaded_file)
+      assert_match /\.jpg$/, file.id
 
       # File
-      location = @uploader.generate_location(File.open(__FILE__))
-      assert_match /\.rb$/, location
+      file = @uploader.upload(File.open(__FILE__))
+      assert_match /\.rb$/, file.id
+    end
+
+    it "uses filename metadata" do
+      file = @uploader.upload(fakeio, metadata: { "filename" => "avatar.jpg" })
+      assert_match /\.jpg$/, file.id
     end
 
     it "downcases the extension" do
-      location = @uploader.generate_location(fakeio(filename: "avatar.JPG"))
-      assert_match /\.jpg$/, location
+      file = @uploader.upload(fakeio(filename: "avatar.JPG"))
+      assert_match /\.jpg$/, file.id
     end
 
     it "handles no extension or no filename" do
-      location = @uploader.generate_location(fakeio(filename: "avatar"))
-      assert_match /^[\w-]+$/, location
+      file = @uploader.upload(fakeio(filename: "avatar"))
+      assert_match /^[\w-]+$/, file.id
 
       uploaded_file = @uploader.upload(fakeio, location: "avatar")
-      location = @uploader.generate_location(uploaded_file)
-      assert_match /^[\w-]+$/, location
+      file = @uploader.upload(uploaded_file)
+      assert_match /^[\w-]+$/, file.id
 
-      location = @uploader.generate_location(fakeio)
-      assert_match /^[\w-]+$/, location
+      file = @uploader.upload(fakeio)
+      assert_match /^[\w-]+$/, file.id
     end
 
     it "gets extension from shrine-url-style id with query params" do
-      uploaded_file = @shrine::UploadedFile.new(id: "http://example.com/path.html?key=value", storage: "cache")
-      location = @uploader.generate_location(uploaded_file)
-      assert_match /\.html$/, location
+      uploaded_file = @uploader.upload(fakeio, location: "http://example.com/path.html?key=value")
+      file = @uploader.upload(uploaded_file)
+      assert_match /\.html$/, file.id
 
-      uploaded_file = @shrine::UploadedFile.new(id: "http://example.com/path?key=value", storage: "cache")
-      location = @uploader.generate_location(uploaded_file)
-      refute_match /key=value/, location
-      assert_match /^[\w-]+$/, location
+      uploaded_file = @uploader.upload(fakeio, location: "http://example.com/path?key=value")
+      file = @uploader.upload(uploaded_file)
+      refute_match /key=value/, file.id
+      assert_match /^[\w-]+$/, file.id
     end
   end
 

@@ -1,6 +1,8 @@
 ## HEAD
 
-* Add `:class_underscore` option to `pretty_location` plugin for underscoring class name (@Uysim)
+* `core` – Infer file extension from `filename` metadata (@janko)
+
+* `pretty_location` – Add `:class_underscore` option for underscoring class name (@Uysim)
 
 * Update `down` dependency to `~> 5.0` (@janko)
 

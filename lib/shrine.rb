@@ -273,7 +273,7 @@ class Shrine
     # Generates a basic location for an uploaded file
     def basic_location(io, metadata:)
       extension   = ".#{io.extension}" if io.is_a?(UploadedFile) && io.extension
-      extension ||= File.extname(extract_filename(io).to_s).downcase
+      extension ||= File.extname(metadata["filename"].to_s).downcase
       basename    = generate_uid(io)
 
       basename + extension
