@@ -206,7 +206,7 @@ The storage can support additional options to customize how the presign will be
 generated, those can be forwarded via the `:presign_options` option on the
 `presign_endpoint` plugin.
 
-## Clear and delete_prefixed
+## Delete Prefixed and Clear
 
 There are two methods that are not currently used by shrine, but which it's good
 for storages to provide to allow client code to delete files from storage. If
@@ -220,12 +220,12 @@ service functionality, storages should usually implement if possible.
 ```rb
 class MyStorage
   # ...
-  def clear!
-    # deletes all files in the storage
-  end
-
   def delete_prefixed(prefix_path)
     # deletes all files under the supplied argument prefix
+  end
+
+  def clear!
+    # deletes all files in the storage
   end
   # ...
 end
