@@ -255,11 +255,19 @@ plugin uses internally):
 ```rb
 Shrine.plugin :refresh_metadata # allow re-extracting metadata
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
+
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.refresh_metadata!
     attacher.atomic_promote
@@ -270,16 +278,22 @@ end
 You can also extract metadata in the background separately from promotion:
 
 ```rb
-MetadataJob.perform_later(
-  attacher.class,
-  attacher.record,
+MetadataJob.perform_async(
+  attacher.class.name,
+  attacher.record.class.name,
+  attacher.record.id,
   attacher.name,
   attacher.file_data,
 )
 ```
 ```rb
-class MetadataJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class MetadataJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.refresh_metadata!
     attacher.atomic_persist
@@ -308,9 +322,14 @@ class MyUploader < Shrine
 end
 ```
 ```rb
-class MetadataJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+class MetadataJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.refresh_metadata!(background: true)
     attacher.atomic_persist
   end
@@ -324,9 +343,14 @@ promotion, you can wrap both in an `UploadedFile#open` block to make
 sure the file content is retrieved from the storage only once.
 
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(record, name, file_data)
-    attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
+    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
 
     attacher.file.open do
       attacher.refresh_metadata!

@@ -161,12 +161,21 @@ The `backgrounding` plugin has been rewritten in Shrine 3.0 and has a new API.
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
-Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
+Shrine::Attacher.destroy_block do
+  DestroyJob.perform_async(self.class.name, data)
+end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.atomic_promote
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
@@ -175,8 +184,12 @@ class PromoteJob < ActiveJob::Base
 end
 ```
 ```rb
-class DestroyJob < ActiveJob::Base
+class DestroyJob
+  include Sidekiq::Worker
+
   def perform(attacher_class, data)
+    attacher_class = Object.const_get(attacher_class)
+
     attacher = attacher_class.from_data(data)
     attacher.destroy
   end
@@ -191,16 +204,21 @@ both argument formats, and then switch to the new one once the jobs with old
 format have been drained.
 
 ```rb
-class PromoteJob < ActiveJob::Base
+class PromoteJob
+  include Sidekiq::Worker
+
   def perform(*args)
     if args.one?
       file_data, (record_class, record_id), name, shrine_class =
         args.first.values_at("attachment", "record", "name", "shrine_class")
 
-      record         = Object.const_get(record_class).find(record_id)
+      record         = Object.const_get(record_class).find(record_id) # if using Active Record
       attacher_class = Object.const_get(shrine_class)::Attacher
     else
-      attacher_class, record, name, file_data = args
+      attacher_class, record_class, record_id, name, file_data = args
+
+      attacher_class = Object.const_get(attacher_class)
+      record         = Object.const_get(record_class).find(record_id) # if using Active Record
     end
 
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
@@ -211,7 +229,9 @@ class PromoteJob < ActiveJob::Base
 and
 ```
 ```rb
-class DestroyJob < ActiveJob::Base
+class DestroyJob
+  include Sidekiq::Worker
+
   def perform(*args)
     if args.one?
       data, shrine_class = args.first.values_at("attachment", "shrine_class")
@@ -220,6 +240,8 @@ class DestroyJob < ActiveJob::Base
       attacher_class = Object.const_get(shrine_class)::Attacher
     else
       attacher_class, data = args
+
+      attacher_class = Object.const_get(attacher_class)
     end
 
     attacher = attacher_class.from_data(data)
@@ -393,8 +415,13 @@ If you're using the `backgrounding` plugin, you can trigger derivatives
 creation in the `PromoteJob` instead of the controller:
 
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record.id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # call derivatives processor
     attacher.atomic_promote

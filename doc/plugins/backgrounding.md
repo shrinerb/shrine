@@ -15,12 +15,21 @@ jobs:
 
 ```rb
 # register backgrounding blocks for all uploaders
-Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
-Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
+Shrine::Attacher.destroy_block do
+  DestroyJob.perform_async(self.class.name, data)
+end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.atomic_promote
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
@@ -29,8 +38,12 @@ class PromoteJob < ActiveJob::Base
 end
 ```
 ```rb
-class DestroyJob < ActiveJob::Base
+class DestroyJob
+  include Sidekiq::Worker
+
   def perform(attacher_class, data)
+    attacher_class = Object.const_get(attacher_class)
+
     attacher = attacher_class.from_data(data)
     attacher.destroy
   end
@@ -43,8 +56,12 @@ backgrounding blocks only for a specific uploader:
 ```rb
 class MyUploader < Shrine
   # register backgrounding blocks only for this uploader
-  Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
-  Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
+  Attacher.promote_block do
+    PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+  end
+  Attacher.destroy_block do
+    DestroyJob.perform_async(self.class.name, data)
+  end
 end
 ```
 
@@ -101,17 +118,18 @@ also use the explicit version by declaring an attacher argument:
 
 ```rb
 Shrine::Attacher.promote_block do |attacher|
-  PromoteJob.perform_later(
-    attacher.class,
-    attacher.record,
+  PromoteJob.perform_async(
+    attacher.class.name,
+    attacher.record.class.name,
+    attacher.record.id,
     attacher.name,
     attacher.file_data,
   )
 end
 
 Shrine::Attacher.destroy_block do |attacher|
-  DestroyJob.perform_later(
-    attacher.class,
+  DestroyJob.perform_async(
+    attacher.class.name,
     attacher.data,
   )
 end
@@ -122,9 +140,10 @@ flexibility:
 
 ```rb
 photo.image_attacher.promote_block do |attacher|
-  PromoteJob.perform_later(
-    attacher.class,
-    attacher.record,
+  PromoteJob.perform_async(
+    attacher.class.name,
+    attacher.record.class.name,
+    attacher.record.id,
     attacher.name,
     attacher.file_data,
     current_user.id, # pass arguments known at the controller level
@@ -133,42 +152,6 @@ end
 
 photo.image = file
 photo.save # executes the promote block above
-```
-
-## Other backgrounding libraries
-
-If you're not using Active Job for backgrounding, you might need to retrieve
-records and resolve constants from job arguments manually:
-
-```rb
-# register backgrounding blocks for all uploaders
-Shrine::Attacher.promote_block { PromoteJob.perform_async(self.class, record.class, record.id, name, file_data) }
-Shrine::Attacher.destroy_block { DestroyJob.perform_async(self.class, data) }
-```
-```rb
-class PromoteJob
-  include Sidekiq::Worker
-
-  def perform(attacher_class, record_class, record_id, name, file_data)
-    attacher_class = Object.const_get(attacher_class)
-    record         = Object.const_get(record_class).find(record_id) # if using Active Record
-
-    attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
-    attacher.atomic_promote
-  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
-  end
-end
-
-class DestroyJob
-  include Sidekiq::Worker
-
-  def perform(attacher_class, data)
-    attacher_class = Object.const_get(attacher_class)
-
-    attacher = attacher_class.from_data(data)
-    attacher.destroy
-  end
-end
 ```
 
 [backgrounding]: /lib/shrine/plugins/backgrounding.rb

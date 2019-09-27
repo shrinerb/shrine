@@ -310,7 +310,7 @@ Shrine.plugin :backgrounding
 
 Shrine::Attacher.promote_block do
   # tells a Sidekiq worker to perform in 3 seconds
-  PromoteJob.perform_in(3, self.class, record.class, record.id, name, file_data)
+  PromoteJob.perform_in(3, self.class.name, record.class.name, record.id, name, file_data)
 end
 ```
 
