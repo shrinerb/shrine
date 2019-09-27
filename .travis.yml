@@ -14,7 +14,7 @@ rvm:
 env:
   global:
     - RACK_ENV=development
-    - S3_LINTED_TEST=true
+    - S3_REAL=true
     - S3_REGION=us-east-1
     - S3_BUCKET=minio-bucket
     - S3_ACCESS_KEY_ID=weak_key
@@ -39,5 +39,3 @@ matrix:
 script: bundle exec rake test
 
 cache: bundler
-
-
