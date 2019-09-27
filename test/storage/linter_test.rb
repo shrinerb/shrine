@@ -18,7 +18,7 @@ describe Shrine::Storage::Linter do
     end
 
     it "takes into account that storage can modify location" do
-      @storage.instance_eval { def upload(io, id, *); id.replace("bar"); super; end }
+      @storage.instance_eval { def upload(io, id, *); id << "-modified"; super; end }
       @linter.call
     end
   end

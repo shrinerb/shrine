@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "shrine"
 
 require "forwardable"
@@ -36,7 +34,7 @@ class Shrine
       end
 
       def call(io_factory = default_io_factory)
-        storage.upload(io_factory.call, id = "foo".dup, {})
+        storage.upload(io_factory.call, id = "foo", {})
 
         lint_open(id)
         lint_exists(id)
@@ -44,14 +42,15 @@ class Shrine
         lint_delete(id)
 
         if storage.respond_to?(:delete_prefixed)
-          storage.upload(io_factory.call, "a/a/a")
-          storage.upload(io_factory.call, "a/a/b")
-          storage.upload(io_factory.call, "a/aaa/a")
+          storage.upload(io_factory.call, id1 = "a/a/a")
+          storage.upload(io_factory.call, id2 = "a/a/b")
+          storage.upload(io_factory.call, id3 = "a/aaa/a")
 
           lint_delete_prefixed(prefix: "a/a/",
-                               expect_deleted: ["a/a/a", "a/a/b"],
-                               expect_remaining: ["a/aaa/a"])
-          storage.delete("a/aaa/a")
+                               expect_deleted: [id1, id2],
+                               expect_remaining: [id3])
+
+          storage.delete(id3)
         end
 
         if storage.respond_to?(:clear!)
@@ -115,11 +114,13 @@ class Shrine
         storage.delete_prefixed(prefix)
 
         expect_deleted.each do |key|
-          error :delete_prefixed, "#{key} still #exists? after #clear_prefix('a/a/')" if storage.exists?(key)
+          next unless storage.exists?(key)
+          error :delete_prefixed, "#{key} still #exists? after #clear_prefix('a/a/')"
         end
 
         expect_remaining.each do |key|
-          error :delete_prefixed, "#{key} not #exists? but should after #clear_prefix('a/a/')" unless storage.exists?(key)
+          next if storage.exists?(key)
+          error :delete_prefixed, "#{key} doesn't #exists? but should after #clear_prefix('a/a/')"
         end
       end
 
