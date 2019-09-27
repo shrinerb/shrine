@@ -30,9 +30,10 @@ class Shrine
         new(*args).call
       end
 
-      def initialize(storage, action: :error)
-        @storage = storage
-        @action  = action
+      def initialize(storage, action: :error, nonexisting: "nonexisting")
+        @storage     = storage
+        @action      = action
+        @nonexisting = nonexisting
       end
 
       def call(io_factory = default_io_factory)
@@ -62,7 +63,7 @@ class Shrine
         opened.close
 
         begin
-          storage.open("nonexisting", {})
+          storage.open(@nonexisting, {})
           error :open, "should raise an exception on nonexisting file"
         rescue Shrine::FileNotFound
         rescue => exception
