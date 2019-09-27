@@ -34,6 +34,7 @@ If you're curious how it compares to other file attachment libraries, see the [A
   - [IO abstraction](#io-abstraction)
 * [Uploaded file](#uploaded-file)
 * [Attachment](#attachment)
+  - [Temporary storage](#temporary-storage)
 * [Attacher](#attacher)
 * [Plugin system](#plugin-system)
 * [Metadata](#metadata)
@@ -419,6 +420,20 @@ attachment will get deleted when the record gets saved.
 ```rb
 photo.update(image: new_file) # changes the attachment and deletes previous
 photo.update(image: nil)      # removes the attachment and deletes previous
+```
+
+### Temporary storage
+
+Shrine uses temporary storage to enable retaining uploaded files across form
+redisplays and for [direct uploads](#direct-uploads), but you can disable this
+behaviour and have files go straight to permanent storage:
+
+```rb
+Shrine.plugin :model, cache: false
+```
+```rb
+photo.image = File.open("waterfall.jpg")
+photo.image.storage_key #=> :store
 ```
 
 ## Attacher

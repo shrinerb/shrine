@@ -40,6 +40,17 @@ plugin :pretty_location, identifier: :email
 # "user/foo@bar.com/profile_picture/493g82jf23.jpg"
 ```
 
+By default, the class name will be only downcased. We can also have the class
+name underscored with the `:class_underscore` option:
+
+```ruby
+plugin :pretty_location
+# "blogpost/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
+
+plugin :pretty_location, class_underscore: :true
+# "blog_post/aa357797-5845-451b-8662-08eecdc9f762/image/493g82jf23.jpg"
+```
+
 For a more custom identifier logic, you can overwrite the method
 `#generate_location` and call `#pretty_location` with the identifier you have
 calculated.
