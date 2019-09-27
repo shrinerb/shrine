@@ -22,26 +22,26 @@ class Shrine
         raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
 
-      def url(id, *)
-        "memory://#{id}"
-      end
-
       def exists?(id)
         store.key?(id)
+      end
+
+      def url(id, *)
+        "memory://#{id}"
       end
 
       def delete(id)
         store.delete(id)
       end
 
-      def clear!
-        store.clear
-      end
-
       def delete_prefixed(delete_prefix)
         # normalize to trailing slash
         delete_prefix = delete_prefix.chomp('/') + '/'
         store.delete_if { |k, _v| k.start_with?(delete_prefix) }
+      end
+
+      def clear!
+        store.clear
       end
     end
   end

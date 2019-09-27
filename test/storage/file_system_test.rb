@@ -182,6 +182,32 @@ describe Shrine::Storage::FileSystem do
     end
   end
 
+  describe "#url" do
+    it "returns the full path without :prefix" do
+      @storage = file_system(root)
+      @storage.upload(fakeio, "foo.jpg")
+      assert_equal "#{root}/foo.jpg", @storage.url("foo.jpg")
+    end
+
+    it "applies a host without :prefix" do
+      @storage = file_system(root)
+      @storage.upload(fakeio, "foo.jpg")
+      assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg", host: "http://124.83.12.24")
+    end
+
+    it "returns the path relative to the :prefix" do
+      @storage = file_system(root, prefix: "uploads")
+      @storage.upload(fakeio, "foo.jpg")
+      assert_equal "/uploads/foo.jpg", @storage.url("foo.jpg")
+    end
+
+    it "accepts a host with :prefix" do
+      @storage = file_system(root, prefix: "uploads")
+      @storage.upload(fakeio, "foo.jpg")
+      assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg", host: "http://abc123.cloudfront.net")
+    end
+  end
+
   describe "#delete" do
     it "cleans subdirectories" do
       @storage.upload(fakeio, "a/a/a.jpg")
@@ -214,32 +240,6 @@ describe Shrine::Storage::FileSystem do
       @storage.delete_prefixed("a/a/")
       refute @storage.exists?("a/a/a.jpg")
       refute @storage.exists?("a/a")
-    end
-  end
-
-  describe "#url" do
-    it "returns the full path without :prefix" do
-      @storage = file_system(root)
-      @storage.upload(fakeio, "foo.jpg")
-      assert_equal "#{root}/foo.jpg", @storage.url("foo.jpg")
-    end
-
-    it "applies a host without :prefix" do
-      @storage = file_system(root)
-      @storage.upload(fakeio, "foo.jpg")
-      assert_equal "http://124.83.12.24#{root}/foo.jpg", @storage.url("foo.jpg", host: "http://124.83.12.24")
-    end
-
-    it "returns the path relative to the :prefix" do
-      @storage = file_system(root, prefix: "uploads")
-      @storage.upload(fakeio, "foo.jpg")
-      assert_equal "/uploads/foo.jpg", @storage.url("foo.jpg")
-    end
-
-    it "accepts a host with :prefix" do
-      @storage = file_system(root, prefix: "uploads")
-      @storage.upload(fakeio, "foo.jpg")
-      assert_equal "http://abc123.cloudfront.net/uploads/foo.jpg", @storage.url("foo.jpg", host: "http://abc123.cloudfront.net")
     end
   end
 
