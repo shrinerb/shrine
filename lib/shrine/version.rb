@@ -9,7 +9,7 @@ class Shrine
     MAJOR = 3
     MINOR = 0
     TINY  = 0
-    PRE   = "beta3"
+    PRE   = "rc"
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join(".")
   end

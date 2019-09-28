@@ -1,4 +1,4 @@
-## HEAD
+## 3.0.0.rc (2019-09-28)
 
 * `core` – Add `Storage#delete_prefixed` method for deleting all files in specified directory (@jrochkind)
 
