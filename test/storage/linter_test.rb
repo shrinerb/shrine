@@ -8,7 +8,7 @@ describe Shrine::Storage::Linter do
   end
 
   it "passes for memory storage" do
-    @linter.call
+    assert @linter.call
   end
 
   describe "upload" do

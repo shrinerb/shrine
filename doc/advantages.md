@@ -310,12 +310,17 @@ library][backgrounding libraries].
 
 ```rb
 Shrine::Attacher.promote_block do
-  PromoteJob.perform_later(self.class, record, name, file_data)
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
 end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # perform processing
     attacher.atomic_promote

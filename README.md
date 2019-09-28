@@ -34,6 +34,7 @@ If you're curious how it compares to other file attachment libraries, see the [A
   - [IO abstraction](#io-abstraction)
 * [Uploaded file](#uploaded-file)
 * [Attachment](#attachment)
+  - [Temporary storage](#temporary-storage)
 * [Attacher](#attacher)
 * [Plugin system](#plugin-system)
 * [Metadata](#metadata)
@@ -419,6 +420,20 @@ attachment will get deleted when the record gets saved.
 ```rb
 photo.update(image: new_file) # changes the attachment and deletes previous
 photo.update(image: nil)      # removes the attachment and deletes previous
+```
+
+### Temporary storage
+
+Shrine uses temporary storage to enable retaining uploaded files across form
+redisplays and for [direct uploads](#direct-uploads), but you can disable this
+behaviour and have files go straight to permanent storage:
+
+```rb
+Shrine.plugin :model, cache: false
+```
+```rb
+photo.image = File.open("waterfall.jpg")
+photo.image.storage_key #=> :store
 ```
 
 ## Attacher
@@ -848,12 +863,21 @@ choice][Backgrounding Libraries]:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
-Shrine::Attacher.destroy_block { DestroyJob.perform_later(self.class, data) }
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
+Shrine::Attacher.destroy_block do
+  DestroyJob.perform_async(self.class.name, data)
+end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record.id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.atomic_promote
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
@@ -862,8 +886,12 @@ class PromoteJob < ActiveJob::Base
 end
 ```
 ```rb
-class DestroyJob < ActiveJob::Base
+class DestroyJob
+  include Sidekiq::Worker
+
   def perform(attacher_class, data)
+    attacher_class = Object.const_get(attacher_class)
+
     attacher = attacher_class.from_data(data)
     attacher.destroy
   end

@@ -1,3 +1,11 @@
+## HEAD
+
+* `core` – Infer file extension from `filename` metadata (@janko)
+
+* `pretty_location` – Add `:class_underscore` option for underscoring class name (@Uysim)
+
+* Update `down` dependency to `~> 5.0` (@janko)
+
 ## 3.0.0.beta3 (2019-09-25)
 
 * `multi_cache` – Add new plugin for whitelisting additional temporary storages (@janko, @jrochkind)

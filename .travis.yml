@@ -11,18 +11,30 @@ rvm:
   - jruby-9.2.8.0
   - jruby-head
 
+env:
+  global:
+    - RACK_ENV=development
+    - S3_REAL=true
+    - S3_REGION=us-east-1
+    - S3_BUCKET=minio-bucket
+    - S3_ACCESS_KEY_ID=weak_key
+    - S3_SECRET_ACCESS_KEY=weak_key
+    - S3_ENDPOINT=http://localhost:9000
+    - MINIO_ACCESS_KEY=weak_key
+    - MINIO_SECRET_KEY=weak_key
+
 before_install:
   - gem install bundler
+  - mkdir -p "${HOME}"/minio/data/minio-bucket
+  - wget -nc -O "${HOME}"/minio/minio https://dl.min.io/server/minio/release/linux-amd64/minio
+  - chmod +x "${HOME}"/minio/minio
+  - "${HOME}/minio/minio server ${HOME}/minio/data --address localhost:9000 &>${HOME}/minio/data/server.log &"
 
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: jruby-9.2.8.0 # temporary
     - rvm: jruby-head
 
 script: bundle exec rake test
 
 cache: bundler
-
-env:
-  - RACK_ENV=development

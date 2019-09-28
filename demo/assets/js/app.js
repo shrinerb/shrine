@@ -54,7 +54,8 @@ function multipleFileUpload(fileInput) {
     })
 
   uppy.on('upload-success', function (file, response) {
-    hiddenField = document.createElement('input')
+    var hiddenField = document.createElement('input')
+
     hiddenField.type = 'hidden'
     hiddenField.name = 'album[photos_attributes]['+ Math.random().toString(36).substr(2, 9) + '][image]'
     hiddenField.value = window.uploadedFileData(file, response, fileInput)

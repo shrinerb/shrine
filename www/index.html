@@ -4,7 +4,7 @@
 <header class="header">
   <div class="container">
     <div>
-      <h1>{{ site.title }} (v{{ site.data.versions[0][0].name }})</h1>
+      <h1>{{ site.title }} (v3.0.0.beta3)</h1>
       <p>
         <span class="text">{{ site.description }}</span>
         <svg class="icon" viewBox="0 0 16 16" width="32" height="32" fill="currentColor">
@@ -13,7 +13,7 @@
         </svg>
       </p>
     </div>
-    <a class="btn" href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/README.md#readme">
+    <a class="btn" href="https://github.com/shrinerb/shrine/blob/v3.0.0.beta3/README.md#readme">
       <svg width="16" height="16" viewBox="0 0 1024 1024" fill="currentColor"><path d="M917.806 229.076c-22.212-30.292-53.174-65.7-87.178-99.704s-69.412-64.964-99.704-87.178c-51.574-37.82-76.592-42.194-90.924-42.194h-496c-44.112 0-80 35.888-80 80v864c0 44.112 35.888 80 80 80h736c44.112 0 80-35.888 80-80v-624c0-14.332-4.372-39.35-42.194-90.924zM785.374 174.626c30.7 30.7 54.8 58.398 72.58 81.374h-153.954v-153.946c22.984 17.78 50.678 41.878 81.374 72.572zM896 944c0 8.672-7.328 16-16 16h-736c-8.672 0-16-7.328-16-16v-864c0-8.672 7.328-16 16-16 0 0 495.956-0.002 496 0v224c0 17.672 14.326 32 32 32h224v624z"></path><path d="M736 832h-448c-17.672 0-32-14.326-32-32s14.328-32 32-32h448c17.674 0 32 14.326 32 32s-14.326 32-32 32z"></path><path d="M736 704h-448c-17.672 0-32-14.326-32-32s14.328-32 32-32h448c17.674 0 32 14.326 32 32s-14.326 32-32 32z"></path><path d="M736 576h-448c-17.672 0-32-14.326-32-32s14.328-32 32-32h448c17.674 0 32 14.326 32 32s-14.326 32-32 32z"></path></svg>
       README
     </a>
@@ -41,7 +41,7 @@
           <ul>
             {% for item in site.data.storages %}
             <li>
-              <a href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/doc/{{ item.guide }}#readme">
+              <a href="https://github.com/shrinerb/shrine/blob/v3.0.0.beta3/doc/{{ item.guide }}#readme">
                 {{ item.name }}
               </a>
               (<a href="{{ site.url }}/rdoc/classes/{{ item.rdoc }}">RDoc</a>)
@@ -57,7 +57,7 @@
           <ul>
             {% for guide in item[1] %}
             <li>
-              <a href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/doc/{{ item.path }}#readme">
+              <a href="https://github.com/shrinerb/shrine/blob/v3.0.0.beta3/doc/{{ guide.path }}#readme">
                 {{ guide.name }}
               </a>
             </li>
@@ -73,7 +73,7 @@
           <ul>
             {% for guide in item[1] %}
             <li>
-              <a href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/doc/{{ item.path }}#readme">
+              <a href="https://github.com/shrinerb/shrine/blob/v3.0.0.beta3/doc/{{ guide.path }}#readme">
                 {{ guide.name }}
               </a>
             </li>
@@ -91,7 +91,7 @@
       <dl>
         {% for plugin in item[1] %}
         <dt>
-          <a href="https://github.com/shrinerb/shrine/blob/v{{ site.data.versions[0][0].name }}/doc/plugins/{{ plugin.name }}.md#readme">{{ plugin.name }}</a>:
+          <a href="https://github.com/shrinerb/shrine/blob/v3.0.0.beta3/doc/plugins/{{ plugin.name }}.md#readme">{{ plugin.name }}</a>:
         </dt>
         <dd>
           <div>{{ plugin.description }}</div>

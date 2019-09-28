@@ -288,17 +288,23 @@ Photo.find_each do |photo|
 
   next unless attacher.stored?
 
-  MakeChangeJob.perform_later(
-    attacher.class,
-    attacher.record,
+  MakeChangeJob.perform_async(
+    attacher.class.name,
+    attacher.record.class.name,
+    attacher.record.id,
     attacher.name,
     attacher.file_data,
   )
 end
 ```
 ```rb
-class MakeChangeJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class MakeChangeJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     # ... make our change ...
   end

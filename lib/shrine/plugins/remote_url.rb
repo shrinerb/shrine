@@ -66,12 +66,12 @@ class Shrine
 
         def download_remote_url(url, options)
           opts[:remote_url][:downloader].call(url, options)
-        rescue Down::NotFound
-          fail DownloadError, "remote file not found"
         rescue Down::TooLarge
           fail DownloadError, "remote file too large"
+        rescue Down::Error
+          fail DownloadError, "remote file not found"
         rescue DownloadError
-          fail
+          fail # re-raise
         end
 
         # Sends a `remote_url.shrine` event for instrumentation plugin.

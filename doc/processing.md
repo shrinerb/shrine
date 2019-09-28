@@ -82,11 +82,18 @@ promotion:
 
 ```rb
 Shrine.plugin :backgrounding
-Shrine::Attacher.promote_block { PromoteJob.perform_later(self.class, record, name, file_data) }
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
 ```
 ```rb
-class PromoteJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class PromoteJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # calls derivatives processor
     attacher.atomic_promote
@@ -102,16 +109,22 @@ Derivatives don't need to be created as part of the attachment flow, you can
 create them at any point after promotion:
 
 ```rb
-DerivativesJob.perform_later(
-  attacher.class,
-  attacher.record,
+DerivativesJob.perform_async(
+  attacher.class.name,
+  attacher.record.class.name,
+  attacher.record.id,
   attacher.name,
   attacher.file_data,
 )
 ```
 ```rb
-class DerivativesJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data)
+class DerivativesJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # calls derivatives processor
     attacher.atomic_persist
@@ -144,9 +157,10 @@ end
 ```
 ```rb
 ImageUploader::THUMBNAILS.each_key do |derivative_name|
-  DerivativeJob.perform_later(
-    attacher.class,
-    attacher.record,
+  DerivativeJob.perform_async(
+    attacher.class.name,
+    attacher.record.class.name,
+    attacher.record.id,
     attacher.name,
     attacher.file_data,
     derivative_name,
@@ -154,8 +168,13 @@ ImageUploader::THUMBNAILS.each_key do |derivative_name|
 end
 ```
 ```rb
-class DerivativeJob < ActiveJob::Base
-  def perform(attacher_class, record, name, file_data, derivative_name)
+class DerivativeJob
+  include Sidekiq::Worker
+
+  def perform(attacher_class, record_class, record_id, name, file_data, derivative_name)
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) # if using Active Record
+
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives(name: derivative_name)
     attacher.atomic_persist do |reloaded_attacher|
