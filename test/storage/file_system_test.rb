@@ -223,7 +223,7 @@ describe Shrine::Storage::FileSystem do
       @storage.upload(fakeio, "a/b/b.jpg")
       @storage.upload(fakeio, "a/aaaa/b.jpg")
 
-      @storage.delete_prefixed("a/a/")
+      @storage.delete_prefixed("a/a")
 
       refute @storage.exists?("a/a/a.jpg")
       refute @storage.exists?("a/a/b.jpg")
@@ -237,7 +237,7 @@ describe Shrine::Storage::FileSystem do
       @storage = file_system(root, prefix: "uploads")
 
       @storage.upload(fakeio, "a/a/a.jpg")
-      @storage.delete_prefixed("a/a/")
+      @storage.delete_prefixed("a/a")
       refute @storage.exists?("a/a/a.jpg")
       refute @storage.exists?("a/a")
     end

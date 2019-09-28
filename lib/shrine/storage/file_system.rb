@@ -89,9 +89,9 @@ class Shrine
       rescue Errno::ENOENT
       end
 
-      # Delete files at keys starting with the prefix.
+      # Deletes the specified directory on the filesystem.
       #
-      #    file_system.delete_prefixed("somekey/derivatives/")
+      #    file_system.delete_prefixed("somekey/derivatives")
       def delete_prefixed(delete_prefix)
         FileUtils.rm_rf directory.join(delete_prefix)
       end
