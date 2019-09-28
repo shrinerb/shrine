@@ -49,6 +49,7 @@ Superclass:
 <ol>
 <li><a href="#method-i-clear-21">clear!</a></li>
 <li><a href="#method-i-delete">delete</a></li>
+<li><a href="#method-i-delete_prefixed">delete_prefixed</a></li>
 <li><a href="#method-i-exists-3F">exists?</a></li>
 <li><a href="#method-i-open">open</a></li>
 <li><a href="#attribute-i-store">store</a></li>
@@ -107,7 +108,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-clear-21-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-clear-21-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-clear-21-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-delete'>
@@ -124,7 +125,24 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-delete-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-delete-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">34</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-delete_prefixed'>
+<a name='method-i-delete_prefixed'></a>
+<div class='synopsis'>
+<span class='name'>delete_prefixed</span>
+<span class='arguments'>(delete_prefix)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete_prefixed-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-delete_prefixed-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete_if</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">_v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-identifier">delete_prefix</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>) }&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-exists-3F'>
@@ -192,7 +210,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-url-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">34</span>   <span class="ruby-node">&quot;memory://#{id}&quot;</span>&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-url-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-node">&quot;memory://#{id}&quot;</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

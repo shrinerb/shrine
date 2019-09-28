@@ -30,7 +30,7 @@ doc/creating_storages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-18 12:32:13 +0200</span>
+<span class='datetime'>2019-09-28 11:29:28 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -115,11 +115,13 @@ Last Update:
 
 <p>The storage can support additional options to customize how the presign will be generated, those can be forwarded via the <code>:presign_options</code> option on the <code>presign_endpoint</code> plugin.</p>
 
-<h2 id="label-Clear">Clear<span><a href="#label-Clear">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Delete+Prefixed+and+Clear">Delete Prefixed and Clear<span><a href="#label-Delete+Prefixed+and+Clear">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>While this method is not used by <a href="../../classes/Shrine.html"><code>Shrine</code></a>, it is good to give users the possibility to delete all files in a storage, and the conventional name for this method is <code>#clear!</code>.</p>
+<p>There are two methods that are not currently used by shrine, but which it&#39;s good for storages to provide to allow client code to delete files from storage. If storages provide these conventional methods, then clients can delete files using consistent API for any storage.</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;    <span class="ruby-comment"># deletes all files in the storage</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<p><code>#clear!</code> deletes all files from storage, and <code>#delete_prefixed</code> will delete all files in a given directory/prefix/path. While not strictly required for shrine storage service functionality, storages should usually implement if possible.</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyStorage</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">prefix_path</span>)&#x000A;    <span class="ruby-comment"># deletes all files under the supplied argument prefix</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;    <span class="ruby-comment"># deletes all files in the storage</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h2 id="label-Update">Update<span><a href="#label-Update">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
