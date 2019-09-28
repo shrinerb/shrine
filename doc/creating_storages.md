@@ -206,15 +206,24 @@ The storage can support additional options to customize how the presign will be
 generated, those can be forwarded via the `:presign_options` option on the
 `presign_endpoint` plugin.
 
-## Clear
+## Delete Prefixed and Clear
 
-While this method is not used by Shrine, it is good to give users the
-possibility to delete all files in a storage, and the conventional name for
-this method is `#clear!`.
+There are two methods that are not currently used by shrine, but which it's good
+for storages to provide to allow client code to delete files from storage. If
+storages provide these conventional methods, then clients can delete files using
+consistent API for any storage.
+
+`#clear!` deletes all files from storage, and `#delete_prefixed` will delete all
+files in a given directory/prefix/path. While not strictly required for shrine storage
+service functionality, storages should usually implement if possible.
 
 ```rb
 class MyStorage
   # ...
+  def delete_prefixed(prefix_path)
+    # deletes all files under the supplied argument prefix
+  end
+
   def clear!
     # deletes all files in the storage
   end

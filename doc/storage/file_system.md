@@ -74,6 +74,15 @@ You can retrieve path to the file using `#path`:
 storage.path("image.jpg") #=> #<Pathname:public/image.jpg>
 ```
 
+## Deleting prefixed
+
+If you want to delete all files in some directory, you can use
+`FileSystem#delete_prefixed`:
+
+```rb
+storage.delete_prefixed("some_directory") # deletes all files in "some_directory/"
+```
+
 ## Clearing cache
 
 If you're using FileSystem as cache, you will probably want to periodically

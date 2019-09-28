@@ -18,7 +18,7 @@ describe Shrine::Storage::Linter do
     end
 
     it "takes into account that storage can modify location" do
-      @storage.instance_eval { def upload(io, id, *); id.replace("bar"); super; end }
+      @storage.instance_eval { def upload(io, id, *); id << "-modified"; super; end }
       @linter.call
     end
   end
@@ -82,6 +82,20 @@ describe Shrine::Storage::Linter do
 
     it "doesn't require #clear! to be defined" do
       @storage.instance_eval { undef clear! }
+      @linter.call
+    end
+  end
+
+  describe "delete_prefixed" do
+    it "tests that files get cleared" do
+      @storage.instance_eval { def delete_prefixed(p); end }
+      assert_raises(Shrine::LintError) { @linter.call }
+    end
+
+    it "doesn't require #clear! to be defined" do
+      if @storage.respond_to?(:delete_prefixed)
+        @storage.instance_eval { undef delete_prefixed }
+      end
       @linter.call
     end
   end

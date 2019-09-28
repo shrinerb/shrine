@@ -70,6 +70,16 @@ class Shrine
         path(id).exist?
       end
 
+      # If #prefix is not present, returns a path composed of #directory and
+      # the given `id`. If #prefix is present, it excludes the #directory part
+      # from the returned path (e.g. #directory can be set to "public" folder).
+      # Both cases accept a `:host` value which will be prefixed to the
+      # generated path.
+      def url(id, host: nil, **options)
+        path = (prefix ? relative_path(id) : path(id)).to_s
+        host ? host + path : path
+      end
+
       # Delets the file, and by default deletes the containing directory if
       # it's empty.
       def delete(id)
@@ -79,14 +89,11 @@ class Shrine
       rescue Errno::ENOENT
       end
 
-      # If #prefix is not present, returns a path composed of #directory and
-      # the given `id`. If #prefix is present, it excludes the #directory part
-      # from the returned path (e.g. #directory can be set to "public" folder).
-      # Both cases accept a `:host` value which will be prefixed to the
-      # generated path.
-      def url(id, host: nil, **options)
-        path = (prefix ? relative_path(id) : path(id)).to_s
-        host ? host + path : path
+      # Deletes the specified directory on the filesystem.
+      #
+      #    file_system.delete_prefixed("somekey/derivatives")
+      def delete_prefixed(delete_prefix)
+        FileUtils.rm_rf directory.join(delete_prefix)
       end
 
       # Deletes all files from the #directory. If a block is passed in, deletes

@@ -26,12 +26,16 @@ class Shrine
         store.key?(id)
       end
 
+      def url(id, *)
+        "memory://#{id}"
+      end
+
       def delete(id)
         store.delete(id)
       end
 
-      def url(id, *)
-        "memory://#{id}"
+      def delete_prefixed(delete_prefix)
+        store.delete_if { |k, _v| k.start_with?(delete_prefix + "/") }
       end
 
       def clear!
