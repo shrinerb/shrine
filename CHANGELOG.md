@@ -1,5 +1,11 @@
 ## HEAD
 
+* `core` – Add `Storage#delete_prefixed` method for deleting all files in specified directory (@jrochkind)
+
+* `linter` – Return `true` in `Storage::Linter#call` so that it can be used with `assert` (@jrochkind)
+
+* `linter` – Allow `Storage::Linter` to accept a key that will be used for testing nonexistent file (@janko)
+
 * `core` – Infer file extension from `filename` metadata (@janko)
 
 * `pretty_location` – Add `:class_underscore` option for underscoring class name (@Uysim)
