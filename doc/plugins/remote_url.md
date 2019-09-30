@@ -27,7 +27,7 @@ attacher.file.size              #=> 43423
 attacher.file.original_filename #=> "cool-image.png"
 ```
 
-## Downloading
+## Downloader
 
 By default, the file will be downloaded using `Down.download` from the [Down]
 gem. This will use the [Down::NetHttp] backend by default, which is a wrapper
@@ -68,6 +68,23 @@ plugin :remote_url, downloader: -> (url, **options) {
     raise Shrine::Plugins::RemoteUrl::DownloadError, "remote file not found"
   end
 }
+```
+
+### Calling downloader
+
+You can call the downloader directly with `Shrine.remote_url`:
+
+```rb
+# or YourUploader.remote_url(...)
+file = Shrine.remote_url("https://example.com/image.jpg")
+file #=> #<Tempfile:...>
+```
+
+You can pass additional options as well:
+
+```rb
+# or YourUploader.remote_url(...)
+Shrine.remote_url("https://example.com/image.jpg", headers: { "Cookie" => "..." })
 ```
 
 ## Uploader options

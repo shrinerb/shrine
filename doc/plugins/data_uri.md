@@ -62,7 +62,7 @@ do that with `Shrine.data_uri`. If the data URI cannot be parsed, a
 `Shrine::Plugins::DataUri::ParseError` will be raised.
 
 ```rb
-# or YourUploader.data_uri("...")
+# or YourUploader.data_uri(...)
 io = Shrine.data_uri("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA")
 io.content_type #=> "image/png"
 io.size         #=> 21
