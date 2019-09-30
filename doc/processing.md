@@ -60,7 +60,7 @@ photo.save
 
 After the processed files are uploaded, their data is saved into the
 `<attachment>_data` column. You can then retrieve the derivatives as
-[`Shrine::UploadedFile`][uploaded file] objects:
+[`Shrine::UploadedFile`] objects:
 
 ```rb
 photo.image(:large)            #=> #<Shrine::UploadedFile ...>
@@ -341,7 +341,7 @@ to be confused with the [image_optim] gem):
 
 ```rb
 # Gemfile
-gem "down", "~> 4.4"
+gem "down", "~> 5.0"
 gem "http", "~> 4.0"
 ```
 
@@ -416,3 +416,4 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [derivation_endpoint performance]: /doc/plugins/derivation_endpoint.md#performance
 [derivatives]: /doc/plugins/derivatives.md#readme
 [concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
+[image_optim]: https://github.com/toy/image_optim
