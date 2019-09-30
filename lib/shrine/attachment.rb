@@ -18,6 +18,13 @@ class Shrine
       def inspect
         "#{shrine_class.inspect}::Attachment"
       end
+
+      # Shorthand for `Attachment.new`.
+      #
+      #   Shrine::Attachment[:image]
+      def [](*args)
+        new(*args)
+      end
     end
 
     module InstanceMethods

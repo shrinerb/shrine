@@ -5,6 +5,17 @@ describe Shrine::Attachment do
     @shrine = shrine
   end
 
+  describe ".[]" do
+    it "calls .new" do
+      attachment = @shrine::Attachment[:file, foo: "bar"]
+
+      assert_instance_of @shrine::Attachment, attachment
+
+      assert_equal :file,            attachment.attachment_name
+      assert_equal Hash[foo: "bar"], attachment.options
+    end
+  end
+
   describe "#initialize" do
     it "symbolizes attachment name" do
       attachment = @shrine::Attachment.new("file")

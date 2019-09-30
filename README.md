@@ -373,8 +373,8 @@ Shrine.plugin :sequel # :activerecord
 ```rb
 class Photo < Sequel::Model # ActiveRecord::Base
   include ImageUploader::Attachment.new(:image) #
-  include ImageUploader::Attachment(:image)     # these are all equivalent
-  include ImageUploader[:image]                 #
+  include ImageUploader::Attachment[:image]     # these are all equivalent
+  include ImageUploader::Attachment(:image)     #
 end
 ```
 
