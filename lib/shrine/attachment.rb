@@ -36,16 +36,6 @@ class Shrine
         @options = options
       end
 
-      def included(klass)
-        super
-
-        attachment = self
-
-        klass.send(:define_singleton_method, :"#{@name}_attacher") do |**options|
-          attachment.shrine_class::Attacher.new(**attachment.options, **options)
-        end
-      end
-
       # Returns name of the attachment this module provides.
       def attachment_name
         @name

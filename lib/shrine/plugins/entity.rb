@@ -11,10 +11,22 @@ class Shrine
       end
 
       module AttachmentMethods
+        # Defines instance methods on initialization.
         def initialize(name, **options)
-          super(name, **options)
+          super
 
           define_entity_methods(name)
+        end
+
+        # Defines class methods on inclusion.
+        def included(klass)
+          super
+
+          attachment = self
+
+          klass.send(:define_singleton_method, :"#{@name}_attacher") do |**options|
+            attachment.send(:class_attacher, **options)
+          end
         end
 
         private
@@ -41,11 +53,19 @@ class Shrine
           end
         end
 
-        # Creates an instance of the corresponding Attacher subclass. It's not
+        # Returns the class attacher instance with loaded entity. It's not
         # memoized because the entity object could be frozen.
         def attacher(record, options)
-          attacher = record.class.send(:"#{@name}_attacher", options)
+          attacher = class_attacher(options)
           attacher.load_entity(record, @name)
+          attacher
+        end
+
+        # Creates an instance of the corresponding attacher class with set
+        # name.
+        def class_attacher(options)
+          attacher = shrine_class::Attacher.new(**@options, **options)
+          attacher.instance_variable_set(:@name, @name)
           attacher
         end
       end
@@ -111,9 +131,7 @@ class Shrine
         #     attacher = Shrine::Attacher.from_entity(photo, :image)
         #     attacher.attribute #=> :image_data
         def attribute
-          fail Shrine::Error, "record is not loaded" if name.nil?
-
-          :"#{name}_data"
+          :"#{name}_data" if name
         end
 
         private

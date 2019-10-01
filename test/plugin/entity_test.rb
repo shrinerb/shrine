@@ -10,6 +10,32 @@ describe Shrine::Plugins::Entity do
   end
 
   describe "Attachment" do
+    describe ".<name>_attacher" do
+      it "returns attacher instance" do
+        @entity_class.include @shrine::Attachment.new(:file)
+
+        assert_instance_of @shrine::Attacher, @entity_class.file_attacher
+      end
+
+      it "sets attacher name" do
+        @entity_class.include @shrine::Attachment.new(:file)
+
+        assert_equal :file, @entity_class.file_attacher.name
+      end
+
+      it "applies attachment options" do
+        @entity_class.include @shrine::Attachment.new(:file, store: :other_store)
+
+        assert_equal :other_store, @entity_class.file_attacher.store_key
+      end
+
+      it "accepts attacher options" do
+        @entity_class.include @shrine::Attachment.new(:file, store: :other_store)
+
+        assert_equal :store, @entity_class.file_attacher(store: :store).store_key
+      end
+    end
+
     describe "#<name>_attacher" do
       it "returns the attacher from the entity instance" do
         @entity_class.include @shrine::Attachment.new(:file)
@@ -218,13 +244,14 @@ describe Shrine::Plugins::Entity do
     end
 
     describe "#attribute" do
-      it "returns the file attribute" do
+      it "returns the data attribute name" do
         @attacher.load_entity(@entity_class.new, :file)
+
         assert_equal :file_data, @attacher.attribute
       end
 
-      it "raises an error when record is not loaded" do
-        assert_raises(Shrine::Error) { @attacher.attribute }
+      it "returns nil when name is not set" do
+        assert_nil @attacher.attribute
       end
     end
   end

@@ -61,7 +61,7 @@ class Shrine
           return super unless model?
 
           if !record.instance_variable_get(:"@#{@name}_attacher") || options.any?
-            attacher = record.class.send(:"#{@name}_attacher", options)
+            attacher = class_attacher(options)
             attacher.load_model(record, @name)
 
             record.instance_variable_set(:"@#{@name}_attacher", attacher)

@@ -1,5 +1,9 @@
 ## HEAD
 
+* `entity` – Add name to the attacher returned by `.<name>_attacher` class method (@janko)
+
+* `core` – Move `.<name>_attacher` class method into `entity` plugin (@janko)
+
 * `core` – Add ability to call `Storage#delete_prefixed` with a prefix with trailing slash (@jrochkind)
 
 * `core` – Add `Shrine::Attachment[]` shorthand for `Shrine::Attachment.new` (@janko)
