@@ -6,8 +6,8 @@ require "shrine"
 require "dry-monitor"
 
 # needed by `backgrounding` plugin
-require "./jobs/promote_job"
-require "./jobs/destroy_job"
+require "./jobs/attachment/promote_job"
+require "./jobs/attachment/destroy_job"
 
 # use S3 for production and local file for other environments
 if ENV["RACK_ENV"] == "production"
@@ -62,9 +62,20 @@ end
 
 # delay promoting and deleting files to a background job (`backgrounding` plugin)
 Shrine.plugin :backgrounding
+
 Shrine::Attacher.promote_block do
-  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+  Attachment::PromoteJob.perform_async(
+    self.class.name,
+    record.class.name,
+    record.id,
+    name,
+    file_data,
+  )
 end
+
 Shrine::Attacher.destroy_block do
-  DestroyJob.perform_async(self.class.name, data)
+  Attachment::DestroyJob.perform_async(
+    self.class.name,
+    data,
+  )
 end
