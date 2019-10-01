@@ -47,10 +47,10 @@ attacher.file # called by `photo.image`
 attacher.url  # called by `photo.image_url`
 ```
 
-The `model`, `entity`, and `column` plugins provide additional
-`Shrine::Attacher` methods (such as `Shrine::Attacher.from_model` we see
-above), but in this guide we'll focus only on the core `Shrine::Attacher`
-methods.
+The [`model`][model], [`entity`][entity], and [`column`][column] plugins
+provide additional `Shrine::Attacher` methods (such as
+`Shrine::Attacher.from_model` we see above), but in this guide we'll focus only
+on the core `Shrine::Attacher` methods.
 
 So, we'll assume a `Shrine::Attacher` object not backed by any model/entity:
 

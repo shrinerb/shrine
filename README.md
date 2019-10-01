@@ -361,10 +361,10 @@ components. To help you actually attach uploaded files to database records in
 your application, Shrine comes with a high-level attachment interface built on
 top of these components.
 
-There are plugins for hooking into most database libraries, and in case of
-ActiveRecord and Sequel the plugin will automatically tie the attached files to
-records' lifecycles. But you can also use Shrine just with plain old Ruby
-objects.
+There are plugins for hooking into most persistence libraries, and in case of
+Active Record and Sequel the plugin will automatically tie the attached files
+to records' lifecycles. But you can also use Shrine with plain structs with
+[`model`][model plugin] and [`entity`][entity plugin] plugins.
 
 ```rb
 Shrine.plugin :sequel # :activerecord
@@ -389,9 +389,9 @@ specified attribute, which then get added to your model when you include it:
 | `#image_url`      | calls `url` on the attachment if it's present, otherwise returns nil              |
 | `#image_attacher` | returns instance of [`Shrine::Attacher`][attacher] which handles the attaching    |
 
-The ORM plugin that we loaded adds appropriate callbacks. For example, saving
-the record uploads the attachment to permanent storage, while deleting the
-record deletes the attachment.
+The persistence plugin that we loaded adds appropriate callbacks, so that
+saving the record uploads the attachment to permanent storage, while deleting
+the record deletes the attachment.
 
 ```rb
 # no file is attached
@@ -424,9 +424,9 @@ photo.update(image: nil)      # removes the attachment and deletes previous
 
 ### Temporary storage
 
-Shrine uses temporary storage to enable retaining uploaded files across form
-redisplays and for [direct uploads](#direct-uploads), but you can disable this
-behaviour and have files go straight to permanent storage:
+Shrine uses temporary storage to support retaining uploaded files across form
+redisplays and [direct uploads](#direct-uploads). But you can disable this
+behaviour, and have files go straight to permanent storage:
 
 ```rb
 Shrine.plugin :model, cache: false
@@ -438,8 +438,8 @@ photo.image.storage_key #=> :store
 
 ## Attacher
 
-The model attachment attributes and callbacks added by `Shrine::Attachment`
-just delegate the behaviour to their underlying `Shrine::Attacher` object.
+The methods and callbacks added by the `Shrine::Attachment` module just
+delegate the behaviour to an underlying `Shrine::Attacher` object.
 
 ```rb
 photo.image_attacher #=> #<Shrine::Attacher>
@@ -582,7 +582,7 @@ photo.save
 ```
 
 If you're allowing the attached file to be updated later on, in your update
-route make sure to create derivatives for new attachments:
+route make sure to trigger derivatives creation for new attachments:
 
 ```rb
 photo.image_derivatives! if photo.image_changed?
@@ -1070,6 +1070,8 @@ The gem is available as open source under the terms of the [MIT License].
 [determine_mime_type plugin]: /doc/plugins/determine_mime_type.md#readme
 [instrumentation plugin]: /doc/plugins/instrumentation.md#readme
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
+[model plugin]: /doc/plugins/model.md#readme
+[entity plugin]: /doc/plugins/entity.md#readme
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
 [presign_endpoint plugin]: /doc/plugins/presign_endpoint.md#readme
 [pretty_location plugin]: /doc/plugins/pretty_location.md#readme
