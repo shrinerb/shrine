@@ -233,6 +233,22 @@ describe Shrine::Storage::FileSystem do
       assert @storage.exists?("a/aaaa/b.jpg")
     end
 
+    it "deletes contents and empty dir" do
+      @storage.upload(fakeio, "a/a/a.jpg")
+      @storage.upload(fakeio, "a/a/b.jpg")
+      @storage.upload(fakeio, "a/b/b.jpg")
+      @storage.upload(fakeio, "a/aaaa/b.jpg")
+
+      @storage.delete_prefixed("a/a/")
+
+      refute @storage.exists?("a/a/a.jpg")
+      refute @storage.exists?("a/a/b.jpg")
+      refute @storage.exists?("a/a")
+
+      assert @storage.exists?("a/b/b.jpg")
+      assert @storage.exists?("a/aaaa/b.jpg")
+    end
+
     it "respects storage prefix" do
       @storage = file_system(root, prefix: "uploads")
 

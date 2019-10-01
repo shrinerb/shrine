@@ -444,6 +444,15 @@ describe Shrine::Storage::S3 do
       assert_equal [{ key: "delete_prefix/foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
     end
 
+    it "deletes objects with prefix with a trailing slash" do
+      @s3.client.stub_responses(:list_objects, contents: [{ key: "delete_prefix/foo" }])
+      @s3.delete_prefixed("delete_prefix/")
+      assert_equal :list_objects,                  @s3.client.api_requests[0][:operation_name]
+      assert_equal "delete_prefix/",               @s3.client.api_requests[0][:params][:prefix]
+      assert_equal :delete_objects,                @s3.client.api_requests[1][:operation_name]
+      assert_equal [{ key: "delete_prefix/foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
+    end
+
     it "respects storage prefix" do
       @s3 = s3(prefix: "prefix")
       @s3.client.stub_responses(:list_objects, contents: [{ key: "prefix/delete_prefix/foo" }])

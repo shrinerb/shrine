@@ -207,12 +207,12 @@ class Shrine
 
       # Deletes objects at keys starting with the specified prefix.
       #
-      #    s3.delete_prefixed("somekey/derivatives")
+      #    s3.delete_prefixed("somekey/derivatives/")
       def delete_prefixed(delete_prefix)
         # We need to make sure to combine with storage prefix, and
         # that it ends in '/' cause S3 can be squirrely about matching interior.
-        absolute_prefix = [*prefix, delete_prefix + "/"].join("/")
-        bucket.objects(prefix: absolute_prefix).batch_delete!
+        delete_prefix = delete_prefix.chomp("/") + "/"
+        bucket.objects(prefix: [*prefix, delete_prefix].join("/")).batch_delete!
       end
 
       # If block is given, deletes all objects from the storage for which the

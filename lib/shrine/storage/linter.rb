@@ -47,7 +47,7 @@ class Shrine
           storage.upload(io_factory.call, id2 = "a/a/b")
           storage.upload(io_factory.call, id3 = "a/aaa/a")
 
-          lint_delete_prefixed(prefix: "a/a",
+          lint_delete_prefixed(prefix: "a/a/",
                                expect_deleted: [id1, id2],
                                expect_remaining: [id3])
 

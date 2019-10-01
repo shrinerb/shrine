@@ -80,7 +80,7 @@ If you want to delete all files in some directory, you can use
 `FileSystem#delete_prefixed`:
 
 ```rb
-storage.delete_prefixed("some_directory") # deletes all files in "some_directory/"
+storage.delete_prefixed("some_directory/") # deletes all files in "some_directory/"
 ```
 
 ## Clearing cache

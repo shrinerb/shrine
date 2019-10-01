@@ -93,9 +93,7 @@ describe Shrine::Storage::Linter do
     end
 
     it "doesn't require #clear! to be defined" do
-      if @storage.respond_to?(:delete_prefixed)
-        @storage.instance_eval { undef delete_prefixed }
-      end
+      @storage.instance_eval { undef clear! }
       @linter.call
     end
   end
