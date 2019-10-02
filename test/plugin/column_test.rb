@@ -1,6 +1,7 @@
 require "test_helper"
 require "shrine/plugins/column"
 require "delegate"
+require "stringio"
 
 describe Shrine::Plugins::Column do
   before do
@@ -67,15 +68,6 @@ describe Shrine::Plugins::Column do
       assert_equal file, @attacher.file
     end
 
-    it "handles hash-like objects" do
-      file = @attacher.attach(fakeio)
-      hash = DelegateClass(Hash).new(file.data)
-
-      @attacher.load_column(hash)
-
-      assert_equal file, @attacher.file
-    end
-
     it "uses custom serializer" do
       @attacher = @shrine::Attacher.new(column_serializer: RubySerializer)
 
@@ -90,6 +82,17 @@ describe Shrine::Plugins::Column do
 
       file = @attacher.upload(fakeio)
       @attacher.load_column(file.data)
+
+      assert_equal file, @attacher.file
+    end
+
+    it "works with hash-like objects" do
+      @attacher = @shrine::Attacher.new(column_serializer: nil)
+
+      file = @attacher.upload(fakeio)
+      hash = DelegateClass(Hash).new(file.data)
+
+      @attacher.load_column(hash)
 
       assert_equal file, @attacher.file
     end
@@ -119,5 +122,27 @@ describe Shrine::Plugins::Column do
 
       assert_equal @attacher.file.data, @attacher.column_data
     end
+  end
+
+  it "allows serializing into custom objects" do
+    custom_serializer = Class.new do
+      def self.dump(data)
+        StringIO.new(data.to_json)
+      end
+
+      def self.load(stringio)
+        JSON.parse(stringio.string)
+      end
+    end
+
+    @attacher = @shrine::Attacher.new(column_serializer: custom_serializer)
+
+    file = @attacher.attach(fakeio)
+
+    assert_instance_of StringIO, @attacher.column_data
+
+    @attacher.load_column(@attacher.column_data)
+
+    assert_equal file, @attacher.file
   end
 end

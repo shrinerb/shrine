@@ -1,5 +1,7 @@
 ## HEAD
 
+* `column` – Allow serializing any custom objects (@janko)
+
 * `entity` – Add name to the attacher returned by `.<name>_attacher` class method (@janko)
 
 * `core` – Move `.<name>_attacher` class method into `entity` plugin (@janko)
