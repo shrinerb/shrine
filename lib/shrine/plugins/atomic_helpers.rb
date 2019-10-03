@@ -89,7 +89,7 @@ class Shrine
         #
         #     attacher.file_data #=> { "id" => "abc123.jpg", "storage" => "store" }
         def file_data
-          file!.data.reject { |key, value| key == "metadata" }
+          file!.data.reject { |key, _| key == "metadata" }
         end
 
         protected
