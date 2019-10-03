@@ -206,7 +206,7 @@ photo.image_url    # shorthand for `photo.image_attacher.url`
 photo.image_attacher #=> #<Shrine::Attacher>
 ```
 
-When an ORM plugin is loaded, the `Shrine::Attachment` module also
+When a persistence plugin is loaded, the `Shrine::Attachment` module also
 automatically:
 
 * syncs Shrine's validation errors with the record

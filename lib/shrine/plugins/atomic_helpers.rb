@@ -43,8 +43,8 @@ class Shrine
         #       persist: persist_strategy,
         #     )
         #
-        # This more convenient to use with ORM plugins, which provide defaults
-        # for reloading and persistence.
+        # This more convenient to use with concrete persistence plugins, which
+        # provide defaults for reloading and persistence.
         def abstract_atomic_promote(reload:, persist:, **options, &block)
           original_file = file
 
@@ -68,8 +68,8 @@ class Shrine
         #       persist: persist_strategy,
         #     )
         #
-        # This more convenient to use with ORM plugins, which provide defaults
-        # for reloading and persistence.
+        # This more convenient to use with concrete persistence plugins, which
+        # provide defaults for reloading and persistence.
         def abstract_atomic_persist(original_file = file, reload:, persist:)
           abstract_reload(reload) do |attacher|
             if attacher && attacher.file != original_file

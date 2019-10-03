@@ -55,8 +55,8 @@ If you're curious how it compares to other file attachment libraries, see the [A
 
 ## Quick start
 
-Add Shrine to the Gemfile and write an initializer which sets up the storage and
-loads the ORM plugin:
+Add Shrine to the Gemfile and write an initializer which sets up the storage
+and loads integration for your persistence library:
 
 ```rb
 # Gemfile

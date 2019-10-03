@@ -11,15 +11,15 @@ Many alternative file upload solutions are coupled to either Rails (Active
 Storage) or Active Record itself (Paperclip, Dragonfly). This is not ideal, as
 Rails-specific solutions fragment the Ruby community between developers that
 use Rails and developers that don't. There are many great web frameworks
-([Sinatra], [Roda], [Cuba], [Hanami], [Grape]) and database libraries
-([Sequel], [ROM], [Hanami::Model]) out there that people use instead of
-Rails and Active Record.
+([Sinatra], [Roda], [Cuba], [Hanami], [Grape]) and persistence libraries
+([Sequel], [ROM], [Hanami::Model]) out there that people use instead of Rails
+and Active Record.
 
 Shrine, on the other hand, doesn't make any assumptions about which web
-framework or ORM you're using. Any web-specific functionality is implemented
-on top of [Rack], the Ruby web server interface that powers all the popular
-Ruby web frameworks (including Rails). The integrations for specific ORMs are
-provided as plugins.
+framework or persistence library you're using. Any web-specific functionality
+is implemented on top of [Rack], the Ruby web server interface that powers all
+the popular Ruby web frameworks (including Rails). The integrations for
+specific ORMs are provided as plugins.
 
 ```rb
 # Rack-based plugins
@@ -58,7 +58,7 @@ photo.image_attacher #=> #<Shrine::Attacher>
 
 The attachment functionality is decoupled from persistence and storage, which
 makes it much easier to reason about. Also, special care was taken to make
-integrating new storages and ORMs possible with minimal amount of code.
+integrating new storages and persistence libraries as easy as possible.
 
 ## Modularity
 

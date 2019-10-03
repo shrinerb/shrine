@@ -15,9 +15,9 @@ end
 ```
 
 The validation block is run when a new file is assigned, and any validation
-errors are stored in `Shrine::Attacher#errors`. ORM plugins like `sequel` and
-`activerecord` will automatically merge these validation errors into the
-`#errors` hash on the model instance.
+errors are stored in `Shrine::Attacher#errors`. Persistence plugins like
+`sequel` and `activerecord` will automatically merge these validation errors
+into the `#errors` hash on the model instance.
 
 ```rb
 photo = Photo.new
