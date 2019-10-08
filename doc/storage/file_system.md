@@ -64,7 +64,12 @@ File.exist?(file.path) #=> false
 ```
 
 If you want to make this option default, you can use the
-[`upload_options`][upload_options] plugin.
+[`upload_options`][upload_options] plugin, provided that both `:cache` and
+`:store` storages are `FileSystem`):
+
+```rb
+plugin :upload_options, cache: { move: true }, store: { move: true }
+```
 
 ## Path
 
