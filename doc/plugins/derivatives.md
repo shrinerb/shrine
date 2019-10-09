@@ -164,11 +164,9 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-# ...
 photo.image_derivatives!(:thumbnails)
 # or
 attacher.create_derivatives(:thumbnails)
-# ...
 ```
 
 ### Derivatives storage
