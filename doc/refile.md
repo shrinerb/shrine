@@ -7,11 +7,14 @@ of three parts:
 2. Instructions how to migrate and existing app that uses Refile to Shrine
 3. Extensive reference of Refile's interface with Shrine equivalents
 
-## Uploaders
+## Overview
 
 Shrine borrows many great concepts from Refile: Refile's "backends" are here
-named "storages", it uses the same IO abstraction for uploading and representing
-uploaded files, similar attachment logic, and direct uploads are also supported.
+named "storages", it uses the same IO abstraction for uploading and
+representing uploaded files, similar attachment logic, and direct uploads are
+supported as well.
+
+### Uploader
 
 While in Refile you work with storages directly, Shrine uses *uploaders* which
 wrap storage uploads:
@@ -25,7 +28,7 @@ uploaded_file #=> #<Shrine::UploadedFile ...>
 uploaded_file.storage #=> #<Shrine::Storage::S3>
 ```
 
-This way Shrine can perform tasks like generating location, extracting
+This way, Shrine can perform tasks like generating location, extracting
 metadata, processing, and logging, which are all storage-agnostic, and leave
 storages to deal only with actual file storage. And these tasks can be
 configured differently depending on the types of files you're uploading:
@@ -44,6 +47,61 @@ class VideoUploader < Shrine
   end
 end
 ```
+
+#### URL
+
+While Refile serves all files through the Rack endpoint mounted in your app,
+Shrine serves files directly from storage services:
+
+```rb
+Refile.attachment_url(@photo, :image) #=> "/attachments/cache/50dfl833lfs0gfh.jpg"
+```
+
+```rb
+@photo.image.url #=> "https://my-bucket.s3.amazonaws.com/cache/50dfl833lfs0gfh.jpg"
+```
+
+If you're using storage which don't expose files over URL (e.g. a database
+storage), or you want to secure your downloads, you can also serve files
+through your app using the [`download_endpoint`][download_endpoint] plugin.
+
+### Persistence
+
+Refile persists the uploaded file location and metadata into individual
+columns:
+
+* `<attachment>_id`
+* `<attachment>_filename`
+* `<attachment>_content_type`
+* `<attachment>_size`
+
+Shrine, on the other hand, saves all uploaded file data into a single
+`<attachment>_data` column:
+
+```rb
+{
+  "id": "path/to/image.jpg",
+  "storage": "store",
+  "metadata": {
+    "filename": "nature.jpg",
+    "size": 4739472,
+    "mime_type": "image/jpeg"
+  }
+}
+```
+```rb
+photo.image.id          #=> "path/to/image.jpg"
+photo.image.storage_key #=> :store
+photo.image.metadata    #=> { "filename" => "...", "size" => ..., "mime_type" => "..." }
+
+photo.image.original_filename #=> "nature.jpg"
+photo.image.size              #=> 4739472
+photo.image.mime_type         #=> "image/jpeg"
+```
+
+This column can be queried if it's made a JSON column. Alternatively, you can
+use the [`metadata_attributes`][metadata_attributes] plugin to save metadata
+into separate columns.
 
 ### Processing
 
@@ -76,117 +134,42 @@ end
 Shrine also support processing up front using the [`derivatives`][derivatives]
 plugin.
 
-### URL
+### Validation
 
-While Refile serves all files through the Rack endpoint mounted in your app,
-Shrine serves files directly from storage services:
-
-```rb
-Refile.attachment_url(@photo, :image) #=> "/attachments/cache/50dfl833lfs0gfh.jpg"
-```
-
-```rb
-@photo.image.url #=> "https://my-bucket.s3.amazonaws.com/cache/50dfl833lfs0gfh.jpg"
-```
-
-If you're using storage which don't expose files over URL (e.g. a database
-storage), or you want to secure your downloads, you can also serve files
-through your app using the [`download_endpoint`][download_endpoint] plugin.
-
-## Attachments
-
-While in Refile you configure attachments by passing options to `.attachment`,
-in Shrine you define all your uploading logic inside uploaders, and then
-generate an attachment module with that uploader which is included into the
-model:
-
-```rb
-class Photo < Sequel::Model
-  extend Shrine::Sequel::Attachment
-  attachment :image, destroy: false
-end
-```
-
-```rb
-class ImageUploader < Shrine
-  plugin :sequel
-end
-
-class Photo < Sequel::Model
-  include ImageUploader::Attachment(:image)
-end
-```
-
-This way we can encapsulate all attachment logic inside a class and share it
-between different models.
-
-### Metadata
-
-Refile allows you to save additional metadata about uploaded files in additional
-columns, so you can define `<attachment>_filename`, `<attachment>_content_type`,
-or `<attachment>_size`.
-
-Shrine, on the other hand, saves all metadata into a single `<attachment>_data`
-column:
-
-```rb
-photo.image_data #=>
-# {
-#   "storage" => "store",
-#   "id" => "photo/1/image/0d9o8dk42.png",
-#   "metadata" => {
-#     "filename"  => "nature.png",
-#     "size"      => 49349138,
-#     "mime_type" => "image/png"
-#   }
-# }
-
-photo.image.original_filename #=> "nature.png"
-photo.image.size              #=> 49349138
-photo.image.mime_type         #=> "image/png"
-```
-
-By default "filename", "size" and "mime_type" is stored, but you can also store
-image dimensions, or define any other custom metadata. This also allow storages
-to add their own metadata.
-
-### Validations
-
-In Refile you define validations by passing options to `.attachment`, while
-in Shrine you define validations on the instance-level, which allows them to
-be dynamic:
+In Refile, file validation is defined statically on attachment definition:
 
 ```rb
 class Photo < Sequel::Model
   attachment :image,
-    extension: %w[jpg jpeg png gif],
-    content_type: %w[image/jpeg image/png image/gif]
+    extension: %w[jpg jpeg png webp],
+    content_type: %w[image/jpeg image/png image/webp]
 end
 ```
+
+In Shrine, validation is performed on the instance-level, which allows you to
+make the validation conditional:
 
 ```rb
 class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension %w[jpg jpeg png gif]
-    validate_mime_type %w[image/jpeg image/png image/gif]
     validate_max_size 10*1024*1024
+    validate_extension %w[jpg jpeg png webp]
+
+    if validate_mime_type %w[image/jpeg image/png image/webp]
+      validate_max_dimensions [5000, 5000]
+    end
   end
 end
 ```
 
 Refile extracts the MIME type from the file extension, which means it can
 easily be spoofed (just give a PHP file a `.jpg` extension). Shrine has the
-`determine_mime_type` plugin for determining MIME type from file *content*.
+[`determine_mime_type`][determine_mime_type] plugin for determining MIME type
+from file *content*.
 
-### Multiple uploads
-
-Shrine doesn't have a built-in solution for accepting multiple uploads, but
-it's actually very easy to do manually, see the [demo app] on how you can do
-multiple uploads directly to S3.
-
-## Direct uploads
+### Direct uploads
 
 Shrine borrows Refile's idea of direct uploads, and ships with
 `upload_endpoint` and `presign_endpoint` plugins which provide endpoints for
@@ -200,10 +183,16 @@ Shrine.plugin :upload_endpoint
 Shrine.presign_endpoint(:cache) # Rack app that generates presigns for specified storage
 ```
 
-Unlike Refile, Shrine doesn't ship with complete JavaScript which you can just
-include to make it work. However, [Uppy] is an excellent JavaScript file upload
-library that integrates wonderfully with Shrine, see the [demo app] for a
-complete example.
+While Refile ships with a plug-and-play JavaScript for direct uploads, Shrine
+instead adopts [Uppy], a modern and modular JavaScript file upload library that
+happens to integrate well with Shrine.
+
+### Multiple uploads
+
+Shrine doesn't have support for multiple uploads out-of-the-box like Refile
+does. Instead, you can implement them using a separate table with a one-to-many
+relationship to which the files will be attached. The [Multiple Files] guide
+explains this setup in more detail.
 
 ## Migrating from Refile
 
@@ -260,7 +249,7 @@ class Photo < ActiveRecord::Base
   include RefileShrineSynchronization
 
   before_save do
-    write_shrine_data(:image) if changes.key?(:image_id)
+    write_shrine_data(:image) if image_id_changed?
   end
 end
 ```
@@ -298,8 +287,7 @@ Shrine.storages = {
 
 #### `.app`, `.mount_point`, `.automount`
 
-The `upload_endpoint`, `presign_endpoint`, and `derivation_endpoint` plugins
-provide methods for generating Rack apps, but you need to mount them
+The Rack apps provided by the `*_endpoint` Shrine plugins are mounted
 explicitly:
 
 ```rb
@@ -312,8 +300,8 @@ end
 
 #### `.allow_uploads_to`
 
-The `Shrine.upload_endpoint` and `Shrine.presign_endpoint` require you to
-specify the storage that will be used.
+The `Shrine.upload_endpoint` and `Shrine.presign_endpoint` builders require you
+to specify the storage that will be used.
 
 #### `.logger`
 
@@ -335,7 +323,7 @@ end
 
 #### `.types`
 
-In Shrine, validations are done by calling `.validate` on the attacher class:
+Shrine defines validations on the uploader class level:
 
 ```rb
 class MyUploader < Shrine
@@ -347,35 +335,38 @@ class MyUploader < Shrine
 end
 ```
 
-#### `.extract_filename`, `.extract_content_type`
+#### `.extract_filename`
 
-In Shrine equivalents are (private) methods `Shrine#extract_filename` and
-`Shrine#extract_mime_type`.
+Shrine's equivalent is a `Shrine#extract_filename` private method. You can
+instead use the `Shrine#extract_metadata` public method.
 
-#### `.app_url`
+#### `.extract_content_type`
 
-You should use your framework to generate the URL to your mounted direct
-endpoint.
+The [`determine_mime_type`][determine_mime_type] plugin provides a
+`Shrine.determine_mime_type` method.
+
+#### `.app_url`, `.upload_url`, `.attachment_upload_url`, `.presign_url`, `.attachment_presign_url`
+
+Shrine requires you to use your framework to generate URLs to mounted
+endpoints.
 
 #### `.attachment_url`, `.file_url`
 
 You can call `#url` on the uploaded file, or `#<name>_url` on the model.
-Additionally you can use the `download_endpoint` plugin.
-
-#### `.upload_url`, `.attachment_upload_url`, `.presign_url`, `.attachment_presign_url`
-
-These should be generated directly by you, it depends on where you've mounted
-the direct endpoint.
+Alternatively, you can use `#download_url` provided by the `download_endpoint`
+plugin.
 
 #### `.host`, `.cdn_host`, `.app_host`, `.allow_downloads_from`, `allow_origin`, `.content_max_age`
 
-Not needed since Shrine doesn't offer on-the-fly processing.
+These can be configured on individual `*_endpoint` plugins.
 
 #### `.secret_key`, `.token`, `.valid_token?`
 
-Not needed since Shrine doesn't offer on-the-fly processing.
+The secret key is required for the
+[`derivation_endpoint`][derivation_endpoint], but these methods are not
+exposed.
 
-### `attachment`
+### `Attachment`
 
 Shrine's equivalent to calling the attachment is including an attachment module
 of an uploader:
@@ -423,7 +414,7 @@ No equivalent currently exists in Shrine.
 
 ### `accepts_attachments_for`
 
-No equivalent in Shrine, but take a look at the "[Multiple Files]" guide.
+No equivalent in Shrine, but take a look at the [Multiple Files] guide.
 
 ### Form helpers
 
@@ -483,11 +474,10 @@ form_for @user do |form|
 end
 ```
 
-[image_processing]: https://github.com/janko/image_processing
 [Uppy]: https://uppy.io
-[Direct Uploads to S3]: /doc/direct_s3.md#readme
-[demo app]: https://github.com/shrinerb/shrine/tree/master/demo
-[Multiple Files]: /doc/multiple_files.md#readme
 [derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
 [download_endpoint]: /doc/plugins/download_endpoint.md#readme
 [derivatives]: /doc/plugins/derivatives.md#readme
+[metadata_attributes]: /doc/plugins/metadata_attributes.md#readme
+[determine_mime_type]: /doc/plugins/determine_mime_type.md#readme
+[Multiple Files]: /doc/multiple_files.md#readme

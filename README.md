@@ -5,7 +5,7 @@ Shrine is a toolkit for file attachments in Ruby applications. Some highlights:
 * **Modular design** – the [plugin system] allows you to load only the functionality you need
 * **Memory friendly** – streaming uploads and [downloads][Retrieving Uploads] make it work great with large files
 * **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and [others][external]
-* **Persistence integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [ROM][rom plugin], [Hanami::Model][hanami plugin] and [Mongoid][mongoid plugin]
+* **Persistence integrations** – works with [Sequel][sequel plugin], [ActiveRecord][activerecord plugin], [ROM][rom plugin], [Hanami][hanami plugin] and [Mongoid][mongoid plugin]
 * **Flexible processing** – generate thumbnails [up front] or [on-the-fly] using [ImageMagick][ImageProcessing::MiniMagick] or [libvips][ImageProcessing::Vips]
 * **Metadata validation** – [validate files][validation] based on [extracted metadata][metadata]
 * **Direct uploads** – upload asynchronously [to your app][simple upload] or [to the cloud][presigned upload] using [Uppy]

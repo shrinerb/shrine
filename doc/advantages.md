@@ -5,6 +5,13 @@ There are many existing file upload solutions for Ruby out there – [Paperclip]
 popular ones. This guide will attempt to cover some of the main advantages that
 Shrine offers compared to these alternatives.
 
+For a more direct comparison with specific file attachment libraries, there are
+more specialized guides:
+
+* [Shrine for CarrierWave Users]
+* [Shrine for Paperclip Users]
+* [Shrine for Refile Users]
+
 ## Generality
 
 Many alternative file upload solutions are coupled to either Rails (Active
@@ -40,20 +47,23 @@ Shrine.plugin :hanami # https://github.com/katafrakt/hanami-shrine
 ## Simplicity
 
 Where some popular file attachment libraries have [god objects]
-(`CarrierWave::Uploader::Base` and `Paperclip::Attachment`), Shrine has several
-core classes, each with a clear set of responsibilities:
+(`CarrierWave::Uploader::Base` and `Paperclip::Attachment`), in Shrine
+responsibilities are distributed across multiple core classes:
 
-* Storage classes encapsulate file operations for the underlying service
-* `Shrine` handles uploads and manages plugins
-* `Shrine::UploadedFile` repesents a file that was uploaded to a storage
-* `Shrine::Attacher` handles attaching files to records
-* `Shrine::Attachment` adds convenience methods to model instances
+| Class                  | Description                                            |
+| :----                  | :-----------                                           |
+| `Shrine::Storage::*`   | Encapsulate file operations for the underlying service |
+| `Shrine`               | Wraps uploads and handles loading plugins              |
+| `Shrine::UploadedFile` | Represents a file that was uploaded to a storage       |
+| `Shrine::Attacher`     | Handles attaching files to records                     |
+| `Shrine::Attachment`   | Adds convenience attachment methods to model instances |
 
 ```rb
-photo.image          #=> #<Shrine::UploadedFile>
-photo.image.storage  #=> #<Shrine::Storage::S3>
-photo.image.uploader #=> #<Shrine>
-photo.image_attacher #=> #<Shrine::Attacher>
+photo.image           #=> #<Shrine::UploadedFile>
+photo.image.storage   #=> #<Shrine::Storage::S3>
+photo.image.uploader  #=> #<Shrine>
+photo.image_attacher  #=> #<Shrine::Attacher>
+photo.class.ancestors #=> [..., #<Shrine::Attachment(:image)>, ...]
 ```
 
 The attachment functionality is decoupled from persistence and storage, which
@@ -64,21 +74,23 @@ integrating new storages and persistence libraries as easy as possible.
 
 Shrine uses a [plugin system] that allows you to pick and choose the features
 that you want. Moreover, you'll only be loading code for the features you've
-selected, which means that Shrine will generally much faster than the
+selected, which means that Shrine will generally load much faster than the
 alternatives.
 
 ```rb
 Shrine.plugin :instrumentation
 
-# translates to
+# which translates to
 
 require "shrine/plugins/instrumentation"
 Shrine.plugin Shrine::Plugins::Instrumentation
 ```
+```rb
+Shrine.method(:instrument).owner #=> Shrine::Plugins::Instrumentation::ClassMethods
+```
 
 Shrine recommends a certain type of attachment flow, but it still offers good
-low-level abstractions that give you the flexibility to build your own
-attachment flow.
+low-level abstractions that give you the flexibility to build your own flow.
 
 ```rb
 uploaded_file = ImageUploader.upload(image, :store) # metadata extraction, upload location generation
@@ -113,9 +125,6 @@ Shrine.plugin :determine_mime_type, analyzer: :marcel
 Shrine.plugin :store_dimensions,    analyzer: :mini_magick
 ```
 
-This approach gives you control over your dependencies by allowing you to
-choose the combination that best suits your needs.
-
 ## Inheritance
 
 Shrine is designed to handle any types of files. If you're accepting uploads of
@@ -126,9 +135,9 @@ for handling them will differ:
 * you might want to store different files to different storage services (images, documents, audios, videos)
 * extracting metadata might require different tools depending on the filetype
 
-With Shrine you can create isolated uploaders for each type of file. Plugins
-that you want to be applied to all uploaders can be applied globally, while
-other plugins would be loaded only for a specific uploader.
+With Shrine you can create isolated uploaders for each type of file. For
+features you want all uploaders to share, their plugins can be loaded globally,
+while other plugins you can load only for selected uploaders.
 
 ```rb
 # loaded for all plugins
@@ -150,18 +159,17 @@ end
 
 ## Processing
 
-Most file attachment libraries give you the ability to process files either "on
-attachment" (Paperclip, CarrierWave) or "on-the-fly" (Dragonfly, Refile, Active
-Storage). However, you should ideally be able to choose both, because both
-approaches have their pros and cons. For example, on-the-fly processing is only
-suitable for fast processing (image thumbnails, document previews), longer
-running processing should be moved into a background job (video transcoding,
-raw images).
+Most file attachment libraries provide either processing files up front
+(Paperclip, CarrierWave) or on-the-fly (Dragonfly, Refile, Active Storage).
+However, each approach is suitable for different requirements. For instance,
+while on-the-fly processing is suitable for fast processing (image thumbnails,
+document previews), longer running processing (video transcoding, raw images)
+should be moved into a background job.
 
-Shrine is the first file attachment library that has support for both
-processing on attachment and on-the-fly. So, if you're handling image uploads,
-you can choose to either generate a set of pre-defined image thumbnails in a
-background job:
+That's why Shrine supports both [up front][derivatives] and
+[on-the-fly][derivation_endpoint] processing. For example, if you're handling
+image uploads, you can choose to either generate a set of pre-defined
+thumbnails during attachment:
 
 ```rb
 class ImageUploader < Shrine
@@ -177,8 +185,8 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-photo.image_url(:large)
-#=> "https://s3.amazonaws.com/path/to/large.jpg"
+photo.image_derivatives! # creates thumbnails
+photo.image_url(:large)  #=> "https://s3.amazonaws.com/path/to/large.jpg"
 ```
 
 or generate thumbnails on-demand:
@@ -197,42 +205,43 @@ photo.image.derivation_url(:thumbnail, 600, 400)
 #=> ".../thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
 ```
 
-### Image processing
+### ImageMagick
 
 Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and
-Refile, implement their own image processing macros. Instead of creating
-yet another in-house implementation, the **[ImageProcessing]** gem was created.
-
-While the ImageProcessing gem was created for Shrine, it's completely generic
-and can be used standalone or with any other file upload library (e.g. Active
-Storage 6+ uses it). It takes care of many details for you, such as [auto
-orienting] the input image and [sharpening] the thumbnails after they are
-resized.
+Refile, implement their own image processing macros. Rather than building yet
+another in-house implementation, a general purpose **[ImageProcessing]** gem
+was created instead, which works great with Shrine.
 
 ```rb
-require "image_processing"
+require "image_processing/mini_magick"
 
 thumbnail = ImageProcessing::MiniMagick
   .source(image)
   .resize_to_limit(400, 400)
   .call # convert input.jpg -auto-orient -resize 400x400> -sharpen 0x1 output.jpg
 
-thumbnail #=> #<Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6.png>
+thumbnail #=> #<Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6.jpg>
 ```
 
-#### libvips
+It takes care of many details for you, such as [auto orienting] the input image
+and applying [sharpening] to resized images. It also has support for
+[libvips](#libvips).
 
-Probably the biggest ImageProcessing feature is the support for **[libvips]**.
-libvips is a full-featured image processing library like ImageMagick, with
-impressive performance characteristics – it's often **multiple times faster**
-than ImageMagick and has low memory usage (see [Why is libvips quick]).
+### libvips
 
-The `ImageProcessing::Vips` backend implements the same API as
-`ImageProcessing::MiniMagick`, so you can easily swap one for the other.
+**[libvips]** is a full-featured image processing library like ImageMagick,
+with [great performance characteristics][libvips performance]. It's often
+**multiple times faster** than ImageMagick, and also has lower memory usage.
+For more details, see [Why is libvips quick].
+
+The ImageProcessing gem provides libvips support as an alternative
+`ImageProcessing::Vips` backend, sharing the same API as the
+`ImageProcessing::MiniMagick` backend.
 
 ```rb
 require "image_processing/vips"
 
+# this now generates the thumbnail using libvips
 ImageProcessing::Vips
   .source(image)
   .resize_to_limit!(400, 400)
@@ -240,13 +249,18 @@ ImageProcessing::Vips
 
 ### Other processors
 
-Both processing "on upload" and "on-the-fly" work in a way that you define a
-Ruby block, which accepts a source file and is expected to return a processed
-file. How you're going to do the processing is entirely up to you.
+In contrast to most file attachment libraries, file processing in Shrine is
+just a functional transformation, where you receive the source file on the
+input and return processed files on the output. This makes it easier to use
+custom processing tools and encourages building generic processors that can be
+reused outside of Shrine.
 
-This allows you to use any tool you want. For example, you could implement
-video transcoding:
+Here is an example of transcoding videos using the [streamio-ffmpeg] gem:
 
+```rb
+# Gemfile
+gem "streamio-ffmpeg"
+```
 ```rb
 class VideoUploader < Shrine
   Attacher.derivatives_processor do |original|
@@ -260,6 +274,13 @@ class VideoUploader < Shrine
     { transcoded: transcoded, screenshot: screenshot }
   end
 end
+```
+```rb
+movie.video_derivatives! # create derivatives
+
+movie.video              #=> #<Shrine::UploadedFile @id="5a5cd0.mov" ...>
+movie.video(:transcoded) #=> #<Shrine::UploadedFile @id="7481d6.mp4" ...>
+movie.video(:screenshot) #=> #<Shrine::UploadedFile @id="8f3136.jpg" ...>
 ```
 
 ## Metadata & Validation
@@ -302,13 +323,14 @@ end
 
 ## Backgrounding
 
-In most file upload solutions background processing was an afterthought, which
-resulted in complex implementations. Shrine was designed with backgrounding
-feature in mind from day one. It is supported via the
-[`backgrounding`][backgrounding] plugin and can be used with [any backgrounding
-library][backgrounding libraries].
+In most file upload solutions, support for background processing was an
+afterthought, which resulted in complex and unreliable implementations. Shrine
+was designed with backgrounding feature in mind from day one. It is supported
+via the [`backgrounding`][backgrounding] plugin and can be used with [any
+backgrounding library][backgrounding libraries].
 
 ```rb
+Shrine.plugin :backgrounding
 Shrine::Attacher.promote_block do
   PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
 end
@@ -324,42 +346,46 @@ class PromoteJob
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
     attacher.create_derivatives # perform processing
     attacher.atomic_promote
+  rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    # attachment changes are detected for concurrency safety
   end
 end
 ```
 
+With Shrine, there is no need for a separate boolean column that indicates the
+processing status. Processed file data is stored into the attachment database
+column, which allows you to easily check whether a file has been processed.
+
+```rb
+photo = Photo.create(image: file) # background job is kicked off
+
+photo.image(:large) #=> nil (thumbnails are still being processed)
+# ... sometime later ...
+photo.image(:large) #=> #<Shrine::UploadedFile> (processing has finished)
+```
+
 ## Direct Uploads
 
-Shrine doesn't come with a plug-and-play JavaScript solution for client-side
-uploads like Refile and Active Storage, but instead it adopts **[Uppy]**. Uppy
-is a modern JavaScript file upload library, which offers support for uploading
-to [AWS S3][Uppy AwsS3], to a [custom endpoint][Uppy XHRUpload], or even to a
-[resumable endpoint][Uppy Tus]. It comes with a set of UI components, ranging
-from a simple [status bar][Uppy StatusBar] to a full-featured [dashboard][Uppy
-Dashboard]. Since Uppy is maintained by the wide JavaScript community, it's
-generally a better choice than any homegrown solution.
+For client side uploads, Shrine adopts **[Uppy]**, a modern JavaScript file
+upload library. This gives the developer a lot more power in customizing the
+user experience compared to a custom JavaScript solution implemented by Refile
+and Active Storage.
 
-Shrine provides Rack components for uploads that integrate nicely with Uppy.
-So, whether you want Uppy to upload directly [to your app][upload_endpoint], or
-you want to authorize direct uploads [to the cloud][presign_endpoint], Shrine
-has it streamlined.
+Uppy supports direct uploads to [AWS S3][Uppy AwsS3] or to a [custom
+endpoint][Uppy XHRUpload]. It also supports **resumable** uploads, either
+[directly to S3][Uppy AwsS3Multipart] or via the [tus protocol][tus]. For the
+UI you can choose from various components, ranging from a simple [status
+bar][Uppy StatusBar] to a full-featured [dashboard][Uppy Dashboard].
 
-### Resumable uploads
+Shrine provides server side components for each type of upload. They are built
+on top of Rack, so that they can be used with any Ruby web framework.
 
-If your users are uploading large files, flaky internet connections can cause
-uploads to fail halfway, which can be a frustrating user experience. To fix
-this problem, [Transloadit] company has created an open HTTP-based protocol for
-resumable uploads – **[tus]**. There are already countless client and server
-[implementations][tus implementations] of the protocol in various languages.
-
-So, if you're expecting large file uploads, you can use Uppy as a [JavaScript
-client][Uppy Tus] and have it upload to [Ruby server][tus-ruby-server], then
-attach uploaded files using the handy [Shrine integration][shrine-tus]. Shrine
-handles uploads and downloads in a streaming fashion, so you can expect low
-memory usage.
-
-Alternatively, you can have [resumable multipart uploads directly to
-S3][uppy-s3_multipart].
+| Uppy                                  | Shrine                                   |
+| :---                                  | :-----                                   |
+| [XHRUpload][Uppy XHRUpload]           | [`upload_endpoint`][upload_endpoint]     |
+| [AwsS3][Uppy AwsS3]                   | [`presign_endpoint`][presign_endpoint]   |
+| [AwsS3Multipart][Uppy AwsS3Multipart] | [`uppy-s3_multipart`][uppy-s3_multipart] |
+| [Tus][Uppy Tus]                       | [`tus-ruby-server`][tus-ruby-server]     |
 
 ## Summary
 
@@ -368,8 +394,8 @@ database library. It has core classes with clearly defined responsibilities,
 which provide both higher and lower level abstractions. The functionality is
 very modular, you can pick and choose features that you need.
 
-With Shrine you can process both on attachment and on-the-fly, depending on
-what is more suitable for your requirements. Processing is just a functional
+With Shrine you can process both up from and on-the-fly, depending on what is
+more suitable for your requirements. Processing is just a functional
 transformation, which makes it easier to use the processing tool of your
 choice. You can also move processing into a background job.
 
@@ -408,7 +434,6 @@ files you can also make the uploads resumable.
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [god objects]: https://en.wikipedia.org/wiki/God_object
-[ImageMagick]: https://www.imagemagick.org
 [ImageProcessing]: https://github.com/janko/image_processing
 [auto orienting]: https://www.imagemagick.org/script/command-line-options.php#auto-orient
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
@@ -424,16 +449,21 @@ files you can also make the uploads resumable.
 [Uppy XHRUpload]: https://uppy.io/docs/xhrupload/
 [Uppy AwsS3]: https://uppy.io/docs/aws-s3/
 [Uppy Tus]: https://uppy.io/docs/tus/
+[Uppy AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
+[tus]: https://tus.io
 [Uppy StatusBar]: https://uppy.io/examples/statusbar/
 [Uppy Dashboard]: https://uppy.io/examples/dashboard/
+[tus-ruby-server]: https://github.com/janko/tus-ruby-server
+[uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [backgrounding]: /doc/plugins/backgrounding.md#readme
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
 [Down streaming]: https://github.com/janko/down#streaming
-[Transloadit]: https://transloadit.com
-[tus]: https://tus.io
-[tus implementations]: https://tus.io/implementations.html
-[tus-ruby-server]: https://github.com/janko/tus-ruby-server
-[shrine-tus]: https://github.com/shrinerb/shrine-tus
-[uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
 [validation_helpers]: /doc/plugins/validation_helpers.md#readme
 [custom validations]: /doc/validation.md#custom-validations
+[derivatives]: /doc/plugins/derivatives.md#readme
+[derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
+[libvips performance]: https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results
+[streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
+[Shrine for CarrierWave Users]: /doc/carrierwave.md#readme
+[Shrine for Paperclip Users]: /doc/paperclip.md#readme
+[Shrine for Refile Users]: /doc/refile.md#readme

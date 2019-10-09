@@ -7,10 +7,44 @@ consists of three parts:
 2. Instructions how to migrate and existing app that uses CarrierWave to Shrine
 3. Extensive reference of CarrierWave's interface with Shrine equivalents
 
-## Storage
+## Overview
 
-While in CarrierWave you configure storage in global configuration, in Shrine
-storage is a class which you can pass options to during initialization:
+### Uploader
+
+Shrine shares CarrierWave's concept of **uploaders**, classes which encapsulate
+file attachment logic for different file types:
+
+```rb
+class ImageUploader < Shrine
+  # attachment logic
+end
+```
+
+However, while CarrierWave uploaders are responsible for most of the
+attachment logic (uploading to temporary/permanent storage, retrieving the
+uploaded file, file validation, processing versions), Shrine distributes
+these responsibilities across several core classes:
+
+| Class                  | Description                                                        |
+| :----                  | :-----------                                                       |
+| `Shrine`               | handles uploads, metadata extraction, location generation          |
+| `Shrine::UploadedFile` | exposes metadata, implements downloading, URL generation, deletion |
+| `Shrine::Attacher`     | handles caching & storing, dirty tracking, persistence, versions   |
+
+Shrine uploaders themselves are functional: they receive a file on the input
+and return the uploaded file on the output. There are no state changes.
+
+```rb
+uploader      = ImageUploader.new(:store)
+uploaded_file = uploader.upload(file, :store)
+uploaded_file          #=> #<Shrine::UploadedFile>
+uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
+uploaded_file.download #=> #<File:/tmp/path/to/file>
+```
+
+### Storage
+
+In CarrierWave, you configure storage in global configuration:
 
 ```rb
 CarrierWave.configure do |config|
@@ -24,6 +58,9 @@ CarrierWave.configure do |config|
   config.fog_directory = "my-bucket"
 end
 ```
+
+In Shrine, the configuration options are passed directly to the storage class:
+
 ```rb
 Shrine.storages[:store] = Shrine::Storage::S3.new(
   bucket:            "my-bucket",
@@ -33,11 +70,11 @@ Shrine.storages[:store] = Shrine::Storage::S3.new(
 )
 ```
 
-In CarrierWave temporary storage cannot be configured; it saves and retrieves
-files from the filesystem, you can only set the directory. With Shrine both
-temporary (`:cache`) and permanent (`:store`) storage are first-class citizens
-and fully configurable, so you can also have files *cached* on S3 (preferrably
-via [direct uploads]):
+#### Temporary storage
+
+Where CarrierWave's temporary storage is hardcoded to disk, Shrine can use any
+storage for temporary storage. So, if you have multiple servers or want to do
+[direct uploads], you can use AWS S3 as temporary storage:
 
 ```rb
 Shrine.storages = {
@@ -46,32 +83,52 @@ Shrine.storages = {
 }
 ```
 
-## Uploader
+### Persistence
 
-Shrine shares CarrierWave's concept of *uploaders*, classes which encapsulate
-file attachment logic for different file types:
-
-```rb
-class ImageUploader < Shrine
-  # attachment logic
-end
-```
-
-However, uploaders in CarrierWave are very broad; in addition to uploading and
-deleting files, they also represent the uploaded file. Shrine has a separate
-`Shrine::UploadedFile` class which represents the uploaded file.
+While CarrierWave persists only the filename of the original uploaded file,
+Shrine persists storage and metadata information as well:
 
 ```rb
-uploaded_file = ImageUploader.upload(file, :store)
-uploaded_file          #=> #<Shrine::UploadedFile>
-uploaded_file.url      #=> "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"
-uploaded_file.download #=> #<File:/tmp/path/to/file>
+{
+  "id": "path/to/image.jpg",
+  "storage": "store",
+  "metadata": {
+    "filename": "nature.jpg",
+    "size": 4739472,
+    "mime_type": "image/jpeg"
+  }
+}
 ```
 
-## Processing
+This way we have all information about uploaded files, without having to
+retrieve the file from the storage.
 
-In contrast to CarrierWave's class-level DSL, in Shrine processing is defined
-and performed on the instance-level.
+```rb
+photo.image.id          #=> "path/to/image.jpg"
+photo.image.storage_key #=> :store
+photo.image.metadata    #=> { "filename" => "...", "size" => ..., "mime_type" => "..." }
+
+photo.image.original_filename #=> "nature.jpg"
+photo.image.size              #=> 4739472
+photo.image.mime_type         #=> "image/jpeg"
+```
+
+#### Location
+
+CarrierWave persists only the filename of the uploaded file, and recalculates
+the full location dynamically based on location configuration. This can be
+dangerous, because if some component of the location happens to change, all
+existing links might become invalid.
+
+To avoid this, Shrine persists the full location on attachment, and uses it
+when generating file URL. So, even if you change how file locations are
+generated, existing files that are on old locations will still remain
+accessible.
+
+### Processing
+
+CarrierWave uses a class-level DSL for generating versions, which internally
+uses uploader subclassing and does in-place processing.
 
 ```rb
 class ImageUploader < CarrierWave::Uploader::Base
@@ -91,6 +148,9 @@ class ImageUploader < CarrierWave::Uploader::Base
 end
 ```
 
+In contrast, in Shrine you perform processing on the instance level as a
+functional transformation, which is a lot simpler and more flexible:
+
 ```rb
 require "image_processing/mini_magick"
 
@@ -109,23 +169,45 @@ class ImageUploader < Shrine
 end
 ```
 
-CarrierWave performs processing before validations, which is a huge security
-issue, as it allows users to give arbitrary files to your processing tool, even
-if you have validations. With Shrine you can perform processing after
-validations.
+#### Retrieving versions
 
-Shrine doesn't have a built-in way of regenerating versions, but there is an
-extensive [Managing Derivatives] guide.
+When retrieving versions, CarrierWave returns a list of declared versions which
+may or may not have been generated. In contrast, Shrine persists data of
+uploaded processed files into the database (including any extracted metadata),
+which then becomes the source of truth on which versions have been generated.
 
-### Validations
+```rb
+photo.image              #=> #<Shrine::UploadedFile @id="original.jpg" ...>
+photo.image_derivatives  #=> {}
 
-Like with processing, validations in Shrine are also defined and performed on
-instance-level:
+photo.image_derivatives! # triggers processing
+photo.image_derivatives  #=>
+# {
+#   large: #<Shrine::UploadedFile @id="large.jpg" @metadata={"size"=>873232, ...} ...>,
+#   medium: #<Shrine::UploadedFile @id="medium.jpg" @metadata={"size"=>94823, ...} ...>,
+#   small: #<Shrine::UploadedFile @id="small.jpg" @metadata={"size"=>37322, ...} ...>,
+# }
+```
+
+#### Reprocessing versions
+
+Shrine doesn't have a built-in way of regenerating versions, because that has
+to be written and optimized differently depending on what versions have changed
+which persistence library you're using, how many records there are in the table
+etc.
+
+However, there is an extensive guide for [Managing Derivatives], which provides
+instructions on how to make these changes safely and with zero downtime.
+
+### Validation
+
+File validation in Shrine is also instance-level, which allows using
+conditionals:
 
 ```rb
 class ImageUploader < CarrierWave::Uploader::Base
   def extension_whitelist
-    %w[jpg jpeg gif png]
+    %w[jpg jpeg png webp]
   end
 
   def content_type_whitelist
@@ -143,91 +225,43 @@ class ImageUploader < Shrine
   plugin :validation_helpers
 
   Attacher.validate do
-    validate_extension %w[jpg jpeg gif png]
-    validate_mime_type %w[image/jpeg image/gif image/png]
     validate_max_size 10*1024*1024
+    validate_extension %w[jpg jpeg png webp]
+
+    if validate_mime_type %w[image/jpeg image/png image/webp]
+      validate_max_dimensions [5000, 5000]
+    end
   end
 end
 ```
 
-## Attachments
+#### Custom metadata
 
-Like CarrierWave, Shrine also provides integrations with ORMs. It ships with
-plugins for both Sequel and ActiveRecord, but can also be used with just PORO
-models.
+With Shrine you can also extract and validate any custom metadata:
 
 ```rb
-Shrine.plugin :sequel       # if you're using Sequel
-Shrine.plugin :activerecord # if you're using ActiveRecord
-```
+class VideoUploader < Shrine
+  plugin :add_metadata
+  plugin :validation
 
-Instead of giving you class methods for "mounting" uploaders, in Shrine you
-generate attachment modules which you simply include in your models, which
-gives your models similar set of methods that CarrierWave gives:
+  add_metadata :duration do |io|
+    FFMPEG::Movie.new(io.path).duration
+  end
 
-```rb
-class Photo < ActiveRecord::Base
-  extend CarrierWave::ActiveRecord # done automatically by CarrierWave
-  mount_uploader :image, ImageUploader
+  Attacher.validate do
+    if file.duration > 5*60*60
+      errors << "must not be longer than 5 hours"
+    end
+  end
 end
 ```
-```rb
-class Photo < ActiveRecord::Base
-  include ImageUploader::Attachment(:image)
-end
-```
-
-### Attachment column
-
-You models are required to have the `<attachment>_data` column, which Shrine
-uses to save storage, location, and metadata of the uploaded file.
-
-```rb
-photo.image_data #=>
-# {
-#   "storage": "store",
-#   "id": "photo/1/image/0d9o8dk42.png",
-#   "metadata": {
-#     "filename":  "nature.png",
-#     "size":      49349138,
-#     "mime_type": "image/png"
-#   }
-# }
-
-photo.image.original_filename #=> "nature.png"
-photo.image.size              #=> 49349138
-photo.image.mime_type         #=> "image/png"
-```
-
-This is much more powerful than storing only the filename like CarrierWave
-does, as it allows you to also store any additional metadata that you might
-want to extract.
-
-Unlike CarrierWave, Shrine will store this information for each processed
-version, making them first-class citizens:
-
-```rb
-photo.image               #=> #<Shrine::UploadedFile>
-photo.image.width         #=> 800
-
-photo.image(:thumb)       #=> #<Shrine::UploadedFile>
-photo.image(:thumb).width #=> 300
-```
-
-Also, since CarrierWave stores only the filename, it has to recalculate the
-full location each time it wants to generate the URL. That makes it really
-difficult to move files to a new location, because changing how the location is
-generated will now cause incorrect URLs to be generated for all existing files.
-Shrine calculates the whole location only once and saves it to the column.
 
 ### Multiple uploads
 
-Shrine doesn't have support for multiple uploads like CarrierWave does, instead
-it expects that you will attach each file to a separate database record. This
-is a good thing, because the implementation is specific to the ORM you're
-using, and it's analogous to how you would implement any nested one-to-many
-associations. Take a look at the [demo app] which shows how easy it is to
-implement multiple uploads.
+Shrine doesn't have support for multiple uploads out-of-the-box like
+CarrierWave does. Instead, you can implement them using a separate table with a
+one-to-many relationship to which the files will be attached. The [Multiple
+Files] guide explains this setup in more detail.
 
 ## Migrating from CarrierWave
 
@@ -653,9 +687,10 @@ multipart or not.
 
 ### `CarrierWave::Storage::Fog`
 
-You can use [`Shrine::Storage::S3`] \(built-in\),
-[`Shrine::Storage::GoogleCloudStorage`], or generic [`Shrine::Storage::Fog`]
-storage. The reference will assume you're using S3 storage.
+You can use [`Shrine::Storage::S3`][S3] (built-in),
+[`Shrine::Storage::GoogleCloudStorage`][shrine-gcs], or generic
+[`Shrine::Storage::Fog`][shrine-fog] storage. The reference will assume you're
+using S3 storage.
 
 #### `:fog_credentials`, `:fog_directory`
 
@@ -704,11 +739,9 @@ Shrine allows you to override the S3 endpoint:
 Shrine::Storage::S3.new(use_accelerate_endpoint: true, **options)
 ```
 
-[image_processing]: https://github.com/janko/image_processing
-[demo app]: https://github.com/shrinerb/shrine/tree/master/demo
 [Managing Derivatives]: /doc/changing_derivatives.md#readme
+[direct uploads]: /README.md#direct-uploads
+[S3]: /doc/storage/s3.md#readme
+[shrine-gcs]: https://github.com/renchap/shrine-google_cloud_storage
 [shrine-fog]: https://github.com/shrinerb/shrine-fog
-[direct uploads]: /doc/direct_s3.md#readme
-[`Shrine::Storage::S3`]: /doc/storage/s3.md#readme
-[`Shrine::Storage::GoogleCloudStorage`]: https://github.com/renchap/shrine-google_cloud_storage
-[`Shrine::Storage::Fog`]: https://github.com/shrinerb/shrine-fog
+[Multiple Files]: /doc/multiple_files.md#readme

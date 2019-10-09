@@ -7,7 +7,7 @@ for validating attached files based on extracted metadata.
 plugin :validation_helpers
 
 Attacher.validate do
-  validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
+  validate_mime_type_inclusion %w[image/jpeg image/png image/webp]
   validate_max_size 5*1024*1024 if record.guest?
 end
 ```
@@ -38,8 +38,8 @@ accept a list of MIME types, and validate that the `mime_type` metadata value
 is/is not a member of that list.
 
 ```rb
-validate_mime_type_inclusion %w[image/jpeg image/png image/gif] # file must be a JPEG, PNG or a GIF image
-validate_mime_type_exclusion %w[application/x-php]              # file must not be a PHP script
+validate_mime_type_inclusion %w[image/jpeg image/png image/webp] # file must be a JPEG, PNG or a WEBP image
+validate_mime_type_exclusion %w[application/x-php]               # file must not be a PHP script
 ```
 
 Instead of `#validate_mime_type_inclusion` you can also use just
@@ -52,8 +52,8 @@ accept a list of file extensions, and validate that the `filename` metadata
 value extension is/is not a member of that list.
 
 ```rb
-validate_extension_inclusion %w[jpg jpeg png gif] # file must have .jpg, .jpeg, .png, or .gif extension
-validate_extension_exclusion %w[php]              # file must not have a .php extension
+validate_extension_inclusion %w[jpg jpeg png webp] # file must have .jpg, .jpeg, .png, or .webp extension
+validate_extension_exclusion %w[php]               # file must not have a .php extension
 ```
 
 Instead of `#validate_extension_inclusion` you can also use just
@@ -132,7 +132,7 @@ easily do conditional validation:
 
 ```rb
 Attacher.validate do
-  if validate_mime_type_inclusion %w[image/jpeg image/png image/gif]
+  if validate_mime_type_inclusion %w[image/jpeg image/png image/webp]
     validate_max_width 2000
     validate_max_height 2000
   end
@@ -166,7 +166,7 @@ If you would like to change the error message inline, you can pass the
 
 ```rb
 Attacher.validate do
-  validate_mime_type %w[image/jpeg image/png image/gif], message: "must be JPEG, PNG or GIF"
+  validate_mime_type %w[image/jpeg image/png image/webp], message: "must be JPEG, PNG or WEBP"
 end
 ```
 
