@@ -31,7 +31,6 @@ class Footer extends React.Component {
                 src={this.props.config.baseUrl + this.props.config.footerIcon}
                 alt={this.props.config.title}
                 width="66"
-                height="58"
               />
             )}
           </a>
@@ -49,18 +48,20 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>Community</h5>
-            <a href={this.pageUrl('users.html', this.props.language)}>
-              User Showcase
+            <a
+              href="https://discourse.shrinerb.com/"
+              target="_blank"
+              rel="noreferrer noopener">
+              Discourse
             </a>
             <a
-              href="https://stackoverflow.com/questions/tagged/"
+              href="https://stackoverflow.com/questions/tagged/shrine"
               target="_blank"
               rel="noreferrer noopener">
               Stack Overflow
             </a>
-            <a href="https://discordapp.com/">Project Chat</a>
             <a
-              href="https://twitter.com/"
+              href="https://twitter.com/shrine_rb"
               target="_blank"
               rel="noreferrer noopener">
               Twitter
@@ -68,8 +69,8 @@ class Footer extends React.Component {
           </div>
           <div>
             <h5>More</h5>
-            <a href={`${this.props.config.baseUrl}blog`}>Blog</a>
-            <a href="https://github.com/">GitHub</a>
+            <a href="https://twin.github.io">Blog</a>
+            <a href="https://github.com/shrinerb/shrine">GitHub</a>
             <a
               className="github-button"
               href={this.props.config.repoUrl}
