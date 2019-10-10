@@ -4,3 +4,4 @@ pkg/
 .sass-cache
 www/build
 coverage/
+node_modules
