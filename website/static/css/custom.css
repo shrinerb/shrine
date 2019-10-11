@@ -19,3 +19,11 @@
 .docs-prevnext {
   display: none;
 }
+
+.features {
+  font-size: 18px;
+}
+
+.features ul {
+  list-style: none;
+}

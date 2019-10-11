@@ -77,8 +77,9 @@ class Index extends React.Component {
     const {baseUrl} = siteConfig;
 
     const Features = () => (
-      <Container>
-        <MarkdownBlock>{`
+      <div className="features">
+        <Container>
+          <MarkdownBlock>{`
 * **Modular design** – the [plugin system] allows you to load only the functionality you need
 * **Memory friendly** – streaming uploads and [downloads][Retrieving Uploads] make it work great with large files
 * **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and others
@@ -114,8 +115,9 @@ class Index extends React.Component {
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [backgrounding]: /docs/plugins/backgrounding
 [Backgrounding Libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
-        `}</MarkdownBlock>
-      </Container>
+          `}</MarkdownBlock>
+        </Container>
+      </div>
     );
 
     return (
