@@ -8,119 +8,70 @@
 const React = require('react');
 
 class Footer extends React.Component {
-  docUrl(doc, language) {
-    const baseUrl = this.props.config.baseUrl;
-    const docsUrl = this.props.config.docsUrl;
-    const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
-    const langPart = `${language ? `${language}/` : ''}`;
-    return `${baseUrl}${docsPart}${langPart}${doc}`;
-  }
-
-  pageUrl(doc, language) {
-    const baseUrl = this.props.config.baseUrl;
-    return baseUrl + (language ? `${language}/` : '') + doc;
-  }
-
   render() {
+    const config = this.props.config
+
     return (
       <footer className="nav-footer" id="footer">
         <section className="sitemap">
-          <a href={this.props.config.baseUrl} className="nav-home">
-            {this.props.config.footerIcon && (
+          <a href={config.baseUrl} className="nav-home">
+            {config.footerIcon && (
               <img
-                src={this.props.config.baseUrl + this.props.config.footerIcon}
-                alt={this.props.config.title}
+                src={config.baseUrl + config.footerIcon}
+                alt={config.title}
                 width="66"
               />
             )}
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={this.docUrl('doc1.html', this.props.language)}>
-              Getting Started (or other categories)
-            </a>
-            <a href={this.docUrl('doc2.html', this.props.language)}>
-              Guides (or other categories)
-            </a>
-            <a href={this.docUrl('doc3.html', this.props.language)}>
-              API Reference (or other categories)
-            </a>
+            <a href={config.guidesUrl}>Guides</a>
+            <a href={config.pluginsUrl}>Plugins</a>
+            <a href={`${config.githubUrl}/blob/master/CONTRIBUTING.md#readme`}>Contributing</a>
           </div>
           <div>
             <h5>Community</h5>
             <a
-              href="https://discourse.shrinerb.com/"
+              href={config.discourseUrl}
               target="_blank"
               rel="noreferrer noopener">
               Discourse
             </a>
             <a
-              href="https://stackoverflow.com/questions/tagged/shrine"
+              href={config.stackOverflowUrl}
               target="_blank"
               rel="noreferrer noopener">
               Stack Overflow
             </a>
-            <a
-              href="https://twitter.com/shrine_rb"
-              target="_blank"
-              rel="noreferrer noopener">
-              Twitter
-            </a>
           </div>
           <div>
             <h5>More</h5>
-            <a href="https://twin.github.io">Blog</a>
-            <a href="https://github.com/shrinerb/shrine">GitHub</a>
+            <a href={config.blogUrl}>Blog</a>
+            <a href={config.githubUrl}>GitHub</a>
             <a
               className="github-button"
-              href={this.props.config.repoUrl}
+              href={config.githubUrl}
               data-icon="octicon-star"
-              data-count-href="/facebook/docusaurus/stargazers"
+              data-count-href={`/${config.organizationName}/${config.projectName}/stargazers`}
               data-show-count="true"
               data-count-aria-label="# stargazers on GitHub"
               aria-label="Star this project on GitHub">
               Star
             </a>
-            {this.props.config.twitterUsername && (
+            {config.twitterUsername && (
               <div className="social">
                 <a
                   href={`https://twitter.com/${
-                    this.props.config.twitterUsername
+                    config.twitterUsername
                   }`}
                   className="twitter-follow-button">
-                  Follow @{this.props.config.twitterUsername}
+                  Follow @{config.twitterUsername}
                 </a>
-              </div>
-            )}
-            {this.props.config.facebookAppId && (
-              <div className="social">
-                <div
-                  className="fb-like"
-                  data-href={this.props.config.url}
-                  data-colorscheme="dark"
-                  data-layout="standard"
-                  data-share="true"
-                  data-width="225"
-                  data-show-faces="false"
-                />
               </div>
             )}
           </div>
         </section>
-
-        <a
-          href="https://opensource.facebook.com/"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="fbOpenSource">
-          <img
-            src={`${this.props.config.baseUrl}img/oss_logo.png`}
-            alt="Facebook Open Source"
-            width="170"
-            height="45"
-          />
-        </a>
-        <section className="copyright">{this.props.config.copyright}</section>
+        <section className="copyright">{config.copyright}</section>
       </footer>
     );
   }

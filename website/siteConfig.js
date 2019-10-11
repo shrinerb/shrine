@@ -17,16 +17,15 @@ const siteConfig = {
   // Used for publishing and more
   projectName: 'shrine',
   organizationName: 'shrinerb',
-  // For top-level user or org sites, the organization is still the same.
-  // e.g., for the https://JoelMarcey.github.io site, it would be set like...
-  //   organizationName: 'JoelMarcey'
+  projectVersion: '3.0.0',
+
   // Read markdown documents from the doc/ directory
   customDocsPath: 'doc',
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
-    {doc: 'doc1', label: 'Docs'},
-    {doc: 'doc4', label: 'API'},
+    {doc: 'getting-started', label: 'Guides'},
+    {doc: 'plugins/activerecord', label: 'Plugins'},
     {href: 'https://discourse.shrinerb.com', label: 'Discourse'},
     {href: 'https://github.com/shrinerb/shrine', label: 'GitHub'},
   ],
@@ -88,7 +87,26 @@ const siteConfig = {
 
   // You may provide arbitrary config keys to be used as needed by your
   // template. For example, if you need your repo's URL...
-  repoUrl: 'https://github.com/shrinerb/shrine',
+  githubUrl: 'https://github.com/shrinerb/shrine',
+  editUrl: 'https://github.com/shrinerb/shrine/edit/master/doc/',
+  blogUrl: 'https://twin.github.io',
+  discourseUrl: 'https://discourse.shrinerb.com',
+  stackOverflowUrl: 'https://stackoverflow.com/questions/tagged/shrine',
+
+  // Link to first documents
+  guidesUrl: '/docs/getting-started',
+  pluginsUrl: '/docs/plugins/activerecord',
+
+  twitterUsername: 'shrine_rb',
+
+  // Display button for scrolling to top
+  scrollToTop: true,
+
+  // for CNAME
+  cname: 'shrinerb.com',
+
+  // for Google Analytics
+  gaTrackingId: 'UA-149836844-1',
 };
 
 module.exports = siteConfig;

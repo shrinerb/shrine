@@ -15,11 +15,8 @@ const GridBlock = CompLibrary.GridBlock;
 
 class HomeSplash extends React.Component {
   render() {
-    const {siteConfig, language = ''} = this.props;
-    const {baseUrl, docsUrl} = siteConfig;
-    const docsPart = `${docsUrl ? `${docsUrl}/` : ''}`;
-    const langPart = `${language ? `${language}/` : ''}`;
-    const docUrl = doc => `${baseUrl}${docsPart}${langPart}${doc}`;
+    const {siteConfig} = this.props;
+    const {baseUrl} = siteConfig;
 
     const SplashContainer = props => (
       <div className="homeContainer">
@@ -64,9 +61,9 @@ class HomeSplash extends React.Component {
         <div className="inner">
           <ProjectTitle siteConfig={siteConfig} />
           <PromoSection>
-            <Button href="#try">Try It Out</Button>
-            <Button href={docUrl('doc1.html')}>Example Link</Button>
-            <Button href={docUrl('doc2.html')}>Example Link 2</Button>
+            <Button href="/docs/getting-started">Getting Started</Button>
+            <Button href="/docs/advantages">Advantages</Button>
+            <Button href="/docs/upgrading-to-3">Upgrading to 3.x</Button>
           </PromoSection>
         </div>
       </SplashContainer>
