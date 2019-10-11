@@ -1,7 +1,6 @@
 Gemfile.lock
 pkg/
 .env
-.sass-cache
-www/build
+website/build
 coverage/
 node_modules
