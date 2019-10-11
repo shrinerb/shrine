@@ -1,17 +1,10 @@
-# Upgrading to Shrine 3.x
+---
+id: upgrading-to-3
+title: Upgrading to Shrine 3.x
+---
 
 This guide provides instructions for upgrading Shrine in your apps to version
-3.x. We will cover the following areas:
-
-* [Attacher](#attacher)
-* [Backgrounding](#backgrounding)
-* [Versions](#versions)
-* [Miscellaneous](#miscellaneous)
-  - [Logging](#logging)
-  - [Backup](#backup)
-  - [Copy](#copy)
-  - [Moving](#moving)
-  - [Memory](#memory)
+3.x. If you're looking for a full list of changes, see the [3.0 release notes].
 
 ## Attacher
 
@@ -559,7 +552,8 @@ Shrine.plugin :upload_options,
   store: -> (io, action: nil, **) { { move: true } if action == :store }
 ```
 
-[model]: /doc/plugins/model.md#readme
-[derivatives]: /doc/plugins/derivatives.md#readme
-[instrumentation]: /doc/plugins/instrumentation.md#readme
-[mirroring]: /doc/plugins/mirroring.md#readme
+[3.0 release notes]: https://shrinerb.com/docs/release_notes/3.0.0
+[model]: https://shrinerb.com/docs/plugins/model
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
+[instrumentation]: https://shrinerb.com/docs/plugins/instrumentation
+[mirroring]: https://shrinerb.com/docs/plugins/mirroring

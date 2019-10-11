@@ -20,6 +20,8 @@ const siteConfig = {
   // For top-level user or org sites, the organization is still the same.
   // e.g., for the https://JoelMarcey.github.io site, it would be set like...
   //   organizationName: 'JoelMarcey'
+  // Read markdown documents from the doc/ directory
+  customDocsPath: 'doc',
 
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
@@ -59,7 +61,7 @@ const siteConfig = {
 
   highlight: {
     // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'default',
+    theme: 'zenburn',
   },
 
   // Add custom scripts here that would be placed in <script> tags.

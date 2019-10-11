@@ -1,4 +1,6 @@
-# Presign Endpoint
+---
+title: Presign Endpoint
+---
 
 The [`presign_endpoint`][presign_endpoint] plugin provides a Rack endpoint
 which generates the URL, fields, and headers that can be used to upload files
@@ -157,7 +159,7 @@ Shrine.presign_endpoint(:cache, presign_location: "${filename}")
 Shrine.presign_response(:cache, env, presign_location: "${filename}")
 ```
 
-[presign_endpoint]: /lib/shrine/plugins/presign_endpoint.rb
+[presign_endpoint]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/presign_endpoint.rb
 [Uppy]: https://uppy.io
 [Amazon S3]: https://aws.amazon.com/s3/
 [Google Cloud Storage]: https://cloud.google.com/storage/

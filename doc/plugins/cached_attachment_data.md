@@ -1,4 +1,6 @@
-# Cached Attachment Data
+---
+title: Cached Attachment Data
+---
 
 The [`cached_attachment_data`][cached_attachment_data] plugin adds the ability
 to retain the cached file across form redisplays, which means the file doesn't
@@ -22,4 +24,4 @@ This method delegates to `Attacher#cached_data`:
 attacher.cached_data #=> '{"id":"38k25.jpg","storage":"cache","metadata":{...}}'
 ```
 
-[cached_attachment_data]: /lib/shrine/plugins/cached_attachment_data.rb
+[cached_attachment_data]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/cached_attachment_data.rb

@@ -1,4 +1,6 @@
-# Validation
+---
+title: Validation
+---
 
 The [`validation`][validation] plugin provides a framework for validating
 attached files. For some useful validators, see the
@@ -79,5 +81,5 @@ You can also skip validation by passing `validate: false`:
 attacher.assign(file, validate: false) # skips validation
 ```
 
-[validation]: /lib/shrine/plugins/validation.rb
-[validation_helpers]: /doc/plugins/validation_helpers.md#readme
+[validation]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/validation.rb
+[validation_helpers]: https://shrinerb.com/docs/plugins/validation_helpers

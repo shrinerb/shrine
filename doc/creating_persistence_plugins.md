@@ -1,4 +1,7 @@
-# Writing an Persistence Plugin
+---
+id: creating-persistence-plugins
+title: Writing an Persistence Plugin
+---
 
 This guide explains some conventions for writing Shrine plugins that integrate
 with persistence libraries such as Active Record, Sequel, ROM and Mongoid. It
@@ -118,12 +121,12 @@ module Shrine::Plugins::Raptor
 end
 ```
 
-[Writing a Plugin]: /doc/creating_plugins.md#readme
+[Writing a Plugin]: https://shrinerb.com/docs/creating-plugins
 [Active Record pattern]: https://www.martinfowler.com/eaaCatalog/activeRecord.html
-[model]: /doc/plugins/model.md#readme
-[entity]: /doc/plugins/entity.md#readme
+[model]: https://shrinerb.com/docs/plugins/model
+[entity]: https://shrinerb.com/docs/plugins/entity
 [Repository pattern]: https://martinfowler.com/eaaCatalog/repository.html
-[backgrounding]: /doc/plugins/backgrounding.md#readme
-[atomic_helpers]: /doc/plugins/atomic_helpers.md#readme
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
+[atomic_helpers]: https://shrinerb.com/docs/plugins/atomic_helpers
 [activerecord]: /lib/shrine/plugins/activerecord.rb
 [sequel]: /lib/shrine/plugins/sequel.rb

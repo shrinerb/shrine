@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/cached_attachment_data.md] on GitHub.
-    #
-    # [doc/plugins/cached_attachment_data.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/cached_attachment_data.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/cached_attachment_data
     module CachedAttachmentData
       module AttachmentMethods
         def define_model_methods(name)

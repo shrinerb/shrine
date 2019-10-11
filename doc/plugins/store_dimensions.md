@@ -1,4 +1,6 @@
-# Store Dimensions
+---
+title: Store Dimensions
+---
 
 The [`store_dimensions`][store_dimensions] plugin extracts dimensions of
 uploaded images and stores them into the metadata hash (by default it uses the
@@ -129,7 +131,7 @@ Or disable logging altogether:
 plugin :store_dimensions, log_subscriber: nil
 ```
 
-[store_dimensions]: /lib/shrine/plugins/store_dimensions.rb
+[store_dimensions]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/store_dimensions.rb
 [fastimage]: https://github.com/sdsykes/fastimage
 [mini_magick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips

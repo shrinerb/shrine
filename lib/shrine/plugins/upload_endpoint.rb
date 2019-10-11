@@ -7,9 +7,7 @@ require "digest"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/upload_endpoint.md] on GitHub.
-    #
-    # [doc/plugins/upload_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/upload_endpoint.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/upload_endpoint
     module UploadEndpoint
       def self.load_dependencies(uploader, opts = {})
         uploader.plugin :rack_file

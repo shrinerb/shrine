@@ -1,4 +1,7 @@
-# Migrating File Locations
+---
+id: changing-location
+title: Migrating File Locations
+---
 
 This guide shows how to migrate the location of uploaded files on the same 
 storage in production, with zero downtime.

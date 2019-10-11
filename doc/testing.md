@@ -1,4 +1,6 @@
-# Testing with Shrine
+---
+title: Testing with Shrine
+---
 
 The goal of this guide is to provide some useful tips for testing file
 attachments implemented with Shrine in your application.
@@ -269,4 +271,4 @@ end
 [Rack::TestApp]: https://github.com/kwatch/rack-test_app
 [aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
 [MinIO]: https://min.io/
-[derivatives]: /doc/plugins/derivatives.md#readme
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives

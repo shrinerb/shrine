@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/form_assign.md] on GitHub.
-    #
-    # [doc/plugins/form_assign.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/form_assign.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/form_assign
     module FormAssign
       def self.load_dependencies(uploader)
         uploader.plugin :entity

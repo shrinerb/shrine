@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/store_dimensions.md] on GitHub.
-    #
-    # [doc/plugins/store_dimensions.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/store_dimensions.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/store_dimensions
     module StoreDimensions
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Image Dimensions (#{event.duration}ms) – #{{

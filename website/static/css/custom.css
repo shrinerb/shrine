@@ -14,3 +14,8 @@
 
 @media only screen and (min-width: 1500px) {
 }
+
+/* Hide prev/next buttons at bottom of documents */
+.docs-prevnext {
+  display: none;
+}

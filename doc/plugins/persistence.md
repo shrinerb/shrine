@@ -1,4 +1,6 @@
-# Persistence
+---
+title: Persistence
+---
 
 This is an internal plugin that provides uniform persistence interface across
 different persistence plugins (e.g. [`activerecord`][activerecord],
@@ -85,5 +87,5 @@ attacher.attach(io)
 attacher.persist # saves the underlying record
 ```
 
-[activerecord]: /doc/plugins/activerecord.md#readme
-[sequel]: /doc/plugins/sequel.md#readme
+[activerecord]: https://shrinerb.com/docs/plugins/activerecord
+[sequel]: https://shrinerb.com/docs/plugins/sequel

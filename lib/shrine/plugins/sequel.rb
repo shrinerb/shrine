@@ -4,9 +4,7 @@ require "sequel"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/sequel.md] on GitHub.
-    #
-    # [doc/plugins/sequel.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/sequel.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/sequel
     module Sequel
       def self.load_dependencies(uploader, **)
         uploader.plugin :model

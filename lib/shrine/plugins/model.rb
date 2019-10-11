@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/model.md] on GitHub.
-    #
-    # [doc/plugins/model.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/model.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/model
     module Model
       def self.load_dependencies(uploader, **)
         uploader.plugin :entity

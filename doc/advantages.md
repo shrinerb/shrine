@@ -1,4 +1,6 @@
-# Advantages of Shrine
+---
+title: Advantages of Shrine
+---
 
 There are many existing file upload solutions for Ruby out there – [Paperclip],
 [CarrierWave], [Dragonfly], [Refile], and [Active Storage], to name the most
@@ -439,12 +441,12 @@ files you can also make the uploads resumable.
 [sharpening]: https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
-[metadata]: /doc/metadata.md#readme
-[store_dimensions]: /doc/plugins/store_dimensions.md#readme
-[add_metadata]: /doc/plugins/add_metadata.md#readme
-[validation]: /doc/validation.md#readme
-[upload_endpoint]: /doc/plugins/upload_endpoint.md#readme
-[presign_endpoint]: /doc/plugins/presign_endpoint.md#readme
+[metadata]: https://shrinerb.com/docs/metadata
+[store_dimensions]: https://shrinerb.com/docs/plugins/store_dimensions
+[add_metadata]: https://shrinerb.com/docs/plugins/add_metadata
+[validation]: https://shrinerb.com/docs/validation
+[upload_endpoint]: https://shrinerb.com/docs/plugins/upload_endpoint
+[presign_endpoint]: https://shrinerb.com/docs/plugins/presign_endpoint
 [Uppy]: https://uppy.io
 [Uppy XHRUpload]: https://uppy.io/docs/xhrupload/
 [Uppy AwsS3]: https://uppy.io/docs/aws-s3/
@@ -455,15 +457,15 @@ files you can also make the uploads resumable.
 [Uppy Dashboard]: https://uppy.io/examples/dashboard/
 [tus-ruby-server]: https://github.com/janko/tus-ruby-server
 [uppy-s3_multipart]: https://github.com/janko/uppy-s3_multipart
-[backgrounding]: /doc/plugins/backgrounding.md#readme
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
 [Down streaming]: https://github.com/janko/down#streaming
-[validation_helpers]: /doc/plugins/validation_helpers.md#readme
-[custom validations]: /doc/validation.md#custom-validations
-[derivatives]: /doc/plugins/derivatives.md#readme
-[derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
+[validation_helpers]: https://shrinerb.com/docs/plugins/validation_helpers
+[custom validations]: https://shrinerb.com/docs/validation#custom-validations
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
+[derivation_endpoint]: https://shrinerb.com/docs/plugins/derivation_endpoint
 [libvips performance]: https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[Shrine for CarrierWave Users]: /doc/carrierwave.md#readme
-[Shrine for Paperclip Users]: /doc/paperclip.md#readme
-[Shrine for Refile Users]: /doc/refile.md#readme
+[Shrine for CarrierWave Users]: https://shrinerb.com/docs/carrierwave
+[Shrine for Paperclip Users]: https://shrinerb.com/docs/paperclip
+[Shrine for Refile Users]: https://shrinerb.com/docs/refile

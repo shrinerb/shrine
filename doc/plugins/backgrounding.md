@@ -1,4 +1,6 @@
-# Backgrounding
+---
+title: Backgrounding
+---
 
 The [`backgrounding`][backgrounding] plugin enables you to move promoting and
 deleting of files into background jobs. This is especially useful if you're
@@ -154,6 +156,6 @@ photo.image = file
 photo.save # executes the promote block above
 ```
 
-[backgrounding]: /lib/shrine/plugins/backgrounding.rb
-[derivatives]: /doc/plugins/derivatives.md#readme
-[atomic_helpers]: /doc/plugins/atomic_helpers.md#readme
+[backgrounding]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/backgrounding.rb
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
+[atomic_helpers]: https://shrinerb.com/docs/plugins/atomic_helpers

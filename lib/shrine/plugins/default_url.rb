@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/default_url.md] on GitHub.
-    #
-    # [doc/plugins/default_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_url.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/default_url
     module DefaultUrl
       def self.configure(uploader, **opts)
         uploader.opts[:default_url] ||= {}

@@ -1,4 +1,6 @@
-# Signature
+---
+title: Signature
+---
 
 The [`signature`][signature] plugin provides the ability to calculate a hash
 from file content. This hash can be used as a checksum or just as a unique
@@ -95,4 +97,4 @@ Or disable logging altogether:
 plugin :signature, log_subscriber: nil
 ```
 
-[signature]: /lib/shrine/plugins/signature.rb
+[signature]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/signature.rb

@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/download_endpoint.md] on GitHub.
-    #
-    # [doc/plugins/download_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/download_endpoint.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/download_endpoint
     module DownloadEndpoint
       def self.load_dependencies(uploader, **)
         uploader.plugin :rack_response

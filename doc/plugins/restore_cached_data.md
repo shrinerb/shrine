@@ -1,4 +1,6 @@
-# Restore Cached Data
+---
+title: Restore Cached Data
+---
 
 The [`restore_cached_data`][restore_cached_data] plugin re-extracts metadata
 when assigning already cached files, i.e. when the attachment has been retained
@@ -14,5 +16,5 @@ plugin :restore_cached_data
 It uses the [`refresh_metadata`][refresh_metadata] plugin to re-extract
 metadata.
 
-[restore_cached_data]: /lib/shrine/plugins/restore_cached_data.rb
-[refresh_metadata]: /doc/plugins/refresh_metadata.md#readme
+[restore_cached_data]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/restore_cached_data.rb
+[refresh_metadata]: https://shrinerb.com/docs/plugins/refresh_metadata

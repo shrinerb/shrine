@@ -1,4 +1,6 @@
-# Keep Files
+---
+title: Keep Files
+---
 
 The [`keep_files`][keep_files] plugin prevents file deletion when the attacher
 is about to destroy currently attached or previously attached file. This
@@ -9,4 +11,4 @@ general any scenario where you need to track history.
 plugin :keep_files
 ```
 
-[keep_files]: /lib/shrine/plugins/keep_files.rb
+[keep_files]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/keep_files.rb

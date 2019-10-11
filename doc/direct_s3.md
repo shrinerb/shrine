@@ -1,4 +1,7 @@
-# Direct Uploads to S3
+---
+id: direct-s3
+title: Direct Uploads to S3
+---
 
 Shrine gives you the ability to upload files directly to Amazon S3 (or any
 other storage service that accepts direct uploads). Uploading directly to a
@@ -375,6 +378,6 @@ setup] guide.
 [lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [Minio]: https://minio.io
-[minio setup]: /doc/testing.md#minio
-[metadata direct uploads]: /doc/metadata.md#direct-uploads
+[minio setup]: https://shrinerb.com/docs/testing#minio
+[metadata direct uploads]: https://shrinerb.com/docs/metadata#direct-uploads
 [content_disposition]: https://github.com/shrinerb/content_disposition

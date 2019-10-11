@@ -1,4 +1,6 @@
-# Remote URL
+---
+title: Remote URL
+---
 
 The [`remote_url`][remote_url] plugin allows you to attach files from a remote
 location.
@@ -183,7 +185,7 @@ Or disable logging altogether:
 plugin :remote_url, log_subscriber: nil
 ```
 
-[remote_url]: /lib/shrine/plugins/remote_url.rb
+[remote_url]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remote_url.rb
 [Down]: https://github.com/janko/down
 [Down::NetHttp]: https://github.com/janko/down#downnethttp
 [open-uri]: https://ruby-doc.org/stdlib/libdoc/open-uri/rdoc/OpenURI.html

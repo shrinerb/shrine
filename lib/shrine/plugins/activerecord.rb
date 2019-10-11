@@ -4,9 +4,7 @@ require "active_record"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/activerecord.md] on GitHub.
-    #
-    # [doc/plugins/activerecord.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/activerecord.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/activerecord
     module Activerecord
       def self.load_dependencies(uploader, **)
         uploader.plugin :model

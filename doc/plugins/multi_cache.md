@@ -1,4 +1,6 @@
-# Multi Cache
+---
+title: Multi Cache
+---
 
 The [`multi_cache`][multi_cache] plugin allows an attacher to accept files from
 additional temporary storages.
@@ -19,4 +21,4 @@ photo.image = { "id" => "...", "storage" => "cache_two", "metadata" => { ... } }
 photo.image.storage_key #=> :cache_two
 ```
 
-[multi_cache]: /lib/shrine/plugins/multi_cache.rb
+[multi_cache]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/multi_cache.rb

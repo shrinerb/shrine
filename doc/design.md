@@ -1,4 +1,6 @@
-# The Design of Shrine
+---
+title: The Design of Shrine
+---
 
 *If you want an in-depth walkthrough through the Shrine codebase, see [Notes on study of shrine implementation] article by Jonathan Rochkind.*
 
@@ -214,7 +216,7 @@ automatically:
 * deletes the uploaded file if attachment was replaced/removed or the record
   destroyed
 
-[Using Attacher]: /doc/attacher.md#readme
+[Using Attacher]: https://shrinerb.com/docs/attacher
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
-[Creating a New Plugin]: /doc/creating_plugins.md#readme
+[Creating a New Plugin]: https://shrinerb.com/docs/creating-plugins
 [Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/

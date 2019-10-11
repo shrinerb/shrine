@@ -1,4 +1,6 @@
-# Validation Helpers
+---
+title: Validation Helpers
+---
 
 The [`validation_helpers`][validation_helpers] plugin provides helper methods
 for validating attached files based on extracted metadata.
@@ -170,4 +172,4 @@ Attacher.validate do
 end
 ```
 
-[validation_helpers]: /lib/shrine/plugins/validation_helpers.rb
+[validation_helpers]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/validation_helpers.rb

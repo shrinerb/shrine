@@ -1,4 +1,6 @@
-# Processing
+---
+title: Processing
+---
 
 Shrine uploaders can define the `#process` method, which will get called
 whenever a file is uploaded. It is given the original file, and is expected to
@@ -65,5 +67,5 @@ uploader.process(file, action: :store) # only process
 If you want the result of processing to be multiple files, use the `versions`
 plugin.
 
-[processing]: /lib/shrine/plugins/processing.rb
+[processing]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/processing.rb
 [image_processing]: https://github.com/janko/image_processing

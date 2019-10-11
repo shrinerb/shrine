@@ -1,4 +1,6 @@
-# Default URL
+---
+title: Default URL
+---
 
 The [`default_url`][default_url] plugin allows setting the URL which will be
 returned when there is no attached file.
@@ -56,4 +58,4 @@ plugin :default_url, host: "https://example.com"
 attacher.url #=> "https://example.com/avatar/missing.jpg"
 ```
 
-[default_url]: /lib/shrine/plugins/default_url.rb
+[default_url]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/default_url.rb

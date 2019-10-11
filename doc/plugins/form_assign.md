@@ -1,4 +1,6 @@
-# Form Assign
+---
+title: Form Assign
+---
 
 The [`form_assign`][form_assign] plugin allows attaching file from form params
 without a form object.
@@ -50,4 +52,4 @@ attacher.form_assign({ "image" => image, ... }, result: :attributes)
 #=> { :image_data => '{"id":"...","storage":"...","metadata":"..."}', "title" => "...", "description" => "..." }
 ```
 
-[form_assign]: /lib/shrine/plugins/form_assign.rb
+[form_assign]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/form_assign.rb

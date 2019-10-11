@@ -1,4 +1,6 @@
-# File Processing
+---
+title: File Processing
+---
 
 Shrine allows you to process attached files up front or on-the-fly. For
 example, if your app is accepting image uploads, you can generate a predefined
@@ -406,14 +408,14 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
 [ImageOptim.com]: https://imageoptim.com/api
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[Managing Derivatives]: /doc/changing_derivatives.md#readme
+[Managing Derivatives]: https://shrinerb.com/docs/changing-derivatives
 [Cloudinary]: https://cloudinary.com
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
-[backgrounding]: /doc/plugins/backgrounding.md#readme
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [MiniMagick]: https://github.com/minimagick/minimagick
-[derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
-[derivation_endpoint performance]: /doc/plugins/derivation_endpoint.md#performance
-[derivatives]: /doc/plugins/derivatives.md#readme
+[derivation_endpoint]: https://shrinerb.com/docs/plugins/derivation_endpoint
+[derivation_endpoint performance]: https://shrinerb.com/docs/plugins/derivation_endpoint#performance
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
 [image_optim]: https://github.com/toy/image_optim

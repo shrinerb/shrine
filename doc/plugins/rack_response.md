@@ -1,4 +1,6 @@
-# Rack Response
+---
+title: Rack Response
+---
 
 The [`rack_response`][rack_response] plugin allows you to convert an
 `UploadedFile` object into a triple consisting of status, headers, and body,
@@ -107,6 +109,6 @@ uploaded_file.open(
 uploaded_file.to_rack_response
 ```
 
-[rack_response]: /lib/shrine/plugins/rack_response.rb
+[rack_response]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/rack_response.rb
 [range requests]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests
 [Rack::Sendfile]: https://www.rubydoc.info/github/rack/rack/Rack/Sendfile

@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/instrumentation.md] on GitHub.
-    #
-    # [doc/plugins/instrumentation.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/instrumentation.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/instrumentation
     module Instrumentation
       EVENTS = %i[upload download open exists delete metadata].freeze
 

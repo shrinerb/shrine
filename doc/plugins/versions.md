@@ -1,4 +1,6 @@
-# Versions
+---
+title: Versions
+---
 
 The [`versions`][versions] plugin enables your uploader to deal with versions,
 by allowing you to return a Hash of files when processing.
@@ -170,11 +172,5 @@ Attacher.default_url do |options|
 end
 ```
 
-## Re-create Versions
-
-If you want to re-create a single or all versions, refer to the [reprocessing
-versions] guide for details.
-
-[versions]: /lib/shrine/plugins/versions.rb
-[reprocessing versions]: /doc/regenerating_versions.md#readme
+[versions]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/versions.rb
 [image_processing]: https://github.com/janko/image_processing

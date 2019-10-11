@@ -1,4 +1,7 @@
-# Multiple Files
+---
+id: multiple-files
+title: Multiple Files
+---
 
 There are times when you want to allow users to attach multiple files to a
 single resource, like an album having many photos or a playlist having many
@@ -294,8 +297,8 @@ attributes feature gives you for free.
 [`Sequel::Model.nested_attributes`]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html
 [`ActiveRecord::Base.accepts_nested_attributes_for`]: http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
 [`Mongoid::Document.accepts_nested_attributes_for`]: https://docs.mongodb.com/mongoid/master/tutorials/mongoid-nested-attributes/
-[`upload_endpoint`]: /doc/plugins/upload_endpoint.md#readme
-[`presign_endpoint`]: /doc/plugins/presign_endpoint.md#readme
+[`upload_endpoint`]: https://shrinerb.com/docs/plugins/upload_endpoint
+[`presign_endpoint`]: https://shrinerb.com/docs/plugins/presign_endpoint
 [Uppy]: https://uppy.io
 [direct app uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [direct S3 uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads

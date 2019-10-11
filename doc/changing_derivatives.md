@@ -1,4 +1,7 @@
-# Managing Derivatives
+---
+id: changing-derivatives
+title: Managing Derivatives
+---
 
 This guide shows how to add, create, update, and remove [derivatives] for an 
 app in production already handling file attachments, with zero downtime.
@@ -311,4 +314,4 @@ class MakeChangeJob
 end
 ```
 
-[derivatives]: /doc/plugins/derivatives.md#readme
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives

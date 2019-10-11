@@ -1,4 +1,6 @@
-# Upload Options
+---
+title: Upload Options
+---
 
 The [`upload_options`][upload_options] plugin allows you to automatically pass
 additional upload options to storage on every upload:
@@ -27,4 +29,4 @@ the uploader.
 uploader.upload(file, upload_options: { acl: "public-read" })
 ```
 
-[upload_options]: /lib/shrine/plugins/upload_options.rb
+[upload_options]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/upload_options.rb

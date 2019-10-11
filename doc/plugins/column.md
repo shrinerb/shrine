@@ -1,4 +1,6 @@
-# Column
+---
+title: Column
+---
 
 The [`column`][column] plugin provides interface for serializing and
 deserializing attachment data in format suitable for persisting in a database
@@ -87,4 +89,4 @@ Shrine::Attacher.new(column_serializer: Oj)  # use custom serializer
 Shrine::Attacher.new(column_serializer: nil) # disable serialization
 ```
 
-[column]: /lib/shrine/plugins/column.rb
+[column]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/column.rb

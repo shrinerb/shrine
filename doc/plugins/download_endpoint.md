@@ -1,4 +1,6 @@
-# Download Endpoint
+---
+title: Download Endpoint
+---
 
 The [`download_endpoint`][download_endpoint] plugin provides a Rack app for
 downloading uploaded files from specified storages. This can be useful when
@@ -167,4 +169,4 @@ If you want to have more control on download requests, you can use the
 | `:prefix`           | Path prefix prepended to download URLs                                            | `nil`    |
 | `:redirect`         | Whether to redirect to uploaded files on the storage                              | `false`  |
 
-[download_endpoint]: /lib/shrine/plugins/download_endpoint.rb
+[download_endpoint]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/download_endpoint.rb

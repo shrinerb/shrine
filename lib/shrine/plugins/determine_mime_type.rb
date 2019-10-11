@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/determine_mime_type.md] on GitHub.
-    #
-    # [doc/plugins/determine_mime_type.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/determine_mime_type.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/determine_mime_type
     module DetermineMimeType
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "MIME Type (#{event.duration}ms) – #{{

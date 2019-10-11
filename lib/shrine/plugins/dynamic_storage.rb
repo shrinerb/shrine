@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/dynamic_storage.md] on GitHub.
-    #
-    # [doc/plugins/dynamic_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/dynamic_storage.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/dynamic_storage
     module DynamicStorage
       def self.configure(uploader)
         uploader.opts[:dynamic_storage] ||= { resolvers: {} }

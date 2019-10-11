@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/pretty_location.md] on GitHub.
-    #
-    # [doc/plugins/pretty_location.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/pretty_location.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/pretty_location
     module PrettyLocation
       def self.configure(uploader, **opts)
         uploader.opts[:pretty_location] ||= { identifier: :id }

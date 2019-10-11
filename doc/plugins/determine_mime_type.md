@@ -1,4 +1,6 @@
-# Determine MIME Type
+---
+title: Determine MIME Type
+---
 
 The [`determine_mime_type`][determine_mime_type] plugin allows you to determine
 and store the actual MIME type of the file analyzed from file content.
@@ -125,7 +127,7 @@ Or disable logging altogether:
 plugin :determine_mime_type, log_subscriber: nil
 ```
 
-[determine_mime_type]: /lib/shrine/plugins/determine_mime_type.rb
+[determine_mime_type]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/determine_mime_type.rb
 [file]: http://linux.die.net/man/1/file
 [Windows equivalent]: http://gnuwin32.sourceforge.net/packages/file.htm
 [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic

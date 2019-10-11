@@ -1,4 +1,6 @@
-# Shrine for Refile Users
+---
+title: Shrine for Refile Users
+---
 
 This guide is aimed at helping Refile users transition to Shrine, and it consists
 of three parts:
@@ -475,9 +477,9 @@ end
 ```
 
 [Uppy]: https://uppy.io
-[derivation_endpoint]: /doc/plugins/derivation_endpoint.md#readme
-[download_endpoint]: /doc/plugins/download_endpoint.md#readme
-[derivatives]: /doc/plugins/derivatives.md#readme
-[metadata_attributes]: /doc/plugins/metadata_attributes.md#readme
-[determine_mime_type]: /doc/plugins/determine_mime_type.md#readme
-[Multiple Files]: /doc/multiple_files.md#readme
+[derivation_endpoint]: https://shrinerb.com/docs/plugins/derivation_endpoint
+[download_endpoint]: https://shrinerb.com/docs/plugins/download_endpoint
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
+[metadata_attributes]: https://shrinerb.com/docs/plugins/metadata_attributes
+[determine_mime_type]: https://shrinerb.com/docs/plugins/determine_mime_type
+[Multiple Files]: https://shrinerb.com/docs/multiple-files

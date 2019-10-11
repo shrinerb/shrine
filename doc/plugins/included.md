@@ -1,4 +1,6 @@
-# Included
+---
+title: Included
+---
 
 The [`included`][included] plugin allows you to hook up to the `.included` hook
 of the attachment module, and call additional methods on the model that
@@ -16,4 +18,4 @@ end
 Photo.include Shrine::Attachment(:image)
 ```
 
-[included]: /lib/shrine/plugins/included.rb
+[included]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/included.rb

@@ -1,4 +1,6 @@
-# Instrumentation
+---
+title: Instrumentation
+---
 
 The [`instrumentation`][instrumentation] plugin publishes events for various
 operations to a centralized notification component. In addition to that, it
@@ -185,6 +187,6 @@ Shrine.subscribe(:my_event) do |event|
 end
 ```
 
-[instrumentation]: /lib/shrine/plugins/instrumentation.rb
+[instrumentation]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/instrumentation.rb
 [ActiveSupport::Notifications]: https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html
 [dry-monitor]: https://github.com/dry-rb/dry-monitor

@@ -1,4 +1,6 @@
-# Data URI
+---
+title: Data URI
+---
 
 The [`data_uri`][data_uri] plugin enables you to upload files as [data URIs].
 This plugin is useful for example when using [HTML5 Canvas].
@@ -140,6 +142,6 @@ Or disable logging altogether:
 plugin :data_uri, log_subscriber: nil
 ```
 
-[data_uri]: /lib/shrine/plugins/data_uri.rb
+[data_uri]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/data_uri.rb
 [data URIs]: https://tools.ietf.org/html/rfc2397
 [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API

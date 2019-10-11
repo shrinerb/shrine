@@ -1,4 +1,6 @@
-# Shrine for CarrierWave Users
+---
+title: Shrine for CarrierWave Users
+---
 
 This guide is aimed at helping CarrierWave users transition to Shrine, and it
 consists of three parts:
@@ -739,9 +741,9 @@ Shrine allows you to override the S3 endpoint:
 Shrine::Storage::S3.new(use_accelerate_endpoint: true, **options)
 ```
 
-[Managing Derivatives]: /doc/changing_derivatives.md#readme
-[direct uploads]: /README.md#direct-uploads
-[S3]: /doc/storage/s3.md#readme
+[Managing Derivatives]: https://shrinerb.com/docs/changing-derivatives
+[direct uploads]: https://shrinerb.com/docs/getting-started#direct-uploads
+[S3]: https://shrinerb.com/docs/storage/s3
 [shrine-gcs]: https://github.com/renchap/shrine-google_cloud_storage
 [shrine-fog]: https://github.com/shrinerb/shrine-fog
-[Multiple Files]: /doc/multiple_files.md#readme
+[Multiple Files]: https://shrinerb.com/docs/multiple-files

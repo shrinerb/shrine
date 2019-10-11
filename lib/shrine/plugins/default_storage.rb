@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/default_storage.md] on GitHub.
-    #
-    # [doc/plugins/default_storage.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_storage.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/default_storage
     module DefaultStorage
       def self.configure(uploader, **opts)
         uploader.opts[:default_storage] ||= {}

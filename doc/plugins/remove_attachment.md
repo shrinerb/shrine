@@ -1,4 +1,6 @@
-# Remove Attachment
+---
+title: Remove Attachment
+---
 
 The [`remove_attachment`][remove_attachment] plugin allows you to delete
 attachments through checkboxes on the web form.
@@ -34,4 +36,4 @@ attacher.remove = '1'
 attacher.file #=> nil
 ```
 
-[remove_attachment]: /lib/shrine/plugins/remove_attachment.rb
+[remove_attachment]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remove_attachment.rb

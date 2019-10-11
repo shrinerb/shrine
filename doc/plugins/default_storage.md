@@ -1,4 +1,6 @@
-# Default Storage
+---
+title: Default Storage
+---
 
 The [`default_storage`][default_storage] plugin allows you to change the
 default temporary and permanent storage a `Shrine::Attacher` object will use
@@ -39,5 +41,5 @@ Attacher.default_store { :other_store }
 The dynamic block is useful in combination with the
 [`dynamic_storage`][dynamic_storage] plugin.
 
-[default_storage]: /lib/shrine/plugins/default_storage.rb
-[dynamic_storage]: /doc/plugins/dynamic_storage.md#readme
+[default_storage]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/default_storage.rb
+[dynamic_storage]: https://shrinerb.com/docs/plugins/dynamic_storage

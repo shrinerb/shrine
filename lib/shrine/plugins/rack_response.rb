@@ -6,9 +6,7 @@ require "digest"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/rack_response.md] on GitHub.
-    #
-    # [doc/plugins/rack_response.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/rack_response.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/rack_response
     module RackResponse
       module FileMethods
         # Returns a Rack response triple for the uploaded file.

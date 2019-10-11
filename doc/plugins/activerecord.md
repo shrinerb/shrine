@@ -1,4 +1,6 @@
-# Active Record
+---
+title: Active Record
+---
 
 The [`activerecord`][activerecord] plugin adds [Active Record] integration to
 the attachment interface. It is built on top of the [`model`][model] plugin.
@@ -195,10 +197,10 @@ The following persistence methods are added to `Shrine::Attacher`:
 
 See [persistence] docs for more details.
 
-[activerecord]: /lib/shrine/plugins/activerecord.rb
+[activerecord]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/activerecord.rb
 [Active Record]: https://guides.rubyonrails.org/active_record_basics.html
-[model]: /doc/plugins/model.md#readme
+[model]: https://shrinerb.com/docs/plugins/model
 [callbacks]: https://guides.rubyonrails.org/active_record_callbacks.html
 [bug with transaction callbacks]: https://github.com/rails/rails/issues/14493
-[validation]: /doc/plugins/validation.md#readme
-[persistence]: /doc/plugins/persistence.md#readme
+[validation]: https://shrinerb.com/docs/plugins/validation
+[persistence]: https://shrinerb.com/docs/plugins/persistence

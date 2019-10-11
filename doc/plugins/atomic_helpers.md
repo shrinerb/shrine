@@ -1,4 +1,6 @@
-# Atomic Helpers
+---
+title: Atomic Helpers
+---
 
 The [`atomic_helpers`][atomic_helpers] plugin provides API for retrieving and
 persisting attachments in a concurrency-safe way, which is useful when using
@@ -174,4 +176,4 @@ attacher.abstract_atomic_persist(**options) do |reloaded_attacher|
 end
 ```
 
-[atomic_helpers]: /lib/shrine/plugins/atomic_helpers.rb
+[atomic_helpers]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/atomic_helpers.rb

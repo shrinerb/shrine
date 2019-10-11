@@ -1,34 +1,11 @@
-# Derivation Endpoint
+---
+title: Derivation Endpoint
+---
 
 The [`derivation_endpoint`][derivation_endpoint] plugin provides a Rack app for
 dynamically processing uploaded files on request. This allows you to create
 URLs to files that might not have been generated yet, and have the endpoint
 process them on-the-fly.
-
-## Contents
-
-* [Quick start](#quick-start)
-* [How it works](#how-it-works)
-  - [Performance](#performance)
-* [Derivation response](#derivation-response)
-* [Dynamic settings](#dynamic-settings)
-* [Host](#host)
-* [Prefix](#prefix)
-* [Expiration](#expiration)
-* [Response headers](#response-headers)
-  - [Content Type](#content-type)
-  - [Content Disposition](#content-disposition)
-  - [Cache Control](#cache-control)
-* [Uploading](#uploading)
-  - [Redirecting](#redirecting)
-  - [Deleting derivatives](#deleting-derivatives)
-* [Cache busting](#cache-busting)
-* [Accessing source file](#accessing-source-file)
-* [Downloading](#downloading)
-  - [Skipping download](#skipping-download)
-* [Derivation API](#derivation-api)
-* [Plugin Options](#plugin-options)
-* [Instrumentation](#instrumentation)
 
 ## Quick start
 
@@ -832,7 +809,7 @@ Or disable logging altogether:
 plugin :derivation_endpoint, log_subscriber: nil
 ```
 
-[derivation_endpoint]: /lib/shrine/plugins/derivation_endpoint.rb
+[derivation_endpoint]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/derivation_endpoint.rb
 [ImageProcessing]: https://github.com/janko/image_processing
 [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
 [`Content-Disposition`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition

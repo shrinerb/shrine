@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/validation_helpers.md] on GitHub.
-    #
-    # [doc/plugins/validation_helpers.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/validation_helpers.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/validation_helpers
     module ValidationHelpers
       DEFAULT_MESSAGES = {
         max_size:            -> (max)  { "size must not be greater than #{PRETTY_FILESIZE.call(max)}" },

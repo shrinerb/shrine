@@ -1,4 +1,6 @@
-# Mirroring
+---
+title: Mirroring
+---
 
 The [`mirroring`][mirroring] plugin enables replicating uploads and deletes to
 other storages. This can be useful for setting up a backup storage, or when
@@ -113,4 +115,4 @@ file.delete                      # delete from :store
 file.mirror_delete_background    # spawn mirror delete background job
 ```
 
-[mirroring]: /lib/shrine/plugins/mirroring.rb
+[mirroring]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/mirroring.rb

@@ -4,9 +4,7 @@ Shrine.deprecation("The module_include plugin is deprecated and will be removed 
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/module_include.md] on GitHub.
-    #
-    # [doc/plugins/module_include.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/module_include.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/module_include
     module ModuleInclude
       module ClassMethods
         def attachment_module(mod = nil, &block)

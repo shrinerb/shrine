@@ -1,4 +1,6 @@
-# Derivatives
+---
+title: Derivatives
+---
 
 The derivatives plugin allows storing processed files ("derivatives") alongside
 the main attached file. The processed file data will be saved together with the
@@ -7,35 +9,6 @@ main attachment data in the same record attribute.
 ```rb
 Shrine.plugin :derivatives
 ```
-
-## Contents
-
-* [API overview](#api-overview)
-* [Creating derivatives](#creating-derivatives)
-  - [Naming processors](#naming-processors)
-  - [Derivatives storage](#derivatives-storage)
-  - [Nesting derivatives](#nesting-derivatives)
-* [Retrieving derivatives](#retrieving-derivatives)
-* [Derivative URL](#derivative-url)
-* [Processing derivatives](#processing-derivatives)
-  - [Dynamic processing](#dynamic-processing)
-  - [Source file](#source-file)
-* [Adding derivatives](#adding-derivatives)
-* [Uploading derivatives](#uploading-derivatives)
-  - [Uploader options](#uploader-options)
-  - [File deletion](#file-deletion)
-* [Merging derivatives](#merging-derivatives)
-  - [Setting derivatives](#setting-derivatives)
-* [Promoting derivatives](#promoting-derivatives)
-* [Removing derivatives](#removing-derivatives)
-  * [Deleting derivatives](#deleting-derivatives)
-* [Miscellaneous](#miscellaneous)
-  * [Without original](#without-original)
-  * [Iterating derivatives](#iterating-derivatives)
-  * [Parsing derivatives](#parsing-derivatives)
-* [Instrumentation](#instrumentation)
-
-## API overview
 
 The interface for managing derivatives is implemented on the `Shrine::Attacher`
 class, and it's layered in the following way:
@@ -679,7 +652,9 @@ attacher.derivatives[:two].exists? #=> false
 
 Derivatives are automatically deleted on `Attacher#destroy`.
 
-## Without original
+## Miscellaneous
+
+### Without original
 
 You can store derivatives even if there is no main attached file:
 
@@ -699,7 +674,7 @@ However, note that in this case operations such as promotion and deletion will
 not be automatically triggered in the attachment flow, you'd need to trigger
 them manually as needed.
 
-## Iterating derivatives
+### Iterating derivatives
 
 If you want to iterate over a nested hash of derivatives (which can be
 `Shrine::UploadedFile` objects or raw files), you can use
@@ -725,7 +700,7 @@ end
 #   [:four, 0], #<Shrine::UploadedFile>
 ```
 
-## Parsing derivatives
+### Parsing derivatives
 
 If you want to directly parse derivatives data written to a record attribute,
 you can use `Shrine.derivatives` (counterpart to `Shrine.uploaded_file`):
@@ -792,6 +767,6 @@ Or disable logging altogether:
 plugin :derivatives, log_subscriber: nil
 ```
 
-[default_url]: /doc/plugins/default_url.md#readme
-[entity]: /doc/plugins/entity.md#readme
-[model]: /doc/plugins/model.md#readme
+[default_url]: https://shrinerb.com/docs/plugins/default_url
+[entity]: https://shrinerb.com/docs/plugins/entity
+[model]: https://shrinerb.com/docs/plugins/model

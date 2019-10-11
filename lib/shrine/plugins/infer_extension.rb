@@ -4,9 +4,7 @@ require "pathname"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/infer_extension.md] on GitHub.
-    #
-    # [doc/plugins/infer_extension.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/infer_extension.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/infer_extension
     module InferExtension
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Extension (#{event.duration}ms) – #{{

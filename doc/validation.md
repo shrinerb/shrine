@@ -1,4 +1,6 @@
-# File Validation
+---
+title: File Validation
+---
 
 Shrine allows validating assigned files using the [`validation`][validation]
 plugin. Validation code is defined inside an `Attacher.validate` block:
@@ -105,5 +107,5 @@ you can have it automatically removed and deleted by loading the
 Shrine.plugin :remove_invalid # remove and delete files that failed validation
 ```
 
-[validation]: /doc/plugins/validation.md#readme
-[validation_helpers]: /doc/plugins/validation_helpers.md#readme
+[validation]: https://shrinerb.com/docs/plugins/validation
+[validation_helpers]: https://shrinerb.com/docs/plugins/validation_helpers

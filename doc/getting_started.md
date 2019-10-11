@@ -934,17 +934,17 @@ In tests you might want to tell Shrine to log only warnings:
 Shrine.logger.level = Logger::WARN
 ```
 
-[Advantages of Shrine]: advantages.md
-[Creating Plugins]: creating_plugins.md
-[Creating Storages]: creating_storages.md
-[Direct Uploads to S3]: direct_s3.md
-[Extracting Metadata]: metadata.md
-[File Processing]: processing.md
-[File Validation]: validation.md
-[Retrieving Uploads]: retrieving_uploads.md
-[Using Attacher]: attacher.md
-[FileSystem]: storage/file_system.md
-[S3]: storage/s3.md
+[Advantages of Shrine]: https://shrinerb.com/docs/advantages
+[Creating Plugins]: https://shrinerb.com/docs/creating-plugins
+[Creating Storages]: https://shrinerb.com/docs/creating-storages
+[Direct Uploads to S3]: https://shrinerb.com/docs/direct-s3
+[Extracting Metadata]: https://shrinerb.com/docs/metadata
+[File Processing]: https://shrinerb.com/docs/processing
+[File Validation]: https://shrinerb.com/docs/validation
+[Retrieving Uploads]: https://shrinerb.com/docs/retrieving-uploads
+[Using Attacher]: https://shrinerb.com/docs/attacher
+[FileSystem]: https://shrinerb.com/docs/storage/file-system
+[S3]: https://shrinerb.com/docs/storage/s3
 [`Shrine::UploadedFile`]: https://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
 
 [attacher]: #attacher
@@ -997,27 +997,27 @@ Shrine.logger.level = Logger::WARN
 [libvips]: http://libvips.github.io/libvips/
 [`file`]: http://linux.die.net/man/1/file
 
-[activerecord plugin]: plugins/activerecord.md
-[add_metadata plugin]: plugins/add_metadata.md
-[backgrounding plugin]: plugins/backgrounding.md
-[derivation_endpoint plugin]: plugins/derivation_endpoint.md
-[derivatives plugin]: plugins/derivatives.md
-[determine_mime_type plugin]: plugins/determine_mime_type.md
-[instrumentation plugin]: plugins/instrumentation.md
+[activerecord plugin]: https://shrinerb.com/docs/plugins/activerecord
+[add_metadata plugin]: https://shrinerb.com/docs/plugins/add_metadata
+[backgrounding plugin]: https://shrinerb.com/docs/plugins/backgrounding
+[derivation_endpoint plugin]: https://shrinerb.com/docs/plugins/derivation_endpoint
+[derivatives plugin]: https://shrinerb.com/docs/plugins/derivatives
+[determine_mime_type plugin]: https://shrinerb.com/docs/plugins/determine_mime_type
+[instrumentation plugin]: https://shrinerb.com/docs/plugins/instrumentation
 [hanami plugin]: https://github.com/katafrakt/hanami-shrine
-[model plugin]: plugins/model.md
-[entity plugin]: plugins/entity.md
+[model plugin]: https://shrinerb.com/docs/plugins/model
+[entity plugin]: https://shrinerb.com/docs/plugins/entity
 [mongoid plugin]: https://github.com/shrinerb/shrine-mongoid
-[presign_endpoint plugin]: plugins/presign_endpoint.md
-[pretty_location plugin]: plugins/pretty_location.md
-[rack_file plugin]: plugins/rack_file.md
+[presign_endpoint plugin]: https://shrinerb.com/docs/plugins/presign_endpoint
+[pretty_location plugin]: https://shrinerb.com/docs/plugins/pretty_location
+[rack_file plugin]: https://shrinerb.com/docs/plugins/rack_file
 [rom plugin]: https://github.com/shrinerb/shrine-rom
-[sequel plugin]: plugins/sequel.md
-[signature plugin]: plugins/signature.md
-[store_dimensions plugin]: plugins/store_dimensions.md
-[upload_endpoint plugin]: plugins/upload_endpoint.md
-[validation_helpers plugin]: plugins/validation_helpers.md
-[validation plugin]: plugins/validation.md
+[sequel plugin]: https://shrinerb.com/docs/plugins/sequel
+[signature plugin]: https://shrinerb.com/docs/plugins/signature
+[store_dimensions plugin]: https://shrinerb.com/docs/plugins/store_dimensions
+[upload_endpoint plugin]: https://shrinerb.com/docs/plugins/upload_endpoint
+[validation_helpers plugin]: https://shrinerb.com/docs/plugins/validation_helpers
+[validation plugin]: https://shrinerb.com/docs/plugins/validation
 
 [rails demo]: https://github.com/erikdahlstrand/shrine-rails-example
 [roda demo]: https://github.com/shrinerb/shrine/tree/master/demo

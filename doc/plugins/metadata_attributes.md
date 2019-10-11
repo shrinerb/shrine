@@ -1,4 +1,6 @@
-# Metadata Attributes
+---
+title: Metadata Attributes
+---
 
 The [`metadata_attributes`][metadata_attributes] plugin allows you to sync
 attachment metadata to additional record attributes. You can provide a hash of
@@ -57,5 +59,5 @@ photo.original_filename #=> "nature.jpg"
 Any metadata attributes that were declared but are missing on the record will
 be skipped.
 
-[metadata_attributes]: /lib/shrine/plugins/metadata_attributes.rb
-[entity]: /doc/plugins/entity.md#readme
+[metadata_attributes]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/metadata_attributes.rb
+[entity]: https://shrinerb.com/docs/plugins/entity

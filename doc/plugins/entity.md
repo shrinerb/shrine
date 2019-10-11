@@ -1,4 +1,6 @@
-# Entity
+---
+title: Entity
+---
 
 The [`entity`][entity] plugin provides integration for handling attachments on
 immutable structs. It is built on top of the [`column`][column] plugin.
@@ -248,6 +250,6 @@ By default, attachment data is serialized into JSON using the `JSON` standard
 library. If you want to change how data is serialized, see the
 [`column`][column serializer] plugin docs.
 
-[column]: /doc/plugins/column.md#readme
-[entity]: /lib/shrine/plugins/entity.rb
-[column serializer]: /doc/plugins/column.md#serializer
+[entity]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/entity.rb
+[column]: https://shrinerb.com/docs/plugins/column
+[column serializer]: https://shrinerb.com/docs/plugins/column#serializer

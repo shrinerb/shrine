@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/metadata_attributes.md] on GitHub.
-    #
-    # [doc/plugins/metadata_attributes.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/metadata_attributes.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/metadata_attributes
     module MetadataAttributes
       def self.load_dependencies(uploader, *)
         uploader.plugin :entity

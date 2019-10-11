@@ -2,6 +2,7 @@
 
 class Shrine
   module Plugins
+    # Documentation can be found on https://shrinerb.com/docs/plugins/mirroring
     module Mirroring
       def self.configure(uploader, **opts)
         uploader.opts[:mirroring] ||= { upload: true, delete: true }
