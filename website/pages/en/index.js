@@ -13,6 +13,8 @@ const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
+const fs = require('fs');
+
 class HomeSplash extends React.Component {
   render() {
     const {siteConfig} = this.props;
@@ -76,9 +78,24 @@ class Index extends React.Component {
     const {config: siteConfig, language = ''} = this.props;
     const {baseUrl} = siteConfig;
 
+    const Demo = () => {
+      const content = fs.readFileSync(`${process.cwd()}/demo.md`, 'utf8');
+
+      return (
+        <div className="landingDemo">
+          <Container>
+            <MarkdownBlock>{content}</MarkdownBlock>
+          </Container>
+        </div>
+      )
+    };
+
     return (
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
+        <div className="mainContainer">
+          <Demo />
+        </div>
       </div>
     );
   }

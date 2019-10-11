@@ -19,3 +19,7 @@
 .docs-prevnext {
   display: none;
 }
+
+.landingDemo .wrapper {
+  max-width: 800px;
+}
