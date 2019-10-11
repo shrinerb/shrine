@@ -25,15 +25,6 @@ class Photo < ActiveRecord::Base
 end
 ```
 
-## Contents
-
-* [Adding derivatives](#adding-derivatives)
-* [Reprocessing all derivatives](#reprocessing-all-derivatives)
-* [Reprocessing certain derivatives](#reprocessing-certain-derivatives)
-* [Adding new derivatives](#adding-new-derivatives)
-* [Removing derivatives](#removing-derivatives)
-* [Backgrounding](#backgrounding)
-
 ## Adding derivatives
 
 *Scenario: Your app is currently working only with original files, and you want
