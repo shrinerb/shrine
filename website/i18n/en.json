@@ -38,6 +38,15 @@
       "direct-s3": {
         "title": "Direct Uploads to S3"
       },
+      "external/articles": {
+        "title": "Articles"
+      },
+      "external/extensions": {
+        "title": "Extensions"
+      },
+      "external/misc": {
+        "title": "Miscellaneous"
+      },
       "getting-started": {
         "title": "Getting Started"
       },
@@ -327,6 +336,7 @@
     "links": {
       "Guides": "Guides",
       "Plugins": "Plugins",
+      "External": "External",
       "Discourse": "Discourse",
       "GitHub": "GitHub"
     },
@@ -349,7 +359,8 @@
       "Other": "Other",
       "Shrine 3.x": "Shrine 3.x",
       "Shrine 2.x": "Shrine 2.x",
-      "Shrine 1.x": "Shrine 1.x"
+      "Shrine 1.x": "Shrine 1.x",
+      "External": "External"
     }
   },
   "pages-strings": {

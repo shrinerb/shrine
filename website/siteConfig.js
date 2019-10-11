@@ -26,6 +26,7 @@ const siteConfig = {
   headerLinks: [
     {doc: 'getting-started', label: 'Guides'},
     {doc: 'plugins/activerecord', label: 'Plugins'},
+    {doc: 'external/extensions', label: 'External'},
     {href: 'https://discourse.shrinerb.com', label: 'Discourse'},
     {href: 'https://github.com/shrinerb/shrine', label: 'GitHub'},
   ],
@@ -96,6 +97,7 @@ const siteConfig = {
   // Link to first documents
   guidesUrl: '/docs/getting-started',
   pluginsUrl: '/docs/plugins/activerecord',
+  externalUrl: '/docs/external/extensions',
 
   twitterUsername: 'shrine_rb',
 

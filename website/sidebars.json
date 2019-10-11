@@ -140,5 +140,12 @@
       "release_notes/1.1.0",
       "release_notes/1.0.0"
     ]
+  },
+  "external": {
+    "External": [
+      "external/extensions",
+      "external/articles",
+      "external/misc"
+    ]
   }
 }
