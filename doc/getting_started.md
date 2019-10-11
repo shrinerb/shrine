@@ -989,12 +989,10 @@ Shrine.logger.level = Logger::WARN
 [uppy xhr-upload]: https://uppy.io/docs/xhr-upload/
 
 [ImageMagick]: https://imagemagick.org/
+[libvips]: http://libvips.github.io/libvips/
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [ImageProcessing]: https://github.com/janko/image_processing
-[ImageProcessing::MiniMagick]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md
-[ImageProcessing::Vips]: https://github.com/janko/image_processing/blob/master/doc/vips.md
-[libvips]: http://libvips.github.io/libvips/
 [`file`]: http://linux.die.net/man/1/file
 
 [activerecord plugin]: https://shrinerb.com/docs/plugins/activerecord
