@@ -9,6 +9,8 @@ This plugin is useful for example when using [HTML5 Canvas].
 plugin :data_uri
 ```
 
+## Usage
+
 The plugin will add the `#<name>_data_uri` writer to your model, which parses
 the given data URI string and uploads it to temporary storage:
 
@@ -89,7 +91,7 @@ io = Shrine.data_uri("data:,content", filename: "foo.txt")
 io.original_filename #=> "foo.txt"
 ```
 
-### Generating data URI
+## Generating data URI
 
 This plugin also adds `UploadedFile#data_uri` method, which returns a
 base64-encoded data URI of the file content, and `UploadedFile#base64`, which

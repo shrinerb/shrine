@@ -12,6 +12,10 @@ extracted on the client side.
 ```rb
 plugin :restore_cached_data
 ```
+```rb
+photo.image = { "id" => "path/to/image.jpg", "storage" => "cache", "metadata" => {} }
+photo.image.metadata #=> { "size" => 4823763, "mime_type" => "image/jpeg", ... }
+```
 
 It uses the [`refresh_metadata`][refresh_metadata] plugin to re-extract
 metadata.

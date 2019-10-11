@@ -9,6 +9,8 @@ file hashes for uploading.
 plugin :rack_file
 ```
 
+## Usage
+
 When a file is uploaded to your Rack application using the
 `multipart/form-data` parameter encoding, Rack converts the uploaded file to a
 hash.
@@ -34,6 +36,8 @@ user.avatar = file_hash
 # or
 attacher.assign(file_hash)
 ```
+
+## API
 
 Internally the Rack uploaded file hash will be converted into an IO object
 using `Shrine.rack_file`, which you can also use directly:

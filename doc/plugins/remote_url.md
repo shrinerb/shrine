@@ -9,6 +9,8 @@ location.
 plugin :remote_url, max_size: 20*1024*1024
 ```
 
+## Usage
+
 The plugin will add the `#<name>_remote_url` writer to your model, which
 downloads the remote file and uploads it to temporary storage.
 

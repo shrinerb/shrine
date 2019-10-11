@@ -10,5 +10,10 @@ general any scenario where you need to track history.
 ```rb
 plugin :keep_files
 ```
+```rb
+photo.image #=> #<Shrine::UploadedFile>
+photo.destroy
+photo.image.exists? #=> true
+```
 
 [keep_files]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/keep_files.rb

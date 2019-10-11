@@ -10,6 +10,8 @@ it's recommended to use [Uppy] for asynchronous uploads.
 plugin :upload_endpoint
 ```
 
+## Setup
+
 The plugin adds a `Shrine.upload_endpoint` method which, given a storage
 identifier, returns a Rack application that accepts multipart POST requests,
 and uploads received files to the specified storage. You can run this Rack

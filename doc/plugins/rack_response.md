@@ -10,6 +10,8 @@ suitable for returning as a response in a Rack-based application.
 plugin :rack_response
 ```
 
+## Usage
+
 To convert a `Shrine::UploadedFile` into a Rack response, simply call
 `#to_rack_response`:
 

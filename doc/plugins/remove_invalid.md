@@ -10,4 +10,10 @@ attached, it will be assigned back.
 plugin :remove_invalid
 ```
 
+```rb
+photo.image = file # invalid file
+photo.valid?       #=> false
+photo.image        #=> nil
+```
+
 [remove_invalid]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remove_invalid.rb

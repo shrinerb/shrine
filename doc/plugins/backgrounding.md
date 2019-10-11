@@ -10,6 +10,10 @@ processing [derivatives] and storing files to a remote storage service.
 Shrine.plugin :backgrounding # load the plugin globally
 ```
 
+## Setup
+
+### Global setup
+
 The plugin provides `Attacher.promote_block` and `Attacher.destroy_block`
 methods, which allow you to register blocks that will get executed in place of
 synchronous promotion and deletion. Inside them you can spawn your background
@@ -52,6 +56,8 @@ class DestroyJob
 end
 ```
 
+### Local setup
+
 If you don't want to apply backgrounding for all uploaders, you can register
 backgrounding blocks only for a specific uploader:
 
@@ -66,6 +72,8 @@ class MyUploader < Shrine
   end
 end
 ```
+
+### How it works
 
 Backgrounding will automatically get triggered as part of your attachment flow
 if you're using `Shrine::Attachment` with a persistence plugin such as

@@ -13,6 +13,8 @@ more.
 plugin :presign_endpoint
 ```
 
+## Setup
+
 The plugin adds a `Shrine.presign_endpoint` method which, given a storage
 identifier, returns a Rack application that accepts GET requests and generates
 a presign for the specified storage. You can run this Rack application inside

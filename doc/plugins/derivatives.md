@@ -10,16 +10,6 @@ main attachment data in the same record attribute.
 Shrine.plugin :derivatives
 ```
 
-The interface for managing derivatives is implemented on the `Shrine::Attacher`
-class, and it's layered in the following way:
-
-* [`Attacher#create_derivatives`](#creating-derivatives) – processes, uploads and merges derivatives
-  * [`Attacher#process_derivatives`](#processing-derivatives) – processes derivatives
-  * [`Attacher#add_derivatives`](#adding-derivatives) – uploads and merges derivatives
-    * [`Attacher#upload_derivatives`](#uploading-derivatives) – uploads derivatives
-    * [`Attacher#merge_derivatives`](#merging-derivatives) – merges derivatives
-      * [`Attacher#set_derivatives`](#setting-derivatives) – overrides derivatives
-
 ## Creating derivatives
 
 When you have a file attached, you can generate derivatives from it and save

@@ -10,6 +10,8 @@ attached files. For some useful validators, see the
 plugin :validation
 ```
 
+## Usage
+
 The `Attacher.validate` method is used to register a validation block, which
 is called on attachment:
 
