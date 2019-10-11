@@ -2,17 +2,12 @@
 title: Advantages of Shrine
 ---
 
-There are many existing file upload solutions for Ruby out there – [Paperclip],
-[CarrierWave], [Dragonfly], [Refile], and [Active Storage], to name the most
-popular ones. This guide will attempt to cover some of the main advantages that
-Shrine offers compared to these alternatives.
+There are many existing file upload solutions for Ruby out there. This guide
+will attempt to cover some of the main advantages that Shrine offers compared
+to these alternatives.
 
 For a more direct comparison with specific file attachment libraries, there are
-more specialized guides:
-
-* [Shrine for CarrierWave Users]
-* [Shrine for Paperclip Users]
-* [Shrine for Refile Users]
+more specialized guides for [CarrierWave], [Paperclip], and [Refile] users.
 
 ## Generality
 
@@ -43,14 +38,15 @@ Shrine.plugin :rack_file
 Shrine.plugin :activerecord
 Shrine.plugin :sequel
 Shrine.plugin :mongoid # https://github.com/shrinerb/shrine-mongoid
+Shrine.plugin :rom # https://github.com/shrinerb/shrine-rom
 Shrine.plugin :hanami # https://github.com/katafrakt/hanami-shrine
 ```
 
 ## Simplicity
 
 Where some popular file attachment libraries have [god objects]
-(`CarrierWave::Uploader::Base` and `Paperclip::Attachment`), in Shrine
-responsibilities are distributed across multiple core classes:
+(`CarrierWave::Uploader::Base` and `Paperclip::Attachment`), Shrine distributes
+responsibilities across multiple core classes:
 
 | Class                  | Description                                            |
 | :----                  | :-----------                                           |
@@ -389,31 +385,6 @@ on top of Rack, so that they can be used with any Ruby web framework.
 | [AwsS3Multipart][Uppy AwsS3Multipart] | [`uppy-s3_multipart`][uppy-s3_multipart] |
 | [Tus][Uppy Tus]                       | [`tus-ruby-server`][tus-ruby-server]     |
 
-## Summary
-
-Shrine is general purpose, it can integrate with any web framework and any
-database library. It has core classes with clearly defined responsibilities,
-which provide both higher and lower level abstractions. The functionality is
-very modular, you can pick and choose features that you need.
-
-With Shrine you can process both up from and on-the-fly, depending on what is
-more suitable for your requirements. Processing is just a functional
-transformation, which makes it easier to use the processing tool of your
-choice. You can also move processing into a background job.
-
-Shrine automatically extracts metadata from the main file and any processed
-files. In addition to built-in metadata you can also extract any custom
-metadata. Any extracted metadata can be validated on attachment.
-
-Finally, Shrine integrates with Uppy, a full-featured JavaScript file upload
-library. It allows you to do direct uploads to your app or to S3. For large
-files you can also make the uploads resumable.
-
-[Paperclip]: https://github.com/thoughtbot/paperclip
-[CarrierWave]: https://github.com/carrierwaveuploader/carrierwave
-[Dragonfly]: http://markevans.github.io/dragonfly/
-[Refile]: https://github.com/refile/refile
-[Active Storage]: https://github.com/rails/rails/tree/master/activestorage#active-storage
 [Rack]: https://rack.github.io
 [Sinatra]: http://sinatrarb.com
 [Roda]: http://roda.jeremyevans.net
@@ -448,7 +419,7 @@ files you can also make the uploads resumable.
 [upload_endpoint]: https://shrinerb.com/docs/plugins/upload_endpoint
 [presign_endpoint]: https://shrinerb.com/docs/plugins/presign_endpoint
 [Uppy]: https://uppy.io
-[Uppy XHRUpload]: https://uppy.io/docs/xhrupload/
+[Uppy XHRUpload]: https://uppy.io/docs/xhr-upload/
 [Uppy AwsS3]: https://uppy.io/docs/aws-s3/
 [Uppy Tus]: https://uppy.io/docs/tus/
 [Uppy AwsS3Multipart]: https://uppy.io/docs/aws-s3-multipart/
@@ -466,6 +437,6 @@ files you can also make the uploads resumable.
 [derivation_endpoint]: https://shrinerb.com/docs/plugins/derivation_endpoint
 [libvips performance]: https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
-[Shrine for CarrierWave Users]: https://shrinerb.com/docs/carrierwave
-[Shrine for Paperclip Users]: https://shrinerb.com/docs/paperclip
-[Shrine for Refile Users]: https://shrinerb.com/docs/refile
+[CarrierWave]: https://shrinerb.com/docs/carrierwave
+[Paperclip]: https://shrinerb.com/docs/paperclip
+[Refile]: https://shrinerb.com/docs/refile
