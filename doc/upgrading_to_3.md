@@ -18,7 +18,7 @@ attacher without a model:
 
 ```rb
 attacher = Shrine::Attacher.new
-# ...
+#=> #<Shrine::Attacher>
 
 attacher = Shrine::Attacher.new(photo, :image)
 # ~> ArgumentError: invalid number of arguments
@@ -488,12 +488,43 @@ end
 However, it doesn't implement any other URL fallbacks that the `versions`
 plugin has for missing derivatives.
 
-## Miscellaneous
+## Other
+
+### Processing
+
+The `processing` plugin has been deprecated over the new
+[`derivatives`][derivatives] plugin. If you were modifying the original file:
+
+```rb
+class MyUploader < Shrine
+  plugin :processing
+
+  process(:store) do |io, context|
+    ImageProcessing::MiniMagick
+      .source(io.download)
+      .resize_to_limit!(1600, 1600)
+  end
+end
+```
+
+you should now add the processed file as a derivative:
+
+```rb
+class MyUploader < Shrine
+  plugin :derivatives
+
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    { normalized: magick.resize_to_limit!(1600, 1600) }
+  end
+end
+```
 
 ### Logging
 
 The `logging` plugin has been removed in favour of the
-[`instrumentation`][instrumentation] plugin. You can replace
+[`instrumentation`][instrumentation] plugin. You can replace code like
 
 ```rb
 Shrine.plugin :logging, logger: Rails.logger
@@ -510,7 +541,7 @@ Shrine.plugin :instrumentation
 ### Backup
 
 The `backup` plugin has been removed in favour of the new
-[`mirroring`][mirroring] plugin. You can replace
+[`mirroring`][mirroring] plugin. You can replace code like
 
 ```rb
 Shrine.plugin :backup, storage: :backup_store
@@ -524,7 +555,8 @@ Shrine.plugin :mirroring, mirror: { store: :backup_store }
 
 ### Copy
 
-The `copy` plugin has been removed. You can replace
+The `copy` plugin has been removed as its behaviour can now be achieved easily.
+You can replace code like
 
 ```rb
 Shrine.plugin :copy
@@ -547,9 +579,48 @@ The `moving` plugin has been removed in favour of the `:move` option for
 `upload_options` plugin:
 
 ```rb
+# set up moving for caching and promotion
 Shrine.plugin :upload_options,
   cache: -> (io, action: nil, **) { { move: true } if action == :cache },
   store: -> (io, action: nil, **) { { move: true } if action == :store }
+```
+
+### Parsed JSON
+
+The `parsed_json` plugin has been removed as it's now the default behaviour.
+
+```rb
+# this now works by default
+photo.image = { "id" => "d7e54d6ef2.jpg", "storage" => "cache", "metadata" => { ... } }
+```
+
+### Module Include
+
+The `module_include` plugin has been deprecated over overriding core classes
+directly. You can replace code like
+
+```rb
+class MyUploader < Shrine
+  plugin :module_include
+
+  file_methods do
+    def image?
+      mime_type.start_with?("image")
+    end
+  end
+end
+```
+
+with
+
+```rb
+class MyUploader < Shrine
+  class UploadedFile
+    def image?
+      mime_type.start_with?("image")
+    end
+  end
+end
 ```
 
 [3.0 release notes]: https://shrinerb.com/docs/release_notes/3.0.0
