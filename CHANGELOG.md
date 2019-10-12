@@ -1,5 +1,7 @@
 ## HEAD
 
+* `core` – Move `action: :store` from `Attacher#promote_cached` to `Attacher#promote` (@janko)
+
 * `column` – Allow serializing any custom objects (@janko)
 
 * `entity` – Add name to the attacher returned by `.<name>_attacher` class method (@janko)

@@ -212,12 +212,6 @@ describe Shrine::Attacher do
       assert_equal file, @attacher.file
     end
 
-    it "sets :action to :store" do
-      file = @attacher.attach_cached(fakeio)
-      @attacher.shrine_class.expects(:upload).with(file, :store, { action: :store })
-      @attacher.promote_cached
-    end
-
     it "forwards additional options for upload" do
       @attacher.attach_cached(fakeio)
       @attacher.promote_cached(location: "foo")
@@ -244,6 +238,12 @@ describe Shrine::Attacher do
       @attacher.promote(storage: :other_store)
       assert_equal :other_store, @attacher.file.storage_key
       assert @attacher.file.exists?
+    end
+
+    it "sets :action to :store" do
+      file = @attacher.attach_cached(fakeio)
+      @attacher.shrine_class.expects(:upload).with(file, :store, { action: :store })
+      @attacher.promote
     end
 
     it "forwards additional options for upload" do

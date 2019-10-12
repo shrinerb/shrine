@@ -154,7 +154,7 @@ class Shrine
       #     attacher.promote_cached
       #     attacher.stored? #=> true
       def promote_cached(**options)
-        promote(action: :store, **options) if promote?
+        promote(**options) if promote?
       end
 
       # Uploads current file to permanent storage and sets the stored file.
@@ -163,7 +163,7 @@ class Shrine
       #     attacher.promote
       #     attacher.stored? #=> true
       def promote(storage: store_key, **options)
-        set upload(file, storage, **options)
+        set upload(file, storage, action: :store, **options)
       end
 
       # Delegates to `Shrine.upload`, passing the #context.
