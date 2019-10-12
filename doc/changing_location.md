@@ -59,10 +59,10 @@ Photo.find_each do |photo|
 
   begin
     attacher.atomic_persist           # persist changes if attachment has not changed in the meantime
-    old_attacher.destroy              # delete files on old location
+    old_attacher.destroy_attached     # delete files on old location
   rescue Shrine::AttachmentChanged,   # attachment has changed during reuploading
          ActiveRecord::RecordNotFound # record has been deleted during reuploading
-    attacher.destroy                  # delete now orphaned files
+    attacher.destroy_attached         # delete now orphaned files
   end
 end
 ```
@@ -103,9 +103,9 @@ class MoveFilesJob
     attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives)
 
     attacher.atomic_persist
-    old_attacher.destroy
+    old_attacher.destroy_attached
   rescue Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
-    attacher&.destroy
+    attacher&.destroy_attached
   end
 end
 ```
