@@ -68,7 +68,7 @@ generates an URL consisting of the configured [path prefix](#prefix),
 derivation name and arguments, serialized uploaded file, and an URL signature
 generated using the configured secret key:
 
-```
+```plaintext
 /  derivations/image  /  thumbnail  /  600/400  /  eyJmZvbyIb3JhZ2UiOiJzdG9yZSJ9  ?  signature=...
   └──── prefix ─────┘  └── name ──┘  └─ args ─┘  └─── serialized source file ───┘
 ```
@@ -411,6 +411,8 @@ fetch the original uploaded file, call the derivation block, upload the
 derivative to the storage, and serve the derivative. If the derivative does
 exist on checking, the endpoint will download the derivative and serve it.
 
+### Upload location
+
 The default upload location for derivatives is `<source id>/<name>-<args>`.
 This can be changed with the `:upload_location` option:
 
@@ -426,6 +428,8 @@ response won't know the appropriate `Content-Type` header value to set, and the
 generic `application/octet-stream` will be used. It's recommended to use the
 [`:type`](#content-type) option to set the appropriate `Content-Type` value.
 
+### Upload storage
+
 The target storage used is the same as for the source uploaded file. The
 `:upload_storage` option can be used to specify a different Shrine storage:
 
@@ -434,12 +438,16 @@ plugin :derivation_endpoint, upload: true,
                              upload_storage: :thumbnail_storage
 ```
 
+### Upload options
+
 Additional storage-specific upload options can be passed via `:upload_options`:
 
 ```rb
 plugin :derivation_endpoint, upload: true,
                              upload_options: { acl: "public-read" }
 ```
+
+### Upload open options
 
 Additional storage-specific download options for the uploaded derivation result
 can be passed via `:upload_open_options`:
@@ -461,8 +469,7 @@ plugin :derivation_endpoint, upload: true,
                              upload_redirect: true
 ```
 
-In that case additional storage-specific URL options can be passed in for the
-redirect URL:
+Additional storage-specific URL options can be passed in for the redirect URL:
 
 ```rb
 plugin :derivation_endpoint, upload: true,
@@ -470,18 +477,58 @@ plugin :derivation_endpoint, upload: true,
                              upload_redirect_url_options: { public: true }
 ```
 
-If you are using the local filesystem storage, then redirecting does not make
-sense.
+Note that redirecting only makes sense if you're using remote storage services
+such as AWS S3 or Google Cloud Storage.
 
 ### Deleting derivatives
 
 When the original attachment is deleted, its uploaded derivatives will not be
-automatically deleted, you will need to do the deletion manually. You can do
-that by calling `Shrine::Derivation#delete` for each derivation you're using:
+automatically deleted, you will need to do the deletion manually. To ensure
+this gets called both on destroying and replacing, you can add that code to
+`Attacher#destroy`.
+
+The easiest way is to delete the directory containing your derivatives:
 
 ```rb
-# photo is the model and image is the file attachment
-photo.image.derivation(:thumbnail).delete
+class ImageUploader < Shrine
+  class Attacher
+    def destroy(*args)
+      super
+
+      derivatives_directory = file.id
+      storage               = store.storage
+
+      storage.delete_prefixed(derivatives_directory)
+    end
+  end
+end
+```
+
+This is under the assumption that your storage implements `#delete_prefixed`
+and that you're using default [`:upload_location`](#upload-location).
+
+Alternatively, you can delete each derivative individually using
+`Derivation#delete`:
+
+```rb
+class ImageUploader < Shrine
+  DERIVATIONS = [
+    [:thumbnail, 800, 800],
+    [:thumbnail, 600, 400],
+    [:thumbnail, 400, 300],
+    ...
+  ]
+
+  class Attacher
+    def destroy(*args)
+      super
+
+      DERIVATIONS.each do |args|
+        file.derivation(*args).delete
+      end
+    end
+  end
+end
 ```
 
 ## Cache busting
