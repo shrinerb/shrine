@@ -25,9 +25,9 @@ class Footer extends React.Component {
           </a>
           <div>
             <h5>Docs</h5>
-            <a href={config.guidesUrl}>Guides</a>
-            <a href={config.pluginsUrl}>Plugins</a>
-            <a href={config.externalUrl}>External</a>
+            <a href="/guides">Guides</a>
+            <a href="/plugins">Plugins</a>
+            <a href="/external">External</a>
             <a href={`${config.githubUrl}/blob/master/CONTRIBUTING.md#readme`}>Contributing</a>
           </div>
           <div>

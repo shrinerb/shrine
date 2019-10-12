@@ -94,11 +94,6 @@ const siteConfig = {
   discourseUrl: 'https://discourse.shrinerb.com',
   stackOverflowUrl: 'https://stackoverflow.com/questions/tagged/shrine',
 
-  // Link to first documents
-  guidesUrl: '/docs/getting-started',
-  pluginsUrl: '/docs/plugins/activerecord',
-  externalUrl: '/docs/external/extensions',
-
   twitterUsername: 'shrine_rb',
 
   // Display button for scrolling to top
