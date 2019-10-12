@@ -68,9 +68,19 @@ end
 
 ## How it works
 
-Backgrounding will automatically get triggered as part of your attachment flow
-if you're using `Shrine::Attachment` with a persistence plugin such as
-`activerecord` or `sequel`:
+If backgrounding blocks are registered, they will be automatically called on
+`Attacher#promote_cached` and `Attacher#destroy_previous` (called by
+`Attacher#finalize`), and `Attacher#destroy_attached`.
+
+```rb
+attacher.assign(file)
+attacher.finalize         # spawns promote job
+attacher.destroy_attached # spawns destroy job
+```
+
+These methods are automatically called as part of the attachment flow if you're
+using `Shrine::Attachment` with a persistence plugin such as `activerecord` or
+`sequel`.
 
 ```rb
 photo = Photo.new
@@ -79,33 +89,19 @@ photo.save    # spawns promote job
 photo.destroy # spawns destroy job
 ```
 
-In terms of `Shrine::Attacher`, the background jobs are spawned on
-`Attacher#promote_cached` (called on `Attacher#finalize`) and
-`Attacher#destroy_attached`:
+### Atomic promotion
 
-```rb
-attacher.assign(file)
-attacher.finalize         # spawns promote job
-attacher.destroy_attached # spawns destroy job
-```
-
-## Promotion
-
-While background deletion acts only on file data, background promotion is more
-complex as it deals with persistence and concurrency safety:
+Inside the promote job, we use `Attacher.retrieve` and
+`Attacher#atomic_promote` for concurrency safety. These methods are provided
+by the [`atomic_helpers`][atomic_helpers] plugin, which is loaded automatically
+by your persistence plugin (`activerecord`, `sequel`).
 
 ```rb
 attacher = Shrine::Attacher.retrieve(model: record, name: name, file: file_data)
 attacher.atomic_promote
 ```
 
-The `Attacher.retrieve` and `Attacher#atomic_promote` methods are provided by
-the [`atomic_helpers`][atomic_helpers] plugin, which is automatically loaded by
-your persistence plugin (`activerecord`, `sequel`). They add concurrency safety
-by verifying that the attachment hasn't changed on the outside before or after
-promotion.
-
-When we remove the concurrency safety, promotion would look like this:
+Without concurrency safety, promotion would look like this:
 
 ```rb
 attacher = record.send(:"#{name}_attacher")
@@ -113,7 +109,7 @@ attacher.promote
 attacher.persist
 ```
 
-## Backgrounding blocks
+## Registering backgrounding blocks
 
 The blocks registered by `Attacher.promote_block` and `Attacher#destroy_block`
 are by default evaluated in context of a `Shrine::Attacher` instance. You can
@@ -155,6 +151,46 @@ end
 
 photo.image = file
 photo.save # executes the promote block above
+```
+
+## Calling backgrounding blocks
+
+If you want to call backgrounding blocks directly, you can do that by calling
+`Attacher#promote_background` and `Attacher#destroy_background`.
+
+```rb
+attacher.promote_background # calls promote block directly
+attacher.destroy_background # calls destroy block directly
+```
+
+Any options passed to these methods will be forwarded to the background block:
+
+```rb
+attacher.promote_background(foo: "bar")
+```
+```rb
+# with instance eval
+Shrine::Attacher.promote_block do |**options|
+  options #=> { foo: "bar" }
+end
+
+# without instance eval
+Shrine::Attacher.promote_block do |attacher, **options|
+  options #=> { foo: "bar" }
+end
+```
+
+## Disabling backgrounding
+
+If you've registered backgrounding blocks, but want to temporarily disable them
+and make the execution synchronous, you can override them on the attacher level
+and call the default behaviour:
+
+```rb
+photo.image_attacher.promote_block(&:promote)
+photo.image_attacher.destroy_block(&:destroy)
+
+# ... now promotion and deletion will be synchronous ...
 ```
 
 [backgrounding]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/backgrounding.rb
