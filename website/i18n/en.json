@@ -24,7 +24,7 @@
         "title": "Migrating File Storage"
       },
       "creating-persistence-plugins": {
-        "title": "Writing an Persistence Plugin"
+        "title": "Writing a Persistence Plugin"
       },
       "creating-plugins": {
         "title": "Writing a Plugin"

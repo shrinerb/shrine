@@ -1,6 +1,6 @@
 ---
 id: creating-persistence-plugins
-title: Writing an Persistence Plugin
+title: Writing a Persistence Plugin
 ---
 
 This guide explains some conventions for writing Shrine plugins that integrate
