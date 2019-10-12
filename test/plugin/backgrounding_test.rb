@@ -124,19 +124,6 @@ describe Shrine::Plugins::Backgrounding do
         assert @attacher.stored?
       end
 
-      it "forwards promote options" do
-        @attacher.promote_block do |attacher, **options|
-          @job = Fiber.new { attacher.promote(**options) }
-        end
-
-        @attacher.attach_cached(fakeio)
-        @attacher.promote_cached(location: "foo")
-
-        @job.resume
-
-        assert_equal "foo", @attacher.file.id
-      end
-
       it "calls default promotion when no promote blocks are registered" do
         @attacher.attach_cached(fakeio)
         @attacher.promote_cached

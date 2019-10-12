@@ -1,5 +1,7 @@
 ## HEAD
 
+* `backgrounding` – Don't forward `Attacher#promote_cached` options to promote block (@janko)
+
 * `core` – Move `action: :store` from `Attacher#promote_cached` to `Attacher#promote` (@janko)
 
 * `column` – Allow serializing any custom objects (@janko)
