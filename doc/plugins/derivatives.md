@@ -736,7 +736,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Derivatives (2133ms) – {:processor=>:thumbnails, :processor_options=>{}, :uploader=>ImageUploader}
 ```
 
@@ -747,7 +747,7 @@ plugin :derivatives, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"derivatives","duration":2133,"processor":"thumbnails","processor_options":{},"uploader":"ImageUploader"}
 ```
 

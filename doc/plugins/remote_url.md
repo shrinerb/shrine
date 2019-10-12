@@ -166,7 +166,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Remote URL (1550ms) – {:remote_url=>"https://example.com/image.jpg",:download_options=>{},:uploader=>Shrine}
 ```
 
@@ -177,7 +177,7 @@ plugin :remote_url, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"remote_url","duration":5,"remote_url":"https://example.com/image.jpg","download_options":{},"uploader":"Shrine"}
 ```
 

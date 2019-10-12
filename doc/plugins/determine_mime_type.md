@@ -106,7 +106,7 @@ payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 MIME Type (33ms) – {:io=>StringIO, :uploader=>Shrine}
 ```
 
@@ -117,7 +117,7 @@ plugin :determine_mime_type, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"mime_type","duration":24,"io":"#<StringIO:0x00007fb7c5b08b80>","uploader":"Shrine"}
 ```
 

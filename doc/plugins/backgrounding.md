@@ -12,22 +12,8 @@ Shrine.plugin :backgrounding # load the plugin globally
 
 ## Setup
 
-### Global setup
+Define background jobs that will promote and destroy attachments:
 
-The plugin provides `Attacher.promote_block` and `Attacher.destroy_block`
-methods, which allow you to register blocks that will get executed in place of
-synchronous promotion and deletion. Inside them you can spawn your background
-jobs:
-
-```rb
-# register backgrounding blocks for all uploaders
-Shrine::Attacher.promote_block do
-  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
-end
-Shrine::Attacher.destroy_block do
-  DestroyJob.perform_async(self.class.name, data)
-end
-```
 ```rb
 class PromoteJob
   include Sidekiq::Worker
@@ -56,14 +42,21 @@ class DestroyJob
 end
 ```
 
-### Local setup
+Then, in your initializer, you can configure all uploaders to use these jobs:
 
-If you don't want to apply backgrounding for all uploaders, you can register
-backgrounding blocks only for a specific uploader:
+```rb
+Shrine::Attacher.promote_block do
+  PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
+end
+Shrine::Attacher.destroy_block do
+  DestroyJob.perform_async(self.class.name, data)
+end
+```
+
+Alternatively, you can setup backgrounding only for specific uploaders:
 
 ```rb
 class MyUploader < Shrine
-  # register backgrounding blocks only for this uploader
   Attacher.promote_block do
     PromoteJob.perform_async(self.class.name, record.class.name, record.id, name, file_data)
   end
@@ -73,7 +66,7 @@ class MyUploader < Shrine
 end
 ```
 
-### How it works
+## How it works
 
 Backgrounding will automatically get triggered as part of your attachment flow
 if you're using `Shrine::Attachment` with a persistence plugin such as

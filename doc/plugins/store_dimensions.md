@@ -110,7 +110,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Image Dimensions (108ms) – {:io=>File, :uploader=>Shrine}
 ```
 
@@ -121,7 +121,7 @@ plugin :store_dimensions, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"image_dimensions","duration":114,"io":"#<File:0x00007fc445371d90>","uploader":"Shrine"}
 ```
 

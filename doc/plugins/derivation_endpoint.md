@@ -830,7 +830,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Derivation (492ms) – {:name=>:thumbnail, :args=>[600, 600], :uploader=>Shrine}
 ```
 
@@ -846,7 +846,7 @@ plugin :derivation_endpoint, log_subscriber: -> (event) {
   )
 }
 ```
-```
+```plaintext
 {"name":"derivation","duration":492,"name":"thumbnail","args":[600,600],"uploader":"Shrine"}
 ```
 

@@ -192,12 +192,12 @@ Shrine.storages = {
 ```
 
 The above example sets up S3 for both temporary and permanent storage, which is
-suitable for [direct uploads][Direct Uploads to S3]. The `:cache` and
-`:store` names are special only in terms that the [attacher] will automatically
-pick them up, you can also register more storage objects under different names.
+suitable for [direct uploads][presigned upload]. The `:cache` and `:store`
+names are special only in terms that the [attacher] will automatically pick
+them up, you can also register more storage objects under different names.
 
 See the [FileSystem] and [S3] storage docs for more details. There are [many
-more Shrine storages][external] provided by external gems, and you can also
+more Shrine storages][storages] provided by external gems, and you can also
 [create your own storage][Creating Storages].
 
 ## Uploader
@@ -320,33 +320,32 @@ uploaded_file.close  # closes the IO
 For more details, see the [Retrieving Uploads] guide and
 [`Shrine::UploadedFile`] API docs.
 
-## Attachment
+## Attaching
 
-Storage objects, uploaders, and uploaded file objects are Shrine's foundational
-components. To help you actually attach uploaded files to database records in
-your application, Shrine comes with a high-level attachment interface built on
-top of these components.
-
-There are plugins for hooking into most persistence libraries, and in case of
-Active Record and Sequel the plugin will automatically tie the attached files
-to records' lifecycles. But you can also use Shrine with plain structs with
-[`model`][model plugin] and [`entity`][entity plugin] plugins.
+To attach uploaded files to database records, Shrine offers an attachment
+interface built on top of uploaders and uploaded files. There are integrations
+for various persistence libraries ([ActiveRecord][activerecord plugin],
+[Sequel][sequel plugin], [ROM][rom plugin], [Hanami][hanami plugin],
+[Mongoid][mongoid plugin]), but you can also attach files to plain structs
+([mutable][model plugin] or [immutable][entity plugin]).
 
 ```rb
 Shrine.plugin :sequel # :activerecord
 ```
 
+### Attachment module
+
+The easiest way to attach files is with the `Shrine::Attachment` module:
+
 ```rb
 class Photo < Sequel::Model # ActiveRecord::Base
   include ImageUploader::Attachment.new(:image) #
-  include ImageUploader::Attachment[:image]     # these are all equivalent
+  include ImageUploader::Attachment[:image]     # use a preferred syntax
   include ImageUploader::Attachment(:image)     #
 end
 ```
 
-You can choose whichever of these syntaxes you prefer. Either of these
-will create a `Shrine::Attachment` module with attachment methods for the
-specified attribute, which then get added to your model when you include it:
+The included module will add attachment methods for the specified attribute:
 
 | Method            | Description                                                                       |
 | :-----            | :----------                                                                       |
@@ -355,9 +354,9 @@ specified attribute, which then get added to your model when you include it:
 | `#image_url`      | calls `url` on the attachment if it's present, otherwise returns nil              |
 | `#image_attacher` | returns instance of [`Shrine::Attacher`][attacher] which handles the attaching    |
 
-The persistence plugin that we loaded adds appropriate callbacks, so that
-saving the record uploads the attachment to permanent storage, while deleting
-the record deletes the attachment.
+The persistence plugin we loaded will add callbacks that ensure cached files
+are automatically promoted to permanent storage on when record is saved, and
+that attachments are deleted when the record is destroyed.
 
 ```rb
 # no file is attached
@@ -388,21 +387,7 @@ photo.update(image: new_file) # changes the attachment and deletes previous
 photo.update(image: nil)      # removes the attachment and deletes previous
 ```
 
-### Temporary storage
-
-Shrine uses temporary storage to support retaining uploaded files across form
-redisplays and [direct uploads](#direct-uploads). But you can disable this
-behaviour, and have files go straight to permanent storage:
-
-```rb
-Shrine.plugin :model, cache: false
-```
-```rb
-photo.image = File.open("waterfall.jpg")
-photo.image.storage_key #=> :store
-```
-
-## Attacher
+### Attacher
 
 The methods and callbacks added by the `Shrine::Attachment` module just
 delegate the behaviour to an underlying `Shrine::Attacher` object.
@@ -429,6 +414,28 @@ You can do things such as change the temporary and permanent storage the
 attacher uses, or upload files directly to permanent storage. See the [Using
 Attacher] guide for more details.
 
+### Temporary storage
+
+Shrine uses temporary storage to support retaining uploaded files across form
+redisplays and [direct uploads]. But you can disable this behaviour, and have
+files go straight to permanent storage:
+
+```rb
+Shrine.plugin :model, cache: false
+```
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Attachment-->
+```rb
+photo.image = File.open("waterfall.jpg")
+photo.image.storage_key #=> :store
+```
+<!--Attacher-->
+```rb
+attacher.attach File.open("waterfall.jpg")
+attacher.file.storage_key #=> :store
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
 ## Plugin system
 
 By default Shrine comes with a small core which provides only the essential
@@ -451,7 +458,8 @@ end
 ```
 
 If you want to extend Shrine functionality with custom behaviour, you can also
-[create your own plugin][Creating Plugins].
+[create your own plugin][Creating Plugins]. There are also additional [external
+plugins] created by others.
 
 ## Metadata
 
@@ -798,7 +806,7 @@ and the [shrine-tus] gem for the glue.
 ```rb
 # Gemfile
 gem "tus-server", "~> 2.0"
-gem "shrine-tus", "~> 1.2"
+gem "shrine-tus", "~> 2.1"
 ```
 ```rb
 require "shrine/storage/tus"
@@ -897,7 +905,7 @@ uploaded_file.exists?
 uploaded_file.download
 uploaded_file.delete
 ```
-```
+```plaintext
 Metadata (32ms) – {:storage=>:store, :io=>StringIO, :uploader=>Shrine}
 Upload (1523ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=>StringIO, :upload_options=>{}, :uploader=>Shrine}
 Exists (755ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
@@ -1027,5 +1035,6 @@ Shrine.logger.level = Logger::WARN
 [`#close`]: https://ruby-doc.org/core/IO.html#method-i-close
 [`IO`]: https://ruby-doc.org/core/IO.html
 
-[external]: https://shrinerb.com/#external
-[plugins]: https://shrinerb.com/#plugins
+[storages]: https://shrinerb.com/docs/external/extensions#storages
+[plugins]: https://shrinerb.com/plugins
+[external plugins]: https://shrinerb.com/docs/external/extensions#plugins
