@@ -1,5 +1,7 @@
 ## HEAD
 
+* `backgrounding` – Forward `Attacher#destroy_background` options to destroy block (@janko)
+
 * `backgrounding` – Don't forward `Attacher#promote_cached` options to promote block (@janko)
 
 * `core` – Move `action: :store` from `Attacher#promote_cached` to `Attacher#promote` (@janko)

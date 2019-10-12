@@ -94,10 +94,10 @@ class Shrine
         end
 
         # Calls the registered destroy block.
-        def destroy_background
+        def destroy_background(**options)
           fail Error, "destroy block is not registered" unless destroy_block
 
-          background_block(destroy_block)
+          background_block(destroy_block, **options)
         end
 
         private

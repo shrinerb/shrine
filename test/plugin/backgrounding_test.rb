@@ -173,7 +173,7 @@ describe Shrine::Plugins::Backgrounding do
         assert @attacher.stored?
       end
 
-      it "accepts additional options" do
+      it "forwards additional options to the block" do
         @attacher.promote_block { |**options| promote(**options) }
 
         @attacher.attach_cached(fakeio)
@@ -325,6 +325,14 @@ describe Shrine::Plugins::Backgrounding do
 
         assert_equal self, this
         refute @attacher.file.exists?
+      end
+
+      it "forwards additional options to the block" do
+        @attacher.destroy_block { |**options| destroy(**options) }
+
+        @attacher.attach(fakeio)
+        @attacher.expects(:destroy).with(foo: "bar")
+        @attacher.destroy_background(foo: "bar")
       end
 
       it "raises exception when destroy block is not registered" do
