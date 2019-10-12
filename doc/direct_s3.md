@@ -26,12 +26,14 @@ storage service is beneficial for several reasons:
   request-response lifecycle might not be able to finish before the request
   times out.
 
+## Storage
+
 To start, let's set both temporary and permanent storage to S3, with the
 temporary storage uploading to the `cache/` prefix:
 
 ```rb
 # Gemfile
-gem "shrine", "~> 2.11"
+gem "shrine", "~> 3.0"
 gem "aws-sdk-s3", "~> 1.14"
 ```
 ```rb

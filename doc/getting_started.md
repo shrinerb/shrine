@@ -10,7 +10,7 @@ and loads integration for your persistence library:
 
 ```rb
 # Gemfile
-gem "shrine", "~> 2.0"
+gem "shrine", "~> 3.0"
 ```
 
 ```rb

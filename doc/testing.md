@@ -101,7 +101,8 @@ We want to keep our tests fast, so when we're setting up files for tests, we
 want to avoid expensive operations such as file processing and metadata
 extraction.
 
-We can start by creating a method which would generate fake attachment data:
+We can create a helper method that will create attached file data for us, and
+use that with our factories/fixtures.
 
 ```rb
 module TestData
@@ -136,24 +137,19 @@ module TestData
   end
 end
 ```
-```rb
-TestData.image_data #=> '{"id":"...","storage":"...","metadata":{...},"derivatives":{...}}'
-```
-
-With [factory_bot] you can then assign the test attachment data like this:
-
+<!--DOCUSAURUS_CODE_TABS-->
+<!--FactoryBot-->
 ```rb
 factory :photo do
   image_data { TestData.image_data }
 end
 ```
-
-With [Rails' YAML fixtures][fixtures] it would look like this:
-
+<!--Rails YAML fixtures-->
 ```erb
 photo:
   image_data: <%= TestData.image_data %>
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ## Unit tests
 
@@ -184,35 +180,26 @@ end
 ## Acceptance tests
 
 In acceptance tests you're testing your app end-to-end, and you likely want to
-also test file attachments here. There are a variety of libraries that you
-might be using for your acceptance tests.
+also test file attachments here. Here are examples for some common use cases:
 
-### Capybara
-
-If you're testing with the [Capybara] acceptance test framework, you can use
-[`#attach_file`] to select a file from your filesystem in the form:
-
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Capybara-->
 ```rb
 attach_file("#image-field", "test/files/image.jpg")
 ```
-
-### Rack::Test
-
-Regular routing tests in Rails use [Rack::Test], in which case you can create
-`Rack::Test::UploadedFile` objects and pass them as form parameters:
-
+<!--Rack::Test-->
 ```rb
-post "/photos", photo: { image: Rack::Test::UploadedFile.new("test/files/image.jpg", "image/jpeg") }
+post "/photos", photo: {
+  image: Rack::Test::UploadedFile.new("test/files/image.jpg", "image/jpeg")
+}
 ```
-
-### Rack::TestApp
-
-With [Rack::TestApp] you can create multipart file upload requests by using the
-`:multipart` option and passing a `File` object:
-
+<!--Rack::TestApp-->
 ```rb
-http.post "/photos", multipart: {"photo[image]" => File.open("test/files/image.jpg")}
+app.post "/photos", multipart: {
+  "photo[image]" => File.open("test/files/image.jpg")
+}
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ## Background jobs
 
@@ -220,19 +207,21 @@ If you're using background jobs with Shrine, you probably want to make them
 synchronous in tests. See your backgrounding library docs for how to make jobs
 synchronous.
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--ActiveJob-->
 ```rb
-# ActiveJob
 ActiveJob::Base.queue_adapter = :inline
 ```
+<!--Sidekiq-->
 ```rb
-# Sidekiq
 require "sidekiq/testing"
 Sidekiq::Testing.inline!
 ```
+<!--SuckerPunch-->
 ```rb
-# SuckerPunch
 require "sucker_punch/testing/inline"
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ## Processing
 
@@ -263,12 +252,7 @@ end
 ```
 
 [DatabaseCleaner]: https://github.com/DatabaseCleaner/database_cleaner
-[factory_bot]: https://github.com/thoughtbot/factory_bot
-[fixtures]: https://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures
-[Capybara]: https://github.com/jnicklas/capybara
 [`#attach_file`]: http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method
-[Rack::Test]: https://github.com/brynary/rack-test
-[Rack::TestApp]: https://github.com/kwatch/rack-test_app
 [aws-sdk-ruby stubs]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html
 [MinIO]: https://min.io/
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
