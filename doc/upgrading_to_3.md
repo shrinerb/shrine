@@ -575,14 +575,12 @@ attacher.add_derivatives other_attacher.derivatives # if using derivatives
 ### Moving
 
 The `moving` plugin has been removed in favour of the `:move` option for
-`FileSystem#upload`. You can set up moving in basic places with the
-`upload_options` plugin:
+`FileSystem#upload`. You can set this option as default using the
+`upload_options` plugin (the example assumes both `:cache` and `:store` are
+FileSystem storages):
 
 ```rb
-# set up moving for caching and promotion
-Shrine.plugin :upload_options,
-  cache: -> (io, action: nil, **) { { move: true } if action == :cache },
-  store: -> (io, action: nil, **) { { move: true } if action == :store }
+Shrine.plugin :upload_options, cache: { move: true }, store: { move: true }
 ```
 
 ### Parsed JSON
