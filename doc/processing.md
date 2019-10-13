@@ -55,7 +55,7 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-photo = Photo.new
+photo = Photo.new(image: file)
 photo.image_derivatives! # calls derivatives processor
 photo.save
 ```
@@ -69,6 +69,21 @@ photo.image(:large)            #=> #<Shrine::UploadedFile ...>
 photo.image(:large).url        #=> "/uploads/store/lg043.jpg"
 photo.image(:large).size       #=> 5825949
 photo.image(:large).mime_type  #=> "image/jpeg"
+```
+
+### Automatic processing
+
+If you would like derivatives to be automatically created with promotion, you
+can override `Attacher#promote` for call `Attacher#create_derivatives` before
+promotion:
+
+```rb
+class Shrine::Attacher
+  def promote(*)
+    create_derivatives
+    super
+  end
+end
 ```
 
 ### Backgrounding

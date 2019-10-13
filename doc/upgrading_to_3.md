@@ -330,6 +330,22 @@ else
 end
 ```
 
+If you have multiple places where you need to generate derivatives, and want it
+to happen automatically like it did with the `versions` plugin, you can
+override `Attacher#promote` to call `Attacher#create_derivatives` before
+promotion:
+
+```rb
+class Shrine::Attacher
+  def promote(*)
+    create_derivatives
+    super
+  end
+end
+```
+
+### Accessing derivatives
+
 The derivative URLs are accessed in the same way as versions:
 
 ```rb
