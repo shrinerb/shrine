@@ -12,7 +12,7 @@ class Footer extends React.Component {
     const config = this.props.config
 
     return (
-      <footer className="nav-footer" id="footer">
+      <footer className="nav-footer" id="footer" data-version={config.projectVersion}>
         <section className="sitemap">
           <a href={config.baseUrl} className="nav-home">
             {config.footerIcon && (

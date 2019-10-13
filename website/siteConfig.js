@@ -8,6 +8,12 @@
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
 
+const sidebars = require(`${__dirname}/sidebars.json`)
+
+const latestSection = Object.keys(sidebars['release_notes'])[0]
+const latestReleaseNotes = sidebars['release_notes'][latestSection][0]
+const latestVersion = latestReleaseNotes.match(/release_notes\/(.+)/)[1]
+
 const siteConfig = {
   title: 'Shrine', // Title for your website.
   tagline: 'File attachment toolkit for Ruby applications',
@@ -17,7 +23,7 @@ const siteConfig = {
   // Used for publishing and more
   projectName: 'shrine',
   organizationName: 'shrinerb',
-  projectVersion: '3.0.0',
+  projectVersion: latestVersion,
 
   // Read markdown documents from the doc/ directory
   customDocsPath: 'doc',
@@ -65,7 +71,10 @@ const siteConfig = {
   },
 
   // Add custom scripts here that would be placed in <script> tags.
-  scripts: ['https://buttons.github.io/buttons.js'],
+  scripts: [
+    'https://buttons.github.io/buttons.js',
+    '/js/version.js',
+  ],
 
   // On page navigation for the current documentation page.
   onPageNav: 'separate',
