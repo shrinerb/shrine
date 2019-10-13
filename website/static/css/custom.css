@@ -23,3 +23,8 @@
 .landingDemo .wrapper {
   max-width: 800px;
 }
+
+.projectLogo {
+  padding-top: 3em !important;
+  padding-bottom: 5em !important;
+}
