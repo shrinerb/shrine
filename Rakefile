@@ -11,7 +11,7 @@ end
 task default: :test
 
 RDoc::Task.new do |t|
-  t.rdoc_dir = "website/build/rdoc"
+  t.rdoc_dir = "website/build/shrine/rdoc"
   t.options += [
     "--line-numbers",
     "--title", "Shrine: Toolkit for file uploads",
