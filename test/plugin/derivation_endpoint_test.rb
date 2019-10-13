@@ -999,6 +999,11 @@ describe Shrine::Plugins::DerivationEndpoint do
         assert_equal "gray content", uploaded_file.read
       end
 
+      it "sets :action to :derivation" do
+        @shrine.expects(:upload).with { |_, _, action:, **| action == :derivation }
+        @uploaded_file.derivation(:gray).upload
+      end
+
       it "excludes original extension from default upload location" do
         @uploaded_file = @uploader.upload(fakeio, location: "foo.jpg")
         uploaded_file = @uploaded_file.derivation(:gray, "dark").upload

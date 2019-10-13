@@ -653,6 +653,7 @@ class Shrine
       shrine_class.upload io, upload_storage,
         location:       upload_location,
         upload_options: upload_options,
+        action:         :derivation,
         **options
     end
   end

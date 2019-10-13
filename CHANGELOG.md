@@ -1,5 +1,11 @@
 ## HEAD
 
+* `mirroring` – Pass `action: :mirror` when uploading to mirror storage (@janko)
+
+* `derivatives` – Pass `action: :derivatives` when uploading derivatives (@janko)
+
+* `derivation_endpoint` – Pass `action: :derivation` when uploading derivation results (@janko)
+
 * `backgrounding` – Forward `Attacher#destroy_background` options to destroy block (@janko)
 
 * `backgrounding` – Don't forward `Attacher#promote_cached` options to promote block (@janko)

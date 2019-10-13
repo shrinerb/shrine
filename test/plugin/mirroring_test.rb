@@ -161,6 +161,12 @@ describe Shrine::Plugins::Mirroring do
         end
       end
 
+      it "sets :action to :mirror" do
+        @shrine.expects(:upload).with { |_, _, action:, **| action == :mirror }
+
+        @file.mirror_upload
+      end
+
       it "raises exception when mirrors not registered" do
         @shrine.plugin :mirroring, mirror: {}
 

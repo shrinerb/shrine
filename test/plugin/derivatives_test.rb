@@ -683,6 +683,12 @@ describe Shrine::Plugins::Derivatives do
         @attacher.upload_derivative(:one, fakeio)
       end
 
+      it "sets :action to :derivatives" do
+        @shrine.expects(:upload).with { |_, _, action:, **| action == :derivatives }
+
+        @attacher.upload_derivative(:one, fakeio)
+      end
+
       it "forwards additional options for uploading" do
         derivative = @attacher.upload_derivative(:one, fakeio, location: "foo")
 

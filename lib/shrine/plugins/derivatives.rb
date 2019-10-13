@@ -244,7 +244,7 @@ class Shrine
           file.open    if file.is_a?(Tempfile)       # refresh file descriptor
           file.binmode if file.respond_to?(:binmode) # ensure binary mode
 
-          upload(file, storage, derivative: path, delete: true, **options)
+          upload(file, storage, derivative: path, delete: true, action: :derivatives, **options)
         end
 
         # Downloads the attached file and calls the specified processor.
