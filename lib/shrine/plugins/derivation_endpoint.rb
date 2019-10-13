@@ -517,7 +517,7 @@ class Shrine
 
         [302, { "Location" => redirect_url }, []]
       else
-        if derivative
+        if derivative && File.exist?(derivative.path)
           file_response(derivative, env)
         else
           uploaded_file.to_rack_response(

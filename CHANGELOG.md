@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivation_endpoint` – Add back handling of FileSystem moving (@janko)
+
 * `mirroring` – Pass `action: :mirror` when uploading to mirror storage (@janko)
 
 * `derivatives` – Pass `action: :derivatives` when uploading derivatives (@janko)

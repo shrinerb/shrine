@@ -696,6 +696,22 @@ describe Shrine::Plugins::DerivationEndpoint do
         refute File.exist?(file.path)
       end
 
+      it "accounts for derivative being moved" do
+        # mimic moving from FileSystem storage
+        @shrine.storages[:store].instance_eval do
+          def upload(io, id, **options)
+            super
+            File.delete(io.path)
+          end
+        end
+
+        response = @uploaded_file.derivation_response(:gray, env: {})
+
+        assert_equal 200,            response[0]
+        assert_equal "12",           response[1]["Content-Length"]
+        assert_equal "gray content", response[2].enum_for(:each).to_a.join
+      end
+
       it "applies :upload_redirect_url_options" do
         @shrine.plugin :derivation_endpoint, upload_redirect: true, upload_redirect_url_options: { foo: "foo" }
         @storage.expects(:url).with("#{@uploaded_file.id}/gray", foo: "foo").returns("foo")
