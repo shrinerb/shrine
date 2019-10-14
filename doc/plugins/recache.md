@@ -1,4 +1,6 @@
-# Re-cache
+---
+title: Re-cache
+---
 
 The [`recache`][recache] plugin allows you to process your attachment after
 validations succeed, but before the attachment is promoted. This is useful for
@@ -26,4 +28,4 @@ you're using the attacher directly, you can call it manually:
 attacher.recache if attacher.changed?
 ```
 
-[recache]: /lib/shrine/plugins/recache.rb
+[recache]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/recache.rb

@@ -1,4 +1,6 @@
-# Sequel
+---
+title: Sequel
+---
 
 The [`sequel`][sequel] plugin adds [Sequel] integration to the attachment
 interface. It is built on top of the [`model`][model] plugin.
@@ -164,8 +166,8 @@ The following persistence methods are added to `Shrine::Attacher`:
 
 See [persistence] docs for more details.
 
-[sequel]: /lib/shrine/plugins/sequel.rb
+[sequel]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/sequel.rb
 [Sequel]: https://sequel.jeremyevans.net/
-[model]: /doc/plugins/model.md#readme
-[validation]: /doc/plugins/validation.md#readme
-[persistence]: /doc/plugins/persistence.md#readme
+[model]: https://shrinerb.com/docs/plugins/model
+[validation]: https://shrinerb.com/docs/plugins/validation
+[persistence]: https://shrinerb.com/docs/plugins/persistence

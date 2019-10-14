@@ -1,4 +1,6 @@
-# Delete Raw
+---
+title: Delete Raw
+---
 
 The [`delete_raw`][delete_raw] plugin will automatically delete raw files that
 have been uploaded. This is especially useful when doing processing, to ensure
@@ -22,4 +24,4 @@ to the uploader:
 uploader.upload(file, delete: false)
 ```
 
-[delete_raw]: /lib/shrine/plugins/delete_raw.rb
+[delete_raw]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/delete_raw.rb

@@ -5,9 +5,7 @@ class Shrine
   end
 
   module Plugins
-    # Documentation lives in [doc/plugins/atomic_helpers.md] on GitHub.
-    #
-    # [doc/plugins/atomic_helpers.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/atomic_helpers.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/atomic_helpers
     class AtomicHelpers
       module AttacherClassMethods
         # Retrieves the attacher from the given entity/model and verifies that

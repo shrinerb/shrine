@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/remove_invalid.md] on GitHub.
-    #
-    # [doc/plugins/remove_invalid.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_invalid.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/remove_invalid
     module RemoveInvalid
       def self.load_dependencies(uploader)
         uploader.plugin :validation

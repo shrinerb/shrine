@@ -4,9 +4,7 @@ require "down"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/remote_url.md] on GitHub.
-    #
-    # [doc/plugins/remote_url.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remote_url.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/remote_url
     module RemoteUrl
       class DownloadError < Error; end
 

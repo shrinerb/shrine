@@ -4,9 +4,7 @@ Shrine.deprecation("The processing plugin is deprecated and will be removed in S
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/processing.md] on GitHub.
-    #
-    # [doc/plugins/processing.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/processing.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/processing
     module Processing
       def self.configure(uploader)
         uploader.opts[:processing] ||= {}

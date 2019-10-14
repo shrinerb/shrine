@@ -1,4 +1,7 @@
-# Retrieving Uploads
+---
+id: retrieving-uploads
+title: Retrieving Uploads
+---
 
 Uploaded file content is typically retrieved from the storage using a
 `Shrine::UploadedFile` object. This guide explains the various methods of

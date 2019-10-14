@@ -1,4 +1,6 @@
-# Pretty Location
+---
+title: Pretty Location
+---
 
 The [`pretty_location`][pretty_location] plugin attempts to generate a nicer
 folder structure for uploaded files.
@@ -13,7 +15,7 @@ generated locations will typically look like this:
 
 ```rb
 "user/564/avatar/thumb-493g82jf23.jpg"
-# :model/:id/:attachment/:version-:uid.:extension
+# :model/:id/:attachment/:derivative-:uid.:extension
 ```
 
 By default if a record class is inside a namespace, only the "inner" class name
@@ -62,4 +64,4 @@ def generate_location(io, record: nil, **context)
 end
 ```
 
-[pretty_location]: /lib/shrine/plugins/pretty_location.rb
+[pretty_location]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/pretty_location.rb

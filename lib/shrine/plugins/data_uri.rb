@@ -8,9 +8,7 @@ require "forwardable"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/data_uri.md] on GitHub.
-    #
-    # [doc/plugins/data_uri.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/data_uri.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/data_uri
     module DataUri
       class ParseError < Error; end
 

@@ -1,4 +1,7 @@
-# Multiple Files
+---
+id: multiple-files
+title: Multiple Files
+---
 
 There are times when you want to allow users to attach multiple files to a
 single resource, like an album having many photos or a playlist having many
@@ -11,7 +14,7 @@ relationship with the main table, and files will be attached on the records in
 the new table. That way each record from the main table can implicitly have
 multiple attachments through the associated records.
 
-```
+```plaintext
 album1
   photo1
     - attachment1
@@ -64,8 +67,9 @@ files (or attachments) table will be the photos table.
 Let's create a table for the main resource and attachments, and add a foreign
 key in the attachment table for the main table:
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Sequel-->
 ```rb
-# with Sequel:
 Sequel.migration do
   change do
     create_table :albums do
@@ -80,8 +84,9 @@ Sequel.migration do
     end
   end
 end
-
-# with Active Record:
+```
+<!--ActiveRecord-->
+```rb
 class CreateAlbumsAndPhotos < ActiveRecord::Migration
   def change
     create_table :albums do |t|
@@ -97,21 +102,25 @@ class CreateAlbumsAndPhotos < ActiveRecord::Migration
   end
 end
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 In the Photo model, create a Shrine attachment attribute named `image`
 (`:image` matches the `_data` column prefix above):
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Sequel-->
 ```rb
-# with Sequel:
 class Photo < Sequel::Model
   include ImageUploader::Attachment(:image)
 end
-
-# with Active Record:
+```
+<!--ActiveRecord-->
+```rb
 class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image)
 end
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### 2. Declare nested attributes
 
@@ -120,8 +129,9 @@ Using nested attributes is the easiest way to implement any dynamic
 relationship to the photos table, and allow it to directly accept attributes
 for the associated photo records by enabling nested attributes:
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Sequel-->
 ```rb
-# with Sequel:
 class Album < Sequel::Model
   one_to_many :photos
   plugin :association_dependencies, photos: :destroy # destroy photos when album is destroyed
@@ -129,13 +139,23 @@ class Album < Sequel::Model
   plugin :nested_attributes
   nested_attributes :photos, destroy: true
 end
-
-# with Active Record:
+```
+<!--ActiveRecord-->
+```rb
 class Album < ActiveRecord::Base
   has_many :photos, dependent: :destroy
   accepts_nested_attributes_for :photos, allow_destroy: true
 end
 ```
+<!--Mongoid-->
+```rb
+class Album
+  include Mongoid::Document
+  embeds_many :photos
+  accepts_nested_attributes_for :photos
+end
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 Documentation on nested attributes:
 
@@ -152,20 +172,9 @@ already created photos, so that the same form can be used for updating the
 album/photos as well (they will be submitted under the
 `album[photos_attributes]` parameter).
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Rails form builder-->
 ```rb
-# with Forme:
-form @album, action: "/photos", enctype: "multipart/form-data" do |f|
-  f.input :title
-  f.subform :photos do # adds new `album[photos_attributes]` parameter
-    f.input :image,   type: :hidden, value: f.obj.cached_image_data
-    f.input :image,   type: :file
-    f.input :_delete, type: :checkbox unless f.obj.new?
-  end
-  f.input "files[]", type: :file, attr: { multiple: true }, obj: nil
-  f.button "Create"
-end
-
-# with Rails form builder:
 form_for @album, html: { enctype: "multipart/form-data" } do |f|
   f.text_field :title
   f.fields_for :photos do |p| # adds new `album[photos_attributes]` parameter
@@ -177,6 +186,20 @@ form_for @album, html: { enctype: "multipart/form-data" } do |f|
   f.submit "Create"
 end
 ```
+<!--Forme-->
+```rb
+form @album, action: "/photos", enctype: "multipart/form-data" do |f|
+  f.input :title
+  f.subform :photos do # adds new `album[photos_attributes]` parameter
+    f.input :image,   type: :hidden, value: f.obj.cached_image_data
+    f.input :image,   type: :file
+    f.input :_delete, type: :checkbox unless f.obj.new?
+  end
+  f.input "files[]", type: :file, attr: { multiple: true }, obj: nil
+  f.button "Create"
+end
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 In your controller you should still be able to assign all the attributes to the
 album, just remember to whitelist the new parameter for the nested attributes,
@@ -261,18 +284,21 @@ class ImageUploader < Shrine
   end
 end
 ```
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Sequel-->
 ```rb
-# with Sequel:
 class Album < Sequel::Model
   # ... (nested_attributes already enables validating associated photos) ...
 end
-
-# with ActiveRecord:
+```
+<!--ActiveRecord-->
+```rb
 class Album < ActiveRecord::Base
   # ...
   validates_associated :photos
 end
 ```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 Note that by default only metadata set on the client side will be available for
 validations. Shrine will not automatically run metadata extraction for directly
@@ -294,8 +320,8 @@ attributes feature gives you for free.
 [`Sequel::Model.nested_attributes`]: http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html
 [`ActiveRecord::Base.accepts_nested_attributes_for`]: http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
 [`Mongoid::Document.accepts_nested_attributes_for`]: https://docs.mongodb.com/mongoid/master/tutorials/mongoid-nested-attributes/
-[`upload_endpoint`]: /doc/plugins/upload_endpoint.md#readme
-[`presign_endpoint`]: /doc/plugins/presign_endpoint.md#readme
+[`upload_endpoint`]: https://shrinerb.com/docs/plugins/upload_endpoint
+[`presign_endpoint`]: https://shrinerb.com/docs/plugins/presign_endpoint
 [Uppy]: https://uppy.io
 [direct app uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [direct S3 uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads

@@ -1,4 +1,6 @@
-# URL Options
+---
+title: URL Options
+---
 
 The [`url_options`][url_options] plugin allows you to specify
 URL options that will be applied by default for uploaded files of specified
@@ -22,4 +24,4 @@ In both cases the default options are merged with options passed to
 `UploadedFile#url`, and the latter will always have precedence over default
 options.
 
-[url_options]: /lib/shrine/plugins/url_options.rb
+[url_options]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/url_options.rb

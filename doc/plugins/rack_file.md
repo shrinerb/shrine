@@ -1,4 +1,6 @@
-# Rack File
+---
+title: Rack File
+---
 
 The [`rack_file`][rack_file] plugin enables uploaders to accept Rack uploaded
 file hashes for uploading.
@@ -6,6 +8,8 @@ file hashes for uploading.
 ```rb
 plugin :rack_file
 ```
+
+## Usage
 
 When a file is uploaded to your Rack application using the
 `multipart/form-data` parameter encoding, Rack converts the uploaded file to a
@@ -33,6 +37,8 @@ user.avatar = file_hash
 attacher.assign(file_hash)
 ```
 
+## API
+
 Internally the Rack uploaded file hash will be converted into an IO object
 using `Shrine.rack_file`, which you can also use directly:
 
@@ -48,4 +54,4 @@ Note that this plugin is not needed in Rails applications, as Rails already
 wraps the Rack uploaded file hash into an `ActionDispatch::Http::UploadedFile`
 object.
 
-[rack_file]: /lib/shrine/plugins/rack_file.rb
+[rack_file]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/rack_file.rb

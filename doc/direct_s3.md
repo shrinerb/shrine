@@ -1,4 +1,7 @@
-# Direct Uploads to S3
+---
+id: direct-s3
+title: Direct Uploads to S3
+---
 
 Shrine gives you the ability to upload files directly to Amazon S3 (or any
 other storage service that accepts direct uploads). Uploading directly to a
@@ -23,12 +26,14 @@ storage service is beneficial for several reasons:
   request-response lifecycle might not be able to finish before the request
   times out.
 
+## Storage
+
 To start, let's set both temporary and permanent storage to S3, with the
 temporary storage uploading to the `cache/` prefix:
 
 ```rb
 # Gemfile
-gem "shrine", "~> 2.11"
+gem "shrine", "~> 3.0"
 gem "aws-sdk-s3", "~> 1.14"
 ```
 ```rb
@@ -375,6 +380,6 @@ setup] guide.
 [lifecycle Console]: http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html
 [lifecycle API]: https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method
 [Minio]: https://minio.io
-[minio setup]: /doc/testing.md#minio
-[metadata direct uploads]: /doc/metadata.md#direct-uploads
+[minio setup]: https://shrinerb.com/docs/testing#minio
+[metadata direct uploads]: https://shrinerb.com/docs/metadata#direct-uploads
 [content_disposition]: https://github.com/shrinerb/content_disposition

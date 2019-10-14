@@ -1,17 +1,10 @@
-# Upgrading to Shrine 3.x
+---
+id: upgrading-to-3
+title: Upgrading to Shrine 3.x
+---
 
 This guide provides instructions for upgrading Shrine in your apps to version
-3.x. We will cover the following areas:
-
-* [Attacher](#attacher)
-* [Backgrounding](#backgrounding)
-* [Versions](#versions)
-* [Miscellaneous](#miscellaneous)
-  - [Logging](#logging)
-  - [Backup](#backup)
-  - [Copy](#copy)
-  - [Moving](#moving)
-  - [Memory](#memory)
+3.x. If you're looking for a full list of changes, see the [3.0 release notes].
 
 ## Attacher
 
@@ -25,7 +18,7 @@ attacher without a model:
 
 ```rb
 attacher = Shrine::Attacher.new
-# ...
+#=> #<Shrine::Attacher>
 
 attacher = Shrine::Attacher.new(photo, :image)
 # ~> ArgumentError: invalid number of arguments
@@ -337,6 +330,22 @@ else
 end
 ```
 
+If you have multiple places where you need to generate derivatives, and want it
+to happen automatically like it did with the `versions` plugin, you can
+override `Attacher#promote` to call `Attacher#create_derivatives` before
+promotion:
+
+```rb
+class Shrine::Attacher
+  def promote(*)
+    create_derivatives
+    super
+  end
+end
+```
+
+### Accessing derivatives
+
 The derivative URLs are accessed in the same way as versions:
 
 ```rb
@@ -495,12 +504,43 @@ end
 However, it doesn't implement any other URL fallbacks that the `versions`
 plugin has for missing derivatives.
 
-## Miscellaneous
+## Other
+
+### Processing
+
+The `processing` plugin has been deprecated over the new
+[`derivatives`][derivatives] plugin. If you were modifying the original file:
+
+```rb
+class MyUploader < Shrine
+  plugin :processing
+
+  process(:store) do |io, context|
+    ImageProcessing::MiniMagick
+      .source(io.download)
+      .resize_to_limit!(1600, 1600)
+  end
+end
+```
+
+you should now add the processed file as a derivative:
+
+```rb
+class MyUploader < Shrine
+  plugin :derivatives
+
+  Attacher.derivatives_processor do |original|
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    { normalized: magick.resize_to_limit!(1600, 1600) }
+  end
+end
+```
 
 ### Logging
 
 The `logging` plugin has been removed in favour of the
-[`instrumentation`][instrumentation] plugin. You can replace
+[`instrumentation`][instrumentation] plugin. You can replace code like
 
 ```rb
 Shrine.plugin :logging, logger: Rails.logger
@@ -517,7 +557,7 @@ Shrine.plugin :instrumentation
 ### Backup
 
 The `backup` plugin has been removed in favour of the new
-[`mirroring`][mirroring] plugin. You can replace
+[`mirroring`][mirroring] plugin. You can replace code like
 
 ```rb
 Shrine.plugin :backup, storage: :backup_store
@@ -531,7 +571,8 @@ Shrine.plugin :mirroring, mirror: { store: :backup_store }
 
 ### Copy
 
-The `copy` plugin has been removed. You can replace
+The `copy` plugin has been removed as its behaviour can now be achieved easily.
+You can replace code like
 
 ```rb
 Shrine.plugin :copy
@@ -550,16 +591,54 @@ attacher.add_derivatives other_attacher.derivatives # if using derivatives
 ### Moving
 
 The `moving` plugin has been removed in favour of the `:move` option for
-`FileSystem#upload`. You can set up moving in basic places with the
-`upload_options` plugin:
+`FileSystem#upload`. You can set this option as default using the
+`upload_options` plugin (the example assumes both `:cache` and `:store` are
+FileSystem storages):
 
 ```rb
-Shrine.plugin :upload_options,
-  cache: -> (io, action: nil, **) { { move: true } if action == :cache },
-  store: -> (io, action: nil, **) { { move: true } if action == :store }
+Shrine.plugin :upload_options, cache: { move: true }, store: { move: true }
 ```
 
-[model]: /doc/plugins/model.md#readme
-[derivatives]: /doc/plugins/derivatives.md#readme
-[instrumentation]: /doc/plugins/instrumentation.md#readme
-[mirroring]: /doc/plugins/mirroring.md#readme
+### Parsed JSON
+
+The `parsed_json` plugin has been removed as it's now the default behaviour.
+
+```rb
+# this now works by default
+photo.image = { "id" => "d7e54d6ef2.jpg", "storage" => "cache", "metadata" => { ... } }
+```
+
+### Module Include
+
+The `module_include` plugin has been deprecated over overriding core classes
+directly. You can replace code like
+
+```rb
+class MyUploader < Shrine
+  plugin :module_include
+
+  file_methods do
+    def image?
+      mime_type.start_with?("image")
+    end
+  end
+end
+```
+
+with
+
+```rb
+class MyUploader < Shrine
+  class UploadedFile
+    def image?
+      mime_type.start_with?("image")
+    end
+  end
+end
+```
+
+[3.0 release notes]: https://shrinerb.com/docs/release_notes/3.0.0
+[model]: https://shrinerb.com/docs/plugins/model
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives
+[instrumentation]: https://shrinerb.com/docs/plugins/instrumentation
+[mirroring]: https://shrinerb.com/docs/plugins/mirroring

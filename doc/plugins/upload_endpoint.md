@@ -1,4 +1,6 @@
-# Upload Endpoint
+---
+title: Upload Endpoint
+---
 
 The [`upload_endpoint`][upload_endpoint] plugin provides a Rack endpoint which
 accepts file uploads and forwards them to specified storage. On the client side
@@ -7,6 +9,8 @@ it's recommended to use [Uppy] for asynchronous uploads.
 ```rb
 plugin :upload_endpoint
 ```
+
+## Setup
 
 The plugin adds a `Shrine.upload_endpoint` method which, given a storage
 identifier, returns a Rack application that accepts multipart POST requests,
@@ -173,5 +177,5 @@ and the endpoint will automatically use it to verify the uploaded data.
 
 If the checksums don't match, a `460 Checksum Mismatch` response is returned.
 
-[upload_endpoint]: /lib/shrine/plugins/upload_endpoint.rb
+[upload_endpoint]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/upload_endpoint.rb
 [Uppy]: https://uppy.io

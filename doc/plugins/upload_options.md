@@ -1,4 +1,6 @@
-# Upload Options
+---
+title: Upload Options
+---
 
 The [`upload_options`][upload_options] plugin allows you to automatically pass
 additional upload options to storage on every upload:
@@ -11,8 +13,8 @@ Keys are names of the registered storages, and values are either hashes or
 blocks.
 
 ```rb
-plugin :upload_options, store: -> (io, context) do
-  if [:original, :thumb].include?(context[:version])
+plugin :upload_options, store: -> (io, **options) do
+  if options[:derivative]
     { acl: "public-read" }
   else
     { acl: "private" }
@@ -27,4 +29,4 @@ the uploader.
 uploader.upload(file, upload_options: { acl: "public-read" })
 ```
 
-[upload_options]: /lib/shrine/plugins/upload_options.rb
+[upload_options]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/upload_options.rb

@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/remove_attachment.md] on GitHub.
-    #
-    # [doc/plugins/remove_attachment.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/remove_attachment.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/remove_attachment
     module RemoveAttachment
       module AttachmentMethods
         def define_model_methods(name)

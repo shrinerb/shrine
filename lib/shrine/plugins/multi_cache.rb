@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/multi_cache.md] on GitHub.
-    #
-    # [doc/plugins/multi_cache.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/multi_cache.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/multi_cache
     module MultiCache
       def self.configure(uploader, **opts)
         uploader.opts[:multi_cache] ||= {}

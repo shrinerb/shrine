@@ -1,26 +1,8 @@
-# Using Attacher
+---
+title: Using Attacher
+---
 
 This guide explains what is `Shrine::Attacher` and how to use it.
-
-## Contents
-
-* [Introduction](#introduction)
-* [Storage](#storage)
-* [Attaching](#attaching)
-  - [Attaching cached](#attaching-cached)
-  - [Attaching stored](#attaching-stored)
-  - [Uploading](#uploading)
-  - [Changes](#changes)
-* [Finalizing](#finalizing)
-  - [Promoting](#promoting)
-  - [Replacing](#replacing)
-* [Retrieving](#retreiving)
-  - [File](#file)
-  - [Attached](#attached)
-  - [URL](#url)
-  - [Data](#data)
-* [Deleting](#deleting)
-* [Context](#context)
 
 ## Introduction
 
@@ -446,8 +428,8 @@ However, it's generally better practice to pass uploader options directly to
 `Attacher#assign`, `Attacher#attach`, `Attacher#promote` or any other method
 that's calling `Attacher#upload`.
 
-[validation]: /doc/plugins/validation.md#readme
-[column]: /doc/plugins/column.md#readme
-[entity]: /doc/plugins/entity.md#readme
-[model]: /doc/plugins/model.md#readme
-[backgrounding]: /doc/plugins/backgrounding.md#readme
+[validation]: https://shrinerb.com/docs/plugins/validation
+[column]: https://shrinerb.com/docs/plugins/column
+[entity]: https://shrinerb.com/docs/plugins/entity
+[model]: https://shrinerb.com/docs/plugins/model
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding

@@ -1,4 +1,6 @@
-# Refresh Metadata
+---
+title: Refresh Metadata
+---
 
 The [`refresh_metadata`][refresh_metadata] plugin allows you to re-extract
 metadata from an uploaded file.
@@ -66,5 +68,5 @@ Any options passed in will be forwarded to metadata extraction:
 uploaded_file.refresh_metadata!(foo: "bar") # passes `{ foo: "bar" }` options to metadata extraction
 ```
 
-[refresh_metadata]: /lib/shrine/plugins/refresh_metadata.rb
-[model]: /doc/plugins/model.md#readme
+[refresh_metadata]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/refresh_metadata.rb
+[model]: https://shrinerb.com/docs/plugins/model

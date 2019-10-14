@@ -1,6 +1,13 @@
-# Writing a Plugin
+---
+id: creating-plugins
+title: Writing a Plugin
+---
 
-Shrine has a lot of plugins built-in, but you can also easily create your own.
+Shrine has a lot of plugins built-in, but you can use Shrine's plugin system to
+create your own.
+
+## Definition
+
 Simply put, a plugin is a module:
 
 ```rb
@@ -11,9 +18,9 @@ end
 Shrine.plugin MyPlugin
 ```
 
-If you would like to load plugins with a symbol, like you already load plugins
-that ship with Shrine, you need to put the plugin in
-`shrine/plugins/my_plugin.rb` in the load path, and register it:
+If you would like to load plugins with a symbol (like you already do with
+plugins that ship with Shrine), you need to put the plugin in
+`shrine/plugins/my_plugin.rb` in your load path and register it:
 
 ```rb
 # shrine/plugins/my_plugin.rb
@@ -30,6 +37,8 @@ end
 ```rb
 Shrine.plugin :my_plugin
 ```
+
+## Methods
 
 The way to make plugins actually extend Shrine's core classes is by defining
 special modules inside the plugin. Here's a list of all "special" modules:
@@ -51,7 +60,7 @@ uploading:
 ```rb
 module MyPlugin
   module InstanceMethods
-    def upload(io, context)
+    def upload(io, **options)
       time = Time.now
       result = super
       duration = Time.now - time
@@ -61,40 +70,51 @@ module MyPlugin
 end
 ```
 
-Notice that we can call `super` to get the original behaviour. In addition to
-these modules, you can also make your plugin configurable:
+Notice that we can call `super` to get the original behaviour.
 
-```rb
-Shrine.plugin :my_plugin, foo: "bar"
-```
+## Configuration
 
-You can do this by adding a `.configure` method to your plugin, which will be
-given any passed in arguments or blocks. Typically you'll want to save these
-options into Shrine's `opts`, so that you can access them inside of Shrine's
-methods.
+You'll likely want to make your plugin configurable. You can do that by
+overriding the `.configure` class method and storing received options into
+`Shrine.opts`:
 
 ```rb
 module MyPlugin
-  def self.configure(uploader, options = {})
-    uploader # The uploader class which called `.plugin`
-    uploader.opts[:my_plugin_options] = options
+  def self.configure(uploader, **opts)
+    uploader.opts[:my_plugin] ||= {}
+    uploader.opts[:my_plugin].merge!(opts)
   end
 
   module InstanceMethods
-    def foo
-      opts[:my_plugin_options] #=> {foo: "bar"}
+    def upload(io, **options)
+      opts[:my_plugin] #=> { ... }
+      # ...
     end
   end
 end
 ```
 
+Users can now pass these configuration options when loading your plugin:
+
+```rb
+Shrine.plugin :my_plugin, foo: "bar"
+```
+
+## Dependencies
+
 If your plugin depends on other plugins, you can load them inside of
-`.load_dependencies` (which is given the same arguments as `.configure`):
+`.load_dependencies`:
 
 ```rb
 module MyPlugin
-  def self.load_dependencies(uploader, *)
+  def self.load_dependencies(uploader, **opts)
     uploader.plugin :derivatives # depends on the derivatives plugin
   end
 end
 ```
+
+The dependencies will get loaded before your plugin, allowing you to override
+methods of your dependencies in your method modules.
+
+The same configuration options passed to `.configure` are passed to
+`.load_dependencies` as well.

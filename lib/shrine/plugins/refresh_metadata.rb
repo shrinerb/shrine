@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/refresh_metadata.md] on GitHub.
-    #
-    # [doc/plugins/refresh_metadata.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/refresh_metadata.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/refresh_metadata
     module RefreshMetadata
       module AttacherMethods
         def refresh_metadata!(**options)

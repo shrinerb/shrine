@@ -1,4 +1,6 @@
-# Signature
+---
+title: Signature
+---
 
 The [`signature`][signature] plugin provides the ability to calculate a hash
 from file content. This hash can be used as a checksum or just as a unique
@@ -74,7 +76,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 MIME Type (33ms) – {:io=>StringIO, :uploader=>Shrine}
 ```
 
@@ -85,7 +87,7 @@ plugin :signature, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"signature","duration":24,"io":"#<StringIO:0x00007fb7c5b08b80>","uploader":"Shrine"}
 ```
 
@@ -95,4 +97,4 @@ Or disable logging altogether:
 plugin :signature, log_subscriber: nil
 ```
 
-[signature]: /lib/shrine/plugins/signature.rb
+[signature]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/signature.rb

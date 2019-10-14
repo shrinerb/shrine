@@ -1,4 +1,6 @@
-# Shrine for Paperclip Users
+---
+title: Shrine for Paperclip Users
+---
 
 This guide is aimed at helping Paperclip users transition to Shrine, and it
 consists of three parts:
@@ -616,13 +618,13 @@ s3.upload(io, "object/destination/path")
 The Shrine storage has no replacement for the `:url` Paperclip option, and it
 isn't needed.
 
-[Managing Derivatives]: /doc/changing_derivatives.md#readme
-[direct uploads]: /README.md#direct-uploads
-[S3]: /doc/storage/s3.md#readme
+[Managing Derivatives]: https://shrinerb.com/docs/changing-derivatives
+[direct uploads]: https://shrinerb.com/docs/getting-started#direct-uploads
+[S3]: https://shrinerb.com/docs/storage/s3
 [image_processing]: https://github.com/janko/image_processing
 [libvips]: http://libvips.github.io/libvips/
-[activerecord]: /doc/plugins/activerecord.md#readme
-[sequel]: /doc/plugins/sequel.md#readme
+[activerecord]: https://shrinerb.com/docs/plugins/activerecord
+[sequel]: https://shrinerb.com/docs/plugins/sequel
 [rom]: https://github.com/shrinerb/shrine-rom
 [hanami]: https://github.com/katafrakt/hanami-shrine
 [mongoid]: https://github.com/shrinerb/shrine-mongoid

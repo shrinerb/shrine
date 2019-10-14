@@ -1,4 +1,6 @@
-# Store Dimensions
+---
+title: Store Dimensions
+---
 
 The [`store_dimensions`][store_dimensions] plugin extracts dimensions of
 uploaded images and stores them into the metadata hash (by default it uses the
@@ -108,7 +110,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Image Dimensions (108ms) – {:io=>File, :uploader=>Shrine}
 ```
 
@@ -119,7 +121,7 @@ plugin :store_dimensions, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"image_dimensions","duration":114,"io":"#<File:0x00007fc445371d90>","uploader":"Shrine"}
 ```
 
@@ -129,7 +131,7 @@ Or disable logging altogether:
 plugin :store_dimensions, log_subscriber: nil
 ```
 
-[store_dimensions]: /lib/shrine/plugins/store_dimensions.rb
+[store_dimensions]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/store_dimensions.rb
 [fastimage]: https://github.com/sdsykes/fastimage
 [mini_magick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips

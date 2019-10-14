@@ -1,4 +1,6 @@
-# Extracting Metadata
+---
+title: Extracting Metadata
+---
 
 Before a file is uploaded, Shrine automatically extracts metadata from it, and
 stores them in the `Shrine::UploadedFile` object.
@@ -386,5 +388,5 @@ end
 [MiniMagick]: https://github.com/minimagick/minimagick
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [tus server]: https://github.com/janko/tus-ruby-server
-[determine_mime_type]: /doc/plugins/determine_mime_type.md#readme
-[backgrounding]: /doc/plugins/backgrounding.md#readme
+[determine_mime_type]: https://shrinerb.com/docs/plugins/determine_mime_type
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding

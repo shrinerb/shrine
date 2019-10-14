@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/keep_files.md] on GitHub.
-    #
-    # [doc/plugins/keep_files.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/keep_files.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/keep_files
     module KeepFiles
       module AttacherMethods
         def destroy?

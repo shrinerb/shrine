@@ -1,4 +1,6 @@
-# Model
+---
+title: Model
+---
 
 The [`model`][model] plugin provides integration for handling attachment on
 mutable structs. It is built on top of the [`entity`][entity] plugin.
@@ -198,6 +200,6 @@ By default, attachment data is serialized into JSON using the `JSON` standard
 library. If you want to change how data is serialized, see the
 [`column`][column serializer] plugin docs.
 
-[model]: /lib/shrine/plugins/model.rb
-[entity]: /doc/plugins/entity.md#readme
-[column serializer]: /doc/plugins/column.md#serializer
+[model]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/model.rb
+[entity]: https://shrinerb.com/docs/plugins/entity
+[column serializer]: https://shrinerb.com/docs/plugins/column#serializer

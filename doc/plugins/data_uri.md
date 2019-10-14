@@ -1,4 +1,6 @@
-# Data URI
+---
+title: Data URI
+---
 
 The [`data_uri`][data_uri] plugin enables you to upload files as [data URIs].
 This plugin is useful for example when using [HTML5 Canvas].
@@ -6,6 +8,8 @@ This plugin is useful for example when using [HTML5 Canvas].
 ```rb
 plugin :data_uri
 ```
+
+## Usage
 
 The plugin will add the `#<name>_data_uri` writer to your model, which parses
 the given data URI string and uploads it to temporary storage:
@@ -87,7 +91,7 @@ io = Shrine.data_uri("data:,content", filename: "foo.txt")
 io.original_filename #=> "foo.txt"
 ```
 
-### Generating data URI
+## Generating data URI
 
 This plugin also adds `UploadedFile#data_uri` method, which returns a
 base64-encoded data URI of the file content, and `UploadedFile#base64`, which
@@ -119,7 +123,7 @@ payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Data URI (5ms) – {:uploader=>Shrine}
 ```
 
@@ -130,7 +134,7 @@ plugin :data_uri, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, uploader: event[:uploader])
 }
 ```
-```
+```plaintext
 {"name":"data_uri","duration":5,"uploader":"Shrine"}
 ```
 
@@ -140,6 +144,6 @@ Or disable logging altogether:
 plugin :data_uri, log_subscriber: nil
 ```
 
-[data_uri]: /lib/shrine/plugins/data_uri.rb
+[data_uri]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/data_uri.rb
 [data URIs]: https://tools.ietf.org/html/rfc2397
 [HTML5 Canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API

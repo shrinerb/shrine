@@ -1,4 +1,6 @@
-# Remote URL
+---
+title: Remote URL
+---
 
 The [`remote_url`][remote_url] plugin allows you to attach files from a remote
 location.
@@ -6,6 +8,8 @@ location.
 ```rb
 plugin :remote_url, max_size: 20*1024*1024
 ```
+
+## Usage
 
 The plugin will add the `#<name>_remote_url` writer to your model, which
 downloads the remote file and uploads it to temporary storage.
@@ -162,7 +166,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Remote URL (1550ms) – {:remote_url=>"https://example.com/image.jpg",:download_options=>{},:uploader=>Shrine}
 ```
 
@@ -173,7 +177,7 @@ plugin :remote_url, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"remote_url","duration":5,"remote_url":"https://example.com/image.jpg","download_options":{},"uploader":"Shrine"}
 ```
 
@@ -183,7 +187,7 @@ Or disable logging altogether:
 plugin :remote_url, log_subscriber: nil
 ```
 
-[remote_url]: /lib/shrine/plugins/remote_url.rb
+[remote_url]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remote_url.rb
 [Down]: https://github.com/janko/down
 [Down::NetHttp]: https://github.com/janko/down#downnethttp
 [open-uri]: https://ruby-doc.org/stdlib/libdoc/open-uri/rdoc/OpenURI.html

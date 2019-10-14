@@ -1,4 +1,7 @@
-# Migrating File Storage
+---
+id: changing-storage
+title: Migrating File Storage
+---
 
 This guides shows how to move file attachments to a different storage in 
 production, with zero downtime.
@@ -104,4 +107,4 @@ Shrine.storages = {
 - Shrine.plugin :mirroring, mirror: { store: :s3 } # mirror to :s3 storage
 ```
 
-[mirroring backgrounding]: /doc/plugins/mirroring.md#backgrounding
+[mirroring backgrounding]: https://shrinerb.com/docs/plugins/mirroring#backgrounding

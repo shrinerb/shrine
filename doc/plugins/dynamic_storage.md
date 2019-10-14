@@ -1,4 +1,6 @@
-# Dynamic Storage
+---
+title: Dynamic Storage
+---
 
 The [`dynamic_storage`][dynamic_storage] plugin allows you to register a
 storage using a regex, and evaluate the storage class dynamically depending on
@@ -20,4 +22,4 @@ the bucket "foo". The block is yielded an instance of `MatchData`.
 
 This can be useful in combination with the `default_storage` plugin.
 
-[dynamic_storage]: /lib/shrine/plugins/dynamic_storage.rb
+[dynamic_storage]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/dynamic_storage.rb

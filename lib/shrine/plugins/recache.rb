@@ -4,9 +4,7 @@ Shrine.deprecation("The recache plugin is deprecated and will be removed in Shri
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/recache.md] on GitHub.
-    #
-    # [doc/plugins/recache.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/recache.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/recache
     module Recache
       module AttacherMethods
         def save

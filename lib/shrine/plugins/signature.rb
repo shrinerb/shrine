@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/signature.md] on GitHub.
-    #
-    # [doc/plugins/signature.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/signature.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/signature
     module Signature
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Signature (#{event.duration}ms) – #{{

@@ -11,7 +11,7 @@ end
 task default: :test
 
 RDoc::Task.new do |t|
-  t.rdoc_dir = "www/build/rdoc"
+  t.rdoc_dir = "website/build/shrine/rdoc"
   t.options += [
     "--line-numbers",
     "--title", "Shrine: Toolkit for file uploads",
@@ -31,7 +31,7 @@ end
 
 namespace :website do
   task :build do
-    sh({"BUNDLE_GEMFILE" => nil}, "bundle install --quiet && bundle exec jekyll build", chdir: "www")
+    sh "yarn build", chdir: "website"
     Rake::Task["rdoc"].invoke
   end
 end

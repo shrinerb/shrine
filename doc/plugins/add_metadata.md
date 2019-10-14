@@ -1,4 +1,6 @@
-# Add Metadata
+---
+title: Add Metadata
+---
 
 The [`add_metadata`][add_metadata] plugin provides a convenient method for
 extracting and adding custom metadata values.
@@ -114,4 +116,4 @@ add_metadata :bar do |io, metadata:, **|
 end
 ```
 
-[add_metadata]: /lib/shrine/plugins/add_metadata.rb
+[add_metadata]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/add_metadata.rb

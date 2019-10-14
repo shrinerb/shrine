@@ -1,4 +1,6 @@
-# Infer Extension
+---
+title: Infer Extension
+---
 
 The [`infer_extension`][infer_extension] plugin allows deducing the appropriate
 file extension for the upload location based on the MIME type of the file. This
@@ -68,7 +70,7 @@ payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 Extension (5ms) – {:mime_type=>"image/jpeg", :uploader=>Shrine}
 ```
 
@@ -79,7 +81,7 @@ plugin :infer_extension, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"extension","duration":5,"mime_type":"image/jpeg","uploader":"Shrine"}
 ```
 
@@ -89,6 +91,6 @@ Or disable logging altogether:
 plugin :infer_extension, log_subscriber: nil
 ```
 
-[infer_extension]: /lib/shrine/plugins/infer_extension.rb
+[infer_extension]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/infer_extension.rb
 [mime-types]: https://github.com/mime-types/ruby-mime-types
 [mini_mime]: https://github.com/discourse/mini_mime

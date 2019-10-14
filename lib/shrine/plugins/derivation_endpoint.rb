@@ -9,9 +9,7 @@ require "pathname"
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/derivation_endpoint.md] on GitHub.
-    #
-    # [doc/plugins/derivation_endpoint.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/derivation_endpoint.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/derivation_endpoint
     module DerivationEndpoint
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Derivation (#{event.duration}ms) – #{{

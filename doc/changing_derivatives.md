@@ -1,4 +1,7 @@
-# Managing Derivatives
+---
+id: changing-derivatives
+title: Managing Derivatives
+---
 
 This guide shows how to add, create, update, and remove [derivatives] for an 
 app in production already handling file attachments, with zero downtime.
@@ -21,15 +24,6 @@ class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image)
 end
 ```
-
-## Contents
-
-* [Adding derivatives](#adding-derivatives)
-* [Reprocessing all derivatives](#reprocessing-all-derivatives)
-* [Reprocessing certain derivatives](#reprocessing-certain-derivatives)
-* [Adding new derivatives](#adding-new-derivatives)
-* [Removing derivatives](#removing-derivatives)
-* [Backgrounding](#backgrounding)
 
 ## Adding derivatives
 
@@ -311,4 +305,4 @@ class MakeChangeJob
 end
 ```
 
-[derivatives]: /doc/plugins/derivatives.md#readme
+[derivatives]: https://shrinerb.com/docs/plugins/derivatives

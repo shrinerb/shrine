@@ -1,4 +1,6 @@
-# Download Endpoint
+---
+title: Download Endpoint
+---
 
 The [`download_endpoint`][download_endpoint] plugin provides a Rack app for
 downloading uploaded files from specified storages. This can be useful when
@@ -50,7 +52,8 @@ Rails.application.routes.draw do
 end
 ```
 
-*Hint: For shrine versions 2.x -> ensure that you don't include the plugin twice (globally and in your uploader class - see #408)*
+*Hint: For shrine versions 2.x -> ensure that you don't include the plugin
+twice (globally and in your uploader class - see #408)*
 
 ## Calling from a controller
 
@@ -167,4 +170,4 @@ If you want to have more control on download requests, you can use the
 | `:prefix`           | Path prefix prepended to download URLs                                            | `nil`    |
 | `:redirect`         | Whether to redirect to uploaded files on the storage                              | `false`  |
 
-[download_endpoint]: /lib/shrine/plugins/download_endpoint.rb
+[download_endpoint]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/download_endpoint.rb

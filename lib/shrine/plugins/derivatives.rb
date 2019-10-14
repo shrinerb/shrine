@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/derivatives.md] on GitHub.
-    #
-    # [doc/plugins/derivatives.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/derivatives.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/derivatives
     module Derivatives
       NOOP_PROCESSOR = -> (*) { Hash.new }
 

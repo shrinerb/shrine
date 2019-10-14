@@ -1,4 +1,6 @@
-# Determine MIME Type
+---
+title: Determine MIME Type
+---
 
 The [`determine_mime_type`][determine_mime_type] plugin allows you to determine
 and store the actual MIME type of the file analyzed from file content.
@@ -104,7 +106,7 @@ payload:
 
 A default log subscriber is added as well which logs these events:
 
-```
+```plaintext
 MIME Type (33ms) – {:io=>StringIO, :uploader=>Shrine}
 ```
 
@@ -115,7 +117,7 @@ plugin :determine_mime_type, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```
+```plaintext
 {"name":"mime_type","duration":24,"io":"#<StringIO:0x00007fb7c5b08b80>","uploader":"Shrine"}
 ```
 
@@ -125,7 +127,7 @@ Or disable logging altogether:
 plugin :determine_mime_type, log_subscriber: nil
 ```
 
-[determine_mime_type]: /lib/shrine/plugins/determine_mime_type.rb
+[determine_mime_type]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/determine_mime_type.rb
 [file]: http://linux.die.net/man/1/file
 [Windows equivalent]: http://gnuwin32.sourceforge.net/packages/file.htm
 [ruby-filemagic]: https://github.com/blackwinter/ruby-filemagic

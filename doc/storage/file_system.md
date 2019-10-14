@@ -1,4 +1,7 @@
-# Shrine::Storage::FileSystem
+---
+id: file-system
+title: Shrine::Storage::FileSystem
+---
 
 The FileSystem storage handles uploads to the filesystem, and it is most
 commonly initialized with a "base" folder and a "prefix":
@@ -125,4 +128,4 @@ also means that deploying the app can cancel someone's uploading if you're
 using backgrounding. Also, by default you cannot generate URLs to files in the
 "tmp" directory, but you can with the `download_endpoint` plugin.
 
-[upload_options]: /doc/plugins/upload_options.md#readme
+[upload_options]: https://shrinerb.com/docs/plugins/upload_options

@@ -2,9 +2,7 @@
 
 class Shrine
   module Plugins
-    # Documentation lives in [doc/plugins/backgrounding.md] on GitHub.
-    #
-    # [doc/plugins/backgrounding.md]: https://github.com/shrinerb/shrine/blob/master/doc/plugins/backgrounding.md
+    # Documentation can be found on https://shrinerb.com/docs/plugins/backgrounding
     module Backgrounding
       def self.configure(uploader)
         uploader.opts[:backgrounding] ||= {}

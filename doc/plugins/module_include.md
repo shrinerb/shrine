@@ -1,4 +1,6 @@
-# Module Include
+---
+title: Module Include
+---
 
 The [`module_include`][module_include] plugin allows you to extend Shrine's
 core classes for the given uploader with modules/methods.
@@ -39,4 +41,4 @@ end
 The above defines an additional `#<attachment>_size` method on the attachment
 module, which is what is included in your model.
 
-[module_include]: /lib/shrine/plugins/module_include.rb
+[module_include]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/module_include.rb

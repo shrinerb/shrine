@@ -1,4 +1,6 @@
-# Instrumentation
+---
+title: Instrumentation
+---
 
 The [`instrumentation`][instrumentation] plugin publishes events for various
 operations to a centralized notification component. In addition to that, it
@@ -32,7 +34,7 @@ uploaded_file.exists?
 uploaded_file.download
 uploaded_file.delete
 ```
-```
+```plaintext
 Metadata (32ms) – {:storage=>:store, :io=>StringIO, :uploader=>Shrine}
 Upload (1523ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=>StringIO, :upload_options=>{}, :uploader=>Shrine}
 Exists (755ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}
@@ -185,6 +187,6 @@ Shrine.subscribe(:my_event) do |event|
 end
 ```
 
-[instrumentation]: /lib/shrine/plugins/instrumentation.rb
+[instrumentation]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/instrumentation.rb
 [ActiveSupport::Notifications]: https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html
 [dry-monitor]: https://github.com/dry-rb/dry-monitor
