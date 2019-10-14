@@ -36,6 +36,7 @@ title: Extensions
 * [shrine-mongoid](https://github.com/shrinerb/shrine-mongoid)
 * [shrine-rails](https://github.com/abepetrillo/shrine-rails)
 * [shrine-reform](https://github.com/shrinerb/shrine-reform)
+* [shrine-rom](https://github.com/shrinerb/shrine-rom)
 * [shrine-tus](https://github.com/shrinerb/shrine-tus)
 
 ## Libraries
