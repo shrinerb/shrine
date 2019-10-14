@@ -1,4 +1,4 @@
-## 3.0.0 (14-10-2019)
+## 3.0.0 (2019-10-14)
 
 * `derivation_endpoint` – Pass `action: :derivation` when uploading derivation results (@janko)
 
