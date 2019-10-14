@@ -1,5 +1,9 @@
 ## HEAD
 
+* `sequel` – Move checks for hooks outside of the attacher methods (@janko)
+
+* `activerecord` – Move checks for callbacks outside of the attacher methods (@janko)
+
 * `derivation_endpoint` – Add back handling of FileSystem moving (@janko)
 
 * `mirroring` – Pass `action: :mirror` when uploading to mirror storage (@janko)

@@ -6,7 +6,7 @@ The [`activerecord`][activerecord] plugin adds [Active Record] integration to
 the attachment interface. It is built on top of the [`model`][model] plugin.
 
 ```rb
-plugin :activerecord
+Shrine.plugin :activerecord
 ```
 
 ## Attachment
@@ -79,6 +79,24 @@ photo.image.exists? #=> false
 Active Record currently has a [bug with transaction callbacks], so if you have
 any "after commit" callbacks, make sure to include Shrine's attachment module
 *after* they have all been defined.
+
+#### Overriding callbacks
+
+You can override any of the following attacher methods to modify callback
+behaviour:
+
+* `Attacher#activerecord_before_save`
+* `Attacher#activerecord_after_save`
+* `Attacher#activerecord_after_destroy`
+
+```rb
+class Shrine::Attacher
+  def activerecord_after_save
+    super
+    # ...
+  end
+end
+```
 
 #### Skipping Callbacks
 

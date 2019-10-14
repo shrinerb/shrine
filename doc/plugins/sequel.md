@@ -6,7 +6,7 @@ The [`sequel`][sequel] plugin adds [Sequel] integration to the attachment
 interface. It is built on top of the [`model`][model] plugin.
 
 ```rb
-plugin :sequel
+Shrine.plugin :sequel
 ```
 
 ## Attachment
@@ -71,6 +71,24 @@ photo.image.exists? #=> true
 
 photo.destroy
 photo.image.exists? #=> false
+```
+
+#### Overriding hooks
+
+You can override any of the following attacher methods to modify callback
+behaviour:
+
+* `Attacher#sequel_before_save`
+* `Attacher#sequel_after_save`
+* `Attacher#sequel_after_destroy`
+
+```rb
+class Shrine::Attacher
+  def sequel_after_save
+    super
+    # ...
+  end
+end
 ```
 
 #### Skipping Hooks

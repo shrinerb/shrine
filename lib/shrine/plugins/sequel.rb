@@ -39,17 +39,23 @@ class Shrine
           if shrine_class.opts[:sequel][:hooks]
             define_method :before_save do
               super()
-              send(:"#{name}_attacher").send(:sequel_before_save)
+              if send(:"#{name}_attacher").changed?
+                send(:"#{name}_attacher").send(:sequel_before_save)
+              end
             end
 
             define_method :after_save do
               super()
-              send(:"#{name}_attacher").send(:sequel_after_save)
+              if send(:"#{name}_attacher").changed?
+                send(:"#{name}_attacher").send(:sequel_after_save)
+              end
             end
 
             define_method :after_destroy do
               super()
-              send(:"#{name}_attacher").send(:sequel_after_destroy)
+              if send(:"#{name}_attacher").attached?
+                send(:"#{name}_attacher").send(:sequel_after_destroy)
+              end
             end
           end
 
@@ -83,15 +89,11 @@ class Shrine
 
         # Calls Attacher#save. Called before model save.
         def sequel_before_save
-          return unless changed?
-
           save
         end
 
         # Finalizes attachment and persists changes. Called after model save.
         def sequel_after_save
-          return unless changed?
-
           record.db.after_commit do
             finalize
             persist
@@ -100,8 +102,6 @@ class Shrine
 
         # Deletes attached files. Called after model destroy.
         def sequel_after_destroy
-          return unless attached?
-
           record.db.after_commit do
             destroy_attached
           end
