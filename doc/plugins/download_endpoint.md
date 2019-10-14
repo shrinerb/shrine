@@ -52,7 +52,8 @@ Rails.application.routes.draw do
 end
 ```
 
-*Hint: For shrine versions 2.x -> ensure that you don't include the plugin twice (globally and in your uploader class - see #408)*
+*Hint: For shrine versions 2.x -> ensure that you don't include the plugin
+twice (globally and in your uploader class - see #408)*
 
 ## Calling from a controller
 

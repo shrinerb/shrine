@@ -515,8 +515,8 @@ set of of thumbnails when the image is attached to a record, or you can have
 thumbnails generated dynamically as they're needed.
 
 For image processing, it's recommended to use the **[ImageProcessing]** gem,
-which is a high-level wrapper for processing with [ImageMagick] (via
-[MiniMagick]) or [libvips] (via [ruby-vips]).
+which is a high-level wrapper for processing with
+[MiniMagick][ImageProcessing::MiniMagick] and [libvips][ImageProcessing::Vips].
 
 ```sh
 $ brew install imagemagick vips
@@ -996,11 +996,9 @@ Shrine.logger.level = Logger::WARN
 [uppy tus]: https://uppy.io/docs/tus/
 [uppy xhr-upload]: https://uppy.io/docs/xhr-upload/
 
-[ImageMagick]: https://imagemagick.org/
-[libvips]: http://libvips.github.io/libvips/
-[MiniMagick]: https://github.com/minimagick/minimagick
-[ruby-vips]: https://github.com/libvips/ruby-vips
 [ImageProcessing]: https://github.com/janko/image_processing
+[ImageProcessing::MiniMagick]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme
+[ImageProcessing::Vips]: https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 [`file`]: http://linux.die.net/man/1/file
 
 [activerecord plugin]: https://shrinerb.com/docs/plugins/activerecord
