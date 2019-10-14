@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Multiple Files · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="There are times when you want to allow users to attach multiple files to a"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Multiple Files · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="There are times when you want to allow users to attach multiple files to a"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Extras</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/multiple_files.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Multiple Files</h1></header><article><div><span><p>There are times when you want to allow users to attach multiple files to a
+single resource, like an album having many photos or a playlist having many
+songs. Some file attachment libraries provide a special interface for multiple
+attachments, but Shrine doesn't have one, because it's more flexible to use
+the &quot;nested attributes&quot; feature of your ORM directly to implement this.</p>
+<p>The basic idea is to create a separate table that will have a many-to-one
+relationship with the main table, and files will be attached on the records in
+the new table. That way each record from the main table can implicitly have
+multiple attachments through the associated records.</p>
+<pre><code class="hljs css language-plaintext">album1
+  photo1
+    - attachment1
+  photo2
+    - attachment2
+  photo3
+    - attachment3
+
+album2
+  photo4
+    - attachment4
+  photo5
+    - attachment5
+
+...
+</code></pre>
+<p>To illustrate, this code will create an album with three photos using nested
+attributes:</p>
+<pre><code class="hljs css language-rb">Album.create(
+  <span class="hljs-symbol">title:</span> <span class="hljs-string">"My Album"</span>,
+  <span class="hljs-symbol">photos_attributes:</span> [
+    { <span class="hljs-symbol">image:</span> File.open(<span class="hljs-string">"image1.jpg"</span>, <span class="hljs-symbol">binmode:</span> <span class="hljs-literal">true</span>) },
+    { <span class="hljs-symbol">image:</span> File.open(<span class="hljs-string">"image2.jpg"</span>, <span class="hljs-symbol">binmode:</span> <span class="hljs-literal">true</span>) },
+    { <span class="hljs-symbol">image:</span> File.open(<span class="hljs-string">"image3.jpg"</span>, <span class="hljs-symbol">binmode:</span> <span class="hljs-literal">true</span>) },
+  ]
+)
+</code></pre>
+<p>This design gives you the greatest flexibility, allowing you to support:</p>
+<ul>
+<li>adding new attachments</li>
+<li>updating existing attachments</li>
+<li>removing existing attachments</li>
+<li>sorting attachments (via a separate position column)</li>
+<li>having additional fields on attachments (e.g. captions, votes, number of downloads etc.)</li>
+<li>expanding this to be &quot;many-to-many&quot; relation (e.g. create different playlists from a list of songs, etc)</li>
+<li>...</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="how-to-implement"></a><a href="#how-to-implement" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>How to Implement</h2>
+<p>For the rest of this guide, we will use the example where we have &quot;albums&quot; that
+can have multiple &quot;photos&quot; in it. The main table is the albums table and the
+files (or attachments) table will be the photos table.</p>
+<h3><a class="anchor" aria-hidden="true" id="1-create-the-main-resource-and-attachment-table"></a><a href="#1-create-the-main-resource-and-attachment-table" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. Create the main resource and attachment table</h3>
+<p>Let's create a table for the main resource and attachments, and add a foreign
+key in the attachment table for the main table:</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-21-tab-22" class="nav-link active" data-group="group_21" data-tab="tab-group-21-content-22">Sequel</div><div id="tab-group-21-tab-23" class="nav-link" data-group="group_21" data-tab="tab-group-21-content-23">ActiveRecord</div></div><div class="tab-content"><div id="tab-group-21-content-22" class="tab-pane active" data-group="group_21" tabindex="-1"><div><span><pre><code class="hljs css language-rb">Sequel.migration <span class="hljs-keyword">do</span><br />  change <span class="hljs-keyword">do</span><br />    create_table <span class="hljs-symbol">:albums</span> <span class="hljs-keyword">do</span><br />      primary_key <span class="hljs-symbol">:id</span><br />      column      <span class="hljs-symbol">:title</span>, <span class="hljs-symbol">:text</span><br />    <span class="hljs-keyword">end</span><br /><br />    create_table <span class="hljs-symbol">:photos</span> <span class="hljs-keyword">do</span><br />      primary_key <span class="hljs-symbol">:id</span><br />      foreign_key <span class="hljs-symbol">:album_id</span>, <span class="hljs-symbol">:albums</span><br />      column      <span class="hljs-symbol">:image_data</span>, <span class="hljs-symbol">:text</span><br />    <span class="hljs-keyword">end</span><br />  <span class="hljs-keyword">end</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-21-content-23" class="tab-pane" data-group="group_21" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CreateAlbumsAndPhotos</span> &lt; ActiveRecord::Migration</span><br />  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">change</span></span><br />    create_table <span class="hljs-symbol">:albums</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|t|</span><br />      t.string     <span class="hljs-symbol">:title</span><br />      t.timestamps<br />    <span class="hljs-keyword">end</span><br /><br />    create_table <span class="hljs-symbol">:photos</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|t|</span><br />      t.references <span class="hljs-symbol">:album</span>, <span class="hljs-symbol">foreign_key:</span> <span class="hljs-literal">true</span><br />      t.text       <span class="hljs-symbol">:image_data</span><br />      t.timestamps<br />    <span class="hljs-keyword">end</span><br />  <span class="hljs-keyword">end</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>In the Photo model, create a Shrine attachment attribute named <code>image</code>
+(<code>:image</code> matches the <code>_data</code> column prefix above):</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-24-tab-25" class="nav-link active" data-group="group_24" data-tab="tab-group-24-content-25">Sequel</div><div id="tab-group-24-tab-26" class="nav-link" data-group="group_24" data-tab="tab-group-24-content-26">ActiveRecord</div></div><div class="tab-content"><div id="tab-group-24-content-25" class="tab-pane active" data-group="group_24" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; Sequel::Model</span><br />  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:image</span>)<br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-24-content-26" class="tab-pane" data-group="group_24" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; ActiveRecord::Base</span><br />  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:image</span>)<br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<h3><a class="anchor" aria-hidden="true" id="2-declare-nested-attributes"></a><a href="#2-declare-nested-attributes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. Declare nested attributes</h3>
+<p>Using nested attributes is the easiest way to implement any dynamic
+&quot;one-to-many&quot; association. In the Album model we'll declare a one-to-many
+relationship to the photos table, and allow it to directly accept attributes
+for the associated photo records by enabling nested attributes:</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-27-tab-28" class="nav-link active" data-group="group_27" data-tab="tab-group-27-content-28">Sequel</div><div id="tab-group-27-tab-29" class="nav-link" data-group="group_27" data-tab="tab-group-27-content-29">ActiveRecord</div><div id="tab-group-27-tab-30" class="nav-link" data-group="group_27" data-tab="tab-group-27-content-30">Mongoid</div></div><div class="tab-content"><div id="tab-group-27-content-28" class="tab-pane active" data-group="group_27" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Album</span> &lt; Sequel::Model</span><br />  one_to_many <span class="hljs-symbol">:photos</span><br />  plugin <span class="hljs-symbol">:association_dependencies</span>, <span class="hljs-symbol">photos:</span> <span class="hljs-symbol">:destroy</span> <span class="hljs-comment"># destroy photos when album is destroyed</span><br /><br />  plugin <span class="hljs-symbol">:nested_attributes</span><br />  nested_attributes <span class="hljs-symbol">:photos</span>, <span class="hljs-symbol">destroy:</span> <span class="hljs-literal">true</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-27-content-29" class="tab-pane" data-group="group_27" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Album</span> &lt; ActiveRecord::Base</span><br />  has_many <span class="hljs-symbol">:photos</span>, <span class="hljs-symbol">dependent:</span> <span class="hljs-symbol">:destroy</span><br />  accepts_nested_attributes_for <span class="hljs-symbol">:photos</span>, <span class="hljs-symbol">allow_destroy:</span> <span class="hljs-literal">true</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-27-content-30" class="tab-pane" data-group="group_27" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Album</span></span><br />  <span class="hljs-keyword">include</span> Mongoid::Document<br />  embeds_many <span class="hljs-symbol">:photos</span><br />  accepts_nested_attributes_for <span class="hljs-symbol">:photos</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>Documentation on nested attributes:</p>
+<ul>
+<li><a href="http://sequel.jeremyevans.net/rdoc-plugins/classes/Sequel/Plugins/NestedAttributes.html"><code>Sequel::Model.nested_attributes</code></a></li>
+<li><a href="http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html"><code>ActiveRecord::Base.accepts_nested_attributes_for</code></a></li>
+<li><a href="https://docs.mongodb.com/mongoid/master/tutorials/mongoid-nested-attributes/"><code>Mongoid::Document.accepts_nested_attributes_for</code></a></li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="3-create-the-view"></a><a href="#3-create-the-view" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>3. Create the View</h3>
+<p>Create a form like you normally do to create the album. To this form we'll add
+a file field for selecting photos, which will have <code>multiple</code> attribute to
+allow the user to select multiple files. We'll also display nested fields for
+already created photos, so that the same form can be used for updating the
+album/photos as well (they will be submitted under the
+<code>album[photos_attributes]</code> parameter).</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-31-tab-32" class="nav-link active" data-group="group_31" data-tab="tab-group-31-content-32">Rails form builder</div><div id="tab-group-31-tab-33" class="nav-link" data-group="group_31" data-tab="tab-group-31-content-33">Forme</div></div><div class="tab-content"><div id="tab-group-31-content-32" class="tab-pane active" data-group="group_31" tabindex="-1"><div><span><pre><code class="hljs css language-rb">form_for @album, <span class="hljs-symbol">html:</span> { <span class="hljs-symbol">enctype:</span> <span class="hljs-string">"multipart/form-data"</span> } <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span><br />  f.text_field <span class="hljs-symbol">:title</span><br />  f.fields_for <span class="hljs-symbol">:photos</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|p|</span> <span class="hljs-comment"># adds new `album[photos_attributes]` parameter</span><br />    p.hidden_field <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">value:</span> p.object.cached_image_data<br />    p.file_field   <span class="hljs-symbol">:image</span><br />    p.check_box    <span class="hljs-symbol">:_destroy</span> <span class="hljs-keyword">unless</span> p.object.new_record?<br />  <span class="hljs-keyword">end</span><br />  file_field_tag <span class="hljs-string">"files[]"</span>, <span class="hljs-symbol">multiple:</span> <span class="hljs-literal">true</span><br />  f.submit <span class="hljs-string">"Create"</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-31-content-33" class="tab-pane" data-group="group_31" tabindex="-1"><div><span><pre><code class="hljs css language-rb">form @album, <span class="hljs-symbol">action:</span> <span class="hljs-string">"/photos"</span>, <span class="hljs-symbol">enctype:</span> <span class="hljs-string">"multipart/form-data"</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span><br />  f.input <span class="hljs-symbol">:title</span><br />  f.subform <span class="hljs-symbol">:photos</span> <span class="hljs-keyword">do</span> <span class="hljs-comment"># adds new `album[photos_attributes]` parameter</span><br />    f.input <span class="hljs-symbol">:image</span>,   <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:hidden</span>, <span class="hljs-symbol">value:</span> f.obj.cached_image_data<br />    f.input <span class="hljs-symbol">:image</span>,   <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:file</span><br />    f.input <span class="hljs-symbol">:_delete</span>, <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:checkbox</span> <span class="hljs-keyword">unless</span> f.obj.new?<br />  <span class="hljs-keyword">end</span><br />  f.input <span class="hljs-string">"files[]"</span>, <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:file</span>, <span class="hljs-symbol">attr:</span> { <span class="hljs-symbol">multiple:</span> <span class="hljs-literal">true</span> }, <span class="hljs-symbol">obj:</span> <span class="hljs-literal">nil</span><br />  f.button <span class="hljs-string">"Create"</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>In your controller you should still be able to assign all the attributes to the
+album, just remember to whitelist the new parameter for the nested attributes,
+in this case <code>album[photos_attributes]</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="4a-form-upload"></a><a href="#4a-form-upload" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4a. Form upload</h3>
+<p>If you would like to avoid writing JavaScript, you can have selected files
+uploaded via the form, and then in your controller you can assign them in the
+format of nested attributes. You'll want to merge these newly uploaded photos
+with the existing photos params that will come from the nested form fields.
+This could look something like this:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># In your controller:</span>
+
+<span class="hljs-comment"># transform the list of uploaded files into a photos attributes hash</span>
+new_photos_attributes = params[<span class="hljs-symbol">:files</span>].inject({}) <span class="hljs-keyword">do</span> <span class="hljs-params">|hash, file|</span>
+  hash.merge!(SecureRandom.hex =&gt; { <span class="hljs-symbol">image:</span> file })
+<span class="hljs-keyword">end</span>
+
+<span class="hljs-comment"># merge new photos attributes with existing (`album_params` is whitelisted `params[:album]`)</span>
+photos_attributes = album_params[<span class="hljs-symbol">:photos_attributes</span>].to_h.merge(new_photos_attributes)
+album_attributes  = album_params.merge(<span class="hljs-symbol">photos_attributes:</span> photos_attributes)
+
+<span class="hljs-comment"># create the album with photos</span>
+Album.create(album_params)
+</code></pre>
+<p>In this case you need to make sure your form tag has
+<code>enctype=&quot;multipart/form-data&quot;</code> attributes specified, otherwise form upload
+won't succeed.</p>
+<h3><a class="anchor" aria-hidden="true" id="4b-direct-upload"></a><a href="#4b-direct-upload" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>4b. Direct upload</h3>
+<p>Alternatively, you can have selected files immediately uploaded to a direct
+upload endpoint, as soon as they're selected. It's recommended to use <a href="https://uppy.io">Uppy</a>
+for handling client side file uploads. There are two methods of implementing
+direct uploads: to your app using the <a href="https://shrinerb.com/docs/plugins/upload_endpoint"><code>upload_endpoint</code></a> plugin, or directly
+to a storage like S3 using the <a href="https://shrinerb.com/docs/plugins/presign_endpoint"><code>presign_endpoint</code></a> plugin. See the
+walkthroughs for setting up simple <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads">direct app uploads</a> and <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">direct S3
+uploads</a>, as well as the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> or <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app
+which implement multiple file uploads.</p>
+<p>Once files are uploaded asynchronously, you can dynamically insert photo
+attachment fields for the <code>image</code> attachment attribute into the form, where the
+hidden field is filled with uploaded file data in JSON format, just like when
+doing single direct uploads. The attachment field names should be namespaced
+according to the convention that the nested attributes feature expects. In this
+case it should be <code>album[photos_attributes][&lt;uid&gt;]</code>, where <code>&lt;uid&gt;</code> is any
+unique string.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># naming format in which photos fields should be generated and submitted</span>
+album[photos_attributes][<span class="hljs-number">11111</span>][image] = <span class="hljs-string">'{"id":"38k25.jpg","storage":"cache","metadata":{...}}'</span>
+album[photos_attributes][<span class="hljs-number">29323</span>][image] = <span class="hljs-string">'{"id":"sg0fg.jpg","storage":"cache","metadata":{...}}'</span>
+album[photos_attributes][<span class="hljs-number">34820</span>][image] = <span class="hljs-string">'{"id":"041jd.jpg","storage":"cache","metadata":{...}}'</span>
+</code></pre>
+<p>In your controller you don't need to make any changes to handle the nested
+photos attributes (other than allowing them), your ORM will take care of
+creating, updating, or removing the associated photos.</p>
+<pre><code class="hljs css language-rb">Album.create(album_params) <span class="hljs-comment"># or `params[:album]`</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="5-adding-validations"></a><a href="#5-adding-validations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>5. Adding Validations</h3>
+<p>You can add file validations to the <code>Photo</code> model using the
+<code>validation_helpers</code> plugin. You just need to make sure that your ORM is
+configured to automatically validate associated records.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:validation_helpers</span>
+  plugin <span class="hljs-symbol">:determine_mime_type</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    validate_max_size <span class="hljs-number">10</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>
+    validate_mime_type <span class="hljs-string">%w[image/jpeg image/png image/webp]</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-34-tab-35" class="nav-link active" data-group="group_34" data-tab="tab-group-34-content-35">Sequel</div><div id="tab-group-34-tab-36" class="nav-link" data-group="group_34" data-tab="tab-group-34-content-36">ActiveRecord</div></div><div class="tab-content"><div id="tab-group-34-content-35" class="tab-pane active" data-group="group_34" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Album</span> &lt; Sequel::Model</span><br />  <span class="hljs-comment"># ... (nested_attributes already enables validating associated photos) ...</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-34-content-36" class="tab-pane" data-group="group_34" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Album</span> &lt; ActiveRecord::Base</span><br />  <span class="hljs-comment"># ...</span><br />  validates_associated <span class="hljs-symbol">:photos</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>Note that by default only metadata set on the client side will be available for
+validations. Shrine will not automatically run metadata extraction for directly
+uploaded files, as this would require (at least partially) downloading each
+file from storage, which could be an unwanted performance penalty. If you want
+metadata to be extracted on the server side, you can load the
+<code>restore_cached_data</code> plugin which will make metadata extraction run on
+assignment, or you can extract the metadata manually (e.g. in a background job)
+using the <code>refresh_metadata</code> plugin.</p>
+<h3><a class="anchor" aria-hidden="true" id="conclusion"></a><a href="#conclusion" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Conclusion</h3>
+<p>Now we have a simple interface for accepting multiple attachments, which
+internally uses the nested attributes feature of your ORM to create multiple
+associated records, each with a single attachment. After creation you can also
+add new attachments, or update and delete existing ones, which the nested
+attributes feature gives you for free.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/validation"><span class="arrow-prev">← </span><span>File Validation</span></a><a class="docs-next button" href="/docs/securing-uploads"><span>Securing uploads</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#how-to-implement">How to Implement</a><ul class="toc-headings"><li><a href="#1-create-the-main-resource-and-attachment-table">1. Create the main resource and attachment table</a></li><li><a href="#2-declare-nested-attributes">2. Declare nested attributes</a></li><li><a href="#3-create-the-view">3. Create the View</a></li><li><a href="#4a-form-upload">4a. Form upload</a></li><li><a href="#4b-direct-upload">4b. Direct upload</a></li><li><a href="#5-adding-validations">5. Adding Validations</a></li><li><a href="#conclusion">Conclusion</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

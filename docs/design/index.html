@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>The Design of Shrine · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="*If you want an in-depth walkthrough through the Shrine codebase, see [Notes on study of shrine implementation] article by Jonathan Rochkind.*"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="The Design of Shrine · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="*If you want an in-depth walkthrough through the Shrine codebase, see [Notes on study of shrine implementation] article by Jonathan Rochkind.*"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Base</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/design.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">The Design of Shrine</h1></header><article><div><span><p><em>If you want an in-depth walkthrough through the Shrine codebase, see <a href="https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/">Notes on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
+<p>There are five main types of objects that you deal with in Shrine:</p>
+<ul>
+<li>Storage</li>
+<li><code>Shrine</code></li>
+<li><code>Shrine::UploadedFile</code></li>
+<li><code>Shrine::Attacher</code></li>
+<li><code>Shrine::Attachment</code></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="storage"></a><a href="#storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Storage</h2>
+<p>On the lowest level we have a storage. A storage class encapsulates file
+management logic on a particular service. It is what actually performs uploads,
+generation of URLs, deletions and similar. By convention it is namespaced under
+<code>Shrine::Storage</code>.</p>
+<pre><code class="hljs css language-rb">filesystem = Shrine::Storage::FileSystem.new(<span class="hljs-string">"uploads"</span>)
+filesystem.upload(file, <span class="hljs-string">"foo"</span>)
+filesystem.url(<span class="hljs-string">"foo"</span>) <span class="hljs-comment">#=&gt; "uploads/foo"</span>
+filesystem.delete(<span class="hljs-string">"foo"</span>)
+</code></pre>
+<p>A storage is a PORO which responds to certain methods:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Shrine</span></span>
+  <span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">Storage</span></span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyStorage</span></span>
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">upload</span><span class="hljs-params">(io, id, <span class="hljs-symbol">shrine_metadata:</span> {}, **upload_options)</span></span>
+        <span class="hljs-comment"># uploads `io` to the location `id`</span>
+      <span class="hljs-keyword">end</span>
+
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">open</span><span class="hljs-params">(id, **options)</span></span>
+        <span class="hljs-comment"># returns the remote file as an IO-like object</span>
+      <span class="hljs-keyword">end</span>
+
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">exists?</span><span class="hljs-params">(id)</span></span>
+        <span class="hljs-comment"># checks if the file exists on the storage</span>
+      <span class="hljs-keyword">end</span>
+
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">delete</span><span class="hljs-params">(id)</span></span>
+        <span class="hljs-comment"># deletes the file from the storage</span>
+      <span class="hljs-keyword">end</span>
+
+      <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">url</span><span class="hljs-params">(id, **options)</span></span>
+        <span class="hljs-comment"># URL to the remote file, accepts options for customizing the URL</span>
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Storages are typically not used directly, but through <code>Shrine</code>.</p>
+<h2><a class="anchor" aria-hidden="true" id="shrine"></a><a href="#shrine" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Shrine</code></h2>
+<p>A <code>Shrine</code> object (also called an &quot;uploader&quot;) is essentially a wrapper around
+the <code>#upload</code> storage method. First the storage needs to be registered under a
+name:</p>
+<pre><code class="hljs css language-rb">Shrine.storages[<span class="hljs-symbol">:disk</span>] = Shrine::Storage::FileSystem.new(<span class="hljs-string">"uploads"</span>)
+</code></pre>
+<p>Now we can upload files to the registered storage:</p>
+<pre><code class="hljs css language-rb">uploaded_file = Shrine.upload(file, <span class="hljs-symbol">:disk</span>)
+uploaded_file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</code></pre>
+<p>The argument to <code>Shrine#upload</code> must be an IO-like object. The method does the
+following:</p>
+<ul>
+<li>generates a unique location</li>
+<li>extracts metadata</li>
+<li>uploads the file (calls <code>Storage#upload</code>)</li>
+<li>closes the file</li>
+<li>creates a <code>Shrine::UploadedFile</code> from the data</li>
+</ul>
+<p><code>Shrine</code> class and subclasses are also used for loading plugins that extend all
+core classes. Each <code>Shrine</code> subclass has its own subclass of each of the core
+classes (<code>Shrine::UploadedFile</code>, <code>Shrine::Attacher</code>, and <code>Shrine::Attachment</code>),
+which makes it possible to have different <code>Shrine</code> subclasses with differently
+customized attachment logic. See <a href="https://shrinerb.com/docs/creating-plugins">Creating a New Plugin</a> guide and the <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin
+system of Sequel and Roda</a> article for more details on the design of Shrine's
+plugin system.</p>
+<h2><a class="anchor" aria-hidden="true" id="shrine-uploadedfile"></a><a href="#shrine-uploadedfile" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Shrine::UploadedFile</code></h2>
+<p><code>Shrine::UploadedFile</code> represents a file that was uploaded to a storage, and is
+the result of <code>Shrine#upload</code>. It is essentially a wrapper around a data hash
+containing information about the uploaded file.</p>
+<pre><code class="hljs css language-rb">uploaded_file      <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+uploaded_file.data <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   "storage"  =&gt; "file_system",</span>
+<span class="hljs-comment">#   "id"       =&gt; "9260ea09d8effd.pdf",</span>
+<span class="hljs-comment">#   "metadata" =&gt; {</span>
+<span class="hljs-comment">#     "filename"  =&gt; "resume.pdf",</span>
+<span class="hljs-comment">#     "mime_type" =&gt; "application/pdf",</span>
+<span class="hljs-comment">#     "size"      =&gt; 983294,</span>
+<span class="hljs-comment">#   },</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<p>The data hash contains the storage the file was uploaded to, the location, and
+some metadata: original filename, MIME type and filesize. The
+<code>Shrine::UploadedFile</code> object has handy methods which use this data:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># metadata methods</span>
+uploaded_file.original_filename
+uploaded_file.mime_type
+uploaded_file.size
+<span class="hljs-comment"># ...</span>
+
+<span class="hljs-comment"># storage methods</span>
+uploaded_file.url
+uploaded_file.exists?
+uploaded_file.open
+uploaded_file.download
+uploaded_file.delete
+<span class="hljs-comment"># ...</span>
+</code></pre>
+<p>A <code>Shrine::UploadedFile</code> is itself an IO-like object (representing the
+remote file), so it can be passed to <code>Shrine#upload</code> as well.</p>
+<h2><a class="anchor" aria-hidden="true" id="shrine-attacher"></a><a href="#shrine-attacher" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Shrine::Attacher</code></h2>
+<p>We usually want to treat uploaded files as <em>attachments</em> to records, saving
+their data into a database column. This is the responsibility of
+<code>Shrine::Attacher</code>. A <code>Shrine::Attacher</code> uses <code>Shrine</code> uploaders and
+<code>Shrine::UploadedFile</code> objects internally.</p>
+<p>The attaching process requires a temporary and a permanent storage to be
+registered (by default that's <code>:cache</code> and <code>:store</code>):</p>
+<pre><code class="hljs css language-rb">Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::FileSystem.new(<span class="hljs-string">"uploads/cache"</span>),
+  <span class="hljs-symbol">store:</span> Shrine::Storage::FileSystem.new(<span class="hljs-string">"uploads/store"</span>),
+}
+</code></pre>
+<p>A <code>Shrine::Attacher</code> is instantiated with a model instance and an attachment
+name (an &quot;image&quot; attachment will be saved to <code>image_data</code> field):</p>
+<pre><code class="hljs css language-rb">attacher = Shrine::Attacher.from_model(photo, <span class="hljs-symbol">:image</span>)
+
+attacher.assign(file)
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>_key=:cache ...&gt;</span>
+attacher.record.image_data <span class="hljs-comment">#=&gt; "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"</span>
+
+attacher.finalize
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>_key=:store ...&gt;</span>
+attacher.record.image_data <span class="hljs-comment">#=&gt; "{\"storage\":\"store\",\"id\":\"ksdf02lr9sf3la.jpg\",\"metadata\":{...}}"</span>
+</code></pre>
+<p>Above a file is assigned by the attacher, which &quot;caches&quot; (uploads) the file to
+the temporary storage. The cached file is then &quot;promoted&quot; (uploaded) to
+permanent storage. Behind the scenes a cached <code>Shrine::UploadedFile</code> is given
+to <code>Shrine#upload</code>, which works because <code>Shrine::UploadedFile</code> is an IO-like
+object. After both caching and promoting the data hash of the uploaded file is
+assigned to the record's column as JSON.</p>
+<p>For more details see <a href="https://shrinerb.com/docs/attacher">Using Attacher</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="shrine-attachment"></a><a href="#shrine-attachment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Shrine::Attachment</code></h2>
+<p><code>Shrine::Attachment</code> is the highest level of abstraction. A
+<code>Shrine::Attachment</code> module exposes the <code>Shrine::Attacher</code> object through the
+model instance. The <code>Shrine::Attachment</code> class is a sublcass of <code>Module</code>, which
+means that an instance of <code>Shrine::Attachment</code> is a module:</p>
+<pre><code class="hljs css language-rb">Shrine::Attachment.new(<span class="hljs-symbol">:image</span>).is_a?(Module) <span class="hljs-comment">#=&gt; true</span>
+Shrine::Attachment.new(<span class="hljs-symbol">:image</span>).instance_methods <span class="hljs-comment">#=&gt; [:image=, :image, :image_url, :image_attacher]</span>
+
+<span class="hljs-comment"># equivalents</span>
+Shrine::Attachment.new(<span class="hljs-symbol">:image</span>)
+Shrine::Attachment[<span class="hljs-symbol">:image</span>]
+Shrine::Attachment(<span class="hljs-symbol">:image</span>)
+</code></pre>
+<p>We can include this module to a model:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span></span>
+  <span class="hljs-keyword">include</span> Shrine::Attachment(<span class="hljs-symbol">:image</span>)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo.image = file <span class="hljs-comment"># shorthand for `photo.image_attacher.assign(file)`</span>
+photo.image        <span class="hljs-comment"># shorthand for `photo.image_attacher.get`</span>
+photo.image_url    <span class="hljs-comment"># shorthand for `photo.image_attacher.url`</span>
+
+photo.image_attacher <span class="hljs-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>
+</code></pre>
+<p>When a persistence plugin is loaded, the <code>Shrine::Attachment</code> module also
+automatically:</p>
+<ul>
+<li>syncs Shrine's validation errors with the record</li>
+<li>triggers promoting after record is saved</li>
+<li>deletes the uploaded file if attachment was replaced/removed or the record
+destroyed</li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/getting-started"><span class="arrow-prev">← </span><span>Getting Started</span></a><a class="docs-next button" href="/docs/retrieving-uploads"><span>Retrieving Uploads</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#storage">Storage</a></li><li><a href="#shrine"><code>Shrine</code></a></li><li><a href="#shrine-uploadedfile"><code>Shrine::UploadedFile</code></a></li><li><a href="#shrine-attacher"><code>Shrine::Attacher</code></a></li><li><a href="#shrine-attachment"><code>Shrine::Attachment</code></a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

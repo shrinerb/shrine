@@ -1,0 +1,132 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Shrine 2.11.0 · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## New features"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Shrine 2.11.0 · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="## New features"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Shrine 2.x</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Shrine 3.x</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/release_notes/3.0.0">Shrine 3.0.0</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Shrine 2.x</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.19.0">Shrine 2.19.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.18.0">Shrine 2.18.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.17.0">Shrine 2.17.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.16.0">Shrine 2.16.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.15.0">Shrine 2.15.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.14.0">Shrine 2.14.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.13.0">Shrine 2.13.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.12.0">Shrine 2.12.0</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/release_notes/2.11.0">Shrine 2.11.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.10.1">Shrine 2.10.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.10.0">Shrine 2.10.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.9.0">Shrine 2.9.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.8.0">Shrine 2.9.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.7.0">Shrine 2.7.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.6.1">Shrine 2.6.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.6.0">Shrine 2.6.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.5.0">Shrine 2.5.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.4.1">Shrine 2.4.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.4.0">Shrine 2.4.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.3.1">Shrine 2.3.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.3.0">Shrine 2.3.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.2.0">Shrine 2.2.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.1.1">Shrine 2.1.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.1.0">Shrine 2.1.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.0.1">Shrine 2.0.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.0.0">Shrine 2.0.0</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Shrine 1.x</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.4.2">Shrine 1.4.2</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.4.1">Shrine 1.4.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.4.0">Shrine 1.4.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.3.0">Shrine 1.3.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.2.0">Shrine 1.2.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.1.0">Shrine 1.1.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.0.0">Shrine 1.0.0</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/release_notes/2.11.0.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Shrine 2.11.0</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="new-features"></a><a href="#new-features" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>New features</h2>
+<ul>
+<li><code>Shrine::UploadedFile#stream</code> has been added for streaming the uploaded
+content to a writable destination.</li>
+</ul>
+<pre><code class="hljs css language-rb">uploaded_file.stream(StringIO.new)
+<span class="hljs-comment"># or</span>
+uploaded_file.stream(<span class="hljs-string">"/path/to/destination"</span>)
+</code></pre>
+<ul>
+<li><code>Shrine.with_file</code> has been added for temporarily converting an IO-like
+object into a file. This is useful when wanting to extract metadata using an
+analyzer which requires the source file to be on disk.</li>
+</ul>
+<pre><code class="hljs css language-rb">add_metadata <span class="hljs-keyword">do</span> <span class="hljs-params">|io, context|</span>
+  movie = Shrine.with_file(io) { <span class="hljs-params">|file|</span> FFMPEG::Movie.new(file.path) }
+
+  { <span class="hljs-string">"duration"</span>   =&gt; movie.duration,
+    <span class="hljs-string">"bitrate"</span>    =&gt; movie.bitrate,
+    <span class="hljs-string">"resolution"</span> =&gt; movie.resolution,
+    <span class="hljs-string">"frame_rate"</span> =&gt; movie.frame_rate }
+<span class="hljs-keyword">end</span>
+</code></pre>
+<ul>
+<li><p>The <code>upload_endpoint</code> plugin now accepts the <code>Content-MD5</code> request header,
+in which case it will verify the provided checksum.</p></li>
+<li><p><code>Shrine::Storage::S3#presign</code> now accepts <code>method: :put</code> for changing from a
+POST to a PUT presigned URL. PUT presigned URLs are generally preferred as
+they support more parameters, such as <code>:content_md5</code> for specifying the
+checksum.</p></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="other-improvements"></a><a href="#other-improvements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other improvements</h2>
+<ul>
+<li><p><code>Shrine::UploadedFile#download</code> will now reuse an already opened file, and
+in this case will simply rewind it after it's finished.</p></li>
+<li><p>The <code>:mini_magick</code> and <code>:ruby_vips</code> dimensions analyzers now silently fail
+on processing errors, to allow validations to be reached when invalid file
+is attached.</p></li>
+<li><p>The <code>#presign</code> storage method can now return a Hash. This means it's not
+required for result to be wrapped in a <code>Struct</code> or <code>OpenStruct</code> anymore.</p></li>
+<li><p>The <code>Shrine::Storage::S3#presign</code> now also returns a <code>:method</code> value
+indicating the HTTP verb that needs to be used for the direct upload.</p></li>
+<li><p>The bucket name is not removed from S3 URL path anymore when both <code>:host</code>
+and <code>:force_path_style</code> are set in <code>Shrine::Storage::S3#url</code>.</p></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="regressions"></a><a href="#regressions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Regressions</h2>
+<ul>
+<li>The MIME type is now correctly determined on empty files for <code>:mime_types</code>
+and <code>:mini_mime</code> analyzers. This regression was introduced in Shrine 2.7.0.</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="backwards-compatibility"></a><a href="#backwards-compatibility" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backwards compatibility</h2>
+<ul>
+<li><p>The <code>direct_upload</code> plugin has been deprecated in favour of <code>upload_endpoint</code>
+and <code>presign_endpoint</code> plugins. The <code>direct_upload</code> plugin will be removed in
+Shrine 3.</p></li>
+<li><p><code>Storage#presign</code> returning an object that doesn't respond to <code>#to_h</code> is now
+deprecated, the support for these objects will be removed in Shrine 3.</p></li>
+<li><p><code>Shrine::Storage::S3#presign</code> now returns a <code>Struct</code> instead of an
+<code>Aws::S3::PresignedPost</code> object. Any applications relying on any methods
+other than <code>#url</code> and <code>#fields</code> will have to update their code.</p></li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/release_notes/2.12.0"><span class="arrow-prev">← </span><span>Shrine 2.12.0</span></a><a class="docs-next button" href="/docs/release_notes/2.10.1"><span>Shrine 2.10.1</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#new-features">New features</a></li><li><a href="#other-improvements">Other improvements</a></li><li><a href="#regressions">Regressions</a></li><li><a href="#backwards-compatibility">Backwards compatibility</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

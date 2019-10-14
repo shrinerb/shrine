@@ -35,7 +35,7 @@ Shrine::Plugins::DefaultUrl
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation lives in <a href="https://github.com/shrinerb/shrine/blob/master/doc/plugins/default_url.md">doc/plugins/default_url.md</a> on GitHub.</p>
+<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/default_url">shrinerb.com/docs/plugins/default_url</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -70,7 +70,7 @@ Shrine::Plugins::DefaultUrl
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/default_url.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/default_url.rb</span>&#x000A;<span class="line-num"> 7</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num"> 8</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url</span>] <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num"> 9</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:default_url</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">10</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

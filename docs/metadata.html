@@ -1,0 +1,378 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Extracting Metadata · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Before a file is uploaded, Shrine automatically extracts metadata from it, and"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Extracting Metadata · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="Before a file is uploaded, Shrine automatically extracts metadata from it, and"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Features</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/metadata.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Extracting Metadata</h1></header><article><div><span><p>Before a file is uploaded, Shrine automatically extracts metadata from it, and
+stores them in the <code>Shrine::UploadedFile</code> object.</p>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(file)
+uploaded_file.metadata <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   "size" =&gt; 345993,</span>
+<span class="hljs-comment">#   "filename" =&gt; "matrix.mp4",</span>
+<span class="hljs-comment">#   "mime_type" =&gt; "video/mp4",</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<p>The following metadata is extracted by default:</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Key</th><th style="text-align:left">Default source</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>filename</code></td><td style="text-align:left">extracted from <code>io.original_filename</code> or <code>io.path</code></td></tr>
+<tr><td style="text-align:left"><code>mime_type</code></td><td style="text-align:left">extracted from <code>io.content_type</code></td></tr>
+<tr><td style="text-align:left"><code>size</code></td><td style="text-align:left">extracted from <code>io.size</code></td></tr>
+</tbody>
+</table>
+<p>You can access extracted metadata in three ways:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># via methods (if they're defined)</span>
+uploaded_file.size
+uploaded_file.original_filename
+uploaded_file.mime_type
+
+<span class="hljs-comment"># via the metadata hash</span>
+uploaded_file.metadata[<span class="hljs-string">"size"</span>]
+uploaded_file.metadata[<span class="hljs-string">"filename"</span>]
+uploaded_file.metadata[<span class="hljs-string">"mime_type"</span>]
+
+<span class="hljs-comment"># via the #[] operator</span>
+uploaded_file[<span class="hljs-string">"size"</span>]
+uploaded_file[<span class="hljs-string">"filename"</span>]
+uploaded_file[<span class="hljs-string">"mime_type"</span>]
+</code></pre>
+<p>Under the hood, <code>Shrine#upload</code> calls <code>Shrine#extract_metadata</code>, which you can
+also use directly to extract metadata from any IO object:</p>
+<pre><code class="hljs css language-rb">uploader.extract_metadata(io) <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   "size" =&gt; 345993,</span>
+<span class="hljs-comment">#   "filename" =&gt; "matrix.mp4",</span>
+<span class="hljs-comment">#   "mime_type" =&gt; "video/mp4",</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<p><code>Shrine#upload</code> accepts a <code>:metadata</code> option which accepts the following values:</p>
+<ul>
+<li><p><code>Hash</code> – adds/overrides extracted metadata with the given hash</p>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(file, <span class="hljs-symbol">metadata:</span> { <span class="hljs-string">"filename"</span> =&gt; <span class="hljs-string">"Matrix[1999].mp4"</span>, <span class="hljs-string">"foo"</span> =&gt; <span class="hljs-string">"bar"</span> })
+uploaded_file.original_filename <span class="hljs-comment">#=&gt; "Matrix[1999].mp4"</span>
+uploaded_file.metadata[<span class="hljs-string">"foo"</span>]   <span class="hljs-comment">#=&gt; "bar"</span>
+</code></pre></li>
+<li><p><code>false</code> – skips metadata extraction (useful in tests)</p>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(file, <span class="hljs-symbol">metadata:</span> <span class="hljs-literal">false</span>)
+uploaded_file.metadata <span class="hljs-comment">#=&gt; {}</span>
+</code></pre></li>
+<li><p><code>true</code> – forces metadata extraction when a <code>Shrine::UploadedFile</code> is being
+uploaded (by default metadata is simply copied over)</p>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(uploaded_file, <span class="hljs-symbol">metadata:</span> <span class="hljs-literal">true</span>)
+uploaded_file.metadata <span class="hljs-comment"># re-extracted metadata</span>
+</code></pre></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="mime-type"></a><a href="#mime-type" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>MIME type</h2>
+<p>By default, the <code>mime_type</code> metadata will be copied over from the
+<code>#content_type</code> attribute of the input file (if present). However, since
+<code>#content_type</code> value comes from the <code>Content-Type</code> header of the upload
+request, it's <em>not guaranteed</em> to hold the actual MIME type of the file (browser
+determines this header based on file extension). Moreover, only
+<code>ActionDispatch::Http::UploadedFile</code>, <code>Shrine::RackFile</code>, and
+<code>Shrine::DataFile</code> objects have <code>#content_type</code> defined, so, when uploading
+simple file objects, <code>mime_type</code> will be nil. That makes relying on
+<code>#content_type</code> both a security risk and limiting.</p>
+<p>To remedy that, Shrine comes with a
+<a href="https://shrinerb.com/docs/plugins/determine_mime_type"><code>determine_mime_type</code></a> plugin which is able to extract
+the MIME type from IO <em>content</em>:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"marcel"</span>, <span class="hljs-string">"~&gt; 0.3"</span>
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:determine_mime_type</span>, <span class="hljs-symbol">analyzer:</span> <span class="hljs-symbol">:marcel</span>
+</code></pre>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload StringIO.new(<span class="hljs-string">"&lt;?php ... ?&gt;"</span>)
+uploaded_file.mime_type <span class="hljs-comment">#=&gt; "application/x-php"</span>
+</code></pre>
+<p>You can choose different analyzers, and even mix-and-match them. See the
+<a href="https://shrinerb.com/docs/plugins/determine_mime_type"><code>determine_mime_type</code></a> plugin docs for more details.</p>
+<h2><a class="anchor" aria-hidden="true" id="image-dimensions"></a><a href="#image-dimensions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Image Dimensions</h2>
+<p>Shrine comes with a <code>store_dimensions</code> plugin for extracting image dimensions.
+It adds <code>width</code> and <code>height</code> metadata values, and also adds <code>#width</code>,
+<code>#height</code>, and <code>#dimensions</code> methods to the <code>Shrine::UploadedFile</code> object. By
+default, the plugin uses <a href="https://github.com/sdsykes/fastimage">FastImage</a> to analyze dimensions, but you can also
+have it use <a href="https://github.com/minimagick/minimagick">MiniMagick</a> or <a href="https://github.com/libvips/ruby-vips">ruby-vips</a>:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"fastimage"</span>
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:store_dimensions</span>
+</code></pre>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(image)
+uploaded_file.metadata[<span class="hljs-string">"width"</span>]  <span class="hljs-comment">#=&gt; 1600</span>
+uploaded_file.metadata[<span class="hljs-string">"height"</span>] <span class="hljs-comment">#=&gt; 900</span>
+
+<span class="hljs-comment"># convenience methods</span>
+uploaded_file.width      <span class="hljs-comment">#=&gt; 1600</span>
+uploaded_file.height     <span class="hljs-comment">#=&gt; 900</span>
+uploaded_file.dimensions <span class="hljs-comment">#=&gt; [1600, 900]</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="custom-metadata"></a><a href="#custom-metadata" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom metadata</h2>
+<p>In addition to the built-in metadata, Shrine allows you to extract and store
+any custom metadata, using the <code>add_metadata</code> plugin (which extends
+<code>Shrine#extract_metadata</code>). For example, you might want to extract EXIF data
+from images:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"exiftool"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"exiftool"</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:add_metadata</span>
+
+  add_metadata <span class="hljs-symbol">:exif</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|io, context|</span>
+    Shrine.with_file(io) <span class="hljs-keyword">do</span> <span class="hljs-params">|file|</span>
+      Exiftool.new(file.path).to_hash
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(image)
+uploaded_file.metadata[<span class="hljs-string">"exif"</span>] <span class="hljs-comment">#=&gt; {...}</span>
+uploaded_file.exif             <span class="hljs-comment">#=&gt; {...}</span>
+</code></pre>
+<p>Or, if you're uploading videos, you might want to extract some video-specific
+meatadata:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"streamio-ffmpeg"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"streamio-ffmpeg"</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VideoUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:add_metadata</span>
+
+  add_metadata <span class="hljs-keyword">do</span> <span class="hljs-params">|io, context|</span>
+    movie = Shrine.with_file(io) { <span class="hljs-params">|file|</span> FFMPEG::Movie.new(file.path) }
+
+    { <span class="hljs-string">"duration"</span>   =&gt; movie.duration,
+      <span class="hljs-string">"bitrate"</span>    =&gt; movie.bitrate,
+      <span class="hljs-string">"resolution"</span> =&gt; movie.resolution,
+      <span class="hljs-string">"frame_rate"</span> =&gt; movie.frame_rate }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(video)
+uploaded_file.metadata <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   ...</span>
+<span class="hljs-comment">#   "duration" =&gt; 7.5,</span>
+<span class="hljs-comment">#   "bitrate" =&gt; 481,</span>
+<span class="hljs-comment">#   "resolution" =&gt; "640x480",</span>
+<span class="hljs-comment">#   "frame_rate" =&gt; 16.72</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<p>The yielded <code>io</code> object will not always be an object that responds to <code>#path</code>.
+For example, with the <code>data_uri</code> plugin the <code>io</code> can be a <code>StringIO</code> wrapper,
+with <code>restore_cached_data</code> or <code>refresh_metadata</code> plugins the <code>io</code> might be a
+<code>Shrine::UploadedFile</code> object. So we're using <code>Shrine.with_file</code> to ensure we
+have a file object.</p>
+<h2><a class="anchor" aria-hidden="true" id="metadata-columns"></a><a href="#metadata-columns" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Metadata columns</h2>
+<p>If you want to write any of the metadata values into a separate database column
+on the record, you can use the <code>metadata_attributes</code> plugin.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:metadata_attributes</span>, <span class="hljs-symbol">:mime_type</span> =&gt; <span class="hljs-symbol">:type</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo = Photo.new(<span class="hljs-symbol">image:</span> file)
+photo.image_type <span class="hljs-comment">#=&gt; "image/jpeg"</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="direct-uploads"></a><a href="#direct-uploads" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Direct uploads</h2>
+<p>When attaching files that were uploaded directly to the cloud or a <a href="https://github.com/janko/tus-ruby-server">tus
+server</a>, Shrine won't automatically extract metadata from them, instead it will
+copy any existing metadata that was set on the client side. The reason why this
+is the default behaviour is because extracting the metadata would require (at
+least partially) retrieving file content from the storage, which could
+potentially be expensive depending on the storage and the type of metadata
+being extracted.</p>
+<p>There are two ways of extracting metadata from directly uploaded files. If you
+want metadata to be automatically extracted on assignment (which is useful if
+you want to validate the extracted metadata or have it immediately available
+for any other reason), you can load the <code>restore_cached_data</code> plugin:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:restore_cached_data</span> <span class="hljs-comment"># automatically extract metadata from cached files on assignment</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo.image = <span class="hljs-string">'{"id":"ks9elsd.jpg","storage":"cache","metadata":{}}'</span> <span class="hljs-comment"># metadata is extracted</span>
+photo.image.metadata <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   "size" =&gt; 4593484,</span>
+<span class="hljs-comment">#   "filename" =&gt; "nature.jpg",</span>
+<span class="hljs-comment">#   "mime_type" =&gt; "image/jpeg"</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="backgrounding"></a><a href="#backgrounding" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backgrounding</h3>
+<p>If you're using <a href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a>, you can extract metadata during background
+promotion using the <code>refresh_metadata</code> plugin (which the <code>restore_cached_data</code>
+plugin uses internally):</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:refresh_metadata</span> <span class="hljs-comment"># allow re-extracting metadata</span>
+Shrine.plugin <span class="hljs-symbol">:backgrounding</span>
+
+Shrine::Attacher.promote_block <span class="hljs-keyword">do</span>
+  PromoteJob.perform_async(<span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, record.<span class="hljs-keyword">class</span>.name, record.id, name, file_data)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.refresh_metadata!
+    attacher.atomic_promote
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>You can also extract metadata in the background separately from promotion:</p>
+<pre><code class="hljs css language-rb">MetadataJob.perform_async(
+  attacher.<span class="hljs-keyword">class</span>.name,
+  attacher.record.<span class="hljs-keyword">class</span>.name,
+  attacher.record.id,
+  attacher.name,
+  attacher.file_data,
+)
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MetadataJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.refresh_metadata!
+    attacher.atomic_persist
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>If you have some metadata that you want to extract in the foreground and some
+that you want to extract in the background, you can use the uploader context:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:add_metadata</span>
+
+  add_metadata <span class="hljs-keyword">do</span> <span class="hljs-params">|io, **options|</span>
+    <span class="hljs-keyword">next</span> <span class="hljs-keyword">unless</span> options[<span class="hljs-symbol">:background</span>] <span class="hljs-comment"># proceed only when `background: true` was specified</span>
+
+    <span class="hljs-comment"># example of metadata extraction</span>
+    movie = Shrine.with_file(io) { <span class="hljs-params">|file|</span> FFMPEG::Movie.new(file.path) }
+
+    { <span class="hljs-string">"duration"</span>   =&gt; movie.duration,
+      <span class="hljs-string">"bitrate"</span>    =&gt; movie.bitrate,
+      <span class="hljs-string">"resolution"</span> =&gt; movie.resolution,
+      <span class="hljs-string">"frame_rate"</span> =&gt; movie.frame_rate }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MetadataJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.refresh_metadata!(<span class="hljs-symbol">background:</span> <span class="hljs-literal">true</span>)
+    attacher.atomic_persist
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="optimizations"></a><a href="#optimizations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Optimizations</h3>
+<p>If you want to do both metadata extraction and file processing during
+promotion, you can wrap both in an <code>UploadedFile#open</code> block to make
+sure the file content is retrieved from the storage only once.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+
+    attacher.file.open <span class="hljs-keyword">do</span>
+      attacher.refresh_metadata!
+      attacher.create_derivatives
+    <span class="hljs-keyword">end</span>
+
+    attacher.atomic_promote
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>If you're dealing with large files and have metadata extractors that use
+<code>Shrine.with_file</code>, you might want to use the <code>tempfile</code> plugin to make sure
+the same copy of the uploaded file is reused for both metadata extraction and
+file processing.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:tempfile</span> <span class="hljs-comment"># load it globally so that it overrides `Shrine.with_file`</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># ...</span>
+attacher.file.open <span class="hljs-keyword">do</span>
+  attacher.refresh_metadata!
+  attacher.create_derivatives(attacher.file.tempfile)
+<span class="hljs-keyword">end</span>
+<span class="hljs-comment"># ...</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/direct-s3"><span class="arrow-prev">← </span><span>Direct Uploads to S3</span></a><a class="docs-next button" href="/docs/processing"><span>File Processing</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#mime-type">MIME type</a></li><li><a href="#image-dimensions">Image Dimensions</a></li><li><a href="#custom-metadata">Custom metadata</a></li><li><a href="#metadata-columns">Metadata columns</a></li><li><a href="#direct-uploads">Direct uploads</a><ul class="toc-headings"><li><a href="#backgrounding">Backgrounding</a></li><li><a href="#optimizations">Optimizations</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

@@ -30,13 +30,15 @@ doc/processing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-28 11:17:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-File+Processing">File Processing<span><a href="#label-File+Processing">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>—</p>
+
+<h2 id="label-title-3A+File+Processing">title: File Processing<span><a href="#label-title-3A+File+Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows you to process attached files up front or on-the-fly. For example, if your app is accepting image uploads, you can generate a predefined set of of thumbnails when the image is attached to a record, or you can have thumbnails generated dynamically as they&#39;re needed.</p>
 
@@ -56,11 +58,17 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    {&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-comment"># calls derivatives processor</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span></pre>
+<pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">image:</span> <span class="ruby-identifier">file</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-comment"># calls derivatives processor</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span></pre>
 
-<p>After the processed files are uploaded, their data is saved into the <code>&lt;attachment&gt;_data</code> column. You can then retrieve the derivatives as [<code>Shrine::UploadedFile</code>][uploaded file] objects:</p>
+<p>After the processed files are uploaded, their data is saved into the <code>&lt;attachment&gt;_data</code> column. You can then retrieve the derivatives as <a target="_top" href="http://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html">Shrine::UploadedFile</a> objects:</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>)            <span class="ruby-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>).<span class="ruby-identifier">url</span>        <span class="ruby-comment">#=&gt; &quot;/uploads/store/lg043.jpg&quot;</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>).<span class="ruby-identifier">size</span>       <span class="ruby-comment">#=&gt; 5825949</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>(<span class="ruby-value">:large</span>).<span class="ruby-identifier">mime_type</span>  <span class="ruby-comment">#=&gt; &quot;image/jpeg&quot;</span></pre>
+
+<h3 id="label-Automatic+processing">Automatic processing<span><a href="#label-Automatic+processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>If you would like derivatives to be automatically created with promotion, you can override <code>Attacher#promote</code> for call <code>Attacher#create_derivatives</code> before promotion:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-operator">*</span>)&#x000A;    <span class="ruby-identifier">create_derivatives</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
@@ -68,7 +76,7 @@ Last Update:
 
 <h4 id="label-With+promotion">With promotion<span><a href="#label-With+promotion">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>The simplest way is to use the <a href="/doc/plugins/backgrounding.md#readme">backgrounding</a> plugin to move promotion into a background job, and then create derivatives as part of promotion:</p>
+<p>The simplest way is to use the <a href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a> plugin to move promotion into a background job, and then create derivatives as part of promotion:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -104,11 +112,11 @@ Last Update:
 
 <h2 id="label-On-the-fly+processing">On-the-fly processing<span><a href="#label-On-the-fly+processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Generating image thumbnails on upload can be a pain to maintain, because whenever you need to add a new version or change an existing one, you need to retroactively apply it to all existing uploads (see the <a href="/doc/changing_derivatives.md#readme">Managing Derivatives</a> guide for more details).</p>
+<p>Generating image thumbnails on upload can be a pain to maintain, because whenever you need to add a new version or change an existing one, you need to retroactively apply it to all existing uploads (see the <a href="https://shrinerb.com/docs/changing-derivatives">Managing Derivatives</a> guide for more details).</p>
 
 <p>As an alternative, it&#39;s very common to instead generate thumbnails dynamically as they&#39;re requested, and then cache them for future requests. This strategy is known as “on-the-fly processing”, and it&#39;s suitable for short-running processing such as creating image thumbnails or document previews.</p>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing functionality via the <a href="/doc/plugins/derivation_endpoint.md#readme">derivation_endpoint</a> plugin. The basic setup is the following:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing functionality via the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">derivation_endpoint</a> plugin. The basic setup is the following:</p>
 <ol><li>
 <p>load the plugin with a secret key and a path prefix for the endpoint</p>
 </li><li>
@@ -127,7 +135,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>.<span class="ruby-identifier">derivation_url</span>(<span class="ruby-value">:thumbnail</span>, <span class="ruby-value">600</span>, <span class="ruby-value">400</span>)&#x000A;<span class="ruby-comment">#=&gt; &quot;/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=...&quot;</span></pre>
 
-<p>The plugin is highly customizable, be sure to check out the <a href="/doc/plugins/derivation_endpoint.md#readme">documentation</a>, especially the <a href="/doc/plugins/derivation_endpoint.md#performance">performance section</a>.</p>
+<p>The plugin is highly customizable, be sure to check out the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">documentation</a>, especially the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint#performance">performance section</a>.</p>
 
 <h2 id="label-Extras">Extras<span><a href="#label-Extras">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -153,9 +161,9 @@ Last Update:
 
 <h3 id="label-External+processing">External processing<span><a href="#label-External+processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>Since processing is so dynamic, you&#39;re not limited to using the ImageProcessing gem, you can also use a 3rd-party service to generate thumbnails for you. Here is an example of generating thumbnails on-the-fly using <a href="https://imageoptim.com/api">ImageOptim.com</a> (not to be confused with the [image_optim] gem):</p>
+<p>Since processing is so dynamic, you&#39;re not limited to using the ImageProcessing gem, you can also use a 3rd-party service to generate thumbnails for you. Here is an example of generating thumbnails on-the-fly using <a href="https://imageoptim.com/api">ImageOptim.com</a> (not to be confused with the <a href="https://github.com/toy/image_optim">image_optim</a> gem):</p>
 
-<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;down&quot;</span>, <span class="ruby-string">&quot;~&gt; 4.4&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;http&quot;</span>, <span class="ruby-string">&quot;~&gt; 4.0&quot;</span></pre>
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;down&quot;</span>, <span class="ruby-string">&quot;~&gt; 5.0&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;http&quot;</span>, <span class="ruby-string">&quot;~&gt; 4.0&quot;</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;down/http&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivation_endpoint</span>,&#x000A;    <span class="ruby-value">secret_key:</span> <span class="ruby-string">&quot;secret&quot;</span>,&#x000A;    <span class="ruby-value">prefix:</span>     <span class="ruby-string">&quot;derivations/image&quot;</span>,&#x000A;    <span class="ruby-value">download:</span>   <span class="ruby-keyword">false</span>&#x000A;&#x000A;  <span class="ruby-identifier">derivation</span> <span class="ruby-value">:thumbnail</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-comment"># generate thumbnails using ImageOptim.com</span>&#x000A;    <span class="ruby-identifier">down</span> = <span class="ruby-constant">Down</span><span class="ruby-operator">::</span><span class="ruby-constant">Http</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">method:</span> <span class="ruby-value">:post</span>)&#x000A;    <span class="ruby-identifier">down</span>.<span class="ruby-identifier">download</span>(<span class="ruby-node">&quot;https://im2.io/&lt;USERNAME&gt;/#{width}x#{height}/#{source.url}&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

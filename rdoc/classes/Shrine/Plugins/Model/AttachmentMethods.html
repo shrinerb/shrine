@@ -69,7 +69,7 @@ Shrine::Plugins::Model::AttachmentMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">23</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">24</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">25</span>   <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>&#x000A;<span class="line-num">26</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">model:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">22</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">23</span>   <span class="ruby-ivar">@model</span> = <span class="ruby-identifier">model</span>&#x000A;<span class="line-num">24</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>
@@ -89,7 +89,7 @@ Shrine::Plugins::Model::AttachmentMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-included-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-included-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">33</span>   <span class="ruby-identifier">define_model_methods</span>(<span class="ruby-ivar">@name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">model?</span>&#x000A;<span class="line-num">34</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-included-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">31</span>   <span class="ruby-identifier">define_model_methods</span>(<span class="ruby-ivar">@name</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">model?</span>&#x000A;<span class="line-num">32</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

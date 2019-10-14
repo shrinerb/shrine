@@ -30,15 +30,17 @@ doc/changing_derivatives.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-28 11:17:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Managing+Derivatives">Managing Derivatives<span><a href="#label-Managing+Derivatives">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>— id: changing-derivatives</p>
 
-<p>This guide shows how to add, create, update, and remove <a href="/doc/plugins/derivatives.md#readme">derivatives</a> for an app in production already handling file attachments, with zero downtime.</p>
+<h2 id="label-title-3A+Managing+Derivatives">title: Managing Derivatives<span><a href="#label-title-3A+Managing+Derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>This guide shows how to add, create, update, and remove <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> for an app in production already handling file attachments, with zero downtime.</p>
 
 <p>Let&#39;s assume we have a <code>Photo</code> model with an <code>image</code> file attachment. The examples will be showing image thumbnails, but the advice applies to any kind of derivatives.</p>
 
@@ -47,21 +49,6 @@ Last Update:
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<h2 id="label-Contents">Contents<span><a href="#label-Contents">&para;</a> <a href="#top">&uarr;</a></span></h2>
-<ul><li>
-<p><a href="#adding-derivatives">Adding derivatives</a></p>
-</li><li>
-<p><a href="#reprocessing-all-derivatives">Reprocessing all derivatives</a></p>
-</li><li>
-<p><a href="#reprocessing-certain-derivatives">Reprocessing certain derivatives</a></p>
-</li><li>
-<p><a href="#adding-new-derivatives">Adding new derivatives</a></p>
-</li><li>
-<p><a href="#removing-derivatives">Removing derivatives</a></p>
-</li><li>
-<p><a href="#backgrounding">Backgrounding</a></p>
-</li></ul>
 
 <h2 id="label-Adding+derivatives">Adding derivatives<span><a href="#label-Adding+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

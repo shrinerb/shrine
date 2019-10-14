@@ -1,0 +1,115 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Refresh Metadata · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The [`refresh_metadata`][refresh_metadata] plugin allows you to re-extract"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Refresh Metadata · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="The [`refresh_metadata`][refresh_metadata] plugin allows you to re-extract"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/getting-started" target="_self">Guides</a></li><li class="siteNavGroupActive"><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Metadata</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Attachment</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/activerecord">Active Record</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/column">Column</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/entity">Entity</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/model">Model</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/sequel">Sequel</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Flow</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/backgrounding">Backgrounding</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/presign_endpoint">Presign Endpoint</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/upload_endpoint">Upload Endpoint</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Processing</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/derivation_endpoint">Derivation Endpoint</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/derivatives">Derivatives</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Source</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/data_uri">Data URI</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/rack_file">Rack File</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/remote_url">Remote URL</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Validation</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/remove_invalid">Remove Invalid</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/validation">Validation</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/validation_helpers">Validation Helpers</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Metadata</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/add_metadata">Add Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/determine_mime_type">Determine MIME Type</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/infer_extension">Infer Extension</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/metadata_attributes">Metadata Attributes</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/plugins/refresh_metadata">Refresh Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/restore_cached_data">Restore Cached Data</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/signature">Signature</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/store_dimensions">Store Dimensions</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Downloading</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/download_endpoint">Download Endpoint</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/rack_response">Rack Response</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/tempfile">Tempfile</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Form</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/cached_attachment_data">Cached Attachment Data</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/form_assign">Form Assign</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/remove_attachment">Remove Attachment</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Settings</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/default_storage">Default Storage</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/default_url">Default URL</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/dynamic_storage">Dynamic Storage</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/multi_cache">Multi Cache</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/pretty_location">Pretty Location</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/upload_options">Upload Options</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/url_options">URL Options</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Other</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/plugins/atomic_helpers">Atomic Helpers</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/included">Included</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/instrumentation">Instrumentation</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/keep_files">Keep Files</a></li><li class="navListItem"><a class="navItem" href="/docs/plugins/mirroring">Mirroring</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/plugins/refresh_metadata.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Refresh Metadata</h1></header><article><div><span><p>The <a href="https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/refresh_metadata.rb"><code>refresh_metadata</code></a> plugin allows you to re-extract
+metadata from an uploaded file.</p>
+<pre><code class="hljs css language-rb">plugin <span class="hljs-symbol">:refresh_metadata</span>
+</code></pre>
+<p>It provides <code>#refresh_metadata!</code> method, which triggers metadata extraction
+(calls <code>Shrine#extract_metadata</code>) with the uploaded file opened for reading,
+and updates the existing metadata hash with the results. This can be done
+on the attacher or the uploaded file level.</p>
+<h2><a class="anchor" aria-hidden="true" id="attacher"></a><a href="#attacher" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attacher</h2>
+<p>Calling <code>#refresh_metadata!</code> on a <code>Shrine::Attacher</code> object will re-extract
+metadata of the attached file. When used with a <a href="https://shrinerb.com/docs/plugins/model">model</a>, it will write new file
+data back into the attachment attribute.</p>
+<pre><code class="hljs css language-rb">attacher.refresh_metadata!
+attacher.file.metadata <span class="hljs-comment"># re-extracted metadata</span>
+</code></pre>
+<p>The <code>Attacher#context</code> hash will be forwarded to metadata extraction, as well
+as any options that you pass in.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># via context</span>
+attacher.context[<span class="hljs-symbol">:foo</span>] = <span class="hljs-string">"bar"</span>
+attacher.refresh_metadata! <span class="hljs-comment"># passes `{ foo: "bar" }` options to metadata extraction</span>
+
+<span class="hljs-comment"># via arguments</span>
+attacher.refresh_metadata!(<span class="hljs-symbol">foo:</span> <span class="hljs-string">"bar"</span>) <span class="hljs-comment"># passes `{ foo: "bar" }` options to metadata extraction</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="uploaded-file"></a><a href="#uploaded-file" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploaded File</h2>
+<p>The <code>#refresh_metadata!</code> method can be called on a <code>Shrine::UploadedFile</code> object
+as well.</p>
+<pre><code class="hljs css language-rb">uploaded_file.refresh_metadata!
+uploaded_file.metadata <span class="hljs-comment"># re-extracted metadata</span>
+</code></pre>
+<p>If the uploaded file is not open, it is opened before and closed after metadata
+extraction. For remote storage services this will make an HTTP request.
+However, only the portion of the file needed for extracting metadata will be
+downloaded.</p>
+<p>If the uploaded file is already open, it is passed to metadata extraction as
+is.</p>
+<pre><code class="hljs css language-rb">uploaded_file.open <span class="hljs-keyword">do</span>
+  uploaded_file.refresh_metadata! <span class="hljs-comment"># uses the already opened file</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Any options passed in will be forwarded to metadata extraction:</p>
+<pre><code class="hljs css language-rb">uploaded_file.refresh_metadata!(<span class="hljs-symbol">foo:</span> <span class="hljs-string">"bar"</span>) <span class="hljs-comment"># passes `{ foo: "bar" }` options to metadata extraction</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/plugins/metadata_attributes"><span class="arrow-prev">← </span><span>Metadata Attributes</span></a><a class="docs-next button" href="/docs/plugins/restore_cached_data"><span>Restore Cached Data</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#attacher">Attacher</a></li><li><a href="#uploaded-file">Uploaded File</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

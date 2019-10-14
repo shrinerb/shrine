@@ -1,0 +1,368 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Direct Uploads to S3 · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Shrine gives you the ability to upload files directly to Amazon S3 (or any"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Direct Uploads to S3 · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="Shrine gives you the ability to upload files directly to Amazon S3 (or any"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Features</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/direct_s3.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Direct Uploads to S3</h1></header><article><div><span><p>Shrine gives you the ability to upload files directly to Amazon S3 (or any
+other storage service that accepts direct uploads). Uploading directly to a
+storage service is beneficial for several reasons:</p>
+<ul>
+<li><p>Accepting uploads is resource-intensive for the server, and delegating it to
+an external service makes scaling easier.</p></li>
+<li><p>If both temporary and permanent storage are S3, promoting an S3 file to
+permanent storage will simply issue an S3 copy request, without any
+downloading and reuploading.</p></li>
+<li><p>With multiple servers it's generally not possible to cache files to the disk,
+unless you're using a distibuted filesystem that's shared between servers.</p></li>
+<li><p>On Heroku any uploaded files that aren't part of version control don't persist,
+they get removed each time you do a new deploy or when the dyno automatically
+changes the location.</p></li>
+<li><p>If your request workers have a timeout configured or you're using Heroku,
+uploading large files to S3 or any external service inside the
+request-response lifecycle might not be able to finish before the request
+times out.</p></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="storage"></a><a href="#storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Storage</h2>
+<p>To start, let's set both temporary and permanent storage to S3, with the
+temporary storage uploading to the <code>cache/</code> prefix:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"shrine"</span>, <span class="hljs-string">"~&gt; 3.0"</span>
+gem <span class="hljs-string">"aws-sdk-s3"</span>, <span class="hljs-string">"~&gt; 1.14"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/s3"</span>
+
+s3_options = {
+  <span class="hljs-symbol">bucket:</span>            <span class="hljs-string">"&lt;YOUR BUCKET&gt;"</span>, <span class="hljs-comment"># required</span>
+  <span class="hljs-symbol">access_key_id:</span>     <span class="hljs-string">"&lt;YOUR KEY&gt;"</span>,
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"&lt;YOUR SECRET&gt;"</span>,
+  <span class="hljs-symbol">region:</span>            <span class="hljs-string">"&lt;REGION&gt;"</span>,
+}
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::S3.new(<span class="hljs-symbol">prefix:</span> <span class="hljs-string">"cache"</span>, **s3_options),
+  <span class="hljs-symbol">store:</span> Shrine::Storage::S3.new(**s3_options),
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="bucket-cors-configuration"></a><a href="#bucket-cors-configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Bucket CORS configuration</h2>
+<p>In order to be able upload files directly to your S3 bucket, you'll need to
+update your bucket's CORS configuration, as public uploads are not allowed by
+default. You can do that from the AWS S3 Console by going to your bucket,
+clicking on the &quot;Permissions&quot; tab and then on &quot;CORS Configuration&quot;.</p>
+<p>If you're using <a href="https://uppy.io">Uppy</a>, this is the recommended CORS configuration for the
+<a href="https://uppy.io/docs/aws-s3/">AWS S3 plugin</a> that should work for both POST and PUT uploads:</p>
+<pre><code class="hljs css language-xml"><span class="hljs-meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">CORSConfiguration</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">"http://s3.amazonaws.com/doc/2006-03-01/"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">CORSRule</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedOrigin</span>&gt;</span>https://my-app.com<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedOrigin</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedMethod</span>&gt;</span>GET<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedMethod</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedMethod</span>&gt;</span>POST<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedMethod</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedMethod</span>&gt;</span>PUT<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedMethod</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MaxAgeSeconds</span>&gt;</span>3000<span class="hljs-tag">&lt;/<span class="hljs-name">MaxAgeSeconds</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedHeader</span>&gt;</span>Authorization<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedHeader</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedHeader</span>&gt;</span>x-amz-date<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedHeader</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedHeader</span>&gt;</span>x-amz-content-sha256<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedHeader</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedHeader</span>&gt;</span>content-type<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedHeader</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedHeader</span>&gt;</span>content-disposition<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedHeader</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">CORSRule</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">CORSRule</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedOrigin</span>&gt;</span>*<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedOrigin</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">AllowedMethod</span>&gt;</span>GET<span class="hljs-tag">&lt;/<span class="hljs-name">AllowedMethod</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MaxAgeSeconds</span>&gt;</span>3000<span class="hljs-tag">&lt;/<span class="hljs-name">MaxAgeSeconds</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">CORSRule</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">CORSConfiguration</span>&gt;</span>
+</code></pre>
+<p>Replace <code>https://my-app.com</code> with the URL to your app (in development you can
+set this to <code>*</code>). Once you've hit &quot;Save&quot;, it may take some time for the
+new CORS settings to be applied.</p>
+<h2><a class="anchor" aria-hidden="true" id="strategy-a-dynamic"></a><a href="#strategy-a-dynamic" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Strategy A (dynamic)</h2>
+<ul>
+<li>Best user experience</li>
+<li>Single or multiple file uploads</li>
+<li>Some JavaScript needed</li>
+</ul>
+<p>When the user selects a file in the form, on the client side we asynchronously
+fetch the upload parameters from the server, and use it to upload the file to
+S3. It's recommended to use <a href="https://uppy.io">Uppy</a> for client side uploads.</p>
+<p>The <code>presign_endpoint</code> plugin provides a Rack application that generates these
+upload parameters, which we can just mount in our application. We'll make our
+presign endpoint also use the additional <code>type</code> and <code>filename</code> query parameters
+to set <code>Content-Type</code> header, <code>Content-Disposition</code> header (using the
+<a href="https://github.com/shrinerb/content_disposition">content_disposition</a> gem), as well as limit the upload size to 10 MB (see
+<a href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign"><code>Shrine::Storage::S3#presign</code></a> for the list of available options).</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:presign_endpoint</span>, <span class="hljs-symbol">presign_options:</span> -&gt; (request) {
+  <span class="hljs-comment"># Uppy will send the "filename" and "type" query parameters</span>
+  filename = request.params[<span class="hljs-string">"filename"</span>]
+  type     = request.params[<span class="hljs-string">"type"</span>]
+
+  {
+    <span class="hljs-symbol">content_disposition:</span>    ContentDisposition.inline(filename), <span class="hljs-comment"># set download filename</span>
+    <span class="hljs-symbol">content_type:</span>           type,                                <span class="hljs-comment"># set content type (required if using DigitalOcean Spaces)</span>
+    <span class="hljs-symbol">content_length_range:</span>   <span class="hljs-number">0</span>..(<span class="hljs-number">10</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>),                   <span class="hljs-comment"># limit upload size to 10 MB</span>
+  }
+}
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># config/routes.rb (Rails)</span>
+Rails.application.routes.draw <span class="hljs-keyword">do</span>
+  mount Shrine.presign_endpoint(<span class="hljs-symbol">:cache</span>) =&gt; <span class="hljs-string">"/s3/params"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>The above will create a <code>GET /s3/params</code> route, which internally calls
+<a href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign"><code>Shrine::Storage::S3#presign</code></a> to return the HTTP verb (POST) and the S3 URL
+to which the file should be uploaded, along with the required POST parameters
+and request headers.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># GET /s3/params</span>
+{
+  <span class="hljs-string">"method"</span>: <span class="hljs-string">"post"</span>,
+  <span class="hljs-string">"url"</span>: <span class="hljs-string">"https://my-bucket.s3-eu-west-1.amazonaws.com"</span>,
+  <span class="hljs-string">"fields"</span>: {
+    <span class="hljs-string">"key"</span>: <span class="hljs-string">"b7d575850ba61b44c8a9ff889dfdb14d88cdc25f8dd121004c8"</span>,
+    <span class="hljs-string">"policy"</span>: <span class="hljs-string">"eyJleHBpcmF0aW9uIjoiMjAxNS0QwMToxMToyOVoiLCJjb25kaXRpb25zIjpbeyJidWNrZXQiOiJ..."</span>,
+    <span class="hljs-string">"x-amz-credential"</span>: <span class="hljs-string">"AKIAIJF55TMZYT6Q/20151024/eu-west-1/s3/aws4_request"</span>,
+    <span class="hljs-string">"x-amz-algorithm"</span>: <span class="hljs-string">"AWS4-HMAC-SHA256"</span>,
+    <span class="hljs-string">"x-amz-date"</span>: <span class="hljs-string">"20151024T001129Z"</span>,
+    <span class="hljs-string">"x-amz-signature"</span>: <span class="hljs-string">"c1eb634f83f96b69bd675f535b3ff15ae184b102fcba51e4db5f4959b4ae26f4"</span>
+  },
+  <span class="hljs-string">"headers"</span>: {}
+}
+</code></pre>
+<p>Uppy's <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin would then make a request to this endpoint
+and use these parameters to upload the file directly to S3. Once the file has
+been uploaded, you can generate a JSON representation of the uploaded file on
+the client side, and write it to the hidden attachment field (or send it
+directly in an AJAX request).</p>
+<pre><code class="hljs css language-rb">{
+  <span class="hljs-string">"id"</span>: <span class="hljs-string">"302858ldg9agjad7f3ls.jpg"</span>,
+  <span class="hljs-string">"storage"</span>: <span class="hljs-string">"cache"</span>,
+  <span class="hljs-string">"metadata"</span>: {
+    <span class="hljs-string">"size"</span>: <span class="hljs-number">943483</span>,
+    <span class="hljs-string">"filename"</span>: <span class="hljs-string">"nature.jpg"</span>,
+    <span class="hljs-string">"mime_type"</span>: <span class="hljs-string">"image/jpeg"</span>,
+  }
+}
+</code></pre>
+<ul>
+<li><code>id</code> – location of the file on S3 (minus the <code>:prefix</code>)</li>
+<li><code>storage</code> – direct uploads typically use the <code>:cache</code> storage</li>
+<li><code>metadata</code> – hash of metadata extracted from the file</li>
+</ul>
+<p>Once the form is submitted, this JSON data will then be assigned to the
+attachment attribute instead of the raw file. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this walkthrough</a> for adding dynamic direct S3 uploads from scratch, as well
+as the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app for a complete example
+of multiple direct S3 uploads.</p>
+<p>Also, if you're dealing with larger files, you may want to make the uploads
+resumable by using the <a href="https://uppy.io/docs/aws-s3/">AWS S3 Multipart</a> Uppy plugin
+instead, with the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem on the backend. Your back-end
+implementation is similar, just using <code>Shrine.uppy_s3_multipart</code> in place of
+<code>Shrine.presign_endpoint</code>. Instructions can be found in the <a href="https://github.com/janko/uppy-s3_multipart#shrine">gem
+docs</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="strategy-b-static"></a><a href="#strategy-b-static" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Strategy B (static)</h2>
+<ul>
+<li>Basic user experience</li>
+<li>Only for single uploads</li>
+<li>No JavaScript needed</li>
+</ul>
+<p>An alternative to the previous strategy is to generate an S3 upload form on
+page render. The user can then select a file and submit it directly to S3. For
+generating the form can use <a href="https://shrinerb.com/rdoc/classes/Shrine/Storage/S3.html#method-i-presign"><code>Shrine::Storage::S3#presign</code></a>, which returns URL
+and form fields that should be used for the upload.</p>
+<pre><code class="hljs css language-rb">presign_data = Shrine.storages[<span class="hljs-symbol">:cache</span>].presign(
+  SecureRandom.hex,
+  <span class="hljs-symbol">success_action_redirect:</span> new_album_url
+)
+
+form <span class="hljs-symbol">action:</span> presign_data[<span class="hljs-symbol">:url</span>], <span class="hljs-symbol">method:</span> <span class="hljs-string">"post"</span>, <span class="hljs-symbol">enctype:</span> <span class="hljs-string">"multipart/form-data"</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span>
+  presign_data[<span class="hljs-symbol">:fields</span>].each <span class="hljs-keyword">do</span> <span class="hljs-params">|name, value|</span>
+    f.input <span class="hljs-symbol">:hidden</span>, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">value:</span> value
+  <span class="hljs-keyword">end</span>
+  f.input <span class="hljs-symbol">:file</span>, <span class="hljs-symbol">name:</span> <span class="hljs-string">"file"</span>
+  f.button <span class="hljs-string">"Submit"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Note the additional <code>:success_action_redirect</code> option which tells S3 where to
+redirect to after the file has been uploaded. If you're using the Rails form
+builder to generate this form, you might need to also tell S3 to ignore the
+additional <code>utf8</code> and <code>authenticity_token</code> fields that Rails generates:</p>
+<pre><code class="hljs css language-rb">presign_data = Shrine.storages[<span class="hljs-symbol">:cache</span>].presign(
+  SecureRandom.hex,
+  <span class="hljs-symbol">allow_any:</span> [<span class="hljs-string">"utf8"</span>, <span class="hljs-string">"authenticity_token"</span>],
+  <span class="hljs-symbol">success_action_redirect:</span> new_album_url
+)
+
+<span class="hljs-comment"># ...</span>
+</code></pre>
+<p>Let's assume we specified the redirect URL to be a page which renders the form
+for a new record. S3 will include some information about the upload in form of
+GET parameters in the URL, out of which we only need the <code>key</code> parameter:</p>
+<pre><code class="hljs css language-rb">cached_file = {
+  <span class="hljs-symbol">storage:</span> <span class="hljs-string">"cache"</span>,
+  <span class="hljs-symbol">id:</span> params[<span class="hljs-string">"key"</span>][<span class="hljs-regexp">/^cache\/(.+)/</span>, <span class="hljs-number">1</span>], <span class="hljs-comment"># we subtract the storage prefix</span>
+  <span class="hljs-symbol">metadata:</span> {},
+}
+
+form @album, <span class="hljs-symbol">action:</span> <span class="hljs-string">"/albums"</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span>
+  f.input <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:hidden</span>, <span class="hljs-symbol">value:</span> cached_file.to_json
+  f.button <span class="hljs-string">"Save"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="shrine-metadata"></a><a href="#shrine-metadata" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Shrine metadata</h2>
+<p>When attaching a file that was uploaded directly to S3, by default Shrine will
+not extract metadata from the file, instead it will simply copy over any
+metadata assigned on the client side. This is the default behaviour because
+extracting metadata requires retrieving file content, which in this case means
+additional HTTP requests.</p>
+<p>See <a href="https://shrinerb.com/docs/metadata#direct-uploads">this section</a> or the rationale and instructions
+on how to opt in.</p>
+<h2><a class="anchor" aria-hidden="true" id="clearing-cache"></a><a href="#clearing-cache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Clearing cache</h2>
+<p>Directly uploaded files won't automatically be deleted from your temporary
+storage, so you'll want to periodically clear them. One way to do that is
+by setting up recurring script which calls <code>Shrine::Storage::S3#clear!</code>:</p>
+<pre><code class="hljs css language-rb">s3 = Shrine.storages[<span class="hljs-symbol">:cache</span>]
+s3.clear! { <span class="hljs-params">|object|</span> object.last_modified &lt; Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span> } <span class="hljs-comment"># delete files older than 1 week</span>
+</code></pre>
+<p>Alternatively you can add a bucket lifeycle rule to do this for you. This can
+be done either from the <a href="http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html">AWS Console</a> or via an <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Client.html#put_bucket_lifecycle_configuration-instance_method">API
+call</a>:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"aws-sdk-s3"</span>
+
+client = Aws::S3::Client.new(
+  <span class="hljs-symbol">access_key_id:</span>     <span class="hljs-string">"&lt;YOUR KEY&gt;"</span>,
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"&lt;YOUR SECRET&gt;"</span>,
+  <span class="hljs-symbol">region:</span>            <span class="hljs-string">"&lt;REGION&gt;"</span>,
+)
+
+client.put_bucket_lifecycle_configuration(
+  <span class="hljs-symbol">bucket:</span> <span class="hljs-string">"&lt;YOUR BUCKET&gt;"</span>,
+  <span class="hljs-symbol">lifecycle_configuration:</span> {
+    <span class="hljs-symbol">rules:</span> [{
+      <span class="hljs-symbol">expiration:</span> { <span class="hljs-symbol">days:</span> <span class="hljs-number">7</span> },
+      <span class="hljs-symbol">filter:</span> { <span class="hljs-symbol">prefix:</span> <span class="hljs-string">"cache/"</span> },
+      <span class="hljs-symbol">id:</span> <span class="hljs-string">"cache-clear"</span>,
+      <span class="hljs-symbol">status:</span> <span class="hljs-string">"Enabled"</span>
+    }]
+  }
+)
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="eventual-consistency"></a><a href="#eventual-consistency" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Eventual consistency</h2>
+<p>When uploading objects to Amazon S3, sometimes they may not be available
+immediately. This can be a problem when using direct S3 uploads, because
+usually in this case you're using S3 for both cache and store, so the S3 object
+is moved to store soon after caching.</p>
+<blockquote>
+<p>Amazon S3 provides eventual consistency for some operations, so it is
+possible that new data will not be available immediately after the upload,
+which could result in an incomplete data load or loading stale data. COPY
+operations where the cluster and the bucket are in different regions are
+eventually consistent. All regions provide read-after-write consistency for
+uploads of new objects with unique object keys. For more information about
+data consistency, see <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/Introduction.html#ConsistencyMode">Amazon S3 Data Consistency Model</a> in the <em>Amazon Simple
+Storage Service Developer Guide</em>.</p>
+</blockquote>
+<p>This means that in certain cases copying from cache to store can fail if it
+happens immediately after uploading to cache. If you start noticing these
+errors, and you're using <code>backgrounding</code> plugin, you can tell your
+backgrounding library to perform the job with a delay:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:backgrounding</span>
+
+Shrine::Attacher.promote_block <span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># tells a Sidekiq worker to perform in 3 seconds</span>
+  PromoteJob.perform_in(<span class="hljs-number">3</span>, <span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, record.<span class="hljs-keyword">class</span>.name, record.id, name, file_data)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="checksums"></a><a href="#checksums" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Checksums</h2>
+<p>You can have AWS S3 verify the integrity of the uploaded data by including a
+checksum generated on the client side in the upload request. For that we'll
+need to include the checksum in the presign request, which we can pass in via
+the <code>checksum</code> query parameter. The <code>:content_md5</code> parameter is not supported
+in POST presigns, so for this we'll need to switch to PUT.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:presign_endpoint</span>, <span class="hljs-symbol">presign_options:</span> -&gt; (request) <span class="hljs-keyword">do</span>
+  {
+    <span class="hljs-symbol">method:</span> <span class="hljs-symbol">:put</span>,
+    <span class="hljs-symbol">content_md5:</span> request.params[<span class="hljs-string">"checksum"</span>],
+  }
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>See <a href="https://github.com/shrinerb/shrine/wiki/Using-Checksums-in-Direct-Uploads">this walkthrough</a> for a complete JavaScript
+implementation of checksums.</p>
+<p>Note that PUT presigns don't support the <code>:content_length_range</code> option, but
+they support <code>:content_length</code> instead. So, if you want to limit the upload
+size during direct uploads, you can pass an additional <code>size</code> query parameter
+to the presign request on the client side, and require it when generating
+presign options:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:presign_endpoint</span>, <span class="hljs-symbol">presign_options:</span> -&gt; (request) <span class="hljs-keyword">do</span>
+  {
+    <span class="hljs-symbol">method:</span> <span class="hljs-symbol">:put</span>,
+    <span class="hljs-symbol">content_length:</span> request.params.fetch(<span class="hljs-string">"size"</span>),
+    <span class="hljs-symbol">content_md5:</span> request.params[<span class="hljs-string">"checksum"</span>],
+  }
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="testing"></a><a href="#testing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Testing</h2>
+<p>To avoid network requests in your test and development environment, you can use
+<a href="https://minio.io">Minio</a>. Minio is an open source object storage server with AWS S3 compatible
+API which you can run locally. See how to set it up in the <a href="https://shrinerb.com/docs/testing#minio">Testing</a> guide.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/attacher"><span class="arrow-prev">← </span><span>Using Attacher</span></a><a class="docs-next button" href="/docs/metadata"><span>Extracting Metadata</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#storage">Storage</a></li><li><a href="#bucket-cors-configuration">Bucket CORS configuration</a></li><li><a href="#strategy-a-dynamic">Strategy A (dynamic)</a></li><li><a href="#strategy-b-static">Strategy B (static)</a></li><li><a href="#shrine-metadata">Shrine metadata</a></li><li><a href="#clearing-cache">Clearing cache</a></li><li><a href="#eventual-consistency">Eventual consistency</a></li><li><a href="#checksums">Checksums</a></li><li><a href="#testing">Testing</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

@@ -30,13 +30,15 @@ doc/design.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-The+Design+of+Shrine">The Design of <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-The+Design+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>—</p>
+
+<h2 id="label-title-3A+The+Design+of+Shrine">title: The Design of <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-title-3A+The+Design+of+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p><em>If you want an in-depth walkthrough through the <a href="../../classes/Shrine.html"><code>Shrine</code></a> codebase, see <a href="https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/">Notes on study of shrine implementation</a> article by Jonathan Rochkind.</em></p>
 
@@ -88,7 +90,7 @@ Last Update:
 <p>creates a <code>Shrine::UploadedFile</code> from the data</p>
 </li></ul>
 
-<p><code>Shrine</code> class and subclasses are also used for loading plugins that extend all core classes. Each <code>Shrine</code> subclass has its own subclass of each of the core classes (<code>Shrine::UploadedFile</code>, <code>Shrine::Attacher</code>, and <code>Shrine::Attachment</code>), which makes it possible to have different <code>Shrine</code> subclasses with differently customized attachment logic. See <a href="/doc/creating_plugins.md#readme">Creating a New Plugin</a> guide and the <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin system of Sequel and Roda</a> article for more details on the design of Shrine&#39;s plugin system.</p>
+<p><code>Shrine</code> class and subclasses are also used for loading plugins that extend all core classes. Each <code>Shrine</code> subclass has its own subclass of each of the core classes (<code>Shrine::UploadedFile</code>, <code>Shrine::Attacher</code>, and <code>Shrine::Attachment</code>), which makes it possible to have different <code>Shrine</code> subclasses with differently customized attachment logic. See <a href="https://shrinerb.com/docs/creating-plugins">Creating a New Plugin</a> guide and the <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">Plugin system of Sequel and Roda</a> article for more details on the design of Shrine&#39;s plugin system.</p>
 
 <h2 id="label-Shrine-3A-3AUploadedFile"><code>Shrine::UploadedFile</code><span><a href="#label-Shrine-3A-3AUploadedFile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -116,13 +118,13 @@ Last Update:
 
 <p>Above a file is assigned by the attacher, which “caches” (uploads) the file to the temporary storage. The cached file is then “promoted” (uploaded) to permanent storage. Behind the scenes a cached <code>Shrine::UploadedFile</code> is given to <code>Shrine#upload</code>, which works because <code>Shrine::UploadedFile</code> is an IO-like object. After both caching and promoting the data hash of the uploaded file is assigned to the record&#39;s column as JSON.</p>
 
-<p>For more details see <a href="/doc/attacher.md#readme">Using Attacher</a>.</p>
+<p>For more details see <a href="https://shrinerb.com/docs/attacher">Using Attacher</a>.</p>
 
 <h2 id="label-Shrine-3A-3AAttachment"><code>Shrine::Attachment</code><span><a href="#label-Shrine-3A-3AAttachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p><code>Shrine::Attachment</code> is the highest level of abstraction. A <code>Shrine::Attachment</code> module exposes the <code>Shrine::Attacher</code> object through the model instance. The <code>Shrine::Attachment</code> class is a sublcass of <code>Module</code>, which means that an instance of <code>Shrine::Attachment</code> is a module:</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Module</span>) <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">instance_methods</span> <span class="ruby-comment">#=&gt; [:image=, :image, :image_url, :image_attacher]</span>&#x000A;&#x000A;<span class="ruby-comment"># equivalents</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span>[<span class="ruby-value">:image</span>]</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Module</span>) <span class="ruby-comment">#=&gt; true</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>).<span class="ruby-identifier">instance_methods</span> <span class="ruby-comment">#=&gt; [:image=, :image, :image_url, :image_attacher]</span>&#x000A;&#x000A;<span class="ruby-comment"># equivalents</span>&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:image</span>)&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>[<span class="ruby-value">:image</span>]&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>)</pre>
 
 <p>We can include this module to a model:</p>
 
@@ -130,7 +132,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">file</span> <span class="ruby-comment"># shorthand for `photo.image_attacher.assign(file)`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span>        <span class="ruby-comment"># shorthand for `photo.image_attacher.get`</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_url</span>    <span class="ruby-comment"># shorthand for `photo.image_attacher.url`</span>&#x000A;&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_attacher</span> <span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span></pre>
 
-<p>When an ORM plugin is loaded, the <code>Shrine::Attachment</code> module also automatically:</p>
+<p>When a persistence plugin is loaded, the <code>Shrine::Attachment</code> module also automatically:</p>
 <ul><li>
 <p>syncs Shrine&#39;s validation errors with the record</p>
 </li><li>

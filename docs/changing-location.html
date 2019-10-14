@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Migrating File Locations · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This guide shows how to migrate the location of uploaded files on the same "/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Migrating File Locations · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="This guide shows how to migrate the location of uploaded files on the same "/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Migrating</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/changing_location.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Migrating File Locations</h1></header><article><div><span><p>This guide shows how to migrate the location of uploaded files on the same
+storage in production, with zero downtime.</p>
+<p>Let's assume we have a <code>Photo</code> model with an <code>image</code> file attachment:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:activerecord</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; ActiveRecord::Base</span>
+  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:image</span>)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="1-update-the-location-generation"></a><a href="#1-update-the-location-generation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. Update the location generation</h2>
+<p>Since Shrine generates the location only once during upload, it is safe to change
+the <code>Shrine#generate_location</code> method. All the existing files will still continue
+to work with the previously stored urls because the files have not been migrated.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_location</span><span class="hljs-params">(io, **options)</span></span>
+    <span class="hljs-comment"># change location generation</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>We can now deploy this change to production so new file uploads will be stored in
+the new location.</p>
+<h2><a class="anchor" aria-hidden="true" id="2-move-existing-files"></a><a href="#2-move-existing-files" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. Move existing files</h2>
+<p>To move existing files to new location, run the following script. It fetches
+the photos in batches, downloads the image, and re-uploads it to the new location.
+We only need to migrate the files in <code>:store</code> storage need to be migrated as the files
+in <code>:cache</code> storage will be uploaded to the new location on promotion.</p>
+<pre><code class="hljs css language-rb">Photo.find_each <span class="hljs-keyword">do</span> <span class="hljs-params">|photo|</span>
+  attacher = photo.image_attacher
+
+  <span class="hljs-keyword">next</span> <span class="hljs-keyword">unless</span> attacher.stored? <span class="hljs-comment"># move only attachments uploaded to permanent storage</span>
+
+  old_attacher = attacher.dup
+
+  attacher.set             attacher.upload(attacher.file)                    <span class="hljs-comment"># reupload file</span>
+  attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives) <span class="hljs-comment"># reupload derivatives if you have derivatives</span>
+
+  <span class="hljs-keyword">begin</span>
+    attacher.atomic_persist           <span class="hljs-comment"># persist changes if attachment has not changed in the meantime</span>
+    old_attacher.destroy_attached     <span class="hljs-comment"># delete files on old location</span>
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged,   <span class="hljs-comment"># attachment has changed during reuploading</span>
+         ActiveRecord::RecordNotFound <span class="hljs-comment"># record has been deleted during reuploading</span>
+    attacher.destroy_attached         <span class="hljs-comment"># delete now orphaned files</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Now all your existing attachments should be happily living on new locations.</p>
+<h3><a class="anchor" aria-hidden="true" id="backgrounding"></a><a href="#backgrounding" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backgrounding</h3>
+<p>For faster migration, we can also delay moving files into a background job:</p>
+<pre><code class="hljs css language-rb">Photo.find_each <span class="hljs-keyword">do</span> <span class="hljs-params">|photo|</span>
+  attacher = photo.image_attacher
+
+  <span class="hljs-keyword">next</span> <span class="hljs-keyword">unless</span> attacher.stored? <span class="hljs-comment"># move only attachments uploaded to permanent storage</span>
+
+  MoveFilesJob.perform_async(
+    attacher.<span class="hljs-keyword">class</span>.name,
+    attacher.record.<span class="hljs-keyword">class</span>.name,
+    attacher.record.id,
+    attacher.name,
+    attacher.file_data,
+  )
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MoveFilesJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher     = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    old_attacher = attacher.dup
+
+    attacher.set             attacher.upload(attacher.file)
+    attacher.set_derivatives attacher.upload_derivatives(attacher.derivatives)
+
+    attacher.atomic_persist
+    old_attacher.destroy_attached
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    attacher&amp;.destroy_attached
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/changing-derivatives"><span class="arrow-prev">← </span><span>Managing Derivatives</span></a><a class="docs-next button" href="/docs/changing-storage"><span>Migrating File Storage</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#1-update-the-location-generation">1. Update the location generation</a></li><li><a href="#2-move-existing-files">2. Move existing files</a><ul class="toc-headings"><li><a href="#backgrounding">Backgrounding</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

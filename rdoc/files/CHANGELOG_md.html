@@ -30,14 +30,18 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-28 12:03:50 +0200</span>
+<span class='datetime'>2019-10-14 12:53:23 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h2 id="label-3.0.0.rc+-282019-09-28-29">3.0.0.rc (2019-09-28)<span><a href="#label-3.0.0.rc+-282019-09-28-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-3.0.0+-2814-10-2019-29">3.0.0 (14-10-2019)<span><a href="#label-3.0.0+-2814-10-2019-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
+<p><code>derivation_endpoint</code> – Pass <code>action: :derivation</code> when uploading derivation results (@janko)</p>
+</li><li>
+<p><code>core</code> – Add <code>Shrine::Attachment[]</code> shorthand for <code>Shrine::Attachment.new</code> (@janko)</p>
+</li><li>
 <p><code>core</code> – Add <code>Storage#delete_prefixed</code> method for deleting all files in specified directory (@jrochkind)</p>
 </li><li>
 <p><code>linter</code> – Return <code>true</code> in <code>Storage::Linter#call</code> so that it can be used with <code>assert</code> (@jrochkind)</p>
@@ -49,77 +53,30 @@ Last Update:
 <p><code>pretty_location</code> – Add <code>:class_underscore</code> option for underscoring class name (@Uysim)</p>
 </li><li>
 <p>Update <code>down</code> dependency to <code>~&gt; 5.0</code> (@janko)</p>
-</li></ul>
-
-<h2 id="label-3.0.0.beta3+-282019-09-25-29">3.0.0.beta3 (2019-09-25)<span><a href="#label-3.0.0.beta3+-282019-09-25-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-<ul><li>
-<p><code>multi_cache</code> – Add new plugin for whitelisting additional temporary storages (@janko, @jrochkind)</p>
 </li><li>
-<p><code>s3</code> – Allow uploading files larger than 50 GB (@janko)</p>
+<p><code>multi_cache</code> – Add new plugin for whitelisting additional temporary storages (@janko, @jrochkind)</p>
 </li><li>
 <p><code>sequel</code> – Extract callback code into attacher methods that can be overridden (@janko)</p>
 </li><li>
 <p><code>activerecord</code> – Extract callback code into attacher methods that can be overridden (@janko)</p>
 </li><li>
-<p><code>derivatives</code> – Ensure binary mode for <code>File</code> and <code>Tempfile</code> objects (@janko)</p>
-</li><li>
-<p><code>derivatives</code> – Ensure refreshed file descriptor for <code>Tempfile</code> objects (@janko)</p>
-</li><li>
 <p><code>derivation_endpoint</code> – Stop re-opening <code>File</code> objects returned in derivation result (@janko)</p>
 </li><li>
 <p><code>derivation_endpoint</code> – Allow only <code>File</code> or <code>Tempfile</code> object as derivation result (@janko)</p>
 </li><li>
-<p><code>derivatives</code> – Add support for default processors (@janko)</p>
-</li><li>
-<p><code>remote_url</code> – Convert only <code>Down::Error</code> and <code>DownloadError</code> exceptions into validation errors (@janko)</p>
-</li><li>
-<p><code>remote_url</code> – Bring back <code>Attacher#remote_url=</code> and <code>Attacher#remote_url</code> (@janko)</p>
-</li><li>
-<p><code>data_uri</code> – Bring back <code>Attacher#data_uri=</code> and <code>Attacher#data_uri</code> (@janko)</p>
-</li><li>
-<p><code>mirroring</code> – Allow skipping mirroring by passing <code>mirror: false</code> to <code>#upload</code> and <code>#delete</code> (@janko)</p>
-</li><li>
-<p><code>mirroring</code> – Rename <code>Shrine.mirror_(upload|delete)</code> to <code>Shrine.mirror_(upload|delete)_block</code> (@janko)</p>
-</li><li>
-<p><code>mirroring</code> – Add <code>UploadedFile#mirror_(upload|delete)_background</code> (@janko)</p>
-</li><li>
-<p><code>attacher_options</code> – Remove plugin (@janko)</p>
-</li><li>
-<p><code>backgrounding</code> – Move <code>Attacher#destroy(background: true)</code> to <code>Attacher#destroy_background</code> (@janko)</p>
-</li><li>
-<p><code>backgrounding</code> – Move <code>Attacher#promote(background: true)</code> to <code>Attacher#promote_background</code> (@janko)</p>
-</li><li>
 <p><code>download_endpoint</code> – Add <code>Shrine.download_response</code> for calling in controller (@janko)</p>
 </li><li>
 <p><code>core</code> – Fetch storage object lazily in <code>Shrine</code> instance (@janko)</p>
-</li></ul>
-
-<h2 id="label-3.0.0.beta2+-282019-09-11-29">3.0.0.beta2 (2019-09-11)<span><a href="#label-3.0.0.beta2+-282019-09-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-<ul><li>
-<p><code>column</code> – Allow <code>Attacher#load_column</code> to receive a hash (@janko)</p>
-</li><li>
-<p><code>activerecord</code> – Fix integration not working with JSON columns (@janko)</p>
 </li><li>
 <p><code>mirroring</code> – Add new plugin for replicating uploads and deletes to other storages (@janko)</p>
 </li><li>
-<p><code>model</code> – Change disabling model attachment behaviour from <code>type: :entity</code> to <code>model: false</code> (@janko)</p>
-</li><li>
 <p><code>sequel</code> – Rename <code>:callbacks</code> option to <code>:hooks</code> (@janko)</p>
-</li><li>
-<p><code>derivatives</code> – Auto-download <code>UploadedFile</code> objects passed to <code>Attacher#process_derivatives</code> (@janko)</p>
-</li></ul>
-
-<h2 id="label-3.0.0.beta+-282019-08-29-29">3.0.0.beta (2019-08-29)<span><a href="#label-3.0.0.beta+-282019-08-29-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-<ul><li>
-<p><code>atomic_helpers</code> – Rename <code>:data</code> argument to <code>:file</code> in <code>Attacher.retrieve</code> (@janko)</p>
-</li><li>
-<p><code>atomic_helpers</code> – Add <code>Attacher#file_data</code> which returns only main file data without metadata (@janko)</p>
 </li><li>
 <p><code>model</code> – Add <code>Attacher#set_model</code> for setting model without loading attachment (@janko)</p>
 </li><li>
 <p><code>entity</code> – Add <code>Attacher#set_entity</code> for setting entity without loading attachment (@janko)</p>
 </li><li>
-<p><code>core</code> – Define <code>#&lt;name&gt;_attacher</code> class method when including <code>Shrine::Attachment</code> (@janko)</p>
+<p><code>entity</code> – Define <code>#&lt;name&gt;_attacher</code> class method when including <code>Shrine::Attachment</code> (@janko)</p>
 </li><li>
 <p><code>derivation_endpoint</code> – Send only <code>:derivation</code> in the instrumentation event payload (@janko)</p>
 </li><li>
@@ -129,7 +86,7 @@ Last Update:
 </li><li>
 <p><code>default_storage</code> – Evaluate storage block in context of <code>Attacher</code> instance (@janko)</p>
 </li><li>
-<p>Simplify persistence interface (@janko)</p>
+<p>Unify persistence plugin interface (@janko)</p>
 </li><li>
 <p><code>upload_options</code> – Keep <code>Shrine#_upload</code> private (@janko)</p>
 </li><li>
@@ -137,15 +94,8 @@ Last Update:
 </li><li>
 <p><code>model</code> – Add <code>#&lt;name&gt;_changed?</code> method to attachment module (@janko)</p>
 </li><li>
-<p><code>core</code> – Make it easier for plugins to define entity and model attachment methods (@janko)</p>
+<p>Make it easier for plugins to define entity and model attachment methods (@janko)</p>
 </li><li>
-<p><code>derivatives</code> – Add <code>#&lt;name&gt;_derivatives!</code> module method which delegates to <code>#create_derivatives</code> (@janko)</p>
-</li><li>
-<p><code>derivatives</code> – Change <code>#create_derivatives</code> to forward all arguments to <code>#process_derivatives</code> (@janko)</p>
-</li></ul>
-
-<h2 id="label-3.0.0.alpha+-282019-08-19-29">3.0.0.alpha (2019-08-19)<span><a href="#label-3.0.0.alpha+-282019-08-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
-<ul><li>
 <p><code>form_assign</code> – Add new plugin for assigning attachment from form params without a form object (@janko)</p>
 </li><li>
 <p><code>derivation_endpoint</code> – Allow passing generic IO objects to <code>Derivation#upload</code> (@janko)</p>
@@ -163,8 +113,6 @@ Last Update:
 <p><code>s3</code> – Eliminate <code>#head_object</code> request in <code>S3#open</code> (@janko)</p>
 </li><li>
 <p><code>download_endpoint</code> – Remove extra <code>Storage#exists?</code> check (@janko)</p>
-</li><li>
-<p><code>derivation_endpoint</code> – Remove support for derivative being deleted during upload (@janko)</p>
 </li><li>
 <p><code>derivation_endpoint</code> – Add <code>Derivation#opened</code> for retrieving an opened derivation result (@janko)</p>
 </li><li>
@@ -240,8 +188,6 @@ Last Update:
 </li><li>
 <p><code>restore_cached_data</code> – Forward options passed to <code>Attacher#attach_cached</code> to metadata extraction (@janko)</p>
 </li><li>
-<p><code>attacher_options</code> – Add new plugin for setting default attacher operation options (@janko)</p>
-</li><li>
 <p><code>validation</code> – Allow skipping validations on attaching by passing <code>validate: false</code> (@janko)</p>
 </li><li>
 <p><code>validation</code> – Add <code>:validate</code> option to <code>Attacher#assign</code> or <code>Attacher#attach</code> for passing options to validation block (@janko)</p>
@@ -254,8 +200,6 @@ Last Update:
 </li><li>
 <p><code>remote_url</code> – Require custom downloaders to raise <code>Shrine::Plugins::RemoteUrl::DownloadError</code> for conversion into a validation error (@janko)</p>
 </li><li>
-<p><code>remote_url</code> – Remove <code>Attacher#remote_url=</code> and <code>Attacher#remote_url</code> (@janko)</p>
-</li><li>
 <p><code>infer_extension</code> – Fix compatibility with the <code>pretty_location</code> plugin (@janko)</p>
 </li><li>
 <p><code>presign_endpoint</code> – Remove deprecated <code>Shrine::Plugins::PresignEndpoint::App</code> constant (@janko)</p>
@@ -266,17 +210,13 @@ Last Update:
 </li><li>
 <p><code>default_url_options</code> – Allow overriding passed URL options by deleting them inside the block (@janko)</p>
 </li><li>
-<p><code>data_uri</code> – Remove <code>Attacher#data_uri=</code> and <code>Attacher#data_uri</code> methods (@janko)</p>
-</li><li>
 <p><code>cached_attachment_data</code> – Rename <code>Attacher#read_cached</code> to <code>Attacher#cached_data</code> (@janko)</p>
 </li><li>
 <p><code>sequel</code> – Add <code>Attacher#atomic_promote</code> and <code>Attacher#atomic_persist</code> (@janko)</p>
 </li><li>
-<p><code>sequel</code> – Remove adding persistence to <code>Attacher#promote</code> (@janko)</p>
+<p><code>sequel</code> – Remove persistence from <code>Attacher#promote</code> (@janko)</p>
 </li><li>
-<p><code>activerecord</code> – Add <code>Attacher#atomic_promote</code> and <code>Attacher#atomic_persist</code> (@janko)</p>
-</li><li>
-<p><code>activerecord</code> – Remove adding persistence to <code>Attacher#promote</code> (@janko)</p>
+<p><code>activerecord</code> – Remove persistence from <code>Attacher#promote</code> (@janko)</p>
 </li><li>
 <p><code>atomic_helpers</code> – Add new plugin with helper methods for atomic promotion and persistence (@janko)</p>
 </li><li>

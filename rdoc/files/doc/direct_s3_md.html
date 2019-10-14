@@ -30,13 +30,15 @@ doc/direct_s3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-28 11:17:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Direct+Uploads+to+S3">Direct Uploads to S3<span><a href="#label-Direct+Uploads+to+S3">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>— id: direct-s3</p>
+
+<h2 id="label-title-3A+Direct+Uploads+to+S3">title: Direct Uploads to S3<span><a href="#label-title-3A+Direct+Uploads+to+S3">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> gives you the ability to upload files directly to Amazon S3 (or any other storage service that accepts direct uploads). Uploading directly to a storage service is beneficial for several reasons:</p>
 <ul><li>
@@ -51,9 +53,11 @@ Last Update:
 <p>If your request workers have a timeout configured or you&#39;re using Heroku,  uploading large files to S3 or any external service inside the  request-response lifecycle might not be able to finish before the request  times out.</p>
 </li></ul>
 
+<h2 id="label-Storage">Storage<span><a href="#label-Storage">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
 <p>To start, let&#39;s set both temporary and permanent storage to S3, with the temporary storage uploading to the <code>cache/</code> prefix:</p>
 
-<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine&quot;</span>, <span class="ruby-string">&quot;~&gt; 2.11&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.14&quot;</span></pre>
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine&quot;</span>, <span class="ruby-string">&quot;~&gt; 3.0&quot;</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;aws-sdk-s3&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.14&quot;</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/s3&quot;</span>&#x000A;&#x000A;<span class="ruby-identifier">s3_options</span> = {&#x000A;  <span class="ruby-value">bucket:</span>            <span class="ruby-string">&quot;&lt;YOUR BUCKET&gt;&quot;</span>, <span class="ruby-comment"># required</span>&#x000A;  <span class="ruby-value">access_key_id:</span>     <span class="ruby-string">&quot;&lt;YOUR KEY&gt;&quot;</span>,&#x000A;  <span class="ruby-value">secret_access_key:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET&gt;&quot;</span>,&#x000A;  <span class="ruby-value">region:</span>            <span class="ruby-string">&quot;&lt;REGION&gt;&quot;</span>,&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;cache&quot;</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">S3</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">s3_options</span>),&#x000A;}</pre>
 
@@ -128,7 +132,7 @@ Last Update:
 
 <p>When attaching a file that was uploaded directly to S3, by default <a href="../../classes/Shrine.html"><code>Shrine</code></a> will not extract metadata from the file, instead it will simply copy over any metadata assigned on the client side. This is the default behaviour because extracting metadata requires retrieving file content, which in this case means additional HTTP requests.</p>
 
-<p>See <a href="/doc/metadata.md#direct-uploads">this section</a> or the rationale and instructions on how to opt in.</p>
+<p>See <a href="https://shrinerb.com/docs/metadata#direct-uploads">this section</a> or the rationale and instructions on how to opt in.</p>
 
 <h2 id="label-Clearing+cache">Clearing cache<span><a href="#label-Clearing+cache">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -166,7 +170,7 @@ Last Update:
 
 <h2 id="label-Testing">Testing<span><a href="#label-Testing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>To avoid network requests in your test and development environment, you can use <a href="https://minio.io">Minio</a>. Minio is an open source object storage server with AWS S3 compatible API which you can run locally. See how to set it up in the <a href="/doc/testing.md#minio">Testing</a> guide.</p>
+<p>To avoid network requests in your test and development environment, you can use <a href="https://minio.io">Minio</a>. Minio is an open source object storage server with AWS S3 compatible API which you can run locally. See how to set it up in the <a href="https://shrinerb.com/docs/testing#minio">Testing</a> guide.</p>
 </div>
 <div id='context'>
 </div>

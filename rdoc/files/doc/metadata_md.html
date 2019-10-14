@@ -30,13 +30,15 @@ doc/metadata.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-28 11:17:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Extracting+Metadata">Extracting Metadata<span><a href="#label-Extracting+Metadata">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>—</p>
+
+<h2 id="label-title-3A+Extracting+Metadata">title: Extracting Metadata<span><a href="#label-title-3A+Extracting+Metadata">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Before a file is uploaded, <a href="../../classes/Shrine.html"><code>Shrine</code></a> automatically extracts metadata from it, and stores them in the <code>Shrine::UploadedFile</code> object.</p>
 
@@ -73,7 +75,7 @@ Last Update:
 
 <p>By default, the <code>mime_type</code> metadata will be copied over from the <code>#content_type</code> attribute of the input file (if present). However, since <code>#content_type</code> value comes from the <code>Content-Type</code> header of the upload request, it&#39;s <em>not guaranteed</em> to hold the actual MIME type of the file (browser determines this header based on file extension). Moreover, only <code>ActionDispatch::Http::UploadedFile</code>, <code>Shrine::RackFile</code>, and <code>Shrine::DataFile</code> objects have <code>#content_type</code> defined, so, when uploading simple file objects, <code>mime_type</code> will be nil. That makes relying on <code>#content_type</code> both a security risk and limiting.</p>
 
-<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
+<p>To remedy that, <a href="../../classes/Shrine.html"><code>Shrine</code></a> comes with a <a href="https://shrinerb.com/docs/plugins/determine_mime_type">determine_mime_type</a> plugin which is able to extract the MIME type from IO <em>content</em>:</p>
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;marcel&quot;</span>, <span class="ruby-string">&quot;~&gt; 0.3&quot;</span></pre>
 
@@ -81,7 +83,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-identifier">uploaded_file</span> = <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">upload</span> <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;&lt;?php ... ?&gt;&quot;</span>)&#x000A;<span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">mime_type</span> <span class="ruby-comment">#=&gt; &quot;application/x-php&quot;</span></pre>
 
-<p>You can choose different analyzers, and even mix-and-match them. See the <a href="/doc/plugins/determine_mime_type.md#readme">determine_mime_type</a> plugin docs for more details.</p>
+<p>You can choose different analyzers, and even mix-and-match them. See the <a href="https://shrinerb.com/docs/plugins/determine_mime_type">determine_mime_type</a> plugin docs for more details.</p>
 
 <h2 id="label-Image+Dimensions">Image Dimensions<span><a href="#label-Image+Dimensions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -133,7 +135,7 @@ Last Update:
 
 <h3 id="label-Backgrounding">Backgrounding<span><a href="#label-Backgrounding">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>If you&#39;re using <a href="/doc/plugins/backgrounding.md#readme">backgrounding</a>, you can extract metadata during background promotion using the <code>refresh_metadata</code> plugin (which the <code>restore_cached_data</code> plugin uses internally):</p>
+<p>If you&#39;re using <a href="https://shrinerb.com/docs/plugins/backgrounding">backgrounding</a>, you can extract metadata during background promotion using the <code>refresh_metadata</code> plugin (which the <code>restore_cached_data</code> plugin uses internally):</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:refresh_metadata</span> <span class="ruby-comment"># allow re-extracting metadata</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backgrounding</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">promote_block</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-constant">PromoteJob</span>.<span class="ruby-identifier">perform_async</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">name</span>, <span class="ruby-identifier">file_data</span>)&#x000A;<span class="ruby-keyword">end</span></pre>
 

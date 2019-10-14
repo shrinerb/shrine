@@ -30,12 +30,16 @@ doc/release_notes/2.19.0.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<p>—</p>
+
+<h2 id="label-title-3A+Shrine+2.19.0">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.19.0<span><a href="#label-title-3A+Shrine+2.19.0">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
 <h2 id="label-New+features">New features<span><a href="#label-New+features">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>A new <code>instrumentation</code> plugin has been added. It sends and logs events for  various <a href="../../../classes/Shrine.html"><code>Shrine</code></a> operations, and provides an API for other plugins to send and  log their own events.</p>
@@ -43,7 +47,7 @@ Last Update:
 
 <p>“`rb  Shrine.plugin :instrumentation</p>
 
-<p>uploaded_file = <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :store)  uploaded_file.exists?  uploaded_file.download  uploaded_file.delete  <code> </code>  Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}  Upload (1523ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}  Exists (755ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  Download (1002ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :download_options=&gt;{}, :uploader=&gt;Shrine}  Delete (700ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  “`</p>
+<p>uploaded_file = <a href="../../../classes/Shrine/InstanceMethods.html#method-i-upload"><code>Shrine.upload</code></a>(io, :store)  uploaded_file.exists?  uploaded_file.download  uploaded_file.delete  <code> </code>plaintext  Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}  Upload (1523ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}  Exists (755ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  Download (1002ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :download_options=&gt;{}, :uploader=&gt;Shrine}  Delete (700ms) – {:storage=&gt;:store, :location=&gt;“ed0e30ddec8b97813f2c1f4cfd1700b4”, :uploader=&gt;Shrine}  “`</p>
 
 <p>It supports <a href="https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html">ActiveSupport::Notifications</a> (default) and <a href="https://github.com/dry-rb/dry-monitor">dry-monitor</a>  notification backends out of the box.</p>
 
@@ -160,7 +164,7 @@ Last Update:
 </li><li>
 <p>The <code>moving</code> pluing has been deprecated in favour of the <code>:move</code> option to  <code>FileSystem#upload</code>. This means that the <code>#move</code> &amp;&amp; <code>#movable?</code> methods are  not part of the storage abstraction anymore.</p>
 </li><li>
-<p>The <code>backup</code> plugin has been deprecated over <a href="https://github.com/shrinerb/shrine/wiki/Mirroring-Uploads">mirroring uploads</a> via the  <code>instrumentation</code> plugin.</p>
+<p>The <code>backup</code> plugin has been deprecated (a new <code>mirroring</code> plugin will get  added in 3.0).</p>
 </li><li>
 <p>The <code>copy</code> plugin has been deprecated.</p>
 </li><li>

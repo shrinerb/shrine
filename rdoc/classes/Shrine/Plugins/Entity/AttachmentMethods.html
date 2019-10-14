@@ -41,6 +41,10 @@ Shrine::Plugins::Entity::AttachmentMethods
 <ol>
 <li><a href="#method-c-new">new</a></li>
 </ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-included">included</a></li>
+</ol>
 </div>
 <div id='context'>
 </div>
@@ -56,12 +60,34 @@ Shrine::Plugins::Entity::AttachmentMethods
 </div>
 <div class='description'>
 
+<p>Defines instance methods on initialization.</p>
+
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">15</span>   <span class="ruby-keyword">super</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">16</span> &#x000A;<span class="line-num">17</span>   <span class="ruby-identifier">define_entity_methods</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">13</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">14</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">15</span> &#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">define_entity_methods</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-included'>
+<a name='method-i-included'></a>
+<div class='synopsis'>
+<span class='name'>included</span>
+<span class='arguments'>(klass)</span>
+
+</div>
+<div class='description'>
+
+<p>Defines class methods on inclusion.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-included-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-included-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">20</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">klass</span>)&#x000A;<span class="line-num">21</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">22</span> &#x000A;<span class="line-num">23</span>   <span class="ruby-identifier">attachment</span> = <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">24</span> &#x000A;<span class="line-num">25</span>   <span class="ruby-identifier">klass</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:define_singleton_method</span>, <span class="ruby-value">:&quot;#{@name}_attacher&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">**</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">26</span>     <span class="ruby-identifier">attachment</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:class_attacher</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">27</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">28</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

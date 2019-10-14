@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Persistence · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This is an internal plugin that provides uniform persistence interface across"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Persistence · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="This is an internal plugin that provides uniform persistence interface across"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/plugins/persistence.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Persistence</h1></header><article><div><span><p>This is an internal plugin that provides uniform persistence interface across
+different persistence plugins (e.g. <a href="https://shrinerb.com/docs/plugins/activerecord"><code>activerecord</code></a>,
+<a href="https://shrinerb.com/docs/plugins/sequel"><code>sequel</code></a>).</p>
+<h2><a class="anchor" aria-hidden="true" id="atomic-promotion"></a><a href="#atomic-promotion" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Atomic promotion</h2>
+<p>If you're promoting cached file to permanent storage
+[asynchronously][backgrounding], and want to handle the possibility of
+attachment changing during promotion, you can use <code>Attacher#atomic_promote</code>:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># in your controller</span>
+attacher.attach_cached(io)
+attacher.cached? <span class="hljs-comment">#=&gt; true</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># in a background job</span>
+attacher.atomic_promote <span class="hljs-comment"># promotes cached file and persists</span>
+attacher.stored? <span class="hljs-comment">#=&gt; true</span>
+</code></pre>
+<p>After the cached file is uploaded to permanent storage, the record is reloaded
+in order to check whether the attachment hasn't changed, and if it hasn't the
+attachment is persisted. If the attachment has changed,
+<code>Shrine::AttachmentChanged</code> exception is raised.</p>
+<p>If you want to execute code after the attachment change check but before
+persistence, you can pass a block:</p>
+<pre><code class="hljs css language-rb">attacher.atomic_promote <span class="hljs-keyword">do</span> <span class="hljs-params">|reloaded_attacher|</span>
+  <span class="hljs-comment"># run code after attachment change check but before persistence</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>You can pass <code>:reload</code> and <code>:persist</code> options to change how the record is
+reloaded and pesisted. See the [<code>atomic_helpers</code>][atomic_helpers] plugin docs
+for more details.</p>
+<p>Any other options are forwarded to <code>Attacher#promote</code>:</p>
+<pre><code class="hljs css language-rb">attacher.atomic_promote(<span class="hljs-symbol">metadata:</span> <span class="hljs-literal">true</span>) <span class="hljs-comment"># re-extract metadata</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="atomic-persistence"></a><a href="#atomic-persistence" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Atomic persistence</h2>
+<p>If you're updating something based on the attached file
+[asynchronously][backgrounding], you might want to handle the possibility of
+the attachment changing in the meanwhile. You can do that with
+<code>Attacher#atomic_persist</code>:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># in a background job</span>
+attacher.refresh_metadata! <span class="hljs-comment"># refresh_metadata plugin</span>
+attacher.atomic_persist <span class="hljs-comment"># persists attachment data</span>
+</code></pre>
+<p>The record is first reloaded in order to check whether the attachment hasn't
+changed, and if it hasn't the attachment is persisted. If the attachment has
+changed, <code>Shrine::AttachmentChanged</code> exception is raised.</p>
+<p>If you want to execute code after the attachment change check but before
+persistence, you can pass a block:</p>
+<pre><code class="hljs css language-rb">attacher.atomic_persist <span class="hljs-keyword">do</span> <span class="hljs-params">|reloaded_attacher|</span>
+  <span class="hljs-comment"># run code after attachment change check but before persistence</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>You can pass <code>:reload</code> and <code>:persist</code> options to change how the record is
+reloaded and pesisted. See the [<code>atomic_helpers</code>][atomic_helpers] plugin docs
+for more details.</p>
+<h2><a class="anchor" aria-hidden="true" id="simple-persistence"></a><a href="#simple-persistence" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Simple Persistence</h2>
+<p>To simply save attachment changes to the underlying record, use
+<code>Attacher#persist</code>:</p>
+<pre><code class="hljs css language-rb">attacher.attach(io)
+attacher.persist <span class="hljs-comment"># saves the underlying record</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#atomic-promotion">Atomic promotion</a></li><li><a href="#atomic-persistence">Atomic persistence</a></li><li><a href="#simple-persistence">Simple Persistence</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

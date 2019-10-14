@@ -1,0 +1,544 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Upgrading to Shrine 3.x · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This guide provides instructions for upgrading Shrine in your apps to version"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Upgrading to Shrine 3.x · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="This guide provides instructions for upgrading Shrine in your apps to version"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Extras</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/upgrading_to_3.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Upgrading to Shrine 3.x</h1></header><article><div><span><p>This guide provides instructions for upgrading Shrine in your apps to version
+3.x. If you're looking for a full list of changes, see the <a href="https://shrinerb.com/docs/release_notes/3.0.0">3.0 release notes</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="attacher"></a><a href="#attacher" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attacher</h2>
+<p>The <code>Shrine::Attacher</code> class has been rewritten in Shrine 3.0, though much of
+the main API remained the same.</p>
+<h3><a class="anchor" aria-hidden="true" id="model"></a><a href="#model" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Model</h3>
+<p>The main change is that <code>Attacher.new</code> is now used for initializing the
+attacher without a model:</p>
+<pre><code class="hljs css language-rb">attacher = Shrine::Attacher.new
+<span class="hljs-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>
+
+attacher = Shrine::Attacher.new(photo, <span class="hljs-symbol">:image</span>)
+<span class="hljs-comment"># ~&gt; ArgumentError: invalid number of arguments</span>
+</code></pre>
+<p>To initialize an attacher with a model, use <code>Attacher.from_model</code> provided by
+the new <a href="https://shrinerb.com/docs/plugins/model"><code>model</code></a> plugin (which is automatically loaded by
+<code>activerecord</code> and <code>sequel</code> plugins):</p>
+<pre><code class="hljs css language-rb">attacher = Shrine::Attacher.from_model(photo, <span class="hljs-symbol">:image</span>)
+<span class="hljs-comment"># ...</span>
+</code></pre>
+<p>If you're using the <code>Shrine::Attachment</code> module with POROs, make sure to load
+the <code>model</code> plugin.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:model</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; Struct.<span class="hljs-title">new</span>(:<span class="hljs-title">image_data</span>)</span>
+  <span class="hljs-keyword">include</span> Shrine::Attachment(<span class="hljs-symbol">:image</span>)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="data-attribute"></a><a href="#data-attribute" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Data attribute</h3>
+<p>The <code>Attacher#read</code> method has been removed. If you want to generate serialized
+attachment data, use <code>Attacher#column_data</code>. Otherwise if you want to generate
+hash attachment data, use <code>Attacher#data</code>.</p>
+<pre><code class="hljs css language-rb">attacher.column_data <span class="hljs-comment">#=&gt; '{"id":"...","storage":"...","metadata":{...}}'</span>
+attacher.data        <span class="hljs-comment">#=&gt; { "id" =&gt; "...", "storage" =&gt; "...", "metadata" =&gt; { ... } }</span>
+</code></pre>
+<p>The <code>Attacher#data_attribute</code> has been renamed to <code>Attacher#attribute</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="state"></a><a href="#state" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>State</h3>
+<p>The attacher now maintains its own state, so if you've previously modified the
+<code>#&lt;name&gt;_data</code> record attribute and expected the changes to be picked up by the
+attacher, you'll now need to call <code>Attacher#reload</code> for that:</p>
+<pre><code class="hljs css language-rb">attacher.file <span class="hljs-comment">#=&gt; nil</span>
+record.image_data = <span class="hljs-string">'{"id":"...","storage":"...","metadata":{...}}'</span>
+attacher.file <span class="hljs-comment">#=&gt; nil</span>
+attacher.reload
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="validation"></a><a href="#validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Validation</h3>
+<p>The validation functionality has been extracted into the <code>validation</code> plugin.
+If you're using the <code>validation_helpers</code> plugin, it will automatically load
+<code>validation</code> for you. Otherwise you'll have to load it explicitly:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:validation</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  Attacher.validate <span class="hljs-keyword">do</span>
+    <span class="hljs-comment"># ...</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="setting"></a><a href="#setting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Setting</h3>
+<p>The <code>Attacher#set</code> method has been renamed to <code>Attacher#change</code>, and the
+private <code>Attacher#_set</code> method has been renamed to <code>Attacher#set</code> and made
+public:</p>
+<pre><code class="hljs css language-rb">attacher.change(uploaded_file) <span class="hljs-comment"># sets file, remembers previous file, runs validations</span>
+attacher.set(uploaded_file)    <span class="hljs-comment"># sets file</span>
+</code></pre>
+<p>If you've previously used <code>Attacher#replace</code> directly to delete previous file,
+it has now been renamed to <code>Attacher#destroy_previous</code>.</p>
+<p>Also note that <code>Attacher#attached?</code> now returns whether a file is attached,
+while <code>Attacher#changed?</code> continues to return whether the attachment has
+changed.</p>
+<h3><a class="anchor" aria-hidden="true" id="uploading-and-deleting"></a><a href="#uploading-and-deleting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploading and deleting</h3>
+<p>The <code>Attacher#store!</code> and <code>Attacher#cache!</code> methods have been removed, you
+should now use <code>Attacher#upload</code> instead:</p>
+<pre><code class="hljs css language-rb">attacher.upload(io)               <span class="hljs-comment"># uploads to permanent storage</span>
+attacher.upload(io, <span class="hljs-symbol">:cache</span>)       <span class="hljs-comment"># uploads to temporary storage</span>
+attacher.upload(io, <span class="hljs-symbol">:other_store</span>) <span class="hljs-comment"># uploads to another storage</span>
+</code></pre>
+<p>The <code>Attacher#delete!</code> method has been removed as well, you should instead just
+delete the file directly via <code>UploadedFile#delete</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="promoting"></a><a href="#promoting" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Promoting</h3>
+<p>If you were promoting manually, the <code>Attacher#promote</code> method will now only
+save promoted file in memory, it won't persist the changes.</p>
+<pre><code class="hljs css language-rb">attacher.promote
+<span class="hljs-comment"># ...</span>
+record.save <span class="hljs-comment"># you need to persist the changes</span>
+</code></pre>
+<p>If you want the concurrenct-safe promotion with persistence, use the new
+<code>Attacher#atomic_promote</code> method.</p>
+<pre><code class="hljs css language-rb">attacher.atomic_promote
+</code></pre>
+<p>The <code>Attacher#swap</code> method has been removed. If you were using it directly, you
+can use <code>Attacher#set</code> and <code>Attacher#atomic_persist</code> instead:</p>
+<pre><code class="hljs css language-rb">current_file = attacher.file
+attacher.set(new_file)
+attacher.atomic_persist(current_file)
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="backgrounding"></a><a href="#backgrounding" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backgrounding</h2>
+<p>The <code>backgrounding</code> plugin has been rewritten in Shrine 3.0 and has a new API.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:backgrounding</span>
+Shrine::Attacher.promote_block <span class="hljs-keyword">do</span>
+  PromoteJob.perform_async(<span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, record.<span class="hljs-keyword">class</span>.name, record.id, name, file_data)
+<span class="hljs-keyword">end</span>
+Shrine::Attacher.destroy_block <span class="hljs-keyword">do</span>
+  DestroyJob.perform_async(<span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, data)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.atomic_promote
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    <span class="hljs-comment"># attachment has changed or record has been deleted, nothing to do</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DestroyJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+
+    attacher = attacher_class.from_data(data)
+    attacher.destroy
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="dual-support"></a><a href="#dual-support" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dual support</h3>
+<p>When you're making the switch in production, there might still be jobs in the
+queue that have the old argument format. So, we'll initially want to handle
+both argument formats, and then switch to the new one once the jobs with old
+format have been drained.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(*args)</span></span>
+    <span class="hljs-keyword">if</span> args.one?
+      file_data, (record_class, record_id), name, shrine_class =
+        args.first.values_at(<span class="hljs-string">"attachment"</span>, <span class="hljs-string">"record"</span>, <span class="hljs-string">"name"</span>, <span class="hljs-string">"shrine_class"</span>)
+
+      record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+      attacher_class = Object.const_get(shrine_class)<span class="hljs-symbol">:</span><span class="hljs-symbol">:Attacher</span>
+    <span class="hljs-keyword">else</span>
+      attacher_class, record_class, record_id, name, file_data = args
+
+      attacher_class = Object.const_get(attacher_class)
+      record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+    <span class="hljs-keyword">end</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.atomic_promote
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    <span class="hljs-comment"># attachment has changed or record has been deleted, nothing to do</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">and</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DestroyJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(*args)</span></span>
+    <span class="hljs-keyword">if</span> args.one?
+      data, shrine_class = args.first.values_at(<span class="hljs-string">"attachment"</span>, <span class="hljs-string">"shrine_class"</span>)
+
+      data           = JSON.parse(data)
+      attacher_class = Object.const_get(shrine_class)<span class="hljs-symbol">:</span><span class="hljs-symbol">:Attacher</span>
+    <span class="hljs-keyword">else</span>
+      attacher_class, data = args
+
+      attacher_class = Object.const_get(attacher_class)
+    <span class="hljs-keyword">end</span>
+
+    attacher = attacher_class.from_data(data)
+    attacher.destroy
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">and</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="attacher-backgrounding"></a><a href="#attacher-backgrounding" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attacher backgrounding</h3>
+<p>In Shrine 2.x, <code>Attacher#_promote</code> and <code>Attacher#_delete</code> methods could be used
+to spawn promote and delete jobs. This is now done by <code>Attacher#promote_cached</code>
+and <code>Attacher#destroy_attached</code>:</p>
+<pre><code class="hljs css language-rb">attacher.promote_cached   <span class="hljs-comment"># will spawn background job if registered</span>
+attacher.destroy_attached <span class="hljs-comment"># will spawn background job if registered</span>
+</code></pre>
+<p>If you want to explicitly call backgrounding blocks, you can use
+<code>Attacher#promote_background</code> and <code>Attacher#destroy_background</code>:</p>
+<pre><code class="hljs css language-rb">attacher.promote_background <span class="hljs-comment"># calls promote block</span>
+attacher.destroy_background <span class="hljs-comment"># calls destroy block</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="versions"></a><a href="#versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Versions</h2>
+<p>The <code>versions</code>, <code>processing</code>, <code>recache</code>, and <code>delete_raw</code> plugins have been
+deprecated in favour of the new <a href="https://shrinerb.com/docs/plugins/derivatives"><code>derivatives</code></a> plugin. Let's
+assume you have the following <code>versions</code> code:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:processing</span>
+  plugin <span class="hljs-symbol">:versions</span>
+  plugin <span class="hljs-symbol">:delete_raw</span>
+
+  process(<span class="hljs-symbol">:store</span>) <span class="hljs-keyword">do</span> <span class="hljs-params">|file, context|</span>
+    versions = { <span class="hljs-symbol">original:</span> file }
+
+    file.download <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+      magick = ImageProcessing::MiniMagick.source(original)
+
+      versions[<span class="hljs-symbol">:large</span>]  = magick.resize_to_limit!(<span class="hljs-number">800</span>, <span class="hljs-number">800</span>)
+      versions[<span class="hljs-symbol">:medium</span>] = magick.resize_to_limit!(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>)
+      versions[<span class="hljs-symbol">:small</span>]  = magick.resize_to_limit!(<span class="hljs-number">300</span>, <span class="hljs-number">300</span>)
+    <span class="hljs-keyword">end</span>
+
+    versions
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo = Photo.new(photo_params)
+
+<span class="hljs-keyword">if</span> photo.valid?
+  photo.save <span class="hljs-comment"># automatically calls processing block</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">else</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>With <code>derivatives</code> it becomes this:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:derivatives</span>, <span class="hljs-symbol">versions_compatibility:</span> <span class="hljs-literal">true</span> <span class="hljs-comment"># handle versions column format</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    {
+      <span class="hljs-symbol">large:</span>  magick.resize_to_limit!(<span class="hljs-number">800</span>, <span class="hljs-number">800</span>),
+      <span class="hljs-symbol">medium:</span> magick.resize_to_limit!(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>),
+      <span class="hljs-symbol">small:</span>  magick.resize_to_limit!(<span class="hljs-number">300</span>, <span class="hljs-number">300</span>),
+    }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo = Photo.new(photo_params)
+
+<span class="hljs-keyword">if</span> photo.valid?
+  photo.image_derivatives! <span class="hljs-keyword">if</span> photo.image_changed? <span class="hljs-comment"># create derivatives</span>
+  photo.save <span class="hljs-comment"># automatically calls processing block</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">else</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>If you have multiple places where you need to generate derivatives, and want it
+to happen automatically like it did with the <code>versions</code> plugin, you can
+override <code>Attacher#promote</code> to call <code>Attacher#create_derivatives</code> before
+promotion:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Shrine::Attacher</span></span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">promote</span><span class="hljs-params">(*)</span></span>
+    create_derivatives
+    <span class="hljs-keyword">super</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="accessing-derivatives"></a><a href="#accessing-derivatives" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Accessing derivatives</h3>
+<p>The derivative URLs are accessed in the same way as versions:</p>
+<pre><code class="hljs css language-rb">photo.image_url(<span class="hljs-symbol">:small</span>)
+</code></pre>
+<p>But the derivatives themselves are accessed differently:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># versions</span>
+photo.image <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   original: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment">#   large: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment">#   medium: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment">#   small: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment"># }</span>
+photo.image[<span class="hljs-symbol">:medium</span>] <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># derivatives</span>
+photo.image_derivatives <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   large: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment">#   medium: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment">#   small: #&lt;Shrine::UploadedFile ...&gt;,</span>
+<span class="hljs-comment"># }</span>
+photo.image(<span class="hljs-symbol">:medium</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="migrating-versions"></a><a href="#migrating-versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Migrating versions</h3>
+<p>The <code>versions</code> and <code>derivatives</code> plugins save processed file data to the
+database column in different formats:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># versions</span>
+{
+  <span class="hljs-string">"original"</span>: { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } },
+  <span class="hljs-string">"large"</span>:    { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } },
+  <span class="hljs-string">"medium"</span>:   { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } },
+  <span class="hljs-string">"small"</span>:    { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } }
+}
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># derivatives</span>
+{
+  <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>,
+  <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>,
+  <span class="hljs-string">"metadata"</span>: { ... },
+  <span class="hljs-string">"derivatives"</span>: {
+    <span class="hljs-string">"large"</span>:  { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } },
+    <span class="hljs-string">"medium"</span>: { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } },
+    <span class="hljs-string">"small"</span>:  { <span class="hljs-string">"id"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"storage"</span>: <span class="hljs-string">"..."</span>, <span class="hljs-string">"metadata"</span>: { ... } }
+  }
+}
+</code></pre>
+<p>The <code>:versions_compatibility</code> flag to the <code>derivatives</code> plugin enables it to
+read the <code>versions</code> format, which aids in transition. Once the <code>derivatives</code>
+plugin has been deployed to production, you can switch existing records to the
+new column format:</p>
+<pre><code class="hljs css language-rb">Photo.find_each <span class="hljs-keyword">do</span> <span class="hljs-params">|photo|</span>
+  photo.image_attacher.write
+  photo.image_attacher.atomic_persist
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Afterwards you should be able to remove the <code>:versions_compatibility</code> flag.</p>
+<h3><a class="anchor" aria-hidden="true" id="backgrounding-derivatives"></a><a href="#backgrounding-derivatives" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backgrounding derivatives</h3>
+<p>If you're using the <code>backgrounding</code> plugin, you can trigger derivatives
+creation in the <code>PromoteJob</code> instead of the controller:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record.id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.create_derivatives <span class="hljs-comment"># call derivatives processor</span>
+    attacher.atomic_promote
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    <span class="hljs-comment"># attachment has changed or record has beeen deleted, nothing to do</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="recache"></a><a href="#recache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Recache</h4>
+<p>If you were using the <code>recache</code> plugin, you can replicate the behaviour by
+creating another derivatives processor that you will trigger in the controller:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    <span class="hljs-comment"># this will be triggered in the background job</span>
+  <span class="hljs-keyword">end</span>
+
+  Attacher.derivatives_processor <span class="hljs-symbol">:foreground</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    <span class="hljs-comment"># this will be triggered in the controller</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo = Photo.new(photo_params)
+
+<span class="hljs-keyword">if</span> photo.valid?
+  photo.image_derivatives!(<span class="hljs-symbol">:foreground</span>) <span class="hljs-keyword">if</span> photo.image_changed?
+  photo.save
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">else</span>
+  <span class="hljs-comment"># ...</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="parallelize"></a><a href="#parallelize" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Parallelize</h4>
+<p>The <code>parallelize</code> plugin has been removed. The <code>derivatives</code> plugin is
+thread-safe, so you can parallelize uploading processed files manually:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"concurrent-ruby"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"concurrent"</span>
+
+derivatives = attacher.process_derivatives
+
+tasks = derivatives.map <span class="hljs-keyword">do</span> <span class="hljs-params">|name, file|</span>
+  Concurrent::Promises.future(name, file) <span class="hljs-keyword">do</span> <span class="hljs-params">|name, file|</span>
+    attacher.add_derivative(name, file)
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+
+Concurrent::Promises.zip(*tasks).wait!
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="default-url"></a><a href="#default-url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Default URL</h4>
+<p>The <code>derivatives</code> plugin integrates with the <code>default_url</code> plugin:</p>
+<pre><code class="hljs css language-rb">Attacher.default_url <span class="hljs-keyword">do</span> <span class="hljs-params">|derivative: <span class="hljs-literal">nil</span>, **|</span>
+  <span class="hljs-string">"https://my-app.com/fallbacks/<span class="hljs-subst">#{derivative}</span>.jpg"</span> <span class="hljs-keyword">if</span> derivative
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>However, it doesn't implement any other URL fallbacks that the <code>versions</code>
+plugin has for missing derivatives.</p>
+<h2><a class="anchor" aria-hidden="true" id="other"></a><a href="#other" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other</h2>
+<h3><a class="anchor" aria-hidden="true" id="processing"></a><a href="#processing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing</h3>
+<p>The <code>processing</code> plugin has been deprecated over the new
+<a href="https://shrinerb.com/docs/plugins/derivatives"><code>derivatives</code></a> plugin. If you were modifying the original file:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:processing</span>
+
+  process(<span class="hljs-symbol">:store</span>) <span class="hljs-keyword">do</span> <span class="hljs-params">|io, context|</span>
+    ImageProcessing::MiniMagick
+      .source(io.download)
+      .resize_to_limit!(<span class="hljs-number">1600</span>, <span class="hljs-number">1600</span>)
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>you should now add the processed file as a derivative:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:derivatives</span>
+
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    { <span class="hljs-symbol">normalized:</span> magick.resize_to_limit!(<span class="hljs-number">1600</span>, <span class="hljs-number">1600</span>) }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="logging"></a><a href="#logging" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Logging</h3>
+<p>The <code>logging</code> plugin has been removed in favour of the
+<a href="https://shrinerb.com/docs/plugins/instrumentation"><code>instrumentation</code></a> plugin. You can replace code like</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:logging</span>, <span class="hljs-symbol">logger:</span> Rails.logger
+</code></pre>
+<p>with</p>
+<pre><code class="hljs css language-rb">Shrine.logger = Rails.logger
+
+Shrine.plugin <span class="hljs-symbol">:instrumentation</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="backup"></a><a href="#backup" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backup</h3>
+<p>The <code>backup</code> plugin has been removed in favour of the new
+<a href="https://shrinerb.com/docs/plugins/mirroring"><code>mirroring</code></a> plugin. You can replace code like</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:backup</span>, <span class="hljs-symbol">storage:</span> <span class="hljs-symbol">:backup_store</span>
+</code></pre>
+<p>with</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:mirroring</span>, <span class="hljs-symbol">mirror:</span> { <span class="hljs-symbol">store:</span> <span class="hljs-symbol">:backup_store</span> }
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="copy"></a><a href="#copy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Copy</h3>
+<p>The <code>copy</code> plugin has been removed as its behaviour can now be achieved easily.
+You can replace code like</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:copy</span>
+</code></pre>
+<pre><code class="hljs css language-rb">attacher.copy(other_attacher)
+</code></pre>
+<p>with</p>
+<pre><code class="hljs css language-rb">attacher.attach other_attacher.file
+attacher.add_derivatives other_attacher.derivatives <span class="hljs-comment"># if using derivatives</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="moving"></a><a href="#moving" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Moving</h3>
+<p>The <code>moving</code> plugin has been removed in favour of the <code>:move</code> option for
+<code>FileSystem#upload</code>. You can set this option as default using the
+<code>upload_options</code> plugin (the example assumes both <code>:cache</code> and <code>:store</code> are
+FileSystem storages):</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:upload_options</span>, <span class="hljs-symbol">cache:</span> { <span class="hljs-symbol">move:</span> <span class="hljs-literal">true</span> }, <span class="hljs-symbol">store:</span> { <span class="hljs-symbol">move:</span> <span class="hljs-literal">true</span> }
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="parsed-json"></a><a href="#parsed-json" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Parsed JSON</h3>
+<p>The <code>parsed_json</code> plugin has been removed as it's now the default behaviour.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># this now works by default</span>
+photo.image = { <span class="hljs-string">"id"</span> =&gt; <span class="hljs-string">"d7e54d6ef2.jpg"</span>, <span class="hljs-string">"storage"</span> =&gt; <span class="hljs-string">"cache"</span>, <span class="hljs-string">"metadata"</span> =&gt; { ... } }
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="module-include"></a><a href="#module-include" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Module Include</h3>
+<p>The <code>module_include</code> plugin has been deprecated over overriding core classes
+directly. You can replace code like</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:module_include</span>
+
+  file_methods <span class="hljs-keyword">do</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">image?</span></span>
+      mime_type.start_with?(<span class="hljs-string">"image"</span>)
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>with</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UploadedFile</span></span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">image?</span></span>
+      mime_type.start_with?(<span class="hljs-string">"image"</span>)
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/testing"><span class="arrow-prev">← </span><span>Testing with Shrine</span></a><a class="docs-next button" href="/docs/changing-derivatives"><span>Managing Derivatives</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#attacher">Attacher</a><ul class="toc-headings"><li><a href="#model">Model</a></li><li><a href="#data-attribute">Data attribute</a></li><li><a href="#state">State</a></li><li><a href="#validation">Validation</a></li><li><a href="#setting">Setting</a></li><li><a href="#uploading-and-deleting">Uploading and deleting</a></li><li><a href="#promoting">Promoting</a></li></ul></li><li><a href="#backgrounding">Backgrounding</a><ul class="toc-headings"><li><a href="#dual-support">Dual support</a></li><li><a href="#attacher-backgrounding">Attacher backgrounding</a></li></ul></li><li><a href="#versions">Versions</a><ul class="toc-headings"><li><a href="#accessing-derivatives">Accessing derivatives</a></li><li><a href="#migrating-versions">Migrating versions</a></li><li><a href="#backgrounding-derivatives">Backgrounding derivatives</a></li></ul></li><li><a href="#other">Other</a><ul class="toc-headings"><li><a href="#processing">Processing</a></li><li><a href="#logging">Logging</a></li><li><a href="#backup">Backup</a></li><li><a href="#copy">Copy</a></li><li><a href="#moving">Moving</a></li><li><a href="#parsed-json">Parsed JSON</a></li><li><a href="#module-include">Module Include</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

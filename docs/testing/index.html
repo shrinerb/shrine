@@ -1,0 +1,239 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Testing with Shrine · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The goal of this guide is to provide some useful tips for testing file"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Testing with Shrine · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="The goal of this guide is to provide some useful tips for testing file"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Extras</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/testing.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Testing with Shrine</h1></header><article><div><span><p>The goal of this guide is to provide some useful tips for testing file
+attachments implemented with Shrine in your application.</p>
+<h2><a class="anchor" aria-hidden="true" id="callbacks"></a><a href="#callbacks" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Callbacks</h2>
+<p>When you first try to test file attachments, you might experience that files
+are not being promoted to permanent storage. This is because your tests are
+likely setup to be wrapped inside database transactions, and that doesn't work
+with Shrine callbacks.</p>
+<p>Specifically, Shrine uses &quot;after commit&quot; callbacks for promoting and deleting
+attached files. This means that if your tests are wrapped inside transactions,
+those Shrine actions will happen only after those transactions commit, which
+happens only after the test has already finished.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Promoting will happen only after the test transaction commits</span>
+it <span class="hljs-string">"can attach images"</span> <span class="hljs-keyword">do</span>
+  photo = Photo.create(<span class="hljs-symbol">image:</span> file)
+  photo.image.storage_key <span class="hljs-comment">#=&gt; :cache (we expected it to be promoted to permanent storage)</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>For file attachments to properly work, you'll need to disable transactions for
+those tests. For Rails apps you can tell Rails not to use transactions, and
+instead use libraries like <a href="https://github.com/DatabaseCleaner/database_cleaner">DatabaseCleaner</a> which allow you to use table
+truncation or deletion strategies instead of transactions.</p>
+<pre><code class="hljs css language-rb">RSpec.configure <span class="hljs-keyword">do</span> <span class="hljs-params">|config|</span>
+  config.use_transactional_fixtures = <span class="hljs-literal">false</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="storage"></a><a href="#storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Storage</h2>
+<p>If you're using FileSystem storage and your tests run in a single process,
+you can switch to <code>Shrine::Storage::Memory</code>, which is both faster and doesn't
+require you to clean up anything between tests.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/memory"</span>
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::Memory.new,
+  <span class="hljs-symbol">store:</span> Shrine::Storage::Memory.new,
+}
+</code></pre>
+<p>If you're using AWS S3 storage, you can use <a href="https://min.io/">MinIO</a> (explained below) instead
+of S3, both in test and development environment. Alternatively, you can <a href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/ClientStubs.html">stub
+aws-sdk-s3 requests</a> in tests.</p>
+<h3><a class="anchor" aria-hidden="true" id="minio"></a><a href="#minio" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>MinIO</h3>
+<p><a href="https://min.io/">MinIO</a> is an open source object storage server with AWS S3 compatible API which
+you can run locally. The advantage of using MinIO for your development and test
+environments is that all AWS S3 functionality should still continue to work,
+including direct uploads, so you don't need to update your code.</p>
+<p>If you're on a Mac you can install it with Homebrew:</p>
+<pre><code class="hljs">$ <span class="hljs-keyword">brew </span>install minio/stable/minio
+</code></pre>
+<p>Afterwards you can start the MinIO server and give it a directory where it will
+store the data:</p>
+<pre><code class="hljs">$ minio<span class="hljs-built_in"> server </span>data/
+</code></pre>
+<p>This command will print out the credentials for the running MinIO server, as
+well as a link to the MinIO web interface. Follow that link and create a new
+bucket. Once you've done that, you can configure <code>Shrine::Storage::S3</code> to use
+your MinIO server:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(
+  <span class="hljs-symbol">access_key_id:</span>     <span class="hljs-string">"&lt;MINIO_ACCESS_KEY&gt;"</span>, <span class="hljs-comment"># "AccessKey" value</span>
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"&lt;MINIO_SECRET_KEY&gt;"</span>, <span class="hljs-comment"># "SecretKey" value</span>
+  <span class="hljs-symbol">endpoint:</span>          <span class="hljs-string">"&lt;MINIO_ENDPOINT&gt;"</span>,   <span class="hljs-comment"># "Endpoint"  value</span>
+  <span class="hljs-symbol">bucket:</span>            <span class="hljs-string">"&lt;MINIO_BUCKET&gt;"</span>,     <span class="hljs-comment"># name of the bucket you created</span>
+  <span class="hljs-symbol">region:</span>            <span class="hljs-string">"us-east-1"</span>,
+  <span class="hljs-symbol">force_path_style:</span>  <span class="hljs-literal">true</span>,
+)
+</code></pre>
+<p>The <code>:endpoint</code> option will make aws-sdk-s3 point all URLs to your MinIO server
+(instead of <code>s3.amazonaws.com</code>), and <code>:force_path_style</code> tells it not to use
+subdomains when generating URLs.</p>
+<h2><a class="anchor" aria-hidden="true" id="test-data"></a><a href="#test-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Test data</h2>
+<p>We want to keep our tests fast, so when we're setting up files for tests, we
+want to avoid expensive operations such as file processing and metadata
+extraction.</p>
+<p>We can create a helper method that will create attached file data for us, and
+use that with our factories/fixtures.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">TestData</span></span>
+  module_function
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">image_data</span></span>
+    attacher = Shrine::Attacher.new
+    attacher.set(uploaded_image)
+
+    <span class="hljs-comment"># if you're processing derivatives</span>
+    attacher.set_derivatives(
+      <span class="hljs-symbol">large:</span>  uploaded_image,
+      <span class="hljs-symbol">medium:</span> uploaded_image,
+      <span class="hljs-symbol">small:</span>  uploaded_image,
+    )
+
+    attacher.column_data
+  <span class="hljs-keyword">end</span>
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">uploaded_image</span></span>
+    file = File.open(<span class="hljs-string">"test/files/image.jpg"</span>, <span class="hljs-symbol">binmode:</span> <span class="hljs-literal">true</span>)
+
+    <span class="hljs-comment"># for performance we skip metadata extraction and assign test metadata</span>
+    uploaded_file = Shrine.upload(file, <span class="hljs-symbol">:store</span>, <span class="hljs-symbol">metadata:</span> <span class="hljs-literal">false</span>)
+    uploaded_file.metadata.merge!(
+      <span class="hljs-string">"size"</span>      =&gt; file.size,
+      <span class="hljs-string">"mime_type"</span> =&gt; <span class="hljs-string">"image/jpeg"</span>,
+      <span class="hljs-string">"filename"</span>  =&gt; <span class="hljs-string">"test.jpg"</span>,
+    )
+
+    uploaded_file
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-37-tab-38" class="nav-link active" data-group="group_37" data-tab="tab-group-37-content-38">FactoryBot</div><div id="tab-group-37-tab-39" class="nav-link" data-group="group_37" data-tab="tab-group-37-content-39">Rails YAML fixtures</div></div><div class="tab-content"><div id="tab-group-37-content-38" class="tab-pane active" data-group="group_37" tabindex="-1"><div><span><pre><code class="hljs css language-rb">factory <span class="hljs-symbol">:photo</span> <span class="hljs-keyword">do</span><br />  image_data { TestData.image_data }<br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-37-content-39" class="tab-pane" data-group="group_37" tabindex="-1"><div><span><pre><code class="hljs css language-erb"><span class="xml">photo:<br />  image_data: <span class="hljs-tag">&lt;<span class="hljs-name">%=</span></span></span><span class="ruby"> TestData.image_data </span><span class="xml"><span class="hljs-tag">%&gt;</span><br /></span></code></pre>
+</span></div></div></div></div>
+<h2><a class="anchor" aria-hidden="true" id="unit-tests"></a><a href="#unit-tests" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Unit tests</h2>
+<p>For testing attachment in your unit tests, you can assign plain <code>File</code> objects:</p>
+<pre><code class="hljs css language-rb">RSpec.describe ImageUploader <span class="hljs-keyword">do</span>
+  let(<span class="hljs-symbol">:image</span>)       { photo.image }
+  let(<span class="hljs-symbol">:derivatives</span>) { photo.image_derivatives }
+  let(<span class="hljs-symbol">:photo</span>)       { Photo.create(<span class="hljs-symbol">image:</span> File.open(<span class="hljs-string">"test/files/image.png"</span>, <span class="hljs-string">"rb"</span>)) }
+
+  it <span class="hljs-string">"extracts metadata"</span> <span class="hljs-keyword">do</span>
+    expect(image.mime_type).to eq(<span class="hljs-string">"image/png"</span>)
+    expect(image.extension).to eq(<span class="hljs-string">"png"</span>)
+    expect(image.size).to be_instance_of(Integer)
+    expect(image.width).to be_instance_of(Integer)
+    expect(image.height).to be_instance_of(Integer)
+  <span class="hljs-keyword">end</span>
+
+  it <span class="hljs-string">"generates derivatives"</span> <span class="hljs-keyword">do</span>
+    expect(derivatives[<span class="hljs-symbol">:small</span>]).to  be_kind_of(Shrine::UploadedFile)
+    expect(derivatives[<span class="hljs-symbol">:medium</span>]).to be_kind_of(Shrine::UploadedFile)
+    expect(derivatives[<span class="hljs-symbol">:large</span>]).to  be_kind_of(Shrine::UploadedFile)
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="acceptance-tests"></a><a href="#acceptance-tests" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Acceptance tests</h2>
+<p>In acceptance tests you're testing your app end-to-end, and you likely want to
+also test file attachments here. Here are examples for some common use cases:</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-40-tab-41" class="nav-link active" data-group="group_40" data-tab="tab-group-40-content-41">Capybara</div><div id="tab-group-40-tab-42" class="nav-link" data-group="group_40" data-tab="tab-group-40-content-42">Rack::Test</div><div id="tab-group-40-tab-43" class="nav-link" data-group="group_40" data-tab="tab-group-40-content-43">Rack::TestApp</div></div><div class="tab-content"><div id="tab-group-40-content-41" class="tab-pane active" data-group="group_40" tabindex="-1"><div><span><pre><code class="hljs css language-rb">attach_file(<span class="hljs-string">"#image-field"</span>, <span class="hljs-string">"test/files/image.jpg"</span>)<br /></code></pre>
+</span></div></div><div id="tab-group-40-content-42" class="tab-pane" data-group="group_40" tabindex="-1"><div><span><pre><code class="hljs css language-rb">post <span class="hljs-string">"/photos"</span>, <span class="hljs-symbol">photo:</span> {<br />  <span class="hljs-symbol">image:</span> Rack::Test::UploadedFile.new(<span class="hljs-string">"test/files/image.jpg"</span>, <span class="hljs-string">"image/jpeg"</span>)<br />}<br /></code></pre>
+</span></div></div><div id="tab-group-40-content-43" class="tab-pane" data-group="group_40" tabindex="-1"><div><span><pre><code class="hljs css language-rb">app.post <span class="hljs-string">"/photos"</span>, <span class="hljs-symbol">multipart:</span> {<br />  <span class="hljs-string">"photo[image]"</span> =&gt; File.open(<span class="hljs-string">"test/files/image.jpg"</span>)<br />}<br /></code></pre>
+</span></div></div></div></div>
+<h2><a class="anchor" aria-hidden="true" id="background-jobs"></a><a href="#background-jobs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Background jobs</h2>
+<p>If you're using background jobs with Shrine, you probably want to make them
+synchronous in tests. See your backgrounding library docs for how to make jobs
+synchronous.</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-44-tab-45" class="nav-link active" data-group="group_44" data-tab="tab-group-44-content-45">ActiveJob</div><div id="tab-group-44-tab-46" class="nav-link" data-group="group_44" data-tab="tab-group-44-content-46">Sidekiq</div><div id="tab-group-44-tab-47" class="nav-link" data-group="group_44" data-tab="tab-group-44-content-47">SuckerPunch</div></div><div class="tab-content"><div id="tab-group-44-content-45" class="tab-pane active" data-group="group_44" tabindex="-1"><div><span><pre><code class="hljs css language-rb">ActiveJob::Base.queue_adapter = <span class="hljs-symbol">:inline</span><br /></code></pre>
+</span></div></div><div id="tab-group-44-content-46" class="tab-pane" data-group="group_44" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"sidekiq/testing"</span><br />Sidekiq::Testing.inline!<br /></code></pre>
+</span></div></div><div id="tab-group-44-content-47" class="tab-pane" data-group="group_44" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"sucker_punch/testing/inline"</span><br /></code></pre>
+</span></div></div></div></div>
+<h2><a class="anchor" aria-hidden="true" id="processing"></a><a href="#processing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing</h2>
+<p>If you're testing your attachment flow which includes processing <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a>,
+you might want to disable the processing for certain tests. You can do this by
+temporarily overriding the processor:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">TestMode</span></span>
+  module_function
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">disable_processing</span><span class="hljs-params">(attacher, processor_name = <span class="hljs-symbol">:default</span>)</span></span>
+    attacher.<span class="hljs-keyword">class</span>.instance_exec <span class="hljs-keyword">do</span>
+      original_processor = derivatives_processor
+      derivatives_processor(processor_name) { Hash.new }
+      <span class="hljs-keyword">yield</span>
+      derivatives_processor(processor_name, &amp;original_processor)
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">TestMode.disable_processing(Photo.image_attacher) <span class="hljs-keyword">do</span>
+  photo = Photo.new
+  photo.file = File.open(<span class="hljs-string">"test/files/image.png"</span>, <span class="hljs-string">"rb"</span>)
+  photo.save
+<span class="hljs-keyword">end</span>
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/securing-uploads"><span class="arrow-prev">← </span><span>Securing uploads</span></a><a class="docs-next button" href="/docs/upgrading-to-3"><span>Upgrading to Shrine 3.x</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#callbacks">Callbacks</a></li><li><a href="#storage">Storage</a><ul class="toc-headings"><li><a href="#minio">MinIO</a></li></ul></li><li><a href="#test-data">Test data</a></li><li><a href="#unit-tests">Unit tests</a></li><li><a href="#acceptance-tests">Acceptance tests</a></li><li><a href="#background-jobs">Background jobs</a></li><li><a href="#processing">Processing</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

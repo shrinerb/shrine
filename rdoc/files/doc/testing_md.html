@@ -30,13 +30,15 @@ doc/testing.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Testing+with+Shrine">Testing with <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-Testing+with+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>—</p>
+
+<h2 id="label-title-3A+Testing+with+Shrine">title: Testing with <a href="../../classes/Shrine.html"><code>Shrine</code></a><span><a href="#label-title-3A+Testing+with+Shrine">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>The goal of this guide is to provide some useful tips for testing file attachments implemented with <a href="../../classes/Shrine.html"><code>Shrine</code></a> in your application.</p>
 
@@ -82,20 +84,14 @@ Last Update:
 
 <p>We want to keep our tests fast, so when we&#39;re setting up files for tests, we want to avoid expensive operations such as file processing and metadata extraction.</p>
 
-<p>We can start by creating a method which would generate fake attachment data:</p>
+<p>We can create a helper method that will create attached file data for us, and use that with our factories/fixtures.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">TestData</span>&#x000A;  <span class="ruby-identifier">module_function</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">image_data</span>&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span>(<span class="ruby-identifier">uploaded_image</span>)&#x000A;&#x000A;    <span class="ruby-comment"># if you&#39;re processing derivatives</span>&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set_derivatives</span>(&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">uploaded_image</span>,&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">uploaded_image</span>,&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">uploaded_image</span>,&#x000A;    )&#x000A;&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">column_data</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">uploaded_image</span>&#x000A;    <span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>)&#x000A;&#x000A;    <span class="ruby-comment"># for performance we skip metadata extraction and assign test metadata</span>&#x000A;    <span class="ruby-identifier">uploaded_file</span> = <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">:store</span>, <span class="ruby-value">metadata:</span> <span class="ruby-keyword">false</span>)&#x000A;    <span class="ruby-identifier">uploaded_file</span>.<span class="ruby-identifier">metadata</span>.<span class="ruby-identifier">merge!</span>(&#x000A;      <span class="ruby-string">&quot;size&quot;</span>      <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">file</span>.<span class="ruby-identifier">size</span>,&#x000A;      <span class="ruby-string">&quot;mime_type&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;image/jpeg&quot;</span>,&#x000A;      <span class="ruby-string">&quot;filename&quot;</span>  <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;test.jpg&quot;</span>,&#x000A;    )&#x000A;&#x000A;    <span class="ruby-identifier">uploaded_file</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<pre class="ruby"><span class="ruby-constant">TestData</span>.<span class="ruby-identifier">image_data</span> <span class="ruby-comment">#=&gt; &#39;{&quot;id&quot;:&quot;...&quot;,&quot;storage&quot;:&quot;...&quot;,&quot;metadata&quot;:{...},&quot;derivatives&quot;:{...}}&#39;</span></pre>
-
-<p>With <a href="https://github.com/thoughtbot/factory_bot">factory_bot</a> you can then assign the test attachment data like this:</p>
-
+<!--DOCUSAURUS_CODE_TABS--><!--FactoryBot-->
 <pre class="ruby"><span class="ruby-identifier">factory</span> <span class="ruby-value">:photo</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-identifier">image_data</span> { <span class="ruby-constant">TestData</span>.<span class="ruby-identifier">image_data</span> }&#x000A;<span class="ruby-keyword">end</span></pre>
-
-<p>With <a href="https://guides.rubyonrails.org/testing.html#the-low-down-on-fixtures">Rails’ YAML fixtures</a> it would look like this:</p>
-
+<!--Rails YAML fixtures-->
 <pre>photo:&#x000A;  image_data: &lt;%= TestData.image_data %&gt;</pre>
-
+<!--END_DOCUSAURUS_CODE_TABS-->
 <h2 id="label-Unit+tests">Unit tests<span><a href="#label-Unit+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>For testing attachment in your unit tests, you can assign plain <code>File</code> objects:</p>
@@ -104,39 +100,27 @@ Last Update:
 
 <h2 id="label-Acceptance+tests">Acceptance tests<span><a href="#label-Acceptance+tests">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>In acceptance tests you&#39;re testing your app end-to-end, and you likely want to also test file attachments here. There are a variety of libraries that you might be using for your acceptance tests.</p>
-
-<h3 id="label-Capybara">Capybara<span><a href="#label-Capybara">&para;</a> <a href="#top">&uarr;</a></span></h3>
-
-<p>If you&#39;re testing with the <a href="https://github.com/jnicklas/capybara">Capybara</a> acceptance test framework, you can use <a target="_top" href="http://www.rubydoc.info/github/jnicklas/capybara/master/Capybara/Node/Actions#attach_file-instance_method">#attach_file</a> to select a file from your filesystem in the form:</p>
-
+<p>In acceptance tests you&#39;re testing your app end-to-end, and you likely want to also test file attachments here. Here are examples for some common use cases:</p>
+<!--DOCUSAURUS_CODE_TABS--><!--Capybara-->
 <pre class="ruby"><span class="ruby-identifier">attach_file</span>(<span class="ruby-string">&quot;#image-field&quot;</span>, <span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)</pre>
-
-<h3 id="label-Rack-3A-3ATest">Rack::Test<span><a href="#label-Rack-3A-3ATest">&para;</a> <a href="#top">&uarr;</a></span></h3>
-
-<p>Regular routing tests in Rails use <a href="https://github.com/brynary/rack-test">Rack::Test</a>, in which case you can create <code>Rack::Test::UploadedFile</code> objects and pass them as form parameters:</p>
-
-<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">photo:</span> { <span class="ruby-value">image:</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-string">&quot;image/jpeg&quot;</span>) }</pre>
-
-<h3 id="label-Rack-3A-3ATestApp">Rack::TestApp<span><a href="#label-Rack-3A-3ATestApp">&para;</a> <a href="#top">&uarr;</a></span></h3>
-
-<p>With <a href="https://github.com/kwatch/rack-test_app">Rack::TestApp</a> you can create multipart file upload requests by using the <code>:multipart</code> option and passing a <code>File</code> object:</p>
-
-<pre class="ruby"><span class="ruby-identifier">http</span>.<span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">multipart:</span> {<span class="ruby-string">&quot;photo[image]&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)}</pre>
-
+<!--Rack::Test-->
+<pre class="ruby"><span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">photo:</span> {&#x000A;  <span class="ruby-value">image:</span> <span class="ruby-constant">Rack</span><span class="ruby-operator">::</span><span class="ruby-constant">Test</span><span class="ruby-operator">::</span><span class="ruby-constant">UploadedFile</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>, <span class="ruby-string">&quot;image/jpeg&quot;</span>)&#x000A;}</pre>
+<!--Rack::TestApp-->
+<pre class="ruby"><span class="ruby-identifier">app</span>.<span class="ruby-identifier">post</span> <span class="ruby-string">&quot;/photos&quot;</span>, <span class="ruby-value">multipart:</span> {&#x000A;  <span class="ruby-string">&quot;photo[image]&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&quot;test/files/image.jpg&quot;</span>)&#x000A;}</pre>
+<!--END_DOCUSAURUS_CODE_TABS-->
 <h2 id="label-Background+jobs">Background jobs<span><a href="#label-Background+jobs">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>If you&#39;re using background jobs with <a href="../../classes/Shrine.html"><code>Shrine</code></a>, you probably want to make them synchronous in tests. See your backgrounding library docs for how to make jobs synchronous.</p>
-
-<pre class="ruby"><span class="ruby-comment"># ActiveJob</span>&#x000A;<span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">queue_adapter</span> = <span class="ruby-value">:inline</span></pre>
-
-<pre class="ruby"><span class="ruby-comment"># Sidekiq</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sidekiq/testing&quot;</span>&#x000A;<span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Testing</span>.<span class="ruby-identifier">inline!</span></pre>
-
-<pre class="ruby"><span class="ruby-comment"># SuckerPunch</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sucker_punch/testing/inline&quot;</span></pre>
-
+<!--DOCUSAURUS_CODE_TABS--><!--ActiveJob-->
+<pre class="ruby"><span class="ruby-constant">ActiveJob</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>.<span class="ruby-identifier">queue_adapter</span> = <span class="ruby-value">:inline</span></pre>
+<!--Sidekiq-->
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sidekiq/testing&quot;</span>&#x000A;<span class="ruby-constant">Sidekiq</span><span class="ruby-operator">::</span><span class="ruby-constant">Testing</span>.<span class="ruby-identifier">inline!</span></pre>
+<!--SuckerPunch-->
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;sucker_punch/testing/inline&quot;</span></pre>
+<!--END_DOCUSAURUS_CODE_TABS-->
 <h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If you&#39;re testing your attachment flow which includes processing <a href="/doc/plugins/derivatives.md#readme">derivatives</a>, you might want to disable the processing for certain tests. You can do this by temporarily overriding the processor:</p>
+<p>If you&#39;re testing your attachment flow which includes processing <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a>, you might want to disable the processing for certain tests. You can do this by temporarily overriding the processor:</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">TestMode</span>&#x000A;  <span class="ruby-identifier">module_function</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">disable_processing</span>(<span class="ruby-identifier">attacher</span>, <span class="ruby-identifier">processor_name</span> = <span class="ruby-value">:default</span>)&#x000A;    <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">instance_exec</span> <span class="ruby-keyword">do</span>&#x000A;      <span class="ruby-identifier">original_processor</span> = <span class="ruby-identifier">derivatives_processor</span>&#x000A;      <span class="ruby-identifier">derivatives_processor</span>(<span class="ruby-identifier">processor_name</span>) { <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> }&#x000A;      <span class="ruby-keyword">yield</span>&#x000A;      <span class="ruby-identifier">derivatives_processor</span>(<span class="ruby-identifier">processor_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">original_processor</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

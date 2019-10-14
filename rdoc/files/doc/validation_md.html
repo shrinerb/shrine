@@ -30,27 +30,29 @@ doc/validation.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-File+Validation">File Validation<span><a href="#label-File+Validation">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>—</p>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows validating assigned files using the <a href="/doc/plugins/validation.md#readme">validation</a> plugin. Validation code is defined inside an <code>Attacher.validate</code> block:</p>
+<h2 id="label-title-3A+File+Validation">title: File Validation<span><a href="#label-title-3A+File+Validation">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> allows validating assigned files using the <a href="https://shrinerb.com/docs/plugins/validation">validation</a> plugin. Validation code is defined inside an <code>Attacher.validate</code> block:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span></pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">validate</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-comment"># ... perform validation ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>The validation block is run when a new file is assigned, and any validation errors are stored in <code>Shrine::Attacher#errors</code>. ORM plugins like <code>sequel</code> and <code>activerecord</code> will automatically merge these validation errors into the <code>#errors</code> hash on the model instance.</p>
+<p>The validation block is run when a new file is assigned, and any validation errors are stored in <code>Shrine::Attacher#errors</code>. Persistence plugins like <code>sequel</code> and <code>activerecord</code> will automatically merge these validation errors into the <code>#errors</code> hash on the model instance.</p>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image</span> = <span class="ruby-identifier">image_file</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">valid?</span> <span class="ruby-comment">#=&gt; false</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">errors</span>[<span class="ruby-value">:image</span>] <span class="ruby-comment">#=&gt; [...]</span></pre>
 
 <h2 id="label-Validation+helpers">Validation helpers<span><a href="#label-Validation+helpers">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The <a href="/doc/plugins/validation_helpers.md#readme">validation_helpers</a> plugin provides convenient validators for built-in metadata:</p>
+<p>The <a href="https://shrinerb.com/docs/plugins/validation_helpers">validation_helpers</a> plugin provides convenient validators for built-in metadata:</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation_helpers</span></pre>
 
@@ -58,7 +60,7 @@ Last Update:
 
 <p>Note that for secure MIME type validation it&#39;s recommended to also load <code>determine_mime_type</code> and <code>restore_cached_data</code> plugins.</p>
 
-<p>See the <a href="/doc/plugins/validation_helpers.md#readme">validation_helpers</a> plugin documentation for more details.</p>
+<p>See the <a href="https://shrinerb.com/docs/plugins/validation_helpers">validation_helpers</a> plugin documentation for more details.</p>
 
 <h2 id="label-Custom+validations">Custom validations<span><a href="#label-Custom+validations">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

@@ -30,12 +30,16 @@ doc/release_notes/2.3.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<p>—</p>
+
+<h2 id="label-title-3A+Shrine+2.3.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.3.1<span><a href="#label-title-3A+Shrine+2.3.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
 <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
 <p>The previous version introduced explicit default permissions for created  files and directories in FileSystem storage. However, the current behaviour  was applying directory permissions to the directory the storage is  initialized with. This would raise a <code>Errno::EPERM</code> exception for directories  for which the permissions cannot be changed, for example <code>Dir.tmpdir</code>. This  is now changed; when FileSystem storage is now initialized with a directory,  the permissions won&#39;t be changed if this directory already exists.</p>

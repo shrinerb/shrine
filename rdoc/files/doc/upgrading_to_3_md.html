@@ -30,34 +30,17 @@ doc/upgrading_to_3.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-28 11:17:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Upgrading+to+Shrine+3.x">Upgrading to <a href="../../classes/Shrine.html"><code>Shrine</code></a> 3.x<span><a href="#label-Upgrading+to+Shrine+3.x">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>— id: upgrading-to-3</p>
 
-<p>This guide provides instructions for upgrading <a href="../../classes/Shrine.html"><code>Shrine</code></a> in your apps to version 3.x. We will cover the following areas:</p>
-<ul><li>
-<p><a href="#attacher">Attacher</a></p>
-</li><li>
-<p><a href="#backgrounding">Backgrounding</a></p>
-</li><li>
-<p><a href="#versions">Versions</a></p>
-</li><li>
-<p><a href="#miscellaneous">Miscellaneous</a></p>
-</li><li>
-<p><a href="#logging">Logging</a></p>
-</li><li>
-<p><a href="#backup">Backup</a></p>
-</li><li>
-<p><a href="#copy">Copy</a></p>
-</li><li>
-<p><a href="#moving">Moving</a></p>
-</li><li>
-<p><a href="#memory">Memory</a></p>
-</li></ul>
+<h2 id="label-title-3A+Upgrading+to+Shrine+3.x">title: Upgrading to <a href="../../classes/Shrine.html"><code>Shrine</code></a> 3.x<span><a href="#label-title-3A+Upgrading+to+Shrine+3.x">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>This guide provides instructions for upgrading <a href="../../classes/Shrine.html"><code>Shrine</code></a> in your apps to version 3.x. If you&#39;re looking for a full list of changes, see the <a href="https://shrinerb.com/docs/release_notes/3.0.0">3.0 release notes</a>.</p>
 
 <h2 id="label-Attacher">Attacher<span><a href="#label-Attacher">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
@@ -67,9 +50,9 @@ Last Update:
 
 <p>The main change is that <code>Attacher.new</code> is now used for initializing the attacher without a model:</p>
 
-<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-comment"># ...</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-comment"># ~&gt; ArgumentError: invalid number of arguments</span></pre>
+<pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>&#x000A;<span class="ruby-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>&#x000A;&#x000A;<span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-comment"># ~&gt; ArgumentError: invalid number of arguments</span></pre>
 
-<p>To initialize an attacher with a model, use <code>Attacher.from_model</code> provided by the new <a href="/doc/plugins/model.md#readme">model</a> plugin (which is automatically loaded by <code>activerecord</code> and <code>sequel</code> plugins):</p>
+<p>To initialize an attacher with a model, use <code>Attacher.from_model</code> provided by the new <a href="https://shrinerb.com/docs/plugins/model">model</a> plugin (which is automatically loaded by <code>activerecord</code> and <code>sequel</code> plugins):</p>
 
 <pre class="ruby"><span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-identifier">photo</span>, <span class="ruby-value">:image</span>)&#x000A;<span class="ruby-comment"># ...</span></pre>
 
@@ -163,7 +146,7 @@ Last Update:
 
 <h2 id="label-Versions">Versions<span><a href="#label-Versions">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>The <code>versions</code>, <code>processing</code>, <code>recache</code>, and <code>delete_raw</code> plugins have been deprecated in favour of the new <a href="/doc/plugins/derivatives.md#readme">derivatives</a> plugin. Let&#39;s assume you have the following <code>versions</code> code:</p>
+<p>The <code>versions</code>, <code>processing</code>, <code>recache</code>, and <code>delete_raw</code> plugins have been deprecated in favour of the new <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> plugin. Let&#39;s assume you have the following <code>versions</code> code:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:versions</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:delete_raw</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">versions</span> = { <span class="ruby-value">original:</span> <span class="ruby-identifier">file</span> }&#x000A;&#x000A;    <span class="ruby-identifier">file</span>.<span class="ruby-identifier">download</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;      <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:large</span>]  = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>)&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:medium</span>] = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>)&#x000A;      <span class="ruby-identifier">versions</span>[<span class="ruby-value">:small</span>]  = <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;&#x000A;    <span class="ruby-identifier">versions</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
@@ -176,6 +159,12 @@ Last Update:
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    {&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;&#x000A;<span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">valid?</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_changed?</span> <span class="ruby-comment"># create derivatives</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span> <span class="ruby-comment"># automatically calls processing block</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">else</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>If you have multiple places where you need to generate derivatives, and want it to happen automatically like it did with the <code>versions</code> plugin, you can override <code>Attacher#promote</code> to call <code>Attacher#create_derivatives</code> before promotion:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">promote</span>(<span class="ruby-operator">*</span>)&#x000A;    <span class="ruby-identifier">create_derivatives</span>&#x000A;    <span class="ruby-keyword">super</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<h3 id="label-Accessing+derivatives">Accessing derivatives<span><a href="#label-Accessing+derivatives">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>The derivative URLs are accessed in the same way as versions:</p>
 
@@ -231,11 +220,21 @@ Last Update:
 
 <p>However, it doesn&#39;t implement any other URL fallbacks that the <code>versions</code> plugin has for missing derivatives.</p>
 
-<h2 id="label-Miscellaneous">Miscellaneous<span><a href="#label-Miscellaneous">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-Other">Other<span><a href="#label-Other">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>processing</code> plugin has been deprecated over the new <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> plugin. If you were modifying the original file:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:processing</span>&#x000A;&#x000A;  <span class="ruby-identifier">process</span>(<span class="ruby-value">:store</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">io</span>, <span class="ruby-identifier">context</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">download</span>)&#x000A;      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">1600</span>, <span class="ruby-value">1600</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>you should now add the processed file as a derivative:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivatives</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    { <span class="ruby-value">normalized:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">1600</span>, <span class="ruby-value">1600</span>) }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h3 id="label-Logging">Logging<span><a href="#label-Logging">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The <code>logging</code> plugin has been removed in favour of the <a href="/doc/plugins/instrumentation.md#readme">instrumentation</a> plugin. You can replace</p>
+<p>The <code>logging</code> plugin has been removed in favour of the <a href="https://shrinerb.com/docs/plugins/instrumentation">instrumentation</a> plugin. You can replace code like</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:logging</span>, <span class="ruby-value">logger:</span> <span class="ruby-constant">Rails</span>.<span class="ruby-identifier">logger</span></pre>
 
@@ -245,7 +244,7 @@ Last Update:
 
 <h3 id="label-Backup">Backup<span><a href="#label-Backup">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The <code>backup</code> plugin has been removed in favour of the new <a href="/doc/plugins/mirroring.md#readme">mirroring</a> plugin. You can replace</p>
+<p>The <code>backup</code> plugin has been removed in favour of the new <a href="https://shrinerb.com/docs/plugins/mirroring">mirroring</a> plugin. You can replace code like</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:backup</span>, <span class="ruby-value">storage:</span> <span class="ruby-value">:backup_store</span></pre>
 
@@ -255,7 +254,7 @@ Last Update:
 
 <h3 id="label-Copy">Copy<span><a href="#label-Copy">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The <code>copy</code> plugin has been removed. You can replace</p>
+<p>The <code>copy</code> plugin has been removed as its behaviour can now be achieved easily. You can replace code like</p>
 
 <pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:copy</span></pre>
 
@@ -267,9 +266,25 @@ Last Update:
 
 <h3 id="label-Moving">Moving<span><a href="#label-Moving">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<p>The <code>moving</code> plugin has been removed in favour of the <code>:move</code> option for <code>FileSystem#upload</code>. You can set up moving in basic places with the <code>upload_options</code> plugin:</p>
+<p>The <code>moving</code> plugin has been removed in favour of the <code>:move</code> option for <code>FileSystem#upload</code>. You can set this option as default using the <code>upload_options</code> plugin (the example assumes both <code>:cache</code> and <code>:store</code> are FileSystem storages):</p>
 
-<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>,&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-value">action:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>) { { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-value">:cache</span> },&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">io</span>, <span class="ruby-value">action:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>) { { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> } <span class="ruby-keyword">if</span> <span class="ruby-identifier">action</span> <span class="ruby-operator">==</span> <span class="ruby-value">:store</span> }</pre>
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:upload_options</span>, <span class="ruby-value">cache:</span> { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> }, <span class="ruby-value">store:</span> { <span class="ruby-value">move:</span> <span class="ruby-keyword">true</span> }</pre>
+
+<h3 id="label-Parsed+JSON">Parsed JSON<span><a href="#label-Parsed+JSON">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>parsed_json</code> plugin has been removed as it&#39;s now the default behaviour.</p>
+
+<pre># this now works by default&#x000A;photo.image = { &quot;id&quot; =&gt; &quot;d7e54d6ef2.jpg&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } }</pre>
+
+<h3 id="label-Module+Include">Module Include<span><a href="#label-Module+Include">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The <code>module_include</code> plugin has been deprecated over overriding core classes directly. You can replace code like</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:module_include</span>&#x000A;&#x000A;  <span class="ruby-identifier">file_methods</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">image?</span>&#x000A;      <span class="ruby-identifier">mime_type</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;image&quot;</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>with</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">class</span> <span class="ruby-constant">UploadedFile</span>&#x000A;    <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">image?</span>&#x000A;      <span class="ruby-identifier">mime_type</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;image&quot;</span>)&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 </div>
 <div id='context'>
 </div>

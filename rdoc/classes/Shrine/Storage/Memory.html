@@ -108,7 +108,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-clear-21-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-clear-21-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-clear-21-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;<span class="line-num">43</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-delete'>
@@ -142,7 +142,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete_prefixed-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-delete_prefixed-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete_if</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">_v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">k</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-identifier">delete_prefix</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>) }&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-delete_prefixed-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">delete_prefix</span> = <span class="ruby-identifier">delete_prefix</span>.<span class="ruby-identifier">chomp</span>(<span class="ruby-string">&quot;/&quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="line-num">39</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete_if</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">_value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-identifier">delete_prefix</span>) }&#x000A;<span class="line-num">40</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-exists-3F'>

@@ -230,14 +230,14 @@ Superclass:
 
 <p>Deletes objects at keys starting with the specified prefix.</p>
 
-<p>s3.delete_prefixed(“somekey/derivatives”)</p>
+<p>s3.delete_prefixed(“somekey/derivatives/”)</p>
 
 </div>
 <div class='source'>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete_prefixed-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-delete_prefixed-source'>    <span class="ruby-comment"># File lib/shrine/storage/s3.rb</span>&#x000A;<span class="line-num">211</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">212</span>   <span class="ruby-comment"># We need to make sure to combine with storage prefix, and</span>&#x000A;<span class="line-num">213</span>   <span class="ruby-comment"># that it ends in &#39;/&#39; cause S3 can be squirrely about matching interior.</span>&#x000A;<span class="line-num">214</span>   <span class="ruby-identifier">absolute_prefix</span> = [<span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">delete_prefix</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;<span class="line-num">215</span>   <span class="ruby-identifier">bucket</span>.<span class="ruby-identifier">objects</span>(<span class="ruby-value">prefix:</span> <span class="ruby-identifier">absolute_prefix</span>).<span class="ruby-identifier">batch_delete!</span>&#x000A;<span class="line-num">216</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-delete_prefixed-source'>    <span class="ruby-comment"># File lib/shrine/storage/s3.rb</span>&#x000A;<span class="line-num">211</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">212</span>   <span class="ruby-comment"># We need to make sure to combine with storage prefix, and</span>&#x000A;<span class="line-num">213</span>   <span class="ruby-comment"># that it ends in &#39;/&#39; cause S3 can be squirrely about matching interior.</span>&#x000A;<span class="line-num">214</span>   <span class="ruby-identifier">delete_prefix</span> = <span class="ruby-identifier">delete_prefix</span>.<span class="ruby-identifier">chomp</span>(<span class="ruby-string">&quot;/&quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="line-num">215</span>   <span class="ruby-identifier">bucket</span>.<span class="ruby-identifier">objects</span>(<span class="ruby-value">prefix:</span> [<span class="ruby-operator">*</span><span class="ruby-identifier">prefix</span>, <span class="ruby-identifier">delete_prefix</span>].<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)).<span class="ruby-identifier">batch_delete!</span>&#x000A;<span class="line-num">216</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-exists-3F'>

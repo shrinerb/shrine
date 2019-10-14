@@ -1,0 +1,722 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Getting Started · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Quick start"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Getting Started · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="## Quick start"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive siteNavItemActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Base</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/getting_started.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Getting Started</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="quick-start"></a><a href="#quick-start" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Quick start</h2>
+<p>Add Shrine to the Gemfile and write an initializer which sets up the storage
+and loads integration for your persistence library:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"shrine"</span>, <span class="hljs-string">"~&gt; 3.0"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine"</span>
+<span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/file_system"</span>
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::FileSystem.new(<span class="hljs-string">"public"</span>, <span class="hljs-symbol">prefix:</span> <span class="hljs-string">"uploads/cache"</span>), <span class="hljs-comment"># temporary</span>
+  <span class="hljs-symbol">store:</span> Shrine::Storage::FileSystem.new(<span class="hljs-string">"public"</span>, <span class="hljs-symbol">prefix:</span> <span class="hljs-string">"uploads"</span>),       <span class="hljs-comment"># permanent</span>
+}
+
+Shrine.plugin <span class="hljs-symbol">:sequel</span> <span class="hljs-comment"># or :activerecord</span>
+Shrine.plugin <span class="hljs-symbol">:cached_attachment_data</span> <span class="hljs-comment"># for retaining the cached file across form redisplays</span>
+Shrine.plugin <span class="hljs-symbol">:restore_cached_data</span> <span class="hljs-comment"># re-extract metadata when attaching a cached file</span>
+Shrine.plugin <span class="hljs-symbol">:rack_file</span> <span class="hljs-comment"># for non-Rails apps</span>
+</code></pre>
+<p>Next decide how you will name the attachment attribute on your model, and run a
+migration that adds an <code>&lt;attachment&gt;_data</code> text or JSON column, which Shrine
+will use to store all information about the attachment:</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-1-tab-2" class="nav-link active" data-group="group_1" data-tab="tab-group-1-content-2">Sequel</div><div id="tab-group-1-tab-3" class="nav-link" data-group="group_1" data-tab="tab-group-1-content-3">ActiveRecord</div><div id="tab-group-1-tab-4" class="nav-link" data-group="group_1" data-tab="tab-group-1-content-4">Rails</div></div><div class="tab-content"><div id="tab-group-1-content-2" class="tab-pane active" data-group="group_1" tabindex="-1"><div><span><pre><code class="hljs css language-rb">Sequel.migration <span class="hljs-keyword">do</span><br />  change <span class="hljs-keyword">do</span><br />    add_column <span class="hljs-symbol">:photos</span>, <span class="hljs-symbol">:image_data</span>, <span class="hljs-symbol">:text</span> <span class="hljs-comment"># or :jsonb</span><br />  <span class="hljs-keyword">end</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-1-content-3" class="tab-pane" data-group="group_1" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AddImageDataToPhotos</span> &lt; ActiveRecord::Migration</span><br />  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">change</span></span><br />    add_column <span class="hljs-symbol">:photos</span>, <span class="hljs-symbol">:image_data</span>, <span class="hljs-symbol">:text</span> <span class="hljs-comment"># or :jsonb</span><br />  <span class="hljs-keyword">end</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-1-content-4" class="tab-pane" data-group="group_1" tabindex="-1"><div><span><pre><code class="hljs css language-sh">$ rails generate migration add_image_data_to_photos image_data:text<br /></code></pre>
+</span></div></div></div></div>
+<p>Now you can create an uploader class for the type of files you want to upload,
+and add a virtual attribute for handling attachments using this uploader to
+your model. If you do not care about adding plugins or additional processing,
+you can use <code>Shrine::Attachment</code>.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-comment"># plugins and uploading logic</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-5-tab-6" class="nav-link active" data-group="group_5" data-tab="tab-group-5-content-6">Sequel</div><div id="tab-group-5-tab-7" class="nav-link" data-group="group_5" data-tab="tab-group-5-content-7">ActiveRecord</div></div><div class="tab-content"><div id="tab-group-5-content-6" class="tab-pane active" data-group="group_5" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; Sequel::Model</span><br />  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:image</span>) <span class="hljs-comment"># adds an `image` virtual attribute</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-5-content-7" class="tab-pane" data-group="group_5" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; ActiveRecord::Base</span><br />  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:image</span>) <span class="hljs-comment"># adds an `image` virtual attribute</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>Let's now add the form fields which will use this virtual attribute (NOT the
+<code>&lt;attachment&gt;_data</code> column attribute). We need (1) a file field for choosing
+files, and (2) a hidden field for retaining the uploaded file in case of
+validation errors and for potential <a href="#direct-uploads">direct uploads</a>.</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-8-tab-9" class="nav-link active" data-group="group_8" data-tab="tab-group-8-content-9">Rails form builder</div><div id="tab-group-8-tab-10" class="nav-link" data-group="group_8" data-tab="tab-group-8-content-10">Simple Form</div><div id="tab-group-8-tab-11" class="nav-link" data-group="group_8" data-tab="tab-group-8-content-11">Forme</div></div><div class="tab-content"><div id="tab-group-8-content-9" class="tab-pane active" data-group="group_8" tabindex="-1"><div><span><pre><code class="hljs css language-rb">form_for @photo <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span><br />  f.hidden_field <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">value:</span> @photo.cached_image_data<br />  f.file_field <span class="hljs-symbol">:image</span><br />  f.submit<br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-8-content-10" class="tab-pane" data-group="group_8" tabindex="-1"><div><span><pre><code class="hljs css language-rb">simple_form_for @photo <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span><br />  f.input <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">as:</span> <span class="hljs-symbol">:hidden</span>, <span class="hljs-symbol">input_html:</span> { <span class="hljs-symbol">value:</span> @photo.cached_image_data }<br />  f.input <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">as:</span> <span class="hljs-symbol">:file</span><br />  f.button <span class="hljs-symbol">:submit</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-8-content-11" class="tab-pane" data-group="group_8" tabindex="-1"><div><span><pre><code class="hljs css language-rb">form @photo, <span class="hljs-symbol">action:</span> <span class="hljs-string">"/photos"</span>, <span class="hljs-symbol">enctype:</span> <span class="hljs-string">"multipart/form-data"</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span><br />  f.input <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:hidden</span>, <span class="hljs-symbol">value:</span> @photo.cached_image_data<br />  f.input <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">type:</span> <span class="hljs-symbol">:file</span><br />  f.button <span class="hljs-string">"Create"</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>Note that the file field needs to go <em>after</em> the hidden field, so that
+selecting a new file can always override the cached file in the hidden field.
+Also notice the <code>enctype=&quot;multipart/form-data&quot;</code> HTML attribute, which is
+required for submitting files through the form (the Rails form builder
+will automatically generate this for you).</p>
+<p>When the form is submitted, in your router/controller you can assign the file
+from request params to the attachment attribute on the model.</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-12-tab-13" class="nav-link active" data-group="group_12" data-tab="tab-group-12-content-13">Rails</div><div id="tab-group-12-tab-14" class="nav-link" data-group="group_12" data-tab="tab-group-12-content-14">Sinatra</div></div><div class="tab-content"><div id="tab-group-12-content-13" class="tab-pane active" data-group="group_12" tabindex="-1"><div><span><pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PhotosController</span> &lt; ApplicationController</span><br />  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">create</span></span><br />    Photo.create(photo_params)<br />    <span class="hljs-comment"># ...</span><br />  <span class="hljs-keyword">end</span><br /><br />  private<br /><br />  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">photo_params</span></span><br />    params.<span class="hljs-keyword">require</span>(<span class="hljs-symbol">:photo</span>).permit(<span class="hljs-symbol">:image</span>)<br />  <span class="hljs-keyword">end</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div><div id="tab-group-12-content-14" class="tab-pane" data-group="group_12" tabindex="-1"><div><span><pre><code class="hljs css language-rb">post <span class="hljs-string">"/photos"</span> <span class="hljs-keyword">do</span><br />  Photo.create(params[<span class="hljs-symbol">:photo</span>])<br />  <span class="hljs-comment"># ...</span><br /><span class="hljs-keyword">end</span><br /></code></pre>
+</span></div></div></div></div>
+<p>Once a file is uploaded and attached to the record, you can retrieve a URL to
+the uploaded file with <code>#&lt;attachment&gt;_url</code> and display it on the page:</p>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-15-tab-16" class="nav-link active" data-group="group_15" data-tab="tab-group-15-content-16">Rails</div><div id="tab-group-15-tab-17" class="nav-link" data-group="group_15" data-tab="tab-group-15-content-17">HTML</div></div><div class="tab-content"><div id="tab-group-15-content-16" class="tab-pane active" data-group="group_15" tabindex="-1"><div><span><pre><code class="hljs css language-erb"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">%=</span></span></span><span class="ruby"> image_tag @photo.image_url </span><span class="xml"><span class="hljs-tag">%&gt;</span><br /></span></code></pre>
+</span></div></div><div id="tab-group-15-content-17" class="tab-pane" data-group="group_15" tabindex="-1"><div><span><pre><code class="hljs css language-erb"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"&lt;%=</span></span></span><span class="ruby"> @photo.image_url </span><span class="xml"><span class="hljs-tag"><span class="hljs-string">%&gt;"</span> /&gt;</span><br /></span></code></pre>
+</span></div></div></div></div>
+<h2><a class="anchor" aria-hidden="true" id="storage"></a><a href="#storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Storage</h2>
+<p>A &quot;storage&quot; in Shrine is an object that encapsulates communication with a
+specific storage service, by implementing a common public interface. Storage
+instances are registered under an identifier in <code>Shrine.storages</code>, so that they
+can later be used by <a href="#uploader">uploaders</a>.</p>
+<p>Previously we've shown the <a href="https://shrinerb.com/docs/storage/file-system">FileSystem</a> storage which saves files to disk, but
+Shrine also ships with <a href="https://shrinerb.com/docs/storage/s3">S3</a> storage which stores files on <a href="https://aws.amazon.com/s3/">AWS S3</a> (or any
+S3-compatible service such as <a href="https://www.digitalocean.com/products/spaces/">DigitalOcean Spaces</a> or <a href="https://min.io/">MinIO</a>).</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"aws-sdk-s3"</span>, <span class="hljs-string">"~&gt; 1.14"</span> <span class="hljs-comment"># for AWS S3 storage</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/s3"</span>
+
+s3_options = {
+  <span class="hljs-symbol">bucket:</span>            <span class="hljs-string">"&lt;YOUR BUCKET&gt;"</span>, <span class="hljs-comment"># required</span>
+  <span class="hljs-symbol">access_key_id:</span>     <span class="hljs-string">"&lt;YOUR ACCESS KEY ID&gt;"</span>,
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"&lt;YOUR SECRET ACCESS KEY&gt;"</span>,
+  <span class="hljs-symbol">region:</span>            <span class="hljs-string">"&lt;YOUR REGION&gt;"</span>,
+}
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::S3.new(<span class="hljs-symbol">prefix:</span> <span class="hljs-string">"cache"</span>, **s3_options),
+  <span class="hljs-symbol">store:</span> Shrine::Storage::S3.new(**s3_options),
+}
+</code></pre>
+<p>The above example sets up S3 for both temporary and permanent storage, which is
+suitable for <a href="#presigned-direct-upload">direct uploads</a>. The <code>:cache</code> and <code>:store</code>
+names are special only in terms that the <a href="#attacher">attacher</a> will automatically pick
+them up, you can also register more storage objects under different names.</p>
+<p>See the <a href="https://shrinerb.com/docs/storage/file-system">FileSystem</a> and <a href="https://shrinerb.com/docs/storage/s3">S3</a> storage docs for more details. There are <a href="https://shrinerb.com/docs/external/extensions#storages">many
+more Shrine storages</a> provided by external gems, and you can also
+<a href="https://shrinerb.com/docs/creating-storages">create your own storage</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="uploader"></a><a href="#uploader" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploader</h2>
+<p>Uploaders are subclasses of <code>Shrine</code>, and they wrap the actual upload to the
+storage. They perform common tasks around upload that aren't related to a
+particular storage.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  <span class="hljs-comment"># image attachment logic</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>It's common to create an uploader for each type of file that you want to handle
+(<code>ImageUploader</code>, <code>VideoUploader</code>, <code>AudioUploader</code> etc), but really you can
+organize them in any way you like.</p>
+<h3><a class="anchor" aria-hidden="true" id="uploading"></a><a href="#uploading" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploading</h3>
+<p>The main method of the uploader is <code>Shrine.upload</code>, which takes an <a href="#io-abstraction">IO-like
+object</a> and a storage identifier on the input, and returns a
+representation of the <a href="#uploaded-file">uploaded file</a> on the output.</p>
+<pre><code class="hljs css language-rb">MyUploader.upload(file, <span class="hljs-symbol">:store</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</code></pre>
+<p>Internally this instantiates the uploader with the storage and calls
+<code>Shrine#upload</code>:</p>
+<pre><code class="hljs css language-rb">uploader = MyUploader.new(<span class="hljs-symbol">:store</span>)
+uploader.upload(file) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+</code></pre>
+<p>Some of the tasks performed by <code>#upload</code> include:</p>
+<ul>
+<li>extracting <a href="#metadata">metadata</a></li>
+<li>generating <a href="#location">location</a></li>
+<li>uploading (this is where the <a href="#storage">storage</a> is called)</li>
+<li>closing the uploaded file</li>
+</ul>
+<p>The second argument is a &quot;context&quot; hash which is forwarded to places like
+metadata extraction and location generation, but it has a few special options:</p>
+<pre><code class="hljs css language-rb">uploader.upload(io, <span class="hljs-symbol">metadata:</span> { <span class="hljs-string">"foo"</span> =&gt; <span class="hljs-string">"bar"</span> })           <span class="hljs-comment"># add metadata</span>
+uploader.upload(io, <span class="hljs-symbol">location:</span> <span class="hljs-string">"path/to/file"</span>)               <span class="hljs-comment"># specify custom location</span>
+uploader.upload(io, <span class="hljs-symbol">upload_options:</span> { <span class="hljs-symbol">acl:</span> <span class="hljs-string">"public-read"</span> }) <span class="hljs-comment"># add options to Storage#upload</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="io-abstraction"></a><a href="#io-abstraction" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>IO abstraction</h3>
+<p>Shrine is able to upload any IO-like object that implement methods <a href="https://ruby-doc.org/core/IO.html#method-i-read"><code>#read</code></a>,
+<a href="https://ruby-doc.org/core/IO.html#method-i-rewind"><code>#rewind</code></a>, <a href="https://ruby-doc.org/core/IO.html#method-i-eof"><code>#eof?</code></a> and <a href="https://ruby-doc.org/core/IO.html#method-i-close"><code>#close</code></a> whose behaviour matches the <a href="https://ruby-doc.org/core/IO.html"><code>IO</code></a> class.
+This includes built-in IO and IO-like objects like File, Tempfile and StringIO.</p>
+<p>When a file is uploaded to a Rails app, in request params it will be
+represented by an <code>ActionDispatch::Http::UploadedFile</code> object, which is also an
+IO-like object accepted by Shrine. In other Rack applications the uploaded file
+will be represented as a Hash, but it can be converted into an IO-like object
+with the <a href="https://shrinerb.com/docs/plugins/rack_file"><code>rack_file</code></a> plugin.</p>
+<p>Here are some examples of various IO-like objects that can be uploaded:</p>
+<pre><code class="hljs css language-rb">uploader.upload File.open(<span class="hljs-string">"/path/to/file"</span>, <span class="hljs-symbol">binmode:</span> <span class="hljs-literal">true</span>)   <span class="hljs-comment"># upload from disk</span>
+uploader.upload StringIO.new(<span class="hljs-string">"file content"</span>)                <span class="hljs-comment"># upload from memory</span>
+uploader.upload ActionDispatch::Http::UploadedFile.new(...) <span class="hljs-comment"># upload from Rails controller</span>
+uploader.upload Shrine.rack_file({ <span class="hljs-symbol">tempfile:</span> tempfile })    <span class="hljs-comment"># upload from Rack controller</span>
+uploader.upload Rack::Test::UploadedFile.new(...)           <span class="hljs-comment"># upload from rack-test</span>
+uploader.upload Down.open(<span class="hljs-string">"https://example.org/file"</span>)       <span class="hljs-comment"># upload from internet</span>
+uploader.upload Shrine::UploadedFile.new(...)               <span class="hljs-comment"># upload from Shrine storage</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="uploaded-file"></a><a href="#uploaded-file" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploaded file</h2>
+<p>The <code>Shrine::UploadedFile</code> object represents the file that was uploaded to a
+storage, and it's what's returned from <code>Shrine#upload</code> or when retrieving a
+record <a href="#attachment">attachment</a>. It contains the following information:</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Key</th><th style="text-align:left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>id</code></td><td style="text-align:left">location of the file on the storage</td></tr>
+<tr><td style="text-align:left"><code>storage</code></td><td style="text-align:left">identifier of the storage the file was uploaded to</td></tr>
+<tr><td style="text-align:left"><code>metadata</code></td><td style="text-align:left">file <a href="#metadata">metadata</a> that was extracted before upload</td></tr>
+</tbody>
+</table>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(file)
+uploaded_file.data <span class="hljs-comment">#=&gt; {"id"=&gt;"949sdjg834.jpg","storage"=&gt;"store","metadata"=&gt;{...}}</span>
+
+uploaded_file.id       <span class="hljs-comment">#=&gt; "949sdjg834.jpg"</span>
+uploaded_file.storage  <span class="hljs-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span>
+uploaded_file.metadata <span class="hljs-comment">#=&gt; {...}</span>
+</code></pre>
+<p>It comes with many convenient methods that delegate to the storage:</p>
+<pre><code class="hljs css language-rb">uploaded_file.url                     <span class="hljs-comment">#=&gt; "https://my-bucket.s3.amazonaws.com/949sdjg834.jpg"</span>
+uploaded_file.open { <span class="hljs-params">|io|</span> ... }       <span class="hljs-comment"># opens the uploaded file stream</span>
+uploaded_file.download { <span class="hljs-params">|file|</span> ... } <span class="hljs-comment"># downloads the uploaded file to disk</span>
+uploaded_file.stream(destination)     <span class="hljs-comment"># streams uploaded content into a writable destination</span>
+uploaded_file.exists?                 <span class="hljs-comment">#=&gt; true</span>
+uploaded_file.delete                  <span class="hljs-comment"># deletes the uploaded file from the storage</span>
+</code></pre>
+<p>It also implements the IO-like interface that conforms to Shrine's <a href="#io-abstraction">IO
+abstraction</a>, which allows it to be uploaded again to other
+storages.</p>
+<pre><code class="hljs css language-rb">uploaded_file.read   <span class="hljs-comment"># returns content of the uploaded file</span>
+uploaded_file.eof?   <span class="hljs-comment"># returns true if the whole IO was read</span>
+uploaded_file.rewind <span class="hljs-comment"># rewinds the IO</span>
+uploaded_file.close  <span class="hljs-comment"># closes the IO</span>
+</code></pre>
+<p>For more details, see the <a href="https://shrinerb.com/docs/retrieving-uploads">Retrieving Uploads</a> guide and
+<a href="https://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html"><code>Shrine::UploadedFile</code></a> API docs.</p>
+<h2><a class="anchor" aria-hidden="true" id="attaching"></a><a href="#attaching" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attaching</h2>
+<p>To attach uploaded files to database records, Shrine offers an attachment
+interface built on top of uploaders and uploaded files. There are integrations
+for various persistence libraries (<a href="https://shrinerb.com/docs/plugins/activerecord">ActiveRecord</a>,
+<a href="https://shrinerb.com/docs/plugins/sequel">Sequel</a>, <a href="https://github.com/shrinerb/shrine-rom">ROM</a>, <a href="https://github.com/katafrakt/hanami-shrine">Hanami</a>,
+<a href="https://github.com/shrinerb/shrine-mongoid">Mongoid</a>), but you can also attach files to plain structs
+(<a href="https://shrinerb.com/docs/plugins/model">mutable</a> or <a href="https://shrinerb.com/docs/plugins/entity">immutable</a>).</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:sequel</span> <span class="hljs-comment"># :activerecord</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="attachment-module"></a><a href="#attachment-module" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attachment module</h3>
+<p>The easiest way to attach files is with the <code>Shrine::Attachment</code> module:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; Sequel::Model <span class="hljs-comment"># ActiveRecord::Base</span></span>
+  <span class="hljs-keyword">include</span> ImageUploader::Attachment.new(<span class="hljs-symbol">:image</span>) <span class="hljs-comment">#</span>
+  <span class="hljs-keyword">include</span> ImageUploader::Attachment[<span class="hljs-symbol">:image</span>]     <span class="hljs-comment"># use a preferred syntax</span>
+  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:image</span>)     <span class="hljs-comment">#</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>The included module will add attachment methods for the specified attribute:</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Method</th><th style="text-align:left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>#image=</code></td><td style="text-align:left">uploads the file to temporary storage and serializes the result into <code>image_data</code></td></tr>
+<tr><td style="text-align:left"><code>#image</code></td><td style="text-align:left">returns <a href="#uploaded-file"><code>Shrine::UploadedFile</code></a> instantiated from <code>image_data</code></td></tr>
+<tr><td style="text-align:left"><code>#image_url</code></td><td style="text-align:left">calls <code>url</code> on the attachment if it's present, otherwise returns nil</td></tr>
+<tr><td style="text-align:left"><code>#image_attacher</code></td><td style="text-align:left">returns instance of <a href="#attacher"><code>Shrine::Attacher</code></a> which handles the attaching</td></tr>
+</tbody>
+</table>
+<p>The persistence plugin we loaded will add callbacks that ensure cached files
+are automatically promoted to permanent storage on when record is saved, and
+that attachments are deleted when the record is destroyed.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># no file is attached</span>
+photo.image <span class="hljs-comment">#=&gt; nil</span>
+
+<span class="hljs-comment"># the assigned file is cached to temporary storage and written to `image_data` column</span>
+photo.image = File.open(<span class="hljs-string">"waterfall.jpg"</span>)
+photo.image      <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@data</span>={...}&gt;</span>
+photo.image_url  <span class="hljs-comment">#=&gt; "/uploads/cache/0sdfllasfi842.jpg"</span>
+photo.image_data <span class="hljs-comment">#=&gt; '{"id":"0sdfllasfi842.jpg","storage":"cache","metadata":{...}}'</span>
+
+<span class="hljs-comment"># the cached file is promoted to permanent storage and saved to `image_data` column</span>
+photo.save
+photo.image      <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@data</span>={...}&gt;</span>
+photo.image_url  <span class="hljs-comment">#=&gt; "/uploads/store/l02kladf8jlda.jpg"</span>
+photo.image_data <span class="hljs-comment">#=&gt; '{"id":"l02kladf8jlda.jpg","storage":"store","metadata":{...}}'</span>
+
+<span class="hljs-comment"># the attached file is deleted with the record</span>
+photo.destroy
+photo.image.exists? <span class="hljs-comment">#=&gt; false</span>
+</code></pre>
+<p>If there is already a file attached and a new file is attached, the previous
+attachment will get deleted when the record gets saved.</p>
+<pre><code class="hljs css language-rb">photo.update(<span class="hljs-symbol">image:</span> new_file) <span class="hljs-comment"># changes the attachment and deletes previous</span>
+photo.update(<span class="hljs-symbol">image:</span> <span class="hljs-literal">nil</span>)      <span class="hljs-comment"># removes the attachment and deletes previous</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="attacher"></a><a href="#attacher" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attacher</h3>
+<p>The methods and callbacks added by the <code>Shrine::Attachment</code> module just
+delegate the behaviour to an underlying <code>Shrine::Attacher</code> object.</p>
+<pre><code class="hljs css language-rb">photo.image_attacher <span class="hljs-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>
+</code></pre>
+<p>The <code>Shrine::Attacher</code> object can be instantiated and used directly:</p>
+<pre><code class="hljs css language-rb">attacher = ImageUploader::Attacher.from_model(photo, <span class="hljs-symbol">:image</span>)
+
+attacher.assign(file) <span class="hljs-comment"># equivalent to `photo.image = file`</span>
+attacher.file         <span class="hljs-comment"># equivalent to `photo.image`</span>
+attacher.url          <span class="hljs-comment"># equivalent to `photo.image_url`</span>
+</code></pre>
+<p>The attacher is what drives attaching files to model instances; you can use it
+as a more explicit alternative to models' attachment interface, or simply when
+you need something that's not available through the attachment methods.</p>
+<p>You can do things such as change the temporary and permanent storage the
+attacher uses, or upload files directly to permanent storage. See the <a href="https://shrinerb.com/docs/attacher">Using
+Attacher</a> guide for more details.</p>
+<h3><a class="anchor" aria-hidden="true" id="temporary-storage"></a><a href="#temporary-storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Temporary storage</h3>
+<p>Shrine uses temporary storage to support retaining uploaded files across form
+redisplays and <a href="#direct-uploads">direct uploads</a>. But you can disable this behaviour, and have
+files go straight to permanent storage:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:model</span>, <span class="hljs-symbol">cache:</span> <span class="hljs-literal">false</span>
+</code></pre>
+<div class="tabs"><div class="nav-tabs"><div id="tab-group-18-tab-19" class="nav-link active" data-group="group_18" data-tab="tab-group-18-content-19">Attachment</div><div id="tab-group-18-tab-20" class="nav-link" data-group="group_18" data-tab="tab-group-18-content-20">Attacher</div></div><div class="tab-content"><div id="tab-group-18-content-19" class="tab-pane active" data-group="group_18" tabindex="-1"><div><span><pre><code class="hljs css language-rb">photo.image = File.open(<span class="hljs-string">"waterfall.jpg"</span>)<br />photo.image.storage_key <span class="hljs-comment">#=&gt; :store</span><br /></code></pre>
+</span></div></div><div id="tab-group-18-content-20" class="tab-pane" data-group="group_18" tabindex="-1"><div><span><pre><code class="hljs css language-rb">attacher.attach File.open(<span class="hljs-string">"waterfall.jpg"</span>)<br />attacher.file.storage_key <span class="hljs-comment">#=&gt; :store</span><br /></code></pre>
+</span></div></div></div></div>
+<h2><a class="anchor" aria-hidden="true" id="plugin-system"></a><a href="#plugin-system" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plugin system</h2>
+<p>By default Shrine comes with a small core which provides only the essential
+functionality. All additional features are available via <a href="https://shrinerb.com/plugins">plugins</a>, which also
+ship with Shrine. This way you can choose exactly what and how much Shrine does
+for you, and you load the code only for features that you use.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:instrumentation</span> <span class="hljs-comment"># adds instrumentation</span>
+</code></pre>
+<p>Plugins add behaviour by extending Shrine core classes via module inclusion, and
+many of them also accept configuration options. The plugin system respects
+inheritance, so you can choose to load a plugin globally or per uploader.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:store_dimensions</span> <span class="hljs-comment"># extract image dimensions only for this uploader and its descendants</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>If you want to extend Shrine functionality with custom behaviour, you can also
+<a href="https://shrinerb.com/docs/creating-plugins">create your own plugin</a>. There are also additional <a href="https://shrinerb.com/docs/external/extensions#plugins">external
+plugins</a> created by others.</p>
+<h2><a class="anchor" aria-hidden="true" id="metadata"></a><a href="#metadata" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Metadata</h2>
+<p>Shrine automatically extracts some basic file metadata and saves them to the
+<code>Shrine::UploadedFile</code>. You can access them through the <code>#metadata</code> hash or via
+metadata methods:</p>
+<pre><code class="hljs css language-rb">uploaded_file.metadata <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   "filename" =&gt; "matrix.mp4",</span>
+<span class="hljs-comment">#   "mime_type" =&gt; "video/mp4",</span>
+<span class="hljs-comment">#   "size" =&gt; 345993,</span>
+<span class="hljs-comment"># }</span>
+
+uploaded_file.original_filename <span class="hljs-comment">#=&gt; "matrix.mp4"</span>
+uploaded_file.extension         <span class="hljs-comment">#=&gt; "mp4"</span>
+uploaded_file.mime_type         <span class="hljs-comment">#=&gt; "video/mp4"</span>
+uploaded_file.size              <span class="hljs-comment">#=&gt; 345993</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mime-type"></a><a href="#mime-type" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>MIME type</h3>
+<p>By default, <code>mime_type</code> metadata will be set from the <code>#content_type</code> attribute
+of the uploaded file (if it exists), which is generally not secure and will
+trigger a warning. You can load the <a href="https://shrinerb.com/docs/plugins/determine_mime_type"><code>determine_mime_type</code></a> plugin to have MIME type extracted from file <em>content</em> instead.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"marcel"</span>, <span class="hljs-string">"~&gt; 0.3"</span>
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:determine_mime_type</span>, <span class="hljs-symbol">analyzer:</span> <span class="hljs-symbol">:marcel</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo = Photo.create(<span class="hljs-symbol">image:</span> StringIO.new(<span class="hljs-string">"&lt;?php ... ?&gt;"</span>))
+photo.image.mime_type <span class="hljs-comment">#=&gt; "application/x-php"</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="other-metadata"></a><a href="#other-metadata" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other metadata</h3>
+<p>In addition to basic metadata, you can also extract <a href="https://shrinerb.com/docs/plugins/store_dimensions">image
+dimensions</a>, calculate <a href="https://shrinerb.com/docs/plugins/signature">signatures</a>,
+and in general extract any <a href="https://shrinerb.com/docs/plugins/add_metadata">custom metadata</a>. Check out
+the <a href="https://shrinerb.com/docs/metadata">Extracting Metadata</a> guide for more details.</p>
+<h2><a class="anchor" aria-hidden="true" id="processing"></a><a href="#processing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing</h2>
+<p>Shrine allows you to process attached files up front or on-the-fly. For
+example, if your app is accepting image uploads, you can generate a predefined
+set of of thumbnails when the image is attached to a record, or you can have
+thumbnails generated dynamically as they're needed.</p>
+<p>For image processing, it's recommended to use the <strong><a href="https://github.com/janko/image_processing">ImageProcessing</a></strong> gem,
+which is a high-level wrapper for processing with
+<a href="https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme">MiniMagick</a> and <a href="https://github.com/janko/image_processing/blob/master/doc/vips.md#readme">libvips</a>.</p>
+<pre><code class="hljs css language-sh">$ brew install imagemagick vips
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="processing-up-front"></a><a href="#processing-up-front" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing up front</h3>
+<p>You can use the <a href="https://shrinerb.com/docs/plugins/derivatives"><code>derivatives</code></a> plugin to generate a set of
+pre-defined processed files:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"image_processing"</span>, <span class="hljs-string">"~&gt; 1.8"</span>
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:derivatives</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"image_processing/mini_magick"</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    {
+      <span class="hljs-symbol">large:</span>  magick.resize_to_limit!(<span class="hljs-number">800</span>, <span class="hljs-number">800</span>),
+      <span class="hljs-symbol">medium:</span> magick.resize_to_limit!(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>),
+      <span class="hljs-symbol">small:</span>  magick.resize_to_limit!(<span class="hljs-number">300</span>, <span class="hljs-number">300</span>),
+    }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo = Photo.new(<span class="hljs-symbol">image:</span> file)
+photo.image_derivatives! <span class="hljs-comment"># calls derivatives processor and uploads results</span>
+photo.save
+</code></pre>
+<p>If you're allowing the attached file to be updated later on, in your update
+route make sure to trigger derivatives creation for new attachments:</p>
+<pre><code class="hljs css language-rb">photo.image_derivatives! <span class="hljs-keyword">if</span> photo.image_changed?
+</code></pre>
+<p>After the processed files are uploaded, their data is saved into the
+<code>&lt;attachment&gt;_data</code> column. You can then retrieve the derivatives as
+<a href="#uploaded-file"><code>Shrine::UploadedFile</code></a> objects:</p>
+<pre><code class="hljs css language-rb">photo.image(<span class="hljs-symbol">:large</span>)            <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile ...&gt;</span>
+photo.image(<span class="hljs-symbol">:large</span>).url        <span class="hljs-comment">#=&gt; "/uploads/store/lg043.jpg"</span>
+photo.image(<span class="hljs-symbol">:large</span>).size       <span class="hljs-comment">#=&gt; 5825949</span>
+photo.image(<span class="hljs-symbol">:large</span>).mime_type  <span class="hljs-comment">#=&gt; "image/jpeg"</span>
+</code></pre>
+<p>For more details, see the <a href="https://shrinerb.com/docs/plugins/derivatives"><code>derivatives</code></a> plugin
+documentation and the <a href="https://shrinerb.com/docs/processing">File Processing</a> guide.</p>
+<h3><a class="anchor" aria-hidden="true" id="processing-on-the-fly"></a><a href="#processing-on-the-fly" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing on-the-fly</h3>
+<p>On-the-fly processing is provided by the
+<a href="https://shrinerb.com/docs/plugins/derivation_endpoint"><code>derivation_endpoint</code></a> plugin. It comes with a
+<a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app which applies processing on request
+and returns processed files.</p>
+<p>To set it up, we mount the Rack app in our router on a chosen path prefix,
+configure the plugin with a secret key and that path prefix, and define
+processing we want to perform:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"image_processing"</span>, <span class="hljs-string">"~&gt; 1.8"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># config/routes.rb (Rails)</span>
+Rails.application.routes.draw <span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># ...</span>
+  mount ImageUploader.derivation_endpoint =&gt; <span class="hljs-string">"/derivations/image"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"image_processing/mini_magick"</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:derivation_endpoint</span>,
+    <span class="hljs-symbol">secret_key:</span> <span class="hljs-string">"&lt;YOUR SECRET KEY&gt;"</span>,
+    <span class="hljs-symbol">prefix:</span>     <span class="hljs-string">"derivations/image"</span> <span class="hljs-comment"># needs to match the mount point in routes</span>
+
+  derivation <span class="hljs-symbol">:thumbnail</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|file, width, height|</span>
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Now we can generate URLs from attached files that will perform the desired
+processing:</p>
+<pre><code class="hljs css language-rb">photo.image.derivation_url(<span class="hljs-symbol">:thumbnail</span>, <span class="hljs-number">600</span>, <span class="hljs-number">400</span>)
+<span class="hljs-comment">#=&gt; "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."</span>
+</code></pre>
+<p>The on-the-fly processing feature is highly customizable, see the
+<a href="https://shrinerb.com/docs/plugins/derivation_endpoint"><code>derivation_endpoint</code></a> plugin documentation for
+more details.</p>
+<h2><a class="anchor" aria-hidden="true" id="validation"></a><a href="#validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Validation</h2>
+<p>The <a href="https://shrinerb.com/docs/plugins/validation"><code>validation</code></a> plugin allows performing validation for
+attached files. For common validations, the
+<a href="https://shrinerb.com/docs/plugins/validation_helpers"><code>validation_helpers</code></a> plugin provides useful
+validators for built in metadata:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:validation_helpers</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DocumentUploader</span> &lt; Shrine</span>
+  Attacher.validate <span class="hljs-keyword">do</span>
+    validate_max_size <span class="hljs-number">5</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>, <span class="hljs-symbol">message:</span> <span class="hljs-string">"is too large (max is 5 MB)"</span>
+    validate_mime_type <span class="hljs-string">%w[application/pdf]</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">user = User.new
+user.cv = File.open(<span class="hljs-string">"cv.pdf"</span>, <span class="hljs-string">"rb"</span>)
+user.valid? <span class="hljs-comment">#=&gt; false</span>
+user.errors.to_hash <span class="hljs-comment">#=&gt; {:cv=&gt;["is too large (max is 5 MB)"]}</span>
+</code></pre>
+<p>For more details, see the <a href="https://shrinerb.com/docs/validation">File Validation</a> guide and
+<a href="https://shrinerb.com/docs/plugins/validation_helpers"><code>validation_helpers</code></a> plugin docs.</p>
+<h2><a class="anchor" aria-hidden="true" id="location"></a><a href="#location" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Location</h2>
+<p>Shrine automatically generated random locations before uploading files. By
+default the hierarchy is flat, meaning all files are stored in the root
+directory of the storage. The <a href="https://shrinerb.com/docs/plugins/pretty_location"><code>pretty_location</code></a>
+plugin provides a good default hierarchy, but you can also override
+<code>#generate_location</code> with a custom implementation:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_location</span><span class="hljs-params">(io, <span class="hljs-symbol">record:</span> <span class="hljs-literal">nil</span>, <span class="hljs-symbol">derivative:</span> <span class="hljs-literal">nil</span>, **)</span></span>
+    type  = record.<span class="hljs-keyword">class</span>.name.downcase <span class="hljs-keyword">if</span> record
+    style = derivative ? <span class="hljs-string">"thumbs"</span> : <span class="hljs-string">"originals"</span>
+    name  = <span class="hljs-keyword">super</span> <span class="hljs-comment"># the default unique identifier</span>
+
+    [type, style, name].compact.join(<span class="hljs-string">"/"</span>)
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-plaintext">uploads/
+  photos/
+    originals/
+      la98lda74j3g.jpg
+    thumbs/
+      95kd8kafg80a.jpg
+      ka8agiaf9gk4.jpg
+</code></pre>
+<p>Note that there should always be a random component in the location, so that
+the ORM dirty tracking is detected properly. Inside <code>#generate_location</code> you
+can also access the extracted metadata through the <code>:metadata</code> option.</p>
+<h2><a class="anchor" aria-hidden="true" id="direct-uploads"></a><a href="#direct-uploads" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Direct uploads</h2>
+<p>To improve the user experience, it's recommended to upload files asynchronously
+as soon as the user selects them. The direct uploads would go to temporary
+storage, just like in the synchronous flow. Then, instead of attaching a raw
+file to your model, you assign the cached file JSON data.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># in the regular synchronous flow</span>
+photo.image = file
+
+<span class="hljs-comment"># in the direct upload flow</span>
+photo.image = <span class="hljs-string">'{"id":"...","storage":"cache","metadata":{...}}'</span>
+</code></pre>
+<p>On the client side it's highly recommended to use <strong><a href="https://uppy.io">Uppy</a></strong>, a very flexible
+modern JavaScript file upload library that happens to integrate nicely with
+Shrine.</p>
+<h3><a class="anchor" aria-hidden="true" id="simple-direct-upload"></a><a href="#simple-direct-upload" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Simple direct upload</h3>
+<p>The simplest approach is to upload directly to an endpoint in your app, which
+forwards uploads to the specified storage. The
+<a href="https://shrinerb.com/docs/plugins/upload_endpoint"><code>upload_endpoint</code></a> Shrine plugin provides a
+<a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app that implements this endpoint:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:upload_endpoint</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># config/routes.rb (Rails)</span>
+Rails.application.routes.draw <span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># ...</span>
+  mount ImageUploader.upload_endpoint(<span class="hljs-symbol">:cache</span>) =&gt; <span class="hljs-string">"/images/upload"</span> <span class="hljs-comment"># POST /images/upload</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Then you can configure Uppy's <a href="https://uppy.io/docs/xhr-upload/">XHR Upload</a> plugin to upload to
+this endpoint. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads">this walkthrough</a> for adding
+simple direct uploads from scratch, it includes a complete JavaScript example
+(there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> demo app).</p>
+<h3><a class="anchor" aria-hidden="true" id="presigned-direct-upload"></a><a href="#presigned-direct-upload" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Presigned direct upload</h3>
+<p>For better performance, you can also upload files directly to your cloud
+storage service (AWS S3, Google Cloud Storage etc). For this, your temporary
+storage needs to be your cloud service:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/s3"</span>
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::S3.new(<span class="hljs-symbol">prefix:</span> <span class="hljs-string">"cache"</span>, **s3_options),
+  <span class="hljs-symbol">store:</span> Shrine::Storage::S3.new(**s3_options)
+}
+</code></pre>
+<p>In this flow, the client needs to first fetch upload parameters from the
+server, and then use these parameters for the upload to the cloud service.
+The <a href="https://shrinerb.com/docs/plugins/presign_endpoint"><code>presign_endpoint</code></a> Shrine plugin provides a
+<a href="https://github.com/shrinerb/shrine/wiki/Mounting-Endpoints">mountable</a> Rack app that generates upload parameters:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:presign_endpoint</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># config/routes.rb (Rails)</span>
+Rails.application.routes.draw <span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># ...</span>
+  mount Shrine.presign_endpoint(<span class="hljs-symbol">:cache</span>) =&gt; <span class="hljs-string">"/s3/params"</span> <span class="hljs-comment"># GET /s3/params</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Then you can configure Uppy's <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> plugin to fetch params from
+your endpoint before uploading to S3. See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Direct-S3-Uploads">this walkthrough</a> for adding direct uploads to S3 from scratch, it includes a complete
+JavaScript example (there is also the <a href="https://github.com/shrinerb/shrine/tree/master/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a>
+demo). See also the <a href="https://shrinerb.com/docs/direct-s3">Direct Uploads to S3</a> guide for more details.</p>
+<h3><a class="anchor" aria-hidden="true" id="resumable-direct-upload"></a><a href="#resumable-direct-upload" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Resumable direct upload</h3>
+<p>If your app is accepting large uploads, you can improve resilience by making
+the uploads <strong>resumable</strong>. This can significantly improve experience for users
+on slow and flaky internet connections.</p>
+<h4><a class="anchor" aria-hidden="true" id="uppy-s3-multipart"></a><a href="#uppy-s3-multipart" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uppy S3 Multipart</h4>
+<p>You can achieve resumable uploads directly to S3 with the <a href="https://uppy.io/docs/aws-s3-multipart/">AWS S3
+Multipart</a> Uppy plugin, accompanied with
+<code>uppy_s3_multipart</code> Shrine plugin provided by the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> gem.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"uppy-s3_multipart"</span>, <span class="hljs-string">"~&gt; 0.3"</span>
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:uppy_s3_multipart</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># config/routes.rb (Rails)</span>
+Rails.application.routes.draw <span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># ...</span>
+  mount Shrine.uppy_s3_multipart(<span class="hljs-symbol">:cache</span>) =&gt; <span class="hljs-string">"/s3/multipart"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>See the <a href="https://github.com/janko/uppy-s3_multipart">uppy-s3_multipart</a> docs for more details.</p>
+<h4><a class="anchor" aria-hidden="true" id="tus-protocol"></a><a href="#tus-protocol" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Tus protocol</h4>
+<p>If you want a more generic approach, you can build your resumable uploads on
+<strong><a href="https://tus.io">tus</a></strong> – an open resumable upload protocol. On the server side you can use
+the <a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> gem, on the client side Uppy's <a href="https://uppy.io/docs/tus/">Tus</a> plugin,
+and the <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> gem for the glue.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"tus-server"</span>, <span class="hljs-string">"~&gt; 2.0"</span>
+gem <span class="hljs-string">"shrine-tus"</span>, <span class="hljs-string">"~&gt; 2.1"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/tus"</span>
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::Tus.new, <span class="hljs-comment"># tus server acts as temporary storage</span>
+  <span class="hljs-symbol">store:</span> ...,                      <span class="hljs-comment"># your permanent storage</span>
+}
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># config/routes.rb (Rails)</span>
+Rails.application.routes.draw <span class="hljs-keyword">do</span>
+  <span class="hljs-comment"># ...</span>
+  mount Tus::Server =&gt; <span class="hljs-string">"/files"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>See <a href="https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads">this walkthrough</a> for adding tus-powered
+resumable uploads from scratch, it includes a complete JavaScript example
+(there is also a <a href="https://github.com/shrinerb/shrine-tus-demo">demo app</a>). See also <a href="https://github.com/shrinerb/shrine-tus">shrine-tus</a> and
+<a href="https://github.com/janko/tus-ruby-server">tus-ruby-server</a> docs for more details.</p>
+<h2><a class="anchor" aria-hidden="true" id="backgrounding"></a><a href="#backgrounding" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backgrounding</h2>
+<p>The <a href="https://shrinerb.com/docs/plugins/backgrounding"><code>backgrounding</code></a> allows you to move file promotion
+and deletion into a background job, using the backgrounding library <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">of your
+choice</a>:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:backgrounding</span>
+Shrine::Attacher.promote_block <span class="hljs-keyword">do</span>
+  PromoteJob.perform_async(<span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, record.<span class="hljs-keyword">class</span>.name, record.id, name, file_data)
+<span class="hljs-keyword">end</span>
+Shrine::Attacher.destroy_block <span class="hljs-keyword">do</span>
+  DestroyJob.perform_async(<span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, data)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record.id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.atomic_promote
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    <span class="hljs-comment"># attachment has changed or the record has been deleted, nothing to do</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DestroyJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+
+    attacher = attacher_class.from_data(data)
+    attacher.destroy
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="clearing-cache"></a><a href="#clearing-cache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Clearing cache</h2>
+<p>Shrine doesn't automatically delete files uploaded to temporary storage, instead
+you should set up a separate recurring task that will automatically delete old
+cached files.</p>
+<p>Most Shrine storage classes come with a <code>#clear!</code> method, which you can call in
+a recurring script. For FileSystem and S3 storage it would look like this:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># FileSystem storage</span>
+file_system = Shrine.storages[<span class="hljs-symbol">:cache</span>]
+file_system.clear! { <span class="hljs-params">|path|</span> path.mtime &lt; Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span> } <span class="hljs-comment"># delete files older than 1 week</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># S3 storage</span>
+s3 = Shrine.storages[<span class="hljs-symbol">:cache</span>]
+s3.clear! { <span class="hljs-params">|object|</span> object.last_modified &lt; Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span> } <span class="hljs-comment"># delete files older than 1 week</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="logging"></a><a href="#logging" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Logging</h2>
+<p>The <a href="https://shrinerb.com/docs/plugins/instrumentation"><code>instrumentation</code></a> plugin sends and logs events for
+important operations:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:instrumentation</span>, <span class="hljs-symbol">notifications:</span> ActiveSupport::Notifications
+
+uploaded_file = Shrine.upload(io, <span class="hljs-symbol">:store</span>)
+uploaded_file.exists?
+uploaded_file.download
+uploaded_file.delete
+</code></pre>
+<pre><code class="hljs css language-plaintext">Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}
+Upload (1523ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}
+Exists (755ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=&gt;Shrine}
+Download (1002ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :download_options=&gt;{}, :uploader=&gt;Shrine}
+Delete (700ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=&gt;Shrine}
+</code></pre>
+<p>Some plugins add their own instrumentation as well when they detect that the
+<code>instrumentation</code> plugin has been loaded. For that to work, the
+<code>instrumentation</code> plugin needs to be loaded <em>before</em> any of these plugins.</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Plugin</th><th style="text-align:left">Instrumentation</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>derivation_endpoint</code></td><td style="text-align:left">instruments file processing</td></tr>
+<tr><td style="text-align:left"><code>derivatives</code></td><td style="text-align:left">instruments file processing</td></tr>
+<tr><td style="text-align:left"><code>determine_mime_type</code></td><td style="text-align:left">instruments analyzing MIME type</td></tr>
+<tr><td style="text-align:left"><code>store_dimensions</code></td><td style="text-align:left">instruments extracting image dimensions</td></tr>
+<tr><td style="text-align:left"><code>signature</code></td><td style="text-align:left">instruments calculating signature</td></tr>
+<tr><td style="text-align:left"><code>infer_extension</code></td><td style="text-align:left">instruments inferring extension</td></tr>
+<tr><td style="text-align:left"><code>remote_url</code></td><td style="text-align:left">instruments remote URL downloading</td></tr>
+<tr><td style="text-align:left"><code>data_uri</code></td><td style="text-align:left">instruments data URI parsing</td></tr>
+</tbody>
+</table>
+<p>For instrumentation, warnings, and other logging, Shrine uses its internal
+logger. You can tell Shrine to use a different logger. For example, if you're
+using Rails, you might want to tell it to use the Rails logger:</p>
+<pre><code class="hljs css language-rb">Shrine.logger = Rails.logger
+</code></pre>
+<p>In tests you might want to tell Shrine to log only warnings:</p>
+<pre><code class="hljs css language-rb">Shrine.logger.level = Logger::WARN
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/docs/design"><span>The Design of Shrine</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#quick-start">Quick start</a></li><li><a href="#storage">Storage</a></li><li><a href="#uploader">Uploader</a><ul class="toc-headings"><li><a href="#uploading">Uploading</a></li><li><a href="#io-abstraction">IO abstraction</a></li></ul></li><li><a href="#uploaded-file">Uploaded file</a></li><li><a href="#attaching">Attaching</a><ul class="toc-headings"><li><a href="#attachment-module">Attachment module</a></li><li><a href="#attacher">Attacher</a></li><li><a href="#temporary-storage">Temporary storage</a></li></ul></li><li><a href="#plugin-system">Plugin system</a></li><li><a href="#metadata">Metadata</a><ul class="toc-headings"><li><a href="#mime-type">MIME type</a></li><li><a href="#other-metadata">Other metadata</a></li></ul></li><li><a href="#processing">Processing</a><ul class="toc-headings"><li><a href="#processing-up-front">Processing up front</a></li><li><a href="#processing-on-the-fly">Processing on-the-fly</a></li></ul></li><li><a href="#validation">Validation</a></li><li><a href="#location">Location</a></li><li><a href="#direct-uploads">Direct uploads</a><ul class="toc-headings"><li><a href="#simple-direct-upload">Simple direct upload</a></li><li><a href="#presigned-direct-upload">Presigned direct upload</a></li><li><a href="#resumable-direct-upload">Resumable direct upload</a></li></ul></li><li><a href="#backgrounding">Backgrounding</a></li><li><a href="#clearing-cache">Clearing cache</a></li><li><a href="#logging">Logging</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

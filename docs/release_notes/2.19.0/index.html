@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Shrine 2.19.0 · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## New features"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Shrine 2.19.0 · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="## New features"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Shrine 2.x</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Shrine 3.x</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/release_notes/3.0.0">Shrine 3.0.0</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Shrine 2.x</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/release_notes/2.19.0">Shrine 2.19.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.18.0">Shrine 2.18.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.17.0">Shrine 2.17.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.16.0">Shrine 2.16.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.15.0">Shrine 2.15.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.14.0">Shrine 2.14.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.13.0">Shrine 2.13.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.12.0">Shrine 2.12.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.11.0">Shrine 2.11.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.10.1">Shrine 2.10.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.10.0">Shrine 2.10.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.9.0">Shrine 2.9.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.8.0">Shrine 2.9.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.7.0">Shrine 2.7.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.6.1">Shrine 2.6.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.6.0">Shrine 2.6.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.5.0">Shrine 2.5.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.4.1">Shrine 2.4.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.4.0">Shrine 2.4.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.3.1">Shrine 2.3.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.3.0">Shrine 2.3.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.2.0">Shrine 2.2.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.1.1">Shrine 2.1.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.1.0">Shrine 2.1.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.0.1">Shrine 2.0.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/2.0.0">Shrine 2.0.0</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Shrine 1.x</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.4.2">Shrine 1.4.2</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.4.1">Shrine 1.4.1</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.4.0">Shrine 1.4.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.3.0">Shrine 1.3.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.2.0">Shrine 1.2.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.1.0">Shrine 1.1.0</a></li><li class="navListItem"><a class="navItem" href="/docs/release_notes/1.0.0">Shrine 1.0.0</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/release_notes/2.19.0.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Shrine 2.19.0</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="new-features"></a><a href="#new-features" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>New features</h2>
+<ul>
+<li><p>A new <code>instrumentation</code> plugin has been added. It sends and logs events for
+various Shrine operations, and provides an API for other plugins to send and
+log their own events.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:instrumentation</span>
+
+uploaded_file = Shrine.upload(io, <span class="hljs-symbol">:store</span>)
+uploaded_file.exists?
+uploaded_file.download
+uploaded_file.delete
+</code></pre>
+<pre><code class="hljs css language-plaintext">Metadata (32ms) – {:storage=&gt;:store, :io=&gt;StringIO, :uploader=&gt;Shrine}
+Upload (1523ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=&gt;StringIO, :upload_options=&gt;{}, :uploader=&gt;Shrine}
+Exists (755ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=&gt;Shrine}
+Download (1002ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :download_options=&gt;{}, :uploader=&gt;Shrine}
+Delete (700ms) – {:storage=&gt;:store, :location=&gt;"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=&gt;Shrine}
+</code></pre>
+<p>It supports <a href="https://api.rubyonrails.org/classes/ActiveSupport/Notifications.html">ActiveSupport::Notifications</a> (default) and <a href="https://github.com/dry-rb/dry-monitor">dry-monitor</a>
+notification backends out of the box.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"dry-monitor"</span>
+
+Shrine.plugin <span class="hljs-symbol">:instrumentation</span>, <span class="hljs-symbol">notifications:</span> Dry::Monitor::Notifications.new(<span class="hljs-symbol">:test</span>)
+</code></pre></li>
+<li><p>Metadata extraction can now be skipped during the upload by passing
+<code>metadata: false</code> to the uploader. This is useful in tests, where you might
+want to skip any potentially expensive metadata extraction while creating
+test data.</p>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(io, <span class="hljs-symbol">metadata:</span> <span class="hljs-literal">false</span>) <span class="hljs-comment"># skips metadata extraction</span>
+uploaded_file.metadata <span class="hljs-comment">#=&gt; {}</span>
+</code></pre></li>
+<li><p>Metadata extraction can now be forced during the upload of a
+<code>Shrine::UploadedFile</code> object by passing <code>metadata: true</code> to the uploader.</p>
+<pre><code class="hljs css language-rb">uploaded_file = uploader.upload(another_uploaded_file, <span class="hljs-symbol">metadata:</span> <span class="hljs-literal">true</span>) <span class="hljs-comment"># forces metadata extraction</span>
+uploaded_file.metadata <span class="hljs-comment">#=&gt; re-extracted metadata</span>
+</code></pre></li>
+<li><p>The <code>pretty_location</code> plugin now supports specifying a different identifier.</p>
+<pre><code class="hljs css language-rb">plugin <span class="hljs-symbol">:pretty_location</span>, <span class="hljs-symbol">identifier:</span> <span class="hljs-string">"uuid"</span>
+<span class="hljs-comment"># "user/aa357797-5845-451b-8662-08eecdc9f762/profile_picture/493g82jf23.jpg"</span>
+
+plugin <span class="hljs-symbol">:pretty_location</span>, <span class="hljs-symbol">identifier:</span> <span class="hljs-symbol">:email</span>
+<span class="hljs-comment"># "user/foo<span class="hljs-doctag">@bar</span>.com/profile_picture/493g82jf23.jpg"</span>
+</code></pre></li>
+<li><p>The <code>store_dimensions</code> plugin has gained an <code>:on_error</code> option for specifying
+how to react when an error occurrs while extracting dimensions.</p>
+<pre><code class="hljs css language-rb">plugin <span class="hljs-symbol">:store_dimensions</span>, <span class="hljs-symbol">on_error:</span> <span class="hljs-symbol">:warn</span>        <span class="hljs-comment"># prints a warning message (default)</span>
+plugin <span class="hljs-symbol">:store_dimensions</span>, <span class="hljs-symbol">on_error:</span> <span class="hljs-symbol">:fail</span>        <span class="hljs-comment"># raises the exception</span>
+plugin <span class="hljs-symbol">:store_dimensions</span>, <span class="hljs-symbol">on_error:</span> <span class="hljs-symbol">:ignore</span>      <span class="hljs-comment"># ignores the exception</span>
+plugin <span class="hljs-symbol">:store_dimensions</span>, <span class="hljs-symbol">on_error:</span> -&gt; (error) { <span class="hljs-comment"># custom handler</span>
+  <span class="hljs-comment"># report the exception to your exception handler</span>
+}
+</code></pre></li>
+<li><p>The <code>FileSystem#upload</code> method now accepts a <code>:move</code> option for moving the
+file instead of copying it. This is now preferred over the <code>moving</code> plugin.</p>
+<pre><code class="hljs css language-rb">uploader.upload(file, <span class="hljs-symbol">move:</span> <span class="hljs-literal">true</span>)
+File.exist?(file.path) <span class="hljs-comment">#=&gt; false</span>
+</code></pre></li>
+<li><p>The <code>FileSystem#clear!</code> method can now take a block for more control over
+which files should be deleted.</p>
+<pre><code class="hljs css language-rb">file_system.clear! { <span class="hljs-params">|path|</span> path.mtime &lt; Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span> } <span class="hljs-comment"># delete files older than 1 week</span>
+</code></pre></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="other-improvements"></a><a href="#other-improvements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other improvements</h2>
+<ul>
+<li><p>Registering storage objects under string keys now works again (this got
+broken in version 2.18.0).</p></li>
+<li><p>Several plugins now add their own instrumentation when the <code>instrumentation</code>
+plugin has been loaded:</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Plugin</th><th style="text-align:left">Instrumentation</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>derivation_endpoint</code></td><td style="text-align:left">instruments file processing</td></tr>
+<tr><td style="text-align:left"><code>determine_mime_type</code></td><td style="text-align:left">instruments analyzing MIME type</td></tr>
+<tr><td style="text-align:left"><code>store_dimensions</code></td><td style="text-align:left">instruments extracting image dimensions</td></tr>
+<tr><td style="text-align:left"><code>signature</code></td><td style="text-align:left">instruments calculating signature</td></tr>
+<tr><td style="text-align:left"><code>infer_extension</code></td><td style="text-align:left">instruments inferring extension</td></tr>
+<tr><td style="text-align:left"><code>remote_url</code></td><td style="text-align:left">instruments remote URL downloading</td></tr>
+<tr><td style="text-align:left"><code>data_uri</code></td><td style="text-align:left">instruments data URI parsing</td></tr>
+</tbody>
+</table>
+</li>
+<li><p><code>Shrine.logger</code> has been added, and any warnings or other messages (such as
+from the <code>instrumentation</code> plugin) now go through it. This way you can change
+the logging destination:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># log messages into the Rails logger</span>
+Shrine.logger = Rails.logger
+</code></pre></li>
+<li><p>The <code>store_dimensions</code> plugin now prints warnings by default when extracting
+dimensions failed.</p></li>
+<li><p>The <code>pretty_location</code> plugin now comes with a <code>#pretty_location</code> method which
+you can call for customization.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_location</span><span class="hljs-params">(io, <span class="hljs-symbol">record:</span> <span class="hljs-literal">nil</span>, **context)</span></span>
+  identifier = record.email <span class="hljs-keyword">if</span> record.is_a?(User)
+  pretty_location(io, <span class="hljs-symbol">record:</span> record, <span class="hljs-symbol">identifier:</span> identifier, **context)
+<span class="hljs-keyword">end</span>
+</code></pre></li>
+<li><p>The <code>Shrine::UploadedFile#[]</code> operator has been added for easier metadata
+retrieving.</p>
+<pre><code class="hljs css language-rb">uploaded_file.metadata[<span class="hljs-string">"duration"</span>]
+<span class="hljs-comment"># can now be just</span>
+uploaded_file[<span class="hljs-string">"duration"</span>]
+</code></pre></li>
+<li><p>The <code>Shrine.mime_type</code>, <code>Shrine.dimensions</code>, and <code>Shrine.signature</code> aliases
+have been added to <code>determine_mime_type</code>, <code>store_dimensions</code>, and <code>signature</code>
+plugins.</p>
+<pre><code class="hljs css language-rb">Shrine.determine_mime_type(io)
+<span class="hljs-comment"># can now be just</span>
+Shrine.mime_type(io)
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.extract_dimensions(io)
+<span class="hljs-comment"># can now be just</span>
+Shrine.dimensions(io)
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.calculate_signature(io)
+<span class="hljs-comment"># can now be just</span>
+Shrine.signature(io)
+</code></pre></li>
+<li><p>The <code>#validate_{max,min}_dimensions</code> validators have been added to the
+<code>validation_helpers</code> plugin.</p>
+<pre><code class="hljs css language-rb">validate_min_width  <span class="hljs-number">10</span>
+validate_min_height <span class="hljs-number">10</span>
+validate_max_width  <span class="hljs-number">5000</span>
+validate_max_height <span class="hljs-number">5000</span>
+
+<span class="hljs-comment"># can now be written as</span>
+
+validate_min_dimensions [<span class="hljs-number">10</span>, <span class="hljs-number">10</span>]
+validate_max_dimensions [<span class="hljs-number">5000</span>, <span class="hljs-number">5000</span>]
+
+<span class="hljs-comment"># which can be additionally shortened to</span>
+
+validate_dimensions [<span class="hljs-number">10</span>..<span class="hljs-number">5000</span>, <span class="hljs-number">10</span>..<span class="hljs-number">5000</span>]
+</code></pre></li>
+<li><p>The <code>#validate_size</code>, <code>#validate_width</code>, and <code>#validate_height</code> shorthands
+have been added to the <code>validation_helpers</code> plugin.</p>
+<pre><code class="hljs css language-rb">validate_min_size <span class="hljs-number">1024</span>
+validate_max_size <span class="hljs-number">10</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>
+
+<span class="hljs-comment"># can now be shortned to</span>
+
+validate_size <span class="hljs-number">1024</span>..<span class="hljs-number">10</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>
+</code></pre>
+<pre><code class="hljs css language-rb">validate_min_width <span class="hljs-number">10</span>
+validate_max_width <span class="hljs-number">5000</span>
+
+<span class="hljs-comment"># can now be shortened to</span>
+
+validate_width <span class="hljs-number">10</span>..<span class="hljs-number">5000</span>
+</code></pre>
+<pre><code class="hljs css language-rb">validate_min_height <span class="hljs-number">10</span>
+validate_max_height <span class="hljs-number">5000</span>
+
+<span class="hljs-comment"># can now be shortened to</span>
+
+validate_height <span class="hljs-number">10</span>..<span class="hljs-number">5000</span>
+</code></pre></li>
+<li><p>The <code>#validate_mime_type</code> and <code>#validate_extension</code> shorthands have been
+added to the <code>validation_helpers</code> plugin.</p>
+<pre><code class="hljs css language-rb">validate_mime_type_inclusion <span class="hljs-string">%w[image/jpeg image/png image/webp]</span>
+<span class="hljs-comment"># can now be just</span>
+validate_mime_type <span class="hljs-string">%w[image/jpeg image/png image/webp]</span>
+</code></pre>
+<pre><code class="hljs css language-rb">validate_extension_inclusion <span class="hljs-string">%w[jpeg png webp]</span>
+<span class="hljs-comment"># can now be just</span>
+validate_extension <span class="hljs-string">%w[jpeg png webp]</span>
+</code></pre></li>
+<li><p>Default error messages in <code>validation_helpers</code> plugin have been simplified.</p></li>
+<li><p>You can now call <code>super</code> when overriding <code>Shrine::UploadedFile</code> methods
+defined by the <code>add_metadata</code> plugin.</p></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="backwards-compatibility"></a><a href="#backwards-compatibility" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backwards compatibility</h2>
+<ul>
+<li><p>The <code>logging</code> plugin has been deprecated in favour of the <code>instrumentation</code>
+plugin.</p></li>
+<li><p>The <code>moving</code> pluing has been deprecated in favour of the <code>:move</code> option to
+<code>FileSystem#upload</code>. This means that the <code>#move</code> &amp;&amp; <code>#movable?</code> methods are
+not part of the storage abstraction anymore.</p></li>
+<li><p>The <code>backup</code> plugin has been deprecated (a new <code>mirroring</code> plugin will get
+added in 3.0).</p></li>
+<li><p>The <code>copy</code> plugin has been deprecated.</p></li>
+<li><p>The <code>Shrine::Plugins::DataUri::DataFile</code> constant from the <code>data_uri</code> plugin
+has been renamed to <code>Shrine::DataFile</code>.</p></li>
+<li><p>The <code>Shrine::Plugins::RackFile::UploadedFile</code> constant from the <code>data_uri</code> plugin
+has been renamed to <code>Shrine::RackFile</code>.</p></li>
+<li><p>The <code>:older_than</code> option for <code>FileSystem#clear!</code> has been deprecated in
+favour of passing a block.</p>
+<pre><code class="hljs css language-rb">file_system.clear!(<span class="hljs-symbol">older_than:</span> Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span>)
+<span class="hljs-comment"># should now be replaced with</span>
+file_system.clear! { <span class="hljs-params">|path|</span> path.mtime &lt; Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span> }
+</code></pre></li>
+<li><p>The <code>FileSystem#upload</code> method deprecates ignoring unrecognized upload
+options.</p></li>
+<li><p>The <code>FileSystem#upload</code> method doesn't backfill <code>size</code> metadata anymore if an
+IO with unknown size is being uploaded via <code>Shrine#upload</code>.</p></li>
+<li><p>Several plugins have changed how they store configuration options internally.
+If you were accessing these options directly, you will need to update your
+code.</p></li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/release_notes/3.0.0"><span class="arrow-prev">← </span><span>Shrine 3.0.0</span></a><a class="docs-next button" href="/docs/release_notes/2.18.0"><span>Shrine 2.18.0</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#new-features">New features</a></li><li><a href="#other-improvements">Other improvements</a></li><li><a href="#backwards-compatibility">Backwards compatibility</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

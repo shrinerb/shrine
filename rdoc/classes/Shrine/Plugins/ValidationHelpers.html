@@ -35,7 +35,7 @@ Shrine::Plugins::ValidationHelpers
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation lives in <a href="https://github.com/shrinerb/shrine/blob/master/doc/plugins/validation_helpers.md">doc/plugins/validation_helpers.md</a> on GitHub.</p>
+<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/validation_helpers">shrinerb.com/docs/plugins/validation_helpers</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -121,7 +121,7 @@ end</td>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">default_messages:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">default_messages:</span> <span class="ruby-constant">DEFAULT_MESSAGES</span>.<span class="ruby-identifier">dup</span> }&#x000A;<span class="line-num">43</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers</span>][<span class="ruby-value">:default_messages</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">default_messages</span>)&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">default_messages:</span> {}, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">40</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">default_messages:</span> <span class="ruby-constant">DEFAULT_MESSAGES</span>.<span class="ruby-identifier">dup</span> }&#x000A;<span class="line-num">41</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:validation_helpers</span>][<span class="ruby-value">:default_messages</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">default_messages</span>)&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -138,7 +138,7 @@ end</td>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation_helpers.rb</span>&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">36</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:validation</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

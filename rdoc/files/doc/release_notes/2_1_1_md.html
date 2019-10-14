@@ -30,12 +30,16 @@ doc/release_notes/2.1.1.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<p>—</p>
+
+<h2 id="label-title-3A+Shrine+2.1.1">title: <a href="../../../classes/Shrine.html"><code>Shrine</code></a> 2.1.1<span><a href="#label-title-3A+Shrine+2.1.1">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
 <h1 id="label-Regressions">Regressions<span><a href="#label-Regressions">&para;</a> <a href="#top">&uarr;</a></span></h1>
 <ul><li>
 <p><code>S3#open</code> has switched from <code>Down.download</code> to <code>Down.open</code> in the previous  <a href="../../../classes/Shrine.html"><code>Shrine</code></a> version, however the Down version 2.3.3 doesn&#39;t require <code>net/http</code>,  which means that <code>S3#open</code> would raise an “undefined constant Net” error  in case <code>net/http</code> wasn&#39;t required anywhere else. This is fixed by bumping  the required Down version to 2.3.4, which requires net/http.</p>

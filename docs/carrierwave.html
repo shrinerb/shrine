@@ -1,0 +1,610 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Shrine for CarrierWave Users · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="This guide is aimed at helping CarrierWave users transition to Shrine, and it"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Shrine for CarrierWave Users · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="This guide is aimed at helping CarrierWave users transition to Shrine, and it"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Comparison</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/carrierwave.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Shrine for CarrierWave Users</h1></header><article><div><span><p>This guide is aimed at helping CarrierWave users transition to Shrine, and it
+consists of three parts:</p>
+<ol>
+<li>Explanation of the key differences in design between CarrierWave and Shrine</li>
+<li>Instructions how to migrate and existing app that uses CarrierWave to Shrine</li>
+<li>Extensive reference of CarrierWave's interface with Shrine equivalents</li>
+</ol>
+<h2><a class="anchor" aria-hidden="true" id="overview"></a><a href="#overview" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h2>
+<h3><a class="anchor" aria-hidden="true" id="uploader"></a><a href="#uploader" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploader</h3>
+<p>Shrine shares CarrierWave's concept of <strong>uploaders</strong>, classes which encapsulate
+file attachment logic for different file types:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-comment"># attachment logic</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>However, while CarrierWave uploaders are responsible for most of the
+attachment logic (uploading to temporary/permanent storage, retrieving the
+uploaded file, file validation, processing versions), Shrine distributes
+these responsibilities across several core classes:</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Class</th><th style="text-align:left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>Shrine</code></td><td style="text-align:left">handles uploads, metadata extraction, location generation</td></tr>
+<tr><td style="text-align:left"><code>Shrine::UploadedFile</code></td><td style="text-align:left">exposes metadata, implements downloading, URL generation, deletion</td></tr>
+<tr><td style="text-align:left"><code>Shrine::Attacher</code></td><td style="text-align:left">handles caching &amp; storing, dirty tracking, persistence, versions</td></tr>
+</tbody>
+</table>
+<p>Shrine uploaders themselves are functional: they receive a file on the input
+and return the uploaded file on the output. There are no state changes.</p>
+<pre><code class="hljs css language-rb">uploader      = ImageUploader.new(<span class="hljs-symbol">:store</span>)
+uploaded_file = uploader.upload(file, <span class="hljs-symbol">:store</span>)
+uploaded_file          <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+uploaded_file.url      <span class="hljs-comment">#=&gt; "https://my-bucket.s3.amazonaws.com/store/kfds0lg9rer.jpg"</span>
+uploaded_file.download <span class="hljs-comment">#=&gt; #&lt;File:/tmp/path/to/file&gt;</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="storage"></a><a href="#storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Storage</h3>
+<p>In CarrierWave, you configure storage in global configuration:</p>
+<pre><code class="hljs css language-rb">CarrierWave.configure <span class="hljs-keyword">do</span> <span class="hljs-params">|config|</span>
+  config.fog_provider = <span class="hljs-string">"fog/aws"</span>
+  config.fog_credentials = {
+    <span class="hljs-symbol">provider:</span>              <span class="hljs-string">"AWS"</span>,
+    <span class="hljs-symbol">aws_access_key_id:</span>     <span class="hljs-string">"abc"</span>,
+    <span class="hljs-symbol">aws_secret_access_key:</span> <span class="hljs-string">"xyz"</span>,
+    <span class="hljs-symbol">region:</span>                <span class="hljs-string">"eu-west-1"</span>,
+  }
+  config.fog_directory = <span class="hljs-string">"my-bucket"</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>In Shrine, the configuration options are passed directly to the storage class:</p>
+<pre><code class="hljs css language-rb">Shrine.storages[<span class="hljs-symbol">:store</span>] = Shrine::Storage::S3.new(
+  <span class="hljs-symbol">bucket:</span>            <span class="hljs-string">"my-bucket"</span>,
+  <span class="hljs-symbol">access_key_id:</span>     <span class="hljs-string">"abc"</span>,
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"xyz"</span>,
+  <span class="hljs-symbol">region:</span>            <span class="hljs-string">"eu-west-1"</span>,
+)
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="temporary-storage"></a><a href="#temporary-storage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Temporary storage</h4>
+<p>Where CarrierWave's temporary storage is hardcoded to disk, Shrine can use any
+storage for temporary storage. So, if you have multiple servers or want to do
+<a href="https://shrinerb.com/docs/getting-started#direct-uploads">direct uploads</a>, you can use AWS S3 as temporary storage:</p>
+<pre><code class="hljs css language-rb">Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> Shrine::Storage::S3.new(<span class="hljs-symbol">prefix:</span> <span class="hljs-string">"cache"</span>, **s3_options),
+  <span class="hljs-symbol">store:</span> Shrine::Storage::S3.new(**s3_options),
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="persistence"></a><a href="#persistence" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Persistence</h3>
+<p>While CarrierWave persists only the filename of the original uploaded file,
+Shrine persists storage and metadata information as well:</p>
+<pre><code class="hljs css language-rb">{
+  <span class="hljs-string">"id"</span>: <span class="hljs-string">"path/to/image.jpg"</span>,
+  <span class="hljs-string">"storage"</span>: <span class="hljs-string">"store"</span>,
+  <span class="hljs-string">"metadata"</span>: {
+    <span class="hljs-string">"filename"</span>: <span class="hljs-string">"nature.jpg"</span>,
+    <span class="hljs-string">"size"</span>: <span class="hljs-number">4739472</span>,
+    <span class="hljs-string">"mime_type"</span>: <span class="hljs-string">"image/jpeg"</span>
+  }
+}
+</code></pre>
+<p>This way we have all information about uploaded files, without having to
+retrieve the file from the storage.</p>
+<pre><code class="hljs css language-rb">photo.image.id          <span class="hljs-comment">#=&gt; "path/to/image.jpg"</span>
+photo.image.storage_key <span class="hljs-comment">#=&gt; :store</span>
+photo.image.metadata    <span class="hljs-comment">#=&gt; { "filename" =&gt; "...", "size" =&gt; ..., "mime_type" =&gt; "..." }</span>
+
+photo.image.original_filename <span class="hljs-comment">#=&gt; "nature.jpg"</span>
+photo.image.size              <span class="hljs-comment">#=&gt; 4739472</span>
+photo.image.mime_type         <span class="hljs-comment">#=&gt; "image/jpeg"</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="location"></a><a href="#location" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Location</h4>
+<p>CarrierWave persists only the filename of the uploaded file, and recalculates
+the full location dynamically based on location configuration. This can be
+dangerous, because if some component of the location happens to change, all
+existing links might become invalid.</p>
+<p>To avoid this, Shrine persists the full location on attachment, and uses it
+when generating file URL. So, even if you change how file locations are
+generated, existing files that are on old locations will still remain
+accessible.</p>
+<h3><a class="anchor" aria-hidden="true" id="processing"></a><a href="#processing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing</h3>
+<p>CarrierWave uses a class-level DSL for generating versions, which internally
+uses uploader subclassing and does in-place processing.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; CarrierWave::Uploader::<span class="hljs-title">Base</span></span>
+  <span class="hljs-keyword">include</span> CarrierWave::MiniMagick
+
+  version <span class="hljs-symbol">:large</span> <span class="hljs-keyword">do</span>
+    process <span class="hljs-symbol">resize_to_limit:</span> [<span class="hljs-number">800</span>, <span class="hljs-number">800</span>]
+  <span class="hljs-keyword">end</span>
+
+  version <span class="hljs-symbol">:medium</span> <span class="hljs-keyword">do</span>
+    process <span class="hljs-symbol">resize_to_limit:</span> [<span class="hljs-number">500</span>, <span class="hljs-number">500</span>]
+  <span class="hljs-keyword">end</span>
+
+  version <span class="hljs-symbol">:small</span> <span class="hljs-keyword">do</span>
+    process <span class="hljs-symbol">resize_to_limit:</span> [<span class="hljs-number">300</span>, <span class="hljs-number">300</span>]
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>In contrast, in Shrine you perform processing on the instance level as a
+functional transformation, which is a lot simpler and more flexible:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"image_processing/mini_magick"</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:derivatives</span>
+
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    {
+      <span class="hljs-symbol">large:</span>  magick.resize_to_limit!(<span class="hljs-number">800</span>, <span class="hljs-number">800</span>),
+      <span class="hljs-symbol">medium:</span> magick.resize_to_limit!(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>),
+      <span class="hljs-symbol">small:</span>  magick.resize_to_limit!(<span class="hljs-number">300</span>, <span class="hljs-number">300</span>),
+    }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="retrieving-versions"></a><a href="#retrieving-versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Retrieving versions</h4>
+<p>When retrieving versions, CarrierWave returns a list of declared versions which
+may or may not have been generated. In contrast, Shrine persists data of
+uploaded processed files into the database (including any extracted metadata),
+which then becomes the source of truth on which versions have been generated.</p>
+<pre><code class="hljs css language-rb">photo.image              <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="original.jpg" ...&gt;</span>
+photo.image_derivatives  <span class="hljs-comment">#=&gt; {}</span>
+
+photo.image_derivatives! <span class="hljs-comment"># triggers processing</span>
+photo.image_derivatives  <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   large: #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="large.jpg" <span class="hljs-doctag">@metadata</span>={"size"=&gt;873232, ...} ...&gt;,</span>
+<span class="hljs-comment">#   medium: #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="medium.jpg" <span class="hljs-doctag">@metadata</span>={"size"=&gt;94823, ...} ...&gt;,</span>
+<span class="hljs-comment">#   small: #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="small.jpg" <span class="hljs-doctag">@metadata</span>={"size"=&gt;37322, ...} ...&gt;,</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="reprocessing-versions"></a><a href="#reprocessing-versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Reprocessing versions</h4>
+<p>Shrine doesn't have a built-in way of regenerating versions, because that has
+to be written and optimized differently depending on what versions have changed
+which persistence library you're using, how many records there are in the table
+etc.</p>
+<p>However, there is an extensive guide for <a href="https://shrinerb.com/docs/changing-derivatives">Managing Derivatives</a>, which provides
+instructions on how to make these changes safely and with zero downtime.</p>
+<h3><a class="anchor" aria-hidden="true" id="validation"></a><a href="#validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Validation</h3>
+<p>File validation in Shrine is also instance-level, which allows using
+conditionals:</p>
+<pre><code class="hljs css language-rb">class ImageUploader &lt; CarrierWave::Uploader::Base
+  def extension_whitelist
+    %w[jpg jpeg png webp]
+  end
+
+  def content_type_whitelist
+    /image\//
+  end
+
+  def size_range
+    0..(10*1024*1024)
+  end
+end
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:validation_helpers</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    validate_max_size <span class="hljs-number">10</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>
+    validate_extension <span class="hljs-string">%w[jpg jpeg png webp]</span>
+
+    <span class="hljs-keyword">if</span> validate_mime_type <span class="hljs-string">%w[image/jpeg image/png image/webp]</span>
+      validate_max_dimensions [<span class="hljs-number">5000</span>, <span class="hljs-number">5000</span>]
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="custom-metadata"></a><a href="#custom-metadata" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom metadata</h4>
+<p>With Shrine you can also extract and validate any custom metadata:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VideoUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:add_metadata</span>
+  plugin <span class="hljs-symbol">:validation</span>
+
+  add_metadata <span class="hljs-symbol">:duration</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|io|</span>
+    FFMPEG::Movie.new(io.path).duration
+  <span class="hljs-keyword">end</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> file.duration &gt; <span class="hljs-number">5</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span>
+      errors &lt;&lt; <span class="hljs-string">"must not be longer than 5 hours"</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="multiple-uploads"></a><a href="#multiple-uploads" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multiple uploads</h3>
+<p>Shrine doesn't have support for multiple uploads out-of-the-box like
+CarrierWave does. Instead, you can implement them using a separate table with a
+one-to-many relationship to which the files will be attached. The <a href="https://shrinerb.com/docs/multiple-files">Multiple
+Files</a> guide explains this setup in more detail.</p>
+<h2><a class="anchor" aria-hidden="true" id="migrating-from-carrierwave"></a><a href="#migrating-from-carrierwave" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Migrating from CarrierWave</h2>
+<p>You have an existing app using CarrierWave and you want to transfer it to
+Shrine. Let's assume we have a <code>Photo</code> model with the &quot;image&quot; attachment. First
+we need to create the <code>image_data</code> column for Shrine:</p>
+<pre><code class="hljs css language-rb">add_column <span class="hljs-symbol">:photos</span>, <span class="hljs-symbol">:image_data</span>, <span class="hljs-symbol">:text</span> <span class="hljs-comment"># or :json or :jsonb if supported</span>
+</code></pre>
+<p>Afterwards we need to make new uploads write to the <code>image_data</code> column. This
+can be done by including the below module to all models that have CarrierWave
+attachments:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine"</span>
+
+Shrine.storages = {
+  <span class="hljs-symbol">cache:</span> ...,
+  <span class="hljs-symbol">store:</span> ...,
+}
+
+Shrine.plugin <span class="hljs-symbol">:model</span>
+Shrine.plugin <span class="hljs-symbol">:derivatives</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">module</span> <span class="hljs-title">CarrierwaveShrineSynchronization</span></span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">self</span>.<span class="hljs-title">included</span><span class="hljs-params">(model)</span></span>
+    model.before_save <span class="hljs-keyword">do</span>
+      <span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.uploaders.each_key <span class="hljs-keyword">do</span> <span class="hljs-params">|name|</span>
+        write_shrine_data(name) <span class="hljs-keyword">if</span> changes.key?(name)
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">write_shrine_data</span><span class="hljs-params">(name)</span></span>
+    uploader = send(name)
+    attacher = Shrine::Attacher.form_model(<span class="hljs-keyword">self</span>, name)
+
+    <span class="hljs-keyword">if</span> read_attribute(name).present?
+      attacher.set shrine_file(uploader)
+
+      uploader.versions.each <span class="hljs-keyword">do</span> <span class="hljs-params">|name, version|</span>
+        attacher.merge_derivatives(name =&gt; shrine_file(version))
+      <span class="hljs-keyword">end</span>
+    <span class="hljs-keyword">else</span>
+      attacher.set <span class="hljs-literal">nil</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+
+  private
+
+  <span class="hljs-comment"># If you'll be using `:prefix` on your Shrine storage, make sure to</span>
+  <span class="hljs-comment"># subtract it from the path assigned as `:id`.</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">shrine_file</span><span class="hljs-params">(uploader)</span></span>
+    name     = uploader.mounted_as
+    filename = read_attribute(name)
+    path     = uploader.store_path(filename)
+
+    Shrine.uploaded_file(
+      <span class="hljs-symbol">storage:</span>  <span class="hljs-symbol">:store</span>,
+      <span class="hljs-symbol">id:</span>       path,
+      <span class="hljs-symbol">metadata:</span> { <span class="hljs-string">"filename"</span> =&gt; filename },
+    )
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Photo</span> &lt; ActiveRecord::Base</span>
+  mount_uploader <span class="hljs-symbol">:image</span>, ImageUploader
+  <span class="hljs-keyword">include</span> CarrierwaveShrineSynchronization <span class="hljs-comment"># needs to be after `mount_uploader`</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>After you deploy this code, the <code>image_data</code> column should now be successfully
+synchronized with new attachments.  Next step is to run a script which writes
+all existing CarrierWave attachments to <code>image_data</code>:</p>
+<pre><code class="hljs css language-rb">Photo.find_each <span class="hljs-keyword">do</span> <span class="hljs-params">|photo|</span>
+  Photo.uploaders.each_key { <span class="hljs-params">|name|</span> photo.write_shrine_data(name) }
+  photo.save!
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>Now you should be able to rewrite your application so that it uses Shrine
+instead of CarrierWave, using equivalent Shrine storages. For help with
+translating the code from CarrierWave to Shrine, you can consult the reference
+below.</p>
+<p>You'll notice that Shrine metadata will be absent from the migrated files'
+data. You can run a script that will fill in any missing metadata defined in
+your Shrine uploader:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:refresh_metadata</span>
+
+Photo.find_each <span class="hljs-keyword">do</span> <span class="hljs-params">|photo|</span>
+  photo.image_attacher.refresh_metadata!
+  photo.save
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="carrierwave-to-shrine-direct-mapping"></a><a href="#carrierwave-to-shrine-direct-mapping" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CarrierWave to Shrine direct mapping</h2>
+<h3><a class="anchor" aria-hidden="true" id="carrierwave-uploader-base"></a><a href="#carrierwave-uploader-base" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>CarrierWave::Uploader::Base</code></h3>
+<h4><a class="anchor" aria-hidden="true" id="storage-1"></a><a href="#storage-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.storage</code></h4>
+<p>When using models, by default all storages use <code>:cache</code> for cache, and <code>:store</code>
+for store. If you want to change that, you can use the <code>default_storage</code>
+plugin:</p>
+<pre><code class="hljs css language-rb">Shrine.storages[<span class="hljs-symbol">:foo</span>] = Shrine::Storage::Foo.new(*args)
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span></span>
+  plugin <span class="hljs-symbol">:default_storage</span>, <span class="hljs-symbol">store:</span> <span class="hljs-symbol">:foo</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="process-version"></a><a href="#process-version" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.process</code>, <code>.version</code></h4>
+<p>Processing is defined by using the <code>derivatives</code> plugin:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:derivatives</span>
+
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    magick = ImageProcessing::MiniMagick.source(image)
+
+    {
+      <span class="hljs-symbol">large:</span>  magick.resize_to_limit!(<span class="hljs-number">800</span>, <span class="hljs-number">800</span>),
+      <span class="hljs-symbol">medium:</span> magick.resize_to_limit!(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>),
+      <span class="hljs-symbol">small:</span>  magick.resize_to_limit!(<span class="hljs-number">300</span>, <span class="hljs-number">300</span>),
+    }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="before-after"></a><a href="#before-after" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.before</code>, <code>.after</code></h4>
+<p>There is no Shrine equivalent for CarrierWave's callbacks.</p>
+<h4><a class="anchor" aria-hidden="true" id="store-cache"></a><a href="#store-cache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#store!</code>, <code>#cache!</code></h4>
+<p>In Shrine you store and cache files by passing the corresponding storage to
+<code>Shrine.upload</code>:</p>
+<pre><code class="hljs css language-rb">ImageUploader.upload(file, <span class="hljs-symbol">:cache</span>)
+ImageUploader.upload(file, <span class="hljs-symbol">:store</span>)
+</code></pre>
+<p>Note that in Shrine you cannot pass in a path to the file, you always have to
+pass an IO-like object, which is required to respond to: <code>#read(*args)</code>,
+<code>#size</code>, <code>#eof?</code>, <code>#rewind</code> and <code>#close</code>.</p>
+<h4><a class="anchor" aria-hidden="true" id="retrieve_from_store-and-retrieve_from_cache"></a><a href="#retrieve_from_store-and-retrieve_from_cache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#retrieve_from_store!</code> and <code>#retrieve_from_cache!</code></h4>
+<p>In Shrine you simply call <code>#download</code> on the uploaded file:</p>
+<pre><code class="hljs css language-rb">uploaded_file = ImageUploader.upload(file, <span class="hljs-symbol">:store</span>)
+uploaded_file.download <span class="hljs-comment">#=&gt; #&lt;Tempfile:/path/to/file&gt;</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="url"></a><a href="#url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#url</code></h4>
+<p>In Shrine you call <code>#url</code> on uploaded files:</p>
+<pre><code class="hljs css language-rb">photo.image     <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+photo.image.url <span class="hljs-comment">#=&gt; "/uploads/398454ujedfggf.jpg"</span>
+photo.image_url <span class="hljs-comment">#=&gt; "/uploads/398454ujedfggf.jpg" (shorthand)</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="identifier"></a><a href="#identifier" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#identifier</code></h4>
+<p>This method corresponds to <code>#original_filename</code> on the uploaded file:</p>
+<pre><code class="hljs css language-rb">photo.image                   <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+photo.image.original_filename <span class="hljs-comment">#=&gt; "avatar.jpg"</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="store_dir-cache_dir"></a><a href="#store_dir-cache_dir" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#store_dir</code>, <code>#cache_dir</code></h4>
+<p>Shrine here provides a <code>#generate_location</code> method, which is triggered for all
+storages:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">generate_location</span><span class="hljs-params">(io, <span class="hljs-symbol">record:</span> <span class="hljs-literal">nil</span>, **)</span></span>
+    <span class="hljs-string">"<span class="hljs-subst">#{record.<span class="hljs-keyword">class</span>}</span>/<span class="hljs-subst">#{record.id}</span>/<span class="hljs-subst">#{io.original_filename}</span>"</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>You might also want to use the <code>pretty_location</code> plugin for automatically
+generating an organized folder structure.</p>
+<h4><a class="anchor" aria-hidden="true" id="default_url"></a><a href="#default_url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#default_url</code></h4>
+<p>For default URLs you can use the <code>default_url</code> plugin:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:default_url</span>
+
+  Attacher.default_url <span class="hljs-keyword">do</span> <span class="hljs-params">|options|</span>
+    <span class="hljs-string">"/attachments/<span class="hljs-subst">#{name}</span>/default.jpg"</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="extension_white_list-extension_black_list"></a><a href="#extension_white_list-extension_black_list" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#extension_white_list</code>, <code>#extension_black_list</code></h4>
+<p>In Shrine, extension whitelisting/blacklisting is a part of validations, and is
+provided by the <code>validation_helpers</code> plugin:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:validation_helpers</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    validate_extension_inclusion <span class="hljs-string">%w[jpg jpeg png]</span> <span class="hljs-comment"># whitelist</span>
+    validate_extension_exclusion <span class="hljs-string">%w[php]</span>          <span class="hljs-comment"># blacklist</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="blacklist_mime_type_pattern-whitelist_mime_type_pattern-content_type_whitelist-content_type_blacklist"></a><a href="#blacklist_mime_type_pattern-whitelist_mime_type_pattern-content_type_whitelist-content_type_blacklist" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#blacklist_mime_type_pattern</code>, <code>#whitelist_mime_type_pattern</code>, <code>#content_type_whitelist</code>, <code>#content_type_blacklist</code></h4>
+<p>In Shrine, MIME type whitelisting/blacklisting is part of validations, and is
+provided by the <code>validation_helpers</code> plugin, though it doesn't support regexes:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:validation_helpers</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    validate_mime_type_inclusion <span class="hljs-string">%w[image/jpeg image/png]</span> <span class="hljs-comment"># whitelist</span>
+    validate_mime_type_exclusion <span class="hljs-string">%w[text/x-php]</span>           <span class="hljs-comment"># blacklist</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="size_range"></a><a href="#size_range" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#size_range</code></h4>
+<p>In Shrine file size validations are typically done using the
+<code>validation_helpers</code> plugin:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:validation_helpers</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    validate_size <span class="hljs-number">0</span>..<span class="hljs-number">5</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span> <span class="hljs-comment"># 5 MB</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="recreate_versions"></a><a href="#recreate_versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#recreate_versions!</code></h4>
+<p>Shrine doesn't have a built-in way of regenerating versions, because that's
+very individual and depends on what versions you want regenerated, what ORM are
+you using, how many records there are in your database etc. The <a href="https://shrinerb.com/docs/changing-derivatives">Managing
+Derivatives</a> guide provides some useful tips on this task.</p>
+<h3><a class="anchor" aria-hidden="true" id="models"></a><a href="#models" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Models</h3>
+<p>The only thing that Shrine requires from your models is a <code>&lt;attachment&gt;_data</code>
+column (e.g. if your attachment is &quot;image&quot;, you need the <code>image_data</code> column).</p>
+<h4><a class="anchor" aria-hidden="true" id="mount_uploader"></a><a href="#mount_uploader" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.mount_uploader</code></h4>
+<p>In Shrine you make include attachment modules directly:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:sequel</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> &lt; Sequel::Model</span>
+  <span class="hljs-keyword">include</span> ImageUploader::Attachment(<span class="hljs-symbol">:avatar</span>)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="attachment"></a><a href="#attachment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#&lt;attachment&gt;=</code></h4>
+<p>The attachment module adds an attachment setter:</p>
+<pre><code class="hljs css language-rb">photo.image = File.open(<span class="hljs-string">"avatar.jpg"</span>, <span class="hljs-string">"rb"</span>)
+</code></pre>
+<p>Note that unlike CarrierWave, you cannot pass in file paths, the input needs to
+be an IO-like object.</p>
+<h4><a class="anchor" aria-hidden="true" id="attachment-1"></a><a href="#attachment-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#&lt;attachment&gt;</code></h4>
+<p>CarrierWave returns the uploader, but Shrine returns a <code>Shrine::UploadedFile</code>,
+a representation of the file uploaded to the storage:</p>
+<pre><code class="hljs css language-rb">photo.image <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+photo.image.methods <span class="hljs-comment">#=&gt; [:url, :download, :read, :exists?, :delete, ...]</span>
+</code></pre>
+<p>If attachment is missing, nil is returned.</p>
+<h4><a class="anchor" aria-hidden="true" id="attachment-_url"></a><a href="#attachment-_url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#&lt;attachment&gt;_url</code></h4>
+<p>This method is simply a shorthand for &quot;if attachment is present, call <code>#url</code>
+on it, otherwise return nil&quot;:</p>
+<pre><code class="hljs css language-rb">photo.image_url <span class="hljs-comment">#=&gt; nil</span>
+photo.image = File.open(<span class="hljs-string">"avatar.jpg"</span>, <span class="hljs-string">"rb"</span>)
+photo.image_url <span class="hljs-comment">#=&gt; "/uploads/ksdf934rt.jpg"</span>
+</code></pre>
+<p>The <code>derivatives</code> plugin extends this method to also accept a version name as
+the argument (<code>photo.image_url(:thumb)</code>).</p>
+<h4><a class="anchor" aria-hidden="true" id="attachment-_cache"></a><a href="#attachment-_cache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#&lt;attachment&gt;_cache</code></h4>
+<p>Shrine has the <code>cached_attachment_data</code> plugin, which gives model a reader method
+that you can use for retaining the cached file:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:cached_attachment_data</span>
+</code></pre>
+<pre><code class="hljs css language-rb">form_for @photo <span class="hljs-keyword">do</span> <span class="hljs-params">|f|</span>
+  f.hidden_field <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">value:</span> @photo.cached_image_data
+  f.file_field <span class="hljs-symbol">:image</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="remote_-attachment-_url"></a><a href="#remote_-attachment-_url" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#remote_&lt;attachment&gt;_url</code></h4>
+<p>In Shrine this method is provided by the <code>remote_url</code> plugin.</p>
+<h4><a class="anchor" aria-hidden="true" id="remove_-attachment"></a><a href="#remove_-attachment" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>#remove_&lt;attachment&gt;</code></h4>
+<p>In Shrine this method is provided by the <code>remove_attachment</code> plugin.</p>
+<h3><a class="anchor" aria-hidden="true" id="configuration"></a><a href="#configuration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuration</h3>
+<p>This section walks through various configuration options in CarrierWave, and
+shows what are Shrine's equivalents.</p>
+<h4><a class="anchor" aria-hidden="true" id="root-base_path-permissions-directory_permissions"></a><a href="#root-base_path-permissions-directory_permissions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>root</code>, <code>base_path</code>, <code>permissions</code>, <code>directory_permissions</code></h4>
+<p>In Shrine these are configured on the FileSystem storage directly.</p>
+<h4><a class="anchor" aria-hidden="true" id="storage-storage_engines"></a><a href="#storage-storage_engines" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>storage</code>, <code>storage_engines</code></h4>
+<p>As mentioned before, in Shrine you register storages through <code>Shrine.storages</code>,
+and the attachment storages will automatically be <code>:cache</code> and <code>:store</code>, but
+you can change this with the <code>default_storage</code> plugin.</p>
+<h4><a class="anchor" aria-hidden="true" id="delete_tmp_file_after_storage-remove_previously_stored_file_after_update"></a><a href="#delete_tmp_file_after_storage-remove_previously_stored_file_after_update" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>delete_tmp_file_after_storage</code>, <code>remove_previously_stored_file_after_update</code></h4>
+<p>By default Shrine deletes cached and replaced files, but you can choose to keep
+those files by loading the <code>keep_files</code> plugin:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:keep_files</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="move_to_cache-move_to_store"></a><a href="#move_to_cache-move_to_store" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>move_to_cache</code>, <code>move_to_store</code></h4>
+<p>You can tell the <code>FileSystem</code> storage that it should move files by specifying
+the <code>:move</code> upload option:</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:upload_options</span>, <span class="hljs-symbol">cache:</span> { <span class="hljs-symbol">move:</span> <span class="hljs-literal">true</span> }, <span class="hljs-symbol">store:</span> { <span class="hljs-symbol">move:</span> <span class="hljs-literal">true</span> }
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="validate_integrity-ignore_integrity_errors"></a><a href="#validate_integrity-ignore_integrity_errors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>validate_integrity</code>, <code>ignore_integrity_errors</code></h4>
+<p>Shrine does this with validation, which are best done with the
+<code>validation_helpers</code> plugin:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:validation_helpers</span>
+
+  Attacher.validate <span class="hljs-keyword">do</span>
+    <span class="hljs-comment"># Evaluated inside an instance of Shrine::Attacher.</span>
+    <span class="hljs-keyword">if</span> record.guest?
+      validate_max_size <span class="hljs-number">2</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>, <span class="hljs-symbol">message:</span> <span class="hljs-string">"must not be larger than 2 MB"</span>
+      validate_mime_type <span class="hljs-string">%w[image/jpg image/png image/webp]</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="validate_download-ignore_download_errors"></a><a href="#validate_download-ignore_download_errors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>validate_download</code>, <code>ignore_download_errors</code></h4>
+<p>Shrine's <code>remote_url</code> plugin always rescues download errors and transforms
+them to validation errors.</p>
+<h4><a class="anchor" aria-hidden="true" id="validate_processing-ignore_processing_errors"></a><a href="#validate_processing-ignore_processing_errors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>validate_processing</code>, <code>ignore_processing_errors</code></h4>
+<p>In Shrine processing is performed <em>after</em> validations, and typically
+asynchronously in a background job, so it is expected that you validate files
+before processing.</p>
+<h4><a class="anchor" aria-hidden="true" id="enable_processing"></a><a href="#enable_processing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>enable_processing</code></h4>
+<p>You can just add conditionals in processing code.</p>
+<h4><a class="anchor" aria-hidden="true" id="ensure_multipart_form"></a><a href="#ensure_multipart_form" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>ensure_multipart_form</code></h4>
+<p>No equivalent, it depends on your application whether you need the form to be
+multipart or not.</p>
+<h3><a class="anchor" aria-hidden="true" id="carrierwave-storage-fog"></a><a href="#carrierwave-storage-fog" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>CarrierWave::Storage::Fog</code></h3>
+<p>You can use <a href="https://shrinerb.com/docs/storage/s3"><code>Shrine::Storage::S3</code></a> (built-in),
+<a href="https://github.com/renchap/shrine-google_cloud_storage"><code>Shrine::Storage::GoogleCloudStorage</code></a>, or generic
+<a href="https://github.com/shrinerb/shrine-fog"><code>Shrine::Storage::Fog</code></a> storage. The reference will assume you're
+using S3 storage.</p>
+<h4><a class="anchor" aria-hidden="true" id="fog_credentials-fog_directory"></a><a href="#fog_credentials-fog_directory" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>:fog_credentials</code>, <code>:fog_directory</code></h4>
+<p>The S3 Shrine storage accepts <code>:access_key_id</code>, <code>:secret_access_key</code>, <code>:region</code>,
+and <code>:bucket</code> options in the initializer:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(
+  <span class="hljs-symbol">access_key_id:</span>     <span class="hljs-string">"..."</span>,
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"..."</span>,
+  <span class="hljs-symbol">region:</span>            <span class="hljs-string">"..."</span>,
+  <span class="hljs-symbol">bucket:</span>            <span class="hljs-string">"..."</span>,
+)
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="fog_attributes"></a><a href="#fog_attributes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>:fog_attributes</code></h4>
+<p>The object data can be configured via the <code>:upload_options</code> hash:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(<span class="hljs-symbol">upload_options:</span> { <span class="hljs-symbol">content_disposition:</span> <span class="hljs-string">"attachment"</span> }, **options)
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="fog_public"></a><a href="#fog_public" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>:fog_public</code></h4>
+<p>The object permissions can be configured with the <code>:acl</code> upload option:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(<span class="hljs-symbol">upload_options:</span> { <span class="hljs-symbol">acl:</span> <span class="hljs-string">"private"</span> }, **options)
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="fog_authenticated_url_expiration"></a><a href="#fog_authenticated_url_expiration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>:fog_authenticated_url_expiration</code></h4>
+<p>The <code>#url</code> method accepts the <code>:expires_in</code> option, you can set the default
+expiration with the <code>url_options</code> plugin:</p>
+<pre><code class="hljs css language-rb">plugin <span class="hljs-symbol">:url_options</span>, <span class="hljs-symbol">store:</span> { <span class="hljs-symbol">expires_in:</span> <span class="hljs-number">600</span> }
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="fog_use_ssl_for_aws-fog_aws_accelerate"></a><a href="#fog_use_ssl_for_aws-fog_aws_accelerate" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>:fog_use_ssl_for_aws</code>, <code>:fog_aws_accelerate</code></h4>
+<p>Shrine allows you to override the S3 endpoint:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(<span class="hljs-symbol">use_accelerate_endpoint:</span> <span class="hljs-literal">true</span>, **options)
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/advantages"><span class="arrow-prev">← </span><span>Advantages of Shrine</span></a><a class="docs-next button" href="/docs/paperclip"><span>Shrine for Paperclip Users</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#overview">Overview</a><ul class="toc-headings"><li><a href="#uploader">Uploader</a></li><li><a href="#storage">Storage</a></li><li><a href="#persistence">Persistence</a></li><li><a href="#processing">Processing</a></li><li><a href="#validation">Validation</a></li><li><a href="#multiple-uploads">Multiple uploads</a></li></ul></li><li><a href="#migrating-from-carrierwave">Migrating from CarrierWave</a></li><li><a href="#carrierwave-to-shrine-direct-mapping">CarrierWave to Shrine direct mapping</a><ul class="toc-headings"><li><a href="#carrierwave-uploader-base"><code>CarrierWave::Uploader::Base</code></a></li><li><a href="#models">Models</a></li><li><a href="#configuration">Configuration</a></li><li><a href="#carrierwave-storage-fog"><code>CarrierWave::Storage::Fog</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

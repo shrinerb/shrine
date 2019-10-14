@@ -1,0 +1,385 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Advantages of Shrine · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="There are many existing file upload solutions for Ruby out there. This guide"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Advantages of Shrine · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="There are many existing file upload solutions for Ruby out there. This guide"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Comparison</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Base</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/design">The Design of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/retrieving-uploads">Retrieving Uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/attacher">Using Attacher</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/direct-s3">Direct Uploads to S3</a></li><li class="navListItem"><a class="navItem" href="/docs/metadata">Extracting Metadata</a></li><li class="navListItem"><a class="navItem" href="/docs/processing">File Processing</a></li><li class="navListItem"><a class="navItem" href="/docs/validation">File Validation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extras</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/multiple-files">Multiple Files</a></li><li class="navListItem"><a class="navItem" href="/docs/securing-uploads">Securing uploads</a></li><li class="navListItem"><a class="navItem" href="/docs/testing">Testing with Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/upgrading-to-3">Upgrading to Shrine 3.x</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Migrating</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/changing-derivatives">Managing Derivatives</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-location">Migrating File Locations</a></li><li class="navListItem"><a class="navItem" href="/docs/changing-storage">Migrating File Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Extending</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/creating-plugins">Writing a Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-persistence-plugins">Writing a Persistence Plugin</a></li><li class="navListItem"><a class="navItem" href="/docs/creating-storages">Writing a Storage</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Comparison</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/advantages">Advantages of Shrine</a></li><li class="navListItem"><a class="navItem" href="/docs/carrierwave">Shrine for CarrierWave Users</a></li><li class="navListItem"><a class="navItem" href="/docs/paperclip">Shrine for Paperclip Users</a></li><li class="navListItem"><a class="navItem" href="/docs/refile">Shrine for Refile Users</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/advantages.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Advantages of Shrine</h1></header><article><div><span><p>There are many existing file upload solutions for Ruby out there. This guide
+will attempt to cover some of the main advantages that Shrine offers compared
+to these alternatives.</p>
+<p>For a more direct comparison with specific file attachment libraries, there are
+more specialized guides for <a href="https://shrinerb.com/docs/carrierwave">CarrierWave</a>, <a href="https://shrinerb.com/docs/paperclip">Paperclip</a>, and <a href="https://shrinerb.com/docs/refile">Refile</a> users.</p>
+<h2><a class="anchor" aria-hidden="true" id="generality"></a><a href="#generality" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Generality</h2>
+<p>Many alternative file upload solutions are coupled to either Rails (Active
+Storage) or Active Record itself (Paperclip, Dragonfly). This is not ideal, as
+Rails-specific solutions fragment the Ruby community between developers that
+use Rails and developers that don't. There are many great web frameworks
+(<a href="http://sinatrarb.com">Sinatra</a>, <a href="http://roda.jeremyevans.net">Roda</a>, <a href="http://cuba.is">Cuba</a>, <a href="http://hanamirb.org">Hanami</a>, <a href="https://github.com/ruby-grape/grape">Grape</a>) and persistence libraries
+(<a href="http://sequel.jeremyevans.net">Sequel</a>, <a href="http://rom-rb.org">ROM</a>, <a href="https://github.com/hanami/model">Hanami::Model</a>) out there that people use instead of Rails
+and Active Record.</p>
+<p>Shrine, on the other hand, doesn't make any assumptions about which web
+framework or persistence library you're using. Any web-specific functionality
+is implemented on top of <a href="https://rack.github.io">Rack</a>, the Ruby web server interface that powers all
+the popular Ruby web frameworks (including Rails). The integrations for
+specific ORMs are provided as plugins.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Rack-based plugins</span>
+Shrine.plugin <span class="hljs-symbol">:upload_endpoint</span>
+Shrine.plugin <span class="hljs-symbol">:presign_endpoint</span>
+Shrine.plugin <span class="hljs-symbol">:download_endpoint</span>
+Shrine.plugin <span class="hljs-symbol">:derivation_endpoint</span>
+Shrine.plugin <span class="hljs-symbol">:rack_response</span>
+Shrine.plugin <span class="hljs-symbol">:rack_file</span>
+
+<span class="hljs-comment"># ORM plugins</span>
+Shrine.plugin <span class="hljs-symbol">:activerecord</span>
+Shrine.plugin <span class="hljs-symbol">:sequel</span>
+Shrine.plugin <span class="hljs-symbol">:mongoid</span> <span class="hljs-comment"># https://github.com/shrinerb/shrine-mongoid</span>
+Shrine.plugin <span class="hljs-symbol">:rom</span> <span class="hljs-comment"># https://github.com/shrinerb/shrine-rom</span>
+Shrine.plugin <span class="hljs-symbol">:hanami</span> <span class="hljs-comment"># https://github.com/katafrakt/hanami-shrine</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="simplicity"></a><a href="#simplicity" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Simplicity</h2>
+<p>Where some popular file attachment libraries have <a href="https://en.wikipedia.org/wiki/God_object">god objects</a>
+(<code>CarrierWave::Uploader::Base</code> and <code>Paperclip::Attachment</code>), Shrine distributes
+responsibilities across multiple core classes:</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Class</th><th style="text-align:left">Description</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>Shrine::Storage::*</code></td><td style="text-align:left">Encapsulate file operations for the underlying service</td></tr>
+<tr><td style="text-align:left"><code>Shrine</code></td><td style="text-align:left">Wraps uploads and handles loading plugins</td></tr>
+<tr><td style="text-align:left"><code>Shrine::UploadedFile</code></td><td style="text-align:left">Represents a file that was uploaded to a storage</td></tr>
+<tr><td style="text-align:left"><code>Shrine::Attacher</code></td><td style="text-align:left">Handles attaching files to records</td></tr>
+<tr><td style="text-align:left"><code>Shrine::Attachment</code></td><td style="text-align:left">Adds convenience attachment methods to model instances</td></tr>
+</tbody>
+</table>
+<pre><code class="hljs css language-rb">photo.image           <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+photo.image.storage   <span class="hljs-comment">#=&gt; #&lt;Shrine::Storage::S3&gt;</span>
+photo.image.uploader  <span class="hljs-comment">#=&gt; #&lt;Shrine&gt;</span>
+photo.image_attacher  <span class="hljs-comment">#=&gt; #&lt;Shrine::Attacher&gt;</span>
+photo.<span class="hljs-keyword">class</span>.ancestors <span class="hljs-comment">#=&gt; [..., #&lt;Shrine::Attachment(:image)&gt;, ...]</span>
+</code></pre>
+<p>The attachment functionality is decoupled from persistence and storage, which
+makes it much easier to reason about. Also, special care was taken to make
+integrating new storages and persistence libraries as easy as possible.</p>
+<h2><a class="anchor" aria-hidden="true" id="modularity"></a><a href="#modularity" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modularity</h2>
+<p>Shrine uses a <a href="https://twin.github.io/the-plugin-system-of-sequel-and-roda/">plugin system</a> that allows you to pick and choose the features
+that you want. Moreover, you'll only be loading code for the features you've
+selected, which means that Shrine will generally load much faster than the
+alternatives.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:instrumentation</span>
+
+<span class="hljs-comment"># which translates to</span>
+
+<span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/plugins/instrumentation"</span>
+Shrine.plugin Shrine::Plugins::Instrumentation
+</code></pre>
+<pre><code class="hljs css language-rb">Shrine.method(<span class="hljs-symbol">:instrument</span>).owner <span class="hljs-comment">#=&gt; Shrine::Plugins::Instrumentation::ClassMethods</span>
+</code></pre>
+<p>Shrine recommends a certain type of attachment flow, but it still offers good
+low-level abstractions that give you the flexibility to build your own flow.</p>
+<pre><code class="hljs css language-rb">uploaded_file = ImageUploader.upload(image, <span class="hljs-symbol">:store</span>) <span class="hljs-comment"># metadata extraction, upload location generation</span>
+uploaded_file.id       <span class="hljs-comment">#=&gt; "44ccafc10ce6a4ff22829e8f579ee6b9.jpg"</span>
+uplaoded_file.metadata <span class="hljs-comment">#=&gt; { ... extracted metadata ... }</span>
+
+data = uploaded_file.to_json <span class="hljs-comment"># serialization</span>
+<span class="hljs-comment"># ...</span>
+uploaded_file = ImageUploader.uploaded_file(data) <span class="hljs-comment"># deserialization</span>
+
+uploaded_file.url <span class="hljs-comment">#=&gt; "https://..."</span>
+uploaded_file.download { <span class="hljs-params">|tempfile|</span> ... } <span class="hljs-comment"># streaming download</span>
+uploaded_file.delete
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="dependencies"></a><a href="#dependencies" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dependencies</h3>
+<p>Shrine is very diligent when it comes to dependencies. It has two mandatory
+dependencies – <a href="https://github.com/janko/down">Down</a> and <a href="https://github.com/shrinerb/content_disposition">ContentDisposition</a> – which are loaded only by
+components that need them. Some Shrine plugins also require additional
+dependencies, but you only need to load them if you're using those plugins.</p>
+<p>Moreover, Shrine often gives you the ability choose between multiple
+alternative dependencies for doing the same task. For example, the
+<code>determine_mime_type</code> plugin allows you to choose between the <a href="http://linux.die.net/man/1/file"><code>file</code></a> command,
+<a href="https://github.com/blackwinter/ruby-filemagic">FileMagic</a>, <a href="https://github.com/sdsykes/fastimage">FastImage</a>, <a href="https://github.com/minad/mimemagic">MimeMagic</a>, or <a href="https://github.com/basecamp/marcel">Marcel</a> gem for determining the MIME
+type, while the <code>store_dimensions</code> plugin can extract dimensions using
+<a href="https://github.com/sdsykes/fastimage">FastImage</a>, <a href="https://github.com/minimagick/minimagick">MiniMagick</a>, or <a href="https://github.com/libvips/ruby-vips">ruby-vips</a> gem.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:determine_mime_type</span>, <span class="hljs-symbol">analyzer:</span> <span class="hljs-symbol">:marcel</span>
+Shrine.plugin <span class="hljs-symbol">:store_dimensions</span>,    <span class="hljs-symbol">analyzer:</span> <span class="hljs-symbol">:mini_magick</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="inheritance"></a><a href="#inheritance" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inheritance</h2>
+<p>Shrine is designed to handle any types of files. If you're accepting uploads of
+multiple types of files, such as videos and images, chances are that the logic
+for handling them will differ:</p>
+<ul>
+<li>small images can be processed on-the-fly, but large files should be processed in a background job</li>
+<li>you might want to store different files to different storage services (images, documents, audios, videos)</li>
+<li>extracting metadata might require different tools depending on the filetype</li>
+</ul>
+<p>With Shrine you can create isolated uploaders for each type of file. For
+features you want all uploaders to share, their plugins can be loaded globally,
+while other plugins you can load only for selected uploaders.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># loaded for all plugins</span>
+Shrine.plugin <span class="hljs-symbol">:activerecord</span>
+Shrine.plugin <span class="hljs-symbol">:instrumentation</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  <span class="hljs-comment"># loaded only for ImageUploader</span>
+  plugin <span class="hljs-symbol">:store_dimensions</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VideoUploader</span> &lt; Shrine</span>
+  <span class="hljs-comment"># loaded only for VideoUploader</span>
+  plugin <span class="hljs-symbol">:default_storage</span>, <span class="hljs-symbol">store:</span> <span class="hljs-symbol">:vimeo</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="processing"></a><a href="#processing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Processing</h2>
+<p>Most file attachment libraries provide either processing files up front
+(Paperclip, CarrierWave) or on-the-fly (Dragonfly, Refile, Active Storage).
+However, each approach is suitable for different requirements. For instance,
+while on-the-fly processing is suitable for fast processing (image thumbnails,
+document previews), longer running processing (video transcoding, raw images)
+should be moved into a background job.</p>
+<p>That's why Shrine supports both <a href="https://shrinerb.com/docs/plugins/derivatives">up front</a> and
+<a href="https://shrinerb.com/docs/plugins/derivation_endpoint">on-the-fly</a> processing. For example, if you're handling
+image uploads, you can choose to either generate a set of pre-defined
+thumbnails during attachment:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    magick = ImageProcessing::MiniMagick.source(original)
+
+    {
+      <span class="hljs-symbol">large:</span>  magick.resize_to_limit!(<span class="hljs-number">800</span>, <span class="hljs-number">800</span>),
+      <span class="hljs-symbol">medium:</span> magick.resize_to_limit!(<span class="hljs-number">500</span>, <span class="hljs-number">500</span>),
+      <span class="hljs-symbol">small:</span>  magick.resize_to_limit!(<span class="hljs-number">300</span>, <span class="hljs-number">300</span>),
+    }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo.image_derivatives! <span class="hljs-comment"># creates thumbnails</span>
+photo.image_url(<span class="hljs-symbol">:large</span>)  <span class="hljs-comment">#=&gt; "https://s3.amazonaws.com/path/to/large.jpg"</span>
+</code></pre>
+<p>or generate thumbnails on-demand:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ImageUploader</span> &lt; Shrine</span>
+  derivation <span class="hljs-symbol">:thumbnail</span> <span class="hljs-keyword">do</span> <span class="hljs-params">|file, width, height|</span>
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">photo.image.derivation_url(<span class="hljs-symbol">:thumbnail</span>, <span class="hljs-number">600</span>, <span class="hljs-number">400</span>)
+<span class="hljs-comment">#=&gt; ".../thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="imagemagick"></a><a href="#imagemagick" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ImageMagick</h3>
+<p>Many file attachment libraries, such as CarrierWave, Paperclip, Dragonfly and
+Refile, implement their own image processing macros. Rather than building yet
+another in-house implementation, a general purpose <strong><a href="https://github.com/janko/image_processing">ImageProcessing</a></strong> gem
+was created instead, which works great with Shrine.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"image_processing/mini_magick"</span>
+
+thumbnail = ImageProcessing::MiniMagick
+  .source(image)
+  .resize_to_limit(<span class="hljs-number">400</span>, <span class="hljs-number">400</span>)
+  .call <span class="hljs-comment"># convert input.jpg -auto-orient -resize 400x400&gt; -sharpen 0x1 output.jpg</span>
+
+thumbnail <span class="hljs-comment">#=&gt; #&lt;Tempfile:/var/folders/.../image_processing20180316-18446-1j247h6.jpg&gt;</span>
+</code></pre>
+<p>It takes care of many details for you, such as <a href="https://www.imagemagick.org/script/command-line-options.php#auto-orient">auto orienting</a> the input image
+and applying <a href="https://photography.tutsplus.com/tutorials/what-is-image-sharpening--cms-26627">sharpening</a> to resized images. It also has support for
+<a href="#libvips">libvips</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="libvips"></a><a href="#libvips" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>libvips</h3>
+<p><strong><a href="http://libvips.github.io/libvips/">libvips</a></strong> is a full-featured image processing library like ImageMagick,
+with <a href="https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results">great performance characteristics</a>. It's often
+<strong>multiple times faster</strong> than ImageMagick, and also has lower memory usage.
+For more details, see <a href="https://github.com/libvips/libvips/wiki/Why-is-libvips-quick">Why is libvips quick</a>.</p>
+<p>The ImageProcessing gem provides libvips support as an alternative
+<code>ImageProcessing::Vips</code> backend, sharing the same API as the
+<code>ImageProcessing::MiniMagick</code> backend.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"image_processing/vips"</span>
+
+<span class="hljs-comment"># this now generates the thumbnail using libvips</span>
+ImageProcessing::Vips
+  .source(image)
+  .resize_to_limit!(<span class="hljs-number">400</span>, <span class="hljs-number">400</span>)
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="other-processors"></a><a href="#other-processors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other processors</h3>
+<p>In contrast to most file attachment libraries, file processing in Shrine is
+just a functional transformation, where you receive the source file on the
+input and return processed files on the output. This makes it easier to use
+custom processing tools and encourages building generic processors that can be
+reused outside of Shrine.</p>
+<p>Here is an example of transcoding videos using the <a href="https://github.com/streamio/streamio-ffmpeg">streamio-ffmpeg</a> gem:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># Gemfile</span>
+gem <span class="hljs-string">"streamio-ffmpeg"</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VideoUploader</span> &lt; Shrine</span>
+  Attacher.derivatives_processor <span class="hljs-keyword">do</span> <span class="hljs-params">|original|</span>
+    transcoded = Tempfile.new [<span class="hljs-string">"transcoded"</span>, <span class="hljs-string">".mp4"</span>]
+    screenshot = Tempfile.new [<span class="hljs-string">"screenshot"</span>, <span class="hljs-string">".jpg"</span>]
+
+    movie = FFMPEG::Movie.new(original.path)
+    movie.transcode(transcoded.path)
+    movie.screenshot(screenshot.path)
+
+    { <span class="hljs-symbol">transcoded:</span> transcoded, <span class="hljs-symbol">screenshot:</span> screenshot }
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb">movie.video_derivatives! <span class="hljs-comment"># create derivatives</span>
+
+movie.video              <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="5a5cd0.mov" ...&gt;</span>
+movie.video(<span class="hljs-symbol">:transcoded</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="7481d6.mp4" ...&gt;</span>
+movie.video(<span class="hljs-symbol">:screenshot</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="8f3136.jpg" ...&gt;</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="metadata-validation"></a><a href="#metadata-validation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Metadata &amp; Validation</h2>
+<p>Shrine automatically <a href="https://shrinerb.com/docs/metadata">extracts metadata</a> from each uploaded file,
+including derivatives like image thumbnails, and saves them into the database
+column. In addition to filename, filesize, and MIME type that are extracted by
+default, you can also extract <a href="https://shrinerb.com/docs/plugins/store_dimensions">image dimensions</a>, or your own
+<a href="https://shrinerb.com/docs/plugins/add_metadata">custom metadata</a>.</p>
+<pre><code class="hljs css language-rb">photo.image.metadata <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   "size" =&gt; 42487494,</span>
+<span class="hljs-comment">#   "filename" =&gt; "nature.jpg",</span>
+<span class="hljs-comment">#   "mime_type" =&gt; "image/jpeg",</span>
+<span class="hljs-comment">#   "width" =&gt; 600,</span>
+<span class="hljs-comment">#   "height" =&gt; 400,</span>
+<span class="hljs-comment">#   ...</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<p>For common metadata you can use the built-in <a href="https://shrinerb.com/docs/plugins/validation_helpers">validators</a>,
+but you can also <a href="https://shrinerb.com/docs/validation#custom-validations">validate any custom metadata</a>.</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DocumentUploader</span> &lt; Shrine</span>
+  Attacher.validate <span class="hljs-keyword">do</span>
+    <span class="hljs-comment"># validation macros</span>
+    validate_max_size <span class="hljs-number">10</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>
+    validate_mime_type <span class="hljs-string">%W[application/pdf]</span>
+
+    <span class="hljs-comment"># custom validations</span>
+    <span class="hljs-keyword">if</span> file[<span class="hljs-string">"page_count"</span>] &gt; <span class="hljs-number">30</span>
+      errors &lt;&lt; <span class="hljs-string">"must not have more than 30 pages"</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="backgrounding"></a><a href="#backgrounding" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Backgrounding</h2>
+<p>In most file upload solutions, support for background processing was an
+afterthought, which resulted in complex and unreliable implementations. Shrine
+was designed with backgrounding feature in mind from day one. It is supported
+via the <a href="https://shrinerb.com/docs/plugins/backgrounding"><code>backgrounding</code></a> plugin and can be used with <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any
+backgrounding library</a>.</p>
+<pre><code class="hljs css language-rb">Shrine.plugin <span class="hljs-symbol">:backgrounding</span>
+Shrine::Attacher.promote_block <span class="hljs-keyword">do</span>
+  PromoteJob.perform_async(<span class="hljs-keyword">self</span>.<span class="hljs-keyword">class</span>.name, record.<span class="hljs-keyword">class</span>.name, record.id, name, file_data)
+<span class="hljs-keyword">end</span>
+</code></pre>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PromoteJob</span></span>
+  <span class="hljs-keyword">include</span> Sidekiq::Worker
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">perform</span><span class="hljs-params">(attacher_class, record_class, record_id, name, file_data)</span></span>
+    attacher_class = Object.const_get(attacher_class)
+    record         = Object.const_get(record_class).find(record_id) <span class="hljs-comment"># if using Active Record</span>
+
+    attacher = attacher_class.retrieve(<span class="hljs-symbol">model:</span> record, <span class="hljs-symbol">name:</span> name, <span class="hljs-symbol">file:</span> file_data)
+    attacher.create_derivatives <span class="hljs-comment"># perform processing</span>
+    attacher.atomic_promote
+  <span class="hljs-keyword">rescue</span> Shrine::AttachmentChanged, ActiveRecord::RecordNotFound
+    <span class="hljs-comment"># attachment changes are detected for concurrency safety</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>With Shrine, there is no need for a separate boolean column that indicates the
+processing status. Processed file data is stored into the attachment database
+column, which allows you to easily check whether a file has been processed.</p>
+<pre><code class="hljs css language-rb">photo = Photo.create(<span class="hljs-symbol">image:</span> file) <span class="hljs-comment"># background job is kicked off</span>
+
+photo.image(<span class="hljs-symbol">:large</span>) <span class="hljs-comment">#=&gt; nil (thumbnails are still being processed)</span>
+<span class="hljs-comment"># ... sometime later ...</span>
+photo.image(<span class="hljs-symbol">:large</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt; (processing has finished)</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="direct-uploads"></a><a href="#direct-uploads" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Direct Uploads</h2>
+<p>For client side uploads, Shrine adopts <strong><a href="https://uppy.io">Uppy</a></strong>, a modern JavaScript file
+upload library. This gives the developer a lot more power in customizing the
+user experience compared to a custom JavaScript solution implemented by Refile
+and Active Storage.</p>
+<p>Uppy supports direct uploads to <a href="https://uppy.io/docs/aws-s3/">AWS S3</a> or to a <a href="https://uppy.io/docs/xhr-upload/">custom
+endpoint</a>. It also supports <strong>resumable</strong> uploads, either
+<a href="https://uppy.io/docs/aws-s3-multipart/">directly to S3</a> or via the <a href="https://tus.io">tus protocol</a>. For the
+UI you can choose from various components, ranging from a simple <a href="https://uppy.io/examples/statusbar/">status
+bar</a> to a full-featured <a href="https://uppy.io/examples/dashboard/">dashboard</a>.</p>
+<p>Shrine provides server side components for each type of upload. They are built
+on top of Rack, so that they can be used with any Ruby web framework.</p>
+<table>
+<thead>
+<tr><th style="text-align:left">Uppy</th><th style="text-align:left">Shrine</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><a href="https://uppy.io/docs/xhr-upload/">XHRUpload</a></td><td style="text-align:left"><a href="https://shrinerb.com/docs/plugins/upload_endpoint"><code>upload_endpoint</code></a></td></tr>
+<tr><td style="text-align:left"><a href="https://uppy.io/docs/aws-s3/">AwsS3</a></td><td style="text-align:left"><a href="https://shrinerb.com/docs/plugins/presign_endpoint"><code>presign_endpoint</code></a></td></tr>
+<tr><td style="text-align:left"><a href="https://uppy.io/docs/aws-s3-multipart/">AwsS3Multipart</a></td><td style="text-align:left"><a href="https://github.com/janko/uppy-s3_multipart"><code>uppy-s3_multipart</code></a></td></tr>
+<tr><td style="text-align:left"><a href="https://uppy.io/docs/tus/">Tus</a></td><td style="text-align:left"><a href="https://github.com/janko/tus-ruby-server"><code>tus-ruby-server</code></a></td></tr>
+</tbody>
+</table>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/creating-storages"><span class="arrow-prev">← </span><span>Writing a Storage</span></a><a class="docs-next button" href="/docs/carrierwave"><span class="function-name-prevnext">Shrine for CarrierWave Users</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#generality">Generality</a></li><li><a href="#simplicity">Simplicity</a></li><li><a href="#modularity">Modularity</a><ul class="toc-headings"><li><a href="#dependencies">Dependencies</a></li></ul></li><li><a href="#inheritance">Inheritance</a></li><li><a href="#processing">Processing</a><ul class="toc-headings"><li><a href="#imagemagick">ImageMagick</a></li><li><a href="#libvips">libvips</a></li><li><a href="#other-processors">Other processors</a></li></ul></li><li><a href="#metadata-amp-validation">Metadata &amp; Validation</a></li><li><a href="#backgrounding">Backgrounding</a></li><li><a href="#direct-uploads">Direct Uploads</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

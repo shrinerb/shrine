@@ -1,0 +1,216 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Shrine::Storage::S3 · Shrine</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk-s3]"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Shrine::Storage::S3 · Shrine"/><meta property="og:type" content="website"/><meta property="og:url" content="https://shrinerb.com/"/><meta property="og:description" content="The S3 storage handles uploads to Amazon S3 service, using the [aws-sdk-s3]"/><meta property="og:image" content="https://shrinerb.com/img/logo.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://shrinerb.com/img/logo.png"/><link rel="shortcut icon" href="/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/zenburn.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-149836844-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="/js/version.js"></script><script src="https://unpkg.com/vanilla-back-to-top@7.1.14/dist/vanilla-back-to-top.min.js"></script><script>
+        document.addEventListener('DOMContentLoaded', function() {
+          addBackToTop(
+            {"zIndex":100}
+          )
+        });
+        </script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/logo.png" alt="Shrine"/><h2 class="headerTitleWithLogo">Shrine</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/getting-started" target="_self">Guides</a></li><li class=""><a href="/docs/plugins/activerecord" target="_self">Plugins</a></li><li class=""><a href="/docs/external/extensions" target="_self">External</a></li><li class=""><a href="https://discourse.shrinerb.com" target="_self">Discourse</a></li><li class=""><a href="https://github.com/shrinerb/shrine" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/shrinerb/shrine/edit/master/doc/storage/s3.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 class="postHeaderTitle">Shrine::Storage::S3</h1></header><article><div><span><p>The S3 storage handles uploads to Amazon S3 service, using the <a href="https://github.com/aws/aws-sdk-ruby/tree/master/gems/aws-sdk-s3">aws-sdk-s3</a>
+gem:</p>
+<pre><code class="hljs css language-rb">gem <span class="hljs-string">"aws-sdk-s3"</span>, <span class="hljs-string">"~&gt; 1.14"</span>
+</code></pre>
+<p>It can be initialized by providing the bucket name and credentials:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"shrine/storage/s3"</span>
+
+s3 = Shrine::Storage::S3.new(
+  <span class="hljs-symbol">bucket:</span> <span class="hljs-string">"my-app"</span>, <span class="hljs-comment"># required</span>
+  <span class="hljs-symbol">access_key_id:</span> <span class="hljs-string">"abc"</span>,
+  <span class="hljs-symbol">secret_access_key:</span> <span class="hljs-string">"xyz"</span>,
+  <span class="hljs-symbol">region:</span> <span class="hljs-string">"eu-west-1"</span>,
+)
+</code></pre>
+<p>The core features of this storage require the following AWS permissions:
+<code>s3:ListBucket</code>, <code>s3:PutObject</code>, <code>s3:GetObject</code>, and <code>s3:DeleteObject</code>. If you
+have additional upload options configured such as setting object ACLs, then
+additional permissions may be required.</p>
+<p>The storage exposes the underlying Aws objects:</p>
+<pre><code class="hljs css language-rb">s3.client <span class="hljs-comment">#=&gt; #&lt;Aws::S3::Client&gt;</span>
+s3.client.access_key_id <span class="hljs-comment">#=&gt; "abc"</span>
+s3.client.secret_access_key <span class="hljs-comment">#=&gt; "xyz"</span>
+s3.client.region <span class="hljs-comment">#=&gt; "eu-west-1"</span>
+
+s3.bucket <span class="hljs-comment">#=&gt; #&lt;Aws::S3::Bucket&gt;</span>
+s3.bucket.name <span class="hljs-comment">#=&gt; "my-app"</span>
+
+s3.object(<span class="hljs-string">"key"</span>) <span class="hljs-comment">#=&gt; #&lt;Aws::S3::Object&gt;</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="public-uploads"></a><a href="#public-uploads" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Public uploads</h2>
+<p>By default, uploaded S3 objects will have private visibility, meaning they can
+only be accessed via signed expiring URLs generated using your private S3
+credentials. If you would like to generate public URLs, you can tell S3 storage
+to make uploads public:</p>
+<pre><code class="hljs css language-rb">s3 = Shrine::Storage::S3.new(<span class="hljs-symbol">public:</span> <span class="hljs-literal">true</span>, **s3_options)
+
+s3.upload(io, <span class="hljs-string">"key"</span>) <span class="hljs-comment"># uploads with "public-read" ACL</span>
+s3.url(<span class="hljs-string">"key"</span>)        <span class="hljs-comment"># returns public (unsigned) object URL</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="prefix"></a><a href="#prefix" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Prefix</h2>
+<p>The <code>:prefix</code> option can be specified for uploading all files inside a specific
+S3 prefix (folder), which is useful when using S3 for both cache and store:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(<span class="hljs-symbol">prefix:</span> <span class="hljs-string">"cache"</span>, **s3_options)
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="upload-options"></a><a href="#upload-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Upload options</h2>
+<p>Sometimes you'll want to add additional upload options to all S3 uploads. You
+can do that by passing the <code>:upload_options</code> option:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(<span class="hljs-symbol">upload_options:</span> { <span class="hljs-symbol">acl:</span> <span class="hljs-string">"private"</span> }, **s3_options)
+</code></pre>
+<p>These options will be passed to aws-sdk-s3's methods for <a href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#put-instance_method">uploading</a>, <a href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#copy_from-instance_method">copying</a>
+and <a href="http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_post-instance_method">presigning</a>.</p>
+<p>You can also generate upload options per upload with the <code>upload_options</code>
+plugin</p>
+<pre><code class="hljs css language-rb"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyUploader</span> &lt; Shrine</span>
+  plugin <span class="hljs-symbol">:upload_options</span>, <span class="hljs-symbol">store:</span> -&gt; (io, <span class="hljs-symbol">derivative:</span> <span class="hljs-literal">nil</span>, **) <span class="hljs-keyword">do</span>
+    <span class="hljs-keyword">if</span> derivative == <span class="hljs-symbol">:thumb</span>
+      { <span class="hljs-symbol">acl:</span> <span class="hljs-string">"public-read"</span> }
+    <span class="hljs-keyword">else</span>
+      { <span class="hljs-symbol">acl:</span> <span class="hljs-string">"private"</span> }
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
+</code></pre>
+<p>or when using the uploader directly</p>
+<pre><code class="hljs css language-rb">uploader.upload(file, <span class="hljs-symbol">upload_options:</span> { <span class="hljs-symbol">acl:</span> <span class="hljs-string">"private"</span> })
+</code></pre>
+<p>Note that, unlike the <code>:upload_options</code> storage option, upload options given on
+the uploader level won't be forwarded for generating presigns, since presigns
+are generated using the storage directly.</p>
+<h2><a class="anchor" aria-hidden="true" id="url-options"></a><a href="#url-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>URL options</h2>
+<p>Other than <a href="#url-host"><code>:host</code></a> and <a href="#public-uploads"><code>:public</code></a> URL options,
+all additional options are forwarded to <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#presigned_url-instance_method"><code>Aws::S3::Object#presigned_url</code></a>.</p>
+<pre><code class="hljs css language-rb">s3.url(
+  <span class="hljs-symbol">expires_in:</span> <span class="hljs-number">15</span>,
+  <span class="hljs-symbol">response_content_disposition:</span> ContentDisposition.attachment(<span class="hljs-string">"my-filename"</span>),
+  <span class="hljs-symbol">response_content_type:</span> <span class="hljs-string">"foo/bar"</span>,
+  <span class="hljs-comment"># ...</span>
+)
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="url-host"></a><a href="#url-host" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>URL Host</h2>
+<p>If you want your S3 object URLs to be generated with a different URL host (e.g.
+a CDN), you can specify the <code>:host</code> option to <code>#url</code>:</p>
+<pre><code class="hljs css language-rb">s3.url(<span class="hljs-string">"image.jpg"</span>, <span class="hljs-symbol">host:</span> <span class="hljs-string">"http://abc123.cloudfront.net"</span>)
+<span class="hljs-comment">#=&gt; "http://abc123.cloudfront.net/image.jpg"</span>
+</code></pre>
+<p>The host URL can include a path prefix, but it needs to end with a slash:</p>
+<pre><code class="hljs css language-rb">s3.url(<span class="hljs-string">"image.jpg"</span>, <span class="hljs-symbol">host:</span> <span class="hljs-string">"https://your-s3-host.com/prefix/"</span>) <span class="hljs-comment"># needs to end with a slash</span>
+<span class="hljs-comment">#=&gt; "http://your-s3-host.com/prefix/image.jpg"</span>
+</code></pre>
+<p>To have the <code>:host</code> option passed automatically for every URL, use the
+<code>url_options</code> plugin.</p>
+<pre><code class="hljs css language-rb">plugin <span class="hljs-symbol">:url_options</span>, <span class="hljs-symbol">store:</span> { <span class="hljs-symbol">host:</span> <span class="hljs-string">"http://abc123.cloudfront.net"</span> }
+</code></pre>
+<p>If you would like to <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html">serve private content via CloudFront</a>, you need to sign
+the object URLs with a special signer, such as <a href="https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/CloudFront/UrlSigner.html"><code>Aws::CloudFront::UrlSigner</code></a>
+provided by the <code>aws-sdk-cloudfront</code> gem. The S3 storage initializer accepts a
+<code>:signer</code> block, which you can use to call your signer:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-keyword">require</span> <span class="hljs-string">"aws-sdk-cloudfront"</span>
+
+signer = Aws::CloudFront::UrlSigner.new(
+  <span class="hljs-symbol">key_pair_id:</span>      <span class="hljs-string">"cf-keypair-id"</span>,
+  <span class="hljs-symbol">private_key_path:</span> <span class="hljs-string">"./cf_private_key.pem"</span>
+)
+
+Shrine::Storage::S3.new(<span class="hljs-symbol">signer:</span> signer.method(<span class="hljs-symbol">:signed_url</span>))
+<span class="hljs-comment"># or</span>
+Shrine::Storage::S3.new(<span class="hljs-symbol">signer:</span> -&gt; (url, **options) { signer.signed_url(url, **options) })
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="presigns"></a><a href="#presigns" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Presigns</h2>
+<p>The <code>#presign</code> method can be used for generating paramters for direct uploads
+to Amazon S3:</p>
+<pre><code class="hljs css language-rb">s3.presign(<span class="hljs-string">"/path/to/file"</span>) <span class="hljs-comment">#=&gt;</span>
+<span class="hljs-comment"># {</span>
+<span class="hljs-comment">#   url: "https://my-bucket.s3.amazonaws.com/...",</span>
+<span class="hljs-comment">#   fields: { ... },  # blank for PUT presigns</span>
+<span class="hljs-comment">#   headers: { ... }, # blank for POST presigns</span>
+<span class="hljs-comment">#   method: "post",</span>
+<span class="hljs-comment"># }</span>
+</code></pre>
+<p>Additional presign options can be given in three places:</p>
+<ul>
+<li>in <code>Storage::S3#presign</code> by forwarding options</li>
+<li>in <code>:upload_options</code> option on this storage</li>
+<li>in <code>presign_endpoint</code> plugin through <code>:presign_options</code></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="large-files"></a><a href="#large-files" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Large files</h2>
+<p>The aws-sdk-s3 gem has the ability to automatically use multipart upload/copy
+for larger files, splitting the file into multiple chunks and uploading/copying
+them in parallel.</p>
+<p>By default any files that are uploaded will use the multipart upload if they're
+larger than 15MB, and any files that are copied will use the multipart copy if
+they're larger than 150MB, but you can change the thresholds via
+<code>:multipart_threshold</code>.</p>
+<pre><code class="hljs css language-rb">thresholds = { <span class="hljs-symbol">upload:</span> <span class="hljs-number">30</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>, <span class="hljs-symbol">copy:</span> <span class="hljs-number">200</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span> }
+Shrine::Storage::S3.new(<span class="hljs-symbol">multipart_threshold:</span> thresholds, **s3_options)
+</code></pre>
+<p>If you want to change how many threads aws-sdk-s3 will use for multipart
+upload/copy, you can use the <code>upload_options</code> plugin to specify
+<code>:thread_count</code>.</p>
+<pre><code class="hljs css language-rb">plugin <span class="hljs-symbol">:upload_options</span>, <span class="hljs-symbol">store:</span> -&gt; (io, context) <span class="hljs-keyword">do</span>
+  { <span class="hljs-symbol">thread_count:</span> <span class="hljs-number">5</span> }
+<span class="hljs-keyword">end</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="encryption"></a><a href="#encryption" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Encryption</h2>
+<p>The easiest way to use server-side encryption for uploaded S3 objects is to
+configure default encryption for your S3 bucket. Alternatively, you can pass
+server-side encryption parameters to the API calls.</p>
+<p>The <code>#upload</code> method accepts <code>:sse_*</code> options:</p>
+<pre><code class="hljs css language-rb">s3.upload(io, <span class="hljs-string">"key"</span>, <span class="hljs-symbol">sse_customer_algorithm:</span> <span class="hljs-string">"AES256"</span>,
+                     <span class="hljs-symbol">sse_customer_key:</span>       <span class="hljs-string">"secret_key"</span>,
+                     <span class="hljs-symbol">sse_customer_key_md5:</span>   <span class="hljs-string">"secret_key_md5"</span>,
+                     <span class="hljs-symbol">ssekms_key_id:</span>          <span class="hljs-string">"key_id"</span>)
+</code></pre>
+<p>The <code>#presign</code> method accepts <code>:server_side_encryption_*</code> options for POST
+presigns, and the same <code>:sse_*</code> options as above for PUT presigns.</p>
+<pre><code class="hljs css language-rb">s3.presign(<span class="hljs-string">"key"</span>, <span class="hljs-symbol">server_side_encryption_customer_algorithm:</span> <span class="hljs-string">"AES256"</span>,
+                  <span class="hljs-symbol">server_side_encryption_customer_key:</span>       <span class="hljs-string">"secret_key"</span>,
+                  <span class="hljs-symbol">server_side_encryption_aws_kms_key_id:</span>     <span class="hljs-string">"key_id"</span>)
+</code></pre>
+<p>When downloading encrypted S3 objects, the same server-side encryption
+parameters need to be passed in.</p>
+<pre><code class="hljs css language-rb">s3.download(<span class="hljs-string">"key"</span>, <span class="hljs-symbol">sse_customer_algorithm:</span> <span class="hljs-string">"AES256"</span>,
+                   <span class="hljs-symbol">sse_customer_key:</span>       <span class="hljs-string">"secret_key"</span>,
+                   <span class="hljs-symbol">sse_customer_key_md5:</span>   <span class="hljs-string">"secret_key_md5"</span>)
+
+s3.open(<span class="hljs-string">"key"</span>, <span class="hljs-symbol">sse_customer_algorithm:</span> <span class="hljs-string">"AES256"</span>,
+               <span class="hljs-symbol">sse_customer_key:</span>       <span class="hljs-string">"secret_key"</span>,
+               <span class="hljs-symbol">sse_customer_key_md5:</span>   <span class="hljs-string">"secret_key_md5"</span>)
+</code></pre>
+<p>If you want to use client-side encryption instead, you can instantiate the
+storage with an <code>Aws::S3::Encryption::Client</code> instance.</p>
+<pre><code class="hljs css language-rb">client = Aws::S3::Encryption::Client.new(
+  <span class="hljs-symbol">kms_key_id:</span> <span class="hljs-string">"alias/my-key"</span>
+)
+
+Shrine::Storage::S3(<span class="hljs-symbol">client:</span> client, <span class="hljs-symbol">bucket:</span> <span class="hljs-string">"my-bucket"</span>)
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="accelerate-endpoint"></a><a href="#accelerate-endpoint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Accelerate endpoint</h2>
+<p>To use Amazon S3's <a href="http://docs.aws.amazon.com/AmazonS3/latest/dev/transfer-acceleration.html">Transfer Acceleration</a> feature, set
+<code>:use_accelerate_endpoint</code> to <code>true</code> when initializing the storage:</p>
+<pre><code class="hljs css language-rb">Shrine::Storage::S3.new(<span class="hljs-symbol">use_accelerate_endpoint:</span> <span class="hljs-literal">true</span>, **other_options)
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="deleting-prefixed"></a><a href="#deleting-prefixed" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Deleting prefixed</h2>
+<p>If you want to delete all objects in some prefix, you can use
+<code>S3#delete_prefixed</code>:</p>
+<pre><code class="hljs css language-rb">s3.delete_prefixed(<span class="hljs-string">"some_prefix/"</span>) <span class="hljs-comment"># deletes all objects in "some_prefix/"</span>
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="clearing-cache"></a><a href="#clearing-cache" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Clearing cache</h2>
+<p>If you're using S3 as a cache, you will probably want to periodically delete
+old files which aren't used anymore. S3 has a built-in way to do this, read
+<a href="http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html">this article</a> for instructions.</p>
+<p>Alternatively you can periodically call the <code>#clear!</code> method:</p>
+<pre><code class="hljs css language-rb"><span class="hljs-comment"># deletes all objects that were uploaded more than 7 days ago</span>
+s3.clear! { <span class="hljs-params">|object|</span> object.last_modified &lt; Time.now - <span class="hljs-number">7</span>*<span class="hljs-number">24</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span> }
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="request-rate-and-performance-guidelines"></a><a href="#request-rate-and-performance-guidelines" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Request Rate and Performance Guidelines</h2>
+<p>Amazon S3 automatically scales to high request rates. For example, your
+application can achieve at least 3,500 PUT/POST/DELETE and 5,500 GET requests
+per second per prefix in a bucket (a prefix is a top-level &quot;directory&quot; in the
+bucket). If your app needs to support higher request rates to S3 than that, you
+can scale exponentially by using more prefixes.</p>
+</span></div></article></div><div class="docs-prevnext"></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#public-uploads">Public uploads</a></li><li><a href="#prefix">Prefix</a></li><li><a href="#upload-options">Upload options</a></li><li><a href="#url-options">URL options</a></li><li><a href="#url-host">URL Host</a></li><li><a href="#presigns">Presigns</a></li><li><a href="#large-files">Large files</a></li><li><a href="#encryption">Encryption</a></li><li><a href="#accelerate-endpoint">Accelerate endpoint</a></li><li><a href="#deleting-prefixed">Deleting prefixed</a></li><li><a href="#clearing-cache">Clearing cache</a></li><li><a href="#request-rate-and-performance-guidelines">Request Rate and Performance Guidelines</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>

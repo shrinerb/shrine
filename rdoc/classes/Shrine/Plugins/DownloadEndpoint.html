@@ -35,7 +35,7 @@ Shrine::Plugins::DownloadEndpoint
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation lives in <a href="https://github.com/shrinerb/shrine/blob/master/doc/plugins/download_endpoint.md">doc/plugins/download_endpoint.md</a> on GitHub.</p>
+<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/download_endpoint">shrinerb.com/docs/plugins/download_endpoint</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -72,7 +72,7 @@ Shrine::Plugins::DownloadEndpoint
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;inline&quot;</span>, <span class="ruby-value">download_options:</span> {} }&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">13</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint</span>] <span class="ruby-operator">||=</span> { <span class="ruby-value">disposition:</span> <span class="ruby-string">&quot;inline&quot;</span>, <span class="ruby-value">download_options:</span> {} }&#x000A;<span class="line-num">14</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:download_endpoint</span>].<span class="ruby-identifier">merge!</span>(<span class="ruby-identifier">opts</span>)&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-class' id='method-method-c-load_dependencies'>
@@ -89,7 +89,7 @@ Shrine::Plugins::DownloadEndpoint
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num"> 9</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num">10</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_response</span>&#x000A;<span class="line-num">11</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:_urlsafe_serialization</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins/download_endpoint.rb</span>&#x000A;<span class="line-num"> 7</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num"> 8</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:rack_response</span>&#x000A;<span class="line-num"> 9</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:_urlsafe_serialization</span>&#x000A;<span class="line-num">10</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

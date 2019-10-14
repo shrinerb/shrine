@@ -30,15 +30,17 @@ doc/creating_persistence_plugins.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-09-27 17:48:51 +0200</span>
+<span class='datetime'>2019-10-14 12:40:04 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h1 id="label-Writing+an+Persistence+Plugin">Writing an Persistence Plugin<span><a href="#label-Writing+an+Persistence+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h1>
+<p>— id: creating-persistence-plugins</p>
 
-<p>This guide explains some conventions for writing <a href="../../classes/Shrine.html"><code>Shrine</code></a> plugins that integrate with persistence libraries such as Active Record, Sequel, ROM and Mongoid. It assumes you&#39;ve read the <a href="/doc/creating_plugins.md#readme">Writing a Plugin</a> guide.</p>
+<h2 id="label-title-3A+Writing+a+Persistence+Plugin">title: Writing a Persistence Plugin<span><a href="#label-title-3A+Writing+a+Persistence+Plugin">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>This guide explains some conventions for writing <a href="../../classes/Shrine.html"><code>Shrine</code></a> plugins that integrate with persistence libraries such as Active Record, Sequel, ROM and Mongoid. It assumes you&#39;ve read the <a href="https://shrinerb.com/docs/creating-plugins">Writing a Plugin</a> guide.</p>
 
 <p>Let&#39;s say we&#39;re writing a plugin for a persistence library called “Raptor”:</p>
 
@@ -46,11 +48,11 @@ Last Update:
 
 <h2 id="label-Attachment">Attachment<span><a href="#label-Attachment">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>If your database library uses the <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>, it&#39;s recommended to load the <a href="/doc/plugins/model.md#readme">model</a> plugin as a dependency.</p>
+<p>If your database library uses the <a href="https://www.martinfowler.com/eaaCatalog/activeRecord.html">Active Record pattern</a>, it&#39;s recommended to load the <a href="https://shrinerb.com/docs/plugins/model">model</a> plugin as a dependency.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:model</span> <span class="ruby-comment"># for Active Record pattern</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Otherwise if it uses the <a href="https://martinfowler.com/eaaCatalog/repository.html">Repository pattern</a>, you can load the <a href="/doc/plugins/entity.md#readme">entity</a> plugin as a dependency.</p>
+<p>Otherwise if it uses the <a href="https://martinfowler.com/eaaCatalog/repository.html">Repository pattern</a>, you can load the <a href="https://shrinerb.com/docs/plugins/entity">entity</a> plugin as a dependency.</p>
 
 <pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Plugins</span><span class="ruby-operator">::</span><span class="ruby-constant">Raptor</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:entity</span> <span class="ruby-comment"># for Repository pattern</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

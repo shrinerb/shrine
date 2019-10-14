@@ -35,7 +35,7 @@ Shrine::Plugins::Signature
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<p>Documentation lives in <a href="https://github.com/shrinerb/shrine/blob/master/doc/plugins/signature.md">doc/plugins/signature.md</a> on GitHub.</p>
+<p>Documentation can be found on <a href="https://shrinerb.com/docs/plugins/signature">shrinerb.com/docs/plugins/signature</a></p>
 </div>
 <div id='method-list'>
 <h2>Methods</h2>
@@ -106,7 +106,7 @@ end</td>
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/signature.rb</span>&#x000A;<span class="line-num">18</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>)&#x000A;<span class="line-num">19</span>   <span class="ruby-comment"># instrumentation plugin integration</span>&#x000A;<span class="line-num">20</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:signature</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:subscribe</span>)&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins/signature.rb</span>&#x000A;<span class="line-num">16</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-value">log_subscriber:</span> <span class="ruby-constant">LOG_SUBSCRIBER</span>)&#x000A;<span class="line-num">17</span>   <span class="ruby-comment"># instrumentation plugin integration</span>&#x000A;<span class="line-num">18</span>   <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:signature</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">log_subscriber</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">uploader</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:subscribe</span>)&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

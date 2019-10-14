@@ -92,7 +92,7 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attribute-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-attribute-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">113</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attribute</span>&#x000A;<span class="line-num">114</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;record is not loaded&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">115</span> &#x000A;<span class="line-num">116</span>   <span class="ruby-value">:&quot;#{name}_data&quot;</span>&#x000A;<span class="line-num">117</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attribute-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">131</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attribute</span>&#x000A;<span class="line-num">132</span>   <span class="ruby-value">:&quot;#{name}_data&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>&#x000A;<span class="line-num">133</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-column_values'>
@@ -113,7 +113,7 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-column_values-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-column_values-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">104</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_values</span>&#x000A;<span class="line-num">105</span>   { <span class="ruby-identifier">attribute</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">column_data</span> }&#x000A;<span class="line-num">106</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-column_values-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">122</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">column_values</span>&#x000A;<span class="line-num">123</span>   { <span class="ruby-identifier">attribute</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">column_data</span> }&#x000A;<span class="line-num">124</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-load_entity'>
@@ -132,7 +132,7 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_entity-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-load_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">72</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">73</span>   <span class="ruby-identifier">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">74</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">75</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-load_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">90</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">91</span>   <span class="ruby-identifier">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">92</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">93</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-reload'>
@@ -153,7 +153,7 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-reload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-reload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reload</span>&#x000A;<span class="line-num">96</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">97</span>   <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">98</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-reload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">113</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reload</span>&#x000A;<span class="line-num">114</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">115</span>   <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">116</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-set_entity'>
@@ -172,7 +172,7 @@ Shrine::Plugins::Entity::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-set_entity-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-set_entity-source'>   <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num">79</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">80</span>   <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>&#x000A;<span class="line-num">81</span>   <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">82</span> &#x000A;<span class="line-num">83</span>   <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-value">record:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">84</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-set_entity-source'>    <span class="ruby-comment"># File lib/shrine/plugins/entity.rb</span>&#x000A;<span class="line-num"> 97</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num"> 98</span>   <span class="ruby-ivar">@record</span> = <span class="ruby-identifier">record</span>&#x000A;<span class="line-num"> 99</span>   <span class="ruby-ivar">@name</span>   = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">100</span> &#x000A;<span class="line-num">101</span>   <span class="ruby-ivar">@context</span>.<span class="ruby-identifier">merge!</span>(<span class="ruby-value">record:</span> <span class="ruby-identifier">record</span>, <span class="ruby-value">name:</span> <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">102</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>
