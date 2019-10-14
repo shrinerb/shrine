@@ -32,10 +32,10 @@ Add the gem to your Gemfile:
 gem "shrine", "~> 3.0"
 ```
 
-Then add an initializer which sets up the storage and loads ORM integration:
+Then add `config/initializers/shrine.rb` which sets up the storage and loads
+ORM integration:
 
 ```rb
-# config/initializers/shrine.rb
 require "shrine"
 require "shrine/storage/file_system"
 
@@ -56,17 +56,15 @@ an "image" attachment on a `photos` table this would be an `image_data` column:
 $ rails generate migration add_image_data_to_photos image_data:text
 ```
 
-Now create an uploader class and use it to register the attachment on your
-model:
+Now create an uploader class (which you can put in `app/uploaders`) and
+register the attachment on your model:
 
 ```rb
-# app/uploaders/image_uploader.rb
 class ImageUploader < Shrine
   # plugins and uploading logic
 end
 ```
 ```rb
-# app/models/photo.rb
 class Photo < ActiveRecord::Base
   include ImageUploader::Attachment(:image) # adds an `image` virtual attribute
 end
@@ -87,7 +85,6 @@ When the form is submitted, in your controller you can assign the file from
 request params to the attachment attribute on the model:
 
 ```rb
-# app/controllers/photos_controller.rb
 class PhotosController < ApplicationController
   def create
     Photo.create(photo_params) # attaches the uploaded file
