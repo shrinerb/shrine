@@ -1,4 +1,4 @@
-## 3.0.0 (2019-10-14)
+## 3.0.0 (2019-10-14) [[release notes]](https://shrinerb.com/docs/release_notes/3.0.0)
 
 * `derivation_endpoint` – Pass `action: :derivation` when uploading derivation results (@janko)
 
@@ -356,7 +356,7 @@
 
 * `s3` – Drop support for `aws-sdk` 2.x (@janko)
 
-## 2.19.0 (2019-07-18)
+## 2.19.0 (2019-07-18) [[release notes]](https://shrinerb.com/docs/release_notes/2.19.0)
 
 * `pretty_location` – Allow specifying a different identifier from `id` (@00dav00)
 
@@ -412,7 +412,7 @@
 
 * `core` – Allow registering storage objects under string keys (@janko)
 
-## 2.18.0 (2019-06-24)
+## 2.18.0 (2019-06-24) [[release notes]](https://shrinerb.com/docs/release_notes/2.18.0)
 
 * `core` – Add `Shrine.upload` method as a shorthand for `Shrine.new(...).upload(...)` (@janko)
 
@@ -436,7 +436,7 @@
 
 * `parsed_json` – Fix overriden `Attacher#assign` not accepting second argument (@janko)
 
-## 2.17.0 (2019-05-06)
+## 2.17.0 (2019-05-06) [[release notes]](https://shrinerb.com/docs/release_notes/2.17.0)
 
 * `data_uri` – Add `Attacher#assign_data_uri` which accepts additional `Shrine#upload` options (@janko)
 
@@ -486,7 +486,7 @@
 
 * `parsed_json` – Accepts hashes with symbols keys (@aglushkov)
 
-## 2.16.0 (2019-02-18)
+## 2.16.0 (2019-02-18) [[release notes]](https://shrinerb.com/docs/release_notes/2.16.0)
 
 * `derivation_endpoint` – Add `:upload_open_options` for download option for derivation result (@janko)
 
@@ -512,7 +512,7 @@
 
 * Fix `store_dimensions` plugin making second argument in `Shrine#extract_metadata` mandatory (@jrochkind)
 
-## 2.15.0 (2019-02-08)
+## 2.15.0 (2019-02-08) [[release notes]](https://shrinerb.com/docs/release_notes/2.15.0)
 
 * Add `derivation_endpoint` plugin for processing uploaded files on-the-fly (@janko)
 
@@ -522,7 +522,7 @@
 
 * Yield a new File object on `Shrine.with_file` when `tempfile` plugin is loaded (@janko)
 
-## 2.14.0 (2018-12-27)
+## 2.14.0 (2018-12-27) [[release notes]](https://shrinerb.com/docs/release_notes/2.14.0)
 
 * Add `tempfile` plugin for easier reusing of the same uploaded file copy on disk (@janko)
 
@@ -592,7 +592,7 @@
 
 * Use a guard raise cause for `bucket` argument in S3 for an appropriate error message (@ardecvz)
 
-## 2.13.0 (2018-11-04)
+## 2.13.0 (2018-11-04) [[release notes]](https://shrinerb.com/docs/release_notes/2.13.0)
 
 * Specify UTF-8 charset in `Content-Type` response header in `presign_endpoint` plugin (@janko)
 
@@ -624,7 +624,7 @@
 
 * In `S3#upload` deprecate using aws-sdk-s3 lower than 1.14 when uploading IO objects of unknown size (@janko)
 
-## 2.12.0 (2018-08-22)
+## 2.12.0 (2018-08-22) [[release notes]](https://shrinerb.com/docs/release_notes/2.12.0)
 
 * Ignore nil values when assigning files from a remote URL (@janko)
 
@@ -652,7 +652,7 @@
 
 * Make `UploadedFile#open` always open a new IO object and close the previous one (@janko)
 
-## 2.11.0 (2018-04-28)
+## 2.11.0 (2018-04-28) [[release notes]](https://shrinerb.com/docs/release_notes/2.11.0)
 
 * Add `Shrine.with_file` for temporarily converting an IO-like object into a file (@janko)
 
@@ -680,7 +680,7 @@
 
 * Deprecate `direct_upload` plugin in favor of `upload_endpoint` and `presign_endpoint` plugins (@janko)
 
-## 2.10.0 (2018-03-28)
+## 2.10.0 (2018-03-28) [[release notes]](https://shrinerb.com/docs/release_notes/2.10.0)
 
 * Add `:fastimage` analyzer to `determine_mime_type` plugin (@mokolabs)
 
@@ -702,7 +702,7 @@
 
 * Inherit the logger on subclassing `Shrine` and make it shared across subclasses (@hmistry)
 
-## 2.9.0 (2018-01-27)
+## 2.9.0 (2018-01-27) [[release notes]](https://shrinerb.com/docs/release_notes/2.9.0)
 
 * Support arrays of files in `versions` plugin (@janko)
 
@@ -726,7 +726,7 @@
 
 * Allow passing options to `Model#<attachment>_attacher` for overriding `Attacher` options (@janko)
 
-## 2.8.0 (2017-10-11)
+## 2.8.0 (2017-10-11) [[release notes]](https://shrinerb.com/docs/release_notes/2.8.0)
 
 * Expand relative directory paths when initializing `Storage::FileSystem` (@janko)
 
@@ -756,7 +756,7 @@
 
 * Update `direct_upload` plugin to support Roda 3 (@janko)
 
-## 2.7.0 (2017-09-11)
+## 2.7.0 (2017-09-11) [[release notes]](https://shrinerb.com/docs/release_notes/2.7.0)
 
 * Deprecate the `Shrine::DownloadEndpoint` constant over `Shrine.download_endpoint` (@janko)
 
@@ -824,11 +824,11 @@
 
 * Don't add a newline at the end of the base64-formatted signature (@janko)
 
-## 2.6.1 (2017-04-12)
+## 2.6.1 (2017-04-12) [[release notes]](https://shrinerb.com/docs/release_notes/2.6.1)
 
 * Fix `download_endpoint` returning incorrect reponse body in some cases (@janko)
 
-## 2.6.0 (2017-04-04)
+## 2.6.0 (2017-04-04) [[release notes]](https://shrinerb.com/docs/release_notes/2.6.0)
 
 * Make `Shrine::Storage::FileSystem#path` public which returns path to the file as a `Pathname` object (@janko)
 
@@ -900,7 +900,7 @@
 
 * Raise `Shrine::Error` when `Shrine#generate_location` returns nil (@janko)
 
-## 2.5.0 (2016-11-11)
+## 2.5.0 (2016-11-11) [[release notes]](https://shrinerb.com/docs/release_notes/2.5.0)
 
 * Add `Attacher.default_url` as the idiomatic way of declaring default URLs (@janko)
 
@@ -926,7 +926,7 @@
 
 * Make it possible to extract multiple metadata values at once with the `add_metadata` plugin (@janko)
 
-## 2.4.1 (2016-10-17)
+## 2.4.1 (2016-10-17) [[release notes]](https://shrinerb.com/docs/release_notes/2.4.1)
 
 * Move back JSON serialization from `Attacher#write` to `Attacher#_set` (@janko)
 
@@ -936,7 +936,7 @@
 
 * In `UploadedFile#download` use extension from `#original_filename` if `#id` doesn't have it (@janko)
 
-## 2.4.0 (2016-10-11)
+## 2.4.0 (2016-10-11) [[release notes]](https://shrinerb.com/docs/release_notes/2.4.0)
 
 * Add `#convert_before_write` and `#convert_after_read` on the Attacher for data attribute conversion (@janko)
 
@@ -972,11 +972,11 @@
 
 * Override `#to_s` in `Shrine::Attachment` for better introspection with `puts` (@janko)
 
-## 2.3.1 (2016-09-01)
+## 2.3.1 (2016-09-01) [[release notes]](https://shrinerb.com/docs/release_notes/2.3.1)
 
 * Don't change permissions of existing directories in FileSystem storage (@janko)
 
-## 2.3.0 (2016-08-27)
+## 2.3.0 (2016-08-27) [[release notes]](https://shrinerb.com/docs/release_notes/2.3.0)
 
 * Prevent client from caching the presign response in direct_upload plugin (@janko)
 
@@ -1002,7 +1002,7 @@
 
 * Add `:directory_permissions` to `Storage::FileSystem` (@janko)
 
-## 2.2.0 (2016-07-29)
+## 2.2.0 (2016-07-29) [[release notes]](https://shrinerb.com/docs/release_notes/2.2.0)
 
 * Soft deprecate `:phase` over `:action` in `context` (@janko)
 
@@ -1034,11 +1034,11 @@
 
 * Avoid an additional HEAD request to determine content length in multipart S3 copy (@janko)
 
-## 2.1.1 (2016-07-14)
+## 2.1.1 (2016-07-14) [[release notes]](https://shrinerb.com/docs/release_notes/2.1.1)
 
 * Fix `S3#open` throwing a NameError if `net/http` isn't required (@janko)
 
-## 2.1.0 (2016-06-27)
+## 2.1.0 (2016-06-27) [[release notes]](https://shrinerb.com/docs/release_notes/2.1.0)
 
 * Remove `:names` from versions plugin, and deprecate generating versions in :cache phase (@janko)
 
@@ -1054,11 +1054,11 @@
 
 * Deprecate `#cached_<attachment>_data=` over using `<attachment>` for the hidden field (@janko)
 
-## 2.0.1 (2016-05-30)
+## 2.0.1 (2016-05-30) [[release notes]](https://shrinerb.com/docs/release_notes/2.0.1)
 
 * Don't override previously set default_url in versions plugin (@janko)
 
-## 2.0.0 (2016-05-19)
+## 2.0.0 (2016-05-19) [[release notes]](https://shrinerb.com/docs/release_notes/2.0.0)
 
 * Include query parameters in CDN-ed S3 URLs, making them work for private objects (@janko)
 
@@ -1138,17 +1138,17 @@
 
 * Deprecate loading the backgrounding plugin through the old "background_helpers" alias (@janko)
 
-## 1.4.2 (2016-04-19)
+## 1.4.2 (2016-04-19) [[release notes]](https://shrinerb.com/docs/release_notes/1.4.2)
 
 * Removed ActiveRecord's automatic support for optimistic locking as it wasn't stable (@janko)
 
 * Fixed record's dataset being modified after promoting preventing further updates with the same instance (@janko)
 
-## 1.4.1 (2016-04-18)
+## 1.4.1 (2016-04-18) [[release notes]](https://shrinerb.com/docs/release_notes/1.4.1)
 
 * Bring back triggering callbacks on promote in ORM plugins, and add support for optimistic locking (@janko)
 
-## 1.4.0 (2016-04-15)
+## 1.4.0 (2016-04-15) [[release notes]](https://shrinerb.com/docs/release_notes/1.4.0)
 
 * Return "Content-Length" response header in download_endpoint plugin (@janko)
 
@@ -1204,7 +1204,7 @@
 
 * Fix keep_files not to spawn a background job when file will not be deleted (@janko)
 
-## 1.3.0 (2016-03-12)
+## 1.3.0 (2016-03-12) [[release notes]](https://shrinerb.com/docs/release_notes/1.3.0)
 
 * Add `<attachment>_cached?` and `<attachment>_stored?` to migration_helpers plugin (@janko)
 
@@ -1246,7 +1246,7 @@
 
 * Fix `NameError` when silencing "missing record" errors in backgrounding (@janko)
 
-## 1.2.0 (2016-01-26)
+## 1.2.0 (2016-01-26) [[release notes]](https://shrinerb.com/docs/release_notes/1.2.0)
 
 * Make `Shrine::Attacher.promote` and `Shrine::Attacher.delete` return the record in backgrounding plugin (@janko)
 
@@ -1262,7 +1262,7 @@
 
 * Make custom metadata inherited from uploaded files and make `#extract_metadata` called only on caching (@janko)
 
-## 1.1.0 (2015-12-26)
+## 1.1.0 (2015-12-26) [[release notes]](https://shrinerb.com/docs/release_notes/1.1.0)
 
 * Rename the "background_helpers" plugin to "backgrounding" (@janko)
 
@@ -1332,7 +1332,7 @@
 
 * Reduce length of URLs generated with pretty_location plugin (@gshaw)
 
-## 1.0.0 (2015-11-27)
+## 1.0.0 (2015-11-27) [[release notes]](https://shrinerb.com/docs/release_notes/1.0.0)
 
 * Improve Windows compatibility in the FileSystem storage (@janko)
 
