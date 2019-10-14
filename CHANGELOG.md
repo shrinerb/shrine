@@ -1,34 +1,8 @@
-## HEAD
-
-* `sequel` – Move checks for hooks outside of the attacher methods (@janko)
-
-* `activerecord` – Move checks for callbacks outside of the attacher methods (@janko)
-
-* `derivation_endpoint` – Add back handling of FileSystem moving (@janko)
-
-* `mirroring` – Pass `action: :mirror` when uploading to mirror storage (@janko)
-
-* `derivatives` – Pass `action: :derivatives` when uploading derivatives (@janko)
+## 3.0.0 (14-10-2019)
 
 * `derivation_endpoint` – Pass `action: :derivation` when uploading derivation results (@janko)
 
-* `backgrounding` – Forward `Attacher#destroy_background` options to destroy block (@janko)
-
-* `backgrounding` – Don't forward `Attacher#promote_cached` options to promote block (@janko)
-
-* `core` – Move `action: :store` from `Attacher#promote_cached` to `Attacher#promote` (@janko)
-
-* `column` – Allow serializing any custom objects (@janko)
-
-* `entity` – Add name to the attacher returned by `.<name>_attacher` class method (@janko)
-
-* `core` – Move `.<name>_attacher` class method into `entity` plugin (@janko)
-
-* `core` – Add ability to call `Storage#delete_prefixed` with a prefix with trailing slash (@jrochkind)
-
 * `core` – Add `Shrine::Attachment[]` shorthand for `Shrine::Attachment.new` (@janko)
-
-## 3.0.0.rc (2019-09-28)
 
 * `core` – Add `Storage#delete_prefixed` method for deleting all files in specified directory (@jrochkind)
 
@@ -42,73 +16,29 @@
 
 * Update `down` dependency to `~> 5.0` (@janko)
 
-## 3.0.0.beta3 (2019-09-25)
-
 * `multi_cache` – Add new plugin for whitelisting additional temporary storages (@janko, @jrochkind)
-
-* `s3` – Allow uploading files larger than 50 GB (@janko)
 
 * `sequel` – Extract callback code into attacher methods that can be overridden (@janko)
 
 * `activerecord` – Extract callback code into attacher methods that can be overridden (@janko)
 
-* `derivatives` – Ensure binary mode for `File` and `Tempfile` objects (@janko)
-
-* `derivatives` – Ensure refreshed file descriptor for `Tempfile` objects (@janko)
-
 * `derivation_endpoint` – Stop re-opening `File` objects returned in derivation result (@janko)
 
 * `derivation_endpoint` – Allow only `File` or `Tempfile` object as derivation result (@janko)
-
-* `derivatives` – Add support for default processors (@janko)
-
-* `remote_url` – Convert only `Down::Error` and `DownloadError` exceptions into validation errors (@janko)
-
-* `remote_url` – Bring back `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
-
-* `data_uri` – Bring back `Attacher#data_uri=` and `Attacher#data_uri` (@janko)
-
-* `mirroring` – Allow skipping mirroring by passing `mirror: false` to `#upload` and `#delete` (@janko)
-
-* `mirroring` – Rename `Shrine.mirror_(upload|delete)` to `Shrine.mirror_(upload|delete)_block` (@janko)
-
-* `mirroring` – Add `UploadedFile#mirror_(upload|delete)_background` (@janko)
-
-* `attacher_options` – Remove plugin (@janko)
-
-* `backgrounding` – Move `Attacher#destroy(background: true)` to `Attacher#destroy_background` (@janko)
-
-* `backgrounding` – Move `Attacher#promote(background: true)` to `Attacher#promote_background` (@janko)
 
 * `download_endpoint` – Add `Shrine.download_response` for calling in controller (@janko)
 
 * `core` – Fetch storage object lazily in `Shrine` instance (@janko)
 
-## 3.0.0.beta2 (2019-09-11)
-
-* `column` – Allow `Attacher#load_column` to receive a hash (@janko)
-
-* `activerecord` – Fix integration not working with JSON columns (@janko)
-
 * `mirroring` – Add new plugin for replicating uploads and deletes to other storages (@janko)
 
-* `model` – Change disabling model attachment behaviour from `type: :entity` to `model: false` (@janko)
-
 * `sequel` – Rename `:callbacks` option to `:hooks` (@janko)
-
-* `derivatives` – Auto-download `UploadedFile` objects passed to `Attacher#process_derivatives` (@janko)
-
-## 3.0.0.beta (2019-08-29)
-
-* `atomic_helpers` – Rename `:data` argument to `:file` in `Attacher.retrieve` (@janko)
-
-* `atomic_helpers` – Add `Attacher#file_data` which returns only main file data without metadata (@janko)
 
 * `model` – Add `Attacher#set_model` for setting model without loading attachment (@janko)
 
 * `entity` – Add `Attacher#set_entity` for setting entity without loading attachment (@janko)
 
-* `core` – Define `#<name>_attacher` class method when including `Shrine::Attachment` (@janko)
+* `entity` – Define `#<name>_attacher` class method when including `Shrine::Attachment` (@janko)
 
 * `derivation_endpoint` – Send only `:derivation` in the instrumentation event payload (@janko)
 
@@ -118,7 +48,7 @@
 
 * `default_storage` – Evaluate storage block in context of `Attacher` instance (@janko)
 
-* Simplify persistence interface (@janko)
+* Unify persistence plugin interface (@janko)
 
 * `upload_options` – Keep `Shrine#_upload` private (@janko)
 
@@ -126,13 +56,7 @@
 
 * `model` – Add `#<name>_changed?` method to attachment module (@janko)
 
-* `core` – Make it easier for plugins to define entity and model attachment methods (@janko)
-
-* `derivatives` – Add `#<name>_derivatives!` module method which delegates to `#create_derivatives` (@janko)
-
-* `derivatives` – Change `#create_derivatives` to forward all arguments to `#process_derivatives` (@janko)
-
-## 3.0.0.alpha (2019-08-19)
+* Make it easier for plugins to define entity and model attachment methods (@janko)
 
 * `form_assign` – Add new plugin for assigning attachment from form params without a form object (@janko)
 
@@ -151,8 +75,6 @@
 * `s3` – Eliminate `#head_object` request in `S3#open` (@janko)
 
 * `download_endpoint` – Remove extra `Storage#exists?` check (@janko)
-
-* `derivation_endpoint` – Remove support for derivative being deleted during upload (@janko)
 
 * `derivation_endpoint` – Add `Derivation#opened` for retrieving an opened derivation result (@janko)
 
@@ -228,8 +150,6 @@
 
 * `restore_cached_data` – Forward options passed to `Attacher#attach_cached` to metadata extraction (@janko)
 
-* `attacher_options` – Add new plugin for setting default attacher operation options (@janko)
-
 * `validation` – Allow skipping validations on attaching by passing `validate: false` (@janko)
 
 * `validation` – Add `:validate` option to `Attacher#assign` or `Attacher#attach` for passing options to validation block (@janko)
@@ -242,8 +162,6 @@
 
 * `remote_url` – Require custom downloaders to raise `Shrine::Plugins::RemoteUrl::DownloadError` for conversion into a validation error (@janko)
 
-* `remote_url` – Remove `Attacher#remote_url=` and `Attacher#remote_url` (@janko)
-
 * `infer_extension` – Fix compatibility with the `pretty_location` plugin (@janko)
 
 * `presign_endpoint` – Remove deprecated `Shrine::Plugins::PresignEndpoint::App` constant (@janko)
@@ -254,17 +172,13 @@
 
 * `default_url_options` – Allow overriding passed URL options by deleting them inside the block (@janko)
 
-* `data_uri` – Remove `Attacher#data_uri=` and `Attacher#data_uri` methods (@janko)
-
 * `cached_attachment_data` – Rename `Attacher#read_cached` to `Attacher#cached_data` (@janko)
 
 * `sequel` – Add `Attacher#atomic_promote` and `Attacher#atomic_persist` (@janko)
 
-* `sequel` – Remove adding persistence to `Attacher#promote` (@janko)
+* `sequel` – Remove persistence from `Attacher#promote` (@janko)
 
-* `activerecord` – Add `Attacher#atomic_promote` and `Attacher#atomic_persist` (@janko)
-
-* `activerecord` – Remove adding persistence to `Attacher#promote` (@janko)
+* `activerecord` – Remove persistence from `Attacher#promote` (@janko)
 
 * `atomic_helpers` – Add new plugin with helper methods for atomic promotion and persistence (@janko)
 
