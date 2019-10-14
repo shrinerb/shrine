@@ -397,4 +397,18 @@ describe Shrine::Plugins::Versions do
       end
     end
   end
+
+  it "works with backgrounding" do
+    @shrine.plugin :backgrounding
+    @shrine.process(:store) do |io, **options|
+      { original: io }
+    end
+
+    @attacher.promote_block { promote }
+    @attacher.attach_cached(fakeio)
+    @attacher.promote
+
+    assert_instance_of Hash, @attacher.file
+    assert_instance_of @shrine::UploadedFile, @attacher.file.fetch(:original)
+  end
 end
