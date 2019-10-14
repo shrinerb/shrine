@@ -23,6 +23,94 @@ Please follow along with the **[Getting Started guide]**.
 | Wiki                    | [github.com/shrinerb/shrine/wiki](https://github.com/shrinerb/shrine/wiki)     |
 | Help & Discussion       | [discourse.shrinerb.com](https://discourse.shrinerb.com)                       |
 
+## Setup
+
+Add the gem to your Gemfile:
+
+```rb
+# Gemfile
+gem "shrine", "~> 3.0"
+```
+
+Then add an initializer which sets up the storage and loads ORM integration:
+
+```rb
+# config/initializers/shrine.rb
+require "shrine"
+require "shrine/storage/file_system"
+
+Shrine.storages = {
+  cache: Shrine::Storage::FileSystem.new("public", prefix: "uploads/cache"), # temporary
+  store: Shrine::Storage::FileSystem.new("public", prefix: "uploads"),       # permanent
+}
+
+Shrine.plugin :activerecord           # loads Active Record integration
+Shrine.plugin :cached_attachment_data # enables retaining cached file across form redisplays
+Shrine.plugin :restore_cached_data    # extracts metadata for assigned cached files
+```
+
+Next, add the `<name>_data` column to the table you want to attach files to. For
+an "image" attachment on a `photos` table this would be an `image_data` column:
+
+```sh
+$ rails generate migration add_image_data_to_photos image_data:text
+```
+
+Now create an uploader class and use it to register the attachment on your
+model:
+
+```rb
+# app/uploaders/image_uploader.rb
+class ImageUploader < Shrine
+  # plugins and uploading logic
+end
+```
+```rb
+# app/models/photo.rb
+class Photo < ActiveRecord::Base
+  include ImageUploader::Attachment(:image) # adds an `image` virtual attribute
+end
+```
+
+In our views let's now add form fields for our attachment attribute that will
+allow users to upload files:
+
+```erb
+<%= form_for @photo do |f| %>
+  <%= f.hidden_field :image, value: @photo.cached_image_data %>
+  <%= f.file_field :image %>
+  <%= f.submit %>
+<% end %>
+```
+
+When the form is submitted, in your controller you can assign the file from
+request params to the attachment attribute on the model:
+
+```rb
+# app/controllers/photos_controller.rb
+class PhotosController < ApplicationController
+  def create
+    Photo.create(photo_params) # attaches the uploaded file
+    # ...
+  end
+
+  private
+
+  def photo_params
+    params.require(:photo).permit(:image)
+  end
+end
+```
+
+Once a file is uploaded and attached to the record, you can retrieve the file
+URL and display it on the page:
+
+```erb
+<%= image_tag @photo.image_url %>
+```
+
+See the **[Getting Started guide]** for further documentation.
+
 ## Inspiration
 
 Shrine was heavily inspired by [Refile] and [Roda]. From Refile it borrows the
