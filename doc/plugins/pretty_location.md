@@ -15,7 +15,7 @@ generated locations will typically look like this:
 
 ```rb
 "user/564/avatar/thumb-493g82jf23.jpg"
-# :model/:id/:attachment/:version-:uid.:extension
+# :model/:id/:attachment/:derivative-:uid.:extension
 ```
 
 By default if a record class is inside a namespace, only the "inner" class name

@@ -13,8 +13,8 @@ Keys are names of the registered storages, and values are either hashes or
 blocks.
 
 ```rb
-plugin :upload_options, store: -> (io, context) do
-  if [:original, :thumb].include?(context[:version])
+plugin :upload_options, store: -> (io, **options) do
+  if options[:derivative]
     { acl: "public-read" }
   else
     { acl: "private" }
