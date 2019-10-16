@@ -37,6 +37,11 @@ const siteConfig = {
     {href: 'https://github.com/shrinerb/shrine', label: 'GitHub'},
   ],
 
+  algolia: {
+    apiKey: '09a11b10801874df7d226df4f2ce8e8f',
+    indexName: 'shrinerb',
+  },
+
   /* path to images for header/footer */
   headerIcon: 'img/logo.png',
   footerIcon: 'img/logo.png',
