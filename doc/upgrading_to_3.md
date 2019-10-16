@@ -7,8 +7,8 @@ This guide provides instructions for upgrading Shrine in your apps to version
 3.x. If you're looking for a full list of changes, see the **[3.0 release
 notes]**.
 
-If you want help with the upgrade, I'm available for consultation, you can
-email me at [janko.marohnic@gmail.com](mailto:janko.marohnic@gmail.com).
+If you would like assistance with the upgrade, I'm available for consultation,
+you can email me at <janko.marohnic@gmail.com>.
 
 ## Attacher
 
