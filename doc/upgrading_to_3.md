@@ -76,6 +76,20 @@ attacher.reload
 attacher.file #=> #<Shrine::UploadedFile ...>
 ```
 
+### Assigning
+
+The `Attacher#assign` method now raises an exception when non-cached uploaded
+file data is assigned:
+
+```rb
+# Shrine 2.x
+attacher.assign('{"id": "...", "storage": "store", "metadata": {...}}') # ignored
+
+# Shrine 3.0
+attacher.assign('{"id": "...", "storage": "store", "metadata": {...}}')
+#~> Shrine::Error: expected cached file, got #<Shrine::UploadedFile @storage_key=:store ...>
+```
+
 ### Validation
 
 The validation functionality has been extracted into the `validation` plugin.

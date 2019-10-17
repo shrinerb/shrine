@@ -230,6 +230,8 @@
 
 * `core` – Add `Attacher#data` and `Attacher.from_data` for dumping to and loading from a Hash (@janko)
 
+* `core` – Change `Attacher#assign` to raise exception when non-cached file is assigned (@janko)
+
 * `core` – Enable `Attacher#assign` to accept cached file data as a Hash (@janko)
 
 * `core` – Add `Attacher#file` alias for `Attacher#get` (@janko)
