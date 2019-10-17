@@ -607,6 +607,8 @@ have been extracted into the new <code>validation</code> plugin.</p></li>
 <li><p>The <code>Attacher#data_attribute</code> method has been renamed to <code>Attacher#attribute</code>.</p></li>
 <li><p>The <code>Attacher#replace</code> method has been renamed to
 <code>Attacher#destroy_previous</code>.</p></li>
+<li><p>The <code>Attacher#assign</code> method now raises an exception when non-cached uploaded
+file is assigned.</p></li>
 <li><p>The <code>Attacher#attached?</code> method now returns whether a file is attached,
 regardless of whether it was changed or not.</p></li>
 </ul>
