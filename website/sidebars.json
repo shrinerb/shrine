@@ -101,6 +101,7 @@
   },
   "release_notes": {
     "Shrine 3.x": [
+      "release_notes/3.0.1",
       "release_notes/3.0.0"
     ],
     "Shrine 2.x": [
