@@ -128,11 +128,11 @@ attacher.store <span class="hljs-comment">#=&gt; #&lt;MyUploader <span class="hl
 </code></pre>
 <p>If given a raw file, it will upload it to temporary storage:</p>
 <pre><code class="hljs css language-rb">attacher.assign(file)
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="asdf.jpg", <span class="hljs-doctag">@storage</span>_key=:cache&gt;</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="asdf.jpg" storage=:cache ...&gt;</span>
 </code></pre>
 <p>If given cached file data (JSON or Hash), it will set the cached file:</p>
 <pre><code class="hljs css language-rb">attacher.assign(<span class="hljs-string">'{"id":"asdf.jpg","storage":"cache","metadata":{...}}'</span>)
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="asdf.jpg", <span class="hljs-doctag">@storage</span>_key=:cache&gt;</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="asdf.jpg" storage=:cache ...&gt;</span>
 </code></pre>
 <p>If given an empty string, it will no-op:</p>
 <pre><code class="hljs css language-rb">attacher.assign(<span class="hljs-string">""</span>) <span class="hljs-comment"># no-op</span>
@@ -159,13 +159,13 @@ attacher.attach_cached(<span class="hljs-literal">nil</span>)
 <h3><a class="anchor" aria-hidden="true" id="attaching-stored"></a><a href="#attaching-stored" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Attaching stored</h3>
 <p>The <code>Attacher#attach</code> method uploads a given file to permanent storage:</p>
 <pre><code class="hljs css language-rb">attacher.attach(file)
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="asdf.jpg" <span class="hljs-doctag">@storage</span>=:store&gt;</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="asdf.jpg" storage=:store ...&gt;</span>
 </code></pre>
 <p>This method is useful when attaching files from scripts, where validation
 doesn't need to be performed, and where temporary storage can be skipped.</p>
 <p>You can specify a different destination storage with the <code>:storage</code> option:</p>
 <pre><code class="hljs css language-rb">attacher.attach(file, <span class="hljs-symbol">storage:</span> <span class="hljs-symbol">:other_store</span>)
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@id</span>="asdf.jpg" <span class="hljs-doctag">@storage</span>=:other_store&gt;</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="asdf.jpg" storage=:other_store ...&gt;</span>
 </code></pre>
 <p>Any additional options passed to <code>Attacher#attach</code>, <code>Attacher#attach_cached</code>
 and <code>Attacher#assign</code> are forwarded to the uploader:</p>
@@ -176,9 +176,9 @@ attacher.attach(file, <span class="hljs-symbol">location:</span> <span class="hl
 <h3><a class="anchor" aria-hidden="true" id="uploading"></a><a href="#uploading" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Uploading</h3>
 <p>If you want to upload a file to without attaching it, you can use
 <code>Attacher#upload</code>:</p>
-<pre><code class="hljs css language-rb">attacher.upload(file)               <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>=:store ...&gt;</span>
-attacher.upload(file, <span class="hljs-symbol">:cache</span>)       <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>=:cache ...&gt;</span>
-attacher.upload(file, <span class="hljs-symbol">:other_store</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>=:other_store ...&gt;</span>
+<pre><code class="hljs css language-rb">attacher.upload(file)               <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile storage=:store ...&gt;</span>
+attacher.upload(file, <span class="hljs-symbol">:cache</span>)       <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile storage=:cache ...&gt;</span>
+attacher.upload(file, <span class="hljs-symbol">:other_store</span>) <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile storage=:other_store ...&gt;</span>
 </code></pre>
 <p>This is useful if you want to attacher <a href="#context">context</a> such as <code>:record</code>
 and <code>:name</code> to be automatically passed to the uploader.</p>
@@ -195,17 +195,16 @@ It will also trigger <a href="https://shrinerb.com/docs/plugins/validation">vali
 <pre><code class="hljs css language-rb">attacher.changed? <span class="hljs-comment">#=&gt; true</span>
 </code></pre>
 <p>You can use <code>Attacher#change</code> to attach an <code>UploadedFile</code> object as is:</p>
-<pre><code class="hljs css language-rb">uploaded_file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<pre><code class="hljs css language-rb">uploaded_file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="foo" ...&gt;</span>
 attacher.change(uploaded_file)
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt; (same object)</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="foo" ...&gt;</span>
 attacher.changed? <span class="hljs-comment">#=&gt; true</span>
-
 </code></pre>
 <p>If you want to attach a file without triggering dirty tracking or validation,
 you can use <code>Attacher#set</code>:</p>
-<pre><code class="hljs css language-rb">uploaded_file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt;</span>
+<pre><code class="hljs css language-rb">uploaded_file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="foo" ...&gt;</span>
 attacher.set(uploaded_file)
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile&gt; (same object)</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile id="foo" ...&gt;</span>
 attacher.changed? <span class="hljs-comment">#=&gt; false</span>
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="finalizing"></a><a href="#finalizing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Finalizing</h2>
@@ -225,13 +224,13 @@ attacher.changed? <span class="hljs-comment">#=&gt; false</span>
 storage, and in this case uploads it to permanent storage.</p>
 <pre><code class="hljs css language-rb">attacher.attach_cached(io)
 attacher.finalize <span class="hljs-comment"># uploads attached file to permanent storage</span>
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>=:store ...&gt;</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile storage=:store ...&gt;</span>
 </code></pre>
 <p>Internally it calls <code>Attacher#promote_cached</code>, which you can call directly if
 you want to pass any promote options:</p>
-<pre><code class="hljs css language-rb">attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>=:cache ...&gt;</span>
+<pre><code class="hljs css language-rb">attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile storage=:cache ...&gt;</span>
 attacher.promote_cached <span class="hljs-comment"># uploads attached file to permanent storage if new and cached</span>
-attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile <span class="hljs-doctag">@storage</span>=:store ...&gt;</span>
+attacher.file <span class="hljs-comment">#=&gt; #&lt;Shrine::UploadedFile storage=:store ...&gt;</span>
 </code></pre>
 <p>You can also call <code>Attacher#promote</code> if you want to upload attached file to
 permanent storage, regardless of whether it's cached or newly attached:</p>
@@ -339,7 +338,7 @@ attacher.context <span class="hljs-comment">#=&gt; { record: #&lt;Photo&gt;, nam
 <p>However, it's generally better practice to pass uploader options directly to
 <code>Attacher#assign</code>, <code>Attacher#attach</code>, <code>Attacher#promote</code> or any other method
 that's calling <code>Attacher#upload</code>.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/retrieving-uploads"><span class="arrow-prev">← </span><span>Retrieving Uploads</span></a><a class="docs-next button" href="/docs/direct-s3"><span>Direct Uploads to S3</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#introduction">Introduction</a></li><li><a href="#storage">Storage</a></li><li><a href="#attaching">Attaching</a><ul class="toc-headings"><li><a href="#attaching-cached">Attaching cached</a></li><li><a href="#attaching-stored">Attaching stored</a></li><li><a href="#uploading">Uploading</a></li><li><a href="#changes">Changes</a></li></ul></li><li><a href="#finalizing">Finalizing</a><ul class="toc-headings"><li><a href="#promoting">Promoting</a></li><li><a href="#replacing">Replacing</a></li></ul></li><li><a href="#retrieving">Retrieving</a><ul class="toc-headings"><li><a href="#file">File</a></li><li><a href="#attached">Attached</a></li><li><a href="#url">URL</a></li><li><a href="#data">Data</a></li></ul></li><li><a href="#deleting">Deleting</a></li><li><a href="#context">Context</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.0"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/retrieving-uploads"><span class="arrow-prev">← </span><span>Retrieving Uploads</span></a><a class="docs-next button" href="/docs/direct-s3"><span>Direct Uploads to S3</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#introduction">Introduction</a></li><li><a href="#storage">Storage</a></li><li><a href="#attaching">Attaching</a><ul class="toc-headings"><li><a href="#attaching-cached">Attaching cached</a></li><li><a href="#attaching-stored">Attaching stored</a></li><li><a href="#uploading">Uploading</a></li><li><a href="#changes">Changes</a></li></ul></li><li><a href="#finalizing">Finalizing</a><ul class="toc-headings"><li><a href="#promoting">Promoting</a></li><li><a href="#replacing">Replacing</a></li></ul></li><li><a href="#retrieving">Retrieving</a><ul class="toc-headings"><li><a href="#file">File</a></li><li><a href="#attached">Attached</a></li><li><a href="#url">URL</a></li><li><a href="#data">Data</a></li></ul></li><li><a href="#deleting">Deleting</a></li><li><a href="#context">Context</a></li></ul></nav></div><footer class="nav-footer" id="footer" data-version="3.0.1"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/logo.png" alt="Shrine" width="66"/></a><div><h5>Docs</h5><a href="/guides">Guides</a><a href="/plugins">Plugins</a><a href="/external">External</a><a href="https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md#readme">Contributing</a></div><div><h5>Community</h5><a href="https://discourse.shrinerb.com" target="_blank" rel="noreferrer noopener">Discourse</a><a href="https://stackoverflow.com/questions/tagged/shrine" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="https://twin.github.io">Blog</a><a href="https://github.com/shrinerb/shrine">GitHub</a><a class="github-button" href="https://github.com/shrinerb/shrine" data-icon="octicon-star" data-count-href="/shrinerb/shrine/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a><div class="social"><a href="https://twitter.com/shrine_rb" class="twitter-follow-button">Follow @shrine_rb</a></div></div></section><section class="copyright">Copyright © 2019 Janko Marohnić</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
