@@ -1,5 +1,7 @@
 ## HEAD
 
+* `metadata_attributes` – Fix exception being raised when there is no attached file (@janko)
+
 * `core` – Simplify `UploadedFile#inspect` output (@janko)
 
 ## 3.0.0 (2019-10-14) [[release notes]](https://shrinerb.com/docs/release_notes/3.0.0)

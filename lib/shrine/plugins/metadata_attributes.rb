@@ -38,7 +38,7 @@ class Shrine
 
             next unless record.respond_to?(metadata_attribute)
 
-            values[metadata_attribute] = file&.metadata[source.to_s]
+            values[metadata_attribute] = file && file.metadata[source.to_s]
           end
 
           values
