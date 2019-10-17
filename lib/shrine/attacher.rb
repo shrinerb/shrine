@@ -352,7 +352,7 @@ class Shrine
         # reject files not uploaded to temporary storage, because otherwise
         # attackers could hijack other users' attachments
         unless cached?(uploaded_file)
-          fail Shrine::Error, "expected cached file, got #{value.inspect}"
+          fail Shrine::Error, "expected cached file, got #{uploaded_file.inspect}"
         end
 
         uploaded_file
