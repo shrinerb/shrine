@@ -29,9 +29,9 @@ end
 ```
 ```rb
 photo.image_derivatives #=>
-# { large:  #<Shrine::UploadedFile @id="4ed847866c71a5bf.jpg" ...>,
-#   medium: #<Shrine::UploadedFile @id="7bc41b1c24afe81d.jpg" ...>,
-#   small:  #<Shrine::UploadedFile @id="cccdd4052261633b.jpg" ...> }
+# { large:  #<Shrine::UploadedFile id="4ed847866c71a5bf.jpg" ...>,
+#   medium: #<Shrine::UploadedFile id="7bc41b1c24afe81d.jpg" ...>,
+#   small:  #<Shrine::UploadedFile id="cccdd4052261633b.jpg" ...> }
 ```
 
 ...or dynamically...

@@ -1,3 +1,7 @@
+## HEAD
+
+* `core` – Simplify `UploadedFile#inspect` output (@janko)
+
 ## 3.0.0 (2019-10-14) [[release notes]](https://shrinerb.com/docs/release_notes/3.0.0)
 
 * `derivation_endpoint` – Pass `action: :derivation` when uploading derivation results (@janko)

@@ -96,14 +96,14 @@ If given a raw file, it will upload it to temporary storage:
 
 ```rb
 attacher.assign(file)
-attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg", @storage_key=:cache>
+attacher.file #=> #<Shrine::UploadedFile id="asdf.jpg" storage=:cache ...>
 ```
 
 If given cached file data (JSON or Hash), it will set the cached file:
 
 ```rb
 attacher.assign('{"id":"asdf.jpg","storage":"cache","metadata":{...}}')
-attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg", @storage_key=:cache>
+attacher.file #=> #<Shrine::UploadedFile id="asdf.jpg" storage=:cache ...>
 ```
 
 If given an empty string, it will no-op:
@@ -143,7 +143,7 @@ The `Attacher#attach` method uploads a given file to permanent storage:
 
 ```rb
 attacher.attach(file)
-attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg" @storage=:store>
+attacher.file #=> #<Shrine::UploadedFile id="asdf.jpg" storage=:store ...>
 ```
 
 This method is useful when attaching files from scripts, where validation
@@ -153,7 +153,7 @@ You can specify a different destination storage with the `:storage` option:
 
 ```rb
 attacher.attach(file, storage: :other_store)
-attacher.file #=> #<Shrine::UploadedFile @id="asdf.jpg" @storage=:other_store>
+attacher.file #=> #<Shrine::UploadedFile id="asdf.jpg" storage=:other_store ...>
 ```
 
 Any additional options passed to `Attacher#attach`, `Attacher#attach_cached`
@@ -171,9 +171,9 @@ If you want to upload a file to without attaching it, you can use
 `Attacher#upload`:
 
 ```rb
-attacher.upload(file)               #=> #<Shrine::UploadedFile @storage=:store ...>
-attacher.upload(file, :cache)       #=> #<Shrine::UploadedFile @storage=:cache ...>
-attacher.upload(file, :other_store) #=> #<Shrine::UploadedFile @storage=:other_store ...>
+attacher.upload(file)               #=> #<Shrine::UploadedFile storage=:store ...>
+attacher.upload(file, :cache)       #=> #<Shrine::UploadedFile storage=:cache ...>
+attacher.upload(file, :other_store) #=> #<Shrine::UploadedFile storage=:other_store ...>
 ```
 
 This is useful if you want to attacher [context](#context) such as `:record`
@@ -202,20 +202,19 @@ attacher.changed? #=> true
 You can use `Attacher#change` to attach an `UploadedFile` object as is:
 
 ```rb
-uploaded_file #=> #<Shrine::UploadedFile>
+uploaded_file #=> #<Shrine::UploadedFile id="foo" ...>
 attacher.change(uploaded_file)
-attacher.file #=> #<Shrine::UploadedFile> (same object)
+attacher.file #=> #<Shrine::UploadedFile id="foo" ...>
 attacher.changed? #=> true
-
 ```
 
 If you want to attach a file without triggering dirty tracking or validation,
 you can use `Attacher#set`:
 
 ```rb
-uploaded_file #=> #<Shrine::UploadedFile>
+uploaded_file #=> #<Shrine::UploadedFile id="foo" ...>
 attacher.set(uploaded_file)
-attacher.file #=> #<Shrine::UploadedFile> (same object)
+attacher.file #=> #<Shrine::UploadedFile id="foo" ...>
 attacher.changed? #=> false
 ```
 
@@ -246,16 +245,16 @@ storage, and in this case uploads it to permanent storage.
 ```rb
 attacher.attach_cached(io)
 attacher.finalize # uploads attached file to permanent storage
-attacher.file #=> #<Shrine::UploadedFile @storage=:store ...>
+attacher.file #=> #<Shrine::UploadedFile storage=:store ...>
 ```
 
 Internally it calls `Attacher#promote_cached`, which you can call directly if
 you want to pass any promote options:
 
 ```rb
-attacher.file #=> #<Shrine::UploadedFile @storage=:cache ...>
+attacher.file #=> #<Shrine::UploadedFile storage=:cache ...>
 attacher.promote_cached # uploads attached file to permanent storage if new and cached
-attacher.file #=> #<Shrine::UploadedFile @storage=:store ...>
+attacher.file #=> #<Shrine::UploadedFile storage=:store ...>
 ```
 
 You can also call `Attacher#promote` if you want to upload attached file to

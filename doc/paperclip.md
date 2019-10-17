@@ -141,7 +141,7 @@ Record][activerecord], [Sequel][sequel], [ROM][rom], [Hanami][hanami] and
 ```rb
 attacher = ImageUploader::Attacher.new
 attacher.attach File.open("nature.jpg")
-attacher.file #=> #<Shrine::UploadedFile @id="f4ba5bdbf366ef0b.jpg" ...>
+attacher.file #=> #<Shrine::UploadedFile id="f4ba5bdbf366ef0b.jpg" ...>
 attacher.url  #=> "https://my-bucket.s3.amazonaws.com/f4ba5bdbf366ef0b.jpg"
 attacher.data #=> { "id" => "f4ba5bdbf366ef0b.jpg", "storage" => "store", "metadata" => { ... } }
 ```
@@ -206,15 +206,15 @@ uploaded processed files into the database (including any extracted metadata),
 which then becomes the source of truth on which versions have been generated.
 
 ```rb
-photo.image              #=> #<Shrine::UploadedFile @id="original.jpg" ...>
+photo.image              #=> #<Shrine::UploadedFile id="original.jpg" ...>
 photo.image_derivatives  #=> {}
 
 photo.image_derivatives! # triggers processing
 photo.image_derivatives  #=>
 # {
-#   large: #<Shrine::UploadedFile @id="large.jpg" @metadata={"size"=>873232, ...} ...>,
-#   medium: #<Shrine::UploadedFile @id="medium.jpg" @metadata={"size"=>94823, ...} ...>,
-#   small: #<Shrine::UploadedFile @id="small.jpg" @metadata={"size"=>37322, ...} ...>,
+#   large: #<Shrine::UploadedFile id="large.jpg" metadata={"size"=>873232, ...} ...>,
+#   medium: #<Shrine::UploadedFile id="medium.jpg" metadata={"size"=>94823, ...} ...>,
+#   small: #<Shrine::UploadedFile id="small.jpg" metadata={"size"=>37322, ...} ...>,
 # }
 ```
 

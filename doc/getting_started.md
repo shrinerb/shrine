@@ -278,7 +278,7 @@ uploader.upload Shrine::UploadedFile.new(...)               # upload from Shrine
 
 The `Shrine::UploadedFile` object represents the file that was uploaded to a
 storage, and it's what's returned from `Shrine#upload` or when retrieving a
-record [attachment]. It contains the following information:
+record [attachment]. It contains the following data:
 
 | Key        | Description                                        |
 | :-------   | :----------                                        |
@@ -288,11 +288,12 @@ record [attachment]. It contains the following information:
 
 ```rb
 uploaded_file = uploader.upload(file)
-uploaded_file.data #=> {"id"=>"949sdjg834.jpg","storage"=>"store","metadata"=>{...}}
+uploaded_file #=> #<Shrine::UploadedFile id="949sdjg834.jpg" storage=:store metadata={...}>
 
-uploaded_file.id       #=> "949sdjg834.jpg"
-uploaded_file.storage  #=> #<Shrine::Storage::S3>
-uploaded_file.metadata #=> {...}
+uploaded_file.id          # => "949sdjg834.jpg"
+uploaded_file.storage_key # => :store
+uploaded_file.storage     # => #<Shrine::Storage::S3>
+uploaded_file.metadata    # => {...}
 ```
 
 It comes with many convenient methods that delegate to the storage:
@@ -364,13 +365,13 @@ photo.image #=> nil
 
 # the assigned file is cached to temporary storage and written to `image_data` column
 photo.image = File.open("waterfall.jpg")
-photo.image      #=> #<Shrine::UploadedFile @data={...}>
+photo.image      #=> #<Shrine::UploadedFile ...>
 photo.image_url  #=> "/uploads/cache/0sdfllasfi842.jpg"
 photo.image_data #=> '{"id":"0sdfllasfi842.jpg","storage":"cache","metadata":{...}}'
 
 # the cached file is promoted to permanent storage and saved to `image_data` column
 photo.save
-photo.image      #=> #<Shrine::UploadedFile @data={...}>
+photo.image      #=> #<Shrine::UploadedFile ...>
 photo.image_url  #=> "/uploads/store/l02kladf8jlda.jpg"
 photo.image_data #=> '{"id":"l02kladf8jlda.jpg","storage":"store","metadata":{...}}'
 

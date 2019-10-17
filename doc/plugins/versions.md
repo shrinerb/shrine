@@ -49,10 +49,10 @@ user.avatar_data #=>
 
 user.avatar #=>
 # {
-#   :original => #<Shrine::UploadedFile @data={"id"=>"0gsdf.jpg", ...}>,
-#   :large    => #<Shrine::UploadedFile @data={"id"=>"lg043.jpg", ...}>,
-#   :medium   => #<Shrine::UploadedFile @data={"id"=>"kd9fk.jpg", ...}>,
-#   :small    => #<Shrine::UploadedFile @data={"id"=>"932fl.jpg", ...}>,
+#   :original => #<Shrine::UploadedFile id=0gsdf.jpg" ...}>,
+#   :large    => #<Shrine::UploadedFile id=lg043.jpg" ...}>,
+#   :medium   => #<Shrine::UploadedFile id=kd9fk.jpg" ...}>,
+#   :small    => #<Shrine::UploadedFile id=932fl.jpg" ...}>,
 # }
 
 user.avatar[:medium]     #=> #<Shrine::UploadedFile>

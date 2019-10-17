@@ -159,11 +159,11 @@ name (an "image" attachment will be saved to `image_data` field):
 attacher = Shrine::Attacher.from_model(photo, :image)
 
 attacher.assign(file)
-attacher.file #=> #<Shrine::UploadedFile @storage_key=:cache ...>
+attacher.file #=> #<Shrine::UploadedFile storage=:cache ...>
 attacher.record.image_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
 
 attacher.finalize
-attacher.file #=> #<Shrine::UploadedFile @storage_key=:store ...>
+attacher.file #=> #<Shrine::UploadedFile storage=:store ...>
 attacher.record.image_data #=> "{\"storage\":\"store\",\"id\":\"ksdf02lr9sf3la.jpg\",\"metadata\":{...}}"
 ```
 

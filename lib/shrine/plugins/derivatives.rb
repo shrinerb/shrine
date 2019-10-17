@@ -525,13 +525,13 @@ class Shrine
         # Converts data into a Hash of derivatives.
         #
         #     Shrine.derivatives('{"thumb":{"id":"foo","storage":"store","metadata":{}}}')
-        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage_key="store" @metadata={}> }
+        #     #=> { thumb: #<Shrine::UploadedFile id="foo" storage=:store metadata={}> }
         #
         #     Shrine.derivatives({ "thumb" => { "id" => "foo", "storage" => "store", "metadata" => {} } })
-        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage_key="store" @metadata={}> }
+        #     #=> { thumb: #<Shrine::UploadedFile id="foo" storage=:store metadata={}> }
         #
         #     Shrine.derivatives({ thumb: { id: "foo", storage: "store", metadata: {} } })
-        #     #=> { thumb: #<Shrine::UploadedFile @id="foo" @storage_key="store" @metadata={}> }
+        #     #=> { thumb: #<Shrine::UploadedFile id="foo" storage=:store metadata={}> }
         def derivatives(object)
           if object.is_a?(String)
             derivatives JSON.parse(object)

@@ -9,7 +9,7 @@ describe Shrine::UploadedFile do
   end
 
   def uploaded_file(data = {})
-    data = { id: "foo", storage: "store", metadata: {} }.merge(data)
+    data = { id: "foo", storage: :store, metadata: {} }.merge(data)
     @shrine::UploadedFile.new(data)
   end
 
@@ -26,7 +26,7 @@ describe Shrine::UploadedFile do
     it "accepts data hash with symbol keys" do
       uploaded_file = @shrine::UploadedFile.new(
         id:       "foo",
-        storage:  "store",
+        storage:  :store,
         metadata: { "foo" => "bar" },
       )
 
@@ -50,7 +50,7 @@ describe Shrine::UploadedFile do
     it "allows being initialized with a frozen hash" do
       @shrine::UploadedFile.new({
         id:       "foo",
-        storage:  "store",
+        storage:  :store,
         metadata: { "foo" => "bar" },
       }.freeze)
     end
@@ -62,7 +62,7 @@ describe Shrine::UploadedFile do
     end
 
     it "raises an error if storage is not registered" do
-      assert_raises(Shrine::Error) { uploaded_file(storage: "foo") }
+      assert_raises(Shrine::Error) { uploaded_file(storage: :foo) }
     end
 
     it "raises an error on invalid data" do
@@ -122,10 +122,10 @@ describe Shrine::UploadedFile do
     end
 
     it "does not include query params from shrine-url ids in extension" do
-      uploaded_file = uploaded_file(id: "http://example.com/path.html?key=value", storage: "cache")
+      uploaded_file = uploaded_file(id: "http://example.com/path.html?key=value", storage: :cache)
       assert_equal "html", uploaded_file.extension
 
-      uploaded_file = uploaded_file(id: "http://example.com/path?key=value", storage: "cache")
+      uploaded_file = uploaded_file(id: "http://example.com/path?key=value", storage: :cache)
       assert_nil uploaded_file.extension
     end
 
@@ -470,7 +470,7 @@ describe Shrine::UploadedFile do
     it "returns uploaded file data hash" do
       uploaded_file = uploaded_file(
         id:       "foo",
-        storage:  "store",
+        storage:  :store,
         metadata: { "foo" => "bar" },
       )
 
@@ -489,7 +489,7 @@ describe Shrine::UploadedFile do
   end
 
   it "implements #to_json" do
-    uploaded_file = uploaded_file(id: "foo", storage: "store", metadata: {})
+    uploaded_file = uploaded_file(id: "foo", storage: :store, metadata: {})
     assert_equal '{"id":"foo","storage":"store","metadata":{}}', uploaded_file.to_json
     assert_equal '{"thumb":{"id":"foo","storage":"store","metadata":{}}}', {thumb: uploaded_file}.to_json
   end
@@ -498,17 +498,22 @@ describe Shrine::UploadedFile do
     assert_equal uploaded_file, uploaded_file
     assert_equal uploaded_file(metadata: { "foo" => "foo" }), uploaded_file(metadata: { "bar" => "bar" })
     refute_equal uploaded_file(id: "foo"), uploaded_file(id: "bar")
-    refute_equal uploaded_file(storage: "store"), uploaded_file(storage: "cache")
+    refute_equal uploaded_file(storage: :store), uploaded_file(storage: :cache)
     refute_equal StringIO.new, uploaded_file
   end
 
   it "implements hash equality" do
     assert_equal 1, Set.new([uploaded_file, uploaded_file]).size
     assert_equal 2, Set.new([uploaded_file(id: "foo"), uploaded_file(id: "bar")]).size
-    assert_equal 2, Set.new([uploaded_file(storage: "store"), uploaded_file(storage: "cache")]).size
+    assert_equal 2, Set.new([uploaded_file(storage: :store), uploaded_file(storage: :cache)]).size
   end
 
-  it "has smarter .inspect" do
-    assert_includes uploaded_file.class.inspect, "::UploadedFile"
+  it "has custom .inspect" do
+    assert_equal "#{@shrine}::UploadedFile", uploaded_file.class.inspect
+  end
+
+  it "has custom #inspect" do
+    assert_equal %(#<#{@shrine}::UploadedFile storage=:store id="foo" metadata={"bar"=>"quux"}>),
+                 uploaded_file(id: "foo", storage: :store, metadata: { "bar" => "quux" }).inspect
   end
 end

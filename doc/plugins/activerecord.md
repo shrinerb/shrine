@@ -28,12 +28,12 @@ photo = Photo.new
 
 photo.image = file # cache attachment
 
-photo.image      #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image      #=> #<Shrine::UploadedFile id="bc2e13.jpg" storage=:cache ...>
 photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
 
 photo.save # persist, promote attachment, then persist again
 
-photo.image      #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image      #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 
 photo.destroy # delete attachment
@@ -192,14 +192,14 @@ attacher = ImageUploader::Attacher.from_model(photo, :image)
 
 attacher.assign(file) # cache
 
-attacher.file    #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+attacher.file    #=> #<Shrine::UploadedFile id="bc2e13.jpg" storage=:cache ...>
 photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
 
 photo.save        # persist
 attacher.finalize # promote
 photo.save        # persist
 
-attacher.file    #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+attacher.file    #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 ```
 

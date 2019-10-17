@@ -249,6 +249,11 @@ class Shrine
         self.class.shrine_class
       end
 
+      # Returns simplified inspect output.
+      def inspect
+        "#<#{self.class.inspect} storage=#{storage_key.inspect} id=#{id.inspect} metadata=#{metadata.inspect}>"
+      end
+
       private
 
       # Returns an opened IO object for the uploaded file by calling `#open`

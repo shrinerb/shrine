@@ -87,7 +87,7 @@ attacher.assign('{"id": "...", "storage": "store", "metadata": {...}}') # ignore
 
 # Shrine 3.0
 attacher.assign('{"id": "...", "storage": "store", "metadata": {...}}')
-#~> Shrine::Error: expected cached file, got #<Shrine::UploadedFile @storage_key=:store ...>
+#~> Shrine::Error: expected cached file, got #<Shrine::UploadedFile storage=:store ...>
 ```
 
 ### Validation

@@ -276,9 +276,9 @@ end
 ```rb
 movie.video_derivatives! # create derivatives
 
-movie.video              #=> #<Shrine::UploadedFile @id="5a5cd0.mov" ...>
-movie.video(:transcoded) #=> #<Shrine::UploadedFile @id="7481d6.mp4" ...>
-movie.video(:screenshot) #=> #<Shrine::UploadedFile @id="8f3136.jpg" ...>
+movie.video              #=> #<Shrine::UploadedFile id="5a5cd0.mov" ...>
+movie.video(:transcoded) #=> #<Shrine::UploadedFile id="7481d6.mp4" ...>
+movie.video(:screenshot) #=> #<Shrine::UploadedFile id="8f3136.jpg" ...>
 ```
 
 ## Metadata & Validation

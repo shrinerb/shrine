@@ -179,15 +179,15 @@ uploaded processed files into the database (including any extracted metadata),
 which then becomes the source of truth on which versions have been generated.
 
 ```rb
-photo.image              #=> #<Shrine::UploadedFile @id="original.jpg" ...>
+photo.image              #=> #<Shrine::UploadedFile id="original.jpg" ...>
 photo.image_derivatives  #=> {}
 
 photo.image_derivatives! # triggers processing
 photo.image_derivatives  #=>
 # {
-#   large: #<Shrine::UploadedFile @id="large.jpg" @metadata={"size"=>873232, ...} ...>,
-#   medium: #<Shrine::UploadedFile @id="medium.jpg" @metadata={"size"=>94823, ...} ...>,
-#   small: #<Shrine::UploadedFile @id="small.jpg" @metadata={"size"=>37322, ...} ...>,
+#   large:  #<Shrine::UploadedFile id="large.jpg"  metadata={"size"=>873232, ...} ...>,
+#   medium: #<Shrine::UploadedFile id="medium.jpg" metadata={"size"=>94823,  ...} ...>,
+#   small:  #<Shrine::UploadedFile id="small.jpg"  metadata={"size"=>37322,  ...} ...>,
 # }
 ```
 

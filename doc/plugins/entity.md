@@ -130,16 +130,16 @@ end
 photo    = Photo.new(image_data: '{"id":"...","storage":"...","metadata":{...}}')
 attacher = ImageUploader::Attacher.from_entity(photo, :image)
 
-attacher.file #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:store ...>
+attacher.file #=> #<Shrine::UploadedFile id="bc2e13.jpg" storage=:store ...>
 
 attacher.attach(file)
-attacher.file          #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+attacher.file          #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 attacher.column_values #=> { image_data: '{"id":"397eca.jpg","storage":"store","metadata":{...}}' }
 
 photo    = Photo.new(attacher.column_values)
 attacher = ImageUploader::Attacher.from_entity(photo, :image)
 
-attacher.file #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+attacher.file #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 ```
 
 ### Loading entity

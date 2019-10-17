@@ -87,13 +87,13 @@ The `#<name>_derivatives!` model method delegates to
 `Shrine::Attacher` directly:
 
 ```rb
-attacher.file               #=> #<Shrine::UploadedFile @id="original.jpg" @storage_key=:store ...>
+attacher.file               #=> #<Shrine::UploadedFile id="original.jpg" storage=:store ...>
 attacher.create_derivatives # calls registered processor and uploads results
 attacher.derivatives        #=>
 # {
-#   small:  #<Shrine::UploadedFile @id="small.jpg" @storage_key=:store ...>,
-#   medium: #<Shrine::UploadedFile @id="medium.jpg" @storage_key=:store ...>,
-#   large:  #<Shrine::UploadedFile @id="large.jpg" @storage_key=:store ...>,
+#   small:  #<Shrine::UploadedFile id="small.jpg" storage=:store ...>,
+#   medium: #<Shrine::UploadedFile id="medium.jpg" storage=:store ...>,
+#   large:  #<Shrine::UploadedFile id="large.jpg" storage=:store ...>,
 # }
 ```
 

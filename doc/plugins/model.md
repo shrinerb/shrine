@@ -26,12 +26,12 @@ photo = Photo.new
 
 photo.image = file
 
-photo.image      #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+photo.image      #=> #<Shrine::UploadedFile id="bc2e13.jpg" storage=:cache ...>
 photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
 
 photo.image_attacher.finalize
 
-photo.image      #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+photo.image      #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 ```
 
@@ -127,12 +127,12 @@ attacher = ImageUploader::Attacher.from_model(photo, :image)
 
 attacher.assign(file) # cache
 
-attacher.file    #=> #<Shrine::UploadedFile @id="bc2e13.jpg" @storage_key=:cache ...>
+attacher.file    #=> #<Shrine::UploadedFile id="bc2e13.jpg" storage=:cache ...>
 photo.image_data #=> '{"id":"bc2e13.jpg","storage":"cache","metadata":{...}}'
 
 attacher.finalize # promote
 
-attacher.file    #=> #<Shrine::UploadedFile @id="397eca.jpg" @storage_key=:store ...>
+attacher.file    #=> #<Shrine::UploadedFile id="397eca.jpg" storage=:store ...>
 photo.image_data #=> '{"id":"397eca.jpg","storage":"store","metadata":{...}}'
 ```
 
