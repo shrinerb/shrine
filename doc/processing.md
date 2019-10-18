@@ -13,7 +13,7 @@ processing with [ImageMagick]/[GraphicsMagick] (using the [MiniMagick] gem) or
 [libvips] (using the [ruby-vips] gem; see the [libvips section](#libvips)).
 Here is an example of generating a thumbnail with ImageProcessing:
 
-```sh
+```
 $ brew install imagemagick
 ```
 ```rb
@@ -306,7 +306,7 @@ low memory usage (see [Why is libvips quick]).
 Using libvips is as easy as installing it and switching to the
 `ImageProcessing::Vips` backend:
 
-```sh
+```
 $ brew install vips
 ```
 

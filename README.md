@@ -52,7 +52,7 @@ Shrine.plugin :restore_cached_data    # extracts metadata for assigned cached fi
 Next, add the `<name>_data` column to the table you want to attach files to. For
 an "image" attachment on a `photos` table this would be an `image_data` column:
 
-```sh
+```
 $ rails generate migration add_image_data_to_photos image_data:text
 ```
 

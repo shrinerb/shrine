@@ -59,19 +59,19 @@ To run the app you need to setup the following things:
 
 * Install ImageMagick:
 
-  ```rb
+  ```
   $ brew install imagemagick
   ```
 
 * Install the gems:
 
-  ```rb
+  ```
   $ bundle install
   ```
 
 * Have SQLite on your machine, and run
 
-  ```sh
+  ```
   $ bundle exec sequel -m db/migrations sqlite://database.sqlite3
   ```
 
@@ -86,7 +86,7 @@ To run the app you need to setup the following things:
 
 Once you have all of these things set up, you can run the app:
 
-```sh
+```
 $ bundle exec rackup
 ```
 

@@ -68,7 +68,7 @@ generates an URL consisting of the configured [path prefix](#prefix),
 derivation name and arguments, serialized uploaded file, and an URL signature
 generated using the configured secret key:
 
-```plaintext
+```
 /  derivations/image  /  thumbnail  /  600/400  /  eyJmZvbyIb3JhZ2UiOiJzdG9yZSJ9  ?  signature=...
   └──── prefix ─────┘  └── name ──┘  └─ args ─┘  └─── serialized source file ───┘
 ```
@@ -197,7 +197,8 @@ Rails.application.routes.draw do
     end
   end
 end
-
+```
+```rb
 # app/controllers/photos_controller.rb
 class PhotosController < ApplicationController
   def thumbnail
@@ -830,7 +831,7 @@ following payload:
 
 A default log subscriber is added as well which logs these events:
 
-```plaintext
+```
 Derivation (492ms) – {:name=>:thumbnail, :args=>[600, 600], :uploader=>Shrine}
 ```
 
@@ -846,7 +847,7 @@ plugin :derivation_endpoint, log_subscriber: -> (event) {
   )
 }
 ```
-```plaintext
+```
 {"name":"derivation","duration":492,"name":"thumbnail","args":[600,600],"uploader":"Shrine"}
 ```
 

@@ -28,3 +28,9 @@
   padding-top: 3em !important;
   padding-bottom: 5em !important;
 }
+
+code[class*="language-"] {
+  display: block;
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+}

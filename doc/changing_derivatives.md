@@ -93,16 +93,16 @@ now you want to reprocess them for existing attachments.*
 Let's assume we've made the following change and have deployed it to production:
 
 ```diff
-Attacher.derivatives_processor do |original|
-  magick = ImageProcessing::MiniMagick.source(original)
+ Attacher.derivatives_processor do |original|
+   magick = ImageProcessing::MiniMagick.source(original)
 +   .saver(quality: 85)
 
-  {
-    small:  magick.resize_to_limit!(300, 300),
-    medium: magick.resize_to_limit!(500, 500),
-    large:  magick.resize_to_limit!(800, 800),
-  }
-end
+   {
+     small:  magick.resize_to_limit!(300, 300),
+     medium: magick.resize_to_limit!(500, 500),
+     large:  magick.resize_to_limit!(800, 800),
+   }
+ end
 ```
 
 We can now run the following script to reprocess derivatives for all existing
@@ -139,16 +139,16 @@ you want to reprocess them for existing attachments.*
 Let's assume we've made a following change and have deployed it to production:
 
 ```diff
-Attacher.derivatives_processor do |original|
-  magick = ImageProcessing::MiniMagick.source(original)
+ Attacher.derivatives_processor do |original|
+   magick = ImageProcessing::MiniMagick.source(original)
 
-  {
-    small:  magick.resize_to_limit!(300, 300),
--   medium: magick.resize_to_limit!(500, 500),
-+   medium: magick.resize_to_limit!(600, 600),
-    large:  magick.resize_to_limit!(800, 800),
-  }
-end
+   {
+     small:  magick.resize_to_limit!(300, 300),
+-    medium: magick.resize_to_limit!(500, 500),
++    medium: magick.resize_to_limit!(600, 600),
+     large:  magick.resize_to_limit!(800, 800),
+   }
+ end
 ```
 
 We can now run the following script to reprocess the derivative for all
@@ -189,16 +189,16 @@ you want to add it to existing attachments.*
 Let's assume we've made a following change and have deployed it to production:
 
 ```diff
-Attacher.derivatives_processor do |original|
-  magick = ImageProcessing::MiniMagick.source(original)
+ Attacher.derivatives_processor do |original|
+   magick = ImageProcessing::MiniMagick.source(original)
 
-  {
-+   square: magick.resize_to_fill!(150, 150),
-    small:  magick.resize_to_limit!(300, 300),
-    medium: magick.resize_to_limit!(600, 600),
-    large:  magick.resize_to_limit!(800, 800),
-  }
-end
+   {
++    square: magick.resize_to_fill!(150, 150),
+     small:  magick.resize_to_limit!(300, 300),
+     medium: magick.resize_to_limit!(600, 600),
+     large:  magick.resize_to_limit!(800, 800),
+   }
+ end
 ```
 
 We can now run following script to add the new derivative for all existing
@@ -239,16 +239,16 @@ existing attachments.*
 Let's assume we've made the following change and have deployed it to production:
 
 ```diff
-Attacher.derivatives_processor do |original|
-  magick = ImageProcessing::MiniMagick.source(original)
+ Attacher.derivatives_processor do |original|
+   magick = ImageProcessing::MiniMagick.source(original)
 
-  {
--   square: magick.resize_to_fill!(150, 150),
-    small:  magick.resize_to_limit!(300, 300),
-    medium: magick.resize_to_limit!(600, 600),
-    large:  magick.resize_to_limit!(800, 800),
-  }
-end
+   {
+-    square: magick.resize_to_fill!(150, 150),
+     small:  magick.resize_to_limit!(300, 300),
+     medium: magick.resize_to_limit!(600, 600),
+     large:  magick.resize_to_limit!(800, 800),
+   }
+ end
 ```
 
 We can now run following script to remove the unused derivative for all

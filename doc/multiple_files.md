@@ -14,7 +14,7 @@ relationship with the main table, and files will be attached on the records in
 the new table. That way each record from the main table can implicitly have
 multiple attachments through the associated records.
 
-```plaintext
+```
 album1
   photo1
     - attachment1

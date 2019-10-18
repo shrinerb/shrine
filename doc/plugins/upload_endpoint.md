@@ -95,16 +95,9 @@ plugin :upload_endpoint, max_size: 20*1024*1024 # 20 MB
 If the uploaded file is larger than the specified value, a `413 Payload Too
 Large` response will be returned.
 
-## Context
+## Uploader options
 
-The upload context will *not* contain `:record` and `:name` values, as the
-upload happens independently of a database record. The endpoint will send the
-following upload context:
-
-* `:action` – holds the value `:upload`
-* `:request` – holds an instance of `Rack::Request`
-
-You can update the upload context via `:upload_context`:
+You can pass additional uploader options via `:upload_context`:
 
 ```rb
 plugin :upload_endpoint, upload_context: -> (request) do
@@ -112,13 +105,16 @@ plugin :upload_endpoint, upload_context: -> (request) do
 end
 ```
 
+Note that the uploader will *not* receive `:record` and `:name` values, as the
+upload happens independently of a database record.
+
 ## Upload
 
 You can also customize the upload itself via the `:upload` option:
 
 ```rb
-plugin :upload_endpoint, upload: -> (io, context, request) do
-  Shrine.upload(io, :cache, context)
+plugin :upload_endpoint, upload: -> (io, **options, request) do
+  Shrine.upload(io, :cache, **options)
 end
 ```
 

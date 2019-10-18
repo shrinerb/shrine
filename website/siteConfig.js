@@ -8,6 +8,8 @@
 // See https://docusaurus.io/docs/site-config for all the possible
 // site configuration options.
 
+const highlight = require(`${__dirname}/highlight.js`)
+
 const sidebars = require(`${__dirname}/sidebars.json`)
 
 const latestSection = Object.keys(sidebars['release_notes'])[0]
@@ -70,9 +72,9 @@ const siteConfig = {
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
   copyright: `Copyright © ${new Date().getFullYear()} Janko Marohnić`,
 
-  highlight: {
-    // Highlight.js theme to use for syntax highlighting in code blocks.
-    theme: 'zenburn',
+  markdownOptions: {
+    langPrefix: 'language-',
+    highlight: highlight,
   },
 
   // Add custom scripts here that would be placed in <script> tags.

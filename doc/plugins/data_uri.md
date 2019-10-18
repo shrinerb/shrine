@@ -123,7 +123,7 @@ payload:
 
 A default log subscriber is added as well which logs these events:
 
-```plaintext
+```
 Data URI (5ms) – {:uploader=>Shrine}
 ```
 
@@ -134,7 +134,7 @@ plugin :data_uri, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, uploader: event[:uploader])
 }
 ```
-```plaintext
+```
 {"name":"data_uri","duration":5,"uploader":"Shrine"}
 ```
 

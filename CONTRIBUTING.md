@@ -45,7 +45,7 @@ The test suite requires that you have the following installed:
 If you're using Homebrew, you can just run `brew bundle`. The test suite is
 best run using Rake:
 
-```sh
+```
 $ rake test
 ```
 

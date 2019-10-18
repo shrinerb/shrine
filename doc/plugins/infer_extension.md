@@ -70,7 +70,7 @@ payload:
 
 A default log subscriber is added as well which logs these events:
 
-```plaintext
+```
 Extension (5ms) – {:mime_type=>"image/jpeg", :uploader=>Shrine}
 ```
 
@@ -81,7 +81,7 @@ plugin :infer_extension, log_subscriber: -> (event) {
   Shrine.logger.info JSON.generate(name: event.name, duration: event.duration, **event.payload)
 }
 ```
-```plaintext
+```
 {"name":"extension","duration":5,"mime_type":"image/jpeg","uploader":"Shrine"}
 ```
 

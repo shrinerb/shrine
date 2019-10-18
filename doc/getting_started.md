@@ -50,7 +50,7 @@ class AddImageDataToPhotos < ActiveRecord::Migration
 end
 ```
 <!--Rails-->
-```sh
+```
 $ rails generate migration add_image_data_to_photos image_data:text
 ```
 <!--END_DOCUSAURUS_CODE_TABS-->
@@ -519,7 +519,7 @@ For image processing, it's recommended to use the **[ImageProcessing]** gem,
 which is a high-level wrapper for processing with
 [MiniMagick][ImageProcessing::MiniMagick] and [libvips][ImageProcessing::Vips].
 
-```sh
+```
 $ brew install imagemagick vips
 ```
 
@@ -675,7 +675,7 @@ class ImageUploader < Shrine
   end
 end
 ```
-```plaintext
+```
 uploads/
   photos/
     originals/
@@ -906,7 +906,7 @@ uploaded_file.exists?
 uploaded_file.download
 uploaded_file.delete
 ```
-```plaintext
+```
 Metadata (32ms) – {:storage=>:store, :io=>StringIO, :uploader=>Shrine}
 Upload (1523ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :io=>StringIO, :upload_options=>{}, :uploader=>Shrine}
 Exists (755ms) – {:storage=>:store, :location=>"ed0e30ddec8b97813f2c1f4cfd1700b4", :uploader=>Shrine}

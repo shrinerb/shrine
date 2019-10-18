@@ -158,7 +158,7 @@ end
 ```
 ```yml
 en:
-  activerecord
+  activerecord:
     errors:
       models:
         photo:
