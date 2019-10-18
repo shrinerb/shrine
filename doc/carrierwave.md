@@ -302,7 +302,7 @@ module CarrierwaveShrineSynchronization
 
   def write_shrine_data(name)
     uploader = send(name)
-    attacher = Shrine::Attacher.form_model(self, name)
+    attacher = Shrine::Attacher.from_model(self, name)
 
     if read_attribute(name).present?
       attacher.set shrine_file(uploader)
