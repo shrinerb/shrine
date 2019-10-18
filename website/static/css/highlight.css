@@ -1,10 +1,9 @@
 code[class*="language-"], .hljs {
   color: #dcdcdc;
   background: #3f3f3f;
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
 
-.source.ruby {
+.meta.embedded {
   color: #dcdcdc;
 }
 
@@ -27,6 +26,7 @@ code[class*="language-"], .hljs {
 
 .support.class,
 .entity.class,
+.entity.module,
 .variable.constant,
 .entity.function,
 .entity.tag {
