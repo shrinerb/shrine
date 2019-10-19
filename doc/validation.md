@@ -88,10 +88,11 @@ when defining more validations:
 class ApplicationUploader < Shrine
   Attacher.validate { validate_max_size 5*1024*1024 }
 end
-
+```
+```rb
 class ImageUploader < ApplicationUploader
   Attacher.validate do
-    super() # empty braces are required
+    super() # empty parentheses are required
     validate_mime_type %w[image/jpeg image/png image/webp]
   end
 end
