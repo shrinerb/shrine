@@ -89,3 +89,4 @@ attacher.persist # saves the underlying record
 
 [activerecord]: https://shrinerb.com/docs/plugins/activerecord
 [sequel]: https://shrinerb.com/docs/plugins/sequel
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
