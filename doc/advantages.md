@@ -281,7 +281,7 @@ movie.video(:transcoded) #=> #<Shrine::UploadedFile id="7481d6.mp4" ...>
 movie.video(:screenshot) #=> #<Shrine::UploadedFile id="8f3136.jpg" ...>
 ```
 
-## Metadata & Validation
+## Metadata
 
 Shrine automatically [extracts metadata][metadata] from each uploaded file,
 including derivatives like image thumbnails, and saves them into the database
@@ -290,6 +290,17 @@ default, you can also extract [image dimensions][store_dimensions], or your own
 [custom metadata][add_metadata].
 
 ```rb
+class ImageUploader < Shrine
+  plugin :determine_mime_type # mime_type
+  plugin :store_dimensions    # width & height
+
+  add_metadata :resolution do |io|
+    image = MiniMagick::Image.new(io.path)
+    image.resolution
+  end
+end
+```
+```rb
 photo.image.metadata #=>
 # {
 #   "size" => 42487494,
@@ -297,23 +308,30 @@ photo.image.metadata #=>
 #   "mime_type" => "image/jpeg",
 #   "width" => 600,
 #   "height" => 400,
+#   "resolution" => [72, 72],
 #   ...
 # }
 ```
 
-For common metadata you can use the built-in [validators][validation_helpers],
-but you can also [validate any custom metadata][custom validations].
+## Validation
+
+For file validations there are [built-in validators][validation_helpers], but
+you can also just use plain Ruby code:
 
 ```rb
-class DocumentUploader < Shrine
-  Attacher.validate do
-    # validation macros
-    validate_max_size 10*1024*1024
-    validate_mime_type %W[application/pdf]
+class ImageUploader < Shrine
+  plugin :validation_helpers
 
-    # custom validations
-    if file["page_count"] > 30
-      errors << "must not have more than 30 pages"
+  Attacher.validate do
+    validate_max_size 10*1024*1024
+    validate_extension %w[jpg jpeg png webp]
+
+    if validate_mime_type %W[image/jpeg image/png image/webp]
+      validate_max_dimensions [5000, 5000]
+
+      unless ImageProcessing::MiniMagick.valid_image?(file.download.path)
+        error << "seems to be corrupted"
+      end
     end
   end
 end
@@ -432,7 +450,6 @@ on top of Rack, so that they can be used with any Ruby web framework.
 [backgrounding libraries]: https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries
 [Down streaming]: https://github.com/janko/down#streaming
 [validation_helpers]: https://shrinerb.com/docs/plugins/validation_helpers
-[custom validations]: https://shrinerb.com/docs/validation#custom-validations
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [derivation_endpoint]: https://shrinerb.com/docs/plugins/derivation_endpoint
 [libvips performance]: https://github.com/libvips/libvips/wiki/Speed-and-memory-use#results
