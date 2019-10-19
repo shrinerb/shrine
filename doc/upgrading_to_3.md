@@ -283,7 +283,7 @@ attacher.destroy_background # calls destroy block
 ## Versions
 
 The `versions`, `processing`, `recache`, and `delete_raw` plugins have been
-deprecated in favour of the new [`derivatives`][derivatives] plugin. Let's
+deprecated in favour of the new **[`derivatives`][derivatives]** plugin. Let's
 assume you have the following `versions` code:
 
 ```rb
@@ -318,7 +318,8 @@ else
 end
 ```
 
-With `derivatives` it becomes this:
+With `derivatives`, the original file is automatically downloaded and retained,
+so the code is now much simpler:
 
 ```rb
 Shrine.plugin :derivatives, versions_compatibility: true # handle versions column format
@@ -328,6 +329,7 @@ class ImageUploader < Shrine
   Attacher.derivatives_processor do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
+    # the :original file should NOT be included anymore
     {
       large:  magick.resize_to_limit!(800, 800),
       medium: magick.resize_to_limit!(500, 500),
