@@ -43,7 +43,7 @@ Shrine.plugin :derivatives
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {
@@ -163,7 +163,7 @@ class ImageUploader < Shrine
     small:  [300, 300],
   }
 
-  Attacher.derivatives_processor do |original, name:|
+  Attacher.derivatives do |original, name:|
     thumbnail = ImageProcessing::MiniMagick
       .source(original)
       .resize_to_limit!(*THUMBNAILS.fetch(name))
@@ -223,7 +223,7 @@ gem "streamio-ffmpeg"
 require "streamio-ffmpeg"
 
 class VideoUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     transcoded = Tempfile.new ["transcoded", ".mp4"]
     screenshot = Tempfile.new ["screenshot", ".jpg"]
 

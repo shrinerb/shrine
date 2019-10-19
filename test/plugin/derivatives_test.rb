@@ -45,7 +45,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#<name>_derivatives!" do
       it "creates derivatives" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -57,7 +57,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "creates default derivatives" do
-        @attacher.class.derivatives_processor do |original|
+        @attacher.class.derivatives do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -69,7 +69,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "accepts original file" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -80,7 +80,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "accepts processor options" do
-        @attacher.class.derivatives_processor :options do |original, **options|
+        @attacher.class.derivatives :options do |original, **options|
           { options: StringIO.new(options.to_s) }
         end
 
@@ -472,7 +472,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#create_derivatives" do
       it "calls processor, then uploads and saves results" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -484,7 +484,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "calls default processor" do
-        @attacher.class.derivatives_processor do |original|
+        @attacher.class.derivatives do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -496,7 +496,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "forwards original file to processor" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -506,7 +506,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "forwards additional options to processor" do
-        @attacher.class.derivatives_processor :options do |original, **options|
+        @attacher.class.derivatives :options do |original, **options|
           { options: StringIO.new(options.to_s) }
         end
 
@@ -710,7 +710,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#process_derivatives" do
       it "calls the registered processor" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -722,7 +722,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "calls the default processor" do
-        @attacher.class.derivatives_processor do |original|
+        @attacher.class.derivatives do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -735,7 +735,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "passes downloaded attached file" do
         minitest = self
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           minitest.assert_instance_of Tempfile, original
 
           { reversed: StringIO.new(original.read.reverse) }
@@ -746,7 +746,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "allows passing source file" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -757,7 +757,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "allows passing source file with default processor" do
-        @attacher.class.derivatives_processor do |original|
+        @attacher.class.derivatives do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -768,7 +768,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "downloads source UploadedFile" do
-        @attacher.class.derivatives_processor :path do |original|
+        @attacher.class.derivatives :path do |original|
           { path: StringIO.new(original.path) }
         end
 
@@ -779,7 +779,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "forwards additional options" do
-        @attacher.class.derivatives_processor :options do |original, **options|
+        @attacher.class.derivatives :options do |original, **options|
           { options: StringIO.new(options.to_s) }
         end
 
@@ -791,7 +791,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "evaluates block in context of Attacher instance" do
         this = nil
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           this = self
           { reversed: StringIO.new(original.read.reverse) }
         end
@@ -803,14 +803,14 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "handles string keys" do
-        @attacher.class.derivatives_processor :symbol_reversed do |original|
+        @attacher.class.derivatives :symbol_reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
         @attacher.attach fakeio("file")
         @attacher.process_derivatives("symbol_reversed")
 
-        @attacher.class.derivatives_processor "string_reversed" do |original|
+        @attacher.class.derivatives "string_reversed" do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -819,7 +819,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "fails if process result is not a Hash" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           :invalid
         end
 
@@ -846,7 +846,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "fails if no file is attached" do
-        @attacher.class.derivatives_processor :reversed do |original|
+        @attacher.class.derivatives :reversed do |original|
           { reversed: StringIO.new(original.read.reverse) }
         end
 
@@ -859,7 +859,7 @@ describe Shrine::Plugins::Derivatives do
         before do
           @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)
 
-          @attacher.class.derivatives_processor :reversed do |original|
+          @attacher.class.derivatives :reversed do |original|
             { reversed: StringIO.new(original.read.reverse) }
           end
 

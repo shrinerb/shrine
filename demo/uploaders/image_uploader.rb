@@ -31,7 +31,7 @@ class ImageUploader < Shrine
   end
 
   # Thumbnails processor (requires `derivatives` plugin)
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     THUMBNAILS.inject({}) do |result, (name, (width, height))|
       result.merge! name => THUMBNAILER.call(original, width, height)
     end

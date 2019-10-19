@@ -151,7 +151,7 @@ processing:
 ```rb
 class ImageUploader < Shrine
   # ...
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     width, height = Shrine.dimensions(original)
 
     fail ImageBombError if width > 5000 || height > 5000

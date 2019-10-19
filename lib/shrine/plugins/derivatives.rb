@@ -64,6 +64,7 @@ class Shrine
             processor
           end
         end
+        alias derivatives derivatives_processor
 
         # Specifies default storage to which derivatives will be uploaded.
         #

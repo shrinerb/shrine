@@ -42,7 +42,7 @@ gem "image_processing", "~> 1.8"
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     # generate the thumbnails you want here
@@ -93,7 +93,7 @@ now you want to reprocess them for existing attachments.*
 Let's assume we've made the following change and have deployed it to production:
 
 ```diff
- Attacher.derivatives_processor do |original|
+ Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 +   .saver(quality: 85)
 
@@ -139,7 +139,7 @@ you want to reprocess them for existing attachments.*
 Let's assume we've made a following change and have deployed it to production:
 
 ```diff
- Attacher.derivatives_processor do |original|
+ Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 
    {
@@ -189,7 +189,7 @@ you want to add it to existing attachments.*
 Let's assume we've made a following change and have deployed it to production:
 
 ```diff
- Attacher.derivatives_processor do |original|
+ Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 
    {
@@ -239,7 +239,7 @@ existing attachments.*
 Let's assume we've made the following change and have deployed it to production:
 
 ```diff
- Attacher.derivatives_processor do |original|
+ Attacher.derivatives do |original|
    magick = ImageProcessing::MiniMagick.source(original)
 
    {

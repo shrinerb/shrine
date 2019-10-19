@@ -171,7 +171,7 @@ thumbnails during attachment:
 
 ```rb
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {
@@ -261,7 +261,7 @@ gem "streamio-ffmpeg"
 ```
 ```rb
 class VideoUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     transcoded = Tempfile.new ["transcoded", ".mp4"]
     screenshot = Tempfile.new ["screenshot", ".jpg"]
 

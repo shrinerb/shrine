@@ -19,7 +19,7 @@ photo.image.metadata #=> { "size" => 749238, "mime_type" => "image/jpeg", "filen
 ...and process them statically...
 
 ```rb
-Shrine.derivatives_processor :thumbnails do |original|
+Shrine::Attacher.derivatives :thumbnails do |original|
   magick = ImageProcessing::MiniMagick.source(original)
 
   { large:  magick.resize_to_limit!(800, 800),

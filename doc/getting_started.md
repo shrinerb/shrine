@@ -539,7 +539,7 @@ Shrine.plugin :derivatives
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {

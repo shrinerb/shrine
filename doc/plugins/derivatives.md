@@ -27,7 +27,8 @@ gem "image_processing", "~> 1.8"
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  # registers a default derivatives processor
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {
@@ -115,11 +116,11 @@ the desired processor.
 
 ```rb
 class ImageUploader < Shrine
-  Attacher.derivatives_processor :thumbnails do |original|
+  Attacher.derivatives :thumbnails do |original|
     # ...
   end
 
-  Attacher.derivatives_processor :crop do |original|
+  Attacher.derivatives :crop do |original|
     # ...
   end
 
@@ -186,7 +187,7 @@ Derivatives can be nested to any level, using both hashes and arrays, but the
 top-level object must be a hash.
 
 ```rb
-Attacher.derivatives_processor :tiff do |original|
+Attacher.derivatives :tiff do |original|
   {
     thumbnail: {
       small:  small,
@@ -308,7 +309,7 @@ A derivatives processor block takes the original file, and is expected to
 return a hash of processed files (it can be [nested](#nesting-derivatives)).
 
 ```rb
-Attacher.derivatives_processor :my_processor do |original|
+Attacher.derivatives :my_processor do |original|
   # return a hash of processed files
 end
 ```
@@ -327,7 +328,7 @@ The processor block is evaluated in context of the `Shrine::Attacher` instance,
 which allows you to change your processing logic based on the record data.
 
 ```rb
-Attacher.derivatives_processor :my_processor do |original|
+Attacher.derivatives :my_processor do |original|
   self    #=> #<Shrine::Attacher>
 
   record  #=> #<Photo>
@@ -345,7 +346,7 @@ forwarded to the processor:
 attacher.process_derivatives(:my_processor, foo: "bar")
 ```
 ```rb
-Attacher.derivatives_processor :my_processor do |original, **options|
+Attacher.derivatives :my_processor do |original, **options|
   options #=> { :foo => "bar" }
   # ...
 end
@@ -357,7 +358,7 @@ By default, the `Attacher#process_derivatives` method will download the
 attached file and pass it to the processor:
 
 ```rb
-Attacher.derivatives_processor :my_processor do |original|
+Attacher.derivatives :my_processor do |original|
   original #=> #<File:...>
   # ...
 end

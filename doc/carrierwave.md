@@ -159,7 +159,7 @@ require "image_processing/mini_magick"
 class ImageUploader < Shrine
   plugin :derivatives
 
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     {
@@ -395,7 +395,7 @@ Processing is defined by using the `derivatives` plugin:
 class ImageUploader < Shrine
   plugin :derivatives
 
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(image)
 
     {
