@@ -61,13 +61,12 @@ Appendix A: Sequel template
 ```rb
 require "sequel"
 require "shrine"
-require "shrine/storage/file_system"
-require "tmpdir"
+require "shrine/storage/memory"
 require "down"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
-  store: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
+  cache: Shrine::Storage::Memory.new,
+  store: Shrine::Storage::Memory.new,
 }
 
 Shrine.plugin :sequel
@@ -79,7 +78,7 @@ end
 DB = Sequel.sqlite # SQLite memory database
 DB.create_table :posts do
   primary_key :id
-  column :image_data, :text
+  String :image_data
 end
 
 class Post < Sequel::Model
@@ -97,13 +96,12 @@ Appendix B: ActiveRecord template
 ```rb
 require "active_record"
 require "shrine"
-require "shrine/storage/file_system"
-require "tmpdir"
+require "shrine/storage/memory"
 require "down"
 
 Shrine.storages = {
-  cache: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
-  store: Shrine::Storage::FileSystem.new(File.join(Dir.tmpdir, "shrine")),
+  cache: Shrine::Storage::Memory.new,
+  store: Shrine::Storage::Memory.new,
 }
 
 Shrine.plugin :activerecord
