@@ -9,9 +9,7 @@
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
-    "docusaurus": "^1.13.0"
-  },
-  "dependencies": {
+    "docusaurus": "^1.13.0",
     "highlights": "^3.1.4",
     "language-diff": "https://github.com/miketheman/language-diff"
   }
