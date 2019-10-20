@@ -29,7 +29,10 @@ const highlight = (string, language) => {
     scopeName: scope,
   })
 
-  html = html.replace(/<\/?pre[^>]*>/g, '') // remove extra <pre> tags
+  // strip extra <pre> tags
+  html = html.replace(/<\/?pre[^>]*>/g, '') 
+  // strip extra <span> elements that are slowing down rendering
+  html = html.replace(/<span>([^<]*)<\/span>/g, '$1') 
 
   return html
 };
