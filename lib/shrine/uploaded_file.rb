@@ -6,7 +6,6 @@ require "uri"
 
 class Shrine
   # Core class that represents a file uploaded to a storage.
-  # Base implementation is defined in InstanceMethods and ClassMethods.
   class UploadedFile
     @shrine_class = ::Shrine
 

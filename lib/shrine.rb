@@ -11,8 +11,7 @@ require "json"
 require "tempfile"
 require "logger"
 
-# Core class that represents uploader.
-# Base implementation is defined in InstanceMethods and ClassMethods.
+# Core class that handles uploading files to specified storage.
 class Shrine
   # A generic exception used by Shrine.
   class Error < StandardError; end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Shrine
-  # Core class which handles attaching files to model instances.
-  # Base implementation is defined in InstanceMethods and ClassMethods.
+  # Core class that handles attaching files. It uses Shrine and
+  # Shrine::UploadedFile objects internally.
   class Attacher
     @shrine_class = ::Shrine
 
