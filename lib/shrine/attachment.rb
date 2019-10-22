@@ -2,8 +2,9 @@
 
 class Shrine
   # Core class which creates attachment modules for specified attribute names
-  # that are included into model classes.
-  # Base implementation is defined in InstanceMethods and ClassMethods.
+  # that are included into model classes. Base implementation is defined in
+  # InstanceMethods and ClassMethods. Main functionality is added by
+  # entity, model, and sequel/activerecord plugins.
   class Attachment < Module
     @shrine_class = ::Shrine
 
