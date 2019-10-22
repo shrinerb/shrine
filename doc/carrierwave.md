@@ -307,8 +307,8 @@ module CarrierwaveShrineSynchronization
     if read_attribute(name).present?
       attacher.set shrine_file(uploader)
 
-      uploader.versions.each do |name, version|
-        attacher.merge_derivatives(name => shrine_file(version))
+      uploader.versions.each do |version_name, version|
+        attacher.merge_derivatives(version_name => shrine_file(version))
       end
     else
       attacher.set nil
