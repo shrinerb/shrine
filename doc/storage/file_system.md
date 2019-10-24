@@ -1,6 +1,6 @@
 ---
 id: file-system
-title: Shrine::Storage::FileSystem
+title: File System
 ---
 
 The FileSystem storage handles uploads to the filesystem, and it is most

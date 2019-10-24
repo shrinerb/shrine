@@ -6,6 +6,10 @@
       "retrieving-uploads",
       "attacher"
     ],
+    "Storage": [
+      "storage/file-system",
+      "storage/s3"
+    ],
     "Features": [
       "direct-s3",
       "metadata",

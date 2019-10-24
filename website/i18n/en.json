@@ -321,10 +321,10 @@
         "title": "Securing uploads"
       },
       "storage/file-system": {
-        "title": "Shrine::Storage::FileSystem"
+        "title": "File System"
       },
       "storage/s3": {
-        "title": "Shrine::Storage::S3"
+        "title": "AWS S3"
       },
       "testing": {
         "title": "Testing with Shrine"
@@ -345,6 +345,7 @@
     },
     "categories": {
       "Base": "Base",
+      "Storage": "Storage",
       "Features": "Features",
       "Extras": "Extras",
       "Migrating": "Migrating",
