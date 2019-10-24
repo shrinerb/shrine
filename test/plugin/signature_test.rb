@@ -63,6 +63,13 @@ describe Shrine::Plugins::Signature do
     assert_equal Zlib.crc32(content).to_s,             @uploader.calculate_signature(io, :crc32,  format: :none)
   end
 
+  it "allows disabling rewinding" do
+    io = fakeio("file")
+
+    assert_equal Digest::MD5.hexdigest("file"), @shrine.signature(io, :md5, rewind: false)
+    assert io.eof?
+  end
+
   describe "with instrumentation" do
     before do
       @shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:test)

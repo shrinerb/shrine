@@ -1,5 +1,7 @@
 ## HEAD
 
+* `signature` – Allow skipping rewinding by passing `rewind: false` to `Shrine.signature` (@janko)
+
 * `derivatives` – Add `Attacher.derivatives` alias for `Attacher.derivatives_processor` (@janko)
 
 ## 3.0.1 (2019-10-17) [[release notes]](https://shrinerb.com/docs/release_notes/3.0.1)

@@ -55,6 +55,15 @@ add_metadata :md5 do |io, action: nil, **|
 end
 ```
 
+## Rewinding
+
+If you want to calculate signature from a non-rewindable IO object, you can
+tell Shrine to skip rewinding:
+
+```rb
+Shrine.calculate_signature(io, :md5, rewind: false)
+```
+
 ## Instrumentation
 
 If the `instrumentation` plugin has been loaded, the `signature` plugin adds

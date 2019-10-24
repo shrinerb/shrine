@@ -21,10 +21,13 @@ class Shrine
       module ClassMethods
         # Calculates `algorithm` hash of the contents of the IO object, and
         # encodes it into `format`.
-        def calculate_signature(io, algorithm, format: :hex)
-          instrument_signature(io, algorithm, format) do
-            SignatureCalculator.new(algorithm.downcase, format: format).call(io)
-          end
+        def calculate_signature(io, algorithm, format: :hex, rewind: true)
+          calculator = SignatureCalculator.new(algorithm.downcase, format: format)
+
+          signature = instrument_signature(io, algorithm, format) { calculator.call(io) }
+          io.rewind if rewind
+
+          signature
         end
         alias signature calculate_signature
 
@@ -62,8 +65,6 @@ class Shrine
 
         def call(io)
           hash = send(:"calculate_#{algorithm}", io)
-          io.rewind
-
           send(:"encode_#{format}", hash)
         end
 
