@@ -90,9 +90,18 @@ class Index extends React.Component {
       )
     };
 
+    /* https://codefund.io */
+    const Ads = () => (
+      <div className="codefund">
+        <div id="codefund"></div>
+        <script src="https://codefund.io/properties/535/funder.js" async="async"></script>
+      </div>
+    )
+
     return (
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
+        <Ads />
         <div className="mainContainer">
           <Demo />
         </div>
