@@ -1,19 +1,23 @@
 /* your custom css */
 
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
+@media only screen and (max-device-width: 479px) {
+  .projectTitle {
+    margin-top: 0px;
+  }
+
+  .buttonWrapper {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
 }
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (max-device-width: 735px) {
+  #footer .nav-home {
+    padding-left: 0px;
+    padding-right: 20px;
+  }
 }
 
-@media only screen and (max-width: 1023px) {
-}
-
-@media only screen and (min-width: 1400px) {
-}
-
-@media only screen and (min-width: 1500px) {
-}
 
 /* Hide prev/next buttons at bottom of documents */
 .docs-prevnext {
