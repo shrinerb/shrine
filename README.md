@@ -1,5 +1,7 @@
 # [Shrine]
 
+<img src="https://shrinerb.com/img/logo.png" width="120" alt="Shrine logo: a red paperclip" align="right" />
+
 Shrine is a toolkit for handling file attachments in Ruby applications. Some highlights:
 
 * **Modular design** – the [plugin system] allows you to load only the functionality you need
