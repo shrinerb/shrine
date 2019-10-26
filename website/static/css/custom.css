@@ -1,33 +1,44 @@
 /* your custom css */
 
-@media only screen and (max-device-width: 479px) {
+@media (max-width: 1023px) {
+  /* remove input margins on Safari */
+  .navSearchWrapper input {
+    margin: 0;
+  }
+}
+
+@media (max-width: 479px) {
+  /* remove unnecessary margin for title */
   .projectTitle {
     margin-top: 0px;
   }
 
+  /* add spacing between buttons when they wrap in multiple lines */
   .buttonWrapper {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
 }
 
-@media only screen and (max-device-width: 735px) {
+@media (max-width: 735px) {
+  /* align logo with other footer items */
   #footer .nav-home {
     padding-left: 0px;
     padding-right: 20px;
   }
 }
 
-
 /* Hide prev/next buttons at bottom of documents */
 .docs-prevnext {
   display: none;
 }
 
+/* make demo code narrower */
 .landingDemo .wrapper {
   max-width: 800px;
 }
 
+/* make main logo smaller */
 .projectLogo {
   padding-top: 3em !important;
   padding-bottom: 5em !important;
