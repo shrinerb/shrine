@@ -7,6 +7,15 @@
   }
 }
 
+@supports (-webkit-overflow-scrolling: touch) {
+  @media (max-device-width: 1023px) {
+    /* vertically align search bar on mobile */
+    .navSearchWrapper {
+      height: 19px;
+    }
+  }
+}
+
 @media (max-width: 479px) {
   /* remove unnecessary margin for title */
   .projectTitle {
