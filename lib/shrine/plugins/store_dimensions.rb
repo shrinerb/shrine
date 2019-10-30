@@ -113,23 +113,32 @@ class Shrine
 
         def extract_with_fastimage(io)
           require "fastimage"
-          FastImage.size(io, raise_on_failure: true)
-        rescue FastImage::FastImageException => error
-          on_error(error)
+
+          begin
+            FastImage.size(io, raise_on_failure: true)
+          rescue FastImage::FastImageException => error
+            on_error(error)
+          end
         end
 
         def extract_with_mini_magick(io)
           require "mini_magick"
-          Shrine.with_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
-        rescue MiniMagick::Error => error
-          on_error(error)
+
+          begin
+            Shrine.with_file(io) { |file| MiniMagick::Image.new(file.path).dimensions }
+          rescue MiniMagick::Error => error
+            on_error(error)
+          end
         end
 
         def extract_with_ruby_vips(io)
           require "vips"
-          Shrine.with_file(io) { |file| Vips::Image.new_from_file(file.path).size }
-        rescue Vips::Error => error
-          on_error(error)
+
+          begin
+            Shrine.with_file(io) { |file| Vips::Image.new_from_file(file.path).size }
+          rescue Vips::Error => error
+            on_error(error)
+          end
         end
 
         def on_error(error)
