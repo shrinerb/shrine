@@ -150,11 +150,11 @@ the `:default_messages` option to the plugin:
 ```rb
 plugin :validation_helpers, default_messages: {
   max_size:            -> (max)  { I18n.t("errors.file.max_size", max: max) },
-  min_size:            -> (max)  { I18n.t("errors.file.min_size", min: min) },
+  min_size:            -> (min)  { I18n.t("errors.file.min_size", min: min) },
   max_width:           -> (max)  { I18n.t("errors.file.max_width", max: max) },
-  min_width:           -> (max)  { I18n.t("errors.file.min_width", min: min) },
+  min_width:           -> (min)  { I18n.t("errors.file.min_width", min: min) },
   max_height:          -> (max)  { I18n.t("errors.file.max_height", max: max) },
-  min_height:          -> (max)  { I18n.t("errors.file.min_height", min: min) },
+  min_height:          -> (min)  { I18n.t("errors.file.min_height", min: min) },
   max_dimensions:      -> (dims) { I18n.t("errors.file.max_dimensions", dims: dims) },
   min_dimensions:      -> (dims) { I18n.t("errors.file.min_dimensions", dims: dims) },
   mime_type_inclusion: -> (list) { I18n.t("errors.file.mime_type_inclusion", list: list) },
