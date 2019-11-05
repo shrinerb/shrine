@@ -14,7 +14,9 @@ Shrine is a toolkit for handling file attachments in Ruby applications. Some hig
 * **Resumable uploads** – make large file uploads [resumable][resumable upload] on [S3][uppy-s3_multipart] or [tus][tus-ruby-server]
 * **Background jobs** – built-in support for [background processing][backgrounding] that supports [any backgrounding library][Backgrounding Libraries]
 
-Please follow along with the **[Getting Started guide]**.
+If you're curious how it compares to other file attachment libraries, see the
+[Advantages of Shrine]. Otherwise, follow along with the **[Getting Started
+guide]**.
 
 ## Links
 
@@ -135,6 +137,7 @@ mailing lists is expected to follow the [Shrine code of conduct][CoC].
 The gem is available as open source under the terms of the [MIT License].
 
 [Shrine]: https://shrinerb.com
+[Advantages of Shrine]: https://shrinerb.com/docs/advantages
 [plugin system]: https://shrinerb.com/docs/getting-started#plugin-system
 [Retrieving Uploads]: https://shrinerb.com/docs/retrieving-uploads
 [FileSystem]: https://shrinerb.com/docs/storage/file-system
