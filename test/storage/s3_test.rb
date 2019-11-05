@@ -436,18 +436,18 @@ describe Shrine::Storage::S3 do
 
   describe "#delete_prefixed" do
     it "deletes objects with specified prefix" do
-      @s3.client.stub_responses(:list_objects, contents: [{ key: "delete_prefix/foo" }])
+      @s3.client.stub_responses(:list_objects_v2, contents: [{ key: "delete_prefix/foo" }])
       @s3.delete_prefixed("delete_prefix")
-      assert_equal :list_objects,                  @s3.client.api_requests[0][:operation_name]
+      assert_equal :list_objects_v2,               @s3.client.api_requests[0][:operation_name]
       assert_equal "delete_prefix/",               @s3.client.api_requests[0][:params][:prefix]
       assert_equal :delete_objects,                @s3.client.api_requests[1][:operation_name]
       assert_equal [{ key: "delete_prefix/foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
     end
 
     it "deletes objects with prefix with a trailing slash" do
-      @s3.client.stub_responses(:list_objects, contents: [{ key: "delete_prefix/foo" }])
+      @s3.client.stub_responses(:list_objects_v2, contents: [{ key: "delete_prefix/foo" }])
       @s3.delete_prefixed("delete_prefix/")
-      assert_equal :list_objects,                  @s3.client.api_requests[0][:operation_name]
+      assert_equal :list_objects_v2,               @s3.client.api_requests[0][:operation_name]
       assert_equal "delete_prefix/",               @s3.client.api_requests[0][:params][:prefix]
       assert_equal :delete_objects,                @s3.client.api_requests[1][:operation_name]
       assert_equal [{ key: "delete_prefix/foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
@@ -455,9 +455,9 @@ describe Shrine::Storage::S3 do
 
     it "respects storage prefix" do
       @s3 = s3(prefix: "prefix")
-      @s3.client.stub_responses(:list_objects, contents: [{ key: "prefix/delete_prefix/foo" }])
+      @s3.client.stub_responses(:list_objects_v2, contents: [{ key: "prefix/delete_prefix/foo" }])
       @s3.delete_prefixed("delete_prefix")
-      assert_equal :list_objects,                         @s3.client.api_requests[0][:operation_name]
+      assert_equal :list_objects_v2,                      @s3.client.api_requests[0][:operation_name]
       assert_equal "prefix/delete_prefix/",               @s3.client.api_requests[0][:params][:prefix]
       assert_equal :delete_objects,                       @s3.client.api_requests[1][:operation_name]
       assert_equal [{ key: "prefix/delete_prefix/foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
@@ -466,18 +466,18 @@ describe Shrine::Storage::S3 do
 
   describe "#clear!" do
     it "deletes all objects in the bucket" do
-      @s3.client.stub_responses(:list_objects, contents: [{ key: "foo" }])
+      @s3.client.stub_responses(:list_objects_v2, contents: [{ key: "foo" }])
       @s3.clear!
-      assert_equal :list_objects,    @s3.client.api_requests[0][:operation_name]
+      assert_equal :list_objects_v2, @s3.client.api_requests[0][:operation_name]
       assert_equal "my-bucket",      @s3.client.api_requests[0][:params][:bucket]
       assert_equal :delete_objects,  @s3.client.api_requests[1][:operation_name]
       assert_equal [{ key: "foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
     end
 
     it "deletes subset of objects in the bucket" do
-      @s3.client.stub_responses(:list_objects, contents: [{ key: "foo" }, { key: "bar" }])
+      @s3.client.stub_responses(:list_objects_v2, contents: [{ key: "foo" }, { key: "bar" }])
       @s3.clear! { |object| object.key == "bar" }
-      assert_equal :list_objects,    @s3.client.api_requests[0][:operation_name]
+      assert_equal :list_objects_v2, @s3.client.api_requests[0][:operation_name]
       assert_equal "my-bucket",      @s3.client.api_requests[0][:params][:bucket]
       assert_equal :delete_objects,  @s3.client.api_requests[1][:operation_name]
       assert_equal [{ key: "bar" }], @s3.client.api_requests[1][:params][:delete][:objects]
@@ -485,9 +485,9 @@ describe Shrine::Storage::S3 do
 
     it "respects :prefix" do
       @s3 = s3(prefix: "prefix")
-      @s3.client.stub_responses(:list_objects, contents: [{ key: "prefix/foo" }])
+      @s3.client.stub_responses(:list_objects_v2, contents: [{ key: "prefix/foo" }])
       @s3.clear!
-      assert_equal :list_objects,           @s3.client.api_requests[0][:operation_name]
+      assert_equal :list_objects_v2,        @s3.client.api_requests[0][:operation_name]
       assert_equal "prefix",                @s3.client.api_requests[0][:params][:prefix]
       assert_equal :delete_objects,         @s3.client.api_requests[1][:operation_name]
       assert_equal [{ key: "prefix/foo" }], @s3.client.api_requests[1][:params][:delete][:objects]
