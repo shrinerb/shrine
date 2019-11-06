@@ -6,7 +6,7 @@ This guide is aimed at helping Paperclip users transition to Shrine, and it
 consists of three parts:
 
 1. Explanation of the key differences in design between Paperclip and Shrine
-2. Instructions how to migrate and existing app that uses Paperclip to Shrine
+2. Instructions how to migrate an existing app that uses Paperclip to Shrine
 3. Extensive reference of Paperclip's interface with Shrine equivalents
 
 ## Overview
