@@ -22,7 +22,7 @@ class Shrine
         private
 
         def _metadata_method(name)
-          FileMethods.send(:define_method, name) do
+          self::UploadedFile.send(:define_method, name) do
             metadata[name.to_s]
           end
         end
@@ -53,10 +53,6 @@ class Shrine
             io.rewind
           end
         end
-      end
-
-      module FileMethods
-        # methods will be dynamically defined here through `Shrine.add_metadata`
       end
     end
 

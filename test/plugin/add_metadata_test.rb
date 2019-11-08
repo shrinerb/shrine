@@ -101,6 +101,16 @@ describe Shrine::Plugins::AddMetadata do
       uploaded_file = @uploader.upload(fakeio)
       assert_nil uploaded_file.custom
     end
+
+    it "respects inheritance" do
+      shrine1 = Class.new(@shrine)
+      shrine2 = Class.new(@shrine)
+
+      shrine1.metadata_method :custom
+
+      assert shrine1::UploadedFile.method_defined?(:custom)
+      refute shrine2::UploadedFile.method_defined?(:custom)
+    end
   end
 
   it "doesn't overwrite existing definitions when loading the plugin" do

@@ -1,5 +1,7 @@
 ## HEAD
 
+* `add_metadata` – Define metadata methods only for the target uploader class (@janko)
+
 * `derivatives` – Add `:storage` option to `Attacher#create_derivatives` (@janko)
 
 * `store_dimensions` – Propagate exceptions on loading `ruby-vips` in `:vips` analyzer (@janko)
