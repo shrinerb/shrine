@@ -1,5 +1,7 @@
 ## HEAD
 
+* `derivatives` – Add `:storage` option to `Attacher#create_derivatives` (@janko)
+
 * `store_dimensions` – Propagate exceptions on loading `ruby-vips` in `:vips` analyzer (@janko)
 
 * `signature` – Allow skipping rewinding by passing `rewind: false` to `Shrine.signature` (@janko)

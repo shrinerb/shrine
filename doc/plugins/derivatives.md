@@ -103,10 +103,18 @@ file, calls the processor, uploads results to attacher's permanent storage, and
 saves uploaded files on the attacher. Any additional arguments are forwarded to
 [`Attacher#process_derivatives`](#processing-derivatives):
 
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Attacher-->
 ```rb
 attacher.create_derivatives(different_source) # pass a different source file
 attacher.create_derivatives(foo: "bar")       # pass custom options to the processor
 ```
+<!--Attachment-->
+```rb
+photo.image_derivatives!(different_source) # pass a different source file
+photo.image_derivatives!(foo: "bar")       # pass custom options to the processor
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Naming processors
 
@@ -117,26 +125,47 @@ the desired processor.
 ```rb
 class ImageUploader < Shrine
   Attacher.derivatives :thumbnails do |original|
-    # ...
+    { large: ..., small: ..., medium: ... }
   end
 
   Attacher.derivatives :crop do |original|
-    # ...
+    { cropped: ... }
   end
-
-  # ...
 end
 ```
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Attachment-->
 ```rb
 photo.image_derivatives!(:thumbnails)
-# or
-attacher.create_derivatives(:thumbnails)
+photo.image_derivatives!(:crop)
 ```
+<!--Attacher-->
+```rb
+attacher.create_derivatives(:thumbnails)
+attacher.create_derivatives(:crop)
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Derivatives storage
 
 By default, derivatives are uploaded to the permanent storage of the attacher.
-You can change the default destination storage with the `:storage` plugin
+You can change the destination storage by passing `:storage` to the creation
+call:
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Attachment-->
+```rb
+photo.image_derivatives!(storage: :cache) # will be promoted together with main file
+photo.image_derivatives!(storage: :other_store)
+```
+<!--Attacher-->
+```rb
+attacher.create_derivatives(storage: :cache) # will be promoted together with main file
+attacher.create_derivatives(storage: :other_store)
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+You can also change the default destination storage with the `:storage` plugin
 option:
 
 ```rb

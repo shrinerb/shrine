@@ -515,6 +515,17 @@ describe Shrine::Plugins::Derivatives do
 
         assert_equal '{:foo=>"bar"}', @attacher.derivatives[:options].read
       end
+
+      it "accepts :storage" do
+        @attacher.class.derivatives :reversed do |original|
+          { reversed: StringIO.new(original.read.reverse) }
+        end
+
+        @attacher.create_derivatives(:reversed, fakeio("file"), storage: :cache)
+
+        assert_equal :cache, @attacher.derivatives[:reversed].storage_key
+        assert_equal "elif", @attacher.derivatives[:reversed].read
+      end
     end
 
     describe "#add_derivatives" do
