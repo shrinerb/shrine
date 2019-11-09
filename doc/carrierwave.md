@@ -6,7 +6,7 @@ This guide is aimed at helping CarrierWave users transition to Shrine, and it
 consists of three parts:
 
 1. Explanation of the key differences in design between CarrierWave and Shrine
-2. Instructions how to migrate and existing app that uses CarrierWave to Shrine
+2. Instructions how to migrate an existing app that uses CarrierWave to Shrine
 3. Extensive reference of CarrierWave's interface with Shrine equivalents
 
 ## Overview

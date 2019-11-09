@@ -6,7 +6,7 @@ This guide is aimed at helping Refile users transition to Shrine, and it consist
 of three parts:
 
 1. Explanation of the key differences in design between Refile and Shrine
-2. Instructions how to migrate and existing app that uses Refile to Shrine
+2. Instructions how to migrate an existing app that uses Refile to Shrine
 3. Extensive reference of Refile's interface with Shrine equivalents
 
 ## Overview
