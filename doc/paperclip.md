@@ -336,8 +336,8 @@ module PaperclipShrineSynchronization
     if attachment.size.present?
       attacher.set shrine_file(attachment)
 
-      attachment.styles.each do |name, style|
-        attacher.merge_derivatives(name => shrine_file(style))
+      attachment.styles.each do |style_name, style|
+        attacher.merge_derivatives(style_name => shrine_file(style))
       end
     else
       attacher.set nil
