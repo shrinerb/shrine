@@ -372,7 +372,7 @@ module PaperclipShrineSynchronization
   # If you'll be using a `:prefix` on your Shrine storage, or you're storing
   # files on the filesystem, make sure to subtract the appropriate part
   # from the path assigned to `:id`.
-  def style_to_shrine_data(style)
+  def shrine_style_file(style)
     Shrine.uploaded_file(
       storage:  :store,
       id:       style.attachment.path(style.name),
