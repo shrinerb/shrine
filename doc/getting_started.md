@@ -186,8 +186,8 @@ s3_options = {
 }
 
 Shrine.storages = {
-  cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options),
-  store: Shrine::Storage::S3.new(**s3_options),
+  cache: Shrine::Storage::S3.new(prefix: "cache", **s3_options), # temporary
+  store: Shrine::Storage::S3.new(**s3_options),                  # permanent
 }
 ```
 
@@ -350,7 +350,7 @@ The easiest way to attach files is with the `Shrine::Attachment` module:
 ```rb
 class Photo < Sequel::Model # ActiveRecord::Base
   include ImageUploader::Attachment.new(:image) #
-  include ImageUploader::Attachment[:image]     # use a preferred syntax
+  include ImageUploader::Attachment[:image]     # use your preferred syntax
   include ImageUploader::Attachment(:image)     #
 end
 ```
@@ -373,7 +373,7 @@ that attachments are deleted when the record is destroyed.
 photo.image #=> nil
 
 # the assigned file is cached to temporary storage and written to `image_data` column
-photo.image = File.open("waterfall.jpg")
+photo.image = File.open("waterfall.jpg", "rb")
 photo.image      #=> #<Shrine::UploadedFile ...>
 photo.image_url  #=> "/uploads/cache/0sdfllasfi842.jpg"
 photo.image_data #=> '{"id":"0sdfllasfi842.jpg","storage":"cache","metadata":{...}}'
@@ -417,12 +417,10 @@ attacher.url          # equivalent to `photo.image_url`
 ```
 
 The attacher is what drives attaching files to model instances; you can use it
-as a more explicit alternative to models' attachment interface, or simply when
-you need something that's not available through the attachment methods.
+as a more explicit alternative to models' attachment interface, or when you
+need something that's not available through the attachment methods.
 
-You can do things such as change the temporary and permanent storage the
-attacher uses, or upload files directly to permanent storage. See the [Using
-Attacher] guide for more details.
+See [Using Attacher] guide for more details.
 
 ### Temporary storage
 
@@ -433,18 +431,18 @@ files go straight to permanent storage:
 ```rb
 Shrine.plugin :model, cache: false
 ```
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Attachment-->
 ```rb
-photo.image = File.open("waterfall.jpg")
+photo.image = File.open("waterfall.jpg", "rb")
 photo.image.storage_key #=> :store
 ```
-<!--Attacher-->
+
+If you're using the attacher directly, you can just use `Attacher#attach`
+instead of `Attacher#assign`:
+
 ```rb
-attacher.attach File.open("waterfall.jpg")
+attacher.attach File.open("waterfall.jpg", "rb")
 attacher.file.storage_key #=> :store
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
 ## Plugin system
 
