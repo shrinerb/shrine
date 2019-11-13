@@ -580,12 +580,9 @@ documentation and the [File Processing] guide.
 ### Processing on-the-fly
 
 On-the-fly processing is provided by the
-[`derivation_endpoint`][derivation_endpoint plugin] plugin. It comes with a
-[mountable][Mounting Endpoints] Rack app which applies processing on request
-and returns processed files.
-
-To set it up, we mount the Rack app in our router on a chosen path prefix,
-configure the plugin with a secret key and that path prefix, and define
+[`derivation_endpoint`][derivation_endpoint plugin] plugin. To set it up, we
+configure the plugin with a secret key and a path prefix, [mount][Mounting
+Endpoints] its Rack app in our routes on the configured path prefix, and define
 processing we want to perform:
 
 ```rb
@@ -593,25 +590,24 @@ processing we want to perform:
 gem "image_processing", "~> 1.8"
 ```
 ```rb
-# config/routes.rb (Rails)
-Rails.application.routes.draw do
-  # ...
-  mount ImageUploader.derivation_endpoint => "/derivations/image"
+# config/initializers/shrine.rb (Rails)
+require "image_processing/mini_magick"
+
+Shrine.plugin :derivation_endpoint,
+  secret_key: "<YOUR SECRET KEY>",
+  prefix:     "derivations" # needs to match the mount point in routes
+
+Shrine.derivation :thumbnail do |file, width, height|
+  ImageProcessing::MiniMagick
+    .source(file)
+    .resize_to_limit!(width.to_i, height.to_i)
 end
 ```
 ```rb
-require "image_processing/mini_magick"
-
-class ImageUploader < Shrine
-  plugin :derivation_endpoint,
-    secret_key: "<YOUR SECRET KEY>",
-    prefix:     "derivations/image" # needs to match the mount point in routes
-
-  derivation :thumbnail do |file, width, height|
-    ImageProcessing::MiniMagick
-      .source(file)
-      .resize_to_limit!(width.to_i, height.to_i)
-  end
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  mount Shrine.derivation_endpoint => "/derivations"
 end
 ```
 
@@ -620,7 +616,7 @@ processing:
 
 ```rb
 photo.image.derivation_url(:thumbnail, 600, 400)
-#=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+#=> "/derivations/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
 ```
 
 The on-the-fly processing feature is highly customizable, see the
