@@ -254,15 +254,17 @@ uploader.upload(io, upload_options: { acl: "public-read" }) # add options to Sto
 
 Shrine is able to upload any IO-like object that implement methods [`#read`],
 [`#rewind`], [`#eof?`] and [`#close`] whose behaviour matches the [`IO`] class.
-This includes built-in IO and IO-like objects like File, Tempfile and StringIO.
+This includes but is not limited to the following objects:
 
-When a file is uploaded to a Rails app, in request params it will be
-represented by an `ActionDispatch::Http::UploadedFile` object, which is also an
-IO-like object accepted by Shrine. In other Rack applications the uploaded file
-will be represented as a Hash, but it can be converted into an IO-like object
-with the [`rack_file`][rack_file plugin] plugin.
-
-Here are some examples of various IO-like objects that can be uploaded:
+* `File`
+* `Tempfile`
+* `StringIO`
+* `ActionDispatch::Http::UploadedFile` (Rails form upload)
+* `Shrine::RackFile` ([`rack_file`][rack_file plugin] plugin)
+* `Shrine::DataFile` ([`data_uri`][data_uri plugin] plugin)
+* `Shrine::UploadedFile`
+* `Down::ChunkedIO` ([Down] gem)
+* ...
 
 ```rb
 uploader.upload File.open("/path/to/file", binmode: true)   # upload from disk
@@ -278,7 +280,15 @@ uploader.upload Shrine::UploadedFile.new(...)               # upload from Shrine
 
 The `Shrine::UploadedFile` object represents the file that was uploaded to a
 storage, and it's what's returned from `Shrine#upload` or when retrieving a
-record [attachment]. It contains the following data:
+record [attachment].
+
+```rb
+uploader.upload(file) #=> #<Shrine::UploadedFile ...>  (uploader)
+photo.image           #=> #<Shrine::UploadedFile ...>  (attachment)
+attacher.file         #=> #<Shrine::UploadedFile ...>  (attacher)
+```
+
+An uploaded file object contains the following data:
 
 | Key        | Description                                        |
 | :-------   | :----------                                        |
@@ -287,13 +297,12 @@ record [attachment]. It contains the following data:
 | `metadata` | file [metadata] that was extracted before upload   |
 
 ```rb
-uploaded_file = uploader.upload(file)
 uploaded_file #=> #<Shrine::UploadedFile id="949sdjg834.jpg" storage=:store metadata={...}>
 
-uploaded_file.id          # => "949sdjg834.jpg"
-uploaded_file.storage_key # => :store
-uploaded_file.storage     # => #<Shrine::Storage::S3>
-uploaded_file.metadata    # => {...}
+uploaded_file.id          #=> "949sdjg834.jpg"
+uploaded_file.storage_key #=> :store
+uploaded_file.storage     #=> #<Shrine::Storage::S3>
+uploaded_file.metadata    #=> {...}
 ```
 
 It comes with many convenient methods that delegate to the storage:
@@ -953,7 +962,7 @@ Shrine.logger.level = Logger::WARN
 [`Shrine::UploadedFile`]: https://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
 
 [attacher]: #attacher
-[attachment]: #attachment
+[attachment]: #attaching
 [backgrounding]: #backgrounding
 [direct uploads]: #direct-uploads
 [io abstraction]: #io-abstraction
@@ -997,10 +1006,12 @@ Shrine.logger.level = Logger::WARN
 [ImageProcessing::MiniMagick]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme
 [ImageProcessing::Vips]: https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 [`file`]: http://linux.die.net/man/1/file
+[Down]: https://github.com/janko/down
 
 [activerecord plugin]: https://shrinerb.com/docs/plugins/activerecord
 [add_metadata plugin]: https://shrinerb.com/docs/plugins/add_metadata
 [backgrounding plugin]: https://shrinerb.com/docs/plugins/backgrounding
+[data_uri plugin]: https://shrinerb.com/docs/plugins/data_uri
 [derivation_endpoint plugin]: https://shrinerb.com/docs/plugins/derivation_endpoint
 [derivatives plugin]: https://shrinerb.com/docs/plugins/derivatives
 [determine_mime_type plugin]: https://shrinerb.com/docs/plugins/determine_mime_type
