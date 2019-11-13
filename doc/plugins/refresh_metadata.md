@@ -12,17 +12,18 @@ plugin :refresh_metadata
 It provides `#refresh_metadata!` method, which triggers metadata extraction
 (calls `Shrine#extract_metadata`) with the uploaded file opened for reading,
 and updates the existing metadata hash with the results. This can be done
-on the attacher or the uploaded file level.
+on the `Shrine::Attacher` or the `Shrine::UploadedFile` level.
 
 ## Attacher
 
 Calling `#refresh_metadata!` on a `Shrine::Attacher` object will re-extract
-metadata of the attached file. When used with a [model], it will write new file
-data back into the attachment attribute.
+metadata of the attached file, and when used with a [model], it will write new
+file data back into the attachment attribute.
 
 ```rb
 attacher.refresh_metadata!
-attacher.file.metadata # re-extracted metadata
+attacher.file.metadata    # re-extracted metadata
+attacher.record.file_data #=> '{ ... data with updated metadata ... }'
 ```
 
 The `Attacher#context` hash will be forwarded to metadata extraction, as well
