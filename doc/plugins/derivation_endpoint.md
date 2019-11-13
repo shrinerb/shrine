@@ -484,32 +484,27 @@ such as AWS S3 or Google Cloud Storage.
 ### Deleting derivatives
 
 When the original attachment is deleted, its uploaded derivatives will not be
-automatically deleted, you will need to do the deletion manually. To ensure
-this gets called both on destroying and replacing, you can add that code to
-`Attacher#destroy`.
+automatically deleted, you will need to do the deletion manually. If you're
+using [backgrounding], you can do this in your `DestroyJob`.
 
-The easiest way is to delete the directory containing your derivatives:
+If your storage implements `#delete_prefixed`, and you're using the default
+[`:upload_location`](#upload-location), you can delete the directory containing
+derivatives:
 
 ```rb
-class ImageUploader < Shrine
-  class Attacher
-    def destroy(*args)
-      super
+class DestroyJob < ActiveJob::Base
+  def perform(attacher_class, data)
+    # ... destroy attached file ...
 
-      derivatives_directory = file.id
-      storage               = store.storage
+    derivatives_directory = attacher.file.id + "/"
+    storage               = attacher.store.storage
 
-      storage.delete_prefixed(derivatives_directory)
-    end
+    storage.delete_prefixed(derivatives_directory)
   end
 end
 ```
 
-This is under the assumption that your storage implements `#delete_prefixed`
-and that you're using default [`:upload_location`](#upload-location).
-
-Alternatively, you can delete each derivative individually using
-`Derivation#delete`:
+Alternatively, you can delete each derivative individually:
 
 ```rb
 class ImageUploader < Shrine
@@ -519,14 +514,15 @@ class ImageUploader < Shrine
     [:thumbnail, 400, 300],
     ...
   ]
+end
+```
+```rb
+class DestroyJob < ActiveJob::Base
+  def perform(attacher_class, data)
+    # ... destroy attached file ...
 
-  class Attacher
-    def destroy(*args)
-      super
-
-      DERIVATIONS.each do |args|
-        file.derivation(*args).delete
-      end
+    attacher.shrine_class::DERIVATIONS.each do |args|
+      attacher.file.derivation(*args).delete
     end
   end
 end
@@ -862,3 +858,4 @@ plugin :derivation_endpoint, log_subscriber: nil
 [`Content-Type`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
 [`Content-Disposition`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition
 [`Cache-Control`]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
