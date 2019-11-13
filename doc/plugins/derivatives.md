@@ -10,12 +10,11 @@ main attachment data in the same record attribute.
 Shrine.plugin :derivatives
 ```
 
-## Creating derivatives
+## Quick start
 
-When you have a file attached, you can generate derivatives from it and save
-them alongside the attached file. The simplest way to do this is to define a
-processor which returns the processed files, and then trigger it when you want
-to create derivatives.
+You'll usually want to create derivatives from an attached file. The simplest
+way to do this is to define a processor which returns the processed files, and
+then trigger it when you want to create derivatives.
 
 Here is an example of generating image thumbnails:
 
@@ -27,7 +26,6 @@ gem "image_processing", "~> 1.8"
 require "image_processing/mini_magick"
 
 class ImageUploader < Shrine
-  # registers a default derivatives processor
   Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
@@ -57,8 +55,17 @@ route make sure to create derivatives for new attachments:
 photo.image_derivatives! if photo.image_changed?
 ```
 
-Once derivatives have been created, their data is stored in the `#<name>_data`
-record attribute alongside the main file data:
+You can then retrieve created derivatives as follows:
+
+```rb
+photo.image(:large)           #=> #<Shrine::UploadedFile ...>
+photo.image(:large).url       #=> "https://s3.amazonaws.com/path/to/large.jpg"
+photo.image(:large).size      #=> 43843
+photo.image(:large).mime_type #=> "image/jpeg"
+```
+
+The derivatives data is stored in the `#<name>_data` record attribute, alongside
+the main file data:
 
 ```rb
 photo.image_data #=>
@@ -74,22 +81,112 @@ photo.image_data #=>
 # }
 ```
 
-You can then retrieve derivatives as follows:
+## Retrieving derivatives
+
+The list of stored derivatives can be retrieved with `#<name>_derivatives`:
 
 ```rb
-photo.image(:large)           #=> #<Shrine::UploadedFile>
-photo.image(:large).url       #=> "https://s3.amazonaws.com/path/to/large.jpg"
-photo.image(:large).size      #=> 43843
-photo.image(:large).mime_type #=> "image/jpeg"
+photo.image_derivatives #=>
+# {
+#   small:  #<Shrine::UploadedFile ...>,
+#   medium: #<Shrine::UploadedFile ...>,
+#   large:  #<Shrine::UploadedFile ...>,
+# }
 ```
 
-The `#<name>_derivatives!` model method delegates to
-`Attacher#create_derivatives`, which you can use if you're using
-`Shrine::Attacher` directly:
+A specific derivative can be retrieved in any of the following ways:
+
+```rb
+photo.image_derivatives[:small] #=> #<Shrine::UploadedFile ...>
+photo.image_derivatives(:small) #=> #<Shrine::UploadedFile ...>
+photo.image(:small)             #=> #<Shrine::UploadedFile ...>
+```
+
+Or with nested derivatives:
+
+```rb
+photo.image_derivatives #=> { thumbnail: { small: ..., medium: ..., large: ... } }
+
+photo.image_derivatives.dig(:thumbnail, :small) #=> #<Shrine::UploadedFile ...>
+photo.image_derivatives(:thumbnail, :small)     #=> #<Shrine::UploadedFile ...>
+photo.image(:thumbnails, :small)                #=> #<Shrine::UploadedFile ...>
+```
+
+### Derivative URL
+
+You can retrieve the URL of a derivative URL with `#<name>_url`:
+
+```rb
+photo.image_url(:small)  #=> "https://example.com/small.jpg"
+photo.image_url(:medium) #=> "https://example.com/medium.jpg"
+photo.image_url(:large)  #=> "https://example.com/large.jpg"
+```
+
+For nested derivatives you can pass multiple keys:
+
+```rb
+photo.image_derivatives #=> { thumbnail: { small: ..., medium: ..., large: ... } }
+
+photo.image_url(:thumbnail, :medium) #=> "https://example.com/medium.jpg"
+```
+
+By default, `#<name>_url` method will return `nil` if derivative is not found.
+You can use the [`default_url`][default_url] plugin to set up URL fallbacks:
+
+```rb
+Attacher.default_url do |derivative: nil, **|
+  "https://my-app.com/fallbacks/#{derivative}.jpg" if derivative
+end
+```
+```rb
+photo.image_url(:medium) #=> "https://example.com/fallbacks.com/medium.jpg"
+```
+
+Any additional URL options passed to `#<name>_url` will be forwarded to the
+storage:
+
+```rb
+photo.image_url(:small, response_content_disposition: "attachment")
+```
+
+You can also retrieve the derivative URL via `UploadedFile#url`:
+
+```rb
+photo.image_derivatives[:large].url
+```
+
+## Attacher API
+
+The derivatives API is primarily defined on the `Shrine::Attacher` class, with
+some important methods also being exposed through the `Shrine::Attachment`
+module.
+
+Here is a model example with equivalent attacher code:
+
+```rb
+photo.image_derivatives!(:thumbnails)
+photo.image_derivatives #=> { ... }
+
+photo.image_url(:large) #=> "https://..."
+photo.image(:large)     #=> #<Shrine::UploadedFile ...>
+```
+```rb
+attacher.create_derivatives(:thumbnails)
+attacher.get_derivatives #=> { ... }
+
+attacher.url(:large) #=> "https://..."
+attacher.get(:large) #=> "#<Shrine::UploadedFile>"
+```
+
+## Creating derivatives
+
+By default, the `Attacher#create_derivatives` method downloads the attached
+file, calls the processor, uploads results to attacher's permanent storage, and
+saves uploaded files on the attacher.
 
 ```rb
 attacher.file               #=> #<Shrine::UploadedFile id="original.jpg" storage=:store ...>
-attacher.create_derivatives # calls registered processor and uploads results
+attacher.create_derivatives # calls default processor and uploads results
 attacher.derivatives        #=>
 # {
 #   small:  #<Shrine::UploadedFile id="small.jpg" storage=:store ...>,
@@ -98,34 +195,23 @@ attacher.derivatives        #=>
 # }
 ```
 
-By default, the `Attacher#create_derivatives` method downloads the attached
-file, calls the processor, uploads results to attacher's permanent storage, and
-saves uploaded files on the attacher. Any additional arguments are forwarded to
+Any additional arguments are forwarded to
 [`Attacher#process_derivatives`](#processing-derivatives):
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Attacher-->
 ```rb
 attacher.create_derivatives(different_source) # pass a different source file
 attacher.create_derivatives(foo: "bar")       # pass custom options to the processor
 ```
-<!--Attachment-->
-```rb
-photo.image_derivatives!(different_source) # pass a different source file
-photo.image_derivatives!(foo: "bar")       # pass custom options to the processor
-```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Naming processors
 
 If you want to have multiple processors for an uploader, you can assign each
-processor a name. Then when creating derivatives you can specify the name of
-the desired processor.
+processor a name:
 
 ```rb
 class ImageUploader < Shrine
   Attacher.derivatives :thumbnails do |original|
-    { large: ..., small: ..., medium: ... }
+    { large: ..., medium: ..., small: ... }
   end
 
   Attacher.derivatives :crop do |original|
@@ -133,18 +219,17 @@ class ImageUploader < Shrine
   end
 end
 ```
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Attachment-->
-```rb
-photo.image_derivatives!(:thumbnails)
-photo.image_derivatives!(:crop)
-```
-<!--Attacher-->
+
+Then when creating derivatives you can specify the name of the desired
+processor. New derivatives will be merged with any existing ones.
+
 ```rb
 attacher.create_derivatives(:thumbnails)
+attacher.derivatives #=> { large: ..., medium: ..., small: ... }
+
 attacher.create_derivatives(:crop)
+attacher.derivatives #=> { large: ..., medium: ..., small: ..., cropped: ... }
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
 ### Derivatives storage
 
@@ -152,18 +237,10 @@ By default, derivatives are uploaded to the permanent storage of the attacher.
 You can change the destination storage by passing `:storage` to the creation
 call:
 
-<!--DOCUSAURUS_CODE_TABS-->
-<!--Attachment-->
-```rb
-photo.image_derivatives!(storage: :cache) # will be promoted together with main file
-photo.image_derivatives!(storage: :other_store)
-```
-<!--Attacher-->
 ```rb
 attacher.create_derivatives(storage: :cache) # will be promoted together with main file
 attacher.create_derivatives(storage: :other_store)
 ```
-<!--END_DOCUSAURUS_CODE_TABS-->
 
 You can also change the default destination storage with the `:storage` plugin
 option:
@@ -231,105 +308,20 @@ Attacher.derivatives :tiff do |original|
   }
 end
 ```
-
-## Retrieving derivatives
-
-If you're using the `Shrine::Attachment` module, you can retrieve stored
-derivatives by calling `#<name>_derivatives` on your model/entity.
-
-```rb
-class Photo < Model(:image_data)
-  include ImageUploader::Attachment(:image)
-end
-```
-```rb
-photo.image_derivatives #=>
-# {
-#   small:  #<Shrine::UploadedFile>,
-#   medium: #<Shrine::UploadedFile>,
-#   large:  #<Shrine::UploadedFile>,
-# }
-```
-
-A specific derivative can be retrieved in any of the following ways:
-
-```rb
-photo.image_derivatives[:small] #=> #<Shrine::UploadedFile>
-photo.image_derivatives(:small) #=> #<Shrine::UploadedFile>
-photo.image(:small)             #=> #<Shrine::UploadedFile>
-```
-
-And with nested derivatives:
-
-```rb
-photo.image_derivatives #=> { thumbnail: { small: ..., medium: ..., large: ... } }
-
-photo.image_derivatives.dig(:thumbnail, :small) #=> #<Shrine::UploadedFile>
-photo.image_derivatives(:thumbnail, :small)     #=> #<Shrine::UploadedFile>
-photo.image(:thumbnails, :small)                #=> #<Shrine::UploadedFile>
-```
-
-When using `Shrine::Attacher` directly, you can retrieve derivatives using
-`Attacher#derivatives`:
-
 ```rb
 attacher.derivatives #=>
 # {
-#   small:  #<Shrine::UploadedFile>,
-#   medium: #<Shrine::UploadedFile>,
-#   large:  #<Shrine::UploadedFile>,
+#   thumbnail: {
+#     small:  #<Shrine::UploadedFile ...>,
+#     medium: #<Shrine::UploadedFile ...>,
+#     large:  #<Shrine::UploadedFile ...>,
+#   },
+#   layers: [
+#     #<Shrine::UploadedFile ...>,
+#     #<Shrine::UploadedFile ...>,
+#     # ...
+#   ]
 # }
-```
-
-## Derivative URL
-
-If you're using the `Shrine::Attachment` module, you can use the `#<name>_url`
-method to retrieve the URL of a derivative.
-
-```rb
-class Photo < Model(:image_data)
-  include ImageUploader::Attachment(:image)
-end
-```
-```rb
-photo.image_url(:small)  #=> "https://example.com/small.jpg"
-photo.image_url(:medium) #=> "https://example.com/medium.jpg"
-photo.image_url(:large)  #=> "https://example.com/large.jpg"
-```
-
-For nested derivatives you can pass multiple keys:
-
-```rb
-photo.image_derivatives #=> { thumbnail: { small: ..., medium: ..., large: ... } }
-
-photo.image_url(:thumbnail, :medium) #=> "https://example.com/medium.jpg"
-```
-
-By default, `#<name>_url` method will return `nil` if derivative is not found.
-You can use the [`default_url`][default_url] plugin to set up URL fallbacks:
-
-```rb
-Attacher.default_url do |derivative: nil, **|
-  "https://my-app.com/fallbacks/#{derivative}.jpg" if derivative
-end
-```
-```rb
-photo.image_url(:medium) #=> "https://example.com/fallbacks.com/medium.jpg"
-```
-
-Any additional URL options passed to `#<name>_url` will be forwarded to the
-storage:
-
-```rb
-photo.image_url(:small, response_content_disposition: "attachment")
-```
-
-You can also retrieve the derivative URL via `UploadedFile#url`:
-
-```rb
-photo.image_derivatives[:large].url
-# or
-attacher.derivatives[:large].url
 ```
 
 ## Processing derivatives
@@ -396,12 +388,22 @@ end
 attacher.process_derivatives(:my_processor) # downloads attached file and passes it to the processor
 ```
 
-If you want to use a different source file, or if you're calling multiple
-processors in a row and want to avoid re-downloading the same source file each
-time, you can pass the source file as the second argument:
+If you want to use a different source file, you can pass it in to the process
+call. Typically you'd pass a local file on disk. If you pass a
+`Shrine::UploadedFile` object, it will be automatically downloaded to disk.
 
 ```rb
-# this way the source file is downloaded only once
+# named processor:
+attacher.process_derivatives(:my_processor, source_file)
+
+# default processor:
+attacher.process_derivatives(source_file)
+```
+
+If you want to call multiple processors in a row with the same source file, you
+can use this to avoid re-downloading the same source file each time:
+
+```rb
 attacher.file.download do |original|
   attacher.process_derivatives(:thumbnails, original)
   attacher.process_derivatives(:colors,     original)
@@ -509,9 +511,7 @@ attacher.upload_derivative :thumb, thumbnail_file,
   location: "path/to/derivative"
 ```
 
-A `:derivative` option is automatically passed to the uploader and holds the
-name of the derivative, which you can use when extracting metadata, generating
-location or generating upload options:
+The `:derivative` name is automatically passed to the uploader:
 
 ```rb
 class MyUploader < Shrine
@@ -540,8 +540,6 @@ If you want to disable this behaviour, pass `delete: false`:
 
 ```rb
 attacher.upload_derivative(:thumb, thumbnail_file, delete: false)
-
-File.exist?(thumbnail_file.path) #=> true
 ```
 
 ## Merging derivatives
