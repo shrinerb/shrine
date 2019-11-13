@@ -199,12 +199,17 @@ explains this setup in more detail.
 ## Migrating from Refile
 
 You have an existing app using Refile and you want to transfer it to
-Shrine. Let's assume we have a `Photo` model with the "image" attachment. First
-we need to create the `image_data` column for Shrine:
+Shrine. Let's assume we have a `Photo` model with the "image" attachment.
+
+### 1. Add Shrine column
+
+First we need to create the `image_data` column for Shrine:
 
 ```rb
 add_column :photos, :image_data, :text
 ```
+
+### 2. Dual write
 
 Afterwards we need to make new uploads write to the `image_data` column. This
 can be done by including the below module to all models that have Refile
@@ -219,8 +224,7 @@ Shrine.storages = {
 }
 
 Shrine.plugin :model
-```
-```rb
+
 module RefileShrineSynchronization
   def write_shrine_data(name)
     attacher = Shrine::Attacher.from_model(self, name)
@@ -257,8 +261,12 @@ end
 ```
 
 After you deploy this code, the `image_data` column should now be successfully
-synchronized with new attachments.  Next step is to run a script which writes
-all existing Refile attachments to `image_data`:
+synchronized with new attachments.
+
+### 3. Data migration
+
+Next step is to run a script which writes all existing Refile attachments to
+`image_data`:
 
 ```rb
 Photo.find_each do |photo|
@@ -267,9 +275,22 @@ Photo.find_each do |photo|
 end
 ```
 
+### 4. Rewrite code
+
 Now you should be able to rewrite your application so that it uses Shrine
-instead of Refile, using equivalent Shrine storages. For help with translating
-the code from Refile to Shrine, you can consult the reference below.
+instead of Refile (you can consult the reference in the next section). You can
+remove the `RefileShrineSynchronization` module as well.
+
+### 5. Remove Refile columns
+
+If everything is looking good, we can remove Refile columns:
+
+```rb
+remove_column :photos, :image_id
+remove_column :photos, :image_size
+remove_column :photos, :image_filename
+remove_column :photos, :image_content_type
+```
 
 ## Refile to Shrine direct mapping
 

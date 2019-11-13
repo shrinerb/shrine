@@ -268,18 +268,24 @@ Files] guide explains this setup in more detail.
 ## Migrating from CarrierWave
 
 You have an existing app using CarrierWave and you want to transfer it to
-Shrine. Let's assume we have a `Photo` model with the "image" attachment. First
-we need to create the `image_data` column for Shrine:
+Shrine. Let's assume we have a `Photo` model with the "image" attachment.
+
+### 1. Add Shrine column
+
+First we need to create the `image_data` column for Shrine:
 
 ```rb
 add_column :photos, :image_data, :text # or :json or :jsonb if supported
 ```
 
-Afterwards we need to make new uploads write to the `image_data` column. This
-can be done by including the below module to all models that have CarrierWave
-attachments:
+### 2. Dual write
+
+Next, we need to make new CarrierWave attachments write to the
+`image_data` column. This can be done by including the below module to all
+models that have CarrierWave attachments:
 
 ```rb
+# config/initializers/shrine.rb (Rails)
 require "shrine"
 
 Shrine.storages = {
@@ -289,8 +295,7 @@ Shrine.storages = {
 
 Shrine.plugin :model
 Shrine.plugin :derivatives
-```
-```rb
+
 module CarrierwaveShrineSynchronization
   def self.included(model)
     model.before_save do
@@ -340,20 +345,27 @@ end
 ```
 
 After you deploy this code, the `image_data` column should now be successfully
-synchronized with new attachments.  Next step is to run a script which writes
-all existing CarrierWave attachments to `image_data`:
+synchronized with new attachments.
+
+### 3. Data migration
+
+Next step is to run a script which writes all existing CarrierWave attachments
+to `image_data`:
 
 ```rb
 Photo.find_each do |photo|
-  Photo.uploaders.each_key { |name| photo.write_shrine_data(name) }
+  photo.write_shrine_data(:image)
   photo.save!
 end
 ```
 
+### 4. Rewrite code
+
 Now you should be able to rewrite your application so that it uses Shrine
-instead of CarrierWave, using equivalent Shrine storages. For help with
-translating the code from CarrierWave to Shrine, you can consult the reference
-below.
+instead of CarrierWave (you can consult the reference in the next section). You
+can remove the `CarrierwaveShrineSynchronization` module as well.
+
+### 5. Backill metadata
 
 You'll notice that Shrine metadata will be absent from the migrated files'
 data. You can run a script that will fill in any missing metadata defined in
@@ -363,9 +375,18 @@ your Shrine uploader:
 Shrine.plugin :refresh_metadata
 
 Photo.find_each do |photo|
-  photo.image_attacher.refresh_metadata!
-  photo.save
+  attacher = photo.image_attacher
+  attacher.refresh_metadata!
+  attacher.atomic_persist
 end
+```
+
+### 6. Remove CarrierWave column
+
+If everything is looking good, we can remove the CarrierWave column:
+
+```rb
+remove_column :photos, :image
 ```
 
 ## CarrierWave to Shrine direct mapping
@@ -499,7 +520,7 @@ class ImageUploader < Shrine
 end
 ```
 
-#### `#blacklist_mime_type_pattern`, `#whitelist_mime_type_pattern`, `#content_type_whitelist`, `#content_type_blacklist`
+####  `#content_type_whitelist`, `#content_type_blacklist`
 
 In Shrine, MIME type whitelisting/blacklisting is part of validations, and is
 provided by the `validation_helpers` plugin, though it doesn't support regexes:
@@ -513,6 +534,17 @@ class ImageUploader < Shrine
     validate_mime_type_exclusion %w[text/x-php]           # blacklist
   end
 end
+```
+
+Make sure to also load the `determine_mime_type` plugin to detect MIME type
+from file content.
+
+```rb
+# Gemfile
+gem "mimemagic"
+```
+```rb
+Shrine.plugin :determine_mime_type, analyzer: :mimemagic
 ```
 
 #### `#size_range`

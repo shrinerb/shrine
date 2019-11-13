@@ -297,16 +297,21 @@ file.mime_type #=> "application/x-php"
 ## Migrating from Paperclip
 
 You have an existing app using Paperclip and you want to transfer it to Shrine.
-First we need to make new uploads write to the `<attachment>_data` column.
-Let's assume we have a `Photo` model with the "image" attachment:
+Let's assume we have a `Photo` model with the "image" attachment.
+
+### 1. Add Shrine column
+
+First we need to create the `image_data` column for Shrine:
 
 ```rb
 add_column :photos, :image_data, :text
 ```
 
-Afterwards we need to make new uploads write to the `image_data` column. This
-can be done by including the below module to all models that have Paperclip
-attachments:
+### 2. Dual write
+
+Next, we need to make new Paperclip attachments write to the `image_data`
+column. This can be done by including the below module to all models that have
+Paperclip attachments:
 
 ```rb
 require "shrine"
@@ -318,8 +323,7 @@ Shrine.storages = {
 
 Shrine.plugin :model
 Shrine.plugin :derivatives
-```
-```rb
+
 module PaperclipShrineSynchronization
   def self.included(model)
     model.before_save do
@@ -389,34 +393,35 @@ end
 ```
 
 After you deploy this code, the `image_data` column should now be successfully
-synchronized with new attachments.  Next step is to run a script which writes
-all existing Paperclip attachments to `image_data`:
+synchronized with new attachments.
+
+### 3. Data migration
+
+Next step is to run a script which writes all existing Paperclip attachments to
+`image_data`:
 
 ```rb
 Photo.find_each do |photo|
-  Paperclip::AttachmentRegistry.each_definition do |klass, name, options|
-    photo.write_shrine_data(name) if klass == Photo
-  end
+  photo.write_shrine_data(:image)
   photo.save!
 end
 ```
 
-Now you should be able to rewrite your application so that it uses Shrine
-instead of Paperclip, using equivalent Shrine storages. For help with
-translating the code from Paperclip to Shrine, you can consult the reference
-below.
+### 4. Rewrite code
 
-You'll notice that Shrine metadata will be absent from the migrated files' data
-(specifically versions). You can run a script that will fill in any missing
-metadata defined in your Shrine uploader:
+Now you should be able to rewrite your application so that it uses Shrine
+instead of Paperclip (you can consult the reference in the next section). You
+can remove the `PaperclipShrineSynchronization` module as well.
+
+### 5. Remove Paperclip columns
+
+If everything is looking good, we can remove Paperclip columns:
 
 ```rb
-Shrine.plugin :refresh_metadata
-
-Photo.find_each do |photo|
-  photo.image_attacher.refresh_metadata!
-  photo.save
-end
+remove_column :photos, :image_file_name
+remove_column :photos, :image_file_size
+remove_column :photos, :image_content_type
+remove_column :photos, :image_updated_at
 ```
 
 ## Paperclip to Shrine direct mapping
@@ -458,7 +463,7 @@ class ImageUploader < Shrine
   plugin :derivatives
 
   Attacher.derivatives do |original|
-    magick = ImageProcessing::MiniMagick.source(image)
+    magick = ImageProcessing::MiniMagick.source(original)
 
     {
       large:  magick.resize_to_limit!(800, 800),
@@ -477,8 +482,8 @@ For default URLs you can use the `default_url` plugin:
 class ImageUploader < Shrine
   plugin :default_url
 
-  Attacher.default_url do |options|
-    "/attachments/#{name}/default.jpg"
+  Attacher.default_url do |derivative: nil, **|
+    "/images/placeholders/#{derivative || "original"}.jpg"
   end
 end
 ```
@@ -515,6 +520,60 @@ end
 #### `:validate_media_type`
 
 Shrine has this functionality in the `determine_mime_type` plugin.
+
+### `validates_attachment`
+
+#### `:presence`
+
+For presence validation you can use your ORM's presence validator:
+
+```rb
+class Photo < ActiveRecord::Base
+  include ImageUploader::Attachment(:image)
+  validates_presence_of :image
+end
+```
+
+#### `:content_type`
+
+You can do MIME type validation with Shrine's `validation_helpers` plugin:
+
+```rb
+class ImageUploader < Shrine
+  plugin :validation_helpers
+
+  Attacher.validate do
+    validate_mime_type %w[image/jpeg image/png image/webp]
+  end
+end
+```
+
+Make sure to also load the `determine_mime_type` plugin to detect MIME type
+from file content.
+
+```rb
+# Gemfile
+gem "mimemagic"
+```
+```rb
+Shrine.plugin :determine_mime_type, analyzer: -> (io, analyzers) do
+  analyzers[:mimemagic].call(io) || analyzers[:file].call(io)
+end
+```
+
+#### `:size`
+
+You can do filesize validation with Shrine's `validation_helpers` plugin:
+
+```rb
+class ImageUploader < Shrine
+  plugin :validation_helpers
+
+  Attacher.validate do
+    validate_max_size 10*1024*1024
+  end
+end
+```
 
 ### `Paperclip::Attachment`
 
