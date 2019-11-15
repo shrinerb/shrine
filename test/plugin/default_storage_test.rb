@@ -3,8 +3,7 @@ require "shrine/plugins/default_storage"
 
 describe Shrine::Plugins::DefaultStorage do
   before do
-    @attacher = attacher { plugin :default_storage }
-    @shrine   = @attacher.shrine_class
+    @shrine = shrine { plugin :default_storage }
   end
 
   describe "Attacher" do
@@ -74,7 +73,27 @@ describe Shrine::Plugins::DefaultStorage do
         end
 
         it "still returns default storage without settings" do
-          assert_equal storage_key, @attacher.public_send(:"#{storage_key}_key")
+          attacher = @shrine::Attacher.new
+
+          assert_equal storage_key, attacher.public_send(:"#{storage_key}_key")
+        end
+
+        it "handles static string keys" do
+          @shrine.plugin :default_storage, storage_key => storage_key.to_s
+
+          attacher = @shrine::Attacher.new
+          attacher.file = attacher.upload(fakeio, storage_key)
+
+          assert_equal storage_key, attacher.send(:"#{storage_key}_key")
+        end
+
+        it "handles dynamic string keys" do
+          @shrine.plugin :default_storage, storage_key => -> { storage_key.to_s }
+
+          attacher = @shrine::Attacher.new
+          attacher.file = attacher.upload(fakeio, storage_key)
+
+          assert_equal storage_key, attacher.send(:"#{storage_key}_key")
         end
       end
     end

@@ -46,9 +46,9 @@ class Shrine
       end
 
       # Returns the temporary storage identifier.
-      def cache_key; @cache; end
+      def cache_key; @cache.to_sym; end
       # Returns the permanent storage identifier.
-      def store_key; @store; end
+      def store_key; @store.to_sym; end
 
       # Returns the uploader that is used for the temporary storage.
       def cache; shrine_class.new(cache_key); end

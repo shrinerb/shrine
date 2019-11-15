@@ -19,6 +19,20 @@ describe Shrine::Attacher do
     end
   end
 
+  describe "#cache_key" do
+    it "symbolizes string keys" do
+      @attacher = @shrine::Attacher.new(cache: "cache")
+      assert_equal :cache, @attacher.cache_key
+    end
+  end
+
+  describe "#store_key" do
+    it "symbolizes string keys" do
+      @attacher = @shrine::Attacher.new(store: "store")
+      assert_equal :store, @attacher.store_key
+    end
+  end
+
   describe "#assign" do
     it "attaches a file to cache" do
       @attacher.assign(fakeio)

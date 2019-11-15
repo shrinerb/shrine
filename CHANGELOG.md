@@ -1,5 +1,9 @@
 ## HEAD
 
+* `default_storage` – Coerce storage key to symbol in `Attacher#cache_key` & `Attacher#store_key` (@janko)
+
+* `core` – Coerce storage key to symbol in `Attacher#cache_key` & `Attacher#store_key` (@janko)
+
 * `add_metadata` – Define metadata methods only for the target uploader class (@janko)
 
 * `derivatives` – Add `:storage` option to `Attacher#create_derivatives` (@janko)

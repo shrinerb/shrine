@@ -34,12 +34,12 @@ class Shrine
           if @cache.respond_to?(:call)
             if @cache.arity == 2
               Shrine.deprecation("Passing record & name argument to default storage block is deprecated and will be removed in Shrine 4. Use a block without arguments instead.")
-              @cache.call(record, name)
+              @cache.call(record, name).to_sym
             else
-              instance_exec(&@cache)
+              instance_exec(&@cache).to_sym
             end
           else
-            @cache
+            super
           end
         end
 
@@ -47,12 +47,12 @@ class Shrine
           if @store.respond_to?(:call)
             if @store.arity == 2
               Shrine.deprecation("Passing record & name argument to default storage block is deprecated and will be removed in Shrine 4. Use a block without arguments instead.")
-              @store.call(record, name)
+              @store.call(record, name).to_sym
             else
-              instance_exec(&@store)
+              instance_exec(&@store).to_sym
             end
           else
-            @store
+            super
           end
         end
       end
