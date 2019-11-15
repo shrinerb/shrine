@@ -46,6 +46,18 @@ Shrine::Plugins::Derivatives::AttacherClassMethods
 <div id='context'>
 </div>
 <div id='section'>
+<div id='aliases-list'>
+<h2>Public Instance Aliases</h2>
+<div class='name-list'>
+<table summary='Public Instance Aliases'>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>derivatives</td>
+<td>-&gt;</td>
+<td class='context-item-value'><a href="#method-i-derivatives_processor">derivatives_processor</a></td>
+</tr>
+</table>
+</div>
+</div>
 <div id='methods'>
 <h2>Public Instance methods</h2>
 <div class='method public-instance' id='method-method-i-derivatives_processor'>
@@ -87,7 +99,7 @@ Shrine::Plugins::Derivatives::AttacherClassMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivatives_storage-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-derivatives_storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>&#x000A;<span class="line-num">79</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivatives_storage</span>(<span class="ruby-identifier">storage_key</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">80</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage_key</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">81</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivatives</span>][<span class="ruby-value">:storage</span>] = <span class="ruby-identifier">storage_key</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">82</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">83</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivatives</span>][<span class="ruby-value">:storage</span>]&#x000A;<span class="line-num">84</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">85</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-derivatives_storage-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>&#x000A;<span class="line-num">80</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivatives_storage</span>(<span class="ruby-identifier">storage_key</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">81</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">storage_key</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">82</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivatives</span>][<span class="ruby-value">:storage</span>] = <span class="ruby-identifier">storage_key</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">block</span>&#x000A;<span class="line-num">83</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">84</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:derivatives</span>][<span class="ruby-value">:storage</span>]&#x000A;<span class="line-num">85</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">86</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

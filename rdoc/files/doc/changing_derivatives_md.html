@@ -30,7 +30,7 @@ doc/changing_derivatives.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-10-14 12:40:04 +0200</span>
+<span class='datetime'>2019-10-29 10:21:39 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -58,7 +58,7 @@ Last Update:
 
 <pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;image_processing&quot;</span>, <span class="ruby-string">&quot;~&gt; 1.8&quot;</span></pre>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives_processor</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    <span class="ruby-comment"># generate the thumbnails you want here</span>&#x000A;    {&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    <span class="ruby-comment"># generate the thumbnails you want here</span>&#x000A;    {&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <pre class="ruby"><span class="ruby-identifier">photo</span> = <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">photo_params</span>)&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">image_derivatives!</span> <span class="ruby-comment"># generate derivatives</span>&#x000A;<span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save</span></pre>
 
@@ -74,7 +74,7 @@ Last Update:
 
 <p>Let&#39;s assume we&#39;ve made the following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives_processor do |original|&#x000A;  magick = ImageProcessing::MiniMagick.source(original)&#x000A;+   .saver(quality: 85)&#x000A;  {&#x000A;    small:  magick.resize_to_limit!(300, 300),&#x000A;    medium: magick.resize_to_limit!(500, 500),&#x000A;    large:  magick.resize_to_limit!(800, 800),&#x000A;  }&#x000A;end</pre>
+<pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;+   .saver(quality: 85)&#x000A;   {&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;     medium: magick.resize_to_limit!(500, 500),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
 <p>We can now run the following script to reprocess derivatives for all existing records. It fetches the records in batches, downloads attachments on permanent storage, reprocesses new derivatives, persists the changes, and deletes old derivatives.</p>
 
@@ -86,7 +86,7 @@ Last Update:
 
 <p>Let&#39;s assume we&#39;ve made a following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives_processor do |original|&#x000A;  magick = ImageProcessing::MiniMagick.source(original)&#x000A;  {&#x000A;    small:  magick.resize_to_limit!(300, 300),&#x000A;-   medium: magick.resize_to_limit!(500, 500),&#x000A;+   medium: magick.resize_to_limit!(600, 600),&#x000A;    large:  magick.resize_to_limit!(800, 800),&#x000A;  }&#x000A;end</pre>
+<pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;   {&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;-    medium: magick.resize_to_limit!(500, 500),&#x000A;+    medium: magick.resize_to_limit!(600, 600),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
 <p>We can now run the following script to reprocess the derivative for all existing records. It fetches the records in batches, downloads attachments with derivatives, reprocesses the specific derivative, persists the change, and deletes old derivative.</p>
 
@@ -98,7 +98,7 @@ Last Update:
 
 <p>Let&#39;s assume we&#39;ve made a following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives_processor do |original|&#x000A;  magick = ImageProcessing::MiniMagick.source(original)&#x000A;  {&#x000A;+   square: magick.resize_to_fill!(150, 150),&#x000A;    small:  magick.resize_to_limit!(300, 300),&#x000A;    medium: magick.resize_to_limit!(600, 600),&#x000A;    large:  magick.resize_to_limit!(800, 800),&#x000A;  }&#x000A;end</pre>
+<pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;   {&#x000A;+    square: magick.resize_to_fill!(150, 150),&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;     medium: magick.resize_to_limit!(600, 600),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
 <p>We can now run following script to add the new derivative for all existing records. It fetches the records in batches, downloads attachments on permanent storage, creates the new derivative, and persists the changes.</p>
 
@@ -112,7 +112,7 @@ Last Update:
 
 <p>Let&#39;s assume we&#39;ve made the following change and have deployed it to production:</p>
 
-<pre>Attacher.derivatives_processor do |original|&#x000A;  magick = ImageProcessing::MiniMagick.source(original)&#x000A;  {&#x000A;-   square: magick.resize_to_fill!(150, 150),&#x000A;    small:  magick.resize_to_limit!(300, 300),&#x000A;    medium: magick.resize_to_limit!(600, 600),&#x000A;    large:  magick.resize_to_limit!(800, 800),&#x000A;  }&#x000A;end</pre>
+<pre>Attacher.derivatives do |original|&#x000A;   magick = ImageProcessing::MiniMagick.source(original)&#x000A;   {&#x000A;-    square: magick.resize_to_fill!(150, 150),&#x000A;     small:  magick.resize_to_limit!(300, 300),&#x000A;     medium: magick.resize_to_limit!(600, 600),&#x000A;     large:  magick.resize_to_limit!(800, 800),&#x000A;   }&#x000A; end</pre>
 
 <p>We can now run following script to remove the unused derivative for all existing record. It fetches the records in batches, removes and deletes the unused derivative, and persists the changes.</p>
 

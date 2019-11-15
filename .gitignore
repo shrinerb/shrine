@@ -1,3 +1,4 @@
 website/
 Gemfile.lock
 pkg/
+coverage/

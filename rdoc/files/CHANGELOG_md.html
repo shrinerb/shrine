@@ -30,13 +30,37 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-10-14 12:53:23 +0200</span>
+<span class='datetime'>2019-11-15 15:17:04 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
-<h2 id="label-3.0.0+-2814-10-2019-29">3.0.0 (14-10-2019)<span><a href="#label-3.0.0+-2814-10-2019-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-3.1.0+-282019-11-15-29+-5Brelease+notes-5D">3.1.0 (2019-11-15) <a href="https://shrinerb.com/docs/release_notes/3.1.0">[release notes]</a><span><a href="#label-3.1.0+-282019-11-15-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>default_storage</code> – Coerce storage key to symbol in <code>Attacher#cache_key</code> &amp; <code>Attacher#store_key</code> (@janko)</p>
+</li><li>
+<p><code>core</code> – Coerce storage key to symbol in <code>Attacher#cache_key</code> &amp; <code>Attacher#store_key</code> (@janko)</p>
+</li><li>
+<p><code>add_metadata</code> – Define metadata methods only for the target uploader class (@janko)</p>
+</li><li>
+<p><code>derivatives</code> – Add <code>:storage</code> option to <code>Attacher#create_derivatives</code> (@janko)</p>
+</li><li>
+<p><code>store_dimensions</code> – Propagate exceptions on loading <code>ruby-vips</code> in <code>:vips</code> analyzer (@janko)</p>
+</li><li>
+<p><code>signature</code> – Allow skipping rewinding by passing <code>rewind: false</code> to <code>Shrine.signature</code> (@janko)</p>
+</li><li>
+<p><code>derivatives</code> – Add <code>Attacher.derivatives</code> alias for <code>Attacher.derivatives_processor</code> (@janko)</p>
+</li></ul>
+
+<h2 id="label-3.0.1+-282019-10-17-29+-5Brelease+notes-5D">3.0.1 (2019-10-17) <a href="https://shrinerb.com/docs/release_notes/3.0.1">[release notes]</a><span><a href="#label-3.0.1+-282019-10-17-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>metadata_attributes</code> – Fix exception being raised when there is no attached file (@janko)</p>
+</li><li>
+<p><code>core</code> – Simplify <code>UploadedFile#inspect</code> output (@janko)</p>
+</li></ul>
+
+<h2 id="label-3.0.0+-282019-10-14-29+-5Brelease+notes-5D">3.0.0 (2019-10-14) <a href="https://shrinerb.com/docs/release_notes/3.0.0">[release notes]</a><span><a href="#label-3.0.0+-282019-10-14-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>derivation_endpoint</code> – Pass <code>action: :derivation</code> when uploading derivation results (@janko)</p>
 </li><li>
@@ -268,6 +292,8 @@ Last Update:
 </li><li>
 <p><code>core</code> – Add <code>Attacher#data</code> and <code>Attacher.from_data</code> for dumping to and loading from a Hash (@janko)</p>
 </li><li>
+<p><code>core</code> – Change <code>Attacher#assign</code> to raise exception when non-cached file is assigned (@janko)</p>
+</li><li>
 <p><code>core</code> – Enable <code>Attacher#assign</code> to accept cached file data as a Hash (@janko)</p>
 </li><li>
 <p><code>core</code> – Add <code>Attacher#file</code> alias for <code>Attacher#get</code> (@janko)</p>
@@ -395,7 +421,7 @@ Last Update:
 <p><code>s3</code> – Drop support for <code>aws-sdk</code> 2.x (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.19.0+-282019-07-18-29">2.19.0 (2019-07-18)<span><a href="#label-2.19.0+-282019-07-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.19.0+-282019-07-18-29+-5Brelease+notes-5D">2.19.0 (2019-07-18) <a href="https://shrinerb.com/docs/release_notes/2.19.0">[release notes]</a><span><a href="#label-2.19.0+-282019-07-18-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>pretty_location</code> – Allow specifying a different identifier from <code>id</code> (@00dav00)</p>
 </li><li>
@@ -452,7 +478,7 @@ Last Update:
 <p><code>core</code> – Allow registering storage objects under string keys (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.18.0+-282019-06-24-29">2.18.0 (2019-06-24)<span><a href="#label-2.18.0+-282019-06-24-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.18.0+-282019-06-24-29+-5Brelease+notes-5D">2.18.0 (2019-06-24) <a href="https://shrinerb.com/docs/release_notes/2.18.0">[release notes]</a><span><a href="#label-2.18.0+-282019-06-24-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>core</code> – Add <code>Shrine.upload</code> method as a shorthand for <code>Shrine.new(...).upload(...)</code> (@janko)</p>
 </li><li>
@@ -477,7 +503,7 @@ Last Update:
 <p><code>parsed_json</code> – Fix overriden <code>Attacher#assign</code> not accepting second argument (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.17.0+-282019-05-06-29">2.17.0 (2019-05-06)<span><a href="#label-2.17.0+-282019-05-06-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.17.0+-282019-05-06-29+-5Brelease+notes-5D">2.17.0 (2019-05-06) <a href="https://shrinerb.com/docs/release_notes/2.17.0">[release notes]</a><span><a href="#label-2.17.0+-282019-05-06-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>data_uri</code> – Add <code>Attacher#assign_data_uri</code> which accepts additional <code>Shrine#upload</code> options (@janko)</p>
 </li><li>
@@ -528,7 +554,7 @@ Last Update:
 <p><code>parsed_json</code> – Accepts hashes with symbols keys (@aglushkov)</p>
 </li></ul>
 
-<h2 id="label-2.16.0+-282019-02-18-29">2.16.0 (2019-02-18)<span><a href="#label-2.16.0+-282019-02-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.16.0+-282019-02-18-29+-5Brelease+notes-5D">2.16.0 (2019-02-18) <a href="https://shrinerb.com/docs/release_notes/2.16.0">[release notes]</a><span><a href="#label-2.16.0+-282019-02-18-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>derivation_endpoint</code> – Add <code>:upload_open_options</code> for download option for derivation result (@janko)</p>
 </li><li>
@@ -555,7 +581,7 @@ Last Update:
 <p>Fix <code>store_dimensions</code> plugin making second argument in <code>Shrine#extract_metadata</code> mandatory (@jrochkind)</p>
 </li></ul>
 
-<h2 id="label-2.15.0+-282019-02-08-29">2.15.0 (2019-02-08)<span><a href="#label-2.15.0+-282019-02-08-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.15.0+-282019-02-08-29+-5Brelease+notes-5D">2.15.0 (2019-02-08) <a href="https://shrinerb.com/docs/release_notes/2.15.0">[release notes]</a><span><a href="#label-2.15.0+-282019-02-08-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>derivation_endpoint</code> plugin for processing uploaded files on-the-fly (@janko)</p>
 </li><li>
@@ -566,7 +592,7 @@ Last Update:
 <p>Yield a new File object on <code>Shrine.with_file</code> when <code>tempfile</code> plugin is loaded (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.14.0+-282018-12-27-29">2.14.0 (2018-12-27)<span><a href="#label-2.14.0+-282018-12-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.14.0+-282018-12-27-29+-5Brelease+notes-5D">2.14.0 (2018-12-27) <a href="https://shrinerb.com/docs/release_notes/2.14.0">[release notes]</a><span><a href="#label-2.14.0+-282018-12-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>tempfile</code> plugin for easier reusing of the same uploaded file copy on disk (@janko)</p>
 </li><li>
@@ -637,7 +663,7 @@ Last Update:
 <p>Use a guard raise cause for <code>bucket</code> argument in S3 for an appropriate error message (@ardecvz)</p>
 </li></ul>
 
-<h2 id="label-2.13.0+-282018-11-04-29">2.13.0 (2018-11-04)<span><a href="#label-2.13.0+-282018-11-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.13.0+-282018-11-04-29+-5Brelease+notes-5D">2.13.0 (2018-11-04) <a href="https://shrinerb.com/docs/release_notes/2.13.0">[release notes]</a><span><a href="#label-2.13.0+-282018-11-04-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Specify UTF-8 charset in <code>Content-Type</code> response header in <code>presign_endpoint</code> plugin (@janko)</p>
 </li><li>
@@ -670,7 +696,7 @@ Last Update:
 <p>In <code>S3#upload</code> deprecate using aws-sdk-s3 lower than 1.14 when uploading IO objects of unknown size (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.12.0+-282018-08-22-29">2.12.0 (2018-08-22)<span><a href="#label-2.12.0+-282018-08-22-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.12.0+-282018-08-22-29+-5Brelease+notes-5D">2.12.0 (2018-08-22) <a href="https://shrinerb.com/docs/release_notes/2.12.0">[release notes]</a><span><a href="#label-2.12.0+-282018-08-22-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Ignore nil values when assigning files from a remote URL (@janko)</p>
 </li><li>
@@ -699,7 +725,7 @@ Last Update:
 <p>Make <code>UploadedFile#open</code> always open a new IO object and close the previous one (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.11.0+-282018-04-28-29">2.11.0 (2018-04-28)<span><a href="#label-2.11.0+-282018-04-28-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.11.0+-282018-04-28-29+-5Brelease+notes-5D">2.11.0 (2018-04-28) <a href="https://shrinerb.com/docs/release_notes/2.11.0">[release notes]</a><span><a href="#label-2.11.0+-282018-04-28-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>Shrine.with_file</code> for temporarily converting an IO-like object into a file (@janko)</p>
 </li><li>
@@ -728,7 +754,7 @@ Last Update:
 <p>Deprecate <code>direct_upload</code> plugin in favor of <code>upload_endpoint</code> and <code>presign_endpoint</code> plugins (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.10.0+-282018-03-28-29">2.10.0 (2018-03-28)<span><a href="#label-2.10.0+-282018-03-28-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.10.0+-282018-03-28-29+-5Brelease+notes-5D">2.10.0 (2018-03-28) <a href="https://shrinerb.com/docs/release_notes/2.10.0">[release notes]</a><span><a href="#label-2.10.0+-282018-03-28-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>:fastimage</code> analyzer to <code>determine_mime_type</code> plugin (@mokolabs)</p>
 </li><li>
@@ -751,7 +777,7 @@ Last Update:
 <p>Inherit the logger on subclassing <code>Shrine</code> and make it shared across subclasses (@hmistry)</p>
 </li></ul>
 
-<h2 id="label-2.9.0+-282018-01-27-29">2.9.0 (2018-01-27)<span><a href="#label-2.9.0+-282018-01-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.9.0+-282018-01-27-29+-5Brelease+notes-5D">2.9.0 (2018-01-27) <a href="https://shrinerb.com/docs/release_notes/2.9.0">[release notes]</a><span><a href="#label-2.9.0+-282018-01-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Support arrays of files in <code>versions</code> plugin (@janko)</p>
 </li><li>
@@ -776,7 +802,7 @@ Last Update:
 <p>Allow passing options to <code>Model#&lt;attachment&gt;_attacher</code> for overriding <code>Attacher</code> options (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.8.0+-282017-10-11-29">2.8.0 (2017-10-11)<span><a href="#label-2.8.0+-282017-10-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.8.0+-282017-10-11-29+-5Brelease+notes-5D">2.8.0 (2017-10-11) <a href="https://shrinerb.com/docs/release_notes/2.8.0">[release notes]</a><span><a href="#label-2.8.0+-282017-10-11-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Expand relative directory paths when initializing <code>Storage::FileSystem</code> (@janko)</p>
 </li><li>
@@ -807,7 +833,7 @@ Last Update:
 <p>Update <code>direct_upload</code> plugin to support Roda 3 (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.7.0+-282017-09-11-29">2.7.0 (2017-09-11)<span><a href="#label-2.7.0+-282017-09-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.7.0+-282017-09-11-29+-5Brelease+notes-5D">2.7.0 (2017-09-11) <a href="https://shrinerb.com/docs/release_notes/2.7.0">[release notes]</a><span><a href="#label-2.7.0+-282017-09-11-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Deprecate the <code>Shrine::DownloadEndpoint</code> constant over <code>Shrine.download_endpoint</code> (@janko)</p>
 </li><li>
@@ -876,12 +902,12 @@ Last Update:
 <p>Don&#39;t add a newline at the end of the base64-formatted signature (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.6.1+-282017-04-12-29">2.6.1 (2017-04-12)<span><a href="#label-2.6.1+-282017-04-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.6.1+-282017-04-12-29+-5Brelease+notes-5D">2.6.1 (2017-04-12) <a href="https://shrinerb.com/docs/release_notes/2.6.1">[release notes]</a><span><a href="#label-2.6.1+-282017-04-12-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Fix <code>download_endpoint</code> returning incorrect reponse body in some cases (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.6.0+-282017-04-04-29">2.6.0 (2017-04-04)<span><a href="#label-2.6.0+-282017-04-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.6.0+-282017-04-04-29+-5Brelease+notes-5D">2.6.0 (2017-04-04) <a href="https://shrinerb.com/docs/release_notes/2.6.0">[release notes]</a><span><a href="#label-2.6.0+-282017-04-04-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Make <code>Shrine::Storage::FileSystem#path</code> public which returns path to the file as a <code>Pathname</code> object (@janko)</p>
 </li><li>
@@ -954,7 +980,7 @@ Last Update:
 <p>Raise <code>Shrine::Error</code> when <code>Shrine#generate_location</code> returns nil (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.5.0+-282016-11-11-29">2.5.0 (2016-11-11)<span><a href="#label-2.5.0+-282016-11-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.5.0+-282016-11-11-29+-5Brelease+notes-5D">2.5.0 (2016-11-11) <a href="https://shrinerb.com/docs/release_notes/2.5.0">[release notes]</a><span><a href="#label-2.5.0+-282016-11-11-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>Attacher.default_url</code> as the idiomatic way of declaring default URLs (@janko)</p>
 </li><li>
@@ -981,7 +1007,7 @@ Last Update:
 <p>Make it possible to extract multiple metadata values at once with the <code>add_metadata</code> plugin (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.4.1+-282016-10-17-29">2.4.1 (2016-10-17)<span><a href="#label-2.4.1+-282016-10-17-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.4.1+-282016-10-17-29+-5Brelease+notes-5D">2.4.1 (2016-10-17) <a href="https://shrinerb.com/docs/release_notes/2.4.1">[release notes]</a><span><a href="#label-2.4.1+-282016-10-17-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Move back JSON serialization from <code>Attacher#write</code> to <code>Attacher#_set</code> (@janko)</p>
 </li><li>
@@ -992,7 +1018,7 @@ Last Update:
 <p>In <code>UploadedFile#download</code> use extension from <code>#original_filename</code> if <code>#id</code> doesn&#39;t have it (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.4.0+-282016-10-11-29">2.4.0 (2016-10-11)<span><a href="#label-2.4.0+-282016-10-11-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.4.0+-282016-10-11-29+-5Brelease+notes-5D">2.4.0 (2016-10-11) <a href="https://shrinerb.com/docs/release_notes/2.4.0">[release notes]</a><span><a href="#label-2.4.0+-282016-10-11-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>#convert_before_write</code> and <code>#convert_after_read</code> on the Attacher for data attribute conversion (@janko)</p>
 </li><li>
@@ -1029,12 +1055,12 @@ Last Update:
 <p>Override <code>#to_s</code> in <code>Shrine::Attachment</code> for better introspection with <code>puts</code> (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.3.1+-282016-09-01-29">2.3.1 (2016-09-01)<span><a href="#label-2.3.1+-282016-09-01-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.3.1+-282016-09-01-29+-5Brelease+notes-5D">2.3.1 (2016-09-01) <a href="https://shrinerb.com/docs/release_notes/2.3.1">[release notes]</a><span><a href="#label-2.3.1+-282016-09-01-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Don&#39;t change permissions of existing directories in FileSystem storage (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.3.0+-282016-08-27-29">2.3.0 (2016-08-27)<span><a href="#label-2.3.0+-282016-08-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.3.0+-282016-08-27-29+-5Brelease+notes-5D">2.3.0 (2016-08-27) <a href="https://shrinerb.com/docs/release_notes/2.3.0">[release notes]</a><span><a href="#label-2.3.0+-282016-08-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Prevent client from caching the presign response in direct_upload plugin (@janko)</p>
 </li><li>
@@ -1061,7 +1087,7 @@ Last Update:
 <p>Add <code>:directory_permissions</code> to <code>Storage::FileSystem</code> (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.2.0+-282016-07-29-29">2.2.0 (2016-07-29)<span><a href="#label-2.2.0+-282016-07-29-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.2.0+-282016-07-29-29+-5Brelease+notes-5D">2.2.0 (2016-07-29) <a href="https://shrinerb.com/docs/release_notes/2.2.0">[release notes]</a><span><a href="#label-2.2.0+-282016-07-29-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Soft deprecate <code>:phase</code> over <code>:action</code> in <code>context</code> (@janko)</p>
 </li><li>
@@ -1094,12 +1120,12 @@ Last Update:
 <p>Avoid an additional HEAD request to determine content length in multipart S3 copy (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.1.1+-282016-07-14-29">2.1.1 (2016-07-14)<span><a href="#label-2.1.1+-282016-07-14-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.1.1+-282016-07-14-29+-5Brelease+notes-5D">2.1.1 (2016-07-14) <a href="https://shrinerb.com/docs/release_notes/2.1.1">[release notes]</a><span><a href="#label-2.1.1+-282016-07-14-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Fix <code>S3#open</code> throwing a NameError if <code>net/http</code> isn&#39;t required (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.1.0+-282016-06-27-29">2.1.0 (2016-06-27)<span><a href="#label-2.1.0+-282016-06-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.1.0+-282016-06-27-29+-5Brelease+notes-5D">2.1.0 (2016-06-27) <a href="https://shrinerb.com/docs/release_notes/2.1.0">[release notes]</a><span><a href="#label-2.1.0+-282016-06-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Remove <code>:names</code> from versions plugin, and deprecate generating versions in :cache phase (@janko)</p>
 </li><li>
@@ -1116,12 +1142,12 @@ Last Update:
 <p>Deprecate <code>#cached_&lt;attachment&gt;_data=</code> over using <code>&lt;attachment&gt;</code> for the hidden field (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.0.1+-282016-05-30-29">2.0.1 (2016-05-30)<span><a href="#label-2.0.1+-282016-05-30-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.0.1+-282016-05-30-29+-5Brelease+notes-5D">2.0.1 (2016-05-30) <a href="https://shrinerb.com/docs/release_notes/2.0.1">[release notes]</a><span><a href="#label-2.0.1+-282016-05-30-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Don&#39;t override previously set default_url in versions plugin (@janko)</p>
 </li></ul>
 
-<h2 id="label-2.0.0+-282016-05-19-29">2.0.0 (2016-05-19)<span><a href="#label-2.0.0+-282016-05-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-2.0.0+-282016-05-19-29+-5Brelease+notes-5D">2.0.0 (2016-05-19) <a href="https://shrinerb.com/docs/release_notes/2.0.0">[release notes]</a><span><a href="#label-2.0.0+-282016-05-19-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Include query parameters in CDN-ed S3 URLs, making them work for private objects (@janko)</p>
 </li><li>
@@ -1202,19 +1228,19 @@ Last Update:
 <p>Deprecate loading the backgrounding plugin through the old “background_helpers” alias (@janko)</p>
 </li></ul>
 
-<h2 id="label-1.4.2+-282016-04-19-29">1.4.2 (2016-04-19)<span><a href="#label-1.4.2+-282016-04-19-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.4.2+-282016-04-19-29+-5Brelease+notes-5D">1.4.2 (2016-04-19) <a href="https://shrinerb.com/docs/release_notes/1.4.2">[release notes]</a><span><a href="#label-1.4.2+-282016-04-19-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Removed ActiveRecord&#39;s automatic support for optimistic locking as it wasn&#39;t stable (@janko)</p>
 </li><li>
 <p>Fixed record&#39;s dataset being modified after promoting preventing further updates with the same instance (@janko)</p>
 </li></ul>
 
-<h2 id="label-1.4.1+-282016-04-18-29">1.4.1 (2016-04-18)<span><a href="#label-1.4.1+-282016-04-18-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.4.1+-282016-04-18-29+-5Brelease+notes-5D">1.4.1 (2016-04-18) <a href="https://shrinerb.com/docs/release_notes/1.4.1">[release notes]</a><span><a href="#label-1.4.1+-282016-04-18-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Bring back triggering callbacks on promote in ORM plugins, and add support for optimistic locking (@janko)</p>
 </li></ul>
 
-<h2 id="label-1.4.0+-282016-04-15-29">1.4.0 (2016-04-15)<span><a href="#label-1.4.0+-282016-04-15-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.4.0+-282016-04-15-29+-5Brelease+notes-5D">1.4.0 (2016-04-15) <a href="https://shrinerb.com/docs/release_notes/1.4.0">[release notes]</a><span><a href="#label-1.4.0+-282016-04-15-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Return “Content-Length” response header in download_endpoint plugin (@janko)</p>
 </li><li>
@@ -1271,7 +1297,7 @@ Last Update:
 <p>Fix keep_files not to spawn a background job when file will not be deleted (@janko)</p>
 </li></ul>
 
-<h2 id="label-1.3.0+-282016-03-12-29">1.3.0 (2016-03-12)<span><a href="#label-1.3.0+-282016-03-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.3.0+-282016-03-12-29+-5Brelease+notes-5D">1.3.0 (2016-03-12) <a href="https://shrinerb.com/docs/release_notes/1.3.0">[release notes]</a><span><a href="#label-1.3.0+-282016-03-12-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Add <code>&lt;attachment&gt;_cached?</code> and <code>&lt;attachment&gt;_stored?</code> to migration_helpers plugin (@janko)</p>
 </li><li>
@@ -1314,7 +1340,7 @@ Last Update:
 <p>Fix <code>NameError</code> when silencing “missing record” errors in backgrounding (@janko)</p>
 </li></ul>
 
-<h2 id="label-1.2.0+-282016-01-26-29">1.2.0 (2016-01-26)<span><a href="#label-1.2.0+-282016-01-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.2.0+-282016-01-26-29+-5Brelease+notes-5D">1.2.0 (2016-01-26) <a href="https://shrinerb.com/docs/release_notes/1.2.0">[release notes]</a><span><a href="#label-1.2.0+-282016-01-26-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Make <code>Shrine::Attacher.promote</code> and <code>Shrine::Attacher.delete</code> return the record in backgrounding plugin (@janko)</p>
 </li><li>
@@ -1331,7 +1357,7 @@ Last Update:
 <p>Make custom metadata inherited from uploaded files and make <code>#extract_metadata</code> called only on caching (@janko)</p>
 </li></ul>
 
-<h2 id="label-1.1.0+-282015-12-26-29">1.1.0 (2015-12-26)<span><a href="#label-1.1.0+-282015-12-26-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.1.0+-282015-12-26-29+-5Brelease+notes-5D">1.1.0 (2015-12-26) <a href="https://shrinerb.com/docs/release_notes/1.1.0">[release notes]</a><span><a href="#label-1.1.0+-282015-12-26-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Rename the “background_helpers” plugin to “backgrounding” (@janko)</p>
 </li><li>
@@ -1402,7 +1428,7 @@ Last Update:
 <p>Reduce length of URLs generated with pretty_location plugin (@gshaw)</p>
 </li></ul>
 
-<h2 id="label-1.0.0+-282015-11-27-29">1.0.0 (2015-11-27)<span><a href="#label-1.0.0+-282015-11-27-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-1.0.0+-282015-11-27-29+-5Brelease+notes-5D">1.0.0 (2015-11-27) <a href="https://shrinerb.com/docs/release_notes/1.0.0">[release notes]</a><span><a href="#label-1.0.0+-282015-11-27-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p>Improve Windows compatibility in the FileSystem storage (@janko)</p>
 </li><li>

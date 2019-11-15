@@ -30,13 +30,15 @@ README.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-10-14 12:40:04 +0200</span>
+<span class='datetime'>2019-11-05 10:33:20 +0100</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
 <h1 id="label-Shrine"><a href="https://shrinerb.com">Shrine</a><span><a href="#label-Shrine">&para;</a> <a href="#top">&uarr;</a></span></h1>
+
+<p>&lt;img src=“<img src="https://shrinerb.com/img/logo.png" />” width=“100” alt=“Shrine logo: a red paperclip” align=“right” /&gt;</p>
 
 <p><a href="../classes/Shrine.html"><code>Shrine</code></a> is a toolkit for handling file attachments in Ruby applications. Some highlights:</p>
 <ul><li>
@@ -59,11 +61,45 @@ Last Update:
 <p><strong>Background jobs</strong> – built-in support for <a href="https://shrinerb.com/docs/plugins/backgrounding">background processing</a> that supports <a href="https://github.com/shrinerb/shrine/wiki/Backgrounding-Libraries">any backgrounding library</a></p>
 </li></ul>
 
-<p>Please follow along with the <strong><a href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong>.</p>
+<p>If you&#39;re curious how it compares to other file attachment libraries, see the <a href="https://shrinerb.com/docs/advantages">Advantages of Shrine</a>. Otherwise, follow along with the <strong><a href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong>.</p>
 
 <h2 id="label-Links">Links<span><a href="#label-Links">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>| Resource | URL | | :—————- | :—————————————————————————– | | Website &amp; Documentation | <a href="https://shrinerb.com">shrinerb.com</a> | | Demo code | <a href="/demo">Roda</a> / <a href="https://github.com/erikdahlstrand/shrine-rails-example">Rails</a> | | Wiki | <a href="https://github.com/shrinerb/shrine/wiki">github.com/shrinerb/shrine/wiki</a> | | Help &amp; Discussion | <a href="https://discourse.shrinerb.com">discourse.shrinerb.com</a> |</p>
+
+<h2 id="label-Setup">Setup<span><a href="#label-Setup">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Add the gem to your Gemfile:</p>
+
+<pre class="ruby"><span class="ruby-comment"># Gemfile</span>&#x000A;<span class="ruby-identifier">gem</span> <span class="ruby-string">&quot;shrine&quot;</span>, <span class="ruby-string">&quot;~&gt; 3.0&quot;</span></pre>
+
+<p>Then add <code>config/initializers/shrine.rb</code> which sets up the storage and loads ORM integration:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine&quot;</span>&#x000A;<span class="ruby-identifier">require</span> <span class="ruby-string">&quot;shrine/storage/file_system&quot;</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">storages</span> = {&#x000A;  <span class="ruby-value">cache:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads/cache&quot;</span>), <span class="ruby-comment"># temporary</span>&#x000A;  <span class="ruby-value">store:</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Storage</span><span class="ruby-operator">::</span><span class="ruby-constant">FileSystem</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;public&quot;</span>, <span class="ruby-value">prefix:</span> <span class="ruby-string">&quot;uploads&quot;</span>),       <span class="ruby-comment"># permanent</span>&#x000A;}&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:activerecord</span>           <span class="ruby-comment"># loads Active Record integration</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:cached_attachment_data</span> <span class="ruby-comment"># enables retaining cached file across form redisplays</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">plugin</span> <span class="ruby-value">:restore_cached_data</span>    <span class="ruby-comment"># extracts metadata for assigned cached files</span></pre>
+
+<p>Next, add the <code>&lt;name&gt;_data</code> column to the table you want to attach files to. For an “image” attachment on a <code>photos</code> table this would be an <code>image_data</code> column:</p>
+
+<pre>$ rails generate migration add_image_data_to_photos image_data:text</pre>
+
+<p>Now create an uploader class (which you can put in <code>app/uploaders</code>) and register the attachment on your model:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-comment"># plugins and uploading logic</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">ImageUploader</span><span class="ruby-operator">::</span><span class="ruby-constant">Attachment</span>(<span class="ruby-value">:image</span>) <span class="ruby-comment"># adds an `image` virtual attribute</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>In our views let&#39;s now add form fields for our attachment attribute that will allow users to upload files:</p>
+
+<pre>&lt;%= form_for @photo do |f| %&gt;&#x000A;  &lt;%= f.hidden_field :image, value: @photo.cached_image_data %&gt;&#x000A;  &lt;%= f.file_field :image %&gt;&#x000A;  &lt;%= f.submit %&gt;&#x000A;&lt;% end %&gt;</pre>
+
+<p>When the form is submitted, in your controller you can assign the file from request params to the attachment attribute on the model:</p>
+
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">PhotosController</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ApplicationController</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">create</span>&#x000A;    <span class="ruby-constant">Photo</span>.<span class="ruby-identifier">create</span>(<span class="ruby-identifier">photo_params</span>) <span class="ruby-comment"># attaches the uploaded file</span>&#x000A;    <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-identifier">private</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">photo_params</span>&#x000A;    <span class="ruby-identifier">params</span>.<span class="ruby-identifier">require</span>(<span class="ruby-value">:photo</span>).<span class="ruby-identifier">permit</span>(<span class="ruby-value">:image</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p>Once a file is uploaded and attached to the record, you can retrieve the file URL and display it on the page:</p>
+
+<pre>&lt;%= image_tag @photo.image_url %&gt;</pre>
+
+<p>See the <strong><a href="https://shrinerb.com/docs/getting-started">Getting Started guide</a></strong> for further documentation.</p>
 
 <h2 id="label-Inspiration">Inspiration<span><a href="#label-Inspiration">&para;</a> <a href="#top">&uarr;</a></span></h2>
 

@@ -247,7 +247,7 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-cache_key-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-cache_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">49</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache_key</span>; <span class="ruby-ivar">@cache</span>; <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-cache_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">49</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">cache_key</span>; <span class="ruby-ivar">@cache</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-cached-3F'>
@@ -636,7 +636,7 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-store_key-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-store_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span>; <span class="ruby-ivar">@store</span>; <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-store_key-source'>   <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">51</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">store_key</span>; <span class="ruby-ivar">@store</span>.<span class="ruby-identifier">to_sym</span>; <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-stored-3F'>

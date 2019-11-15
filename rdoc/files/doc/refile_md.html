@@ -30,7 +30,7 @@ doc/refile.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-10-14 12:40:04 +0200</span>
+<span class='datetime'>2019-11-13 19:10:18 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -44,7 +44,7 @@ Last Update:
 <ol><li>
 <p>Explanation of the key differences in design between Refile and <a href="../../classes/Shrine.html"><code>Shrine</code></a></p>
 </li><li>
-<p>Instructions how to migrate and existing app that uses Refile to <a href="../../classes/Shrine.html"><code>Shrine</code></a></p>
+<p>Instructions how to migrate an existing app that uses Refile to <a href="../../classes/Shrine.html"><code>Shrine</code></a></p>
 </li><li>
 <p>Extensive reference of Refile&#39;s interface with <a href="../../classes/Shrine.html"><code>Shrine</code></a> equivalents</p>
 </li></ol>
@@ -132,23 +132,39 @@ Last Update:
 
 <h2 id="label-Migrating+from+Refile">Migrating from Refile<span><a href="#label-Migrating+from+Refile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>You have an existing app using Refile and you want to transfer it to <a href="../../classes/Shrine.html"><code>Shrine</code></a>. Let&#39;s assume we have a <code>Photo</code> model with the “image” attachment. First we need to create the <code>image_data</code> column for Shrine:</p>
+<p>You have an existing app using Refile and you want to transfer it to <a href="../../classes/Shrine.html"><code>Shrine</code></a>. Let&#39;s assume we have a <code>Photo</code> model with the “image” attachment.</p>
+
+<h3 id="label-1.+Add+Shrine+column">1. Add <a href="../../classes/Shrine.html"><code>Shrine</code></a> column<span><a href="#label-1.+Add+Shrine+column">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>First we need to create the <code>image_data</code> column for Shrine:</p>
 
 <pre class="ruby"><span class="ruby-identifier">add_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_data</span>, <span class="ruby-value">:text</span></pre>
 
+<h3 id="label-2.+Dual+write">2. Dual write<span><a href="#label-2.+Dual+write">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
 <p>Afterwards we need to make new uploads write to the <code>image_data</code> column. This can be done by including the below module to all models that have Refile attachments:</p>
 
-<pre>require &quot;shrine&quot;&#x000A;Shrine.storages = {&#x000A;  cache: ...,&#x000A;  store: ...,&#x000A;}&#x000A;&#x000A;Shrine.plugin :model</pre>
-
-<pre class="ruby"><span class="ruby-keyword">module</span> <span class="ruby-constant">RefileShrineSynchronization</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write_shrine_data</span>(<span class="ruby-identifier">name</span>)&#x000A;    <span class="ruby-identifier">attacher</span> = <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">from_model</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">name</span>)&#x000A;&#x000A;    <span class="ruby-keyword">if</span> <span class="ruby-identifier">read_attribute</span>(<span class="ruby-node">&quot;#{name}_id&quot;</span>).<span class="ruby-identifier">present?</span>&#x000A;      <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span> <span class="ruby-identifier">shrine_file</span>(<span class="ruby-identifier">name</span>)&#x000A;    <span class="ruby-keyword">else</span>&#x000A;      <span class="ruby-identifier">attacher</span>.<span class="ruby-identifier">set</span> <span class="ruby-keyword">nil</span>&#x000A;    <span class="ruby-keyword">end</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_file</span>(<span class="ruby-identifier">name</span>)&#x000A;    <span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">uploaded_file</span>(&#x000A;      <span class="ruby-value">storage:</span>  <span class="ruby-value">:store</span>,&#x000A;      <span class="ruby-value">id:</span>       <span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{name}_id&quot;</span>),&#x000A;      <span class="ruby-value">metadata:</span> {&#x000A;        <span class="ruby-string">&quot;size&quot;</span>      <span class="ruby-operator">=&gt;</span> (<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{name}_size&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">respond_to?</span>(<span class="ruby-node">&quot;#{name}_size&quot;</span>)),&#x000A;        <span class="ruby-string">&quot;filename&quot;</span>  <span class="ruby-operator">=&gt;</span> (<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{name}_filename&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">respond_to?</span>(<span class="ruby-node">&quot;#{name}_filename&quot;</span>)),&#x000A;        <span class="ruby-string">&quot;mime_type&quot;</span> <span class="ruby-operator">=&gt;</span> (<span class="ruby-identifier">send</span>(<span class="ruby-node">&quot;#{name}_content_type&quot;</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">respond_to?</span>(<span class="ruby-node">&quot;#{name}_content_type&quot;</span>)),&#x000A;      }&#x000A;    )&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre>require &quot;shrine&quot;&#x000A;Shrine.storages = {&#x000A;  cache: ...,&#x000A;  store: ...,&#x000A;}&#x000A;&#x000A;Shrine.plugin :model&#x000A;&#x000A;module RefileShrineSynchronization&#x000A;  def write_shrine_data(name)&#x000A;    attacher = Shrine::Attacher.from_model(self, name)&#x000A;&#x000A;    if read_attribute(&quot;#{name}_id&quot;).present?&#x000A;      attacher.set shrine_file(name)&#x000A;    else&#x000A;      attacher.set nil&#x000A;    end&#x000A;  end&#x000A;&#x000A;  def shrine_file(name)&#x000A;    Shrine.uploaded_file(&#x000A;      storage:  :store,&#x000A;      id:       send(&quot;#{name}_id&quot;),&#x000A;      metadata: {&#x000A;        &quot;size&quot;      =&gt; (send(&quot;#{name}_size&quot;) if respond_to?(&quot;#{name}_size&quot;)),&#x000A;        &quot;filename&quot;  =&gt; (send(&quot;#{name}_filename&quot;) if respond_to?(&quot;#{name}_filename&quot;)),&#x000A;        &quot;mime_type&quot; =&gt; (send(&quot;#{name}_content_type&quot;) if respond_to?(&quot;#{name}_content_type&quot;)),&#x000A;      }&#x000A;    )&#x000A;  end&#x000A;end</pre>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Photo</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span>&#x000A;  <span class="ruby-identifier">attachment</span> <span class="ruby-value">:image</span>&#x000A;  <span class="ruby-identifier">include</span> <span class="ruby-constant">RefileShrineSynchronization</span>&#x000A;&#x000A;  <span class="ruby-identifier">before_save</span> <span class="ruby-keyword">do</span>&#x000A;    <span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-value">:image</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">image_id_changed?</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>After you deploy this code, the <code>image_data</code> column should now be successfully synchronized with new attachments. Next step is to run a script which writes all existing Refile attachments to <code>image_data</code>:</p>
+<p>After you deploy this code, the <code>image_data</code> column should now be successfully synchronized with new attachments.</p>
+
+<h3 id="label-3.+Data+migration">3. Data migration<span><a href="#label-3.+Data+migration">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Next step is to run a script which writes all existing Refile attachments to <code>image_data</code>:</p>
 
 <pre class="ruby"><span class="ruby-constant">Photo</span>.<span class="ruby-identifier">find_each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">photo</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">write_shrine_data</span>(<span class="ruby-value">:image</span>)&#x000A;  <span class="ruby-identifier">photo</span>.<span class="ruby-identifier">save!</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p>Now you should be able to rewrite your application so that it uses <a href="../../classes/Shrine.html"><code>Shrine</code></a> instead of Refile, using equivalent <a href="../../classes/Shrine.html"><code>Shrine</code></a> storages. For help with translating the code from Refile to <a href="../../classes/Shrine.html"><code>Shrine</code></a>, you can consult the reference below.</p>
+<h3 id="label-4.+Rewrite+code">4. Rewrite code<span><a href="#label-4.+Rewrite+code">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Now you should be able to rewrite your application so that it uses <a href="../../classes/Shrine.html"><code>Shrine</code></a> instead of Refile (you can consult the reference in the next section). You can remove the <code>RefileShrineSynchronization</code> module as well.</p>
+
+<h3 id="label-5.+Remove+Refile+columns">5. Remove Refile columns<span><a href="#label-5.+Remove+Refile+columns">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>If everything is looking good, we can remove Refile columns:</p>
+
+<pre class="ruby"><span class="ruby-identifier">remove_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_id</span>&#x000A;<span class="ruby-identifier">remove_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_size</span>&#x000A;<span class="ruby-identifier">remove_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_filename</span>&#x000A;<span class="ruby-identifier">remove_column</span> <span class="ruby-value">:photos</span>, <span class="ruby-value">:image_content_type</span></pre>
 
 <h2 id="label-Refile+to+Shrine+direct+mapping">Refile to <a href="../../classes/Shrine.html"><code>Shrine</code></a> direct mapping<span><a href="#label-Refile+to+Shrine+direct+mapping">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
