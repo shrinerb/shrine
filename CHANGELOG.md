@@ -1,4 +1,4 @@
-## HEAD
+## 3.1.0 (2019-11-15) [[release notes]](https://shrinerb.com/docs/release_notes/3.1.0)
 
 * `default_storage` – Coerce storage key to symbol in `Attacher#cache_key` & `Attacher#store_key` (@janko)
 
