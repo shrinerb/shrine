@@ -729,7 +729,7 @@ Shrine.plugin :upload_endpoint
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
   # ...
-  mount ImageUploader.upload_endpoint(:cache) => "/images/upload" # POST /images/upload
+  mount Shrine.upload_endpoint(:cache) => "/upload" # POST /upload
 end
 ```
 
