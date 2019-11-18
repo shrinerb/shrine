@@ -184,9 +184,9 @@ require "shrine/storage/s3"
 
 s3_options = {
   bucket:            "<YOUR BUCKET>", # required
+  region:            "<YOUR REGION>", # required
   access_key_id:     "<YOUR ACCESS KEY ID>",
   secret_access_key: "<YOUR SECRET ACCESS KEY>",
-  region:            "<YOUR REGION>",
 }
 
 Shrine.storages = {
