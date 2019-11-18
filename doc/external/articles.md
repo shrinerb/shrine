@@ -17,6 +17,7 @@ title: Articles
 * [Better File Uploads with Shrine: Processing](https://twin.github.io/better-file-uploads-with-shrine-processing/)
 * [Better File Uploads with Shrine: Metadata](https://twin.github.io/better-file-uploads-with-shrine-metadata/)
 * [Better File Uploads with Shrine: Direct Uploads](https://twin.github.io/better-file-uploads-with-shrine-direct-uploads)
+* [Upcoming Features in Shrine 3.0](https://twin.github.io/upcoming-features-in-shrine-3-0/)
 * [Shrine 3.0 Released](https://twin.github.io/shrine-3-0-released/)
 
 ## Other Articles
