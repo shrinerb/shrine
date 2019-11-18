@@ -167,9 +167,13 @@ specific storage service, by implementing a common public interface. Storage
 instances are registered under an identifier in `Shrine.storages`, so that they
 can later be used by [uploaders][uploader].
 
-Previously we've shown the [FileSystem] storage which saves files to disk, but
-Shrine also ships with [S3] storage which stores files on [AWS S3] (or any
-S3-compatible service such as [DigitalOcean Spaces] or [MinIO]).
+Shrine ships with the following storages:
+
+* [`Shrine::Storage::FileSystem`][FileSystem] – stores files on disk
+* [`Shrine::Storage::S3`][S3] – stores files on [AWS S3] (or [DigitalOcean Spaces], [MinIO], ...)
+* [`Shrine::Storage::Memory`][Memory] – stores file in memory (convenient for [testing][Testing with Shrine])
+
+Here is how we might configure Shrine with S3 storage:
 
 ```rb
 # Gemfile
@@ -196,9 +200,9 @@ suitable for [direct uploads][presigned upload]. The `:cache` and `:store`
 names are special only in terms that the [attacher] will automatically pick
 them up, you can also register more storage objects under different names.
 
-See the [FileSystem] and [S3] storage docs for more details. There are [many
-more Shrine storages][storages] provided by external gems, and you can also
-[create your own storage][Creating Storages].
+See the [FileSystem]/[S3]/[Memory] storage docs for more details. There are
+[many more Shrine storages][storages] provided by external gems, and you can
+also [create your own storage][Creating Storages].
 
 ## Uploader
 
@@ -957,6 +961,8 @@ Shrine.logger.level = Logger::WARN
 [Using Attacher]: https://shrinerb.com/docs/attacher
 [FileSystem]: https://shrinerb.com/docs/storage/file-system
 [S3]: https://shrinerb.com/docs/storage/s3
+[Memory]: https://shrinerb.com/docs/storage/memory
+[Testing With Shrine]: https://shrinerb.com/docs/testing
 [`Shrine::UploadedFile`]: https://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
 
 [attacher]: #attacher

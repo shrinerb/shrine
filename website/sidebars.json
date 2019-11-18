@@ -8,7 +8,8 @@
     ],
     "Storage": [
       "storage/file-system",
-      "storage/s3"
+      "storage/s3",
+      "storage/memory"
     ],
     "Features": [
       "direct-s3",
