@@ -2,22 +2,25 @@
 title: The Design of Shrine
 ---
 
-*If you want an in-depth walkthrough through the Shrine codebase, see [Notes on study of shrine implementation] article by Jonathan Rochkind.*
+*If you want an in-depth walkthrough through the Shrine codebase, see [Notes on
+study of shrine implementation] article by Jonathan Rochkind.*
 
-There are five main types of objects that you deal with in Shrine:
+There are five main types of classes that you deal with in Shrine:
 
-* Storage
-* `Shrine`
-* `Shrine::UploadedFile`
-* `Shrine::Attacher`
-* `Shrine::Attachment`
+| Class | Description |
+| :---- | :---------- |
+| `Shrine::Storage::*` | Manages files on a particular storage service |
+| `Shrine` | Wraps uploads and handles loading plugins |
+| `Shrine::UploadedFile` | Represents a file uploaded to a storage |
+| `Shrine::Attacher` | Handles file attachment logic |
+| `Shrine::Attachment` | Provides convenience model attachment interface |
 
 ## Storage
 
 On the lowest level we have a storage. A storage class encapsulates file
 management logic on a particular service. It is what actually performs uploads,
 generation of URLs, deletions and similar. By convention it is namespaced under
-`Shrine::Storage`.
+`Shrine::Storage::*`.
 
 ```rb
 filesystem = Shrine::Storage::FileSystem.new("uploads")
@@ -26,7 +29,7 @@ filesystem.url("foo") #=> "uploads/foo"
 filesystem.delete("foo")
 ```
 
-A storage is a PORO which responds to certain methods:
+A storage is a PORO which implements the following interface:
 
 ```rb
 class Shrine
@@ -56,13 +59,14 @@ class Shrine
 end
 ```
 
-Storages are typically not used directly, but through `Shrine`.
+Storages are typically not used directly, but through [`Shrine`](#shrine) and
+[`Shrine::UploadedFile`](#shrine-uploadedfile) classes.
 
 ## `Shrine`
 
-A `Shrine` object (also called an "uploader") is essentially a wrapper around
-the `#upload` storage method. First the storage needs to be registered under a
-name:
+The `Shrine` class (also called an "uploader") primarily provides a wrapper
+method around `Storage#upload`. First, the storage needs to be registered under
+a name:
 
 ```rb
 Shrine.storages[:disk] = Shrine::Storage::FileSystem.new("uploads")
@@ -72,7 +76,7 @@ Now we can upload files to the registered storage:
 
 ```rb
 uploaded_file = Shrine.upload(file, :disk)
-uploaded_file #=> #<Shrine::UploadedFile>
+uploaded_file #=> #<Shrine::UploadedFile storage=:disk id="6a9fb596cc554efb" ...>
 ```
 
 The argument to `Shrine#upload` must be an IO-like object. The method does the
@@ -84,63 +88,97 @@ following:
 * closes the file
 * creates a `Shrine::UploadedFile` from the data
 
-`Shrine` class and subclasses are also used for loading plugins that extend all
-core classes. Each `Shrine` subclass has its own subclass of each of the core
-classes (`Shrine::UploadedFile`, `Shrine::Attacher`, and `Shrine::Attachment`),
-which makes it possible to have different `Shrine` subclasses with differently
-customized attachment logic. See [Creating a New Plugin] guide and the [Plugin
-system of Sequel and Roda] article for more details on the design of Shrine's
-plugin system.
+### Plugins
+
+The `Shrine` class is also used for loading plugins, which provide additional
+functionality by extending core classes.
+
+```rb
+Shrine.plugin :derivatives
+
+Shrine::UploadedFile.ancestors #=> [..., Shrine::Plugins::Derivatives::FileMethods, Shrine::UploadedFile::InstanceMethods, ...]
+Shrine::Attacher.ancestors     #=> [..., Shrine::Plugins::Derivatives::AttacherMethods, Shrine::Attacher::InstanceMethods,  ...]
+Shrine::Attachment.ancestors   #=> [..., Shrine::Plugins::Derivatives::AttachmentMethods, Shrine::Attachment::InstanceMethods, ...]
+```
+
+The plugins store their configuration in `Shrine.opts`:
+
+```rb
+Shrine.plugin :derivation_endpoint, secret_key: "foo"
+Shrine.plugin :default_storage, store: :other_store
+Shrine.plugin :activerecord
+
+Shrine.opts #=>
+# { derivation_endpoint: { options: { secret_key: "foo" }, derivations: {} },
+#   default_storage: { store: :other_store },
+#   column: { serializer: Shrine::Plugins::Column::JsonSerializer },
+#   model: { cache: true },
+#   activerecord: { callbacks: true, validations: true } }
+```
+
+Each `Shrine` subclass has its own copy of the core classes, storages and
+options, which makes it possible to customize attachment logic per uploader.
+
+```rb
+MyUploader = Class.new(Shrine)
+MyUploader::UploadedFile.superclass #=> Shrine::UploadedFile
+MyUploader::Attacher.superclass     #=> Shrine::Attacher
+MyUploader::Attachment.superclass   #=> Shrine::Attachment
+```
+
+See [Creating a New Plugin] guide and the [Plugin system of Sequel and Roda]
+article for more details on the design of Shrine's plugin system.
 
 ## `Shrine::UploadedFile`
 
-`Shrine::UploadedFile` represents a file that was uploaded to a storage, and is
-the result of `Shrine#upload`. It is essentially a wrapper around a data hash
-containing information about the uploaded file.
+A `Shrine::UploadedFile` object represents a file that was uploaded to a
+storage, containing upload location, storage, and any metadata extracted during
+the upload.
 
 ```rb
-uploaded_file      #=> #<Shrine::UploadedFile>
-uploaded_file.data #=>
+uploaded_file #=> #<Shrine::UploadedFile id="949sdjg834.jpg" storage=:store metadata={...}>
+
+uploaded_file.id          #=> "949sdjg834.jpg"
+uploaded_file.storage_key #=> :store
+uploaded_file.storage     #=> #<Shrine::Storage::S3>
+uploaded_file.metadata    #=> {...}
+```
+
+It has convenience methods for accessing metadata:
+
+```rb
+uploaded_file.metadata #=>
 # {
-#   "storage"  => "file_system",
-#   "id"       => "9260ea09d8effd.pdf",
-#   "metadata" => {
-#     "filename"  => "resume.pdf",
-#     "mime_type" => "application/pdf",
-#     "size"      => 983294,
-#   },
+#   "filename" => "matrix.mp4",
+#   "mime_type" => "video/mp4",
+#   "size" => 345993,
 # }
+
+uploaded_file.original_filename #=> "matrix.mp4"
+uploaded_file.extension         #=> "mp4"
+uploaded_file.mime_type         #=> "video/mp4"
+uploaded_file.size              #=> 345993
 ```
 
-The data hash contains the storage the file was uploaded to, the location, and
-some metadata: original filename, MIME type and filesize. The
-`Shrine::UploadedFile` object has handy methods which use this data:
+It also has methods that delegate to the storage:
 
 ```rb
-# metadata methods
-uploaded_file.original_filename
-uploaded_file.mime_type
-uploaded_file.size
-# ...
-
-# storage methods
-uploaded_file.url
-uploaded_file.exists?
-uploaded_file.open
-uploaded_file.download
-uploaded_file.delete
-# ...
+uploaded_file.url                     #=> "https://my-bucket.s3.amazonaws.com/949sdjg834.jpg"
+uploaded_file.open { |io| ... }       # opens the uploaded file stream
+uploaded_file.download { |file| ... } # downloads the uploaded file to disk
+uploaded_file.stream(destination)     # streams uploaded content into a writable destination
+uploaded_file.exists?                 #=> true
+uploaded_file.delete                  # deletes the uploaded file from the storage
 ```
 
-A `Shrine::UploadedFile` is itself an IO-like object (representing the
-remote file), so it can be passed to `Shrine#upload` as well.
+A `Shrine::UploadedFile` is itself an IO-like object (built on top of
+`Storage#open`), so it can be passed to `Shrine#upload` as well.
 
 ## `Shrine::Attacher`
 
 We usually want to treat uploaded files as *attachments* to records, saving
-their data into a database column. This is the responsibility of
-`Shrine::Attacher`. A `Shrine::Attacher` uses `Shrine` uploaders and
-`Shrine::UploadedFile` objects internally.
+their data into a database column. This is done by `Shrine::Attacher`, which
+internally uses `Shrine` and `Shrine::UploadedFile` classes.
 
 The attaching process requires a temporary and a permanent storage to be
 registered (by default that's `:cache` and `:store`):
@@ -152,40 +190,50 @@ Shrine.storages = {
 }
 ```
 
-A `Shrine::Attacher` is instantiated with a model instance and an attachment
-name (an "image" attachment will be saved to `image_data` field):
+A `Shrine::Attacher` can be initialized standalone and handle the common
+attachment flow, which includes dirty tracking (promoting cached file to
+permanent storage, deleting previously attached file), validation, processing,
+serialization etc.
+
+```rb
+attacher = Shrine::Attacher.new
+
+# ... user uploads a file ...
+
+attacher.assign(io) # uploads to temporary storage
+attacher.file       #=> #<Shrine::UploadedFile storage=:cache ...>
+
+# ... handle file validations ...
+
+attacher.finalize   # uploads to permanent storage
+attacher.file       #=> #<Shrine::UploadedFile storage=:store ...>
+```
+
+It can also be initialized with a model instance to handle serialization into a
+model attribute:
 
 ```rb
 attacher = Shrine::Attacher.from_model(photo, :image)
 
 attacher.assign(file)
-attacher.file #=> #<Shrine::UploadedFile storage=:cache ...>
-attacher.record.image_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
+photo.image_data #=> "{\"storage\":\"cache\",\"id\":\"9260ea09d8effd.jpg\",\"metadata\":{...}}"
 
 attacher.finalize
-attacher.file #=> #<Shrine::UploadedFile storage=:store ...>
-attacher.record.image_data #=> "{\"storage\":\"store\",\"id\":\"ksdf02lr9sf3la.jpg\",\"metadata\":{...}}"
+photo.image_data #=> "{\"storage\":\"store\",\"id\":\"ksdf02lr9sf3la.jpg\",\"metadata\":{...}}"
 ```
 
-Above a file is assigned by the attacher, which "caches" (uploads) the file to
-the temporary storage. The cached file is then "promoted" (uploaded) to
-permanent storage. Behind the scenes a cached `Shrine::UploadedFile` is given
-to `Shrine#upload`, which works because `Shrine::UploadedFile` is an IO-like
-object. After both caching and promoting the data hash of the uploaded file is
-assigned to the record's column as JSON.
-
-For more details see [Using Attacher].
+For more details, see the [Using Attacher] guide and
+[`entity`][entity]/[`model`][model] plugins.
 
 ## `Shrine::Attachment`
 
-`Shrine::Attachment` is the highest level of abstraction. A
-`Shrine::Attachment` module exposes the `Shrine::Attacher` object through the
-model instance. The `Shrine::Attachment` class is a sublcass of `Module`, which
-means that an instance of `Shrine::Attachment` is a module:
+A `Shrine::Attachment` module provides a convenience model interface around the
+`Shrine::Attacher` object. The `Shrine::Attachment` class is a subclass of
+`Module`, which means that an instance of `Shrine::Attachment` is a module:
 
 ```rb
 Shrine::Attachment.new(:image).is_a?(Module) #=> true
-Shrine::Attachment.new(:image).instance_methods #=> [:image=, :image, :image_url, :image_attacher]
+Shrine::Attachment.new(:image).instance_methods #=> [:image=, :image, :image_url, :image_attacher, ...]
 
 # equivalents
 Shrine::Attachment.new(:image)
@@ -193,30 +241,31 @@ Shrine::Attachment[:image]
 Shrine::Attachment(:image)
 ```
 
-We can include this module to a model:
+We can include this module into a model:
 
 ```rb
-class Photo
-  include Shrine::Attachment(:image)
-end
+Photo.include Shrine::Attachment(:image)
 ```
 ```rb
-photo.image = file # shorthand for `photo.image_attacher.assign(file)`
-photo.image        # shorthand for `photo.image_attacher.get`
-photo.image_url    # shorthand for `photo.image_attacher.url`
+photo.image = file   # shorthand for `photo.image_attacher.assign(file)`
+photo.image          # shorthand for `photo.image_attacher.get`
+photo.image_url      # shorthand for `photo.image_attacher.url`
 
-photo.image_attacher #=> #<Shrine::Attacher>
+photo.image_attacher #=> #<Shrine::Attacher @cache_key=:cache @store_key=:store ...>
 ```
 
-When a persistence plugin is loaded, the `Shrine::Attachment` module also
-automatically:
+When a persistence plugin is loaded ([`activerecord`][activerecord],
+[`sequel`][sequel]), the `Shrine::Attachment` module also automatically:
 
 * syncs Shrine's validation errors with the record
 * triggers promoting after record is saved
-* deletes the uploaded file if attachment was replaced/removed or the record
-  destroyed
+* deletes the uploaded file if attachment was replaced or the record destroyed
 
 [Using Attacher]: https://shrinerb.com/docs/attacher
 [Notes on study of shrine implementation]: https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/
 [Creating a New Plugin]: https://shrinerb.com/docs/creating-plugins
 [Plugin system of Sequel and Roda]: https://twin.github.io/the-plugin-system-of-sequel-and-roda/
+[entity]: https://shrinerb.com/docs/plugins/entity
+[model]: https://shrinerb.com/docs/plugins/model
+[activerecord]: https://shrinerb.com/docs/plugins/activerecord
+[sequel]: https://shrinerb.com/docs/plugins/sequel
