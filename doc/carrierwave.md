@@ -1,5 +1,5 @@
 ---
-title: Shrine for CarrierWave Users
+title: Upgrading from CarrierWave
 ---
 
 This guide is aimed at helping CarrierWave users transition to Shrine, and it

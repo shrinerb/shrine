@@ -12,7 +12,7 @@
         "title": "Using Attacher"
       },
       "carrierwave": {
-        "title": "Shrine for CarrierWave Users"
+        "title": "Upgrading from CarrierWave"
       },
       "changing-derivatives": {
         "title": "Managing Derivatives"
@@ -57,7 +57,7 @@
         "title": "Multiple Files"
       },
       "paperclip": {
-        "title": "Shrine for Paperclip Users"
+        "title": "Upgrading from Paperclip"
       },
       "plugins/activerecord": {
         "title": "Active Record"
@@ -207,7 +207,7 @@
         "title": "File Processing"
       },
       "refile": {
-        "title": "Shrine for Refile Users"
+        "title": "Upgrading from Refile"
       },
       "release_notes/1.0.0": {
         "title": "Shrine 1.0.0"
@@ -350,13 +350,14 @@
       "GitHub": "GitHub"
     },
     "categories": {
+      "Introduction": "Introduction",
       "Base": "Base",
       "Storage": "Storage",
       "Features": "Features",
       "Extras": "Extras",
       "Migrating": "Migrating",
       "Extending": "Extending",
-      "Comparison": "Comparison",
+      "Upgrading": "Upgrading",
       "Attachment": "Attachment",
       "Flow": "Flow",
       "Processing": "Processing",

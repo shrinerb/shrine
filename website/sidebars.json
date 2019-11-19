@@ -1,7 +1,10 @@
 {
   "guides": {
+    "Introduction": [
+      "advantages",
+      "getting-started"
+    ],
     "Base": [
-      "getting-started",
       "design",
       "retrieving-uploads",
       "attacher"
@@ -20,8 +23,7 @@
     "Extras": [
       "multiple-files",
       "securing-uploads",
-      "testing",
-      "upgrading-to-3"
+      "testing"
     ],
     "Migrating": [
       "changing-derivatives",
@@ -33,8 +35,8 @@
       "creating-persistence-plugins",
       "creating-storages"
     ],
-    "Comparison": [
-      "advantages",
+    "Upgrading": [
+      "upgrading-to-3",
       "carrierwave",
       "paperclip",
       "refile"

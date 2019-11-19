@@ -1,5 +1,5 @@
 ---
-title: Shrine for Refile Users
+title: Upgrading from Refile
 ---
 
 This guide is aimed at helping Refile users transition to Shrine, and it consists

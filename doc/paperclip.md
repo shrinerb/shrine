@@ -1,5 +1,5 @@
 ---
-title: Shrine for Paperclip Users
+title: Upgrading from Paperclip
 ---
 
 This guide is aimed at helping Paperclip users transition to Shrine, and it
