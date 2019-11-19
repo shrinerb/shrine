@@ -135,7 +135,7 @@ You can use the [`default_url`][default_url] plugin to set up URL fallbacks:
 
 ```rb
 Attacher.default_url do |derivative: nil, **|
-  "https://my-app.com/fallbacks/#{derivative}.jpg" if derivative
+  "/fallbacks/#{derivative}.jpg" if derivative
 end
 ```
 ```rb

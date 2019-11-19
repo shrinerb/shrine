@@ -476,15 +476,24 @@ photo.image.original_filename #=> "avatar.jpg"
 
 #### `#store_dir`, `#cache_dir`
 
-Shrine here provides a `#generate_location` method, which is triggered for all
-storages:
+Shrine here provides a single `#generate_location` method that's triggered for
+all storages:
 
 ```rb
 class ImageUploader < Shrine
-  def generate_location(io, record: nil, **)
-    "#{record.class}/#{record.id}/#{io.original_filename}"
+  def generate_location(io, record: nil, name: nil, **)
+    [ storage_key,
+      record && record.class.name.underscore,
+      record && record.id,
+      super,
+      io.original_filename ].compact.join("/")
   end
 end
+```
+```
+cache/user/123/2feff8c724e7ce17/nature.jpg
+store/user/456/7f99669fde1e01fc/kitten.jpg
+...
 ```
 
 You might also want to use the `pretty_location` plugin for automatically
@@ -498,8 +507,8 @@ For default URLs you can use the `default_url` plugin:
 class ImageUploader < Shrine
   plugin :default_url
 
-  Attacher.default_url do |options|
-    "/attachments/#{name}/default.jpg"
+  Attacher.default_url do |derivative: nil, **|
+    "/fallbacks/#{derivative || "original"}.jpg"
   end
 end
 ```
@@ -654,7 +663,7 @@ shows what are Shrine's equivalents.
 
 #### `root`, `base_path`, `permissions`, `directory_permissions`
 
-In Shrine these are configured on the FileSystem storage directly.
+In Shrine these are configured on the `FileSystem` storage directly.
 
 #### `storage`, `storage_engines`
 

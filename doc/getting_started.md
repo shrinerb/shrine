@@ -667,34 +667,80 @@ For more details, see the [File Validation] guide and
 
 Shrine automatically generated random locations before uploading files. By
 default the hierarchy is flat, meaning all files are stored in the root
-directory of the storage. The [`pretty_location`][pretty_location plugin]
-plugin provides a good default hierarchy, but you can also override
-`#generate_location` with a custom implementation:
+directory of the storage.
+
+```
+024d9fe83bf4fafb.jpg
+768a336bf54de219.jpg
+adfaa363629f7fc5.png
+...
+```
+
+The [`pretty_location`][pretty_location plugin] plugin provides a good default
+hierarchy:
+
+```rb
+Shrine.plugin :pretty_location
+```
+```
+user/
+  564/
+    avatar/
+      aa3e0cd715.jpg
+      thumb-493g82jf23.jpg
+photo/
+  123/
+    image/
+      13f8a7bc18.png
+      thumb-9be62da67e.png
+...
+```
+
+Buy you can also override `Shrine#generate_location` with a custom
+implementation:
 
 ```rb
 class ImageUploader < Shrine
   def generate_location(io, record: nil, derivative: nil, **)
-    type  = record.class.name.downcase if record
-    style = derivative ? "thumbs" : "originals"
-    name  = super # the default unique identifier
+    return super unless record
 
-    [type, style, name].compact.join("/")
+    [ "uploads",
+      record.class.table_name,
+      record.id,
+      "#{derivative || "original"}-#{super}" ].compact.join("/")
   end
 end
 ```
 ```
 uploads/
   photos/
-    originals/
-      la98lda74j3g.jpg
-    thumbs/
-      95kd8kafg80a.jpg
-      ka8agiaf9gk4.jpg
+    123/
+      original-afe929b8b4.jpg
+      small-ad61f25883.jpg
+      medium-41b75c42bb.jpg
+      large-73e67abe50.jpg
 ```
 
-Note that there should always be a random component in the location, so that
-the ORM dirty tracking is detected properly. Inside `#generate_location` you
-can also access the extracted metadata through the `:metadata` option.
+> There should always be a random component in the location, so that the ORM
+  dirty tracking is detected properly.
+
+The `Shrine#generate_location` method contains a lot of useful context for the
+upcoming upload:
+
+```rb
+class ImageUploader < Shrine
+  def generate_location(io, record: nil, name: nil, derivative: nil, metadata: {}, **)
+    storage_key #=> :cache, :store, ...
+    io          #=> #<File>, #<Shrine::UploadedFile>, ...
+    record      #=> #<Photo>, #<User>, ...
+    name        #=> :image, :avatar, ...
+    derivative  #=> :small, :medium, :large, ... (derivatives plugin)
+    metadata    #=> { "filename" => "nature.jpg", "mime_type" => "image/jpeg", "size" => 18573, ... }
+
+    # ...
+  end
+end
+```
 
 ## Direct uploads
 

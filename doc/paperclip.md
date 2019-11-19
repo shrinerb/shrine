@@ -511,10 +511,19 @@ Alternatively, if you want to generate locations yourself you can override the
 
 ```rb
 class ImageUploader < Shrine
-  def generate_location(io, **options)
-    # ...
+  def generate_location(io, record: nil, name: nil, **)
+    [ storage_key,
+      record && record.class.name.underscore,
+      record && record.id,
+      super,
+      io.original_filename ].compact.join("/")
   end
 end
+```
+```
+cache/user/123/2feff8c724e7ce17/nature.jpg
+store/user/456/7f99669fde1e01fc/kitten.jpg
+...
 ```
 
 #### `:validate_media_type`
