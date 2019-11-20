@@ -40,9 +40,12 @@ The default URL block is evaluated in the context of an instance of
 Attacher.default_url do |options|
   self    #=> #<Shrine::Attacher>
 
+  file    #=> #<Shrine::UploadedFile>
   name    #=> :avatar
   record  #=> #<User>
   context #=> { ... }
+
+  # ...
 end
 ```
 

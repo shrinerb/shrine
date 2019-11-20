@@ -279,11 +279,14 @@ The storage block is evaluated in the context of a `Shrine::Attacher` instance:
 
 ```rb
 Attacher.derivatives_storage do |derivative|
-  self   #=> #<Shrine::Attacher>
+  self    #=> #<Shrine::Attacher>
 
+  file    #=> #<Shrine::UploadedFile>
   record  #=> #<Photo>
   name    #=> :image
   context #=> { ... }
+
+  # ...
 end
 ```
 
@@ -352,6 +355,7 @@ which allows you to change your processing logic based on the record data.
 Attacher.derivatives :my_processor do |original|
   self    #=> #<Shrine::Attacher>
 
+  file    #=> #<Shrine::UploadedFile>
   record  #=> #<Photo>
   name    #=> :image
   context #=> { ... }

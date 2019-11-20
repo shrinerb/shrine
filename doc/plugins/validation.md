@@ -34,11 +34,12 @@ The validation block is executed in context of a `Shrine::Attacher` instance:
 ```rb
 class VideoUploader < Shrine
   Attacher.validate do
-    self #=> #<VideoUploader::Attacher>
+    self    #=> #<Shrine::Attacher>
 
-    record #=> #<Movie>
-    name   #=> :video
-    file   #=> #<Shrine::UploadedFile>
+    file    #=> #<Shrine::UploadedFile>
+    record  #=> #<Movie>
+    name    #=> :video
+    context #=> { ... }
   end
 end
 ```
