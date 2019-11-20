@@ -204,6 +204,68 @@ class DerivativeJob
 end
 ```
 
+### URL fallbacks
+
+If you're creating derivatives in a background job, you'll likely want to use
+some fallbacks for derivative URLs while the background job is still
+processing. You can do that with the [`default_url`][default_url] plugin.
+
+```rb
+Shrine.plugin :default_url
+```
+
+#### A) Fallback to original
+
+You can fall back to the original file URL when the derivative is missing:
+
+```rb
+Attacher.default_url do |derivative: nil, **|
+  file&.url if derivative
+end
+```
+```rb
+photo.image_url(:large) #=> "https://example.com/path/to/original.jpg"
+# ... background job finishes ...
+photo.image_url(:large) #=> "https://example.com/path/to/large.jpg"
+```
+
+#### B) Fallback to derivative
+
+You can fall back to another derivative URL when the derivative is missing:
+
+```rb
+Attacher.default_url do |derivative: nil, **|
+  derivatives[:optimized]&.url if derivative
+end
+```
+```rb
+photo.image_url(:large) #=> "https://example.com/path/to/optimized.jpg"
+# ... background job finishes ...
+photo.image_url(:large) #=> "https://example.com/path/to/large.jpg"
+```
+
+#### C) Fallback to on-the-fly
+
+You can also fall back to [on-the-fly processing](#on-the-fly-processing),
+which should generally provide the best user experience.
+
+```rb
+THUMBNAILS = {
+  small:  [300, 300],
+  medium: [500, 500],
+  large:  [800, 800],
+}
+
+Attacher.default_url do |derivative: nil, **|
+  file&.derivation_url(:thumbnail, *THUMBNAILS.fetch(derivative)) if derivative
+end
+```
+```rb
+photo.image_url(:large) #=> "../derivations/thumbnail/800/800/..."
+# ... background job finishes ...
+photo.image_url(:large) #=> "https://example.com/path/to/large.jpg"
+```
+
 ## On-the-fly processing
 
 Having image thumbnails pre-generated can be a pain to maintain, because
@@ -427,3 +489,4 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
 [image_optim]: https://github.com/toy/image_optim
+[default_url]: https://shrinerb.com/docs/plugins/default_url
