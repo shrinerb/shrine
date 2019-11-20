@@ -8,7 +8,7 @@ Shrine is a toolkit for handling file attachments in Ruby applications. Some hig
 * **Memory friendly** – streaming uploads and [downloads][Retrieving Uploads] make it work great with large files
 * **Cloud storage** – store files on [disk][FileSystem], [AWS S3][S3], [Google Cloud][GCS], [Cloudinary] and others
 * **Persistence integrations** – works with [Sequel], [ActiveRecord], [ROM], [Hanami] and [Mongoid] and others
-* **Flexible processing** – generate thumbnails [up front] or [on-the-fly] using [ImageMagick] or [libvips]
+* **Flexible processing** – generate thumbnails [eagerly] or [on-the-fly] using [ImageMagick] or [libvips]
 * **Metadata validation** – [validate files][validation] based on [extracted metadata][metadata]
 * **Direct uploads** – upload asynchronously [to your app][simple upload] or [to the cloud][presigned upload] using [Uppy]
 * **Resumable uploads** – make large file uploads [resumable][resumable upload] on [S3][uppy-s3_multipart] or [tus][tus-ruby-server]
@@ -149,8 +149,8 @@ The gem is available as open source under the terms of the [MIT License].
 [ROM]: https://github.com/shrinerb/shrine-rom
 [Hanami]: https://github.com/katafrakt/hanami-shrine
 [Mongoid]: https://github.com/shrinerb/shrine-mongoid
-[up front]: https://shrinerb.com/docs/getting-started#processing-up-front
-[on-the-fly]: https://shrinerb.com/docs/getting-started#processing-on-the-fly
+[eagerly]: https://shrinerb.com/docs/getting-started#eager-processing
+[on-the-fly]: https://shrinerb.com/docs/getting-started#on-the-fly-processing
 [ImageMagick]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme
 [libvips]: https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 [validation]: https://shrinerb.com/docs/validation

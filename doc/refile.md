@@ -114,26 +114,24 @@ Shrine provides on-the-fly processing via the
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
   # ...
-  mount ImageUploader.derivation_endpoint => "/derivations/image"
+  mount Shrine.derivation_endpoint => "/derivations"
 end
 ```
 ```rb
 require "image_processing/mini_magick"
 
-class ImageUploader < Shrine
-  plugin :derivation_endpoint,
-    secret_key: "<YOUR SECRET KEY>",
-    prefix:     "derivations/image" # needs to match the mount point in routes
+Shrine.plugin :derivation_endpoint,
+  secret_key: "<YOUR SECRET KEY>",
+  prefix:     "derivations" # needs to match the mount point in routes
 
-  derivation :thumbnail do |file, width, height|
-    ImageProcessing::MiniMagick
-      .source(file)
-      .resize_to_limit!(width.to_i, height.to_i)
-  end
+Shrine.derivation :thumbnail do |file, width, height|
+  ImageProcessing::MiniMagick
+    .source(file)
+    .resize_to_limit!(width.to_i, height.to_i)
 end
 ```
 
-Shrine also support processing up front using the [`derivatives`][derivatives]
+Shrine also support eager processing using the [`derivatives`][derivatives]
 plugin.
 
 ### Validation

@@ -260,14 +260,14 @@ Shrine is able to upload any IO-like object that implement methods [`#read`],
 [`#rewind`], [`#eof?`] and [`#close`] whose behaviour matches the [`IO`] class.
 This includes but is not limited to the following objects:
 
-* `File`
-* `Tempfile`
-* `StringIO`
-* `ActionDispatch::Http::UploadedFile` (Rails form upload)
-* `Shrine::RackFile` ([`rack_file`][rack_file plugin] plugin)
-* `Shrine::DataFile` ([`data_uri`][data_uri plugin] plugin)
-* `Shrine::UploadedFile`
-* `Down::ChunkedIO` ([Down] gem)
+* [`File`](https://ruby-doc.org/core/File.html)
+* [`Tempfile`](https://ruby-doc.org/stdlib/libdoc/tempfile/rdoc/Tempfile.html)
+* [`StringIO`](https://ruby-doc.org/stdlib/libdoc/stringio/rdoc/StringIO.html)
+* [`ActionDispatch::Http::UploadedFile`](https://api.rubyonrails.org/classes/ActionDispatch/Http/UploadedFile.html)
+* [`Shrine::RackFile`](https://shrinerb.com/docs/plugins/rack_file)
+* [`Shrine::DataFile`](https://shrinerb.com/docs/plugins/data_uri)
+* [`Shrine::UploadedFile`](#uploaded-file)
+* [`Down::ChunkedIO`](https://github.com/janko/down#streaming)
 * ...
 
 ```rb
@@ -521,10 +521,10 @@ the [Extracting Metadata] guide for more details.
 
 ## Processing
 
-Shrine allows you to process attached files up front or on-the-fly. For
-example, if your app is accepting image uploads, you can generate a predefined
-set of of thumbnails when the image is attached to a record, or you can have
-thumbnails generated dynamically as they're needed.
+Shrine allows you to process attached files both "eagerly" and "on-the-fly".
+For example, if your app is accepting image uploads, you can generate a
+predefined set of of thumbnails when the image is attached to a record, or you
+can have thumbnails generated dynamically as they're needed.
 
 For image processing, it's recommended to use the **[ImageProcessing]** gem,
 which is a high-level wrapper for processing with
@@ -534,10 +534,10 @@ which is a high-level wrapper for processing with
 $ brew install imagemagick vips
 ```
 
-### Processing up front
+### Eager processing
 
-You can use the [`derivatives`][derivatives plugin] plugin to generate a set of
-pre-defined processed files:
+You can use the [`derivatives`][derivatives plugin] plugin to generate a
+pre-defined set of processed files:
 
 ```rb
 # Gemfile
@@ -588,7 +588,7 @@ photo.image(:large).mime_type  #=> "image/jpeg"
 For more details, see the [`derivatives`][derivatives plugin] plugin
 documentation and the [File Processing] guide.
 
-### Processing on-the-fly
+### On-the-fly processing
 
 On-the-fly processing is provided by the
 [`derivation_endpoint`][derivation_endpoint plugin] plugin. To set it up, we
@@ -996,7 +996,6 @@ In tests you might want to tell Shrine to log only warnings:
 Shrine.logger.level = Logger::WARN
 ```
 
-[Advantages of Shrine]: https://shrinerb.com/docs/advantages
 [Creating Plugins]: https://shrinerb.com/docs/creating-plugins
 [Creating Storages]: https://shrinerb.com/docs/creating-storages
 [Direct Uploads to S3]: https://shrinerb.com/docs/direct-s3
@@ -1008,27 +1007,18 @@ Shrine.logger.level = Logger::WARN
 [FileSystem]: https://shrinerb.com/docs/storage/file-system
 [S3]: https://shrinerb.com/docs/storage/s3
 [Memory]: https://shrinerb.com/docs/storage/memory
-[Testing With Shrine]: https://shrinerb.com/docs/testing
+[Testing with Shrine]: https://shrinerb.com/docs/testing
 [`Shrine::UploadedFile`]: https://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
 
 [attacher]: #attacher
 [attachment]: #attaching
-[backgrounding]: #backgrounding
 [direct uploads]: #direct-uploads
 [io abstraction]: #io-abstraction
 [location]: #location
 [metadata]: #metadata
-[up front]: #processing-up-front
-[on-the-fly]: #processing-on-the-fly
-[plugin system]: #plugin-system
-[simple upload]: #simple-direct-upload
 [presigned upload]: #presigned-direct-upload
-[resumable upload]: #resumable-direct-upload
 [storage]: #storage
 [uploaded file]: #uploaded-file
-[uploading]: #uploading
-[uploader]: #uploader
-[validation]: #validation
 
 [Adding Direct App Uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [Adding Resumable Uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads

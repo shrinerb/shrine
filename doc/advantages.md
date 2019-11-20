@@ -157,14 +157,14 @@ end
 
 ## Processing
 
-Most file attachment libraries provide either processing files up front
-(Paperclip, CarrierWave) or on-the-fly (Dragonfly, Refile, Active Storage).
+Most file attachment libraries allow you to process files either "eagerly"
+(Paperclip, CarrierWave) or "on-the-fly" (Dragonfly, Refile, Active Storage).
 However, each approach is suitable for different requirements. For instance,
 while on-the-fly processing is suitable for fast processing (image thumbnails,
 document previews), longer running processing (video transcoding, raw images)
 should be moved into a background job.
 
-That's why Shrine supports both [up front][derivatives] and
+That's why Shrine supports both [eager][derivatives] and
 [on-the-fly][derivation_endpoint] processing. For example, if you're handling
 image uploads, you can choose to either generate a set of pre-defined
 thumbnails during attachment:

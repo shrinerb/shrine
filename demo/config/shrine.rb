@@ -40,7 +40,7 @@ Shrine.plugin :instrumentation, notifications: Dry::Monitor::Notifications.new(:
 Shrine.plugin :determine_mime_type, analyzer: :marcel, log_subscriber: nil
 Shrine.plugin :cached_attachment_data
 Shrine.plugin :restore_cached_data
-Shrine.plugin :derivatives          # up front processing
+Shrine.plugin :derivatives          # eager processing
 Shrine.plugin :derivation_endpoint, # on-the-fly processing
   secret_key: "secret"
 

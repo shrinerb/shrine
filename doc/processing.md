@@ -2,7 +2,7 @@
 title: File Processing
 ---
 
-Shrine allows you to process attached files up front or on-the-fly. For
+Shrine allows you to process attached files eagerly or on-the-fly. For
 example, if your app is accepting image uploads, you can generate a predefined
 set of of thumbnails when the image is attached to a record, or you can have
 thumbnails generated dynamically as they're needed.
@@ -30,7 +30,7 @@ thumbnail = ImageProcessing::MiniMagick
 thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
 ```
 
-## Processing up front
+## Eager processing
 
 Let's say we're handling images, and want to generate a predefined set of
 thumbnails with various dimensions. We can use the
@@ -268,7 +268,7 @@ photo.image_url(:large) #=> "https://example.com/path/to/large.jpg"
 
 ## On-the-fly processing
 
-Having image thumbnails pre-generated can be a pain to maintain, because
+Having eagerly created image thumbnails can be a pain to maintain, because
 whenever you need to add a new version or change an existing one, you need to
 retroactively apply it to all existing attachments (see the [Managing
 Derivatives] guide for more details).
