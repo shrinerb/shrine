@@ -33,8 +33,8 @@ thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
 ## Processing up front
 
 Let's say we're handling images, and want to generate a predefined set of
-thumbnails with various dimensions. We can use the `derivatives` plugin to
-upload and save the processed files:
+thumbnails with various dimensions. We can use the
+**[`derivatives`][derivatives]** plugin to upload and save the processed files:
 
 ```rb
 Shrine.plugin :derivatives
@@ -91,7 +91,7 @@ end
 Since file processing can be time consuming, it's recommended to move it into a
 background job.
 
-#### With promotion
+#### A) Creating derivatives with promotion
 
 The simplest way is to use the [`backgrounding`][backgrounding] plugin to move
 promotion into a background job, and then create derivatives as part of
@@ -120,7 +120,7 @@ class PromoteJob
 end
 ```
 
-#### Separate from promotion
+#### B) Creating derivatives separately from promotion
 
 Derivatives don't need to be created as part of the attachment flow, you can
 create them at any point after promotion:
@@ -151,7 +151,7 @@ class DerivativesJob
 end
 ```
 
-#### Concurrent processing
+#### C) Creating derivatives concurrently
 
 You can also generate derivatives concurrently:
 
@@ -204,7 +204,59 @@ class DerivativeJob
 end
 ```
 
-### Processing other filetypes
+## On-the-fly processing
+
+Having image thumbnails pre-generated can be a pain to maintain, because
+whenever you need to add a new version or change an existing one, you need to
+retroactively apply it to all existing attachments (see the [Managing
+Derivatives] guide for more details).
+
+Sometimes it makes more sense to generate thumbnails dynamically as they're
+requested, and then cache them for future requests. This strategy is known as
+processing "**on-the-fly**" or "**on-demand**", and it's suitable for
+short-running processing such as creating image thumbnails or document
+previews.
+
+Shrine provides on-the-fly processing functionality via the
+**[`derivation_endpoint`][derivation_endpoint]** plugin. You set it up by
+loading the plugin with a secret key and a path prefix, mount its Rack app in
+your routes on the configured path prefix, and define processing you want to
+perform:
+
+```rb
+require "image_processing/mini_magick"
+
+Shrine.plugin :derivation_endpoint,
+  secret_key: "<YOUR SECRET KEY>",
+  prefix:     "derivations" # needs to match the mount point in routes
+
+Shrine.derivation :thumbnail do |file, width, height|
+  ImageProcessing::MiniMagick
+    .source(file)
+    .resize_to_limit!(width.to_i, height.to_i)
+end
+```
+
+```rb
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  mount Shrine.derivation_endpoint => "/derivations"
+end
+```
+
+Now you can generate thumbnail URLs from attached files, and the actual
+thumbnail will be generated when the URL is requested:
+
+```rb
+photo.image.derivation_url(:thumbnail, 600, 400)
+#=> "/derivations/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+```
+
+The plugin is highly customizable, be sure to check out the
+[documentation][derivation_endpoint], especially the [performance
+section][derivation_endpoint performance].
+
+## Processing other filetypes
 
 So far we've only been talking about processing images. However, there is
 nothing image-specific in Shrine's processing API, you can just as well process
@@ -235,63 +287,6 @@ class VideoUploader < Shrine
   end
 end
 ```
-
-## On-the-fly processing
-
-Generating image thumbnails on upload can be a pain to maintain, because
-whenever you need to add a new version or change an existing one, you need to
-retroactively apply it to all existing uploads (see the [Managing Derivatives]
-guide for more details).
-
-As an alternative, it's very common to instead generate thumbnails dynamically
-as they're requested, and then cache them for future requests. This strategy is
-known as "on-the-fly processing", and it's suitable for short-running
-processing such as creating image thumbnails or document previews.
-
-Shrine provides on-the-fly processing functionality via the
-[`derivation_endpoint`][derivation_endpoint] plugin. The basic setup is the
-following:
-
-1. load the plugin with a secret key and a path prefix for the endpoint
-2. mount the endpoint into your main app's router
-3. define a processing block for the type files you want to generate
-
-Together it might look something like this:
-
-```rb
-require "image_processing/mini_magick"
-
-class ImageUploader < Shrine
-  plugin :derivation_endpoint,
-    secret_key: "<YOUR SECRET KEY>",
-    prefix:     "derivations/image"
-
-  derivation :thumbnail do |file, width, height|
-    ImageProcessing::MiniMagick
-      .source(file)
-      .resize_to_limit!(width.to_i, height.to_i)
-  end
-end
-```
-
-```rb
-# config/routes.rb (Rails)
-Rails.application.routes.draw do
-  mount ImageUploader.derivation_endpoint => "derivations/image"
-end
-```
-
-Now you can generate thumbnail URLs from attached files, and the actual
-thumbnail will be generated when the URL is requested:
-
-```rb
-photo.image.derivation_url(:thumbnail, 600, 400)
-#=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
-```
-
-The plugin is highly customizable, be sure to check out the
-[documentation][derivation_endpoint], especially the [performance
-section][derivation_endpoint performance].
 
 ## Extras
 
@@ -365,17 +360,15 @@ gem "http", "~> 4.0"
 ```rb
 require "down/http"
 
-class ImageUploader < Shrine
-  plugin :derivation_endpoint,
-    secret_key: "secret",
-    prefix:     "derivations/image",
-    download:   false
+Shrine.plugin :derivation_endpoint,
+  secret_key: "secret",
+  prefix:     "derivations",
+  download:   false # disable download
 
-  derivation :thumbnail do |width, height|
-    # generate thumbnails using ImageOptim.com
-    down = Down::Http.new(method: :post)
-    down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{source.url}")
-  end
+Shrine.derivation :thumbnail do |width, height|
+  # generate thumbnails using ImageOptim.com
+  down = Down::Http.new(method: :post)
+  down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{source.url}")
 end
 ```
 
