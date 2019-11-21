@@ -447,66 +447,41 @@ Concurrent::Promises.zip(*tasks).wait!
 
 ### External processing
 
-Since processing is so dynamic, you're not limited to using the ImageProcessing
-gem, you can also use a 3rd-party service to generate thumbnails for you. Here
-is an example of generating thumbnails on-the-fly using [ImageOptim.com] (not
-to be confused with the [image_optim] gem):
+You can also integrate Shrine with 3rd-party processing services such as
+[Cloudinary] and [Imgix]. In the most common case, you'd serve images directly
+from these services, see the corresponding plugin docs for more details
+([shrine-cloudinary], [shrine-imgix] and [others][external extensions])
+
+You can also choose to use these services as an implementation detail of your
+application, by downloading the processed images and saving them to your
+storage. Here is how you might store files processed by Imgix as derivatives:
 
 ```rb
 # Gemfile
 gem "down", "~> 5.0"
 gem "http", "~> 4.0"
+gem "shrine-imgix", "~> 0.5"
 ```
-
+```rb
+Shrine.plugin :derivatives
+Shrine.plugin :imgix, client: { host: "my-app.imgix.net", secure_url_token: "secret" }
+```
 ```rb
 require "down/http"
 
-Shrine.plugin :derivation_endpoint,
-  secret_key: "secret",
-  prefix:     "derivations",
-  download:   false # disable download
+class ImageUploader < Shrine
+  IMGIX_THUMBNAIL = -> (file, width, height) do
+    Down::Http.download(file.imgix_url(w: width, h: height))
+  end
 
-Shrine.derivation :thumbnail do |width, height|
-  # generate thumbnails using ImageOptim.com
-  down = Down::Http.new(method: :post)
-  down.download("https://im2.io/<USERNAME>/#{width}x#{height}/#{source.url}")
+  Attacher.derivatives do
+    {
+      large:  IMGIX_TUMBNAIL[file, 800, 800],
+      medium: IMGIX_TUMBNAIL[file, 500, 500],
+      small:  IMGIX_TUMBNAIL[file, 300, 300],
+    }
+  end
 end
-```
-
-### Cloudinary
-
-[Cloudinary] is a popular commercial service for on-the-fly image processing,
-so it's a good alternative to the `derivation_endpoint` plugin. The
-[shrine-cloudinary] gem provides a Shrine storage that we can set for our
-temporary and permanent storage:
-
-```rb
-# Gemfile
-gem "shrine-cloudinary"
-```
-
-```rb
-require "cloudinary"
-require "shrine/storage/cloudinary"
-
-Cloudinary.config(
-  cloud_name: "<YOUR_CLOUD_NAME>",
-  api_key:    "<YOUR_API_KEY>",
-  api_secret: "<YOUR_API_SECRET>",
-)
-
-Shrine.storages = {
-  cache: Shrine::Storage::Cloudinary.new(prefix: "cache"),
-  store: Shrine::Storage::Cloudinary.new,
-}
-```
-
-Now when we upload our images to Cloudinary, we can generate URLs with various
-processing parameters:
-
-```rb
-photo.image_url(width: 100, height: 100, crop: :fit)
-#=> "http://res.cloudinary.com/myapp/image/upload/w_100,h_100,c_fit/nature.jpg"
 ```
 
 [`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
@@ -515,11 +490,12 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [GraphicsMagick]: http://www.graphicsmagick.org
 [libvips]: http://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
-[ImageOptim.com]: https://imageoptim.com/api
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [Managing Derivatives]: https://shrinerb.com/docs/changing-derivatives
-[Cloudinary]: https://cloudinary.com
+[Cloudinary]: https://cloudinary.com/
+[Imgix]: https://www.imgix.com/
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
+[shrine-imgix]: https://github.com/shrinerb/shrine-imgix
 [backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [MiniMagick]: https://github.com/minimagick/minimagick
@@ -527,5 +503,5 @@ photo.image_url(width: 100, height: 100, crop: :fit)
 [derivation_endpoint performance]: https://shrinerb.com/docs/plugins/derivation_endpoint#performance
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
-[image_optim]: https://github.com/toy/image_optim
 [default_url]: https://shrinerb.com/docs/plugins/default_url
+[external extensions]: https://shrinerb.com/docs/external/extensions
