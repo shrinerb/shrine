@@ -179,25 +179,7 @@ class Shrine
         options.merge!(@upload_options)
         options.merge!(presign_options)
 
-        if method == :post
-          presigned_post = object(id).presigned_post(options)
-
-          { method: method, url: presigned_post.url, fields: presigned_post.fields }
-        else
-          url = object(id).presigned_url(method, options)
-
-          # When any of these options are specified, the corresponding request
-          # headers must be included in the upload request.
-          headers = {}
-          headers["Content-Length"]      = options[:content_length]      if options[:content_length]
-          headers["Content-Type"]        = options[:content_type]        if options[:content_type]
-          headers["Content-Disposition"] = options[:content_disposition] if options[:content_disposition]
-          headers["Content-Encoding"]    = options[:content_encoding]    if options[:content_encoding]
-          headers["Content-Language"]    = options[:content_language]    if options[:content_language]
-          headers["Content-MD5"]         = options[:content_md5]         if options[:content_md5]
-
-          { method: method, url: url, headers: headers }
-        end
+        send(:"presign_#{method}", id, options)
       end
 
       # Deletes the file from the storage.
@@ -235,6 +217,17 @@ class Shrine
 
       private
 
+      # Uploads the file to S3. Uses multipart upload for large files.
+      def put(io, id, **options)
+        if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
+          object(id).put(body: io, **options)
+        else # multipart upload
+          object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
+            IO.copy_stream(io, write_stream)
+          end
+        end
+      end
+
       # Copies an existing S3 object to a new location. Uses multipart copy for
       # large files.
       def copy(io, id, **copy_options)
@@ -250,15 +243,28 @@ class Shrine
         object(id).copy_from(io.storage.object(io.id), **options)
       end
 
-      # Uploads the file to S3. Uses multipart upload for large files.
-      def put(io, id, **options)
-        if io.respond_to?(:size) && io.size && io.size <= @multipart_threshold[:upload]
-          object(id).put(body: io, **options)
-        else # multipart upload
-          object(id).upload_stream(part_size: part_size(io), **options) do |write_stream|
-            IO.copy_stream(io, write_stream)
-          end
-        end
+      # Generates parameters for a POST upload request.
+      def presign_post(id, options)
+        presigned_post = object(id).presigned_post(options)
+
+        { method: :post, url: presigned_post.url, fields: presigned_post.fields }
+      end
+
+      # Generates parameters for a PUT upload request.
+      def presign_put(id, options)
+        url = object(id).presigned_url(:put, options)
+
+        # When any of these options are specified, the corresponding request
+        # headers must be included in the upload request.
+        headers = {}
+        headers["Content-Length"]      = options[:content_length]      if options[:content_length]
+        headers["Content-Type"]        = options[:content_type]        if options[:content_type]
+        headers["Content-Disposition"] = options[:content_disposition] if options[:content_disposition]
+        headers["Content-Encoding"]    = options[:content_encoding]    if options[:content_encoding]
+        headers["Content-Language"]    = options[:content_language]    if options[:content_language]
+        headers["Content-MD5"]         = options[:content_md5]         if options[:content_md5]
+
+        { method: :put, url: url, headers: headers }
       end
 
       # Determins the part size that should be used when uploading the given IO
