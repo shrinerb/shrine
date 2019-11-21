@@ -473,7 +473,7 @@ class Shrine
         def _process_derivatives(processor_name, source, **options)
           processor = self.class.derivatives_processor(processor_name)
 
-          result = instrument_derivatives(processor_name, options) do
+          result = instrument_derivatives(processor_name, source, options) do
             instance_exec(source, **options, &processor)
           end
 
@@ -485,13 +485,15 @@ class Shrine
         end
 
         # Sends a `derivatives.shrine` event for instrumentation plugin.
-        def instrument_derivatives(processor_name, processor_options, &block)
+        def instrument_derivatives(processor_name, source, processor_options, &block)
           return yield unless shrine_class.respond_to?(:instrument)
 
           shrine_class.instrument(
             :derivatives,
             processor:         processor_name,
             processor_options: processor_options,
+            io:                source,
+            attacher:          self,
             &block
           )
         end

@@ -760,11 +760,13 @@ plugin :derivatives
 Processing derivatives will trigger a `derivatives.shrine` event with the
 following payload:
 
-| Key                  | Description                            |
-| :--                  | :----                                  |
-| `:processor`         | Name of the derivatives processor      |
-| `:processor_options` | Any options passed to the processor    |
-| `:uploader`          | The uploader class that sent the event |
+| Key                  | Description                                |
+| :--                  | :----                                      |
+| `:processor`         | Name of the derivatives processor          |
+| `:processor_options` | Any options passed to the processor        |
+| `:io`                | The source file passed to the processor    |
+| `:attacher`          | The attacher instance doing the processing |
+| `:uploader`          | The uploader class that sent the event     |
 
 A default log subscriber is added as well which logs these events:
 
@@ -780,7 +782,7 @@ plugin :derivatives, log_subscriber: -> (event) {
 }
 ```
 ```
-{"name":"derivatives","duration":2133,"processor":"thumbnails","processor_options":{},"uploader":"ImageUploader"}
+{"name":"derivatives","duration":2133,"processor":"thumbnails","processor_options":{},"io":"#<File:...>","uploader":"ImageUploader"}
 ```
 
 Or disable logging altogether:

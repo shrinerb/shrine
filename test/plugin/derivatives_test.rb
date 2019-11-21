@@ -895,6 +895,8 @@ describe Shrine::Plugins::Derivatives do
           assert_equal :derivatives,     @event.name
           assert_equal :reversed,        @event[:processor]
           assert_equal Hash[foo: "bar"], @event[:processor_options]
+          assert_instance_of Tempfile,   @event[:io]
+          assert_equal @attacher,        @event[:attacher]
           assert_equal @shrine,          @event[:uploader]
           assert_kind_of Integer,        @event.duration
         end
