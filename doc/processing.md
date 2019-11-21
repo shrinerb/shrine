@@ -350,6 +350,45 @@ class VideoUploader < Shrine
 end
 ```
 
+### Polymorphic uploader
+
+Sometimes you might want an attachment attribute to accept multiple types of
+files, and apply different processing depending on the type. Since Shrine's
+processing blocks are evaluated dynamically, you can use conditional logic:
+
+```rb
+class PolymorphicUploader < Shrine
+  IMAGE_TYPES = %w[image/jpeg image/png image/webp]
+  VIDEO_TYPES = %w[video/mp4 video/quicktime]
+  PDF_TYPES   = %w[application/pdf]
+
+  Attacher.validate do
+    validate_mime_type IMAGE_TYPES + VIDEO_TYPES + PDF_TYPES
+    # ...
+  end
+
+  Attacher.derivatives do |original|
+    case file.mime_type
+    when *IMAGE_TYPES then process_derivatives(:image, original)
+    when *VIDEO_TYPES then process_derivatives(:video, original)
+    when *PDF_TYPES   then process_derivatives(:pdf,   original)
+    end
+  end
+
+  Attacher.derivatives :image do |original|
+    # ...
+  end
+
+  Attacher.derivatives :video do |original|
+    # ...
+  end
+
+  Attacher.derivatives :pdf do |original|
+    # ...
+  end
+end
+```
+
 ## Extras
 
 ### libvips
