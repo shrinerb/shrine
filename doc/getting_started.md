@@ -946,6 +946,8 @@ s3 = Shrine.storages[:cache]
 s3.clear! { |object| object.last_modified < Time.now - 7*24*60*60 } # delete files older than 1 week
 ```
 
+For S3, it may be easier and cheaper to use [S3 bucket lifecycle expiration rules](http://docs.aws.amazon.com/AmazonS3/latest/UG/lifecycle-configuration-bucket-no-versioning.html)  instead.
+
 ## Logging
 
 The [`instrumentation`][instrumentation plugin] plugin sends and logs events for
