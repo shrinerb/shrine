@@ -450,7 +450,7 @@ Concurrent::Promises.zip(*tasks).wait!
 You can also integrate Shrine with 3rd-party processing services such as
 [Cloudinary] and [Imgix]. In the most common case, you'd serve images directly
 from these services, see the corresponding plugin docs for more details
-([shrine-cloudinary], [shrine-imgix] and [others][external extensions])
+([shrine-cloudinary], [shrine-imgix] and [others][external storages])
 
 You can also choose to use these services as an implementation detail of your
 application, by downloading the processed images and saving them to your
@@ -476,9 +476,9 @@ class ImageUploader < Shrine
 
   Attacher.derivatives do
     {
-      large:  IMGIX_TUMBNAIL[file, 800, 800],
-      medium: IMGIX_TUMBNAIL[file, 500, 500],
-      small:  IMGIX_TUMBNAIL[file, 300, 300],
+      large:  IMGIX_THUMBNAIL[file, 800, 800],
+      medium: IMGIX_THUMBNAIL[file, 500, 500],
+      small:  IMGIX_THUMBNAIL[file, 300, 300],
     }
   end
 end
@@ -504,4 +504,4 @@ end
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
 [default_url]: https://shrinerb.com/docs/plugins/default_url
-[external extensions]: https://shrinerb.com/docs/external/extensions
+[external storages]: https://shrinerb.com/docs/external/extensions#storages

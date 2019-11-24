@@ -428,9 +428,9 @@ See [Using Attacher] guide for more details.
 
 ### Temporary storage
 
-Shrine uses temporary storage to support retaining uploaded files across form
-redisplays and [direct uploads]. But you can disable this behaviour, and have
-files go straight to permanent storage:
+Shrine uses temporary storage to support [file validation][validation] and
+[direct uploads]. If you don't need these features, you can tell Shrine to
+upload files directly to permanent storage:
 
 ```rb
 Shrine.plugin :model, cache: false
@@ -450,7 +450,7 @@ attacher.file.storage_key #=> :store
 
 ## Plugin system
 
-By default Shrine comes with a small core which provides only the essential
+By default, Shrine comes with a small core which provides only the essential
 functionality. All additional features are available via [plugins], which also
 ship with Shrine. This way you can choose exactly what and how much Shrine does
 for you, and you load the code only for features that you use.
@@ -697,17 +697,18 @@ photo/
 ```
 
 Buy you can also override `Shrine#generate_location` with a custom
-implementation:
+implementation, for example:
 
 ```rb
 class ImageUploader < Shrine
   def generate_location(io, record: nil, derivative: nil, **)
     return super unless record
 
-    [ "uploads",
-      record.class.table_name,
-      record.id,
-      "#{derivative || "original"}-#{super}" ].compact.join("/")
+    table  = record.class.table_name
+    id     = record.id
+    prefix = derivative || "original"
+
+    "uploads/#{table}/#{id}/#{prefix}-#{super}"
   end
 end
 ```
@@ -719,6 +720,7 @@ uploads/
       small-ad61f25883.jpg
       medium-41b75c42bb.jpg
       large-73e67abe50.jpg
+...
 ```
 
 > There should always be a random component in the location, so that the ORM
@@ -729,13 +731,14 @@ upcoming upload:
 
 ```rb
 class ImageUploader < Shrine
-  def generate_location(io, record: nil, name: nil, derivative: nil, metadata: {}, **)
+  def generate_location(io, record: nil, name: nil, derivative: nil, metadata: {}, **options)
     storage_key #=> :cache, :store, ...
     io          #=> #<File>, #<Shrine::UploadedFile>, ...
     record      #=> #<Photo>, #<User>, ...
     name        #=> :image, :avatar, ...
     derivative  #=> :small, :medium, :large, ... (derivatives plugin)
     metadata    #=> { "filename" => "nature.jpg", "mime_type" => "image/jpeg", "size" => 18573, ... }
+    options     #=> { ... other uploader options ... }
 
     # ...
   end
@@ -1021,6 +1024,8 @@ Shrine.logger.level = Logger::WARN
 [presigned upload]: #presigned-direct-upload
 [storage]: #storage
 [uploaded file]: #uploaded-file
+[uploader]: #uploader
+[validation]: #validation
 
 [Adding Direct App Uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Direct-App-Uploads
 [Adding Resumable Uploads]: https://github.com/shrinerb/shrine/wiki/Adding-Resumable-Uploads

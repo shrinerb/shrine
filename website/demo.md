@@ -16,7 +16,7 @@ photo.image.storage  #=> #<Shrine::Storage::S3>
 photo.image.metadata #=> { "size" => 749238, "mime_type" => "image/jpeg", "filename" => "nature.jpg" }
 ```
 
-...and process them statically...
+...and process them eagerly...
 
 ```rb
 Shrine::Attacher.derivatives :thumbnails do |original|
@@ -34,7 +34,7 @@ photo.image_derivatives #=>
 #   small:  #<Shrine::UploadedFile id="cccdd4052261633b.jpg" ...> }
 ```
 
-...or dynamically...
+...or on-the-fly...
 
 ```rb
 Shrine.derivation :thumbnail do |file, width, height|
