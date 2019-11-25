@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "shrine/version"
 require "shrine/uploaded_file"
 require "shrine/attacher"
 require "shrine/attachment"
 require "shrine/plugins"
+require "shrine/version"
 
 require "securerandom"
 require "json"
