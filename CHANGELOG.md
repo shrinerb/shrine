@@ -1,5 +1,7 @@
 ## master
 
+* `ignore_assign_current` – Add new plugin for skipping uploaded file assignment when it's the current file (@janko)
+
 * `derivatives` – Fix `:derivative` value inconsistency when derivatives are being promoted (@janko)
 
 * `add_metadata` – Add `#add_metadata` method for adding metadata to uploaded files (@janko)
