@@ -1,9 +1,9 @@
 require "test_helper"
-require "shrine/plugins/ignore_assign_current"
+require "shrine/plugins/allow_assign_current"
 
-describe Shrine::Plugins::IgnoreAssignCurrent do
+describe Shrine::Plugins::AllowAssignCurrent do
   before do
-    @attacher = attacher { plugin :ignore_assign_current }
+    @attacher = attacher { plugin :allow_assign_current }
     @shrine   = @attacher.shrine_class
   end
 

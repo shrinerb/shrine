@@ -100,7 +100,7 @@
     ],
     "Other": [
       "plugins/atomic_helpers",
-      "plugins/ignore_assign_current",
+      "plugins/allow_assign_current",
       "plugins/included",
       "plugins/instrumentation",
       "plugins/keep_files",

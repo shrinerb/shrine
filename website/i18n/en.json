@@ -110,8 +110,8 @@
       "plugins/form_assign": {
         "title": "Form Assign"
       },
-      "plugins/ignore_assign_current": {
-        "title": "Ignore Assign Current"
+      "plugins/allow_assign_current": {
+        "title": "Allow Assign Current"
       },
       "plugins/included": {
         "title": "Included"
