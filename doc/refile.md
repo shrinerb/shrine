@@ -111,23 +111,25 @@ Shrine provides on-the-fly processing via the
 [`derivation_endpoint`][derivation_endpoint] plugin:
 
 ```rb
-# config/routes.rb (Rails)
-Rails.application.routes.draw do
-  # ...
-  mount Shrine.derivation_endpoint => "/derivations"
+require "image_processing/mini_magick"
+
+class ImageUploader < Shrine
+  plugin :derivation_endpoint,
+    secret_key: "<YOUR SECRET KEY>",
+    prefix:     "derivations/image" # needs to match the mount point in routes
+
+  derivation :thumbnail do |file, width, height|
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  end
 end
 ```
 ```rb
-require "image_processing/mini_magick"
-
-Shrine.plugin :derivation_endpoint,
-  secret_key: "<YOUR SECRET KEY>",
-  prefix:     "derivations" # needs to match the mount point in routes
-
-Shrine.derivation :thumbnail do |file, width, height|
-  ImageProcessing::MiniMagick
-    .source(file)
-    .resize_to_limit!(width.to_i, height.to_i)
+# config/routes.rb (Rails)
+Rails.application.routes.draw do
+  # ...
+  mount ImageUploader.derivation_endpoint => "/derivations/image"
 end
 ```
 

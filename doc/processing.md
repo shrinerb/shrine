@@ -286,23 +286,28 @@ your routes on the configured path prefix, and define processing you want to
 perform:
 
 ```rb
+# config/initializers/shrine.rb (Rails)
+# ...
+Shrine.plugin :derivation_endpoints, secret_key: "<YOUR_SECRET_KEY>"
+```
+```rb
 require "image_processing/mini_magick"
 
-Shrine.plugin :derivation_endpoint,
-  secret_key: "<YOUR SECRET KEY>",
-  prefix:     "derivations" # needs to match the mount point in routes
+class ImageUploader < Shrine
+  plugin :derivation_endpoint, prefix: "derivations/image" # matches mount point
 
-Shrine.derivation :thumbnail do |file, width, height|
-  ImageProcessing::MiniMagick
-    .source(file)
-    .resize_to_limit!(width.to_i, height.to_i)
+  derivation :thumbnail do |file, width, height|
+    ImageProcessing::MiniMagick
+      .source(file)
+      .resize_to_limit!(width.to_i, height.to_i)
+  end
 end
 ```
-
 ```rb
 # config/routes.rb (Rails)
 Rails.application.routes.draw do
-  mount Shrine.derivation_endpoint => "/derivations"
+  # ...
+  mount ImageUploader.derivation_endpoint => "/derivations/image"
 end
 ```
 
@@ -311,7 +316,7 @@ thumbnail will be generated when the URL is requested:
 
 ```rb
 photo.image.derivation_url(:thumbnail, 600, 400)
-#=> "/derivations/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
+#=> "/derivations/image/thumbnail/600/400/eyJpZCI6ImZvbyIsInN0b3JhZ2UiOiJzdG9yZSJ9?signature=..."
 ```
 
 The plugin is highly customizable, be sure to check out the
@@ -325,11 +330,13 @@ derivation for each one, you can set up a single derivation that applies any
 series of transformations:
 
 ```rb
-Shrine.derivation :transform do |original, transformations|
-  transformations = Shrine.urlsafe_deserialize(transformations)
+class ImageUploader < Shrine
+  derivation :transform do |original, transformations|
+    transformations = Shrine.urlsafe_deserialize(transformations)
 
-  vips = ImageProcessing::Vips.source(original)
-  vips.apply!(transformations)
+    vips = ImageProcessing::Vips.source(original)
+    vips.apply!(transformations)
+  end
 end
 ```
 ```rb
