@@ -15,6 +15,18 @@ uploaded_file.metadata #=>
 # }
 ```
 
+Under the hood, `Shrine#upload` calls `Shrine#extract_metadata`, which you can
+also use directly to extract metadata from any IO object:
+
+```rb
+uploader.extract_metadata(io) #=>
+# {
+#   "size" => 345993,
+#   "filename" => "matrix.mp4",
+#   "mime_type" => "video/mp4",
+# }
+```
+
 The following metadata is extracted by default:
 
 | Key         | Default source                                     |
@@ -23,7 +35,9 @@ The following metadata is extracted by default:
 | `mime_type` | extracted from `io.content_type`                   |
 | `size`      | extracted from `io.size`                           |
 
-You can access extracted metadata in three ways:
+## Accessing metadata
+
+You can access the stored metadata in three ways:
 
 ```rb
 # via methods (if they're defined)
@@ -42,17 +56,7 @@ uploaded_file["filename"]
 uploaded_file["mime_type"]
 ```
 
-Under the hood, `Shrine#upload` calls `Shrine#extract_metadata`, which you can
-also use directly to extract metadata from any IO object:
-
-```rb
-uploader.extract_metadata(io) #=>
-# {
-#   "size" => 345993,
-#   "filename" => "matrix.mp4",
-#   "mime_type" => "video/mp4",
-# }
-```
+## Controlling extraction
 
 `Shrine#upload` accepts a `:metadata` option which accepts the following values:
 
@@ -85,11 +89,11 @@ By default, the `mime_type` metadata will be copied over from the
 `#content_type` attribute of the input file (if present). However, since
 `#content_type` value comes from the `Content-Type` header of the upload
 request, it's *not guaranteed* to hold the actual MIME type of the file (browser
-determines this header based on file extension). Moreover, only
-`ActionDispatch::Http::UploadedFile`, `Shrine::RackFile`, and
-`Shrine::DataFile` objects have `#content_type` defined, so, when uploading
-simple file objects, `mime_type` will be nil. That makes relying on
-`#content_type` both a security risk and limiting.
+determines this header based on file extension).
+
+Moreover, only `ActionDispatch::Http::UploadedFile`, `Shrine::RackFile`, and
+`Shrine::DataFile` objects have `#content_type` defined, so when uploading
+objects such as `File`, the `mime_type` value will be nil by default.
 
 To remedy that, Shrine comes with a
 [`determine_mime_type`][determine_mime_type] plugin which is able to extract
@@ -112,15 +116,14 @@ You can choose different analyzers, and even mix-and-match them. See the
 
 ## Image Dimensions
 
-Shrine comes with a `store_dimensions` plugin for extracting image dimensions.
-It adds `width` and `height` metadata values, and also adds `#width`,
-`#height`, and `#dimensions` methods to the `Shrine::UploadedFile` object. By
-default, the plugin uses [FastImage] to analyze dimensions, but you can also
-have it use [MiniMagick] or [ruby-vips]:
+Shrine comes with a [`store_dimensions`][store_dimensions] plugin for
+extracting image dimensions. It adds `width` and `height` metadata values, and
+also adds `#width`, `#height`, and `#dimensions` methods to the
+`Shrine::UploadedFile` object.
 
 ```rb
 # Gemfile
-gem "fastimage"
+gem "fastimage" # default analyzer
 ```
 ```rb
 Shrine.plugin :store_dimensions
@@ -136,12 +139,17 @@ uploaded_file.height     #=> 900
 uploaded_file.dimensions #=> [1600, 900]
 ```
 
+By default, the plugin uses [FastImage] to analyze dimensions, but you can also
+have it use [MiniMagick] or [ruby-vips]. See the
+[`store_dimensions`][store_dimensions] plugin docs for more details.
+
 ## Custom metadata
 
 In addition to the built-in metadata, Shrine allows you to extract and store
-any custom metadata, using the `add_metadata` plugin (which extends
-`Shrine#extract_metadata`). For example, you might want to extract EXIF data
-from images:
+any custom metadata, using the [`add_metadata`][add_metadata] plugin (which
+internally extends `Shrine#extract_metadata`).
+
+For example, you might want to extract EXIF data from images:
 
 ```rb
 # Gemfile
@@ -203,9 +211,25 @@ uploaded_file.metadata #=>
 
 The yielded `io` object will not always be an object that responds to `#path`.
 For example, with the `data_uri` plugin the `io` can be a `StringIO` wrapper,
-with `restore_cached_data` or `refresh_metadata` plugins the `io` might be a
-`Shrine::UploadedFile` object. So we're using `Shrine.with_file` to ensure we
-have a file object.
+while with `restore_cached_data` or `refresh_metadata` plugins the `io` might
+be a `Shrine::UploadedFile` object. So, we're using `Shrine.with_file` to
+ensure we have a file object.
+
+### Uploader options
+
+Any options passed to the uploader will be available in the `add_metadata`
+block, so you can use that for dynamic extraction.
+
+```rb
+uploader.upload(io, foo: "bar")
+```
+```rb
+class MyUploader < Shrine
+  add_metadata do |io, **options|
+    options #=> { :foo => "bar", ... }
+  end
+end
+```
 
 ## Metadata columns
 
@@ -225,15 +249,20 @@ photo.image_type #=> "image/jpeg"
 When attaching files that were uploaded directly to the cloud or a [tus
 server], Shrine won't automatically extract metadata from them, instead it will
 copy any existing metadata that was set on the client side. The reason why this
-is the default behaviour is because extracting the metadata would require (at
-least partially) retrieving file content from the storage, which could
-potentially be expensive depending on the storage and the type of metadata
-being extracted.
+is the default behaviour is because metadata extraction requires (at least
+partially) retrieving file content from the storage, which could potentially be
+expensive depending on the storage and the type of metadata being extracted.
 
-There are two ways of extracting metadata from directly uploaded files. If you
-want metadata to be automatically extracted on assignment (which is useful if
-you want to validate the extracted metadata or have it immediately available
-for any other reason), you can load the `restore_cached_data` plugin:
+```rb
+# no additional metadata will be extracted in this assignment by default
+photo.image = '{"id":"9e6581a4ea1.jpg","storage":"cache","metadata":{...}}'
+```
+
+### Extracting on attachment
+
+If you want metadata to be automatically extracted on assignment (which is
+useful if you want to validate the extracted metadata or have it immediately
+available for any other reason), you can load the `restore_cached_data` plugin:
 
 ```rb
 Shrine.plugin :restore_cached_data # automatically extract metadata from cached files on assignment
@@ -248,7 +277,9 @@ photo.image.metadata #=>
 # }
 ```
 
-### Backgrounding
+### Extracting in the background
+
+#### A) Extracting with promotion
 
 If you're using [backgrounding], you can extract metadata during background
 promotion using the `refresh_metadata` plugin (which the `restore_cached_data`
@@ -271,11 +302,13 @@ class PromoteJob
     record         = Object.const_get(record_class).find(record_id) # if using Active Record
 
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
-    attacher.refresh_metadata!
+    attacher.refresh_metadata! # extract metadata
     attacher.atomic_promote
   end
 end
 ```
+
+#### B) Extracting separately from promotion
 
 You can also extract metadata in the background separately from promotion:
 
@@ -303,11 +336,13 @@ class MetadataJob
 end
 ```
 
+### Combining foreground and background
+
 If you have some metadata that you want to extract in the foreground and some
 that you want to extract in the background, you can use the uploader context:
 
 ```rb
-class MyUploader < Shrine
+class VideoUploader < Shrine
   plugin :add_metadata
 
   add_metadata do |io, **options|
@@ -324,7 +359,7 @@ class MyUploader < Shrine
 end
 ```
 ```rb
-class MetadataJob
+class PromoteJob
   include Sidekiq::Worker
 
   def perform(attacher_class, record_class, record_id, name, file_data)
@@ -332,11 +367,15 @@ class MetadataJob
     record         = Object.const_get(record_class).find(record_id) # if using Active Record
 
     attacher = attacher_class.retrieve(model: record, name: name, file: file_data)
-    attacher.refresh_metadata!(background: true)
-    attacher.atomic_persist
+    attacher.refresh_metadata!(background: true) # specify the flag
+    attacher.atomic_promote
   end
 end
 ```
+
+Now triggering metadata extraction in the controller on attachment (using
+`restore_cached_data` or `refresh_metadata` plugin) will skip the video
+metadata block, which will be triggered later in the background job.
 
 ### Optimizations
 
@@ -389,4 +428,6 @@ end
 [ruby-vips]: https://github.com/libvips/ruby-vips
 [tus server]: https://github.com/janko/tus-ruby-server
 [determine_mime_type]: https://shrinerb.com/docs/plugins/determine_mime_type
+[store_dimensions]: https://shrinerb.com/docs/plugins/store_dimensions
+[add_metadata]: https://shrinerb.com/docs/plugins/add_metadata
 [backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
