@@ -7,7 +7,7 @@ describe Shrine::Plugins::AddMetadata do
     @shrine   = @uploader.class
   end
 
-  describe "add_metadata" do
+  describe "Shrine.add_metadata" do
     describe "with argument" do
       it "adds declared metadata" do
         @shrine.add_metadata(:custom) { |io, context| "value" }
@@ -88,7 +88,7 @@ describe Shrine::Plugins::AddMetadata do
     end
   end
 
-  describe "metadata_method" do
+  describe "Shrine.metadata_method" do
     it "defines a reader on the uploaded file which returns the metadata" do
       @shrine.add_metadata { Hash["custom" => "value"] }
       @shrine.metadata_method :custom
@@ -118,5 +118,50 @@ describe Shrine::Plugins::AddMetadata do
     @shrine.plugin :add_metadata
     metadata = @uploader.extract_metadata(fakeio)
     assert_equal "bar", metadata["foo"]
+  end
+
+  describe "UploadedFile#add_metadata" do
+    it "merges metadata" do
+      file = @uploader.upload(fakeio, metadata: { "foo" => "foo" })
+      file.add_metadata("bar" => "bar")
+      assert_equal "foo", file.metadata["foo"]
+      assert_equal "bar", file.metadata["bar"]
+    end
+
+    it "accepts merge block" do
+      file = @uploader.upload(fakeio, metadata: { "nested" => { "foo" => "foo" } })
+      file.add_metadata("nested" => { "bar" => "bar" }) { |k, v1, v2| v1.merge(v2) }
+      assert_equal "foo", file.metadata["nested"]["foo"]
+      assert_equal "bar", file.metadata["nested"]["bar"]
+    end
+
+    it "doesn't mutate the metadata hash" do
+      file = @uploader.upload(fakeio)
+      metadata = file.metadata
+      file.add_metadata("foo" => "bar")
+      refute_equal metadata, file.metadata
+    end
+  end
+
+  describe "Attacher#add_metadata" do
+    it "merges metadata and writes to the model" do
+      @shrine.plugin :model
+
+      attacher = @shrine::Attacher.from_model(model(file_data: nil), :file)
+      attacher.attach(fakeio)
+      attacher.add_metadata("foo" => "bar")
+
+      file = @shrine.uploaded_file(attacher.record.file_data)
+      assert_equal "bar", file.metadata["foo"]
+      assert_equal "bar", attacher.file.metadata["foo"]
+    end
+
+    it "raises exception if there is no attached file" do
+      attacher = @shrine::Attacher.new
+
+      assert_raises Shrine::Error do
+        attacher.add_metadata("foo" => "bar")
+      end
+    end
   end
 end

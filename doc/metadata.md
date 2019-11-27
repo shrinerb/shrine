@@ -215,20 +215,15 @@ while with `restore_cached_data` or `refresh_metadata` plugins the `io` might
 be a `Shrine::UploadedFile` object. So, we're using `Shrine.with_file` to
 ensure we have a file object.
 
-### Uploader options
+### Adding metadata
 
-Any options passed to the uploader will be available in the `add_metadata`
-block, so you can use that for dynamic extraction.
+If you wish to add metadata to an already attached file, you can do it as
+follows:
 
 ```rb
-uploader.upload(io, foo: "bar")
-```
-```rb
-class MyUploader < Shrine
-  add_metadata do |io, **options|
-    options #=> { :foo => "bar", ... }
-  end
-end
+photo.image_attacher.add_metadata("foo" => "bar")
+photo.image.metadata #=> { ..., "foo" => "bar" }
+photo.save # persist changes
 ```
 
 ## Metadata columns

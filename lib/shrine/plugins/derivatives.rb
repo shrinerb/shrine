@@ -374,7 +374,7 @@ class Shrine
         #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
         def set_derivatives(derivatives)
           self.derivatives = derivatives
-          set file # trigger model writing
+          set file # trigger model write
           derivatives
         end
 

@@ -116,4 +116,25 @@ add_metadata :bar do |io, metadata:, **|
 end
 ```
 
+## Updating metadata
+
+If you just wish to add some custom metadata to existing uploads, you can do it
+with `UploadedFile#add_metadata` (and write the changes back to the model):
+
+```rb
+attacher.file.add_metadata("foo" => "bar")
+attacher.write # write changes to the model attribute
+
+attacher.file.metadata #=> { ..., "foo" => "bar" }
+```
+
+You can also use the `Attacher#add_metadata` shorthand, which also takes care
+of syncing the model:
+
+```rb
+attacher.add_metadata("foo" => "bar")
+
+attacher.file.metadata #=> { ..., "foo" => "bar" }
+```
+
 [add_metadata]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/add_metadata.rb

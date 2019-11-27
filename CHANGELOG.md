@@ -1,5 +1,7 @@
 ## master
 
+* `add_metadata` – Add `#add_metadata` method for adding metadata to uploaded files (@janko)
+
 * `derivatives` – Add `:io` and `:attacher` values to instrumentation event payload (@janko)
 
 ## 3.1.0 (2019-11-15) [[release notes]](https://shrinerb.com/docs/release_notes/3.1.0)

@@ -54,6 +54,19 @@ class Shrine
           end
         end
       end
+
+      module AttacherMethods
+        def add_metadata(new_metadata, &block)
+          file!.add_metadata(new_metadata, &block)
+          set(file) # trigger model write
+        end
+      end
+
+      module FileMethods
+        def add_metadata(new_metadata, &block)
+          @metadata = @metadata.merge(new_metadata, &block)
+        end
+      end
     end
 
     register_plugin(:add_metadata, AddMetadata)

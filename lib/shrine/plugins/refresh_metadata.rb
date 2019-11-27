@@ -6,8 +6,8 @@ class Shrine
     module RefreshMetadata
       module AttacherMethods
         def refresh_metadata!(**options)
-          file.refresh_metadata!(**context, **options)
-          set(file)
+          file!.refresh_metadata!(**context, **options)
+          set(file) # trigger model write
         end
       end
 
