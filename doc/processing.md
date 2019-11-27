@@ -318,6 +318,42 @@ The plugin is highly customizable, be sure to check out the
 [documentation][derivation_endpoint], especially the [performance
 section][derivation_endpoint performance].
 
+### Dynamic derivation
+
+If you have multiple types of transformations and don't want to have a
+derivation for each one, you can set up a single derivation that applies any
+series of transformations:
+
+```rb
+Shrine.derivation :transform do |original, transformations|
+  transformations = Shrine.urlsafe_deserialize(transformations)
+
+  vips = ImageProcessing::Vips.source(original)
+  vips.apply!(transformations)
+end
+```
+```rb
+photo.image.derivation_url :transform, Shrine.urlsafe_serialize(
+  crop:          [10, 10, 500, 500],
+  resize_to_fit: [300, 300],
+  gaussblur:     1,
+)
+```
+
+You can create a helper method for convenience:
+
+```rb
+def derivation_url(file, transformations)
+  file.derivation_url(:transform, Shrine.urlsafe_serialize(transformations))
+end
+```
+```rb
+derivation_url photo.image,
+  crop:          [10, 10, 500, 500],
+  resize_to_fit: [300, 300],
+  gaussblur:     1
+```
+
 ## Processing other filetypes
 
 So far we've only been talking about processing images. However, there is
