@@ -62,3 +62,10 @@ code[class*="language-"] {
 code {
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
+
+.cf-wrapper {
+  /* light red-tinted grey with grey border */
+  border: 1px solid rgb(172, 171, 171);
+  background-color: rgb(247, 246, 246);
+  border-radius: 3px;
+}
