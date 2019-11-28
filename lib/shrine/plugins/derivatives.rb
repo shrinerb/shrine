@@ -227,8 +227,6 @@ class Shrine
         #     hash[:thumb] #=> #<Shrine::UploadedFile>
         def upload_derivatives(files, **options)
           map_derivative(files) do |path, file|
-            path = derivative_path(path)
-
             upload_derivative(path, file, **options)
           end
         end
@@ -238,6 +236,7 @@ class Shrine
         #     hash = attacher.upload_derivative(:thumb, thumb)
         #     hash[:thumb] #=> #<Shrine::UploadedFile>
         def upload_derivative(path, file, storage: nil, **options)
+          path      = derivative_path(path)
           storage ||= derivative_storage(path)
 
           file.open    if file.is_a?(Tempfile)       # refresh file descriptor
@@ -500,7 +499,7 @@ class Shrine
 
         # Returns symbolized array or single key.
         def derivative_path(path)
-          path = path.map { |key| key.is_a?(String) ? key.to_sym : key }
+          path = Array(path).map { |key| key.is_a?(String) ? key.to_sym : key }
           path = path.first if path.one?
           path
         end

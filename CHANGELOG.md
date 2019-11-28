@@ -1,5 +1,7 @@
 ## master
 
+* `derivatives` – Fix `:derivative` value inconsistency when derivatives are being promoted (@janko)
+
 * `add_metadata` – Add `#add_metadata` method for adding metadata to uploaded files (@janko)
 
 * `derivatives` – Add `:io` and `:attacher` values to instrumentation event payload (@janko)
