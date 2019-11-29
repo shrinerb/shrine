@@ -14,7 +14,8 @@ require "logger"
 # Core class that handles uploading files to specified storage.
 class Shrine
   # A generic exception used by Shrine.
-  class Error < StandardError; end
+  class Error < StandardError
+  end
 
   # Raised when a file is not a valid IO.
   class InvalidFile < Error
@@ -25,6 +26,10 @@ class Shrine
 
   # Raised by the storage in the #open method.
   class FileNotFound < Error
+  end
+
+  # Raised by the attacher when assigned uploaded file is not cached.
+  class NotCached < Error
   end
 
   @opts = {}
