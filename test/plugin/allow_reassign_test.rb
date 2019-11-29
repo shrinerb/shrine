@@ -1,9 +1,9 @@
 require "test_helper"
-require "shrine/plugins/allow_assign_current"
+require "shrine/plugins/allow_reassign"
 
-describe Shrine::Plugins::AllowAssignCurrent do
+describe Shrine::Plugins::AllowReassign do
   before do
-    @attacher = attacher { plugin :allow_assign_current }
+    @attacher = attacher { plugin :allow_reassign }
     @shrine   = @attacher.shrine_class
   end
 
@@ -29,7 +29,7 @@ describe Shrine::Plugins::AllowAssignCurrent do
 
   it "still raises exception for other non-cached files" do
     file = @attacher.upload(fakeio)
-    assert_raises(Shrine::Error) do
+    assert_raises Shrine::NotCached do
       @attacher.assign(file.to_json)
     end
   end
@@ -45,5 +45,14 @@ describe Shrine::Plugins::AllowAssignCurrent do
     @attacher.file = file
     @shrine::UploadedFile.any_instance.expects(:refresh_metadata!).never
     @attacher.assign(file.to_json)
+  end
+
+  it "doesn't hijack the rack_file plugin" do
+    @attacher = attacher do
+      plugin :rack_file
+      plugin :allow_reassign
+    end
+    @attacher.assign({ tempfile: tempfile("file"), name: "file" })
+    assert_equal "file", @attacher.file.read
   end
 end

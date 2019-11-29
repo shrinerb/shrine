@@ -137,7 +137,7 @@ describe Shrine::Attacher do
 
       it "rejects non-cached files" do
         stored_file = @shrine.upload(fakeio, :store)
-        assert_raises(Shrine::Error) do
+        assert_raises Shrine::NotCached do
           @attacher.attach_cached(stored_file.data)
         end
       end

@@ -65,6 +65,9 @@
       "plugins/add_metadata": {
         "title": "Add Metadata"
       },
+      "plugins/allow_reassign": {
+        "title": "Allow Re-Assign"
+      },
       "plugins/atomic_helpers": {
         "title": "Atomic Helpers"
       },
@@ -109,9 +112,6 @@
       },
       "plugins/form_assign": {
         "title": "Form Assign"
-      },
-      "plugins/allow_assign_current": {
-        "title": "Allow Assign Current"
       },
       "plugins/included": {
         "title": "Included"

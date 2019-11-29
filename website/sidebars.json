@@ -99,8 +99,8 @@
       "plugins/url_options"
     ],
     "Other": [
+      "plugins/allow_reassign",
       "plugins/atomic_helpers",
-      "plugins/allow_assign_current",
       "plugins/included",
       "plugins/instrumentation",
       "plugins/keep_files",

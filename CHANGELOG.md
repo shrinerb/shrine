@@ -1,6 +1,8 @@
 ## master
 
-* `allow_assign_current` – Add new plugin for skipping uploaded file assignment when it's the current file (@janko)
+* `core` – Raise `Shrine::NotCached` in `Attacher#attach_cached` when non-cached uploaded file is assigned (@janko)
+
+* `allow_reassign` – Add new plugin for ignoring exception when assigning stored file if it's the current file (@janko)
 
 * `derivatives` – Fix `:derivative` value inconsistency when derivatives are being promoted (@janko)
 
