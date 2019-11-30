@@ -35,9 +35,9 @@ const siteConfig = {
     {doc: 'getting-started', label: 'Guides'},
     {doc: 'plugins/activerecord', label: 'Plugins'},
     {doc: 'external/extensions', label: 'External'},
-    {href: 'https://discourse.shrinerb.com', label: 'Discourse'},
-    {href: 'https://github.com/shrinerb/shrine', label: 'GitHub'},
-    {href: 'https://github.com/shrinerb/shrine/wiki', label: 'Wiki'},
+    {href: 'https://discourse.shrinerb.com', label: 'Discourse', external: true},
+    {href: 'https://github.com/shrinerb/shrine', label: 'GitHub', external: true},
+    {href: 'https://github.com/shrinerb/shrine/wiki', label: 'Wiki', external: true},
   ],
 
   algolia: {
