@@ -9,9 +9,9 @@ thumbnails generated dynamically as they're needed.
 
 How you're going to implement processing is entirely up to you. For images it's
 recommended to use the **[ImageProcessing]** gem, which provides wrappers for
-processing with [ImageMagick]/[GraphicsMagick] (using the [MiniMagick] gem) or
-[libvips] (using the [ruby-vips] gem; see the [libvips section](#libvips)).
-Here is an example of generating a thumbnail with ImageProcessing:
+processing with [MiniMagick][ImageProcessing::MiniMagick] and
+[libvips][ImageProcessing::Vips]. Here is an example of generating a thumbnail
+with ImageProcessing:
 
 ```
 $ brew install imagemagick
@@ -529,10 +529,8 @@ end
 
 [`Shrine::UploadedFile`]: http://shrinerb.com/rdoc/classes/Shrine/UploadedFile/InstanceMethods.html
 [ImageProcessing]: https://github.com/janko/image_processing
-[ImageMagick]: https://www.imagemagick.org
-[GraphicsMagick]: http://www.graphicsmagick.org
-[libvips]: http://libvips.github.io/libvips/
-[Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
+[ImageProcessing::MiniMagick]: https://github.com/janko/image_processing/blob/master/doc/minimagick.md#readme
+[ImageProcessing::Vips]: https://github.com/janko/image_processing/blob/master/doc/vips.md#readme
 [streamio-ffmpeg]: https://github.com/streamio/streamio-ffmpeg
 [Managing Derivatives]: https://shrinerb.com/docs/changing-derivatives
 [Cloudinary]: https://cloudinary.com/
@@ -540,8 +538,6 @@ end
 [shrine-cloudinary]: https://github.com/shrinerb/shrine-cloudinary
 [shrine-imgix]: https://github.com/shrinerb/shrine-imgix
 [backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
-[ruby-vips]: https://github.com/libvips/ruby-vips
-[MiniMagick]: https://github.com/minimagick/minimagick
 [derivation_endpoint]: https://shrinerb.com/docs/plugins/derivation_endpoint
 [derivation_endpoint performance]: https://shrinerb.com/docs/plugins/derivation_endpoint#performance
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
