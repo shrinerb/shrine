@@ -37,6 +37,7 @@ const siteConfig = {
     {doc: 'external/extensions', label: 'External'},
     {href: 'https://discourse.shrinerb.com', label: 'Discourse'},
     {href: 'https://github.com/shrinerb/shrine', label: 'GitHub'},
+    {href: 'https://github.com/shrinerb/shrine/wiki', label: 'Wiki'},
   ],
 
   algolia: {
