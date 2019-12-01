@@ -187,10 +187,20 @@ and make the execution synchronous, you can override them on the attacher level
 and call the default behaviour:
 
 ```rb
-photo.image_attacher.promote_block(&:promote)
-photo.image_attacher.destroy_block(&:destroy)
+photo.image_attacher.promote_block(&:promote) # promote synchronously
+photo.image_attacher.destroy_block(&:destroy) # destroy synchronously
 
 # ... now promotion and deletion will be synchronous ...
+```
+
+You can also do this on the class level if you want to disable backgrounding
+that was set up by a superclass:
+
+```rb
+class MyUploader < Shrine
+  Attacher.promote_block(&:promote) # promote synchronously
+  Attacher.destroy_block(&:destroy) # destroy synchronously
+end
 ```
 
 [backgrounding]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/backgrounding.rb
