@@ -69,3 +69,7 @@ code {
   background-color: rgb(247, 246, 246);
   border-radius: 3px;
 }
+
+.button {
+  margin: 0 3px;
+}
