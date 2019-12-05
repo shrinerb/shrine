@@ -136,7 +136,7 @@ into separate columns.
 While Paperclip works only with Active Record, Shrine is designed to integrate
 with any persistence library (there are integrations for [Active
 Record][activerecord], [Sequel][sequel], [ROM][rom], [Hanami][hanami] and
-[Hanami][mongoid]), and can also be used standalone:
+[Mongoid][mongoid]), and can also be used standalone:
 
 ```rb
 attacher = ImageUploader::Attacher.new
