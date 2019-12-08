@@ -350,7 +350,8 @@
       "Plugins": "Plugins",
       "External": "External",
       "Discourse": "Discourse",
-      "GitHub": "GitHub"
+      "GitHub": "GitHub",
+      "Wiki": "Wiki"
     },
     "categories": {
       "Introduction": "Introduction",
