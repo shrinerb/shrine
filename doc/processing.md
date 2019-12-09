@@ -24,8 +24,12 @@ gem "image_processing", "~> 1.8"
 require "image_processing/mini_magick"
 
 thumbnail = ImageProcessing::MiniMagick
-  .source(image)
-  .resize_to_limit!(600, 400)
+  .source(image)              # input file
+  .resize_to_limit(600, 400)  # resize macro
+  .colorspace("grayscale")    # custom operation
+  .convert("jpeg")            # output type
+  .saver(quality: 90)         # output options
+  .call                       # run the pipeline
 
 thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
 ```
@@ -69,21 +73,6 @@ photo.image(:large)            #=> #<Shrine::UploadedFile ...>
 photo.image(:large).url        #=> "/uploads/store/lg043.jpg"
 photo.image(:large).size       #=> 5825949
 photo.image(:large).mime_type  #=> "image/jpeg"
-```
-
-### Automatic processing
-
-If you would like derivatives to be automatically created with promotion, you
-can override `Attacher#promote` for call `Attacher#create_derivatives` before
-promotion:
-
-```rb
-class Shrine::Attacher
-  def promote(*)
-    create_derivatives
-    super
-  end
-end
 ```
 
 ### Backgrounding
@@ -434,6 +423,26 @@ end
 
 ## Extras
 
+### Automatic derivatives
+
+If you would like derivatives to be automatically created with promotion, you
+can override `Attacher#promote` for call `Attacher#create_derivatives` before
+promotion:
+
+```rb
+class Shrine::Attacher
+  def promote(*)
+    create_derivatives
+    super
+  end
+end
+```
+
+This shouldn't be needed if you're processing in the
+[background](#backgrounding), as in that case you have a background worker that
+will be called for each attachment, so you can call
+`Attacher#create_derivatives` there.
+
 ### libvips
 
 As mentioned, ImageProcessing gem also has an alternative backend for
@@ -443,7 +452,7 @@ characteristics – it's often **multiple times faster** than ImageMagick and ha
 low memory usage (see [Why is libvips quick]).
 
 Using libvips is as easy as installing it and switching to the
-`ImageProcessing::Vips` backend:
+[`ImageProcessing::Vips`][ImageProcessing::Vips] backend:
 
 ```
 $ brew install vips
@@ -544,3 +553,5 @@ end
 [concurrent-ruby]: https://github.com/ruby-concurrency/concurrent-ruby
 [default_url]: https://shrinerb.com/docs/plugins/default_url
 [external storages]: https://shrinerb.com/docs/external/extensions#storages
+[libvips]: https://libvips.github.io/libvips/
+[Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
