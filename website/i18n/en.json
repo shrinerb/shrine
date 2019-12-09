@@ -188,6 +188,9 @@
       "plugins/tempfile": {
         "title": "Tempfile"
       },
+      "plugins/type_predicates": {
+        "title": "Type Predicates"
+      },
       "plugins/upload_endpoint": {
         "title": "Upload Endpoint"
       },

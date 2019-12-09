@@ -141,7 +141,7 @@ class Shrine
           require "mimemagic"
 
           mime = MimeMagic.by_magic(io)
-          mime.type if mime
+          mime&.type
         end
 
         def extract_with_marcel(io, options)
@@ -158,7 +158,7 @@ class Shrine
 
           if filename = extract_filename(io)
             mime_type = MIME::Types.of(filename).first
-            mime_type.content_type if mime_type
+            mime_type&.content_type
           end
         end
 
@@ -167,7 +167,7 @@ class Shrine
 
           if filename = extract_filename(io)
             info = MiniMime.lookup_by_filename(filename)
-            info.content_type if info
+            info&.content_type
           end
         end
 

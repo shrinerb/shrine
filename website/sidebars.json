@@ -77,7 +77,8 @@
       "plugins/refresh_metadata",
       "plugins/restore_cached_data",
       "plugins/signature",
-      "plugins/store_dimensions"
+      "plugins/store_dimensions",
+      "plugins/type_predicates"
     ],
     "Downloading": [
       "plugins/download_endpoint",
