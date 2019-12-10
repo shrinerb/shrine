@@ -22,7 +22,7 @@ describe Shrine::Storage::S3 do
     end
 
     it "accepts :client" do
-      client = Aws::S3::Encryption::Client.new(encryption_key: "a" * 16, stub_responses: true)
+      client = Aws::S3::Client.new(stub_responses: true)
       @s3 = s3(client: client)
       assert_equal client, @s3.client
       assert_equal client, @s3.bucket.client
