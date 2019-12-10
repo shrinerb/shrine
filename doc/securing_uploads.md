@@ -1,6 +1,6 @@
 ---
 id: securing-uploads
-title: Securing uploads
+title: Securing Uploads
 ---
 
 Shrine does a lot to make your file uploads secure, but there are still a lot
