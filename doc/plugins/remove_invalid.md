@@ -11,9 +11,17 @@ plugin :remove_invalid
 ```
 
 ```rb
-photo.image = file # invalid file
+# without previous file
+photo.image        #=> nil
+photo.image = file # validation fails, assignment is reverted
 photo.valid?       #=> false
 photo.image        #=> nil
+
+# with previous file
+photo.image        #=> #<Shrine::UploadedFile id="foo" ...>
+photo.image = file # validation fails, assignment is reverted
+photo.valid?       #=> false
+photo.image        #=> #<Shrine::UploadedFile id="foo" ...>
 ```
 
 [remove_invalid]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/remove_invalid.rb
