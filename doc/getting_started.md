@@ -669,8 +669,8 @@ For more details, see the [File Validation] guide and
 
 ## Location
 
-Shrine automatically generated random locations before uploading files. By
-default the hierarchy is flat, meaning all files are stored in the root
+Shrine automatically generates random locations before uploading files. By
+default, the hierarchy is flat, meaning all files are stored in the root
 directory of the storage.
 
 ```
