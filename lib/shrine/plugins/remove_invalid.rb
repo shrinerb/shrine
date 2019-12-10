@@ -22,7 +22,7 @@ class Shrine
 
           if changed?
             load_data @previous.data
-            remove_instance_variable(:@previous)
+            @previous = nil
           else
             load_data nil
           end

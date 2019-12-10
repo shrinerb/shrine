@@ -39,10 +39,11 @@ class Shrine
 
       # Initializes the attached file, temporary and permanent storage.
       def initialize(file: nil, cache: :cache, store: :store)
-        @file    = file
-        @cache   = cache
-        @store   = store
-        @context = {}
+        @file     = file
+        @cache    = cache
+        @store    = store
+        @context  = {}
+        @previous = nil
       end
 
       # Returns the temporary storage identifier.
@@ -138,7 +139,7 @@ class Shrine
       def finalize
         destroy_previous
         promote_cached
-        remove_instance_variable(:@previous) if changed?
+        @previous = nil
       end
 
       # Plugins can override this if they want something to be done in a
@@ -254,7 +255,7 @@ class Shrine
       #     attacher.attach(file)
       #     attacher.changed? #=> true
       def changed?
-        instance_variable_defined?(:@previous)
+        !!@previous
       end
 
       # Returns whether a file is attached.
