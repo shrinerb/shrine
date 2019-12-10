@@ -1,5 +1,11 @@
 ## master
 
+* `validation` – Run validation on `Attacher#attach` & `Attacher#attach_cached` instead of `Attacher#change` (@janko)
+
+* `remove_invalid` – Activate also when `Attacher#validate` is run manually (@janko)
+
+* `remove_invalid` – Fix incompatibility with `derivatives` plugin (@janko)
+
 * `type_predicates` – Add new plugin with convenient `UploadedFile` predicate methods based on MIME type (@janko)
 
 * `core` – Raise `Shrine::NotCached` in `Attacher#attach_cached` when non-cached uploaded file is assigned (@janko)

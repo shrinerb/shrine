@@ -441,7 +441,7 @@ class Shrine
         #     attacher.derivatives #=> { thumb: #<Shrine::UploadedFile> }
         #     attacher.change(file)
         #     attacher.derivatives #=> {}
-        def change(*args)
+        def change(*)
           result = super
           set_derivatives({})
           result

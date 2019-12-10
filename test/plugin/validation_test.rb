@@ -44,62 +44,80 @@ describe Shrine::Plugins::Validation do
     end
 
     describe "#attach_cached" do
-      it "forwards :validate option to validation block" do
+      it "runs validation by default" do
+        @attacher.class.validate { errors << "error" }
+        cached_file = @attacher.upload(fakeio, :cache)
+        @attacher.attach_cached(cached_file.data)
+        assert_equal ["error"], @attacher.errors
+      end
+
+      it "runs validation only once for raw IO" do
+        count = 0
+        @attacher.class.validate { count += 1 }
+        @attacher.attach_cached(fakeio)
+        assert_equal 1, count
+      end
+
+      it "skips validation when :validate is false" do
+        @attacher.errors << "error"
+        @attacher.class.validate { errors << "new_error" }
+        @attacher.attach_cached(fakeio, validate: false)
+        assert_equal [], @attacher.errors
+      end
+
+      it "runs validation when :validate is true" do
+        @attacher.class.validate { errors << "error" }
+        @attacher.attach_cached(fakeio, validate: true)
+        assert_equal ["error"], @attacher.errors
+      end
+
+      it "forwards :validate options to validation block" do
         validate_options = nil
         @attacher.class.validate { |**options| validate_options = options }
-        cached_file = @shrine.upload(fakeio, :cache)
-        @attacher.attach_cached(cached_file.data, validate: { foo: "bar" })
+        @attacher.attach_cached(fakeio, validate: { foo: "bar" })
         assert_equal Hash[foo: "bar"], validate_options
+      end
+
+      it "still returns attached file" do
+        assert_instance_of @shrine::UploadedFile, @attacher.attach_cached(fakeio)
       end
     end
 
     describe "#attach" do
-      it "forwards options to validation" do
+      it "runs validation by default" do
+        @attacher.class.validate { errors << "error" }
+        @attacher.attach(fakeio)
+        assert_equal ["error"], @attacher.errors
+      end
+
+      it "skips validation when :validate is false" do
+        @attacher.errors << "error"
+        @attacher.class.validate { errors << "new_error" }
+        @attacher.attach(fakeio, validate: false)
+        assert_equal [], @attacher.errors
+      end
+
+      it "runs validation when :validate is true" do
+        @attacher.class.validate { errors << "error" }
+        @attacher.attach(fakeio, validate: true)
+        assert_equal ["error"], @attacher.errors
+      end
+
+      it "forwards :validate options to validation block" do
         validate_options = nil
         @attacher.class.validate { |**options| validate_options = options }
         @attacher.attach(fakeio, validate: { foo: "bar" })
         assert_equal Hash[foo: "bar"], validate_options
       end
 
-      it "doesn't forward :validate option to uploader" do
+      it "doesn't forward :validate option to the uploader" do
         io = fakeio
         @shrine.expects(:upload).with(io, :store, {})
         @attacher.attach(io, validate: { foo: "bar" })
       end
-    end
 
-    describe "#change" do
-      it "runs validations" do
-        @attacher.class.validate { errors << "error" }
-        @attacher.change @attacher.upload(fakeio)
-        assert_equal ["error"], @attacher.errors
-      end
-
-      it "fowards :validate option to validation block" do
-        validate_options = nil
-        @attacher.class.validate { |**options| validate_options = options }
-        file = @attacher.upload(fakeio)
-        @attacher.change(file, validate: { foo: "bar" })
-        assert_equal Hash[foo: "bar"], validate_options
-      end
-
-      it "skips validation when :validate is set to false" do
-        @attacher.class.validate { errors << "error" }
-        file = @attacher.upload(fakeio)
-        @attacher.change(file, validate: false)
-        assert_equal [], @attacher.errors
-      end
-
-      it "runs validation when :validate is set to true" do
-        @attacher.class.validate { errors << "error" }
-        file = @attacher.upload(fakeio)
-        @attacher.change(file, validate: true)
-        assert_equal ["error"], @attacher.errors
-      end
-
-      it "still returns changed file" do
-        file = @attacher.upload(fakeio)
-        assert_equal file, @attacher.change(file)
+      it "still returns attached file" do
+        assert_instance_of @shrine::UploadedFile, @attacher.attach(fakeio)
       end
     end
 
@@ -137,6 +155,34 @@ describe Shrine::Plugins::Validation do
         @attacher.file = @attacher.upload(fakeio)
         @attacher.validate(foo: "bar")
         assert_equal Hash[foo: "bar"], validate_options
+      end
+    end
+
+    describe "with model plugin" do
+      before do
+        @shrine.plugin :model
+
+        model_class = model_class(:file_data)
+        model_class.include @shrine::Attachment.new(:file)
+
+        @model = model_class.new
+      end
+
+      it "runs validation with caching on" do
+        @shrine::Attacher.validate { errors << "error" }
+
+        @model.file = fakeio
+
+        assert_equal ["error"], @model.file_attacher.errors
+      end
+
+      it "runs validation with caching off" do
+        @shrine.plugin :model, cache: false
+        @shrine::Attacher.validate { errors << "error" }
+
+        @model.file = fakeio
+
+        assert_equal ["error"], @model.file_attacher.errors
       end
     end
   end

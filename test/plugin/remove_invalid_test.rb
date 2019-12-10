@@ -8,31 +8,25 @@ describe Shrine::Plugins::RemoveInvalid do
   end
 
   describe "Attacher" do
-    describe "#change" do
+    describe "#validate" do
       it "deletes and removes invalid cached files" do
         @attacher.class.validate { errors << "error" }
+        file = @attacher.attach_cached(fakeio)
 
-        cached_file = @shrine.upload(fakeio, :cache)
-        @attacher.change(cached_file)
-
-        refute cached_file.exists?
+        refute file.exists?
         assert_nil @attacher.file
       end
 
       it "deletes and removes invalid stored files" do
         @attacher.class.validate { errors << "error" }
+        file = @attacher.attach(fakeio)
 
-        stored_file = @shrine.upload(fakeio, :store)
-        @attacher.change(stored_file)
-
-        refute stored_file.exists?
+        refute file.exists?
         assert_nil @attacher.file
       end
 
-      it "reverts the previous attached file" do
-        previous_file = @attacher.upload(fakeio)
-        @attacher.file = previous_file
-
+      it "assigns back the previous file" do
+        previous_file = @attacher.attach(fakeio)
         @attacher.class.validate { errors << "error" }
         @attacher.attach(fakeio)
 
@@ -41,29 +35,84 @@ describe Shrine::Plugins::RemoveInvalid do
 
       it "removes dirty state from attacher" do
         @attacher.class.validate { errors << "error" }
-
         @attacher.attach(fakeio)
 
         refute @attacher.changed?
       end
 
-      it "doesn't remove when validations have passed" do
-        @attacher.attach(fakeio)
+      it "doesn't deassign when validations have passed" do
+        file = @attacher.attach(fakeio)
 
-        refute_nil @attacher.file
+        assert_equal file, @attacher.file
         assert @attacher.file.exists?
         assert @attacher.changed?
       end
 
-      it "works with versions" do
-        @shrine.plugin :versions
+      describe "with derivatives plugin" do
+        before do
+          @shrine.plugin :derivatives
+          @attacher = @shrine::Attacher.new
+        end
 
-        file = @shrine.upload(fakeio, :cache)
-        @attacher.class.validate { errors << "error" }
-        @attacher.change(thumb: file)
+        it "assigns back derivatives" do
+          file        = @attacher.set @attacher.upload(fakeio)
+          derivatives = @attacher.add_derivatives(one: fakeio)
 
-        assert_nil @attacher.file
-        refute file.exists?
+          @attacher.class.validate { errors << "error" }
+          @attacher.assign(fakeio)
+
+          assert_equal file,        @attacher.file
+          assert_equal derivatives, @attacher.derivatives
+
+          assert derivatives[:one].exists?
+        end
+
+        it "destroys derivatives" do
+          file        = @attacher.set @attacher.upload(fakeio)
+          derivatives = @attacher.add_derivatives(one: fakeio)
+
+          @attacher.class.validate { errors << "error" }
+          @attacher.validate
+
+          refute file.exists?
+          refute derivatives[:one].exists?
+        end
+
+        it "deassigns dirty" do
+          file        = @attacher.attach(fakeio)
+          derivatives = @attacher.add_derivatives(one: fakeio)
+
+          @attacher.class.validate { errors << "error" }
+          @attacher.validate
+
+          assert_nil   @attacher.file
+          assert_empty @attacher.derivatives
+        end
+
+        it "deassign clean" do
+          file        = @attacher.set(@attacher.upload(fakeio))
+          derivatives = @attacher.add_derivatives(one: fakeio)
+
+          @attacher.class.validate { errors << "error" }
+          @attacher.validate
+
+          assert_nil   @attacher.file
+          assert_empty @attacher.derivatives
+        end
+      end
+
+      describe "with versions plugin" do
+        before do
+          @shrine.plugin :versions
+        end
+
+        it "destroys versions" do
+          @attacher.class.validate { errors << "error" }
+          files = @attacher.attach(thumb: fakeio)
+
+          assert_nil @attacher.file
+          refute files[:thumb].exists?
+        end
       end
     end
   end

@@ -9,18 +9,23 @@ class Shrine
       end
 
       module AttacherMethods
-        def change(*)
+        def validate(*)
           super
         ensure
-          revert_change if errors.any?
+          deassign if errors.any?
         end
 
         private
 
-        def revert_change
+        def deassign
           destroy
-          set @previous.file
-          remove_instance_variable(:@previous)
+
+          if changed?
+            load_data @previous.data
+            remove_instance_variable(:@previous)
+          else
+            load_data nil
+          end
         end
       end
     end

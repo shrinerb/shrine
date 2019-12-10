@@ -89,7 +89,7 @@ class Shrine
       #     attacher.attach_cached({ "id" => "...", "storage" => "cache", "metadata" => {} })
       def attach_cached(value, **options)
         if value.is_a?(String) || value.is_a?(Hash)
-          change(cached(value, **options), **options)
+          change(cached(value, **options))
         else
           attach(value, storage: cache_key, action: :cache, **options)
         end
@@ -111,7 +111,7 @@ class Shrine
       def attach(io, storage: store_key, **options)
         file = upload(io, storage, **options) if io
 
-        change(file, **options)
+        change(file)
       end
 
       # Deletes any previous file and promotes newly attached cached file.
@@ -211,7 +211,7 @@ class Shrine
       #     attacher.change(uploaded_file)
       #     attacher.file #=> #<Shrine::UploadedFile>
       #     attacher.changed? #=> true
-      def change(file, **)
+      def change(file)
         @previous = dup unless @file == file
         set(file)
       end

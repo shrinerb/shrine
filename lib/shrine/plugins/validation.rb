@@ -29,14 +29,16 @@ class Shrine
           @errors = []
         end
 
-        # Leaves out :validate option when calling `Shrine.upload`.
-        def upload(*args, validate: nil, **options)
-          super(*args, **options)
+        # Performs validations after attaching cached file.
+        def attach_cached(value, validate: nil, **options)
+          result = super(value, validate: false, **options)
+          validation(validate)
+          result
         end
 
-        # Performs validations after changing the file.
-        def change(file, validate: nil, **)
-          result = super
+        # Performs validations after attaching file.
+        def attach(io, validate: nil, **options)
+          result = super(io, **options)
           validation(validate)
           result
         end

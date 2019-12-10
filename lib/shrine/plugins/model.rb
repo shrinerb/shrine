@@ -118,7 +118,7 @@ class Shrine
         end
 
         # Writes uploaded file data into the model.
-        def set(*args)
+        def set(*)
           result = super
           write if model?
           result
