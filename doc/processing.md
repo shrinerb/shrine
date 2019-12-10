@@ -75,6 +75,49 @@ photo.image(:large).size       #=> 5825949
 photo.image(:large).mime_type  #=> "image/jpeg"
 ```
 
+### Conditional derivatives
+
+The `Attacher.derivatives` block is evaluated in context of a
+`Shrine::Attacher` instance:
+
+```rb
+Attacher.derivatives do |original|
+  self    #=> #<Shrine::Attacher>
+
+  file    #=> #<Shrine::UploadedFile>
+  record  #=> #<Photo>
+  name    #=> :image
+  context #=> { ... }
+
+  # ...
+end
+```
+
+This gives you the ability to branch the processing logic based on the
+attachment information:
+
+```rb
+Attacher.derivatives do |original|
+  magick = ImageProcessing::MiniMagick.source(original)
+  result = {}
+
+  if record.is_a?(Photo)
+    result[:jpg]  = magick.convert!("jpeg")
+    result[:gray] = magick.colorspace!("grayscale")
+  end
+
+  if file.mime_type == "image/svg+xml"
+    result[:png] = magick.loader(transparent: "white").convert!("png")
+  end
+
+  result
+end
+```
+
+If you find yourself branching a lot based on MIME type, the
+[`type_predicates`][type_predicates] plugin provides convenient predicate
+methods for that.
+
 ### Backgrounding
 
 Since file processing can be time consuming, it's recommended to move it into a
@@ -474,7 +517,7 @@ thumbnail = ImageProcessing::Vips
 thumbnail #=> #<Tempfile:...> (a 600x400 thumbnail of the source image)
 ```
 
-### Parallelize uploading
+### Parallelize uploads
 
 If you're generating derivatives, you can parallelize the uploads using the
 [concurrent-ruby] gem:
@@ -555,3 +598,4 @@ end
 [external storages]: https://shrinerb.com/docs/external/extensions#storages
 [libvips]: https://libvips.github.io/libvips/
 [Why is libvips quick]: https://github.com/libvips/libvips/wiki/Why-is-libvips-quick
+[type_predicates]: https://shrinerb.com/docs/plugins/type_predicates

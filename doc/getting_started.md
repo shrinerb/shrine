@@ -585,8 +585,8 @@ photo.image(:large).size       #=> 5825949
 photo.image(:large).mime_type  #=> "image/jpeg"
 ```
 
-For more details, see the [`derivatives`][derivatives plugin] plugin
-documentation and the [File Processing] guide.
+For more details, see the [File Processing] guide and the
+[`derivatives`][derivatives plugin] plugin documentation.
 
 ### On-the-fly processing
 
