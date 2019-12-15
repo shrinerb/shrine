@@ -283,8 +283,9 @@ attacher.destroy_background # calls destroy block
 ## Versions
 
 The `versions`, `processing`, `recache`, and `delete_raw` plugins have been
-deprecated in favour of the new **[`derivatives`][derivatives]** plugin. Let's
-assume you have the following `versions` code:
+deprecated in favour of the new **[`derivatives`][derivatives]** plugin.
+
+Let's assume you have the following `versions` configuration:
 
 ```rb
 class ImageUploader < Shrine
@@ -307,11 +308,15 @@ class ImageUploader < Shrine
   end
 end
 ```
+
+When an attached file is promoted to permanent storage, the versions would
+automatically get generated:
+
 ```rb
 photo = Photo.new(photo_params)
 
 if photo.valid?
-  photo.save # automatically calls processing block
+  photo.save # generates versions on promotion
   # ...
 else
   # ...
@@ -319,7 +324,7 @@ end
 ```
 
 With `derivatives`, the original file is automatically downloaded and retained,
-so the code is now much simpler:
+so the processing code is much simpler:
 
 ```rb
 Shrine.plugin :derivatives, versions_compatibility: true # handle versions column format
@@ -338,22 +343,25 @@ class ImageUploader < Shrine
   end
 end
 ```
+
+However, you now need to trigger processing manually during attachment:
+
 ```rb
 photo = Photo.new(photo_params)
 
 if photo.valid?
   photo.image_derivatives! if photo.image_changed? # create derivatives
-  photo.save # automatically calls processing block
+  photo.save
   # ...
 else
   # ...
 end
 ```
 
-If you have multiple places where you need to generate derivatives, and want it
-to happen automatically like it did with the `versions` plugin, you can
-override `Attacher#promote` to call `Attacher#create_derivatives` before
-promotion:
+### Automatic processing
+
+If you prefer processing to happen automatically with promotion (like it did
+with the `versions` plugin), you can put the following in your initializer:
 
 ```rb
 class Shrine::Attacher
@@ -372,7 +380,7 @@ The derivative URLs are accessed in the same way as versions:
 photo.image_url(:small)
 ```
 
-But the derivatives themselves are accessed differently:
+But the files themselves are accessed differently:
 
 ```rb
 # versions
@@ -426,8 +434,8 @@ database column in different formats:
 
 The `:versions_compatibility` flag to the `derivatives` plugin enables it to
 read the `versions` format, which aids in transition. Once the `derivatives`
-plugin has been deployed to production, you can switch existing records to the
-new column format:
+plugin has been deployed to production, you can update existing records with
+the new column format:
 
 ```rb
 Photo.find_each do |photo|
@@ -488,32 +496,10 @@ else
 end
 ```
 
-#### Parallelize
+### Default URL
 
-The `parallelize` plugin has been removed. The `derivatives` plugin is
-thread-safe, so you can parallelize uploading processed files manually:
-
-```rb
-# Gemfile
-gem "concurrent-ruby"
-```
-```rb
-require "concurrent"
-
-derivatives = attacher.process_derivatives
-
-tasks = derivatives.map do |name, file|
-  Concurrent::Promises.future(name, file) do |name, file|
-    attacher.add_derivative(name, file)
-  end
-end
-
-Concurrent::Promises.zip(*tasks).wait!
-```
-
-#### Default URL
-
-The `derivatives` plugin integrates with the `default_url` plugin:
+If you were using the `default_url` plugin, the `Attacher.default_url` now
+receives a `:derivative` option:
 
 ```rb
 Attacher.default_url do |derivative: nil, **|
@@ -521,15 +507,66 @@ Attacher.default_url do |derivative: nil, **|
 end
 ```
 
-However, it doesn't implement any other URL fallbacks that the `versions`
-plugin has for missing derivatives.
+#### Fallback to original
+
+With the `versions` plugin, a missing version URL would automatically fall back
+to the original file. The `derivatives` plugin has no such fallback, but you
+can configure it manually:
+
+```rb
+Attacher.default_url do |derivative: nil, **|
+  file&.url if derivative
+end
+```
+
+#### Fallback to version
+
+The `versions` plugin had the ability to fall back missing version URL to
+another version that already exists. The `derivatives` plugin doesn't have this
+built in, but you can implement it as follows:
+
+```rb
+DERIVATIVE_FALLBACKS = { foo: :bar, ... }
+
+Attacher.default_url do |derivative: nil, **|
+  derivatives[DERIVATIVE_FALLBACKS[derivative]]&.url if derivative
+end
+```
+
+### Location
+
+The `Shrine#generate_location` method will now receive a `:derivative`
+parameter instead of `:version`:
+
+```rb
+class MyUploader < Shrine
+  def generate_location(io, derivative: nil, **)
+    derivative #=> :large, :medium, :small, ...
+    # ...
+  end
+end
+```
+
+### Overwriting original
+
+With the `derivatives` plugin, saving processed files separately from the
+original file, so the original file is automatically kept. This means it's not
+possible anymore to overwrite the original file as part of processing.
+
+However, **it's highly recommended to always keep the original file**, even if
+you don't plan to use it. That way, if there is ever a need to reprocess
+derivatives, you have the original file to use as a base.
+
+That being said, if you still want to overwrite the original file, [this
+thread][overwriting original] has some tips.
 
 ## Other
 
 ### Processing
 
 The `processing` plugin has been deprecated over the new
-[`derivatives`][derivatives] plugin. If you were modifying the original file:
+[`derivatives`][derivatives] plugin. If you were previously replacing the
+original file:
 
 ```rb
 class MyUploader < Shrine
@@ -555,6 +592,30 @@ class MyUploader < Shrine
     { normalized: magick.resize_to_limit!(1600, 1600) }
   end
 end
+```
+
+### Parallelize
+
+The `parallelize` plugin has been removed. With `derivatives` plugin you can
+parallelize uploading processed files manually:
+
+```rb
+# Gemfile
+gem "concurrent-ruby"
+```
+```rb
+require "concurrent"
+
+attacher    = photo.image_attacher
+derivatives = attacher.process_derivatives
+
+tasks = derivatives.map do |name, file|
+  Concurrent::Promises.future(name, file) do |name, file|
+    attacher.add_derivative(name, file)
+  end
+end
+
+Concurrent::Promises.zip(*tasks).wait!
 ```
 
 ### Logging
@@ -662,3 +723,4 @@ end
 [derivatives]: https://shrinerb.com/docs/plugins/derivatives
 [instrumentation]: https://shrinerb.com/docs/plugins/instrumentation
 [mirroring]: https://shrinerb.com/docs/plugins/mirroring
+[overwriting original]: https://discourse.shrinerb.com/t/keep-original-file-after-processing/50/4

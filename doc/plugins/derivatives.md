@@ -44,41 +44,43 @@ end
 ```
 ```rb
 photo = Photo.new(image: file)
-photo.image_derivatives! # calls derivatives processor and uploads results
-photo.save
+
+if photo.valid?
+  photo.image_derivatives! if photo.image_changed? # create derivatives
+  photo.save
+end
 ```
 
-If you're allowing the attached file to be updated later on, in your update
-route make sure to create derivatives for new attachments:
+You can then retrieve the URL of a processed derivative:
 
 ```rb
-photo.image_derivatives! if photo.image_changed?
+photo.image_url(:large) #=> "https://s3.amazonaws.com/path/to/large.jpg"
 ```
 
-You can then retrieve created derivatives as follows:
-
-```rb
-photo.image(:large)           #=> #<Shrine::UploadedFile ...>
-photo.image(:large).url       #=> "https://s3.amazonaws.com/path/to/large.jpg"
-photo.image(:large).size      #=> 43843
-photo.image(:large).mime_type #=> "image/jpeg"
-```
-
-The derivatives data is stored in the `#<name>_data` record attribute, alongside
-the main file data:
+The derivatives data is stored in the `<attachment>_data` column alongside the
+main file:
 
 ```rb
 photo.image_data #=>
 # {
-#   "id": "original.jpg",
+#   "id": "path/to/original.jpg",
 #   "store": "store",
 #   "metadata": { ... },
 #   "derivatives": {
-#     "small": { "id": "small.jpg", "storage": "store", "metadata": { ... } },
-#     "medium": { "id": "medium.jpg", "storage": "store", "metadata": { ... } },
-#     "large": { "id": "large.jpg", "storage": "store", "metadata": { ... } },
+#     "small": { "id": "path/to/small.jpg", "storage": "store", "metadata": { ... } },
+#     "medium": { "id": "path/to/medium.jpg", "storage": "store", "metadata": { ... } },
+#     "large": { "id": "path/to/large.jpg", "storage": "store", "metadata": { ... } },
 #   }
 # }
+```
+
+And they can be retrieved as `Shrine::UploadedFile` objects:
+
+```rb
+photo.image(:large)           #=> #<Shrine::UploadedFile id="path/to/large.jpg" storage=:store metadata={...}>
+photo.image(:large).url       #=> "https://s3.amazonaws.com/path/to/large.jpg"
+photo.image(:large).size      #=> 5825949
+photo.image(:large).mime_type #=> "image/jpeg"
 ```
 
 ## Retrieving derivatives

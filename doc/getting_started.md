@@ -508,7 +508,7 @@ gem "marcel", "~> 0.3"
 Shrine.plugin :determine_mime_type, analyzer: :marcel
 ```
 ```rb
-photo = Photo.create(image: StringIO.new("<?php ... ?>"))
+photo = Photo.new(image: StringIO.new("<?php ... ?>"))
 photo.image.mime_type #=> "application/x-php"
 ```
 
@@ -536,8 +536,10 @@ $ brew install imagemagick vips
 
 ### Eager processing
 
-You can use the [`derivatives`][derivatives plugin] plugin to generate a
-pre-defined set of processed files:
+We can can use the [`derivatives`][derivatives plugin] plugin to generate a
+pre-defined set of processed files (e.g. image thumbnails). We do this by
+registering a derivatives processor block and then explicitly triggering
+creation:
 
 ```rb
 # Gemfile
@@ -563,26 +565,27 @@ end
 ```
 ```rb
 photo = Photo.new(image: file)
-photo.image_derivatives! # calls derivatives processor and uploads results
-photo.save
+
+if photo.valid?
+  photo.image_derivatives! if photo.image_changed? # create derivatives
+  photo.save
+end
 ```
 
-If you're allowing the attached file to be updated later on, in your update
-route make sure to trigger derivatives creation for new attachments:
+You can then retrieve the URL of a processed derivative:
 
 ```rb
-photo.image_derivatives! if photo.image_changed?
+photo.image_url(:large) #=> "https://s3.amazonaws.com/path/to/large.jpg"
 ```
 
-After the processed files are uploaded, their data is saved into the
-`<attachment>_data` column. You can then retrieve the derivatives as
-[`Shrine::UploadedFile`][uploaded file] objects:
+The derivatives data is stored in the `<attachment>_data` column, and you can
+retrieve them as [`Shrine::UploadedFile`][uploaded file] objects:
 
 ```rb
-photo.image(:large)            #=> #<Shrine::UploadedFile ...>
-photo.image(:large).url        #=> "/uploads/store/lg043.jpg"
-photo.image(:large).size       #=> 5825949
-photo.image(:large).mime_type  #=> "image/jpeg"
+photo.image(:large)           #=> #<Shrine::UploadedFile id="path/to/large.jpg" storage=:store metadata={...}>
+photo.image(:large).url       #=> "https://s3.amazonaws.com/path/to/large.jpg"
+photo.image(:large).size      #=> 5825949
+photo.image(:large).mime_type #=> "image/jpeg"
 ```
 
 For more details, see the [File Processing] guide and the
