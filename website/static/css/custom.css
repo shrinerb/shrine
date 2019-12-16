@@ -43,8 +43,65 @@
 }
 
 /* make demo code narrower */
-.landingDemo .wrapper {
+.demoContainer .wrapper {
   max-width: 800px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.sponsorsContainer .wrapper {
+  max-width: 800px;
+}
+
+.sponsors {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.sponsors .link {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 180px;
+  margin: 5px;
+  padding: 5px;
+}
+
+.sponsors .link:hover {
+  text-decoration: underline;
+}
+
+.sponsors .link .caption {
+  line-height: 20px;
+  height: 20px;
+  text-align: center;
+}
+
+.sponsors .link img {
+  max-height: 110px;
+  margin: 20px;
+  width: 110px;
+  align-self: center;
+  border: 1px solid;
+}
+
+.heartEmoji {
+  margin-left: 5px;
+}
+
+@media only screen and (max-width: 735px) {
+  .sponsors .link {
+    height: 134px;
+  }
+
+  .sponsors .link img {
+    max-height: 64px;
+    padding: 20px;
+    width: 64px;
+  }
 }
 
 /* make main logo smaller */

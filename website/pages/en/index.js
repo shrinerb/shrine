@@ -15,6 +15,8 @@ const GridBlock = CompLibrary.GridBlock;
 
 const fs = require('fs');
 
+const readFile = (name) => fs.readFileSync(`${process.cwd()}/${name}`, 'utf-8')
+
 class HomeSplash extends React.Component {
   render() {
     const {siteConfig} = this.props;
@@ -79,14 +81,12 @@ class Index extends React.Component {
     const {baseUrl} = siteConfig;
 
     const Demo = () => {
-      const content = fs.readFileSync(`${process.cwd()}/demo.md`, 'utf8');
+      const content = readFile("demo.md")
 
       return (
-        <div className="landingDemo">
-          <Container>
-            <MarkdownBlock>{content}</MarkdownBlock>
-          </Container>
-        </div>
+        <Container background="light" className="demoContainer">
+          <MarkdownBlock>{content}</MarkdownBlock>
+        </Container>
       )
     };
 
@@ -98,12 +98,38 @@ class Index extends React.Component {
       </div>
     )
 
+    const Sponsors = () => {
+      const sponsors = JSON.parse(readFile("sponsors.json"))
+      const heartEmoji = "https://github.githubassets.com/images/icons/emoji/unicode/1f496.png"
+
+      return (
+        <Container className="sponsorsContainer">
+          <h2>Sponsors <img src={heartEmoji} height="20" className="heartEmoji" /> </h2>
+          <p>These people are currently sponsoring the development of Shrine:</p>
+          <div className="sponsors">
+            {sponsors.map(sponsor => (
+              <a className="link" href={sponsor.link} key={sponsor.link} target="_blank">
+                <img src={sponsor.avatar} alt={`${sponsor.name} avatar`} title={sponsor.name} />
+                <span className="caption">{sponsor.name}</span>
+              </a>
+            ))}
+          </div>
+          <p>
+            If your company is relying on Shrine or simply want to see Shrine
+            evolve faster, please consider backing the project through <strong>
+            <a href="https://github.com/sponsors/janko/">GitHub Sponsors</a></strong>.
+          </p>
+        </Container>
+      )
+    }
+
     return (
       <div>
         <HomeSplash siteConfig={siteConfig} language={language} />
         <Ads />
         <div className="mainContainer">
           <Demo />
+          <Sponsors />
         </div>
       </div>
     );
