@@ -105,7 +105,6 @@ class Index extends React.Component {
       return (
         <Container className="sponsorsContainer">
           <h2>Sponsors <img src={heartEmoji} height="20" className="heartEmoji" /> </h2>
-          <p>These people are currently sponsoring the development of Shrine:</p>
           <div className="sponsors">
             {sponsors.map(sponsor => (
               <a className="link" href={sponsor.link} key={sponsor.link} target="_blank">
@@ -117,7 +116,7 @@ class Index extends React.Component {
           <p>
             If your company is relying on Shrine or simply want to see Shrine
             evolve faster, please consider backing the project through <strong>
-            <a href="https://github.com/sponsors/janko/">GitHub Sponsors</a></strong>.
+            <a href="https://github.com/sponsors/janko/" target="_blank">GitHub Sponsors</a></strong>.
           </p>
         </Container>
       )
