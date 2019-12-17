@@ -1,4 +1,4 @@
-## master
+## 3.2.0 (2019-12-17) [[release notes]](https://shrinerb.com/docs/release_notes/3.2.0)
 
 * `validation` – Run validation on `Attacher#attach` & `Attacher#attach_cached` instead of `Attacher#change` (@janko)
 

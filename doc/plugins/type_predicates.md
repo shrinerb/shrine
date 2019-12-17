@@ -16,8 +16,7 @@ Shrine.plugin :type_predicates
 
 ## General predicates
 
-By default, the plugin adds four predicate methods based on the general type of
-the file:
+The plugin adds four predicate methods based on the general type of the file:
 
 ```rb
 file.image? # returns true for any "image/*" MIME type
