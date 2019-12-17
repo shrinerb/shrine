@@ -8,6 +8,24 @@ describe Shrine::Plugins::RestoreCachedData do
   end
 
   describe "Attacher" do
+    describe "#assign" do
+      it "doesn't reextract metadata of current cached file" do
+        file = @attacher.attach_cached(fakeio, metadata: false)
+
+        @shrine.any_instance.expects(:extract_metadata).never
+
+        @attacher.assign(id: file.id, storage: file.storage_key)
+      end
+
+      it "doesn't reextract metadata of current stored file" do
+        file = @attacher.attach(fakeio, metadata: false)
+
+        @shrine.any_instance.expects(:extract_metadata).never
+
+        @attacher.assign(id: file.id, storage: file.storage_key)
+      end
+    end
+
     describe "#attach_cached" do
       it "reextracts metadata of set cached files" do
         cached_file = @attacher.upload(fakeio("a" * 1024), :cache)
@@ -21,7 +39,7 @@ describe Shrine::Plugins::RestoreCachedData do
       it "skips extracting if the file is not cached" do
         stored_file = @attacher.upload(fakeio, :store)
 
-        @attacher.cache.expects(:extract_metadata).never
+        @shrine.any_instance.expects(:extract_metadata).never
 
         assert_raises(Shrine::Error) do
           @attacher.attach_cached(stored_file.data)

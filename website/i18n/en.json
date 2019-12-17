@@ -65,9 +65,6 @@
       "plugins/add_metadata": {
         "title": "Add Metadata"
       },
-      "plugins/allow_reassign": {
-        "title": "Allow Re-Assign"
-      },
       "plugins/atomic_helpers": {
         "title": "Atomic Helpers"
       },

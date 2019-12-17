@@ -70,6 +70,10 @@ class Shrine
       def assign(value, **options)
         return if value == "" # skip empty hidden field
 
+        if value.is_a?(Hash) || value.is_a?(String)
+          return if uploaded_file(value) == file # skip assignment for current file
+        end
+
         attach_cached(value, **options)
       end
 
@@ -353,7 +357,7 @@ class Shrine
         # reject files not uploaded to temporary storage, because otherwise
         # attackers could hijack other users' attachments
         unless cached?(uploaded_file)
-          fail Shrine::NotCached, "expected cached file, got #{uploaded_file.inspect}"
+          fail Shrine::Error, "expected cached file, got #{uploaded_file.inspect}"
         end
 
         uploaded_file

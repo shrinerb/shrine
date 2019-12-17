@@ -8,9 +8,7 @@
 
 * `type_predicates` – Add new plugin with convenient `UploadedFile` predicate methods based on MIME type (@janko)
 
-* `core` – Raise `Shrine::NotCached` in `Attacher#attach_cached` when non-cached uploaded file is assigned (@janko)
-
-* `allow_reassign` – Add new plugin for ignoring exception when assigning stored file if it's the current file (@janko)
+* `core` – Allow assigning back current attached file data (@janko)
 
 * `derivatives` – Fix `:derivative` value inconsistency when derivatives are being promoted (@janko)
 

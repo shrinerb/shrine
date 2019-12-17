@@ -28,10 +28,6 @@ class Shrine
   class FileNotFound < Error
   end
 
-  # Raised by the attacher when assigned uploaded file is not cached.
-  class NotCached < Error
-  end
-
   @opts = {}
   @storages = {}
   @logger = Logger.new(STDOUT)

@@ -60,6 +60,58 @@ describe Shrine::Attacher do
       @attacher.assign(fakeio, location: "foo")
       assert_equal "foo", @attacher.file.id
     end
+
+    it "ignores current stored file (Hash)" do
+      file = @attacher.attach(fakeio, metadata: false)
+
+      @attacher.assign(
+        id:       file.id,
+        storage:  file.storage_key,
+        metadata: { "foo" => "bar" },
+      )
+
+      assert_equal file,     @attacher.file
+      assert_equal Hash.new, @attacher.file.metadata
+    end
+
+    it "ignores current stored file (JSON)" do
+      file = @attacher.attach(fakeio, metadata: false)
+
+      @attacher.assign JSON.generate(
+        id:       file.id,
+        storage:  file.storage_key,
+        metadata: { "foo" => "bar" },
+      )
+
+      assert_equal file,     @attacher.file
+      assert_equal Hash.new, @attacher.file.metadata
+    end
+
+    it "ignores current cached file (Hash)" do
+      file = @attacher.attach_cached(fakeio, metadata: false)
+
+      @attacher.assign(
+        id:       file.id,
+        storage:  file.storage_key,
+        metadata: { "foo" => "bar" },
+      )
+
+      assert_equal file,     @attacher.file
+      assert_equal Hash.new, @attacher.file.metadata
+    end
+
+    it "ignores current cached file (JSON)" do
+      file = @attacher.attach_cached(fakeio, metadata: false)
+
+      @attacher.assign JSON.generate(
+        id:       file.id,
+        storage:  file.storage_key,
+        metadata: { "foo" => "bar" },
+      )
+
+      assert_equal file,     @attacher.file
+      assert_equal Hash.new, @attacher.file.metadata
+    end
   end
 
   describe "#attach_cached" do
@@ -137,7 +189,7 @@ describe Shrine::Attacher do
 
       it "rejects non-cached files" do
         stored_file = @shrine.upload(fakeio, :store)
-        assert_raises Shrine::NotCached do
+        assert_raises Shrine::Error do
           @attacher.attach_cached(stored_file.data)
         end
       end
