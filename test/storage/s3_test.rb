@@ -245,6 +245,13 @@ describe Shrine::Storage::S3 do
       assert_equal 7, io.size
     end
 
+    it "works with empty object" do
+      @s3.client.stub_responses(:get_object, status_code: 200, headers: { "content-length" => "0" }, body: "")
+      io = @s3.open("foo")
+      assert_instance_of Down::ChunkedIO, io
+      assert_equal "", io.read
+    end
+
     it "forwards additional options to #get_object" do
       @s3.client.stub_responses(:get_object, status_code: 200, headers: { "content-length" => "7" }, body: "content")
       io = @s3.open("foo", range: "bytes=0-100", response_content_encoding: "gzip")

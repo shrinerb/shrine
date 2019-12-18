@@ -282,10 +282,14 @@ class Shrine
       # Aws::S3::Object#get doesn't allow us to get the content length of the
       # object before the content is downloaded, so we hack our way around it.
       def get_object(object, params)
-        req = client.build_request(:get_object, **params, bucket: bucket.name, key: object.key)
+        req = client.build_request(:get_object, bucket: bucket.name, key: object.key, **params)
 
         body = req.enum_for(:send_request)
-        body.peek # start the request
+        begin
+          body.peek # start the request
+        rescue StopIteration
+          # the S3 object is empty
+        end
 
         content_length = Integer(req.context.http_response.headers["Content-Length"])
         chunks         = Enumerator.new { |y| loop { y << body.next } }
