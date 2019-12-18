@@ -63,7 +63,7 @@ in the `:max_size` option to reject files that are larger than the specified
 limit:
 
 ```rb
-plugin :upload_endpoint, max_size: 100*1024*1024 # 20 MB
+plugin :upload_endpoint, max_size: 100*1024*1024 # 100 MB
 ```
 
 If you're doing direct uploads to Amazon S3 using the `presign_endpoint`
