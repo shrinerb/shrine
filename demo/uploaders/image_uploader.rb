@@ -2,7 +2,7 @@
 # This will be included in the model to manage the file.
 
 require "./config/shrine"
-require "image_processing/mini_magick"
+require "./lib/generate_thumbnail"
 
 class ImageUploader < Shrine
   ALLOWED_TYPES  = %w[image/jpeg image/png image/webp]
@@ -32,8 +32,8 @@ class ImageUploader < Shrine
 
   # Thumbnails processor (requires `derivatives` plugin)
   Attacher.derivatives do |original|
-    THUMBNAILS.inject({}) do |result, (name, (width, height))|
-      result.merge! name => THUMBNAILER.call(original, width, height)
+    THUMBNAILS.transform_values do |(width, height)|
+      GenerateThumbnail.call(original, width, height)
     end
   end
 
@@ -44,12 +44,6 @@ class ImageUploader < Shrine
 
   # Dynamic thumbnail definition (requires `derivation_endpoint` plugin)
   derivation :thumbnail do |file, width, height|
-    THUMBNAILER.call(file, width.to_i, height.to_i)
-  end
-
-  THUMBNAILER = -> (file, width, height) do
-    ImageProcessing::MiniMagick
-      .source(file)
-      .resize_to_limit!(width, height)
+    GenerateThumbnail.call(file, width.to_i, height.to_i)
   end
 end
