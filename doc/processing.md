@@ -114,9 +114,8 @@ Attacher.derivatives do |original|
 end
 ```
 
-If you find yourself branching a lot based on MIME type, the
-[`type_predicates`][type_predicates] plugin provides convenient predicate
-methods for that.
+The [`type_predicates`][type_predicates] plugin provides convenient predicate
+methods for branching based on the file type.
 
 ### Backgrounding
 

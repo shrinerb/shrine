@@ -110,6 +110,14 @@ form @photo, action: "/photos", enctype: "multipart/form-data" do |f|
   f.button "Create"
 end
 ```
+<!--HTML-->
+```erb
+<form action="/photos" method="post" enctype="multipart/form-data">
+  <input name="photo[image]" type="hidden" value="<%= @photo.cached_image_data %>" />
+  <input name="photo[image] "type="file" />
+  <input type="submit" value="Create" />
+</form>
+```
 <!--END_DOCUSAURUS_CODE_TABS-->
 
 Note that the file field needs to go *after* the hidden field, so that
