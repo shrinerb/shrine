@@ -66,23 +66,48 @@ If you want to load attachment from a Hash, use `Attacher.from_data` or
 
 ## Serializer
 
-By default the `JSON` standard library is used as the serializer, but you can
-use your own serializer. The serializer object needs to implement `#dump` and
-`#load` methods.
+By default, the `JSON` standard library is used for serializing hash data. With
+the [`model`][model] and [`entity`][entity] plugin, the data is serialized
+before writing to and deserialized after reading from the data attribute.
+
+You can also use your own serializer via the `:serializer` option. The
+serializer object needs to implement `#dump` and `#load` methods:
 
 ```rb
-require "oj"
+class MyDataSerializer
+  def self.dump(data)
+    data #=> { "id" => "...", "storage" => "...", "metadata" => { ... } }
 
-plugin :column, serializer: Oj # use custom serializer
+    JSON.generate(data) # serialize data, e.g. into JSON
+  end
+
+  def self.load(data)
+    data #=> '{"id":"...", "storage":"...", "metadata": {...}}'
+
+    JSON.parse(data) # deserialize data, e.g. from JSON
+  end
+end
+
+plugin :column, serializer: MyDataSerializer
 ```
 
-If you want to disable serialization, you can set serializer to `nil`.
+Some serialization libraries such as [Oj] and [MessagePack] already implement
+this interface, which simplifies the configuration:
+
+```rb
+require "oj" # https://github.com/ohler55/oj
+
+plugin :column, serializer: Oj
+```
+
+If you want to disable serialization and work with hashes directly, you can set
+`:serializer` to `nil`:
 
 ```rb
 plugin :column, serializer: nil # disable serialization
 ```
 
-You can also change the serializer on the attacher level:
+The serializer can also be changed for a particular attacher instance:
 
 ```rb
 Shrine::Attacher.new(column_serializer: Oj)  # use custom serializer
@@ -90,3 +115,7 @@ Shrine::Attacher.new(column_serializer: nil) # disable serialization
 ```
 
 [column]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/column.rb
+[model]: https://shrinerb.com/docs/plugins/model
+[entity]: https://shrinerb.com/docs/plugins/entity
+[Oj]: https://github.com/ohler55/oj
+[MessagePack]: https://github.com/msgpack/msgpack-ruby
