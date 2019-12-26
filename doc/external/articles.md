@@ -25,6 +25,7 @@ title: Articles
 
 | Article                                                                                                                                                                        | Published   |
 | :------                                                                                                                                                                        | --------:   |
+| [Microsoft Azure data storage library](https://syndicode.com/2019/12/17/microsoft-azure-data-storage-library-rewrite-the-existing-library-to-get-things-done/)                 | 17 Dec 2019 |
 | [GraphQL file upload with Shrine](https://blog.stanko.io/graphql-file-upload-with-shrine-45fa26463c68)                                                                         | 02 Jan 2019 |
 | [Notes on study of shrine implementation](https://bibwild.wordpress.com/2018/09/12/notes-on-study-of-shrine-implementation/)                                                   | 12 Sep 2018 |
 | [Happy users uploading files with Rails 5, Shrine, and Vue.js](https://itnext.io/happy-users-uploading-files-with-rails-5-shrine-and-vue-js-bbcc470a327f)                      | 04 Sep 2018 |
