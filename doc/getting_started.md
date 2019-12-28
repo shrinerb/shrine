@@ -544,7 +544,7 @@ $ brew install imagemagick vips
 
 ### Eager processing
 
-We can can use the [`derivatives`][derivatives plugin] plugin to generate a
+We can use the [`derivatives`][derivatives plugin] plugin to generate a
 pre-defined set of processed files (e.g. image thumbnails). We do this by
 registering a derivatives processor block and then explicitly triggering
 creation:
