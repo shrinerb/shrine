@@ -84,5 +84,14 @@ You can also skip validation by passing `validate: false`:
 attacher.assign(file, validate: false) # skips validation
 ```
 
+## Manual validation
+
+You can also run validation manually via `Attacher#validate`:
+
+```rb
+attacher.set(uploaded_file) # doesn't trigger validation
+attacher.validate           # runs validation
+```
+
 [validation]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/validation.rb
 [validation_helpers]: https://shrinerb.com/docs/plugins/validation_helpers
