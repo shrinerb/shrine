@@ -40,7 +40,12 @@ around [open-uri].
 You can pass options to the downloader via the `:downloader` option:
 
 ```rb
-attacher.assign_remote_url(url, downloader: { 'Authorization' => 'Basic ...' })
+attacher.assign_remote_url url, downloader: {
+  headers: { "Authorization" => "Basic ..." },
+  read_timeout: 30, open_timeout: 30,
+  max_redirects: 5,
+  # ...
+}
 ```
 
 You can also change the downloader:

@@ -16,7 +16,7 @@ class Shrine
         }.inspect}"
       end
 
-      DOWNLOADER = -> (url, options) { Down.download(url, options) }
+      DOWNLOADER = -> (url, **options) { Down.download(url, **options) }
 
       def self.load_dependencies(uploader, *)
         uploader.plugin :validation
@@ -63,7 +63,7 @@ class Shrine
         private
 
         def download_remote_url(url, options)
-          opts[:remote_url][:downloader].call(url, options)
+          opts[:remote_url][:downloader].call(url, **options)
         rescue Down::TooLarge
           fail DownloadError, "remote file too large"
         rescue Down::Error
@@ -87,7 +87,7 @@ class Shrine
         def assign_remote_url(url, downloader: {}, **options)
           return if url == "" || url.nil?
 
-          downloaded_file = shrine_class.remote_url(url, downloader)
+          downloaded_file = shrine_class.remote_url(url, **downloader)
           attach_cached(downloaded_file, **options)
         rescue DownloadError => error
           errors.clear << remote_url_error_message(url, error)

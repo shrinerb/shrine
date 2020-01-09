@@ -33,7 +33,7 @@ direct uploads for fully asynchronous user experience.
   gem.files        = Dir["README.md", "LICENSE.txt", "CHANGELOG.md", "lib/**/*.rb", "shrine.gemspec", "doc/**/*.md"]
   gem.require_path = "lib"
 
-  gem.add_dependency "down", "~> 5.0"
+  gem.add_dependency "down", "~> 5.1"
   gem.add_dependency "content_disposition", "~> 1.0"
 
   # general testing helpers
