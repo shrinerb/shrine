@@ -112,7 +112,8 @@ describe Shrine::Plugins::Validation do
 
       it "doesn't forward :validate option to the uploader" do
         io = fakeio
-        @shrine.expects(:upload).with(io, :store, {})
+        empty_hash = {}
+        @shrine.expects(:upload).with(io, :store, **empty_hash)
         @attacher.attach(io, validate: { foo: "bar" })
       end
 

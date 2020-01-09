@@ -74,7 +74,8 @@ describe Shrine::Plugins::RefreshMetadata do
       it "forwards a Shrine::UploadedFile" do
         file = @uploader.upload(fakeio)
 
-        @shrine.any_instance.expects(:extract_metadata).with(file, {}).returns({})
+        empty_hash = {}
+        @shrine.any_instance.expects(:extract_metadata).with(file, **empty_hash).returns({})
 
         file.refresh_metadata!
       end
