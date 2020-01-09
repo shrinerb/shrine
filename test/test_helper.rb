@@ -18,7 +18,7 @@ require "shrine"
 
 Shrine.logger = Logger.new(nil) # disable mime_type warnings
 
-Mocha::Configuration.prevent(:stubbing_non_existent_method)
+Mocha.configure { |config| config.stubbing_non_existent_method = :prevent }
 
 require "./test/support/shrine_helper"
 require "./test/support/file_helper"
