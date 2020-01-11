@@ -1,5 +1,7 @@
 ## master
 
+* `derivation_endpoint` – Use `Rack::Files` constant on Rack >= 2.1 (@janko)
+
 * Fix Ruby 2.7 warnings regarding separation of positional and keyword arguments (@janko)
 
 * `s3` – Make `S3#open` handle empty S3 objects (@janko)

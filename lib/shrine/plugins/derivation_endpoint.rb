@@ -475,9 +475,9 @@ class Shrine
       file_response(derivative, env)
     end
 
-    # Generates a Rack response triple from a local file using `Rack::File`.
-    # Fills in `Content-Type` and `Content-Disposition` response headers from
-    # derivation options and file extension of the derivation result.
+    # Generates a Rack response triple from a local file. Fills in
+    # `Content-Type` and `Content-Disposition` response headers from derivation
+    # options and file extension of the derivation result.
     def file_response(file, env)
       response = rack_file_response(file.path, env)
 
@@ -528,10 +528,14 @@ class Shrine
       end
     end
 
-    # We call `Rack::File` with no default `Content-Type`, and make sure we
+    # We call `Rack::Files` with no default `Content-Type`, and make sure we
     # stay compatible with both Rack 2.x and 1.6.x.
     def rack_file_response(path, env)
-      server = Rack::File.new("", {}, nil)
+      if Rack.release >= "2.1"
+        server = Rack::Files.new("", {}, nil)
+      else
+        server = Rack::File.new("", {}, nil)
+      end
 
       if Rack.release > "2"
         server.serving(Rack::Request.new(env), path)
