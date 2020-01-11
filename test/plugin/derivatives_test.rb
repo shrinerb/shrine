@@ -384,8 +384,8 @@ describe Shrine::Plugins::Derivatives do
 
       it "passes correct :derivative parameter to the uploader" do
         @attacher.add_derivatives({ one: fakeio, two: { three: fakeio } }, storage: :cache)
-        @shrine.expects(:upload).with { |*, derivative:, **| derivative == :one }
-        @shrine.expects(:upload).with { |*, derivative:, **| derivative == [:two, :three] }
+        @shrine.expects(:upload).with { |*, o| o[:derivative] == :one }
+        @shrine.expects(:upload).with { |*, o| o[:derivative] == [:two, :three] }
         @attacher.promote_derivatives
       end
 
@@ -602,10 +602,10 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "passes derivative name to the uploader" do
-        @shrine.expects(:upload).with { |*args, derivative:, **| derivative == :one }
+        @shrine.expects(:upload).with { |*, o| o[:derivative] == :one }
         @attacher.upload_derivatives({ one: fakeio })
 
-        @shrine.expects(:upload).with { |*args, derivative:, **| derivative == [:one, :two] }
+        @shrine.expects(:upload).with { |*, o| o[:derivative] == [:one, :two] }
         @attacher.upload_derivatives({ one: { two: fakeio } })
       end
 
@@ -697,12 +697,12 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "passes derivative name to the uploader" do
-        @shrine.expects(:upload).with { |*, derivative:, **| derivative == :one }
+        @shrine.expects(:upload).with { |*, o| o[:derivative] == :one }
         @attacher.upload_derivative(:one, fakeio)
       end
 
       it "sets :action to :derivatives" do
-        @shrine.expects(:upload).with { |*, action:, **| action == :derivatives }
+        @shrine.expects(:upload).with { |*, o| o[:action] == :derivatives }
 
         @attacher.upload_derivative(:one, fakeio)
       end

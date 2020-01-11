@@ -162,7 +162,7 @@ describe Shrine::Plugins::Mirroring do
       end
 
       it "sets :action to :mirror" do
-        @shrine.expects(:upload).with { |_, _, action:, **| action == :mirror }
+        @shrine.expects(:upload).with { |*, o| o[:action] == :mirror }
 
         @file.mirror_upload
       end

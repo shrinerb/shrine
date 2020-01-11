@@ -347,16 +347,17 @@ describe Shrine do
     end
 
     it "forwards metadata to the storage" do
-      @uploader.storage.expects(:upload).with do |io, id, shrine_metadata: {}|
-        shrine_metadata.keys.sort == %w[filename mime_type size]
+      @uploader.storage.expects(:upload).with do |*, o|
+        o[:shrine_metadata].keys.sort == %w[filename mime_type size]
       end
 
       @uploader.upload(fakeio)
     end
 
     it "forwards :upload_options to the storage" do
-      @uploader.storage.expects(:upload).with do |io, id, shrine_metadata: {}, **upload_options|
-        upload_options == { foo: "bar" }
+      @uploader.storage.expects(:upload).with do |*, o|
+        o.delete(:shrine_metadata)
+        o == { foo: "bar" }
       end
 
       @uploader.upload(fakeio, upload_options: { foo: "bar" })

@@ -967,10 +967,10 @@ describe Shrine::Plugins::DerivationEndpoint do
 
       it "applies :upload_options" do
         @shrine.plugin :derivation_endpoint, upload_options: { foo: "foo" }
-        @storage.expects(:upload).with { |*, **options| options[:foo] == "foo" }
+        @storage.expects(:upload).with { |*, o| o[:foo] == "foo" }
         @uploaded_file.derivation(:gray).upload
 
-        @storage.expects(:upload).with { |*, **options| options[:bar] == "bar" }
+        @storage.expects(:upload).with { |*, o| o[:bar] == "bar" }
         @uploaded_file.derivation(:gray, upload_options: { bar: "bar" }).upload
       end
 
@@ -1016,7 +1016,7 @@ describe Shrine::Plugins::DerivationEndpoint do
       end
 
       it "sets :action to :derivation" do
-        @shrine.expects(:upload).with { |_, _, action:, **| action == :derivation }
+        @shrine.expects(:upload).with { |*, o| o[:action] == :derivation }
         @uploaded_file.derivation(:gray).upload
       end
 
