@@ -20,7 +20,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#<name>_derivatives" do
       it "returns the hash of derivatives" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         model = @model_class.new(file_data: @attacher.column_data)
 
@@ -28,7 +28,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "forward arguments" do
-        @attacher.add_derivatives(one: fakeio, two: { three: fakeio })
+        @attacher.add_derivatives({ one: fakeio, two: { three: fakeio } })
 
         model = @model_class.new(file_data: @attacher.column_data)
 
@@ -101,7 +101,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#<name>" do
       it "returns derivatives with arguments" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         model = @model_class.new(file_data: @attacher.column_data)
 
@@ -135,7 +135,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#<name>_url" do
       it "returns derivative URL with arguments" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         model = @model_class.new(file_data: @attacher.column_data)
 
@@ -184,13 +184,13 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "retrieves selected derivative" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         assert_equal @attacher.derivatives[:one], @attacher.get(:one)
       end
 
       it "retrieves selected nested derivative" do
-        @attacher.add_derivatives(one: { two: fakeio })
+        @attacher.add_derivatives({ one: { two: fakeio } })
 
         assert_equal @attacher.derivatives[:one][:two], @attacher.get(:one, :two)
       end
@@ -198,31 +198,31 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#get_derivatives" do
       it "returns all derivatives without arguments" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         assert_equal @attacher.derivatives, @attacher.get_derivatives
       end
 
       it "retrieves derivative with given name" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         assert_equal @attacher.derivatives[:one], @attacher.get_derivatives(:one)
       end
 
       it "retrieves nested derivatives" do
-        @attacher.add_derivatives(one: { two: fakeio })
+        @attacher.add_derivatives({ one: { two: fakeio } })
 
         assert_equal @attacher.derivatives[:one][:two], @attacher.get_derivatives(:one, :two)
       end
 
       it "handles string keys" do
-        @attacher.add_derivatives(one: { two: fakeio })
+        @attacher.add_derivatives({ one: { two: fakeio } })
 
         assert_equal @attacher.derivatives[:one][:two], @attacher.get_derivatives("one", "two")
       end
 
       it "handles array indices" do
-        @attacher.add_derivatives(one: [fakeio])
+        @attacher.add_derivatives({ one: [fakeio] })
 
         assert_equal @attacher.derivatives[:one][0], @attacher.get_derivatives(:one, 0)
       end
@@ -255,19 +255,19 @@ describe Shrine::Plugins::Derivatives do
 
       describe "with arguments" do
         it "returns derivative URL" do
-          @attacher.add_derivatives(one: fakeio)
+          @attacher.add_derivatives({ one: fakeio })
 
           assert_equal @attacher.derivatives[:one].url, @attacher.url(:one)
         end
 
         it "returns nested derivative URL" do
-          @attacher.add_derivatives(one: { two: fakeio })
+          @attacher.add_derivatives({ one: { two: fakeio } })
 
           assert_equal @attacher.derivatives[:one][:two].url, @attacher.url(:one, :two)
         end
 
         it "passes URL options to derivative URL" do
-          @attacher.add_derivatives(one: fakeio)
+          @attacher.add_derivatives({ one: fakeio })
 
           @attacher.derivatives[:one].expects(:url).with(foo: "bar")
 
@@ -279,7 +279,7 @@ describe Shrine::Plugins::Derivatives do
         end
 
         it "handles string keys" do
-          @attacher.add_derivatives(one: fakeio)
+          @attacher.add_derivatives({ one: fakeio })
 
           assert_equal @attacher.derivatives[:one].url, @attacher.url(:one)
         end
@@ -287,7 +287,7 @@ describe Shrine::Plugins::Derivatives do
         it "works with default URL" do
           @shrine::Attacher.default_url { "default_url" }
 
-          @attacher.add_derivatives(one: fakeio)
+          @attacher.add_derivatives({ one: fakeio })
 
           assert_equal @attacher.derivatives[:one].url, @attacher.url(:one)
           assert_equal "default_url",                   @attacher.url(:two)
@@ -410,7 +410,7 @@ describe Shrine::Plugins::Derivatives do
     describe "#destroy" do
       it "deletes derivatives" do
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         @attacher.destroy
 
@@ -429,7 +429,7 @@ describe Shrine::Plugins::Derivatives do
         end
 
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         @attacher.destroy_attached
 
@@ -445,7 +445,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#delete_derivatives" do
       it "deletes set derivatives" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         @attacher.delete_derivatives
 
@@ -537,21 +537,21 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#add_derivatives" do
       it "uploads given files to permanent storage" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         assert_equal :store, @attacher.derivatives[:one].storage_key
       end
 
       it "merges new derivatives with existing derivatives" do
-        @attacher.add_derivatives(one: fakeio)
-        @attacher.add_derivatives(two: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
+        @attacher.add_derivatives({ two: fakeio })
 
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:one]
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:two]
       end
 
       it "returns added derivatives" do
-        derivatives = @attacher.add_derivatives(one: fakeio("one"))
+        derivatives = @attacher.add_derivatives({ one: fakeio("one") })
 
         assert_equal @attacher.derivatives, derivatives
       end
@@ -594,7 +594,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#upload_derivatives" do
       it "uploads given files to permanent storage" do
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
 
         assert_kind_of Shrine::UploadedFile, derivatives[:one]
         assert_equal :store, derivatives[:one].storage_key
@@ -603,10 +603,10 @@ describe Shrine::Plugins::Derivatives do
 
       it "passes derivative name to the uploader" do
         @shrine.expects(:upload).with { |*args, derivative:, **| derivative == :one }
-        @attacher.upload_derivatives(one: fakeio)
+        @attacher.upload_derivatives({ one: fakeio })
 
         @shrine.expects(:upload).with { |*args, derivative:, **| derivative == [:one, :two] }
-        @attacher.upload_derivatives(one: { two: fakeio })
+        @attacher.upload_derivatives({ one: { two: fakeio } })
       end
 
       it "accepts additional options" do
@@ -617,7 +617,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "works with nested derivatives" do
-        derivatives = @attacher.upload_derivatives(one: { two: fakeio })
+        derivatives = @attacher.upload_derivatives({ one: { two: fakeio } })
 
         assert_kind_of Shrine::UploadedFile, derivatives[:one][:two]
         assert_equal :store, derivatives[:one][:two].storage_key
@@ -626,11 +626,11 @@ describe Shrine::Plugins::Derivatives do
 
       it "coerces string keys" do
         io = fakeio
-        derivatives = @attacher.upload_derivatives("one" => io)
+        derivatives = @attacher.upload_derivatives({ "one" => io })
         assert_kind_of Shrine::UploadedFile, derivatives[:one]
 
         io = fakeio
-        derivatives = @attacher.upload_derivatives("one" => { "two" => io })
+        derivatives = @attacher.upload_derivatives({ "one" => { "two" => io } })
         assert_kind_of Shrine::UploadedFile, derivatives[:one][:two]
       end
     end
@@ -930,7 +930,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#remove_derivatives" do
       it "removes top level derivatives" do
-        @attacher.add_derivatives(one: fakeio, two: fakeio, three: fakeio)
+        @attacher.add_derivatives({ one: fakeio, two: fakeio, three: fakeio })
 
         derivatives = @attacher.derivatives.dup
         two, three  = @attacher.remove_derivatives(:two, :three)
@@ -945,7 +945,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "removes nested derivatives" do
-        @attacher.add_derivatives(nested: { one: fakeio, two: fakeio, three: fakeio })
+        @attacher.add_derivatives({ nested: { one: fakeio, two: fakeio, three: fakeio } })
 
         derivatives = { nested: @attacher.derivatives[:nested].dup }
         two, three  = @attacher.remove_derivatives([:nested, :two], [:nested, :three])
@@ -960,7 +960,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "allows deleting removed derivatives" do
-        @attacher.add_derivatives(one: fakeio, two: fakeio, three: fakeio)
+        @attacher.add_derivatives({ one: fakeio, two: fakeio, three: fakeio })
 
         two, three = @attacher.remove_derivatives(:two, :three, delete: true)
 
@@ -971,7 +971,7 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#remove_derivative" do
       it "removes top level derivative" do
-        @attacher.add_derivatives(one: fakeio, two: fakeio)
+        @attacher.add_derivatives({ one: fakeio, two: fakeio })
 
         derivatives = @attacher.derivatives.dup
 
@@ -984,7 +984,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "removes nested derivative" do
-        @attacher.add_derivatives(nested: { one: fakeio, two: fakeio })
+        @attacher.add_derivatives({ nested: { one: fakeio, two: fakeio } })
 
         derivatives = { nested: @attacher.derivatives[:nested].dup }
 
@@ -997,7 +997,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "allows deleting removed derivative" do
-        @attacher.add_derivatives(one: fakeio, two: fakeio)
+        @attacher.add_derivatives({ one: fakeio, two: fakeio })
 
         two = @attacher.remove_derivative(:two, delete: true)
 
@@ -1007,19 +1007,19 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#merge_derivatives" do
       it "merges current derivatives with given derivatives" do
-        @attacher.merge_derivatives @attacher.upload_derivatives(one: fakeio)
-        @attacher.merge_derivatives @attacher.upload_derivatives(two: fakeio)
+        @attacher.merge_derivatives @attacher.upload_derivatives({ one: fakeio })
+        @attacher.merge_derivatives @attacher.upload_derivatives({ two: fakeio })
 
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:one]
         assert_kind_of Shrine::UploadedFile, @attacher.derivatives[:two]
       end
 
       it "does deep merging" do
-        @attacher.add_derivatives(hash: { one: fakeio("one") }, array: [fakeio("0")])
+        @attacher.add_derivatives({ hash: { one: fakeio("one") }, array: [fakeio("0")] })
 
-        @attacher.merge_derivatives @attacher.upload_derivatives(
+        @attacher.merge_derivatives @attacher.upload_derivatives({
           hash: { two: fakeio("two") }, array: [fakeio("1")]
-        )
+        })
 
         assert_equal "one", @attacher.derivatives[:hash][:one].read
         assert_equal "two", @attacher.derivatives[:hash][:two].read
@@ -1030,21 +1030,21 @@ describe Shrine::Plugins::Derivatives do
 
     describe "#set_derivatives" do
       it "sets given derivatives" do
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
         @attacher.set_derivatives(derivatives)
 
         assert_equal derivatives, @attacher.derivatives
       end
 
       it "returns set derivatives" do
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
 
         assert_equal derivatives, @attacher.set_derivatives(derivatives)
       end
 
       it "doesn't clear the attached file" do
         @attacher.attach(fakeio)
-        @attacher.set_derivatives @attacher.upload_derivatives(one: fakeio)
+        @attacher.set_derivatives @attacher.upload_derivatives({ one: fakeio })
 
         assert_kind_of Shrine::UploadedFile, @attacher.file
       end
@@ -1058,7 +1058,7 @@ describe Shrine::Plugins::Derivatives do
         @attacher.attach(fakeio)
         assert_equal @attacher.column_data, model.file_data
 
-        @attacher.set_derivatives @attacher.upload_derivatives(one: fakeio)
+        @attacher.set_derivatives @attacher.upload_derivatives({ one: fakeio })
         assert_equal @attacher.column_data, model.file_data
       end
     end
@@ -1066,7 +1066,7 @@ describe Shrine::Plugins::Derivatives do
     describe "#data" do
       it "adds derivatives data to existing hash" do
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         assert_equal @attacher.file.data.merge(
           "derivatives" => {
@@ -1077,7 +1077,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "handles nested derivatives" do
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: { two: fakeio })
+        @attacher.add_derivatives({ one: { two: fakeio } })
 
         assert_equal @attacher.file.data.merge(
           "derivatives" => {
@@ -1087,7 +1087,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "allows no attached file" do
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         assert_equal Hash[
           "derivatives" => {
@@ -1110,7 +1110,7 @@ describe Shrine::Plugins::Derivatives do
     describe "#load_data" do
       it "loads derivatives" do
         file        = @attacher.upload(fakeio)
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
 
         @attacher.load_data file.data.merge(
           "derivatives" => {
@@ -1124,7 +1124,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "handles nested derivatives" do
         file        = @attacher.upload(fakeio)
-        derivatives = @attacher.upload_derivatives(one: { two: fakeio })
+        derivatives = @attacher.upload_derivatives({ one: { two: fakeio } })
 
         @attacher.load_data file.data.merge(
           "derivatives" => {
@@ -1137,7 +1137,7 @@ describe Shrine::Plugins::Derivatives do
       end
 
       it "loads derivatives without attached file" do
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
 
         @attacher.load_data(
           "derivatives" => {
@@ -1151,7 +1151,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "handles symbol keys" do
         file        = @attacher.upload(fakeio)
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
 
         @attacher.load_data file.data.merge(
           derivatives: {
@@ -1165,7 +1165,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "clears derivatives when there is no derivatives data" do
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         @attacher.load_data @attacher.file.data
 
@@ -1174,7 +1174,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "works with frozen data hash" do
         file        = @attacher.upload(fakeio)
-        derivatives = @attacher.upload_derivatives(one: fakeio)
+        derivatives = @attacher.upload_derivatives({ one: fakeio })
 
         @attacher.load_data file.data.merge(
           "derivatives" => {
@@ -1193,7 +1193,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "loads no attached file or derivatives" do
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         @attacher.load_data(nil)
 
@@ -1205,7 +1205,7 @@ describe Shrine::Plugins::Derivatives do
     describe "#change" do
       it "clears derivatives" do
         @attacher.attach(fakeio)
-        @attacher.add_derivatives(one: fakeio)
+        @attacher.add_derivatives({ one: fakeio })
 
         file = @attacher.upload(fakeio)
         @attacher.change(file)
@@ -1216,7 +1216,7 @@ describe Shrine::Plugins::Derivatives do
 
       it "records previous derivatives" do
         file        = @attacher.attach(fakeio)
-        derivatives = @attacher.add_derivatives(one: fakeio)
+        derivatives = @attacher.add_derivatives({ one: fakeio })
 
         @attacher.change(nil)
         @attacher.destroy_previous
@@ -1349,7 +1349,7 @@ describe Shrine::Plugins::Derivatives do
 
         it "still works with nil data" do
           @attacher.attach(fakeio)
-          @attacher.add_derivatives(one: fakeio)
+          @attacher.add_derivatives({ one: fakeio })
 
           @attacher.load_data(nil)
 
@@ -1365,7 +1365,7 @@ describe Shrine::Plugins::Derivatives do
       it "loads derivatives from Hash" do
         file = @attacher.upload(fakeio)
 
-        derivatives = @shrine.derivatives("one" => file.data)
+        derivatives = @shrine.derivatives({ "one" => file.data })
 
         assert_equal Hash[one: file], derivatives
       end
@@ -1381,7 +1381,7 @@ describe Shrine::Plugins::Derivatives do
       it "loads nested derivatives" do
         file = @attacher.upload(fakeio)
 
-        derivatives = @shrine.derivatives("one" => { "two" => [file.data] })
+        derivatives = @shrine.derivatives({ "one" => { "two" => [file.data] } })
 
         assert_equal Hash[one: { two: [file] }], derivatives
       end
@@ -1397,10 +1397,12 @@ describe Shrine::Plugins::Derivatives do
       it "handles symbol keys" do
         file = @attacher.upload(fakeio)
 
-        derivatives = @shrine.derivatives(one: {
-          id:       file.id,
-          storage:  file.storage_key,
-          metadata: file.metadata,
+        derivatives = @shrine.derivatives({
+          one: {
+            id:       file.id,
+            storage:  file.storage_key,
+            metadata: file.metadata,
+          }
         })
 
         assert_equal Hash[one: file], derivatives
@@ -1409,7 +1411,7 @@ describe Shrine::Plugins::Derivatives do
       it "allows UploadedFile values" do
         file = @attacher.upload(fakeio)
 
-        derivatives = @shrine.derivatives(one: file)
+        derivatives = @shrine.derivatives({ one: file })
 
         assert_equal Hash[one: file], derivatives
       end
