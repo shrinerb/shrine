@@ -15,9 +15,7 @@ describe Shrine::Plugins::MetadataAttributes do
     describe "#column_values" do
       it "returns metadata attributes" do
         @attacher.class.metadata_attributes size: :size, mime_type: :type
-
-        @entity.class.option :file_size, optional: true
-        @entity.class.option :file_type, optional: true
+        @entity.class.attr_reader :file_size, :file_type
 
         @attacher.attach fakeio("file", content_type: "text/plain")
 
@@ -30,8 +28,7 @@ describe Shrine::Plugins::MetadataAttributes do
 
       it "allows specifying full record attribute name" do
         @attacher.class.metadata_attributes filename: "original_filename"
-
-        @entity.class.option :original_filename, optional: true
+        @entity.class.attr_reader :original_filename
 
         @attacher.attach fakeio("file", filename: "nature.jpg")
 
@@ -53,9 +50,7 @@ describe Shrine::Plugins::MetadataAttributes do
 
       it "works with metadata attributes defined when loading the plugin" do
         @shrine.plugin :metadata_attributes, size: :size, mime_type: :type
-
-        @entity.class.option :file_size, optional: true
-        @entity.class.option :file_type, optional: true
+        @entity.class.attr_reader :file_size, :file_type
 
         @attacher.attach fakeio("file", content_type: "text/plain")
 
@@ -68,9 +63,7 @@ describe Shrine::Plugins::MetadataAttributes do
 
       it "returns nil values without attachment" do
         @shrine.plugin :metadata_attributes, size: :size, mime_type: :type
-
-        @entity.class.option :file_size, optional: true
-        @entity.class.option :file_type, optional: true
+        @entity.class.attr_reader :file_size, :file_type
 
         assert_equal Hash[
           file_data: nil,
@@ -100,8 +93,7 @@ describe Shrine::Plugins::MetadataAttributes do
     @shrine.plugin :metadata_attributes, size: :size
     @shrine.plugin :metadata_attributes, mime_type: :type
 
-    @entity.class.option :file_size, optional: true
-    @entity.class.option :file_type, optional: true
+    @entity.class.attr_reader :file_size, :file_type
 
     @attacher.attach fakeio("file", content_type: "text/plain")
 

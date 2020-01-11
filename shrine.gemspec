@@ -40,7 +40,6 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "rake", ">= 11.1"
   gem.add_development_dependency "minitest", "~> 5.8"
   gem.add_development_dependency "mocha", "~> 1.11"
-  gem.add_development_dependency "dry-initializer"
 
   # for endpoint plugins
   gem.add_development_dependency "rack", "~> 2.0"

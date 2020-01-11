@@ -1,5 +1,4 @@
 require "shrine/storage/memory"
-require "dry-initializer"
 
 module ShrineHelper
   def shrine(&block)
@@ -24,16 +23,13 @@ module ShrineHelper
 
   def model_class(*attributes)
     klass = entity_class(*attributes)
-    klass.send(:attr_writer, *attributes)
+    klass.attr_writer *attributes
     klass
   end
 
   def entity_class(*attributes)
-    klass = Class.new
-    klass.extend Dry::Initializer
-    attributes.each do |attribute|
-      klass.option attribute, optional: true
-    end
+    klass = Class.new(Struct)
+    klass.attr_reader *attributes
     klass
   end
 
@@ -45,6 +41,18 @@ module ShrineHelper
   def model(attributes)
     model_class = model_class(*attributes.keys)
     model_class.new(attributes)
+  end
+
+  class Struct
+    # These are private on Ruby 2.4 and older, so we make them public.
+    def self.attr_reader(*names) super(*names) end
+    def self.attr_writer(*names) super(*names) end
+
+    def initialize(attributes = {})
+      attributes.each do |name, value|
+        instance_variable_set(:"@#{name}", value)
+      end
+    end
   end
 end
 
