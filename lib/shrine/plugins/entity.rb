@@ -41,8 +41,8 @@ class Shrine
           end
 
           # Returns the URL to the attached file.
-          define_method :"#{name}_url" do |*args|
-            send(:"#{name}_attacher").url(*args)
+          define_method :"#{name}_url" do |*args, **options|
+            send(:"#{name}_attacher").url(*args, **options)
           end
 
           # Returns an attacher instance.

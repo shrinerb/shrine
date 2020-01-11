@@ -297,7 +297,7 @@ class Shrine
     # Retrieves the location for the given IO and context. First it looks
     # for the `:location` option, otherwise it calls #generate_location.
     def get_location(io, location: nil, **options)
-      location ||= generate_location(io, options)
+      location ||= generate_location(io, **options)
       location or fail Error, "location generated for #{io.inspect} was nil"
     end
 

@@ -40,8 +40,8 @@ class Shrine
         def define_model_methods(name)
           super if defined?(super)
 
-          define_method(:"#{name}_derivatives!") do |*args|
-            send(:"#{name}_attacher").create_derivatives(*args)
+          define_method(:"#{name}_derivatives!") do |*args, **options|
+            send(:"#{name}_attacher").create_derivatives(*args, **options)
           end
         end
       end
@@ -462,8 +462,8 @@ class Shrine
         # Iterates through nested derivatives and maps results.
         #
         #     attacher.map_derivative(derivatives) { |path, file| ... }
-        def map_derivative(*args, &block)
-          shrine_class.map_derivative(*args, &block)
+        def map_derivative(derivatives, **options, &block)
+          shrine_class.map_derivative(derivatives, **options, &block)
         end
 
         private
