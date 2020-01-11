@@ -23,6 +23,7 @@ Mocha.configure { |config| config.stubbing_non_existent_method = :prevent }
 require "./test/support/shrine_helper"
 require "./test/support/file_helper"
 require "./test/support/logging_helper"
+require "./test/support/ext"
 
 class RubySerializer
   def self.dump(data)
