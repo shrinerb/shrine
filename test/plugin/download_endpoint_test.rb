@@ -1,6 +1,5 @@
 require "test_helper"
 require "shrine/plugins/download_endpoint"
-require "rack/test_app"
 require "uri"
 
 describe Shrine::Plugins::DownloadEndpoint do

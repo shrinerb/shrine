@@ -255,7 +255,7 @@ describe Shrine::Plugins::AtomicHelpers do
         @attacher = @shrine::Attacher.new
 
         @attacher.attach(fakeio, metadata: { "foo" => "bar" })
-        @attacher.add_derivatives(one: fakeio, two: fakeio)
+        @attacher.add_derivatives({ one: fakeio, two: fakeio })
 
         assert_equal Hash[
           "id"      => @attacher.file.id,

@@ -1,6 +1,5 @@
 require "test_helper"
 require "shrine/plugins/derivation_endpoint"
-require "rack/test_app"
 require "dry-monitor"
 require "tempfile"
 require "stringio"
@@ -184,12 +183,12 @@ describe Shrine::Plugins::DerivationEndpoint do
   end
 
   describe "Shrine.derivation_endpoint" do
-    def app(*args)
-      Rack::TestApp.wrap(Rack::Lint.new(endpoint(*args)))
+    def app(*args, **options)
+      Rack::TestApp.wrap(Rack::Lint.new(endpoint(*args, **options)))
     end
 
-    def endpoint(*args)
-      @shrine.derivation_endpoint(*args)
+    def endpoint(*args, **options)
+      @shrine.derivation_endpoint(*args, **options)
     end
 
     it "generates correct derivation response" do

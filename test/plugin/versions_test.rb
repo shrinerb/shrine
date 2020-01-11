@@ -50,13 +50,13 @@ describe Shrine::Plugins::Versions do
       end
 
       it "accepts versions" do
-        versions = @uploader.upload(thumb: fakeio)
+        versions = @uploader.upload({ thumb: fakeio })
         assert_kind_of Shrine::UploadedFile, versions.fetch(:thumb)
 
         versions = @uploader.upload([fakeio])
         assert_kind_of Shrine::UploadedFile, versions.fetch(0)
 
-        versions = @uploader.upload(thumb: [fakeio])
+        versions = @uploader.upload({ thumb: [fakeio] })
         assert_kind_of Shrine::UploadedFile, versions.fetch(:thumb).fetch(0)
 
         # uploading a single file still works
@@ -66,7 +66,7 @@ describe Shrine::Plugins::Versions do
 
       it "passes the version name to location generator" do
         @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
-        versions = @uploader.upload(thumb: fakeio)
+        versions = @uploader.upload({ thumb: fakeio })
         assert_equal "thumb", versions.fetch(:thumb).id
 
         @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
@@ -74,7 +74,7 @@ describe Shrine::Plugins::Versions do
         assert_equal "0", versions.fetch(0).id
 
         @uploader.instance_eval { def generate_location(io, version:, **); version.to_s; end }
-        versions = @uploader.upload(thumb: [fakeio])
+        versions = @uploader.upload({ thumb: [fakeio] })
         assert_equal "[:thumb, 0]", versions.fetch(:thumb).fetch(0).id
 
         # doesn't pass it in case of a single file
@@ -115,9 +115,9 @@ describe Shrine::Plugins::Versions do
       it "loads versions from Hash data" do
         file = @uploader.upload(fakeio)
 
-        assert_equal Hash[thumb: file],   @shrine.uploaded_file("thumb" => file.data)
+        assert_equal Hash[thumb: file],   @shrine.uploaded_file({ "thumb" => file.data })
         assert_equal [file],              @shrine.uploaded_file([file.data])
-        assert_equal Hash[thumb: [file]], @shrine.uploaded_file(thumb: [file.data])
+        assert_equal Hash[thumb: [file]], @shrine.uploaded_file({ thumb: [file.data] })
         assert_equal file,                @shrine.uploaded_file(file.data)
       end
 
@@ -133,9 +133,9 @@ describe Shrine::Plugins::Versions do
       it "loads versions from Hash of UploadedFiles" do
         file = @uploader.upload(fakeio)
 
-        assert_equal Hash[thumb: file],   @shrine.uploaded_file("thumb" => file)
+        assert_equal Hash[thumb: file],   @shrine.uploaded_file({ "thumb" => file })
         assert_equal [file],              @shrine.uploaded_file([file])
-        assert_equal Hash[thumb: [file]], @shrine.uploaded_file(thumb: [file])
+        assert_equal Hash[thumb: [file]], @shrine.uploaded_file({ thumb: [file] })
         assert_equal file,                @shrine.uploaded_file(file)
       end
 
@@ -143,7 +143,7 @@ describe Shrine::Plugins::Versions do
         file = @uploader.upload(fakeio)
 
         yielded = []
-        assert_equal Hash[thumb: file], @shrine.uploaded_file("thumb" => file.data) { |f| yielded << f }
+        assert_equal Hash[thumb: file], @shrine.uploaded_file({ "thumb" => file.data }) { |f| yielded << f }
         assert_equal [file], yielded
 
         yielded = []
@@ -151,7 +151,7 @@ describe Shrine::Plugins::Versions do
         assert_equal [file], yielded
 
         yielded = []
-        assert_equal Hash[thumb: [file]], @shrine.uploaded_file(thumb: [file]) { |f| yielded << f }
+        assert_equal Hash[thumb: [file]], @shrine.uploaded_file({ thumb: [file] }) { |f| yielded << f }
         assert_equal [file], yielded
 
         yielded = []
@@ -180,7 +180,7 @@ describe Shrine::Plugins::Versions do
 
     describe "#destroy_attached" do
       it "deletes versions" do
-        @attacher.set(thumb: @uploader.upload(fakeio))
+        @attacher.set({ thumb: @uploader.upload(fakeio) })
         @attacher.destroy_attached
         refute @attacher.get[:thumb].exists?
 
@@ -188,7 +188,7 @@ describe Shrine::Plugins::Versions do
         @attacher.destroy_attached
         refute @attacher.get[0].exists?
 
-        @attacher.set(thumb: [@uploader.upload(fakeio)])
+        @attacher.set({ thumb: [@uploader.upload(fakeio)] })
         @attacher.destroy_attached
         refute @attacher.get[:thumb][0].exists?
 
@@ -200,8 +200,8 @@ describe Shrine::Plugins::Versions do
 
     describe "#destroy_previous" do
       it "deletes versions" do
-        @attacher.change(original = {thumb: @uploader.upload(fakeio)})
-        @attacher.change(thumb: @uploader.upload(fakeio))
+        @attacher.change(original = { thumb: @uploader.upload(fakeio) })
+        @attacher.change({ thumb: @uploader.upload(fakeio) })
         @attacher.destroy_previous
         refute original[:thumb].exists?
 
@@ -210,8 +210,8 @@ describe Shrine::Plugins::Versions do
         @attacher.destroy_previous
         refute original[0].exists?
 
-        @attacher.change(original = {thumb: [@uploader.upload(fakeio)]})
-        @attacher.change(thumb: [@uploader.upload(fakeio)])
+        @attacher.change(original = { thumb: [@uploader.upload(fakeio)] })
+        @attacher.change({ thumb: [@uploader.upload(fakeio)] })
         @attacher.destroy_previous
         refute original[:thumb][0].exists?
 
@@ -224,7 +224,7 @@ describe Shrine::Plugins::Versions do
 
     describe "#promote_cached" do
       it "promotes versions successfully" do
-        @attacher.change(thumb: @shrine.upload(fakeio, :cache))
+        @attacher.change({ thumb: @shrine.upload(fakeio, :cache) })
         @attacher.promote_cached
         assert_equal :store, @attacher.get[:thumb].storage_key
 
@@ -232,7 +232,7 @@ describe Shrine::Plugins::Versions do
         @attacher.promote_cached
         assert_equal :store, @attacher.get[0].storage_key
 
-        @attacher.change(thumb: [@shrine.upload(fakeio, :cache)])
+        @attacher.change({ thumb: [@shrine.upload(fakeio, :cache)] })
         @attacher.promote_cached
         assert_equal :store, @attacher.get[:thumb][0].storage_key
 
@@ -244,7 +244,7 @@ describe Shrine::Plugins::Versions do
 
     describe "#url" do
       it "accepts a version name indifferently" do
-        @attacher.set(thumb: @uploader.upload(fakeio))
+        @attacher.set({ thumb: @uploader.upload(fakeio) })
         assert_equal @attacher.get[:thumb].url, @attacher.url(:thumb)
         assert_equal @attacher.get[:thumb].url, @attacher.url("thumb")
       end
@@ -265,7 +265,7 @@ describe Shrine::Plugins::Versions do
       end
 
       it "doesn't allow no argument when attachment is versioned" do
-        @attacher.set(thumb: @uploader.upload(fakeio))
+        @attacher.set({ thumb: @uploader.upload(fakeio) })
         assert_raises(Shrine::Error) { @attacher.url }
       end
 
@@ -275,7 +275,7 @@ describe Shrine::Plugins::Versions do
       end
 
       it "forwards url options" do
-        @attacher.set(thumb: @uploader.upload(fakeio))
+        @attacher.set({ thumb: @uploader.upload(fakeio) })
         Shrine::UploadedFile.any_instance.expects(:url).with(foo: "foo")
         @attacher.url(:thumb, foo: "foo")
         @attacher.set(@uploader.upload(fakeio))
@@ -284,7 +284,7 @@ describe Shrine::Plugins::Versions do
         Shrine::UploadedFile.any_instance.expects(:url).with(foo: "foo")
         @attacher.url(foo: "foo")
 
-        @attacher.set(original: @uploader.upload(fakeio))
+        @attacher.set({ original: @uploader.upload(fakeio) })
         @attacher.expects(:default_url).with(version: :thumb, foo: "foo")
         @attacher.url(:thumb, foo: "foo")
         @attacher.set(nil)
@@ -295,7 +295,7 @@ describe Shrine::Plugins::Versions do
       it "supports :fallbacks" do
         @shrine.plugin :versions, fallbacks: { medium: :thumb, large:  :medium }
 
-        @attacher.set(thumb: @uploader.upload(fakeio))
+        @attacher.set({ thumb: @uploader.upload(fakeio) })
         assert_equal @attacher.url(:thumb), @attacher.url(:medium)
         assert_equal @attacher.url(:thumb), @attacher.url(:large)
       end
@@ -316,13 +316,13 @@ describe Shrine::Plugins::Versions do
       it "converts versions into a Hash of data" do
         file = @uploader.upload(fakeio)
 
-        @attacher.set(thumb: file)
+        @attacher.set({ thumb: file })
         assert_equal Hash["thumb" => file.data], @attacher.data
 
         @attacher.set([file])
         assert_equal [file.data], @attacher.data
 
-        @attacher.set(thumb: [file])
+        @attacher.set({ thumb: [file] })
         assert_equal Hash["thumb" => [file.data]], @attacher.data
 
         @attacher.set(file)
@@ -334,13 +334,13 @@ describe Shrine::Plugins::Versions do
       it "loads versions data" do
         file = @uploader.upload(fakeio)
 
-        @attacher.load_data("thumb" => file.data)
+        @attacher.load_data({ "thumb" => file.data })
         assert_equal Hash[thumb: file], @attacher.file
 
         @attacher.load_data([file.data])
         assert_equal [file], @attacher.file
 
-        @attacher.load_data(thumb: [file.data])
+        @attacher.load_data({ thumb: [file.data] })
         assert_equal Hash[thumb: [file]], @attacher.file
 
         @attacher.load_data(file.data)
@@ -377,23 +377,23 @@ describe Shrine::Plugins::Versions do
 
     describe "#cached?" do
       it "returns true if versions are cached" do
-        assert_equal true, @attacher.cached?(thumb: @shrine.upload(fakeio, :cache))
-        assert_equal true, @attacher.cached?(thumb: [@shrine.upload(fakeio, :cache)])
+        assert_equal true, @attacher.cached?({ thumb: @shrine.upload(fakeio, :cache) })
+        assert_equal true, @attacher.cached?({ thumb: [@shrine.upload(fakeio, :cache)] })
         assert_equal true, @attacher.cached?([@shrine.upload(fakeio, :cache)])
         assert_equal true, @attacher.cached?(@shrine.upload(fakeio, :cache))
 
-        assert_equal false, @attacher.cached?(thumb: @shrine.upload(fakeio, :store))
+        assert_equal false, @attacher.cached?({ thumb: @shrine.upload(fakeio, :store) })
       end
     end
 
     describe "#stored?" do
       it "returns true if versions are stored" do
-        assert_equal true, @attacher.stored?(thumb: @shrine.upload(fakeio, :store))
-        assert_equal true, @attacher.stored?(thumb: [@shrine.upload(fakeio, :store)])
+        assert_equal true, @attacher.stored?({ thumb: @shrine.upload(fakeio, :store) })
+        assert_equal true, @attacher.stored?({ thumb: [@shrine.upload(fakeio, :store)] })
         assert_equal true, @attacher.stored?([@shrine.upload(fakeio, :store)])
         assert_equal true, @attacher.stored?(@shrine.upload(fakeio, :store))
 
-        assert_equal false, @attacher.stored?(thumb: @shrine.upload(fakeio, :cache))
+        assert_equal false, @attacher.stored?({ thumb: @shrine.upload(fakeio, :cache) })
       end
     end
   end

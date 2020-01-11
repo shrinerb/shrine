@@ -55,11 +55,11 @@ class Shrine
         end
 
         # Memoizes the attacher instance into an instance variable.
-        def attacher(record, options)
+        def attacher(record, **options)
           return super unless model?
 
           if !record.instance_variable_get(:"@#{@name}_attacher") || options.any?
-            attacher = class_attacher(options)
+            attacher = class_attacher(**options)
             attacher.load_model(record, @name)
 
             record.instance_variable_set(:"@#{@name}_attacher", attacher)

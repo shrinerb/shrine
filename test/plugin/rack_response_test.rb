@@ -1,7 +1,6 @@
 require "test_helper"
 require "shrine/plugins/rack_response"
 require "shrine/storage/file_system"
-require "rack/test_app"
 
 describe Shrine::Plugins::RackResponse do
   before do

@@ -7,8 +7,8 @@ require "fileutils"
 require "tmpdir"
 
 describe Shrine::Storage::FileSystem do
-  def file_system(*args)
-    Shrine::Storage::FileSystem.new(*args)
+  def file_system(*args, **options)
+    Shrine::Storage::FileSystem.new(*args, **options)
   end
 
   def root

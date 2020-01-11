@@ -1,7 +1,6 @@
 require "test_helper"
 require "shrine/plugins/presign_endpoint"
 require "shrine/storage/s3"
-require "rack/test_app"
 require "json"
 
 describe Shrine::Plugins::PresignEndpoint do

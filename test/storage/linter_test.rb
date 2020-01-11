@@ -132,11 +132,6 @@ describe Shrine::Storage::Linter do
       @storage.instance_eval { def presign(id, **options); Struct.new(:url).new("foo"); end }
       assert_raises(Shrine::LintError) { @linter.call }
     end
-
-    it "tests that method accepts options" do
-      @storage.instance_eval { def presign(id); { method: "post", url: "foo" }; end }
-      assert_raises(ArgumentError) { @linter.call }
-    end
   end
 
   it "can print errors as warnings" do

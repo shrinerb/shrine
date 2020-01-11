@@ -4,9 +4,9 @@ class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/url_options
     module UrlOptions
-      def self.configure(uploader, **options)
+      def self.configure(uploader, **opts)
         uploader.opts[:url_options] ||= {}
-        uploader.opts[:url_options].merge!(options)
+        uploader.opts[:url_options].merge!(opts)
       end
 
       module FileMethods

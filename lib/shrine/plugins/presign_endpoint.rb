@@ -8,7 +8,7 @@ class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/presign_endpoint
     module PresignEndpoint
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:presign_endpoint] ||= {}
         uploader.opts[:presign_endpoint].merge!(opts)
       end
@@ -135,7 +135,7 @@ class Shrine
       if @presign
         data = @presign.call(location, options, request)
       else
-        data = storage.presign(location, options)
+        data = storage.presign(location, **options)
       end
 
       { fields: {}, headers: {} }.merge(data.to_h)

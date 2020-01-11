@@ -61,14 +61,20 @@ describe Shrine::Attacher do
       assert_equal "foo", @attacher.file.id
     end
 
+    it "accepts cached file" do
+      file = @attacher.upload(fakeio, :cache)
+      @attacher.assign(file.data)
+      assert_equal file, @attacher.file
+    end
+
     it "ignores current stored file (Hash)" do
       file = @attacher.attach(fakeio, metadata: false)
 
-      @attacher.assign(
+      @attacher.assign({
         id:       file.id,
         storage:  file.storage_key,
         metadata: { "foo" => "bar" },
-      )
+      })
 
       assert_equal file,     @attacher.file
       assert_equal Hash.new, @attacher.file.metadata
@@ -90,11 +96,11 @@ describe Shrine::Attacher do
     it "ignores current cached file (Hash)" do
       file = @attacher.attach_cached(fakeio, metadata: false)
 
-      @attacher.assign(
+      @attacher.assign({
         id:       file.id,
         storage:  file.storage_key,
         metadata: { "foo" => "bar" },
-      )
+      })
 
       assert_equal file,     @attacher.file
       assert_equal Hash.new, @attacher.file.metadata

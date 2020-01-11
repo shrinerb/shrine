@@ -20,7 +20,7 @@ describe Shrine::Plugins::UrlOptions do
       it "adds default options dynamically" do
         minitest = self
 
-        @uploader.class.plugin :url_options, store: -> (io, **options) do
+        @uploader.class.plugin :url_options, store: -> (io, options) do
           minitest.assert_kind_of Shrine::UploadedFile, io
           minitest.assert_equal "bar", options[:bar]
 
@@ -55,7 +55,7 @@ describe Shrine::Plugins::UrlOptions do
         file.storage.expects(:url).with(file.id, { foo: "foo" })
         file.url(foo: "foo")
 
-        @shrine.plugin :url_options, store: -> (io, **options) {}
+        @shrine.plugin :url_options, store: -> (io, options) {}
 
         file = @uploader.upload(fakeio)
         file.storage.expects(:url).with(file.id, { foo: "foo" })

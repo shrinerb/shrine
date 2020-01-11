@@ -511,7 +511,7 @@ class Shrine
       end
 
       if upload_redirect
-        redirect_url = uploaded_file.url(upload_redirect_url_options)
+        redirect_url = uploaded_file.url(**upload_redirect_url_options)
 
         [302, { "Location" => redirect_url }, []]
       else

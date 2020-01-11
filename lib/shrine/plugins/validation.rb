@@ -54,7 +54,7 @@ class Shrine
         # Calls validation appropriately based on the :validate value.
         def validation(argument)
           case argument
-          when Hash  then validate(argument)
+          when Hash  then validate(**argument)
           when false then errors.clear # skip validation
           else            validate
           end

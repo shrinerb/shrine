@@ -4,9 +4,9 @@ class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/upload_options
     module UploadOptions
-      def self.configure(uploader, options = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:upload_options] ||= {}
-        uploader.opts[:upload_options].merge!(options)
+        uploader.opts[:upload_options].merge!(opts)
       end
 
       module InstanceMethods

@@ -130,8 +130,8 @@ attacher.attach_cached(file)
 
 # sets cached file
 attacher.attach_cached('{"id":"asdf.jpg","storage":"cache","metadata":{...}}')
-attacher.attach_cached("id" => "asdf.jpg", "storage" => "cache", "metadata" => { ... })
-attacher.attach_cached(id: "asdf.jpg", storage: "cache", metadata: { ... })
+attacher.attach_cached({ "id" => "asdf.jpg", "storage" => "cache", "metadata" => { ... } })
+attacher.attach_cached({ id: "asdf.jpg", storage: "cache", metadata: { ... } })
 
 # unsets attached file
 attacher.attach_cached(nil)

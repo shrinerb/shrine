@@ -113,7 +113,7 @@ upload happens independently of a database record.
 You can also customize the upload itself via the `:upload` option:
 
 ```rb
-plugin :upload_endpoint, upload: -> (io, **options, request) do
+plugin :upload_endpoint, upload: -> (io, options, request) do
   Shrine.upload(io, :cache, **options)
 end
 ```

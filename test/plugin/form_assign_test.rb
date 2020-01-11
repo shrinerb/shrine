@@ -11,7 +11,7 @@ describe Shrine::Plugins::FormAssign do
     describe "#form_assign" do
       describe "with raw file" do
         it "attaches file" do
-          @attacher.form_assign("file" => fakeio)
+          @attacher.form_assign({ "file" => fakeio })
 
           assert @attacher.attached?
           assert @attacher.changed?
@@ -36,7 +36,7 @@ describe Shrine::Plugins::FormAssign do
         end
 
         it "attaches file" do
-          @attacher.form_assign("file" => @cached_file.to_json)
+          @attacher.form_assign({ "file" => @cached_file.to_json })
 
           assert @attacher.attached?
           assert @attacher.changed?
@@ -63,7 +63,7 @@ describe Shrine::Plugins::FormAssign do
         end
 
         it "attaches file" do
-          @attacher.form_assign("file" => nil)
+          @attacher.form_assign({ "file" => nil })
 
           refute @attacher.attached?
           assert @attacher.changed?
@@ -88,7 +88,7 @@ describe Shrine::Plugins::FormAssign do
         end
 
         it "attaches nothing" do
-          @attacher.form_assign("file" => "")
+          @attacher.form_assign({ "file" => "" })
 
           assert @attacher.attached?
           refute @attacher.changed?

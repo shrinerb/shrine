@@ -35,7 +35,7 @@ class Shrine
       end
 
       def call(io_factory = default_io_factory)
-        storage.upload(io_factory.call, id = "foo", {})
+        storage.upload(io_factory.call, id = "foo", shrine_metadata: { "foo" => "bar" })
 
         lint_open(id)
         lint_exists(id)
@@ -67,13 +67,13 @@ class Shrine
       end
 
       def lint_open(id)
-        opened = storage.open(id, {})
+        opened = storage.open(id)
         error :open, "doesn't return a valid IO object" if !io?(opened)
         error :open, "returns an empty IO object" if opened.read.empty?
         opened.close
 
         begin
-          storage.open(@nonexisting, {})
+          storage.open(@nonexisting)
           error :open, "should raise an exception on nonexisting file"
         rescue Shrine::FileNotFound
         rescue => exception
@@ -107,7 +107,7 @@ class Shrine
       end
 
       def lint_presign(id)
-        data = storage.presign(id, {})
+        data = storage.presign(id)
         error :presign, "result should be a Hash" unless data.respond_to?(:to_h)
         error :presign, "result should include :method key" unless data.to_h.key?(:method)
         error :presign, "result should include :url key" unless data.to_h.key?(:url)

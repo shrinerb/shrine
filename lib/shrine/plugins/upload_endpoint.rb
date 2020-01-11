@@ -9,11 +9,11 @@ class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/upload_endpoint
     module UploadEndpoint
-      def self.load_dependencies(uploader, opts = {})
+      def self.load_dependencies(uploader, **)
         uploader.plugin :rack_file
       end
 
-      def self.configure(uploader, opts = {})
+      def self.configure(uploader, **opts)
         uploader.opts[:upload_endpoint] ||= {}
         uploader.opts[:upload_endpoint].merge!(opts)
       end
@@ -156,7 +156,7 @@ class Shrine
       if @upload
         @upload.call(io, context, request)
       else
-        uploader.upload(io, context)
+        uploader.upload(io, **context)
       end
     end
 

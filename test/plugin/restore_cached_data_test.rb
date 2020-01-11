@@ -14,7 +14,7 @@ describe Shrine::Plugins::RestoreCachedData do
 
         @shrine.any_instance.expects(:extract_metadata).never
 
-        @attacher.assign(id: file.id, storage: file.storage_key)
+        @attacher.assign({ id: file.id, storage: file.storage_key })
       end
 
       it "doesn't reextract metadata of current stored file" do
@@ -22,7 +22,7 @@ describe Shrine::Plugins::RestoreCachedData do
 
         @shrine.any_instance.expects(:extract_metadata).never
 
-        @attacher.assign(id: file.id, storage: file.storage_key)
+        @attacher.assign({ id: file.id, storage: file.storage_key })
       end
     end
 
@@ -75,7 +75,7 @@ describe Shrine::Plugins::RestoreCachedData do
         cached_file = @attacher.upload(fakeio("a" * 1024), :cache)
         cached_file.metadata["size"] = 5
 
-        @attacher.attach_cached("version" => cached_file.data)
+        @attacher.attach_cached({ "version" => cached_file.data })
 
         assert_equal 1024, @attacher.file[:version].metadata["size"]
       end

@@ -33,7 +33,7 @@ class Shrine
         def process(io, **options)
           pipeline = processing_pipeline(options[:action])
           pipeline.inject(io) do |input, processor|
-            instance_exec(input, options, &processor) || input
+            instance_exec(input, **options, &processor) || input
           end
         end
 

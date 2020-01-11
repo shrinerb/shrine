@@ -22,8 +22,8 @@ class Shrine
       # Shorthand for `Attachment.new`.
       #
       #   Shrine::Attachment[:image]
-      def [](*args)
-        new(*args)
+      def [](*args, **options)
+        new(*args, **options)
       end
     end
 

@@ -422,11 +422,11 @@ If you already have processed files that you want to save, you can do that with
 `Attacher#add_derivatives`:
 
 ```rb
-attacher.add_derivatives(
+attacher.add_derivatives({
   one: file_1,
   two: file_2,
   # ...
-)
+})
 
 attacher.derivatives #=>
 # {
@@ -440,7 +440,7 @@ New derivatives will be merged with existing ones:
 
 ```rb
 attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
-attacher.add_derivatives(two: two_file)
+attacher.add_derivatives({ two: two_file })
 attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
 ```
 
@@ -448,7 +448,7 @@ The merging is deep, so the following will work as well:
 
 ```rb
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
-attacher.add_derivatives(nested: { two: two_file })
+attacher.add_derivatives({ nested: { two: two_file } })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
 
@@ -475,11 +475,11 @@ If you want to upload processed files without setting them, you can use
 `Attacher#upload_derivatives`:
 
 ```rb
-derivatives = attacher.upload_derivatives(
+derivatives = attacher.upload_derivatives({
   one: file_1,
   two: file_2,
   # ...
-)
+})
 
 derivatives #=>
 # {
@@ -555,7 +555,7 @@ If you want to save already uploaded derivatives, you can use
 
 ```rb
 attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
-attacher.merge_derivatives attacher.upload_derivatives(two: two_file)
+attacher.merge_derivatives attacher.upload_derivatives({ two: two_file })
 attacher.derivatives #=> { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> }
 ```
 
@@ -563,7 +563,7 @@ This does a deep merge, so the following will work as well:
 
 ```rb
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
-attacher.merge_derivatives attacher.upload_derivatives(nested: { two: two_file })
+attacher.merge_derivatives attacher.upload_derivatives({ nested: { two: two_file } })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
 
@@ -576,7 +576,7 @@ If instead of adding you want to *override* existing derivatives, you can use
 
 ```rb
 attacher.derivatives #=> { one: #<Shrine::UploadedFile> }
-attacher.set_derivatives attacher.upload_derivatives(two: two_file)
+attacher.set_derivatives attacher.upload_derivatives({ two: two_file })
 attacher.derivatives #=> { two: #<Shrine::UploadedFile> }
 ```
 
@@ -684,7 +684,7 @@ You can store derivatives even if there is no main attached file:
 
 ```rb
 attacher.file #=> nil
-attacher.add_derivatives(one: one_file, two: two_file)
+attacher.add_derivatives({ one: one_file, two: two_file })
 attacher.data #=>
 # {
 #   "derivatives" => {

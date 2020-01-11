@@ -56,7 +56,7 @@ describe Shrine::Plugins::RemoveInvalid do
 
         it "assigns back derivatives" do
           file        = @attacher.set @attacher.upload(fakeio)
-          derivatives = @attacher.add_derivatives(one: fakeio)
+          derivatives = @attacher.add_derivatives({ one: fakeio })
 
           @attacher.class.validate { errors << "error" }
           @attacher.assign(fakeio)
@@ -69,7 +69,7 @@ describe Shrine::Plugins::RemoveInvalid do
 
         it "destroys derivatives" do
           file        = @attacher.set @attacher.upload(fakeio)
-          derivatives = @attacher.add_derivatives(one: fakeio)
+          derivatives = @attacher.add_derivatives({ one: fakeio })
 
           @attacher.class.validate { errors << "error" }
           @attacher.validate
@@ -80,7 +80,7 @@ describe Shrine::Plugins::RemoveInvalid do
 
         it "deassigns dirty" do
           file        = @attacher.attach(fakeio)
-          derivatives = @attacher.add_derivatives(one: fakeio)
+          derivatives = @attacher.add_derivatives({ one: fakeio })
 
           @attacher.class.validate { errors << "error" }
           @attacher.validate
@@ -91,7 +91,7 @@ describe Shrine::Plugins::RemoveInvalid do
 
         it "deassign clean" do
           file        = @attacher.set(@attacher.upload(fakeio))
-          derivatives = @attacher.add_derivatives(one: fakeio)
+          derivatives = @attacher.add_derivatives({ one: fakeio })
 
           @attacher.class.validate { errors << "error" }
           @attacher.validate
@@ -108,7 +108,7 @@ describe Shrine::Plugins::RemoveInvalid do
 
         it "destroys versions" do
           @attacher.class.validate { errors << "error" }
-          files = @attacher.attach(thumb: fakeio)
+          files = @attacher.attach({ thumb: fakeio })
 
           assert_nil @attacher.file
           refute files[:thumb].exists?
