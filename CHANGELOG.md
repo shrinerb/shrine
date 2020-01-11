@@ -1,5 +1,7 @@
 ## master
 
+* Fix Ruby 2.7 warnings regarding separation of positional and keyword arguments (@janko)
+
 * `s3` – Make `S3#open` handle empty S3 objects (@janko)
 
 ## 3.2.0 (2019-12-17) [[release notes]](https://shrinerb.com/docs/release_notes/3.2.0)
