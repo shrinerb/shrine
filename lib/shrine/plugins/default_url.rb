@@ -25,7 +25,7 @@ class Shrine
         def default_url(**options)
           return unless default_url_block
 
-          url = instance_exec(options, &default_url_block)
+          url = instance_exec(**options, &default_url_block)
 
           [*default_url_host, url].join
         end

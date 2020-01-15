@@ -17,7 +17,7 @@ require "image_processing/mini_magick"
 
 plugin :processing
 
-process(:store) do |io, context|
+process(:store) do |io, **options|
   versions = { original: io } # retain original
 
   io.download do |original|
@@ -120,7 +120,7 @@ In addition to Hashes, the plugin also supports Arrays of files. For example,
 you might want to split a PDf into pages:
 
 ```rb
-process(:store) do |io, context|
+process(:store) do |io, **options|
   versions = { pages: [] }
 
   io.download do |pdf|
@@ -146,7 +146,7 @@ which you can do by adding the yielded `Shrine::UploadedFile` object as one of
 the versions, by convention named `:original`:
 
 ```rb
-process(:store) do |io, context|
+process(:store) do |io, **options|
   # processing thumbnail
   { original: io, thumbnail: thumbnail }
 end
@@ -163,12 +163,12 @@ The version name will be available via `:version` when generating location or a
 default URL.
 
 ```rb
-def generate_location(io, context)
-  "uploads/#{context[:version]}-#{super}"
+def generate_location(io, version: nil, **)
+  "uploads/#{version}-#{super}"
 end
 
-Attacher.default_url do |options|
-  "/images/defaults/#{options[:version]}.jpg"
+Attacher.default_url do |version: nil, **|
+  "/images/defaults/#{version}.jpg"
 end
 ```
 

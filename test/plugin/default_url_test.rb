@@ -34,7 +34,7 @@ describe Shrine::Plugins::DefaultUrl do
       end
 
       it "yields the given URL options to the block" do
-        @attacher.class.default_url { |options| options.to_json }
+        @attacher.class.default_url { |**options| options.to_json }
 
         assert_equal '{"foo":"bar"}', @attacher.url(foo: "bar")
       end

@@ -255,7 +255,7 @@ describe Shrine::Plugins::Versions do
 
       it "doesn't fail if version is registered but missing" do
         @attacher.set({})
-        @attacher.class.default_url { |options| "missing #{options[:version]}" }
+        @attacher.class.default_url { |version:, **| "missing #{version}" }
         assert_equal "missing thumb", @attacher.url(:thumb)
       end
 
@@ -270,7 +270,7 @@ describe Shrine::Plugins::Versions do
       end
 
       it "passes in :version to the default url" do
-        @attacher.class.default_url { |options| "missing #{options[:version]}" }
+        @attacher.class.default_url { |version:, **| "missing #{version}" }
         assert_equal "missing thumb", @attacher.url(:thumb)
       end
 

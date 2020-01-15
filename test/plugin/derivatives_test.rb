@@ -247,7 +247,7 @@ describe Shrine::Plugins::Derivatives do
         end
 
         it "passes options to the default URL block" do
-          @shrine::Attacher.default_url { |options| options[:foo] }
+          @shrine::Attacher.default_url { |foo:, **| foo }
 
           assert_equal "bar", @attacher.url(foo: "bar")
         end
@@ -294,14 +294,14 @@ describe Shrine::Plugins::Derivatives do
         end
 
         it "passes :derivative to default URL block" do
-          @shrine::Attacher.default_url { |options| options[:derivative].inspect }
+          @shrine::Attacher.default_url { |derivative:, **| derivative.inspect }
 
           assert_equal ":one",         @attacher.url(:one)
           assert_equal "[:one, :two]", @attacher.url(:one, :two)
         end
 
         it "passes options to the default URL block" do
-          @shrine::Attacher.default_url { |options| options[:foo] }
+          @shrine::Attacher.default_url { |foo:, **| foo }
 
           assert_equal "bar", @attacher.url(:one, foo: "bar")
         end

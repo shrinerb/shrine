@@ -8,7 +8,7 @@ returned when there is no attached file.
 ```rb
 plugin :default_url
 
-Attacher.default_url do |options|
+Attacher.default_url do |**options|
   "/#{name}/missing.jpg"
 end
 ```
@@ -28,7 +28,7 @@ Any URL options passed will be available in the default URL block:
 attacher.url(foo: "bar")
 ```
 ```rb
-Attacher.default_url do |options|
+Attacher.default_url do |**options|
   options #=> { foo: "bar" }
 end
 ```
@@ -37,7 +37,7 @@ The default URL block is evaluated in the context of an instance of
 `Shrine::Attacher`.
 
 ```rb
-Attacher.default_url do |options|
+Attacher.default_url do |**options|
   self    #=> #<Shrine::Attacher>
 
   file    #=> #<Shrine::UploadedFile>

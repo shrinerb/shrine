@@ -41,7 +41,7 @@ class Shrine
 
         def extract_custom_metadata(io, **options)
           opts[:add_metadata][:definitions].each do |name, block|
-            result = instance_exec(io, options, &block)
+            result = instance_exec(io, **options, &block)
 
             if name
               options[:metadata].merge! name.to_s => result
