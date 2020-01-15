@@ -43,9 +43,9 @@ Shrine::Plugins::Validation::AttacherMethods
 </ol>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#method-i-change">change</a></li>
+<li><a href="#method-i-attach">attach</a></li>
+<li><a href="#method-i-attach_cached">attach_cached</a></li>
 <li><a href="#attribute-i-errors">errors</a></li>
-<li><a href="#method-i-upload">upload</a></li>
 <li><a href="#method-i-validate">validate</a></li>
 </ol>
 </div>
@@ -90,42 +90,42 @@ Shrine::Plugins::Validation::AttacherMethods
 </div>
 </div>
 <h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-change'>
-<a name='method-i-change'></a>
+<div class='method public-instance' id='method-method-i-attach'>
+<a name='method-i-attach'></a>
 <div class='synopsis'>
-<span class='name'>change</span>
-<span class='arguments'>(file, validate: nil, **)</span>
+<span class='name'>attach</span>
+<span class='arguments'>(io, validate: nil, **options)</span>
 
 </div>
 <div class='description'>
 
-<p>Performs validations after changing the file.</p>
+<p>Performs validations after attaching file.</p>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-change-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attach-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-change-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>&#x000A;<span class="line-num">38</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>, <span class="ruby-value">validate:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num">39</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">40</span>   <span class="ruby-identifier">validation</span>(<span class="ruby-identifier">validate</span>)&#x000A;<span class="line-num">41</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attach-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>&#x000A;<span class="line-num">40</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">validate:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">41</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>(<span class="ruby-identifier">io</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">42</span>   <span class="ruby-identifier">validation</span>(<span class="ruby-identifier">validate</span>)&#x000A;<span class="line-num">43</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
-<div class='method public-instance' id='method-method-i-upload'>
-<a name='method-i-upload'></a>
+<div class='method public-instance' id='method-method-i-attach_cached'>
+<a name='method-i-attach_cached'></a>
 <div class='synopsis'>
-<span class='name'>upload</span>
-<span class='arguments'>(*args, validate: nil, **options)</span>
+<span class='name'>attach_cached</span>
+<span class='arguments'>(value, validate: nil, **options)</span>
 
 </div>
 <div class='description'>
 
-<p>Leaves out :validate option when calling <code>Shrine.upload</code>.</p>
+<p>Performs validations after attaching cached file.</p>
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-attach_cached-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-value">validate:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">34</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-attach_cached-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">attach_cached</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">validate:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">34</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>(<span class="ruby-identifier">value</span>, <span class="ruby-value">validate:</span> <span class="ruby-keyword">false</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">35</span>   <span class="ruby-identifier">validation</span>(<span class="ruby-identifier">validate</span>)&#x000A;<span class="line-num">36</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-validate'>
@@ -144,7 +144,7 @@ Shrine::Plugins::Validation::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-validate-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>&#x000A;<span class="line-num">45</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">46</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">47</span>   <span class="ruby-identifier">_validate</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">attached?</span>&#x000A;<span class="line-num">48</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate-source'>   <span class="ruby-comment"># File lib/shrine/plugins/validation.rb</span>&#x000A;<span class="line-num">47</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">48</span>   <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">49</span>   <span class="ruby-identifier">_validate</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">attached?</span>&#x000A;<span class="line-num">50</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

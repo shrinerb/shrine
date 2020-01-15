@@ -30,7 +30,7 @@ doc/attacher.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-11-11 17:09:06 +0100</span>
+<span class='datetime'>2020-01-11 19:46:50 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -106,7 +106,7 @@ Last Update:
 
 <p>This plays nicely with the recommended HTML form fields for the attachment. If you&#39;re not using the <code>hidden</code> form field (and therefore don&#39;t need empty strings to be handled), you can also use <code>Attacher#attach_cached</code>:</p>
 
-<pre># uploads file to cache&#x000A;attacher.attach_cached(file)&#x000A;# sets cached file&#x000A;attacher.attach_cached(&#39;{&quot;id&quot;:&quot;asdf.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)&#x000A;attacher.attach_cached(&quot;id&quot; =&gt; &quot;asdf.jpg&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... })&#x000A;attacher.attach_cached(id: &quot;asdf.jpg&quot;, storage: &quot;cache&quot;, metadata: { ... })&#x000A;&#x000A;# unsets attached file&#x000A;attacher.attach_cached(nil)</pre>
+<pre># uploads file to cache&#x000A;attacher.attach_cached(file)&#x000A;# sets cached file&#x000A;attacher.attach_cached(&#39;{&quot;id&quot;:&quot;asdf.jpg&quot;,&quot;storage&quot;:&quot;cache&quot;,&quot;metadata&quot;:{...}}&#39;)&#x000A;attacher.attach_cached({ &quot;id&quot; =&gt; &quot;asdf.jpg&quot;, &quot;storage&quot; =&gt; &quot;cache&quot;, &quot;metadata&quot; =&gt; { ... } })&#x000A;attacher.attach_cached({ id: &quot;asdf.jpg&quot;, storage: &quot;cache&quot;, metadata: { ... } })&#x000A;&#x000A;# unsets attached file&#x000A;attacher.attach_cached(nil)</pre>
 
 <h3 id="label-Attaching+stored">Attaching stored<span><a href="#label-Attaching+stored">&para;</a> <a href="#top">&uarr;</a></span></h3>
 

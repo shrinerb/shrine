@@ -30,7 +30,7 @@ doc/refile.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-11-13 19:10:18 +0100</span>
+<span class='datetime'>2019-12-17 14:32:51 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,7 +38,7 @@ Last Update:
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+for+Refile+Users">title: <a href="../../classes/Shrine.html"><code>Shrine</code></a> for Refile Users<span><a href="#label-title-3A+Shrine+for+Refile+Users">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-title-3A+Upgrading+from+Refile">title: Upgrading from Refile<span><a href="#label-title-3A+Upgrading+from+Refile">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>This guide is aimed at helping Refile users transition to <a href="../../classes/Shrine.html"><code>Shrine</code></a>, and it consists of three parts:</p>
 <ol><li>
@@ -100,11 +100,11 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> provides on-the-fly processing via the <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">derivation_endpoint</a> plugin:</p>
 
-<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">derivation_endpoint</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/derivations/image&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
-
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&quot;image_processing/mini_magick&quot;</span>&#x000A;&#x000A;<span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:derivation_endpoint</span>,&#x000A;    <span class="ruby-value">secret_key:</span> <span class="ruby-string">&quot;&lt;YOUR SECRET KEY&gt;&quot;</span>,&#x000A;    <span class="ruby-value">prefix:</span>     <span class="ruby-string">&quot;derivations/image&quot;</span> <span class="ruby-comment"># needs to match the mount point in routes</span>&#x000A;&#x000A;  <span class="ruby-identifier">derivation</span> <span class="ruby-value">:thumbnail</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">file</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>&#x000A;      .<span class="ruby-identifier">source</span>(<span class="ruby-identifier">file</span>)&#x000A;      .<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-identifier">width</span>.<span class="ruby-identifier">to_i</span>, <span class="ruby-identifier">height</span>.<span class="ruby-identifier">to_i</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> also support processing up front using the <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> plugin.</p>
+<pre class="ruby"><span class="ruby-comment"># config/routes.rb (Rails)</span>&#x000A;<span class="ruby-constant">Rails</span>.<span class="ruby-identifier">application</span>.<span class="ruby-identifier">routes</span>.<span class="ruby-identifier">draw</span> <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># ...</span>&#x000A;  <span class="ruby-identifier">mount</span> <span class="ruby-constant">ImageUploader</span>.<span class="ruby-identifier">derivation_endpoint</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;/derivations/image&quot;</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> also support eager processing using the <a href="https://shrinerb.com/docs/plugins/derivatives">derivatives</a> plugin.</p>
 
 <h3 id="label-Validation">Validation<span><a href="#label-Validation">&para;</a> <a href="#top">&uarr;</a></span></h3>
 

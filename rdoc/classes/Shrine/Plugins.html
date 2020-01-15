@@ -163,6 +163,9 @@ Shrine::Plugins
 <a href="../../files/lib/shrine/plugins/tempfile_rb.html">lib/shrine/plugins/tempfile.rb</a>
 </li>
 <li class='other'>
+<a href="../../files/lib/shrine/plugins/type_predicates_rb.html">lib/shrine/plugins/type_predicates.rb</a>
+</li>
+<li class='other'>
 <a href="../../files/lib/shrine/plugins/upload_endpoint_rb.html">lib/shrine/plugins/upload_endpoint.rb</a>
 </li>
 <li class='other'>
@@ -194,6 +197,8 @@ Shrine::Plugins
 <h2>Methods</h2>
 <h3>Public Class</h3>
 <ol>
+<li><a href="#method-c-configure">configure</a></li>
+<li><a href="#method-c-load_dependencies">load_dependencies</a></li>
 <li><a href="#method-c-load_plugin">load_plugin</a></li>
 <li><a href="#method-c-register_plugin">register_plugin</a></li>
 </ol>
@@ -244,6 +249,7 @@ Shrine::Plugins
 <li><a href="Plugins/Signature.html">Shrine::Plugins::Signature</a></li>
 <li><a href="Plugins/StoreDimensions.html">Shrine::Plugins::StoreDimensions</a></li>
 <li><a href="Plugins/Tempfile.html">Shrine::Plugins::Tempfile</a></li>
+<li><a href="Plugins/TypePredicates.html">Shrine::Plugins::TypePredicates</a></li>
 <li><a href="Plugins/UploadEndpoint.html">Shrine::Plugins::UploadEndpoint</a></li>
 <li><a href="Plugins/UploadOptions.html">Shrine::Plugins::UploadOptions</a></li>
 <li><a href="Plugins/UrlOptions.html">Shrine::Plugins::UrlOptions</a></li>
@@ -257,6 +263,44 @@ Shrine::Plugins
 <div id='section'>
 <div id='methods'>
 <h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-configure'>
+<a name='method-c-configure'></a>
+<div class='synopsis'>
+<span class='name'>configure</span>
+<span class='arguments'>(plugin, uploader, *args, **kwargs, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Delegate call to the plugin in a way that works across Ruby versions.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-configure-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-configure-source'>   <span class="ruby-comment"># File lib/shrine/plugins.rb</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">configure</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">34</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:configure</span>)&#x000A;<span class="line-num">35</span> &#x000A;<span class="line-num">36</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">kwargs</span>.<span class="ruby-identifier">any?</span>&#x000A;<span class="line-num">37</span>     <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">39</span>     <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">configure</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">40</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">41</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-load_dependencies'>
+<a name='method-c-load_dependencies'></a>
+<div class='synopsis'>
+<span class='name'>load_dependencies</span>
+<span class='arguments'>(plugin, uploader, *args, **kwargs, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Delegate call to the plugin in a way that works across Ruby versions.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-load_dependencies-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-load_dependencies-source'>   <span class="ruby-comment"># File lib/shrine/plugins.rb</span>&#x000A;<span class="line-num">22</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">load_dependencies</span>(<span class="ruby-identifier">plugin</span>, <span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">23</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:load_dependencies</span>)&#x000A;<span class="line-num">24</span> &#x000A;<span class="line-num">25</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">kwargs</span>.<span class="ruby-identifier">any?</span>&#x000A;<span class="line-num">26</span>     <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">kwargs</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">27</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">28</span>     <span class="ruby-identifier">plugin</span>.<span class="ruby-identifier">load_dependencies</span>(<span class="ruby-identifier">uploader</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">29</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">30</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
 <div class='method public-class' id='method-method-c-load_plugin'>
 <a name='method-c-load_plugin'></a>
 <div class='synopsis'>
@@ -294,7 +338,7 @@ Shrine::Plugins
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-register_plugin-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-register_plugin-source'>   <span class="ruby-comment"># File lib/shrine/plugins.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-register_plugin-source'>   <span class="ruby-comment"># File lib/shrine/plugins.rb</span>&#x000A;<span class="line-num">47</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">register_plugin</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">mod</span>)&#x000A;<span class="line-num">48</span>   <span class="ruby-ivar">@plugins</span>[<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">mod</span>&#x000A;<span class="line-num">49</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

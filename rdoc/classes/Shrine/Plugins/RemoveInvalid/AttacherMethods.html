@@ -39,7 +39,7 @@ Shrine::Plugins::RemoveInvalid::AttacherMethods
 <h2>Methods</h2>
 <h3>Public Instance</h3>
 <ol>
-<li><a href="#method-i-change">change</a></li>
+<li><a href="#method-i-validate">validate</a></li>
 </ol>
 </div>
 <div id='context'>
@@ -47,10 +47,10 @@ Shrine::Plugins::RemoveInvalid::AttacherMethods
 <div id='section'>
 <div id='methods'>
 <h2>Public Instance methods</h2>
-<div class='method public-instance' id='method-method-i-change'>
-<a name='method-i-change'></a>
+<div class='method public-instance' id='method-method-i-validate'>
+<a name='method-i-validate'></a>
 <div class='synopsis'>
-<span class='name'>change</span>
+<span class='name'>validate</span>
 <span class='arguments'>(*)</span>
 
 </div>
@@ -58,10 +58,10 @@ Shrine::Plugins::RemoveInvalid::AttacherMethods
 
 </div>
 <div class='source'>
-<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-change-source&#39;); return false'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-validate-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-change-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remove_invalid.rb</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">13</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">ensure</span>&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">revert_change</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">any?</span>&#x000A;<span class="line-num">16</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-validate-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remove_invalid.rb</span>&#x000A;<span class="line-num">12</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">validate</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">13</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">14</span> <span class="ruby-keyword">ensure</span>&#x000A;<span class="line-num">15</span>   <span class="ruby-identifier">deassign</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">errors</span>.<span class="ruby-identifier">any?</span>&#x000A;<span class="line-num">16</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

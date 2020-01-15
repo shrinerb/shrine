@@ -30,7 +30,7 @@ doc/advantages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-10-29 10:21:39 +0100</span>
+<span class='datetime'>2019-12-17 14:32:51 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -103,9 +103,9 @@ Last Update:
 
 <h2 id="label-Processing">Processing<span><a href="#label-Processing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>Most file attachment libraries provide either processing files up front (Paperclip, CarrierWave) or on-the-fly (Dragonfly, Refile, Active Storage). However, each approach is suitable for different requirements. For instance, while on-the-fly processing is suitable for fast processing (image thumbnails, document previews), longer running processing (video transcoding, raw images) should be moved into a background job.</p>
+<p>Most file attachment libraries allow you to process files either “eagerly” (Paperclip, CarrierWave) or “on-the-fly” (Dragonfly, Refile, Active Storage). However, each approach is suitable for different requirements. For instance, while on-the-fly processing is suitable for fast processing (image thumbnails, document previews), longer running processing (video transcoding, raw images) should be moved into a background job.</p>
 
-<p>That&#39;s why <a href="../../classes/Shrine.html"><code>Shrine</code></a> supports both <a href="https://shrinerb.com/docs/plugins/derivatives">up front</a> and <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">on-the-fly</a> processing. For example, if you&#39;re handling image uploads, you can choose to either generate a set of pre-defined thumbnails during attachment:</p>
+<p>That&#39;s why <a href="../../classes/Shrine.html"><code>Shrine</code></a> supports both <a href="https://shrinerb.com/docs/plugins/derivatives">eager</a> and <a href="https://shrinerb.com/docs/plugins/derivation_endpoint">on-the-fly</a> processing. For example, if you&#39;re handling image uploads, you can choose to either generate a set of pre-defined thumbnails during attachment:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">derivatives</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">original</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-identifier">magick</span> = <span class="ruby-constant">ImageProcessing</span><span class="ruby-operator">::</span><span class="ruby-constant">MiniMagick</span>.<span class="ruby-identifier">source</span>(<span class="ruby-identifier">original</span>)&#x000A;&#x000A;    {&#x000A;      <span class="ruby-value">large:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">800</span>, <span class="ruby-value">800</span>),&#x000A;      <span class="ruby-value">medium:</span> <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">500</span>, <span class="ruby-value">500</span>),&#x000A;      <span class="ruby-value">small:</span>  <span class="ruby-identifier">magick</span>.<span class="ruby-identifier">resize_to_limit!</span>(<span class="ruby-value">300</span>, <span class="ruby-value">300</span>),&#x000A;    }&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 

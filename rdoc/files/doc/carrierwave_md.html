@@ -30,7 +30,7 @@ doc/carrierwave.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-11-13 19:06:48 +0100</span>
+<span class='datetime'>2019-12-17 14:32:51 +0100</span>
 </div>
 </div>
 <div id='content'>
@@ -38,7 +38,7 @@ Last Update:
 <div id='description'>
 <p>—</p>
 
-<h2 id="label-title-3A+Shrine+for+CarrierWave+Users">title: <a href="../../classes/Shrine.html"><code>Shrine</code></a> for CarrierWave Users<span><a href="#label-title-3A+Shrine+for+CarrierWave+Users">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<h2 id="label-title-3A+Upgrading+from+CarrierWave">title: Upgrading from CarrierWave<span><a href="#label-title-3A+Upgrading+from+CarrierWave">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>This guide is aimed at helping CarrierWave users transition to <a href="../../classes/Shrine.html"><code>Shrine</code></a>, and it consists of three parts:</p>
 <ol><li>
@@ -229,9 +229,11 @@ Last Update:
 
 <h4 id="label-23store_dir-2C+-23cache_dir"><code>#store_dir</code>, <code>#cache_dir</code><span><a href="#label-23store_dir-2C+-23cache_dir">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> here provides a <code>#generate_location</code> method, which is triggered for all storages:</p>
+<p><a href="../../classes/Shrine.html"><code>Shrine</code></a> here provides a single <code>#generate_location</code> method that&#39;s triggered for all storages:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">record:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)&#x000A;    <span class="ruby-node">&quot;#{record.class}/#{record.id}/#{io.original_filename}&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate_location</span>(<span class="ruby-identifier">io</span>, <span class="ruby-value">record:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">name:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span>)&#x000A;    [ <span class="ruby-identifier">storage_key</span>,&#x000A;      <span class="ruby-identifier">record</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">underscore</span>,&#x000A;      <span class="ruby-identifier">record</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">record</span>.<span class="ruby-identifier">id</span>,&#x000A;      <span class="ruby-keyword">super</span>,&#x000A;      <span class="ruby-identifier">io</span>.<span class="ruby-identifier">original_filename</span> ].<span class="ruby-identifier">compact</span>.<span class="ruby-identifier">join</span>(<span class="ruby-string">&quot;/&quot;</span>)&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+<pre>cache/user/123/2feff8c724e7ce17/nature.jpg&#x000A;store/user/456/7f99669fde1e01fc/kitten.jpg&#x000A;...</pre>
 
 <p>You might also want to use the <code>pretty_location</code> plugin for automatically generating an organized folder structure.</p>
 
@@ -239,7 +241,7 @@ Last Update:
 
 <p>For default URLs you can use the <code>default_url</code> plugin:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">options</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-node">&quot;/attachments/#{name}/default.jpg&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">ImageUploader</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Shrine</span>&#x000A;  <span class="ruby-identifier">plugin</span> <span class="ruby-value">:default_url</span>&#x000A;&#x000A;  <span class="ruby-constant">Attacher</span>.<span class="ruby-identifier">default_url</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-value">derivative:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-operator">|</span>&#x000A;    <span class="ruby-node">&quot;/fallbacks/#{derivative || &quot;original&quot;}.jpg&quot;</span>&#x000A;  <span class="ruby-keyword">end</span>&#x000A;<span class="ruby-keyword">end</span></pre>
 
 <h4 id="label-23extension_white_list-2C+-23extension_black_list"><code>#extension_white_list</code>, <code>#extension_black_list</code><span><a href="#label-23extension_white_list-2C+-23extension_black_list">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
@@ -327,7 +329,7 @@ Last Update:
 
 <h4 id="label-root-2C+base_path-2C+permissions-2C+directory_permissions"><code>root</code>, <code>base_path</code>, <code>permissions</code>, <code>directory_permissions</code><span><a href="#label-root-2C+base_path-2C+permissions-2C+directory_permissions">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
-<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> these are configured on the FileSystem storage directly.</p>
+<p>In <a href="../../classes/Shrine.html"><code>Shrine</code></a> these are configured on the <code>FileSystem</code> storage directly.</p>
 
 <h4 id="label-storage-2C+storage_engines"><code>storage</code>, <code>storage_engines</code><span><a href="#label-storage-2C+storage_engines">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
