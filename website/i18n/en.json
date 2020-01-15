@@ -323,6 +323,9 @@
       "release_notes/3.2.0": {
         "title": "Shrine 3.2.0"
       },
+      "release_notes/3.2.1": {
+        "title": "Shrine 3.2.1"
+      },
       "retrieving-uploads": {
         "title": "Retrieving Uploads"
       },
