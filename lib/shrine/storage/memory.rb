@@ -17,7 +17,9 @@ class Shrine
       end
 
       def open(id, *)
-        StringIO.new(store.fetch(id))
+        io = StringIO.new(store.fetch(id))
+        io.set_encoding(io.string.encoding) # Ruby 2.7.0 – https://bugs.ruby-lang.org/issues/16497
+        io
       rescue KeyError
         raise Shrine::FileNotFound, "file #{id.inspect} not found on storage"
       end
