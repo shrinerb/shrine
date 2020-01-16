@@ -11,19 +11,18 @@ describe Shrine::Storage::Memory do
     assert Shrine::Storage::Linter.call(@memory)
   end
 
-
   # work around apparent bug in ruby 2.7.0
   # https://bugs.ruby-lang.org/issues/16497
   it "preserves encoding despite Encoding.default_internal set" do
+    @memory.upload(fakeio("content".b), "key")
+
     begin
-      original = Encoding.default_internal
+      original_internal = Encoding.default_internal
       Encoding.default_internal = Encoding::UTF_8
 
-      binary_string = "\x99".force_encoding("ASCII-8BIT")
-      @memory.upload(StringIO.new(binary_string, "r:ASCII-8BIT"), "key")
-      assert_equal @memory.open("key").read.encoding, Encoding::BINARY
+      assert_equal Encoding::BINARY, @memory.open("key").read.encoding
     ensure
-      Encoding.default_internal = original
+      Encoding.default_internal = original_internal
     end
   end
 end
