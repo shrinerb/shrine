@@ -1,4 +1,4 @@
-## master (2020-01-16)
+## 2.19.4 (2020-01-16)
 
 * Relax Down version to allow 5.x (@janko)
 
