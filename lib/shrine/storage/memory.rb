@@ -12,11 +12,11 @@ class Shrine
         @store = store
       end
 
-      def upload(io, id, *)
+      def upload(io, id, **)
         store[id] = io.read
       end
 
-      def open(id, *)
+      def open(id, **)
         io = StringIO.new(store.fetch(id))
         io.set_encoding(io.string.encoding) # Ruby 2.7.0 – https://bugs.ruby-lang.org/issues/16497
         io

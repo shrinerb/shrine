@@ -11,6 +11,19 @@ describe Shrine::Storage::Memory do
     assert Shrine::Storage::Linter.call(@memory)
   end
 
+  describe "#upload" do
+    it "accepts keyword arguments" do
+      @memory.upload(fakeio, "key", foo: "bar")
+    end
+  end
+
+  describe "#open" do
+    it "accepts keyword arguments" do
+      @memory.upload(fakeio, "key")
+      @memory.open("key", foo: "bar")
+    end
+  end
+
   # work around apparent bug in ruby 2.7.0
   # https://bugs.ruby-lang.org/issues/16497
   it "preserves encoding despite Encoding.default_internal set" do
