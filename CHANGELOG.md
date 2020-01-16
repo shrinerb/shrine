@@ -1,3 +1,7 @@
+## master (2020-01-16)
+
+* Relax Down version to allow 5.x (@janko)
+
 ## 2.19.3 (2019-08-09)
 
 * `store_dimensions` – Ignore dimensions extraction errors by default (@janko)
