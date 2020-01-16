@@ -1,3 +1,7 @@
+## master
+
+* `memory` – Ensure `Memory#open` returns content in original encoding (@jrochkind)
+
 ## 3.2.1 (2020-01-12)
 
 * `derivation_endpoint` – Use `Rack::Files` constant on Rack >= 2.1 (@janko)
