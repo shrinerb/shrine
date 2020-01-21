@@ -27,6 +27,14 @@ describe Shrine::Storage::S3 do
       assert_equal client, @s3.client
       assert_equal client, @s3.bucket.client
     end
+
+    it "accepts encryption :client" do
+      encryption_client = Aws::S3::Encryption::Client.new(encryption_key: "a" * 32, stub_responses: true)
+      @s3 = s3(client: encryption_client)
+      assert_equal encryption_client,        @s3.encryption_client
+      assert_equal encryption_client.client, @s3.client
+      assert_equal encryption_client.client, @s3.bucket.client
+    end
   end
 
   describe "#client" do
@@ -229,6 +237,27 @@ describe Shrine::Storage::S3 do
       @s3.upload(fakeio, "foo", content_type: "foo/bar")
       assert_equal "foo/bar", @s3.client.api_requests[0][:params][:content_type]
     end
+
+    it "works with encryption client" do
+      @s3 = s3(
+        client: Aws::S3::Encryption::Client.new(encryption_key: "a" * 32, stub_responses: true), 
+        prefix: "prefix",
+        multipart_threshold: { upload: 1 }, # test that we're avoiding multipart uploads
+      )
+
+      @s3.upload(fakeio("file"), "foo", acl: "public-read")
+
+      assert_equal :put_object,     @s3.client.api_requests[0][:operation_name]
+      assert_equal @s3.bucket.name, @s3.client.api_requests[0][:params][:bucket]
+      assert_equal "prefix/foo",    @s3.client.api_requests[0][:params][:key]
+      assert_equal "public-read",   @s3.client.api_requests[0][:params][:acl]
+
+      @s3.client.stub_responses :get_object,
+        body:     @s3.client.api_requests[0][:params][:body].read,
+        metadata: @s3.client.api_requests[0][:params][:metadata].inject({}) { |h, (k, v)| h.merge(k => v.to_s) }
+
+      assert_equal "file", @s3.open("foo").read
+    end
   end
 
   describe "#open" do
@@ -277,6 +306,34 @@ describe Shrine::Storage::S3 do
     it "returns Shrine::FileNotFound when object was not found" do
       @s3.client.stub_responses(:get_object, "NoSuchKey")
       assert_raises(Shrine::FileNotFound) { @s3.open("nonexisting") }
+    end
+
+    it "works with encryption client" do
+      @s3 = s3(
+        client: Aws::S3::Encryption::Client.new(encryption_key: "a" * 32, stub_responses: true), 
+        prefix: "prefix",
+        multipart_threshold: { upload: 1 }, # test that we're avoiding multipart uploads
+      )
+
+      @s3.upload(fakeio("file"), "foo")
+
+      @s3.client.stub_responses :head_object, content_length: 4
+      @s3.client.stub_responses :get_object,
+        body:     @s3.client.api_requests[0][:params][:body].read,
+        metadata: @s3.client.api_requests[0][:params][:metadata].inject({}) { |h, (k, v)| h.merge(k => v.to_s) }
+
+      io = @s3.open("foo", response_content_disposition: "attachment")
+      assert_equal 4,      io.size
+      assert_equal "file", io.read
+
+      assert_equal :head_object,    @s3.client.api_requests[1][:operation_name]
+      assert_equal @s3.bucket.name, @s3.client.api_requests[1][:params][:bucket]
+      assert_equal "prefix/foo",    @s3.client.api_requests[1][:params][:key]
+
+      assert_equal :get_object,     @s3.client.api_requests[2][:operation_name]
+      assert_equal @s3.bucket.name, @s3.client.api_requests[2][:params][:bucket]
+      assert_equal "prefix/foo",    @s3.client.api_requests[2][:params][:key]
+      assert_equal "attachment",    @s3.client.api_requests[2][:params][:response_content_disposition]
     end
   end
 

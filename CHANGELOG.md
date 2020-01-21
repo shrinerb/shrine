@@ -1,5 +1,7 @@
 ## master
 
+* `s3` – Add back support for client-side encryption (@janko)
+
 * `memory` – Ensure `Memory#open` returns content in original encoding (@jrochkind)
 
 ## 3.2.1 (2020-01-12)

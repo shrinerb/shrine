@@ -103,7 +103,7 @@ class Shrine
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def open(id, rewindable: true, **options)
-        chunks, length = get_object(object(id), options)
+        chunks, length = get(id, **options)
 
         Down::ChunkedIO.new(chunks: chunks, rewindable: rewindable, size: length)
       rescue Aws::S3::Errors::NoSuchKey
@@ -212,7 +212,7 @@ class Shrine
 
       # Returns an `Aws::S3::Object` for the given id.
       def object(id)
-        bucket.object([*prefix, id].join("/"))
+        bucket.object(object_key(id))
       end
 
       private
@@ -280,9 +280,10 @@ class Shrine
       end
 
       # Aws::S3::Object#get doesn't allow us to get the content length of the
-      # object before the content is downloaded, so we hack our way around it.
-      def get_object(object, params)
-        req = client.build_request(:get_object, bucket: bucket.name, key: object.key, **params)
+      # object before all content is downloaded, so we hack our way around it.
+      # This way get the content length without an additional HEAD request.
+      def get(id, **params)
+        req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **params)
 
         body = req.enum_for(:send_request)
         begin
@@ -312,6 +313,49 @@ class Shrine
           bucket.delete_objects(delete: delete_params)
         end
       end
+
+      # Returns object key with potential prefix.
+      def object_key(id)
+        [*prefix, id].join("/")
+      end
+
+      # Adds support for Aws::S3::Encryption::Client.
+      module ClientSideEncryption
+        attr_reader :encryption_client
+
+        # Save the encryption client and continue initialization with normal
+        # client.
+        def initialize(client: nil, **options)
+          return super unless client.is_a?(Aws::S3::Encryption::Client)
+
+          super(client: client.client, **options)
+          @encryption_client = client
+        end
+
+        private
+
+        # Encryption client doesn't support multipart uploads, so we always use
+        # #put_object.
+        def put(io, id, **options)
+          return super unless encryption_client
+
+          encryption_client.put_object(body: io, bucket: bucket.name, key: object_key(id), **options)
+        end
+
+        # Encryption client doesn't implement #head_object, so we use regular
+        # client for that. We also need to actually call `#get_object` for the
+        # encryption client to add the decrypt handler.
+        def get(id, **options)
+          return super unless encryption_client
+
+          content_length = client.head_object(bucket: bucket.name, key: object_key(id)).content_length
+          chunks         = encryption_client.enum_for(:get_object, bucket: bucket.name, key: object_key(id), **options)
+
+          [chunks, content_length]
+        end
+      end
+
+      prepend ClientSideEncryption
     end
   end
 end
