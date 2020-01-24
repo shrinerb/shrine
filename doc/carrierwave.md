@@ -322,18 +322,21 @@ module CarrierwaveShrineSynchronization
 
   private
 
-  # If you'll be using `:prefix` on your Shrine storage, make sure to
-  # subtract it from the path assigned as `:id`.
   def shrine_file(uploader)
     name     = uploader.mounted_as
     filename = read_attribute(name)
-    path     = uploader.store_path(filename)
+    location = uploader.store_path(filename)
+    location = location.sub(%r{^#{storage.prefix}/}, "") if storage.prefix
 
     Shrine.uploaded_file(
       storage:  :store,
-      id:       path,
+      id:       location,
       metadata: { "filename" => filename },
     )
+  end
+
+  def storage
+    Shrine.storages[:store]
   end
 end
 ```

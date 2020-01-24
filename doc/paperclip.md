@@ -358,13 +358,14 @@ module PaperclipShrineSynchronization
     end
   end
 
-  # If you'll be using a `:prefix` on your Shrine storage, or you're storing
-  # files on the filesystem, make sure to subtract the appropriate part
-  # from the path assigned to `:id`.
   def shrine_attachment_file(attachment)
+    location = attachment.path
+    # if you're storing files on disk, make sure to subtract the absolute path
+    location = location.sub(%r{^#{storage.prefix}/}, "") if storage.prefix
+
     Shrine.uploaded_file(
       storage:  :store,
-      id:       attachment.path,
+      id:       location,
       metadata: {
         "size"      => attachment.size,
         "filename"  => attachment.original_filename,
@@ -377,11 +378,19 @@ module PaperclipShrineSynchronization
   # files on the filesystem, make sure to subtract the appropriate part
   # from the path assigned to `:id`.
   def shrine_style_file(style)
+    location = style.attachment.path(style.name)
+    # if you're storing files on disk, make sure to subtract the absolute path
+    location = location.sub(%r{^#{storage.prefix}/}, "") if storage.prefix
+
     Shrine.uploaded_file(
       storage:  :store,
-      id:       style.attachment.path(style.name),
+      id:       location,
       metadata: {},
     )
+  end
+
+  def storage
+    Shrine.storages[:store]
   end
 end
 ```
