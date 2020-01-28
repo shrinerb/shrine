@@ -135,9 +135,14 @@ class Shrine
       end
 
       error!(400, "Upload Not Found") if value.nil?
-      error!(400, "Upload Not Valid") unless value.is_a?(Hash) && value[:tempfile]
-
-      @shrine_class.rack_file(value)
+      
+	    if value.is_a?(Hash) && value[:tempfile]
+		    return @shrine_class.rack_file(value)
+	    elsif value.respond_to?(:read) && value.respond_to?(:rewind)  && value.respond_to?(:eof?) && value.respond_to?(:close)
+	    	return value
+	    else
+	   	  error!(400, "Upload Not Valid")
+      end
     end
 
     # Returns a hash of information containing `:action` and `:request`
