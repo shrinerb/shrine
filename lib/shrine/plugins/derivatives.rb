@@ -54,9 +54,9 @@ class Shrine
         #     end
         def derivatives_processor(name = :default, &block)
           if block
-            shrine_class.opts[:derivatives][:processors][name.to_sym] = block
+            shrine_class.derivatives_options[:processors][name.to_sym] = block
           else
-            processor   = shrine_class.opts[:derivatives][:processors][name.to_sym]
+            processor   = shrine_class.derivatives_options[:processors][name.to_sym]
             processor ||= NOOP_PROCESSOR if name == :default
 
             fail Error, "derivatives processor #{name.inspect} not registered" unless processor
@@ -79,9 +79,9 @@ class Shrine
         #     end
         def derivatives_storage(storage_key = nil, &block)
           if storage_key || block
-            shrine_class.opts[:derivatives][:storage] = storage_key || block
+            shrine_class.derivatives_options[:storage] = storage_key || block
           else
-            shrine_class.opts[:derivatives][:storage]
+            shrine_class.derivatives_options[:storage]
           end
         end
       end
@@ -147,6 +147,7 @@ class Shrine
         def promote(**options)
           super
           promote_derivatives
+          create_derivatives if create_derivatives_on_promote?
         end
 
         # Uploads any cached derivatives to permanent storage.
@@ -521,6 +522,11 @@ class Shrine
             o2
           end
         end
+
+        # Whether to automatically create derivatives on promotion
+        def create_derivatives_on_promote?
+          shrine_class.derivatives_options[:create_on_promote]
+        end
       end
 
       module ClassMethods
@@ -576,6 +582,11 @@ class Shrine
           else
             yield path, object
           end
+        end
+
+        # Returns derivatives plugin options.
+        def derivatives_options
+          opts[:derivatives]
         end
       end
 

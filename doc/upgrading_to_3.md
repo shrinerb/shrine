@@ -323,15 +323,17 @@ else
 end
 ```
 
-With `derivatives`, the original file is automatically downloaded and retained,
-so the processing code is much simpler:
+With `derivatives`, the original file is automatically downloaded and retained
+during processing, so the setup is simpler:
 
 ```rb
-Shrine.plugin :derivatives, versions_compatibility: true # handle versions column format
+Shrine.plugin :derivatives,
+  create_on_promote:      true, # automatically create derivatives on promotion
+  versions_compatibility: true  # handle versions column format
 ```
 ```rb
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     # the :original file should NOT be included anymore
@@ -343,32 +345,14 @@ class ImageUploader < Shrine
   end
 end
 ```
-
-However, you now need to trigger processing manually during attachment:
-
 ```rb
 photo = Photo.new(photo_params)
 
 if photo.valid?
-  photo.image_derivatives! if photo.image_changed? # create derivatives
-  photo.save
+  photo.save # creates derivatives on promotion
   # ...
 else
   # ...
-end
-```
-
-### Automatic processing
-
-If you prefer processing to happen automatically with promotion (like it did
-with the `versions` plugin), you can put the following in your initializer:
-
-```rb
-class Shrine::Attacher
-  def promote(*)
-    create_derivatives
-    super
-  end
 end
 ```
 
@@ -475,11 +459,11 @@ creating another derivatives processor that you will trigger in the controller:
 
 ```rb
 class ImageUploader < Shrine
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     # this will be triggered in the background job
   end
 
-  Attacher.derivatives_processor :foreground do |original|
+  Attacher.derivatives :foreground do |original|
     # this will be triggered in the controller
   end
 end
@@ -586,7 +570,7 @@ you should now add the processed file as a derivative:
 class MyUploader < Shrine
   plugin :derivatives
 
-  Attacher.derivatives_processor do |original|
+  Attacher.derivatives do |original|
     magick = ImageProcessing::MiniMagick.source(original)
 
     { normalized: magick.resize_to_limit!(1600, 1600) }

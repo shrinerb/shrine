@@ -350,6 +350,22 @@ describe Shrine::Plugins::Derivatives do
         assert_equal :store, @attacher.file.storage_key
         assert_equal :store, @attacher.derivatives[:one].storage_key
       end
+
+      it "creates derivatives when :create_on_promote is enabled" do
+        @attacher.class.derivatives { { one: StringIO.new } }
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote
+
+        assert_empty @attacher.derivatives
+
+        @shrine.plugin :derivatives, create_on_promote: true
+
+        @attacher.attach_cached(fakeio)
+        @attacher.promote
+
+        assert_instance_of @shrine::UploadedFile, @attacher.derivatives.fetch(:one)
+      end
     end
 
     describe "#promote_derivatives" do

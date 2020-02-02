@@ -554,7 +554,7 @@ creation:
 gem "image_processing", "~> 1.8"
 ```
 ```rb
-Shrine.plugin :derivatives
+Shrine.plugin :derivatives, create_on_promote: true
 ```
 ```rb
 require "image_processing/mini_magick"
@@ -573,11 +573,7 @@ end
 ```
 ```rb
 photo = Photo.new(image: file)
-
-if photo.valid?
-  photo.image_derivatives! if photo.image_changed? # create derivatives
-  photo.save
-end
+photo.save # automatically creates derivatives on promotion
 ```
 
 You can then retrieve the URL of a processed derivative:

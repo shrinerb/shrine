@@ -1,5 +1,7 @@
 ## master
 
+* `derivatives` – Add `:create_on_promote` option for auto-creating derivatives on promotion (@janko)
+
 * `s3` – Add back support for client-side encryption (@janko)
 
 * `memory` – Ensure `Memory#open` returns content in original encoding (@jrochkind)

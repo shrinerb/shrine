@@ -60,8 +60,11 @@ end
 ```
 ```rb
 photo = Photo.new(image: file)
-photo.image_derivatives! # calls derivatives processor
-photo.save
+
+if photo.valid?
+  photo.image_derivatives! if photo.image_changed? # creates derivatives
+  photo.save
+end
 ```
 
 After the processed files are uploaded, their data is saved into the

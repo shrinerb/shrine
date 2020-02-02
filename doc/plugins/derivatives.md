@@ -38,17 +38,9 @@ class ImageUploader < Shrine
 end
 ```
 ```rb
-class Photo < Model(:image_data)
-  include ImageUploader::Attachment(:image)
-end
-```
-```rb
 photo = Photo.new(image: file)
-
-if photo.valid?
-  photo.image_derivatives! if photo.image_changed? # create derivatives
-  photo.save
-end
+photo.image_derivatives! # creates derivatives
+photo.save
 ```
 
 You can then retrieve the URL of a processed derivative:
@@ -203,6 +195,19 @@ Any additional arguments are forwarded to
 ```rb
 attacher.create_derivatives(different_source) # pass a different source file
 attacher.create_derivatives(foo: "bar")       # pass custom options to the processor
+```
+
+### Create on promote
+
+You can also have derivatives created automatically on promotion:
+
+```rb
+Shrine.plugin :derivatives, create_on_promote: true
+```
+```rb
+attacher.assign(file)
+attacher.finalize # creates derivatives on promotion
+attacher.derivatives #=> { small: ..., medium: ..., large: ... }
 ```
 
 ### Naming processors
