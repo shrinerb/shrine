@@ -76,6 +76,7 @@ If you're using [Uppy], this is the recommended CORS configuration for the
     <AllowedHeader>x-amz-content-sha256</AllowedHeader>
     <AllowedHeader>content-type</AllowedHeader>
     <AllowedHeader>content-disposition</AllowedHeader>
+    <ExposeHeader>ETag</ExposeHeader>
   </CORSRule>
   <CORSRule>
     <AllowedOrigin>*</AllowedOrigin>
