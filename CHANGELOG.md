@@ -1,5 +1,7 @@
 ## master
 
+* `upload_endpoint` – Fix `Shrine.upload_response` not working in a Rails controller (@pldavid2)
+
 * `presign_endpoint` – Add `OPTIONS` route that newer versions of Uppy check (@janko)
 
 * `derivatives` – Add `:create_on_promote` option for auto-creating derivatives on promotion (@janko)
