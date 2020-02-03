@@ -81,9 +81,14 @@ class Shrine
 
       status, headers, body = catch(:halt) do
         error!(404, "Not Found") unless ["", "/"].include?(request.path_info)
-        error!(405, "Method Not Allowed") unless request.get?
 
-        handle_request(request)
+        if request.get?
+          handle_request(request)
+        elsif request.options?
+          handle_options_request(request)
+        else
+          error!(405, "Method Not Allowed")
+        end
       end
 
       headers["Content-Length"] ||= body.map(&:bytesize).inject(0, :+).to_s
@@ -107,6 +112,13 @@ class Shrine
       presign = generate_presign(location, options, request)
 
       make_response(presign, request)
+    end
+
+    # Uppy client sends an OPTIONS request to fetch information about the
+    # Uppy Companion. Since our Rack app is only acting as Uppy Companion, we
+    # just return a successful response.
+    def handle_options_request(request)
+      [200, {}, []]
     end
 
     # Generates the location using `Shrine#generate_uid`, and extracts the

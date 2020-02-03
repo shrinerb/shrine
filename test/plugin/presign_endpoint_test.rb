@@ -107,16 +107,24 @@ describe Shrine::Plugins::PresignEndpoint do
     assert_equal "image/jpeg", response.body_json["fields"]["Content-Type"]
   end
 
-  it "accepts only GET requests" do
-    response = app.put "/"
-    assert_equal 405, response.status
-    assert_equal "text/plain", response.headers["Content-Type"]
-    assert_equal "Method Not Allowed", response.body_binary
+  it "accepts OPTIONS request" do
+    response = app.options "/"
+
+    assert_equal 200,                           response.status
+    assert_equal Hash["Content-Length" => "0"], response.headers
+    assert_equal "",                            response.body_binary
   end
 
   it "accepts only root requests" do
     response = app.get "/presign"
     assert_equal 404, response.status
+  end
+
+  it "doesn't accept verbs other than GET or OPTIONS" do
+    response = app.put "/"
+    assert_equal 405, response.status
+    assert_equal "text/plain", response.headers["Content-Type"]
+    assert_equal "Method Not Allowed", response.body_binary
   end
 
   describe "Shrine.presign_response" do
