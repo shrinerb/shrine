@@ -51,6 +51,15 @@ describe Shrine::Plugins::UploadEndpoint do
     assert_equal "Too Many Files", response.body_binary
   end
 
+  it "accepts already wrapped uploaded file (Rails)" do
+    Rack::Request.any_instance.stubs(:params).returns({ "file" => fakeio("file") })
+
+    response = app.post "/", multipart: { file: image }
+
+    assert_equal 200,    response.status
+    assert_equal "file", @shrine.uploaded_file(response.body_json).read
+  end
+
   it "validates maximum size" do
     @shrine.plugin :upload_endpoint, max_size: 10
     response = app.post "/", multipart: { file: image }
