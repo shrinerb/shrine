@@ -87,6 +87,10 @@ class DownloadsController < ApplicationController
 end
 ```
 
+If you want to create an endpoint with a custom path, you can use the
+[`rack_response`][rack_response] plugin directly, which this plugin uses
+internally.
+
 ## Host
 
 You can specify download URL host via the `:host` plugin option:
@@ -155,11 +159,6 @@ You can override any of the options above when creating the endpoint:
 Shrine.download_endpoint(disposition: "attachment")
 ```
 
-## Custom endpoint
-
-If you want to have more control on download requests, you can use the
-`rack_response` plugin which this plugin uses internally.
-
 ## Plugin options
 
 | Name                | Description                                                                       | Default  |
@@ -171,3 +170,4 @@ If you want to have more control on download requests, you can use the
 | `:redirect`         | Whether to redirect to uploaded files on the storage                              | `false`  |
 
 [download_endpoint]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/download_endpoint.rb
+[rack_response]: https://shrinerb.com/docs/plugins/rack_response
