@@ -228,7 +228,7 @@ photos_attributes = album_params[:photos_attributes].to_h.merge(new_photos_attri
 album_attributes  = album_params.merge(photos_attributes: photos_attributes)
 
 # create the album with photos
-Album.create(album_params)
+Album.create(album_attributes)
 ```
 
 In this case you need to make sure your form tag has
