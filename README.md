@@ -127,6 +127,10 @@ system.
 * Refile
 * Active Storage
 
+## Contributing
+
+Please refer to the [contributing page][Contributing].
+
 ## Code of Conduct
 
 Everyone interacting in the Shrine project’s codebases, issue trackers, and
@@ -170,3 +174,4 @@ The gem is available as open source under the terms of the [MIT License].
 [Roda]: https://github.com/jeremyevans/roda
 [CoC]: /CODE_OF_CONDUCT.md
 [MIT License]: /LICENSE.txt
+[Contributing]: https://github.com/shrinerb/shrine/blob/master/CONTRIBUTING.md
