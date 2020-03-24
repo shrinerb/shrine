@@ -12,7 +12,7 @@ Example:
 plugin :dynamic_storage
 
 storage /store_(\w+)/ do |match|
-  Shrine::Storages::S3.new(bucket: match[1])
+  Shrine::Storage::S3.new(bucket: match[1])
 end
 ```
 
