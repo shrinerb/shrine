@@ -41,6 +41,7 @@ The test suite requires that you have the following installed:
 
 * [libmagic]
 * [SQLite]
+* [libvips] - please download the appropriate package suiting your operating system.
 
 If you're using Homebrew, you can just run `brew bundle`. The test suite is
 best run using Rake:
@@ -125,6 +126,7 @@ post = Post.create(image: Down.download("https://example.com/image-from-internet
 [forum]: https://discourse.shrinerb.com
 [Shrine code of conduct]: https://github.com/shrinerb/shrine/blob/master/CODE_OF_CONDUCT.md
 [libmagic]: https://github.com/threatstack/libmagic
+[libvips]: https://github.com/libvips/libvips/wiki
 [SQLite]: https://www.sqlite.org
 [Design of Shrine]: /doc/design.md#readme
 [Creating a New Plugin]: /doc/creating_plugins.md#readme
