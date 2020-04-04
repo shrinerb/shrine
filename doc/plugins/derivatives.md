@@ -2,7 +2,7 @@
 title: Derivatives
 ---
 
-The derivatives plugin allows storing processed files ("derivatives") alongside
+The [`derivatives`][derivatives] plugin allows storing processed files ("derivatives") alongside
 the main attached file. The processed file data will be saved together with the
 main attachment data in the same record attribute.
 
@@ -798,6 +798,7 @@ Or disable logging altogether:
 plugin :derivatives, log_subscriber: nil
 ```
 
+[derivatives]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/derivatives.rb
 [default_url]: https://shrinerb.com/docs/plugins/default_url
 [entity]: https://shrinerb.com/docs/plugins/entity
 [model]: https://shrinerb.com/docs/plugins/model
