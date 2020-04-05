@@ -899,7 +899,7 @@ resumable uploads from scratch, it includes a complete JavaScript example
 
 ## Backgrounding
 
-The [`backgrounding`][backgrounding plugin] allows you to move file promotion
+The [`backgrounding`][backgrounding plugin] plugin allows you to move file promotion
 and deletion into a background job, using the backgrounding library [of your
 choice][Backgrounding Libraries]:
 
