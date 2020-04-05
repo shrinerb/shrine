@@ -707,7 +707,7 @@ photo/
 ...
 ```
 
-Buy you can also override `Shrine#generate_location` with a custom
+But you can also override `Shrine#generate_location` with a custom
 implementation, for example:
 
 ```rb
