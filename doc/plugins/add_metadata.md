@@ -34,6 +34,24 @@ uploaded_file.metadata["page_count"] #=> 30
 uploaded_file.page_count #=> 30
 ```
 
+By default, if your block returns `nil` then the `nil` value will be stored into
+metadata. If you do not want to store anything when your block returns nil, you
+can use the `skip_nil: true` option:
+
+```rb
+class PdfUploader < Shrine
+  add_metadata :pages, skip_nil: true do |io|
+    if is_pdf?(io)
+      reader = PDF::Reader.new(io)
+      reader.page_count
+    else
+      # If this is not a PDF, then the pages metadata will not be stored
+      nil
+    end
+  end
+end
+```
+
 ### Multiple values
 
 You can also extract multiple metadata values at once, by using `add_metadata`
