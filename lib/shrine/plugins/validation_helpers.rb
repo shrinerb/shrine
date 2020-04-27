@@ -5,18 +5,19 @@ class Shrine
     # Documentation can be found on https://shrinerb.com/docs/plugins/validation_helpers
     module ValidationHelpers
       DEFAULT_MESSAGES = {
-        max_size:            -> (max)  { "size must not be greater than #{PRETTY_FILESIZE.call(max)}" },
-        min_size:            -> (min)  { "size must not be less than #{PRETTY_FILESIZE.call(min)}" },
-        max_width:           -> (max)  { "width must not be greater than #{max}px" },
-        min_width:           -> (min)  { "width must not be less than #{min}px" },
-        max_height:          -> (max)  { "height must not be greater than #{max}px" },
-        min_height:          -> (min)  { "height must not be less than #{min}px" },
-        max_dimensions:      -> (dims) { "dimensions must not be greater than #{dims.join("x")}" },
-        min_dimensions:      -> (dims) { "dimensions must not be less than #{dims.join("x")}" },
-        mime_type_inclusion: -> (list) { "type must be one of: #{list.join(", ")}" },
-        mime_type_exclusion: -> (list) { "type must not be one of: #{list.join(", ")}" },
-        extension_inclusion: -> (list) { "extension must be one of: #{list.join(", ")}" },
-        extension_exclusion: -> (list) { "extension must not be one of: #{list.join(", ")}" },
+        max_size:            -> (max)    { "size must not be greater than #{PRETTY_FILESIZE.call(max)}" },
+        min_size:            -> (min)    { "size must not be less than #{PRETTY_FILESIZE.call(min)}" },
+        max_width:           -> (max)    { "width must not be greater than #{max}px" },
+        min_width:           -> (min)    { "width must not be less than #{min}px" },
+        max_height:          -> (max)    { "height must not be greater than #{max}px" },
+        min_height:          -> (min)    { "height must not be less than #{min}px" },
+        max_dimensions:      -> (dims)   { "dimensions must not be greater than #{dims.join("x")}" },
+        min_dimensions:      -> (dims)   { "dimensions must not be less than #{dims.join("x")}" },
+        mime_type_inclusion: -> (list)   { "type must be one of: #{list.join(", ")}" },
+        mime_type_exclusion: -> (list)   { "type must not be one of: #{list.join(", ")}" },
+        mime_type_format:    -> (format) { "type must match #{format.inspect}" },
+        extension_inclusion: -> (list)   { "extension must be one of: #{list.join(", ")}" },
+        extension_exclusion: -> (list)   { "extension must not be one of: #{list.join(", ")}" },
       }.freeze
 
       FILESIZE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"].freeze
@@ -185,6 +186,17 @@ class Shrine
           validate_result(
             !types.include?(file.mime_type),
             :mime_type_exclusion, message, types
+          )
+        end
+
+        # Validates that the `mime_type` metadata match the regular
+        # expression.
+        #
+        #     validate_mime_type_format %r[\Aimage\/.+\z]
+        def validate_mime_type_format(format, message: nil)
+          validate_result(
+            format.match(file.mime_type),
+            :mime_type_format, message, format
           )
         end
 

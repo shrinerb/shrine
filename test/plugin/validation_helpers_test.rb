@@ -722,6 +722,50 @@ describe Shrine::Plugins::ValidationHelpers do
     end
   end
 
+  describe "#validate_mime_type_format" do
+    before do
+      @attacher.attach(fakeio(content_type: "image/jpeg"))
+    end
+
+    it "adds an error when mime_type does not match with format" do
+      @attacher.class.validate { validate_mime_type_format(%r[\Aimage\/.+\z]) }
+      @attacher.validate
+      assert_equal 0, @attacher.errors.size
+
+      @attacher.class.validate { validate_mime_type_format(%r[\Avideo\/.+\z]) }
+      @attacher.validate
+      assert_equal 1, @attacher.errors.size
+    end
+
+    it "uses the default error message" do
+      @attacher.class.validate { validate_mime_type_format(%r[\Avideo\/.+\z]) }
+      @attacher.validate
+      assert_equal ["type must match /\\Avideo\\/.+\\z/"], @attacher.errors
+    end
+
+    it "accepts a custom error message" do
+      @attacher.class.validate { validate_mime_type_format(%r[\Avideo\/.+\z], message: "must be a video") }
+      @attacher.validate
+      assert_equal ["must be a video"], @attacher.errors
+
+      @attacher.class.validate { validate_mime_type_format(%r[\Avideo\/.+\z], message: -> (format){"must be a #{format}"}) }
+      @attacher.validate
+      assert_equal ["must be a (?-mix:\\Avideo\\/.+\\z)"], @attacher.errors
+    end
+
+    it "returns whether the validation succeeded" do
+      validation_passed = nil
+
+      @attacher.class.validate { validation_passed = validate_mime_type_format(%r[\Aimage\/.+\z]) }
+      @attacher.validate
+      assert_equal true, validation_passed
+
+      @attacher.class.validate { validation_passed = validate_mime_type_format(%r[\Avideo\/.+\z]) }
+      @attacher.validate
+      assert_equal false, validation_passed
+    end
+  end
+
   describe "#validate_extension_inclusion" do
     before do
       @attacher.attach(fakeio(filename: "image.jpg"))

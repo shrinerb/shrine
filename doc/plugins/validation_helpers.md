@@ -48,6 +48,13 @@ validate_mime_type_exclusion %w[application/x-php]               # file must not
 Instead of `#validate_mime_type_inclusion` you can also use just
 `#validate_mime_type`.
 
+The `#validate_mime_type_format` method accepts a format of MIME type, and
+validate that the `mime_type` metadata value match that format.
+
+```rb
+validate_mime_type_format %r[\Aimage\/.+\z] # file must be a image
+```
+
 ### File extension
 
 The `#validate_extension_inclusion`/`#validation_extension_exclusion` methods
@@ -149,18 +156,19 @@ the `:default_messages` option to the plugin:
 
 ```rb
 plugin :validation_helpers, default_messages: {
-  max_size:            -> (max)  { I18n.t("errors.file.max_size", max: max) },
-  min_size:            -> (min)  { I18n.t("errors.file.min_size", min: min) },
-  max_width:           -> (max)  { I18n.t("errors.file.max_width", max: max) },
-  min_width:           -> (min)  { I18n.t("errors.file.min_width", min: min) },
-  max_height:          -> (max)  { I18n.t("errors.file.max_height", max: max) },
-  min_height:          -> (min)  { I18n.t("errors.file.min_height", min: min) },
-  max_dimensions:      -> (dims) { I18n.t("errors.file.max_dimensions", dims: dims) },
-  min_dimensions:      -> (dims) { I18n.t("errors.file.min_dimensions", dims: dims) },
-  mime_type_inclusion: -> (list) { I18n.t("errors.file.mime_type_inclusion", list: list) },
-  mime_type_exclusion: -> (list) { I18n.t("errors.file.mime_type_exclusion", list: list) },
-  extension_inclusion: -> (list) { I18n.t("errors.file.extension_inclusion", list: list) },
-  extension_exclusion: -> (list) { I18n.t("errors.file.extension_exclusion", list: list) },
+  max_size:            -> (max)    { I18n.t("errors.file.max_size", max: max) },
+  min_size:            -> (min)    { I18n.t("errors.file.min_size", min: min) },
+  max_width:           -> (max)    { I18n.t("errors.file.max_width", max: max) },
+  min_width:           -> (min)    { I18n.t("errors.file.min_width", min: min) },
+  max_height:          -> (max)    { I18n.t("errors.file.max_height", max: max) },
+  min_height:          -> (min)    { I18n.t("errors.file.min_height", min: min) },
+  max_dimensions:      -> (dims)   { I18n.t("errors.file.max_dimensions", dims: dims) },
+  min_dimensions:      -> (dims)   { I18n.t("errors.file.min_dimensions", dims: dims) },
+  mime_type_inclusion: -> (list)   { I18n.t("errors.file.mime_type_inclusion", list: list) },
+  mime_type_exclusion: -> (list)   { I18n.t("errors.file.mime_type_exclusion", list: list) },
+  mime_type_format:    -> (format) { "type must match #{format.inspect}" },
+  extension_inclusion: -> (list)   { I18n.t("errors.file.extension_inclusion", list: list) },
+  extension_exclusion: -> (list)   { I18n.t("errors.file.extension_exclusion", list: list) },
 }
 ```
 
