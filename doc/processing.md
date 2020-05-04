@@ -471,15 +471,11 @@ end
 ### Automatic derivatives
 
 If you would like derivatives to be automatically created with promotion, you
-can override `Attacher#promote` for call `Attacher#create_derivatives` before
-promotion:
+can use the `create_on_promote` option built-in to the derivatives plugin.
 
 ```rb
 class Shrine::Attacher
-  def promote(*)
-    create_derivatives
-    super
-  end
+  plugin :derivatives, create_on_promote: true
 end
 ```
 
