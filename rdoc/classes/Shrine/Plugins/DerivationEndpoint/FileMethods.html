@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::DerivationEndpoint::FileMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::DerivationEndpoint::FileMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/derivation_endpoint_rb.html">lib/shrine/plugins/derivation_endpoint.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-derivation">derivation</a></li>
+<li><a href="#method-i-derivation_response">derivation_response</a></li>
+<li><a href="#method-i-derivation_url">derivation_url</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-derivation'>
+<a name='method-i-derivation'></a>
+<div class='synopsis'>
+<span class='name'>derivation</span>
+<span class='arguments'>(name, *args, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns a <a href="../../Derivation.html"><code>Shrine::Derivation</code></a> object created from the provided arguments. This object offers additional methods for operating with derivatives on a lower level.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-derivation-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">104</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">105</span>   <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">Derivation</span>.<span class="ruby-identifier">new</span>(&#x000A;<span class="line-num">106</span>     <span class="ruby-value">name:</span>    <span class="ruby-identifier">name</span>,&#x000A;<span class="line-num">107</span>     <span class="ruby-value">args:</span>    <span class="ruby-identifier">args</span>,&#x000A;<span class="line-num">108</span>     <span class="ruby-value">source:</span>  <span class="ruby-keyword">self</span>,&#x000A;<span class="line-num">109</span>     <span class="ruby-value">options:</span> <span class="ruby-identifier">options</span>,&#x000A;<span class="line-num">110</span>   )&#x000A;<span class="line-num">111</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-derivation_response'>
+<a name='method-i-derivation_response'></a>
+<div class='synopsis'>
+<span class='name'>derivation_response</span>
+<span class='arguments'>(name, *args, env:, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Calls the specified derivation with the receiver as the source file, returning a Rack response triple. The derivation endpoint ultimately calls this method.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation_response-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-derivation_response-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">97</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_response</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-value">env:</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">98</span>   <span class="ruby-identifier">derivation</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>).<span class="ruby-identifier">response</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">99</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-derivation_url'>
+<a name='method-i-derivation_url'></a>
+<div class='synopsis'>
+<span class='name'>derivation_url</span>
+<span class='arguments'>(name, *args, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Generates a URL to a derivation with the receiver as the source file. Any arguments provided will be included in the URL and passed to the derivation block. Accepts additional URL options.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivation_url-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-derivation_url-source'>   <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">90</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivation_url</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">91</span>   <span class="ruby-identifier">derivation</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>).<span class="ruby-identifier">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">92</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

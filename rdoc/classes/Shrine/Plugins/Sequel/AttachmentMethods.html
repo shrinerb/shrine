@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::Sequel::AttachmentMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Sequel::AttachmentMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/sequel_rb.html">lib/shrine/plugins/sequel.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-included">included</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-included'>
+<a name='method-i-included'></a>
+<div class='synopsis'>
+<span class='name'>included</span>
+<span class='arguments'>(model)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-included-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-included-source'>   <span class="ruby-comment"># File lib/shrine/plugins/sequel.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">included</span>(<span class="ruby-identifier">model</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">27</span> &#x000A;<span class="line-num">28</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">model</span> <span class="ruby-operator">&lt;</span> <span class="ruby-operator">::</span><span class="ruby-constant">Sequel</span><span class="ruby-operator">::</span><span class="ruby-constant">Model</span>&#x000A;<span class="line-num">29</span> &#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">name</span> = <span class="ruby-ivar">@name</span>&#x000A;<span class="line-num">31</span> &#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:sequel</span>][<span class="ruby-value">:validations</span>]&#x000A;<span class="line-num">33</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:validate</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">34</span>       <span class="ruby-keyword">super</span>()&#x000A;<span class="line-num">35</span>       <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">send</span>(<span class="ruby-value">:sequel_validate</span>)&#x000A;<span class="line-num">36</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">37</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">38</span> &#x000A;<span class="line-num">39</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:sequel</span>][<span class="ruby-value">:hooks</span>]&#x000A;<span class="line-num">40</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:before_save</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">41</span>       <span class="ruby-keyword">super</span>()&#x000A;<span class="line-num">42</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">changed?</span>&#x000A;<span class="line-num">43</span>         <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">send</span>(<span class="ruby-value">:sequel_before_save</span>)&#x000A;<span class="line-num">44</span>       <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">45</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">46</span> &#x000A;<span class="line-num">47</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:after_save</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">48</span>       <span class="ruby-keyword">super</span>()&#x000A;<span class="line-num">49</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">changed?</span>&#x000A;<span class="line-num">50</span>         <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">send</span>(<span class="ruby-value">:sequel_after_save</span>)&#x000A;<span class="line-num">51</span>       <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">52</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">53</span> &#x000A;<span class="line-num">54</span>     <span class="ruby-identifier">define_method</span> <span class="ruby-value">:after_destroy</span> <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">55</span>       <span class="ruby-keyword">super</span>()&#x000A;<span class="line-num">56</span>       <span class="ruby-keyword">if</span> <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">attached?</span>&#x000A;<span class="line-num">57</span>         <span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{name}_attacher&quot;</span>).<span class="ruby-identifier">send</span>(<span class="ruby-value">:sequel_after_destroy</span>)&#x000A;<span class="line-num">58</span>       <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">59</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">60</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">61</span> &#x000A;<span class="line-num">62</span>   <span class="ruby-comment"># reload the attacher on record reload</span>&#x000A;<span class="line-num">63</span>   <span class="ruby-identifier">define_method</span> <span class="ruby-value">:_refresh</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">*</span><span class="ruby-identifier">args</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">64</span>     <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="line-num">65</span>     <span class="ruby-identifier">instance_variable_set</span>(<span class="ruby-value">:&quot;@#{name}_attacher&quot;</span>, <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">66</span>     <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">67</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">68</span>   <span class="ruby-identifier">private</span> <span class="ruby-value">:_refresh</span>&#x000A;<span class="line-num">69</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

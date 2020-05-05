@@ -1,0 +1,5 @@
+website/
+Gemfile.lock
+pkg/
+coverage/
+demo/

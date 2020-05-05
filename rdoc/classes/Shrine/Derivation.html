@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Derivation</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+Shrine::Derivation
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../files/lib/shrine/plugins/derivation_endpoint_rb.html">lib/shrine/plugins/derivation_endpoint.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-new">new</a></li>
+<li><a href="#method-c-option">option</a></li>
+<li><a href="#method-c-options">options</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#attribute-i-args">args</a></li>
+<li><a href="#method-i-delete">delete</a></li>
+<li><a href="#method-i-generate">generate</a></li>
+<li><a href="#attribute-i-name">name</a></li>
+<li><a href="#method-i-opened">opened</a></li>
+<li><a href="#method-i-option">option</a></li>
+<li><a href="#attribute-i-options">options</a></li>
+<li><a href="#method-i-processed">processed</a></li>
+<li><a href="#method-i-response">response</a></li>
+<li><a href="#method-i-retrieve">retrieve</a></li>
+<li><a href="#method-i-shrine_class">shrine_class</a></li>
+<li><a href="#attribute-i-source">source</a></li>
+<li><a href="#method-i-upload">upload</a></li>
+<li><a href="#method-i-url">url</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='class-list'>
+<h2>Classes and Modules</h2>
+<ol>
+<li><a href="Derivation/Command.html">Shrine::Derivation::Command</a></li>
+<li><a href="Derivation/Delete.html">Shrine::Derivation::Delete</a></li>
+<li><a href="Derivation/Generate.html">Shrine::Derivation::Generate</a></li>
+<li><a href="Derivation/NotFound.html">Shrine::Derivation::NotFound</a></li>
+<li><a href="Derivation/Opened.html">Shrine::Derivation::Opened</a></li>
+<li><a href="Derivation/Processed.html">Shrine::Derivation::Processed</a></li>
+<li><a href="Derivation/Response.html">Shrine::Derivation::Response</a></li>
+<li><a href="Derivation/Retrieve.html">Shrine::Derivation::Retrieve</a></li>
+<li><a href="Derivation/SourceNotFound.html">Shrine::Derivation::SourceNotFound</a></li>
+<li><a href="Derivation/Upload.html">Shrine::Derivation::Upload</a></li>
+<li><a href="Derivation/Url.html">Shrine::Derivation::Url</a></li>
+</ol>
+</div>
+<div id='section'>
+<div id='attribute-list'>
+<h2 class='section-bar'>Attributes</h2>
+<div class='name-list'>
+<table>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-args'>args</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-name'>name</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-options'>options</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-source'>source</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span>
+<span class='arguments'>(name:, args:, source:, options:)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">124</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">name:</span>, <span class="ruby-value">args:</span>, <span class="ruby-value">source:</span>, <span class="ruby-value">options:</span>)&#x000A;<span class="line-num">125</span>   <span class="ruby-ivar">@name</span>    = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>&#x000A;<span class="line-num">126</span>   <span class="ruby-ivar">@args</span>    = <span class="ruby-identifier">args</span>&#x000A;<span class="line-num">127</span>   <span class="ruby-ivar">@source</span>  = <span class="ruby-identifier">source</span>&#x000A;<span class="line-num">128</span>   <span class="ruby-ivar">@options</span> = <span class="ruby-identifier">options</span>&#x000A;<span class="line-num">129</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-option'>
+<a name='method-c-option'></a>
+<div class='synopsis'>
+<span class='name'>option</span>
+<span class='arguments'>(name, default: nil, result: nil)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-option-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-option-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">186</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">option</span>(<span class="ruby-identifier">name</span>, <span class="ruby-value">default:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">result:</span> <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">187</span>   <span class="ruby-identifier">options</span>[<span class="ruby-identifier">name</span>] = { <span class="ruby-value">default:</span> <span class="ruby-identifier">default</span>, <span class="ruby-value">result:</span> <span class="ruby-identifier">result</span> }&#x000A;<span class="line-num">188</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-class' id='method-method-c-options'>
+<a name='method-c-options'></a>
+<div class='synopsis'>
+<span class='name'>options</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-options-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-options-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">182</span> <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier ruby-title">options</span>&#x000A;<span class="line-num">183</span>   <span class="ruby-ivar">@options</span> <span class="ruby-operator">||=</span> {}&#x000A;<span class="line-num">184</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-delete'>
+<a name='method-i-delete'></a>
+<div class='synopsis'>
+<span class='name'>delete</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Deletes the derivation result from the storage.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">178</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>&#x000A;<span class="line-num">179</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Delete</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>&#x000A;<span class="line-num">180</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-generate'>
+<a name='method-i-generate'></a>
+<div class='synopsis'>
+<span class='name'>generate</span>
+<span class='arguments'>(file = nil)</span>
+
+</div>
+<div class='description'>
+
+<p>Calls the derivation block and returns the direct result.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-generate-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-generate-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">155</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">generate</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">nil</span>)&#x000A;<span class="line-num">156</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Generate</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">157</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-opened'>
+<a name='method-i-opened'></a>
+<div class='synopsis'>
+<span class='name'>opened</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns opened <a href="UploadedFile.html"><code>Shrine::UploadedFile</code></a> object pointing to the uploaded derivative if it exists.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-opened-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-opened-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">173</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">opened</span>&#x000A;<span class="line-num">174</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Opened</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>&#x000A;<span class="line-num">175</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-option'>
+<a name='method-i-option'></a>
+<div class='synopsis'>
+<span class='name'>option</span>
+<span class='arguments'>(name)</span>
+
+</div>
+<div class='description'>
+
+<p>Retrieves the value of a derivation option.</p>
+<ul><li>
+<p>If specified as a raw value, returns that value</p>
+</li><li>
+<p>If specified as a block, evaluates that it and returns the result</p>
+</li><li>
+<p>If unspecified, returns the default value</p>
+</li></ul>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-option-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-option-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">215</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">option</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">216</span>   <span class="ruby-identifier">option_definition</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">options</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">217</span> &#x000A;<span class="line-num">218</span>   <span class="ruby-identifier">value</span> = <span class="ruby-identifier">options</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">name</span>) { <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">derivation_options</span>[<span class="ruby-identifier">name</span>] }&#x000A;<span class="line-num">219</span>   <span class="ruby-identifier">value</span> = <span class="ruby-identifier">instance_exec</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">value</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Proc</span>)&#x000A;<span class="line-num">220</span> &#x000A;<span class="line-num">221</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">222</span>     <span class="ruby-identifier">default</span> = <span class="ruby-identifier">option_definition</span>[<span class="ruby-value">:default</span>]&#x000A;<span class="line-num">223</span>     <span class="ruby-identifier">value</span>   = <span class="ruby-identifier">instance_exec</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">default</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">default</span>&#x000A;<span class="line-num">224</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">225</span> &#x000A;<span class="line-num">226</span>   <span class="ruby-identifier">result</span> = <span class="ruby-identifier">option_definition</span>[<span class="ruby-value">:result</span>]&#x000A;<span class="line-num">227</span>   <span class="ruby-identifier">value</span>  = <span class="ruby-identifier">instance_exec</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">result</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">228</span> &#x000A;<span class="line-num">229</span>   <span class="ruby-identifier">value</span>&#x000A;<span class="line-num">230</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-processed'>
+<a name='method-i-processed'></a>
+<div class='synopsis'>
+<span class='name'>processed</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns the derivation result as a File/Tempfile or a <a href="UploadedFile.html"><code>Shrine::UploadedFile</code></a> object.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-processed-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-processed-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">150</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">processed</span>&#x000A;<span class="line-num">151</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Processed</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>&#x000A;<span class="line-num">152</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-response'>
+<a name='method-i-response'></a>
+<div class='synopsis'>
+<span class='name'>response</span>
+<span class='arguments'>(env)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns the derivation result in form of a Rack response triple.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-response-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-response-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">144</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">response</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">145</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Response</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">env</span>)&#x000A;<span class="line-num">146</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-retrieve'>
+<a name='method-i-retrieve'></a>
+<div class='synopsis'>
+<span class='name'>retrieve</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Returns a <a href="UploadedFile.html"><code>Shrine::UploadedFile</code></a> object pointing to the uploaded derivative if it exists.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-retrieve-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-retrieve-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">167</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">retrieve</span>&#x000A;<span class="line-num">168</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Retrieve</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>&#x000A;<span class="line-num">169</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-shrine_class'>
+<a name='method-i-shrine_class'></a>
+<div class='synopsis'>
+<span class='name'>shrine_class</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-shrine_class-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-shrine_class-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">232</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">shrine_class</span>&#x000A;<span class="line-num">233</span>   <span class="ruby-identifier">source</span>.<span class="ruby-identifier">shrine_class</span>&#x000A;<span class="line-num">234</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-upload'>
+<a name='method-i-upload'></a>
+<div class='synopsis'>
+<span class='name'>upload</span>
+<span class='arguments'>(file = nil, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Uploads the derivation result to a dedicated destination on the specified <a href="../Shrine.html"><code>Shrine</code></a> storage.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-upload-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">161</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">file</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">162</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Upload</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(<span class="ruby-identifier">file</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">163</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-url'>
+<a name='method-i-url'></a>
+<div class='synopsis'>
+<span class='name'>url</span>
+<span class='arguments'>(**options)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns an URL to the derivation.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-url-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-url-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivation_endpoint.rb</span>&#x000A;<span class="line-num">132</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">133</span>   <span class="ruby-constant">Derivation</span><span class="ruby-operator">::</span><span class="ruby-constant">Url</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword">self</span>).<span class="ruby-identifier">call</span>(&#x000A;<span class="line-num">134</span>     <span class="ruby-value">host:</span>       <span class="ruby-identifier">option</span>(<span class="ruby-value">:host</span>),&#x000A;<span class="line-num">135</span>     <span class="ruby-value">prefix:</span>     <span class="ruby-identifier">option</span>(<span class="ruby-value">:prefix</span>),&#x000A;<span class="line-num">136</span>     <span class="ruby-value">expires_in:</span> <span class="ruby-identifier">option</span>(<span class="ruby-value">:expires_in</span>),&#x000A;<span class="line-num">137</span>     <span class="ruby-value">version:</span>    <span class="ruby-identifier">option</span>(<span class="ruby-value">:version</span>),&#x000A;<span class="line-num">138</span>     <span class="ruby-value">metadata:</span>   <span class="ruby-identifier">option</span>(<span class="ruby-value">:metadata</span>),&#x000A;<span class="line-num">139</span>     <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>,&#x000A;<span class="line-num">140</span>   )&#x000A;<span class="line-num">141</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::Derivatives::ClassMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Derivatives::ClassMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/derivatives_rb.html">lib/shrine/plugins/derivatives.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-derivatives">derivatives</a></li>
+<li><a href="#method-i-map_derivative">map_derivative</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-derivatives'>
+<a name='method-i-derivatives'></a>
+<div class='synopsis'>
+<span class='name'>derivatives</span>
+<span class='arguments'>(object)</span>
+
+</div>
+<div class='description'>
+
+<p>Converts data into a Hash of derivatives.</p>
+
+<pre class="ruby"><span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">derivatives</span>(<span class="ruby-string">&#39;{&quot;thumb&quot;:{&quot;id&quot;:&quot;foo&quot;,&quot;storage&quot;:&quot;store&quot;,&quot;metadata&quot;:{}}}&#39;</span>)&#x000A;<span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile id=&quot;foo&quot; storage=:store metadata={}&gt; }</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">derivatives</span>({ <span class="ruby-string">&quot;thumb&quot;</span> <span class="ruby-operator">=&gt;</span> { <span class="ruby-string">&quot;id&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-string">&quot;storage&quot;</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-string">&quot;metadata&quot;</span> <span class="ruby-operator">=&gt;</span> {} } })&#x000A;<span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile id=&quot;foo&quot; storage=:store metadata={}&gt; }</span>&#x000A;&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">derivatives</span>({ <span class="ruby-value">thumb:</span> { <span class="ruby-value">id:</span> <span class="ruby-string">&quot;foo&quot;</span>, <span class="ruby-value">storage:</span> <span class="ruby-string">&quot;store&quot;</span>, <span class="ruby-value">metadata:</span> {} } })&#x000A;<span class="ruby-comment">#=&gt; { thumb: #&lt;Shrine::UploadedFile id=&quot;foo&quot; storage=:store metadata={}&gt; }</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-derivatives-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-derivatives-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>&#x000A;<span class="line-num">537</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">derivatives</span>(<span class="ruby-identifier">object</span>)&#x000A;<span class="line-num">538</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)&#x000A;<span class="line-num">539</span>     <span class="ruby-identifier">derivatives</span> <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">object</span>)&#x000A;<span class="line-num">540</span>   <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">||</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)&#x000A;<span class="line-num">541</span>     <span class="ruby-identifier">map_derivative</span>(&#x000A;<span class="line-num">542</span>       <span class="ruby-identifier">object</span>,&#x000A;<span class="line-num">543</span>       <span class="ruby-value">transform_keys:</span> <span class="ruby-value">:to_sym</span>,&#x000A;<span class="line-num">544</span>       <span class="ruby-value">leaf:</span> <span class="ruby-operator">-&gt;</span> (<span class="ruby-identifier">value</span>) { <span class="ruby-identifier">value</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>) <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">value</span>[<span class="ruby-string">&quot;id&quot;</span>] <span class="ruby-operator">||</span> <span class="ruby-identifier">value</span>[<span class="ruby-value">:id</span>]).<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>) },&#x000A;<span class="line-num">545</span>     ) { <span class="ruby-operator">|</span><span class="ruby-identifier">_</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">uploaded_file</span>(<span class="ruby-identifier">value</span>) }&#x000A;<span class="line-num">546</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">547</span>     <span class="ruby-identifier">fail</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;cannot convert #{object.inspect} to derivatives&quot;</span>&#x000A;<span class="line-num">548</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">549</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-map_derivative'>
+<a name='method-i-map_derivative'></a>
+<div class='synopsis'>
+<span class='name'>map_derivative</span>
+<span class='arguments'>(object, path = [], transform_keys: :to_sym, leaf: nil, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Iterates over a nested collection, yielding on each part of the path. If the block returns a truthy value, that branch is terminated</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-map_derivative-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-map_derivative-source'>    <span class="ruby-comment"># File lib/shrine/plugins/derivatives.rb</span>&#x000A;<span class="line-num">553</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">map_derivative</span>(<span class="ruby-identifier">object</span>, <span class="ruby-identifier">path</span> = [], <span class="ruby-value">transform_keys:</span> <span class="ruby-value">:to_sym</span>, <span class="ruby-value">leaf:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">554</span>   <span class="ruby-keyword">return</span> <span class="ruby-identifier">enum_for</span>(<span class="ruby-identifier">__method__</span>, <span class="ruby-identifier">object</span>) <span class="ruby-keyword">unless</span> <span class="ruby-identifier">block_given?</span>&#x000A;<span class="line-num">555</span> &#x000A;<span class="line-num">556</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">leaf</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">leaf</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">object</span>)&#x000A;<span class="line-num">557</span>     <span class="ruby-keyword">yield</span> <span class="ruby-identifier">path</span>, <span class="ruby-identifier">object</span>&#x000A;<span class="line-num">558</span>   <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Hash</span>)&#x000A;<span class="line-num">559</span>     <span class="ruby-identifier">object</span>.<span class="ruby-identifier">inject</span>({}) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, (<span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span>)<span class="ruby-operator">|</span>&#x000A;<span class="line-num">560</span>       <span class="ruby-identifier">key</span> = <span class="ruby-identifier">key</span>.<span class="ruby-identifier">send</span>(<span class="ruby-identifier">transform_keys</span>)&#x000A;<span class="line-num">561</span> &#x000A;<span class="line-num">562</span>       <span class="ruby-identifier">hash</span>.<span class="ruby-identifier">merge!</span> <span class="ruby-identifier">key</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">map_derivative</span>(&#x000A;<span class="line-num">563</span>         <span class="ruby-identifier">value</span>, [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">key</span>],&#x000A;<span class="line-num">564</span>         <span class="ruby-value">transform_keys:</span> <span class="ruby-identifier">transform_keys</span>, <span class="ruby-value">leaf:</span> <span class="ruby-identifier">leaf</span>,&#x000A;<span class="line-num">565</span>         <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>&#x000A;<span class="line-num">566</span>       )&#x000A;<span class="line-num">567</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">568</span>   <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">object</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Array</span>)&#x000A;<span class="line-num">569</span>     <span class="ruby-identifier">object</span>.<span class="ruby-identifier">map</span>.<span class="ruby-identifier">with_index</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">value</span>, <span class="ruby-identifier">idx</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">570</span>       <span class="ruby-identifier">map_derivative</span>(&#x000A;<span class="line-num">571</span>         <span class="ruby-identifier">value</span>, [<span class="ruby-operator">*</span><span class="ruby-identifier">path</span>, <span class="ruby-identifier">idx</span>],&#x000A;<span class="line-num">572</span>         <span class="ruby-value">transform_keys:</span> <span class="ruby-identifier">transform_keys</span>, <span class="ruby-value">leaf:</span> <span class="ruby-identifier">leaf</span>,&#x000A;<span class="line-num">573</span>         <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>&#x000A;<span class="line-num">574</span>       )&#x000A;<span class="line-num">575</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">576</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">577</span>     <span class="ruby-keyword">yield</span> <span class="ruby-identifier">path</span>, <span class="ruby-identifier">object</span>&#x000A;<span class="line-num">578</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">579</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

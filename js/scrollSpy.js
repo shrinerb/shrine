@@ -5,56 +5,50 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable */
+/* eslint-disable prefer-arrow-callback */
 (function scrollSpy() {
-  var OFFSET = 10;
-  var timer;
-  var headingsCache;
-
-  var findHeadings = function findHeadings() {
+  const OFFSET = 10;
+  let timer;
+  let headingsCache;
+  const findHeadings = function findHeadings() {
     return headingsCache || document.querySelectorAll('.toc-headings > li > a');
   };
-
-  var onScroll = function onScroll() {
+  const onScroll = function onScroll() {
     if (timer) {
       // throttle
       return;
     }
-
     timer = setTimeout(function() {
       timer = null;
-      var activeNavFound = false;
-      var headings = findHeadings(); // toc nav anchors
-
+      let activeNavFound = false;
+      const headings = findHeadings(); // toc nav anchors
       /**
        * On every call, try to find header right after  <-- next header
        * the one whose content is on the current screen <-- highlight this
        */
-
-      for (var i = 0; i < headings.length; i++) {
+      for (let i = 0; i < headings.length; i++) {
         // headings[i] is current element
         // if an element is already active, then current element is not active
         // if no element is already active, then current element is active
-        var currNavActive = !activeNavFound;
+        let currNavActive = !activeNavFound;
         /**
          * Enter the following check up only when an active nav header is not yet found
          * Then, check the bounding rectangle of the next header
          * The headers that are scrolled passed will have negative bounding rect top
          * So the first one with positive bounding rect top will be the nearest next header
          */
-
         if (currNavActive && i < headings.length - 1) {
-          var heading = headings[i + 1];
-          var next = decodeURIComponent(heading.href.split('#')[1]);
-          var nextHeader = document.getElementById(next);
+          const heading = headings[i + 1];
+          const next = decodeURIComponent(heading.href.split('#')[1]);
+          const nextHeader = document.getElementById(next);
 
           if (nextHeader) {
-            var top = nextHeader.getBoundingClientRect().top;
+            const top = nextHeader.getBoundingClientRect().top;
             currNavActive = top > OFFSET;
           } else {
             console.error('Can not find header element', {
               id: next,
-              heading: heading,
+              heading,
             });
           }
         }
@@ -62,7 +56,6 @@
          * Stop searching once a first such header is found,
          * this makes sure the highlighted header is the most current one
          */
-
         if (currNavActive) {
           activeNavFound = true;
           headings[i].classList.add('active');

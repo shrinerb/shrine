@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::Instrumentation::ClassMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Instrumentation::ClassMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/instrumentation_rb.html">lib/shrine/plugins/instrumentation.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-instrument">instrument</a></li>
+<li><a href="#method-i-subscribe">subscribe</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-instrument'>
+<a name='method-i-instrument'></a>
+<div class='synopsis'>
+<span class='name'>instrument</span>
+<span class='arguments'>(event_name, payload = {}, &block)</span>
+
+</div>
+<div class='description'>
+
+<p>Sends a <code>*.shrine</code> event.</p>
+
+<pre class="ruby"><span class="ruby-comment"># sends a `my_event.shrine` event</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">instrument</span>(<span class="ruby-value">:my_event</span>) <span class="ruby-keyword">do</span>&#x000A;  <span class="ruby-comment"># work</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-instrument-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-instrument-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">instrument</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-identifier">payload</span> = {}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-identifier">payload</span>[<span class="ruby-value">:uploader</span>] = <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">31</span> &#x000A;<span class="line-num">32</span>   <span class="ruby-identifier">notifications</span>.<span class="ruby-identifier">instrument</span>(<span class="ruby-node">&quot;#{event_name}.shrine&quot;</span>, <span class="ruby-identifier">payload</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-subscribe'>
+<a name='method-i-subscribe'></a>
+<div class='synopsis'>
+<span class='name'>subscribe</span>
+<span class='arguments'>(event_name, &subscriber)</span>
+
+</div>
+<div class='description'>
+
+<p>Subscribes to a <code>*.shrine</code> event. It rejects duplicate subscribers.</p>
+
+<pre class="ruby"><span class="ruby-comment"># subscribes to the `storage_upload.shrine` event</span>&#x000A;<span class="ruby-constant">Shrine</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-value">:storage_upload</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event</span><span class="ruby-operator">|</span>&#x000A;  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">name</span> <span class="ruby-comment">#=&gt; :storage_upload</span>&#x000A;  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">payload</span> <span class="ruby-comment">#=&gt; { location: &quot;...&quot;, ... }</span>&#x000A;  <span class="ruby-identifier">event</span>[<span class="ruby-value">:location</span>] <span class="ruby-comment">#=&gt; &quot;...&quot;</span>&#x000A;  <span class="ruby-identifier">event</span>.<span class="ruby-identifier">duration</span> <span class="ruby-comment">#=&gt; 50 (in milliseconds)</span>&#x000A;<span class="ruby-keyword">end</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-subscribe-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-subscribe-source'>   <span class="ruby-comment"># File lib/shrine/plugins/instrumentation.rb</span>&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">subscribe</span>(<span class="ruby-identifier">event_name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">subscriber</span>)&#x000A;<span class="line-num">45</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subscriber</span>.<span class="ruby-identifier">nil?</span>&#x000A;<span class="line-num">46</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>]&amp;.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">subscriber</span>)&#x000A;<span class="line-num">47</span> &#x000A;<span class="line-num">48</span>   <span class="ruby-identifier">notifications</span>.<span class="ruby-identifier">subscribe</span>(<span class="ruby-node">&quot;#{event_name}.shrine&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">event</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">49</span>     <span class="ruby-identifier">subscriber</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">event</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">event</span>[<span class="ruby-value">:uploader</span>] <span class="ruby-operator">&lt;=</span> <span class="ruby-keyword">self</span>&#x000A;<span class="line-num">50</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">51</span> &#x000A;<span class="line-num">52</span>   <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>] <span class="ruby-operator">||=</span> []&#x000A;<span class="line-num">53</span>   <span class="ruby-identifier">subscribers</span>[<span class="ruby-identifier">event_name</span>] <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">subscriber</span>&#x000A;<span class="line-num">54</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

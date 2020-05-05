@@ -5,8 +5,8 @@
         <link>https://shrinerb.com/blog</link>
         <description>The best place to stay up-to-date with the latest Shrine news and events.</description>
         <lastBuildDate>Tue, 24 Oct 2017 06:00:00 GMT</lastBuildDate>
-        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
-        <generator>https://github.com/jpmonette/feed</generator>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Feed for Node.js</generator>
         <image>
             <title>Shrine Blog</title>
             <url>https://shrinerb.com/img/logo.png</url>

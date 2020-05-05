@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::Mirroring::FileMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Mirroring::FileMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/mirroring_rb.html">lib/shrine/plugins/mirroring.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-delete">delete</a></li>
+<li><a href="#method-i-mirror_delete">mirror_delete</a></li>
+<li><a href="#method-i-mirror_delete_background">mirror_delete_background</a></li>
+<li><a href="#method-i-mirror_upload">mirror_upload</a></li>
+<li><a href="#method-i-mirror_upload_background">mirror_upload_background</a></li>
+<li><a href="#method-i-trigger_mirror_delete">trigger_mirror_delete</a></li>
+<li><a href="#method-i-trigger_mirror_upload">trigger_mirror_upload</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-delete'>
+<a name='method-i-delete'></a>
+<div class='synopsis'>
+<span class='name'>delete</span>
+<span class='arguments'>(mirror: true)</span>
+
+</div>
+<div class='description'>
+
+<p>Mirrors delete to other mirror storages.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num"> 98</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-value">mirror:</span> <span class="ruby-keyword">true</span>)&#x000A;<span class="line-num"> 99</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>()&#x000A;<span class="line-num">100</span>   <span class="ruby-identifier">trigger_mirror_delete</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">mirror</span>&#x000A;<span class="line-num">101</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">102</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-mirror_delete'>
+<a name='method-i-mirror_delete'></a>
+<div class='synopsis'>
+<span class='name'>mirror_delete</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Deletes the file from each mirror storage.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-mirror_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-mirror_delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num">124</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_delete</span>&#x000A;<span class="line-num">125</span>   <span class="ruby-identifier">each_mirror</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">mirror</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">126</span>     <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">id:</span> <span class="ruby-identifier">id</span>, <span class="ruby-value">storage:</span> <span class="ruby-identifier">mirror</span>).<span class="ruby-identifier">delete</span>&#x000A;<span class="line-num">127</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">128</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-mirror_delete_background'>
+<a name='method-i-mirror_delete_background'></a>
+<div class='synopsis'>
+<span class='name'>mirror_delete_background</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Calls mirror delete block.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-mirror_delete_background-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-mirror_delete_background-source'>    <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num">117</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_delete_background</span>&#x000A;<span class="line-num">118</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;mirror delete block is not registered&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_delete_block</span>&#x000A;<span class="line-num">119</span> &#x000A;<span class="line-num">120</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_delete_block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-keyword">self</span>)&#x000A;<span class="line-num">121</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-mirror_upload'>
+<a name='method-i-mirror_upload'></a>
+<div class='synopsis'>
+<span class='name'>mirror_upload</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Uploads the file to each mirror storage.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-mirror_upload-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-mirror_upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num">82</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_upload</span>&#x000A;<span class="line-num">83</span>   <span class="ruby-identifier">previously_opened</span> = <span class="ruby-identifier">opened?</span>&#x000A;<span class="line-num">84</span> &#x000A;<span class="line-num">85</span>   <span class="ruby-identifier">each_mirror</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">mirror</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">86</span>     <span class="ruby-identifier">rewind</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span>&#x000A;<span class="line-num">87</span> &#x000A;<span class="line-num">88</span>     <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">upload</span>(<span class="ruby-keyword">self</span>, <span class="ruby-identifier">mirror</span>, <span class="ruby-value">location:</span> <span class="ruby-identifier">id</span>, <span class="ruby-value">close:</span> <span class="ruby-keyword">false</span>, <span class="ruby-value">action:</span> <span class="ruby-value">:mirror</span>)&#x000A;<span class="line-num">89</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">90</span> <span class="ruby-keyword">ensure</span>&#x000A;<span class="line-num">91</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">opened?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">previously_opened</span>&#x000A;<span class="line-num">92</span>     <span class="ruby-identifier">close</span>&#x000A;<span class="line-num">93</span>     <span class="ruby-ivar">@io</span> = <span class="ruby-keyword">nil</span>&#x000A;<span class="line-num">94</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">95</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-mirror_upload_background'>
+<a name='method-i-mirror_upload_background'></a>
+<div class='synopsis'>
+<span class='name'>mirror_upload_background</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Calls mirror upload block.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-mirror_upload_background-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-mirror_upload_background-source'>   <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num">75</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">mirror_upload_background</span>&#x000A;<span class="line-num">76</span>   <span class="ruby-identifier">fail</span> <span class="ruby-constant">Error</span>, <span class="ruby-string">&quot;mirror upload block is not registered&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>&#x000A;<span class="line-num">77</span> &#x000A;<span class="line-num">78</span>   <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>.<span class="ruby-identifier">call</span>(<span class="ruby-keyword">self</span>)&#x000A;<span class="line-num">79</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-trigger_mirror_delete'>
+<a name='method-i-trigger_mirror_delete'></a>
+<div class='synopsis'>
+<span class='name'>trigger_mirror_delete</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Mirrors delete if mirrors are defined. Calls mirror block if registered, otherwise mirrors synchronously.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-trigger_mirror_delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-trigger_mirror_delete-source'>    <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num">106</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">trigger_mirror_delete</span>&#x000A;<span class="line-num">107</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirrors</span>[<span class="ruby-identifier">storage_key</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_delete?</span>&#x000A;<span class="line-num">108</span> &#x000A;<span class="line-num">109</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_delete_block</span>&#x000A;<span class="line-num">110</span>     <span class="ruby-identifier">mirror_delete_background</span>&#x000A;<span class="line-num">111</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">112</span>     <span class="ruby-identifier">mirror_delete</span>&#x000A;<span class="line-num">113</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">114</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-trigger_mirror_upload'>
+<a name='method-i-trigger_mirror_upload'></a>
+<div class='synopsis'>
+<span class='name'>trigger_mirror_upload</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Mirrors upload if mirrors are defined. Calls mirror block if registered, otherwise mirrors synchronously.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-trigger_mirror_upload-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-trigger_mirror_upload-source'>   <span class="ruby-comment"># File lib/shrine/plugins/mirroring.rb</span>&#x000A;<span class="line-num">64</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">trigger_mirror_upload</span>&#x000A;<span class="line-num">65</span>   <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirrors</span>[<span class="ruby-identifier">storage_key</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload?</span>&#x000A;<span class="line-num">66</span> &#x000A;<span class="line-num">67</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">mirror_upload_block</span>&#x000A;<span class="line-num">68</span>     <span class="ruby-identifier">mirror_upload_background</span>&#x000A;<span class="line-num">69</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">70</span>     <span class="ruby-identifier">mirror_upload</span>&#x000A;<span class="line-num">71</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">72</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::RemoteUrl::ClassMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::RemoteUrl::ClassMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/remote_url_rb.html">lib/shrine/plugins/remote_url.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-remote_url">remote_url</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-remote_url'>
+<a name='method-i-remote_url'></a>
+<div class='synopsis'>
+<span class='name'>remote_url</span>
+<span class='arguments'>(url, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Downloads the file using the “down” gem or a custom downloader. Checks the file size and terminates the download early if the file is too big.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-remote_url-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-remote_url-source'>   <span class="ruby-comment"># File lib/shrine/plugins/remote_url.rb</span>&#x000A;<span class="line-num">55</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">56</span>   <span class="ruby-identifier">options</span> = { <span class="ruby-value">max_size:</span> <span class="ruby-identifier">opts</span>[<span class="ruby-value">:remote_url</span>][<span class="ruby-value">:max_size</span>] }.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">57</span> &#x000A;<span class="line-num">58</span>   <span class="ruby-identifier">instrument_remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">options</span>) <span class="ruby-keyword">do</span>&#x000A;<span class="line-num">59</span>     <span class="ruby-identifier">download_remote_url</span>(<span class="ruby-identifier">url</span>, <span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">60</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">61</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

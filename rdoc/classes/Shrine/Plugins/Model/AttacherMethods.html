@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::Model::AttacherMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::Model::AttacherMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/model_rb.html">lib/shrine/plugins/model.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-load_model">load_model</a></li>
+<li><a href="#method-i-model_assign">model_assign</a></li>
+<li><a href="#method-i-set">set</a></li>
+<li><a href="#method-i-set_model">set_model</a></li>
+<li><a href="#method-i-write">write</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span>
+<span class='arguments'>(model_cache: shrine_class.opts[:model][:cache], **options)</span>
+
+</div>
+<div class='description'>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">91</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">model_cache:</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">opts</span>[<span class="ruby-value">:model</span>][<span class="ruby-value">:cache</span>], <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">92</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">93</span>   <span class="ruby-ivar">@model_cache</span> = <span class="ruby-identifier">model_cache</span>&#x000A;<span class="line-num">94</span>   <span class="ruby-ivar">@model</span>       = <span class="ruby-keyword">nil</span>&#x000A;<span class="line-num">95</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-load_model'>
+<a name='method-i-load_model'></a>
+<div class='synopsis'>
+<span class='name'>load_model</span>
+<span class='arguments'>(record, name)</span>
+
+</div>
+<div class='description'>
+
+<p>Saves record and name and initializes attachment from the model attribute. Called from <code>Attacher.from_model</code>.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-load_model-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-load_model-source'>    <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num"> 99</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">load_model</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">100</span>   <span class="ruby-identifier">set_model</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">101</span>   <span class="ruby-identifier">read</span>&#x000A;<span class="line-num">102</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-model_assign'>
+<a name='method-i-model_assign'></a>
+<div class='synopsis'>
+<span class='name'>model_assign</span>
+<span class='arguments'>(value, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Called by the attachment attribute setter on the model.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-model_assign-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-model_assign-source'>    <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">112</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">model_assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">113</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">model_cache?</span>&#x000A;<span class="line-num">114</span>     <span class="ruby-identifier">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">115</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">116</span>     <span class="ruby-identifier">attach</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">117</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">118</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-set'>
+<a name='method-i-set'></a>
+<div class='synopsis'>
+<span class='name'>set</span>
+<span class='arguments'>(*)</span>
+
+</div>
+<div class='description'>
+
+<p>Writes uploaded file data into the model.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-set-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-set-source'>    <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">121</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set</span>(<span class="ruby-operator">*</span>)&#x000A;<span class="line-num">122</span>   <span class="ruby-identifier">result</span> = <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">123</span>   <span class="ruby-identifier">write</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">model?</span>&#x000A;<span class="line-num">124</span>   <span class="ruby-identifier">result</span>&#x000A;<span class="line-num">125</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-set_model'>
+<a name='method-i-set_model'></a>
+<div class='synopsis'>
+<span class='name'>set_model</span>
+<span class='arguments'>(record, name)</span>
+
+</div>
+<div class='description'>
+
+<p>Saves record and name without loading attachment from the model attribute.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-set_model-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-set_model-source'>    <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">106</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">set_model</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">107</span>   <span class="ruby-identifier">set_entity</span>(<span class="ruby-identifier">record</span>, <span class="ruby-identifier">name</span>)&#x000A;<span class="line-num">108</span>   <span class="ruby-ivar">@model</span> = <span class="ruby-keyword">true</span>&#x000A;<span class="line-num">109</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-write'>
+<a name='method-i-write'></a>
+<div class='synopsis'>
+<span class='name'>write</span>
+<span class='arguments'>()</span>
+
+</div>
+<div class='description'>
+
+<p>Writes the attachment data into the model attribute.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-write-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-write-source'>    <span class="ruby-comment"># File lib/shrine/plugins/model.rb</span>&#x000A;<span class="line-num">128</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">write</span>&#x000A;<span class="line-num">129</span>   <span class="ruby-identifier">column_values</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">130</span>     <span class="ruby-identifier">write_attribute</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">131</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">132</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Storage::FileSystem</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>class</span>
+Shrine::Storage::FileSystem
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../files/lib/shrine/storage/file_system_rb.html">lib/shrine/storage/file_system.rb</a>
+</li>
+</ol>
+<div class='parent'>
+Superclass:
+<strong>Object</strong>
+</div>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Class</h3>
+<ol>
+<li><a href="#method-c-new">new</a></li>
+</ol>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-clear-21">clear!</a></li>
+<li><a href="#method-i-delete">delete</a></li>
+<li><a href="#method-i-delete_prefixed">delete_prefixed</a></li>
+<li><a href="#attribute-i-directory">directory</a></li>
+<li><a href="#attribute-i-directory_permissions">directory_permissions</a></li>
+<li><a href="#method-i-exists-3F">exists?</a></li>
+<li><a href="#method-i-open">open</a></li>
+<li><a href="#method-i-path">path</a></li>
+<li><a href="#attribute-i-permissions">permissions</a></li>
+<li><a href="#attribute-i-prefix">prefix</a></li>
+<li><a href="#method-i-upload">upload</a></li>
+<li><a href="#method-i-url">url</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='attribute-list'>
+<h2 class='section-bar'>Attributes</h2>
+<div class='name-list'>
+<table>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-directory'>directory</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-directory_permissions'>directory_permissions</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-permissions'>permissions</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+<tr class='top-aligned-row context-row'>
+<td class='context-item-name'>
+<a name='attribute-i-prefix'>prefix</a>
+</td>
+<td class='context-item-value'>[R]</td>
+<td class='context-item-desc'></td>
+</tr>
+</table>
+</div>
+</div>
+<div id='methods'>
+<h2>Public Class methods</h2>
+<div class='method public-class' id='method-method-c-new'>
+<a name='method-c-new'></a>
+<div class='synopsis'>
+<span class='name'>new</span>
+<span class='arguments'>(directory, prefix: nil, clean: true, permissions: 0644, directory_permissions: 0755)</span>
+
+</div>
+<div class='description'>
+
+<p>Initializes a storage for uploading to the filesystem.</p>
+<table class="rdoc-list note-list"><tbody><tr><td class='label'>:prefix</td><td>
+<p>The directory relative to <code>directory</code> to which files will be stored,  and it is included in the URL.</p>
+</td></tr><tr><td class='label'>:permissions</td><td>
+<p>The UNIX permissions applied to created files. Can be set to <code>nil</code>,  in which case the default permissions will be applied. Defaults to  <code>0644</code>.</p>
+</td></tr><tr><td class='label'>:directory_permissions</td><td>
+<p>The UNIX permissions applied to created directories. Can be set to  <code>nil</code>, in which case the default permissions will be applied. Defaults  to <code>0755</code>.</p>
+</td></tr><tr><td class='label'>:clean</td><td>
+<p>By default empty folders inside the directory are automatically  deleted, but if it happens that it causes too much load on the  filesystem, you can set this option to <code>false</code>.</p>
+</td></tr></tbody></table>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">directory</span>, <span class="ruby-value">prefix:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">clean:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">permissions:</span> <span class="ruby-value">0644</span>, <span class="ruby-value">directory_permissions:</span> <span class="ruby-value">0755</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">prefix</span>&#x000A;<span class="line-num">33</span>     <span class="ruby-ivar">@prefix</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">relative</span>(<span class="ruby-identifier">prefix</span>))&#x000A;<span class="line-num">34</span>     <span class="ruby-ivar">@directory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">directory</span>).<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@prefix</span>).<span class="ruby-identifier">expand_path</span>&#x000A;<span class="line-num">35</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">36</span>     <span class="ruby-ivar">@directory</span> = <span class="ruby-constant">Pathname</span>(<span class="ruby-identifier">directory</span>).<span class="ruby-identifier">expand_path</span>&#x000A;<span class="line-num">37</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">38</span> &#x000A;<span class="line-num">39</span>   <span class="ruby-ivar">@permissions</span> = <span class="ruby-identifier">permissions</span>&#x000A;<span class="line-num">40</span>   <span class="ruby-ivar">@directory_permissions</span> = <span class="ruby-identifier">directory_permissions</span>&#x000A;<span class="line-num">41</span>   <span class="ruby-ivar">@clean</span> = <span class="ruby-identifier">clean</span>&#x000A;<span class="line-num">42</span> &#x000A;<span class="line-num">43</span>   <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">exist?</span>&#x000A;<span class="line-num">44</span>     <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">mkpath</span>&#x000A;<span class="line-num">45</span>     <span class="ruby-ivar">@directory</span>.<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">directory_permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">directory_permissions</span>&#x000A;<span class="line-num">46</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">47</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-clear-21'>
+<a name='method-i-clear-21'></a>
+<div class='synopsis'>
+<span class='name'>clear!</span>
+<span class='arguments'>(&condition)</span>
+
+</div>
+<div class='description'>
+
+<p>Deletes all files from the <a href="FileSystem.html#attribute-i-directory"><code>directory</code></a>. If a block is passed in, deletes only the files for which the block evaluates to true.</p>
+
+<pre class="ruby"><span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span> <span class="ruby-comment"># deletes all files and subdirectories in the storage directory</span>&#x000A;<span class="ruby-identifier">file_system</span>.<span class="ruby-identifier">clear!</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span> <span class="ruby-identifier">path</span>.<span class="ruby-identifier">mtime</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span> <span class="ruby-operator">-</span> <span class="ruby-value">7</span><span class="ruby-operator">*</span><span class="ruby-value">24</span><span class="ruby-operator">*</span><span class="ruby-value">60</span><span class="ruby-operator">*</span><span class="ruby-value">60</span> } <span class="ruby-comment"># deletes only files older than 1 week</span></pre>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-clear-21-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-clear-21-source'>    <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">104</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">condition</span>)&#x000A;<span class="line-num">105</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">condition</span>&#x000A;<span class="line-num">106</span>     <span class="ruby-identifier">list_files</span>(<span class="ruby-identifier">directory</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span><span class="ruby-operator">|</span>&#x000A;<span class="line-num">107</span>       <span class="ruby-keyword">next</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">condition</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">path</span>)&#x000A;<span class="line-num">108</span>       <span class="ruby-identifier">path</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="line-num">109</span>       <span class="ruby-identifier">clean</span>(<span class="ruby-identifier">path</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">clean?</span>&#x000A;<span class="line-num">110</span>     <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">111</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">112</span>     <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">children</span>.<span class="ruby-identifier">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:rmtree</span>)&#x000A;<span class="line-num">113</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">114</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-delete'>
+<a name='method-i-delete'></a>
+<div class='synopsis'>
+<span class='name'>delete</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+<p>Delets the file, and by default deletes the containing directory if it&#39;s empty.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-delete-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">85</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">86</span>   <span class="ruby-identifier">path</span> = <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">87</span>   <span class="ruby-identifier">path</span>.<span class="ruby-identifier">delete</span>&#x000A;<span class="line-num">88</span>   <span class="ruby-identifier">clean</span>(<span class="ruby-identifier">path</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">clean?</span>&#x000A;<span class="line-num">89</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOENT</span>&#x000A;<span class="line-num">90</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-delete_prefixed'>
+<a name='method-i-delete_prefixed'></a>
+<div class='synopsis'>
+<span class='name'>delete_prefixed</span>
+<span class='arguments'>(delete_prefix)</span>
+
+</div>
+<div class='description'>
+
+<p>Deletes the specified directory on the filesystem.</p>
+
+<p>file_system.delete_prefixed(“somekey/derivatives/”)</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete_prefixed-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-delete_prefixed-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">95</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">96</span>   <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">rm_rf</span> <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">97</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-exists-3F'>
+<a name='method-i-exists-3F'></a>
+<div class='synopsis'>
+<span class='name'>exists?</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns true if the file exists on the filesystem.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-exists-3F-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-exists-3F-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">69</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">70</span>   <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">exist?</span>&#x000A;<span class="line-num">71</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-open'>
+<a name='method-i-open'></a>
+<div class='synopsis'>
+<span class='name'>open</span>
+<span class='arguments'>(id, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Opens the file on the given location in read mode. Accepts additional <code>File.open</code> arguments.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-open-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-open-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">62</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">open</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">63</span>   <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">open</span>(<span class="ruby-value">binmode:</span> <span class="ruby-keyword">true</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">64</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">Errno</span><span class="ruby-operator">::</span><span class="ruby-constant">ENOENT</span>&#x000A;<span class="line-num">65</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>, <span class="ruby-node">&quot;file #{id.inspect} not found on storage&quot;</span>&#x000A;<span class="line-num">66</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-path'>
+<a name='method-i-path'></a>
+<div class='synopsis'>
+<span class='name'>path</span>
+<span class='arguments'>(id)</span>
+
+</div>
+<div class='description'>
+
+<p>Returns the full path to the file.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-path-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-path-source'>    <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">117</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">path</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">118</span>   <span class="ruby-identifier">directory</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">id</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-string">&quot;/&quot;</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">SEPARATOR</span>))&#x000A;<span class="line-num">119</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-upload'>
+<a name='method-i-upload'></a>
+<div class='synopsis'>
+<span class='name'>upload</span>
+<span class='arguments'>(io, id, move: false, **)</span>
+
+</div>
+<div class='description'>
+
+<p>Copies the file into the given location.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-upload-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">50</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-value">move:</span> <span class="ruby-keyword">false</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num">51</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">move</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">movable?</span>(<span class="ruby-identifier">io</span>)&#x000A;<span class="line-num">52</span>     <span class="ruby-identifier">move</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="line-num">53</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">54</span>     <span class="ruby-constant">IO</span>.<span class="ruby-identifier">copy_stream</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">path!</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="line-num">55</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">56</span> &#x000A;<span class="line-num">57</span>   <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>).<span class="ruby-identifier">chmod</span>(<span class="ruby-identifier">permissions</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">permissions</span>&#x000A;<span class="line-num">58</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+<div class='method public-instance' id='method-method-i-url'>
+<a name='method-i-url'></a>
+<div class='synopsis'>
+<span class='name'>url</span>
+<span class='arguments'>(id, host: nil, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>If <a href="FileSystem.html#attribute-i-prefix"><code>prefix</code></a> is not present, returns a path composed of <a href="FileSystem.html#attribute-i-directory"><code>directory</code></a> and the given <code>id</code>. If <a href="FileSystem.html#attribute-i-prefix"><code>prefix</code></a> is present, it excludes the <a href="FileSystem.html#attribute-i-directory"><code>directory</code></a> part from the returned path (e.g. <a href="FileSystem.html#attribute-i-directory"><code>directory</code></a> can be set to “public” folder). Both cases accept a <code>:host</code> value which will be prefixed to the generated path.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-url-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-url-source'>   <span class="ruby-comment"># File lib/shrine/storage/file_system.rb</span>&#x000A;<span class="line-num">78</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-value">host:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">79</span>   <span class="ruby-identifier">path</span> = (<span class="ruby-identifier">prefix</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">relative_path</span>(<span class="ruby-identifier">id</span>) <span class="ruby-operator">:</span> <span class="ruby-identifier">path</span>(<span class="ruby-identifier">id</span>)).<span class="ruby-identifier">to_s</span>&#x000A;<span class="line-num">80</span>   <span class="ruby-identifier">host</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">host</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">path</span>&#x000A;<span class="line-num">81</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>

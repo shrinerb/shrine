@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+<head>
+<title>Shrine::Plugins::RackFile::AttacherMethods</title>
+<meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+<link href='../../../../css/style.css' media='screen' rel='stylesheet' type='text/css'>
+<script type='text/javascript'>
+  function popupCode(url) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+  
+  function toggleCode(id) {
+    var code = document.getElementById(id)
+  
+    code.style.display = code.style.display != 'block' ? 'block' : 'none'
+    return true
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+</script>
+</head>
+<body class='page'>
+<div class='class' id='wrapper'>
+<div class='header'>
+<h1 class='name'><span class='type'>module</span>
+Shrine::Plugins::RackFile::AttacherMethods
+</h1>
+<ol class='paths'>
+<li>
+<a href="../../../../files/lib/shrine/plugins/rack_file_rb.html">lib/shrine/plugins/rack_file.rb</a>
+</li>
+</ol>
+</div>
+<div id='content'>
+<div id='text'>
+<div id='description'></div>
+<div id='method-list'>
+<h2>Methods</h2>
+<h3>Public Instance</h3>
+<ol>
+<li><a href="#method-i-assign">assign</a></li>
+</ol>
+</div>
+<div id='context'>
+</div>
+<div id='section'>
+<div id='methods'>
+<h2>Public Instance methods</h2>
+<div class='method public-instance' id='method-method-i-assign'>
+<a name='method-i-assign'></a>
+<div class='synopsis'>
+<span class='name'>assign</span>
+<span class='arguments'>(value, **options)</span>
+
+</div>
+<div class='description'>
+
+<p>Checks whether a file is a Rack file hash, and in that case wraps the hash in an IO-like object.</p>
+
+</div>
+<div class='source'>
+<a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-assign-source&#39;); return false'>
+[show source]
+</a>
+<pre id='method-i-assign-source'>   <span class="ruby-comment"># File lib/shrine/plugins/rack_file.rb</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">assign</span>(<span class="ruby-identifier">value</span>, <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>)&#x000A;<span class="line-num">28</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">rack_file?</span>(<span class="ruby-identifier">value</span>)&#x000A;<span class="line-num">29</span>     <span class="ruby-identifier">assign</span> <span class="ruby-identifier">shrine_class</span>.<span class="ruby-identifier">rack_file</span>(<span class="ruby-identifier">value</span>), <span class="ruby-operator">**</span><span class="ruby-identifier">options</span>&#x000A;<span class="line-num">30</span>   <span class="ruby-keyword">else</span>&#x000A;<span class="line-num">31</span>     <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">32</span>   <span class="ruby-keyword">end</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id='footer-push'></div>
+</div>
+<div id='footer'>
+<a href="https://github.com/rdoc/hanna-nouveau"><strong>Hanna Nouveau</strong> RDoc template</a>
+</div>
+</body>
+</html>
