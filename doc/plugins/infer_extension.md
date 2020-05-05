@@ -11,6 +11,15 @@ extension might not be known.
 plugin :infer_extension
 ```
 
+By default an extension will only be inferred if needed to supply an otherwise
+missing extension. But option `force: true` will normalize even an already
+present extension to the extension inferred from MIME type. This could be used
+to fix incorrect or malicious extensions on user-submitted files.
+
+```rb
+plugin :infer_extension, force: true
+```
+
 ## Inferrers
 
 By default, the [mini_mime] gem will be used for inferring the extension, but
