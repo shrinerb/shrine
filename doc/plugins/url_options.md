@@ -10,6 +10,8 @@ storages.
 plugin :url_options, store: { expires_in: 24*60*60 }
 ```
 
+If you're using [GCS](https://googleapis.dev/ruby/google-cloud-storage/latest/Google/Cloud/Storage/File.html#signed_url-instance_method) you need `expires:` instead.
+
 You can also generate the default URL options dynamically by using a block,
 which will receive the UploadedFile object along with any options that were
 passed to `UploadedFile#url`.
