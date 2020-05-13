@@ -4,10 +4,10 @@ title: URL Options
 
 The [`url_options`][url_options] plugin allows you to specify
 URL options that will be applied by default for uploaded files of specified
-storages.
+storages. `url_options` are parameters specific to the storage service.
 
 ```rb
-plugin :url_options, store: { expires_in: 24*60*60 }
+plugin :url_options, store: { expires_in: 24*60*60 } # `expires_in` is a URL option for AWS S3
 ```
 
 You can also generate the default URL options dynamically by using a block,
