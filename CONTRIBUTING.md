@@ -95,6 +95,15 @@ Appendix B: ActiveRecord template
 =================================
 
 ```rb
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem "rails"
+  gem 'shrine'
+  gem "down"
+end
+
 require "active_record"
 require "shrine"
 require "shrine/storage/memory"
