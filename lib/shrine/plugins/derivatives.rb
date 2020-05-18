@@ -21,7 +21,7 @@ class Shrine
       end
 
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
-        uploader.opts[:derivatives] ||= { processors: {}, storage: proc { store_key } }
+        uploader.opts[:derivatives] ||= { processors: {}, processor_raw_source: {}, storage: proc { store_key } }
         uploader.opts[:derivatives].merge!(opts)
 
         # instrumentation plugin integration
@@ -52,9 +52,22 @@ class Shrine
         #     Attacher.derivatives_processor :thumbnails do |original|
         #       # ...
         #     end
-        def derivatives_processor(name = :default, &block)
+        #
+        # Normally sources are normalized to local files before passing to processor;
+        # if this processor would like to receive raw input -- which could be
+        # a File object, another IO object, or an UploadedFile, then register
+        # with raw_source: true:
+        #
+        #     Attacher.derivatives_processor :thumbnails, raw_source: true do |original|
+        #       # ...
+        #     end
+        #
+        # This can be useful if you'd like to defer or avoid a possibly expensive download
+        # operation for processor logic that does not require it.
+        def derivatives_processor(name = :default, raw_source: false, &block)
           if block
             shrine_class.derivatives_options[:processors][name.to_sym] = block
+            shrine_class.derivatives_options[:processor_raw_source][name.to_sym] = raw_source
           else
             processor   = shrine_class.derivatives_options[:processors][name.to_sym]
             processor ||= NOOP_PROCESSOR if name == :default
@@ -269,8 +282,14 @@ class Shrine
 
           source ||= file!
 
-          shrine_class.with_file(source) do |file|
-            _process_derivatives(processor_name, file, **options)
+          raw_source_mode = self.class.shrine_class.derivatives_options[:processor_raw_source][processor_name]
+
+          if raw_source_mode
+            _process_derivatives(processor_name, source, **options)
+          else
+            shrine_class.with_file(source) do |file|
+              _process_derivatives(processor_name, file, **options)
+            end
           end
         end
 
