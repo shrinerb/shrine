@@ -812,6 +812,17 @@ describe Shrine::Plugins::Derivatives do
         assert_match /^#{Dir.tmpdir}/, result[:path].read
       end
 
+      it "downloads source non-file IO" do
+        @attacher.class.derivatives :path do |original|
+          { path: original.respond_to?(:path) ? StringIO.new(original.path) : nil }
+        end
+
+        result = @attacher.process_derivatives(:path, StringIO.new("fake content"))
+
+        assert result[:path]
+        assert_match /^#{Dir.tmpdir}/, result[:path].read
+      end
+
       it "forwards additional options" do
         @attacher.class.derivatives :options do |original, **options|
           { options: StringIO.new(options.to_s) }
