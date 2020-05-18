@@ -83,5 +83,33 @@ describe Shrine::Plugins::RemoveAttachment do
         assert_equal "true", @attacher.remove
       end
     end
+
+    describe "#change" do
+      it "keeps pointing to the removed file" do
+        file = @attacher.set @attacher.upload(fakeio)
+        @attacher.remove = "true"
+        @attacher.attach(fakeio)
+
+        assert @attacher.changed?
+
+        @attacher.destroy_previous
+
+        refute file.exists?
+        assert @attacher.file.exists?
+      end
+
+      it "set previous attachment when nothing was removed" do
+        file = @attacher.set @attacher.upload(fakeio)
+        @attacher.remove = "false"
+        @attacher.attach(fakeio)
+
+        assert @attacher.changed?
+
+        @attacher.destroy_previous
+
+        refute file.exists?
+        assert @attacher.file.exists?
+      end
+    end
   end
 end

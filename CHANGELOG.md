@@ -1,5 +1,7 @@
 ## master
 
+* `remove_attachment` – Delete removed file if a new file was attached right after removal (@janko)
+
 * `upload_endpoint` – Fix `Shrine.upload_response` not working in a Rails controller (@pldavid2)
 
 * `presign_endpoint` – Add `OPTIONS` route that newer versions of Uppy check (@janko)

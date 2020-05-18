@@ -32,6 +32,11 @@ class Shrine
 
         private
 
+        # Don't override previously removed attachment that wasn't yet deleted.
+        def change?(file)
+          super && !(changed? && remove?)
+        end
+
         # Rails sends "0" or "false" if the checkbox hasn't been ticked.
         def remove?
           remove && remove != "" && remove !~ /\A(0|false)\z/

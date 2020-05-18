@@ -217,7 +217,7 @@ class Shrine
       #     attacher.file #=> #<Shrine::UploadedFile>
       #     attacher.changed? #=> true
       def change(file)
-        @previous = dup unless @file == file
+        @previous = dup if change?(file)
         set(file)
       end
 
@@ -371,6 +371,11 @@ class Shrine
       # Whether attached file should be deleted.
       def destroy?
         attached? && !cached?
+      end
+
+      # Whether assigning the given file is considered a change.
+      def change?(file)
+        @file != file
       end
 
       # Returns whether the file is uploaded to specified storage.
