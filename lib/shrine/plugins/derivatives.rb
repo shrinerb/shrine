@@ -269,12 +269,8 @@ class Shrine
 
           source ||= file!
 
-          if source.is_a?(UploadedFile)
-            source.download do |file|
-              _process_derivatives(processor_name, file, **options)
-            end
-          else
-            _process_derivatives(processor_name, source, **options)
+          shrine_class.with_file(source) do |file|
+            _process_derivatives(processor_name, file, **options)
           end
         end
 
