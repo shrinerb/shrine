@@ -6,6 +6,10 @@ This is an internal plugin that provides uniform persistence interface across
 different persistence plugins (e.g. [`activerecord`][activerecord],
 [`sequel`][sequel]).
 
+For these activerecord and sequel, atomic persistence is implemented in terms
+of database locks, eg "SELECT... FOR UPDATE". For more discussion of concurrency
+challenges, see the [atomic_helpers] documentation.
+
 ## Atomic promotion
 
 If you're promoting cached file to permanent storage
@@ -65,11 +69,15 @@ changed, and if it hasn't the attachment is persisted. If the attachment has
 changed, `Shrine::AttachmentChanged` exception is raised.
 
 If you want to execute code after the attachment change check but before
-persistence, you can pass a block:
+persistence, you can pass a block. For instance, one way to allow concurrent
+changes to metadata, perhaps in different background workers,  without
+overwriting each other might be:
 
 ```rb
 attacher.atomic_persist do |reloaded_attacher|
   # run code after attachment change check but before persistence
+  attacher.file.metadata.merge!(reloaded_attacher.file.metadata)
+  attacher.file.metadata["some_key"] = "changed_value"
 end
 ```
 
@@ -89,4 +97,5 @@ attacher.persist # saves the underlying record
 
 [activerecord]: https://shrinerb.com/docs/plugins/activerecord
 [sequel]: https://shrinerb.com/docs/plugins/sequel
+[atomic_helpers]: https://shrinerb.com/docs/plugins/atomic_helpers
 [backgrounding]: https://shrinerb.com/docs/plugins/backgrounding

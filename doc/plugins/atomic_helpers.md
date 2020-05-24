@@ -3,13 +3,47 @@ title: Atomic Helpers
 ---
 
 The [`atomic_helpers`][atomic_helpers] plugin provides API for retrieving and
-persisting attachments in a concurrency-safe way, which is useful when using
-the `backgrounding` plugin. The database plugins (`activerecord` and `sequel`)
-implement atomic promotion and atomic persistence on top of this plugin.
+persisting attachments in a concurrency-safe way, which is especially useful
+when using the `backgrounding` plugin. The database plugins (`activerecord`
+and `sequel`) implement atomic promotion and atomic persistence on top of this
+plugin.
 
 ```rb
 plugin :atomic_helpers
 ```
+
+## Problem Statement
+
+What happens if two different processors (web workers, background jobs,
+command-line executions, whatever) try to edit a shrine attachment
+concurrently? The kinds of edits typically made include: "promoting a file",
+moving it to a different storage and persisting that change in the model;
+adding or changing a derivative; adding or changing a metadata element.
+
+There are two main categories of "race condition":
+
+1. The file could be switched out from under you. If you were promoting a file,
+but some other process has *changed* the attachment, you don't want to
+overwrite it with the promomoted version of the *prior* attacchment. Likewise,
+if you were adding metadata or a derivative, they would be corresponding to a
+certain attachment, and you don't want to accidentally add them to a now changed
+attacchment for which they are inappropriate.
+
+2. Overwriting each other's edits. Since all shrine (meta)data is stored in a
+single JSON hash, standard implementations will write the entire JSON hash at
+once to a rdbms column or other store. If two processes both read in the hash,
+make a change to different keys in it, and then write it back out, the second
+process to write will 'win' and overwrite changes made by the first.
+
+The atomic helpers give you tools to avoid both of these sorts of race
+conditions, under conditions of concurrent editing.
+
+## High-level ORM helpers
+
+If you are using the `sequel` or `activerecord` plugins, they give you two
+higher-level helpers: `atomic_persist` and `atomic_promote`. See the
+[persistence]  documentation for more.
+
 
 ## Retrieving
 
@@ -177,3 +211,7 @@ end
 ```
 
 [atomic_helpers]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/atomic_helpers.rb
+
+[persistence]: https://shrinerb.com/docs/plugins/persistence
+
+[backgrounding]: https://shrinerb.com/docs/plugins/backgrounding
