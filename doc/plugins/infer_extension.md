@@ -46,21 +46,6 @@ plugin :infer_extension, inferrer: -> (mime_type, inferrers) do
 end
 ```
 
-## Options
-
-You can pass `force: true` to force the inferred extension to be used rather 
-than an extension from the original filename. This can be used to canonicalize 
-extensions (jpg, jpeg => jpeg), or replace an incorrect original extension.
-
-```rb
-plugin :infer_extension, force: true
-```
-
-*Note: There are rare cases where an inferrer may miscategorize a file resulting in an 
-incorrect file extension. Please verify all your different file types are correctly 
-categorized by the inferrer and results in a correct extension when using the 
-`force: true` option.*
-     
 ## API
 
 You can also use methods for inferring extension directly:
