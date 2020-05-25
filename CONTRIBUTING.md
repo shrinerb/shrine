@@ -143,8 +143,9 @@ source 'https://rubygems.org' do
 end
 ```
 
-1. Run `bundle install` 
-2. Run the template with: `ruby template_name.rb`
+1. Run `bundle install`.
+
+2. Run the template with: `ruby template_name.rb`.
 
 ### In-lining them Gems in your script (Option 2)
 
@@ -173,17 +174,23 @@ If you would like to debug or step through Shrine's code using the above templat
 
 1. Download (or clone) Shrine's repository to your local machine
    `git clone https://github.com/shrinerb/shrine.git` (or you could create a fork of the above repository and clone your fork - this will make it easier for you if you want to make a pull request). 
-2. Checkout the version of shrine you are using by running git checkout <version_tag> 
-3. Modify the Shrine gem line in your Gemfile to point to the local copy of Shrine code:
+   
+2. Checkout the version of shrine you are using by running `git checkout <version_tag>`.
+
+3. Modify the Shrine gem line in your `Gemfile` to point to the local copy of Shrine code:
 
 ```ruby
   gem "shrine", path: "/path/to/your/local/shrine/gem/code" 
 ```
 
-4. If needed, add a debugger like byebug or pry to the Gemfile.
-5. Run `bundle install`
-6. Add require "bundler/setup" to the top of the template script.
-7. You can add debugger statement anywhere in your template file or Shrine code 
+4. If needed, add a debugger like `byebug` or `pry` to the `Gemfile`.
+
+5. Run `bundle install`.
+
+6. Add `require "bundler/setup"` to the top of the template script.
+
+7. You can add debugger statement anywhere in your template file or Shrine code.
+
 8. Run `ruby template_name.rb`. 
 
 [forum]: https://discourse.shrinerb.com
