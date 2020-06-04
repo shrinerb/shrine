@@ -649,7 +649,7 @@ attacher.copy(other_attacher)
 with
 
 ```rb
-attacher.attach other_attacher.file
+attacher.set attacher.upload(other_attacher.file)
 attacher.add_derivatives other_attacher.derivatives # if using derivatives
 ```
 
