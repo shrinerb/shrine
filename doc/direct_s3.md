@@ -351,7 +351,7 @@ Shrine.plugin :presign_endpoint, presign_options: -> (request) do
   {
     method: :put,
     content_length: request.params.fetch("size"),
-    content_md5: request.params["checksum"],
+    content_md5: request.params["checksum"]
   }
 end
 ```
