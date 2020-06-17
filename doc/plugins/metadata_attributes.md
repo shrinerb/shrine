@@ -72,3 +72,4 @@ photo.original_filename #=> "nature.jpg"
 
 [metadata_attributes]: https://github.com/shrinerb/shrine/blob/master/lib/shrine/plugins/metadata_attributes.rb
 [entity]: https://shrinerb.com/docs/plugins/entity
+[model]: https://shrinerb.com/docs/plugins/model
