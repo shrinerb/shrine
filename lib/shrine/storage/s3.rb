@@ -282,20 +282,36 @@ class Shrine
       # Aws::S3::Object#get doesn't allow us to get the content length of the
       # object before all content is downloaded, so we hack our way around it.
       # This way get the content length without an additional HEAD request.
-      def get(id, **params)
-        req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **params)
+      if Gem::Version.new(Aws::CORE_GEM_VERSION) >= Gem::Version.new("3.104.0")
+        def get(id, **params)
+          enum = object(id).enum_for(:get, **params)
 
-        body = req.enum_for(:send_request)
-        begin
-          body.peek # start the request
-        rescue StopIteration
-          # the S3 object is empty
+          begin
+            content_length = Integer(enum.peek.last["content-length"])
+          rescue StopIteration
+            content_length = 0
+          end
+
+          chunks = Enumerator.new { |y| loop { y << enum.next.first } }
+
+          [chunks, content_length]
         end
+      else
+        def get(id, **params)
+          req = client.build_request(:get_object, bucket: bucket.name, key: object_key(id), **params)
 
-        content_length = Integer(req.context.http_response.headers["Content-Length"])
-        chunks         = Enumerator.new { |y| loop { y << body.next } }
+          body = req.enum_for(:send_request)
+          begin
+            body.peek # start the request
+          rescue StopIteration
+            # the S3 object is empty
+          end
 
-        [chunks, content_length]
+          content_length = Integer(req.context.http_response.headers["Content-Length"])
+          chunks         = Enumerator.new { |y| loop { y << body.next } }
+
+          [chunks, content_length]
+        end
       end
 
       # The file is copyable if it's on S3 and on the same Amazon account.

@@ -1,5 +1,7 @@
 ## master
 
+* `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
+
 * `remove_attachment` – Delete removed file if a new file was attached right after removal (@janko)
 
 * `upload_endpoint` – Fix `Shrine.upload_response` not working in a Rails controller (@pldavid2)
