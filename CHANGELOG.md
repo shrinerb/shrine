@@ -1,3 +1,7 @@
+## master
+
+* `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
+
 ## 3.2.1 (2020-01-12)
 
 * `derivation_endpoint` – Use `Rack::Files` constant on Rack >= 2.1 (@janko)

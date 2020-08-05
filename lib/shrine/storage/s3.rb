@@ -103,7 +103,7 @@ class Shrine
       #
       # [`Aws::S3::Object#get`]: http://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/S3/Object.html#get-instance_method
       def open(id, rewindable: true, **options)
-        chunks, length = get_object(object(id), options)
+        chunks, length = get(object(id), options)
 
         Down::ChunkedIO.new(chunks: chunks, rewindable: rewindable, size: length)
       rescue Aws::S3::Errors::NoSuchKey
@@ -279,22 +279,36 @@ class Shrine
         end
       end
 
-      # Aws::S3::Object#get doesn't allow us to get the content length of the
-      # object before the content is downloaded, so we hack our way around it.
-      def get_object(object, params)
-        req = client.build_request(:get_object, bucket: bucket.name, key: object.key, **params)
+      if Gem::Version.new(Aws::CORE_GEM_VERSION) >= Gem::Version.new("3.104.0")
+        def get(object, params)
+          enum = object.enum_for(:get, **params)
 
-        body = req.enum_for(:send_request)
-        begin
-          body.peek # start the request
-        rescue StopIteration
-          # the S3 object is empty
+          begin
+            content_length = Integer(enum.peek.last["content-length"])
+          rescue StopIteration
+            content_length = 0
+          end
+
+          chunks = Enumerator.new { |y| loop { y << enum.next.first } }
+
+          [chunks, content_length]
         end
+      else
+        def get(object, params)
+          req = client.build_request(:get_object, bucket: bucket.name, key: object.key, **params)
 
-        content_length = Integer(req.context.http_response.headers["Content-Length"])
-        chunks         = Enumerator.new { |y| loop { y << body.next } }
+          body = req.enum_for(:send_request)
+          begin
+            body.peek # start the request
+          rescue StopIteration
+            # the S3 object is empty
+          end
 
-        [chunks, content_length]
+          content_length = Integer(req.context.http_response.headers["Content-Length"])
+          chunks         = Enumerator.new { |y| loop { y << body.next } }
+
+          [chunks, content_length]
+        end
       end
 
       # The file is copyable if it's on S3 and on the same Amazon account.
