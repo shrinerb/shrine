@@ -1,4 +1,4 @@
-## master
+## 3.2.2 (2020-08-05)
 
 * `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
 
