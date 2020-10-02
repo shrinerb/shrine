@@ -30,7 +30,7 @@ describe Shrine::Plugins::Mirroring do
       end
 
       it "forwards options to the mirror upload" do
-        @shrine.expects(:upload).with do |file, mirror, **options|
+        @shrine.expects(:upload).with do |file, mirror, options|
           mirror == :other_store && options[:foo] == "bar"
         end
 
