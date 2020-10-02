@@ -85,7 +85,7 @@ class Shrine
           each_mirror do |mirror|
             rewind if opened?
 
-            shrine_class.upload(self, mirror, **options.merge(location: id, close: false, action: :mirror))
+            shrine_class.upload(self, mirror, **options, location: id, close: false, action: :mirror)
           end
         ensure
           if opened? && !previously_opened
