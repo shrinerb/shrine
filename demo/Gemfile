@@ -30,7 +30,6 @@ gem "pry-byebug"
 
 # Testing
 gem "minitest"
-gem "capybara"
-gem "chromedriver-helper"
-gem "selenium-webdriver"
+gem "capybara", "~> 3.33"
+gem "cuprite"
 gem "rake"

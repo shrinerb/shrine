@@ -5,25 +5,19 @@ ENV["MT_NO_EXPECTATIONS"] = "1" # disable Minitest's expectations monkey-patches
 require "minitest/autorun"
 require "minitest/pride"
 
-require "selenium/webdriver"
 require "capybara"
 require "capybara/dsl"
 require "capybara/minitest"
+require "capybara/cuprite"
 
 require "./app"
 require "sucker_punch/testing/inline"
 
-Capybara.register_driver :headless_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w(headless disable-gpu) }
-  )
-
-  Capybara::Selenium::Driver.new app,
-    browser: :chrome,
-    desired_capabilities: capabilities
+Capybara.register_driver :cuprite do |app|
+  Capybara::Cuprite::Driver.new(app, window_size: [1200, 800])
 end
 
-Capybara.default_driver = :headless_chrome
+Capybara.default_driver = :cuprite
 Capybara.app = ShrineDemo
 Capybara.ignore_hidden_elements = false
 
@@ -33,8 +27,8 @@ class Minitest::Test
 
   def teardown
     Capybara.reset_sessions!
-    DB.from(:photos).truncate
-    DB.from(:albums).truncate
+    DB[:photos].truncate
+    DB[:albums].truncate
   end
 
   def fixture(filename)
