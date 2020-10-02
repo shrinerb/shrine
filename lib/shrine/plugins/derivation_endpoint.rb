@@ -392,6 +392,7 @@ class Shrine
       options[:type]        = request.params["type"]        if request.params["type"]
       options[:disposition] = request.params["disposition"] if request.params["disposition"]
       options[:filename]    = request.params["filename"]    if request.params["filename"]
+      options[:version]     = request.params["version"]     if request.params["version"]
       options[:expires_in]  = expires_in(request)           if request.params["expires_at"]
 
       derivation = uploaded_file.derivation(name, *args, **options)

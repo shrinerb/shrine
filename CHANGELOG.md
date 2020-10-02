@@ -1,5 +1,7 @@
 ## master
 
+* `derivation_endpoint` – Apply `version` URL option in derivation endpoint (@janko)
+
 * `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
 
 * `remove_attachment` – Delete removed file if a new file was attached right after removal (@janko)
