@@ -18,7 +18,7 @@ describe Shrine::Storage::Linter do
     end
 
     it "takes into account that storage can modify location" do
-      @storage.instance_eval { def upload(io, id, *); id << "-modified"; super; end }
+      @storage.instance_eval { def upload(io, id, **); id << "-modified"; super; end }
       @linter.call
     end
   end
@@ -145,13 +145,13 @@ describe Shrine::Storage::Linter do
   end
 
   it "works for storages that close files on upload" do
-    @storage.instance_eval { def upload(io, id, *); super; io.close; end }
+    @storage.instance_eval { def upload(io, id, **); super; io.close; end }
     @linter.call
   end
 
   it "accounts for storages which cannot write immediately to previously used location" do
     @storage.instance_eval do
-      def upload(io, id, *)
+      def upload(io, id, **)
         @uploaded ||= []
         raise if @uploaded.include?(id)
         super
@@ -168,7 +168,7 @@ describe Shrine::Storage::Linter do
   end
 
   it "doesn't pass any file extensions" do
-    @storage.instance_eval { def upload(io, id, *); raise if id.include?("."); super; end }
+    @storage.instance_eval { def upload(io, id, **); raise if id.include?("."); super; end }
     @linter.call
   end
 end

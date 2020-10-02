@@ -43,10 +43,10 @@ describe Shrine::Plugins::UploadEndpoint do
   end
 
   it "doesn't accept more than one file" do
-    response = app.post "/", multipart: HTTP::FormData.create("files[]": [
+    response = app.post "/", multipart: HTTP::FormData.create({ "files[]": [
       HTTP::FormData::File.new(image.path),
       HTTP::FormData::File.new(image.path),
-    ])
+    ] })
     assert_equal 400, response.status
     assert_equal "Too Many Files", response.body_binary
   end
@@ -84,7 +84,7 @@ describe Shrine::Plugins::UploadEndpoint do
 
   it "handles filenames with UTF-8 characters" do
     filename = "über_pdf_with_1337%_leetness.pdf"
-    form = HTTP::FormData.create(file: HTTP::FormData::Part.new("", filename: filename))
+    form = HTTP::FormData.create({ file: HTTP::FormData::Part.new("", filename: filename) })
     response = app.post "/", multipart: { input: form.to_s }, headers: {"Content-Type" => form.content_type}
     assert_equal 200, response.status
     uploaded_file = @shrine.uploaded_file(response.body_json)
@@ -183,9 +183,9 @@ describe Shrine::Plugins::UploadEndpoint do
 
   describe "Shrine.upload_response" do
     it "returns the Rack response triple" do
-      form_data = HTTP::FormData.create(
+      form_data = HTTP::FormData.create({
         file: HTTP::FormData::Part.new("content", filename: "foo.txt")
-      )
+      })
 
       env = {
         "REQUEST_METHOD" => "POST",
@@ -204,9 +204,9 @@ describe Shrine::Plugins::UploadEndpoint do
     end
 
     it "accepts additional upload endpoint options" do
-      form_data = HTTP::FormData.create(
+      form_data = HTTP::FormData.create({
         file: HTTP::FormData::Part.new("content", filename: "foo.txt")
-      )
+      })
 
       env = {
         "REQUEST_METHOD" => "POST",
