@@ -50,7 +50,7 @@ Shrine.plugin :mirroring, mirror: { ... }, delete: false
 You can have mirroring performed in a background job:
 
 ```rb
-Shrine.mirror_upload_block do |file|
+Shrine.mirror_upload_block do |file, **options|
   MirrorUploadJob.perform_async(file.shrine_class.name, file.data)
 end
 
