@@ -47,6 +47,7 @@ title: Extensions
 | Gem                                                             | Description                                                                     |
 | :-----                                                          | :-------                                                                        |
 | [ckeditor](https://github.com/galetahub/ckeditor)               | Integration for [CKEditor](https://ckeditor.com/ckeditor-4/)                    |
+| [faster_s3_url](https://github.com/jrochkind/faster_s3_url)     | Optimized generation of public and presigned AWS S3 GET URLs                    |
 | [imgproxy](https://github.com/imgproxy/imgproxy.rb)             | Integration for [imgproxy](https://github.com/imgproxy/imgproxy)                |
 | [rails_admin](https://github.com/sferik/rails_admin)            | Integration for [RailsAdmin](https://github.com/sferik/rails_admin)             |
 | [uppy-s3_multipart](https://github.com/janko/uppy-s3_multipart) | Integration for [Uppy AWS S3 Multipart](https://uppy.io/docs/aws-s3-multipart/) |
