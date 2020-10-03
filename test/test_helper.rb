@@ -1,4 +1,4 @@
-Warning[:deprecated] = true
+Warning[:deprecated] = true if RUBY_VERSION >= "2.7"
 
 require "bundler/setup"
 
