@@ -34,6 +34,8 @@ uploaded_file.metadata["page_count"] #=> 30
 uploaded_file.page_count #=> 30
 ```
 
+### Skipping nil values
+
 By default, if your block returns `nil` then the `nil` value will be stored into
 metadata. If you do not want to store anything when your block returns nil, you
 can use the `skip_nil: true` option:

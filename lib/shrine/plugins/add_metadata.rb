@@ -9,9 +9,8 @@ class Shrine
       end
 
       module ClassMethods
-        def add_metadata(name = nil, **method_opts, &block)
-          default_opts = { skip_nil: false }
-          opts[:add_metadata][:definitions] << [name, default_opts.merge(method_opts), block]
+        def add_metadata(name = nil, **options, &block)
+          opts[:add_metadata][:definitions] << [name, options, block]
 
           metadata_method(name) if name
         end
@@ -41,10 +40,10 @@ class Shrine
         private
 
         def extract_custom_metadata(io, **options)
-          opts[:add_metadata][:definitions].each do |name, opts, block|
+          opts[:add_metadata][:definitions].each do |name, definition_options, block|
             result = instance_exec(io, **options, &block)
 
-            if result.nil? && opts[:skip_nil]
+            if result.nil? && definition_options[:skip_nil]
               # Do not store this metadata
             elsif name
               options[:metadata].merge! name.to_s => result

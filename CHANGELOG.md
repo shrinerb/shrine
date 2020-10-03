@@ -1,5 +1,7 @@
 ## master
 
+* `add_metadata` – Add `:skip_nil` option for excluding metadata keys whose values are nil (@renchap)
+
 * `store_dimensions` – Add `:auto_extraction` option for disabling automatically extracting dimensions on upload (@renchap)
 
 * `mirroring` – Forward original upload options when mirroring upload (@corneverbruggen)
