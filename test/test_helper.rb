@@ -1,3 +1,5 @@
+Warning[:deprecated] = true
+
 require "bundler/setup"
 
 if ENV["COVERAGE"]
