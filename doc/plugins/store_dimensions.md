@@ -72,7 +72,15 @@ Shrine.dimensions(io) #=> [300, 400] (calls the defined analyzer)
 Shrine.dimensions_analyzers[:fastimage].call(io) #=> [300, 400] (calls a built-in analyzer)
 ```
 
-If you want to have access to those methods but not automatically add the metadata, you can setup this plugin with the `auto_extraction: false` option.
+### Disabling auto-extraction
+
+If you want to use the dimensions extraction methods but not automatically
+extract dimensions on upload, you can setup this plugin with the
+`auto_extraction: false` option.
+
+```rb
+plugin :store_dimensions, auto_extraction: false
+```
 
 ## Errors
 

@@ -72,14 +72,12 @@ class Shrine
 
       module InstanceMethods
         def extract_metadata(io, **options)
-          if self.class.opts[:store_dimensions][:auto_extraction]
-            # We update the metadata with "width" and "height".
-            width, height = self.class.extract_dimensions(io)
+          return super unless opts[:store_dimensions][:auto_extraction]
 
-            super.merge!("width" => width, "height" => height)
-          else
-            super
-          end
+          # We update the metadata with "width" and "height".
+          width, height = self.class.extract_dimensions(io)
+
+          super.merge!("width" => width, "height" => height)
         end
       end
 

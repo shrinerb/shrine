@@ -1,5 +1,7 @@
 ## master
 
+* `store_dimensions` – Add `:auto_extraction` option for disabling automatically extracting dimensions on upload (@renchap)
+
 * `mirroring` – Forward original upload options when mirroring upload (@corneverbruggen)
 
 * `derivation_endpoint` – Apply `version` URL option in derivation endpoint (@janko)

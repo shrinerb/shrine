@@ -211,16 +211,11 @@ describe Shrine::Plugins::StoreDimensions do
     end
   end
 
-  describe "auto_extraction: false" do
-    it "does not add metadata" do
-      @shrine.plugin :store_dimensions, auto_extraction: false
-      uploaded_file = @uploader.upload(image)
-      assert_nil uploaded_file.metadata["width"]
-      assert_nil uploaded_file.metadata["height"]
-    end
-
-    it "provides method to extract dimensions from files" do
-      assert_equal [100, 67], @shrine.extract_dimensions(image)
-    end
+  it "can disable automatically extracting dimensions on upload" do
+    @shrine.plugin :store_dimensions, auto_extraction: false
+    uploaded_file = @uploader.upload(image)
+    assert_nil uploaded_file.metadata["width"]
+    assert_nil uploaded_file.metadata["height"]
+    assert_equal [100, 67], @shrine.extract_dimensions(image)
   end
 end
