@@ -230,6 +230,18 @@ describe Shrine::Plugins::Activerecord do
         assert_equal file, @user.avatar
       end
 
+      it "preserves state other than the file" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+        @user.avatar_attacher(cache: :other_cache)
+        @user.avatar_attacher.context[:foo] = "bar"
+        @user.reload
+
+        assert_equal :other_cache, @user.avatar_attacher.cache_key
+        assert_equal "bar",        @user.avatar_attacher.context[:foo]
+      end
+
       it "returns self" do
         @user.class.include @shrine::Attachment.new(:avatar)
 

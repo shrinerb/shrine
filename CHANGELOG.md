@@ -1,5 +1,9 @@
 ## master
 
+* `sequel` – Call `Attacher#reload` in `Sequel::Model#reload`, which keeps rest of attacher state (@janko, @jrochkind)
+
+* `activerecord` – Call `Attacher#reload` in `ActiveRecord::Base#reload`, which keeps rest of attacher state (@janko, @jrochkind)
+
 * `add_metadata` – Add `:skip_nil` option for excluding metadata keys whose values are nil (@renchap)
 
 * `store_dimensions` – Add `:auto_extraction` option for disabling automatically extracting dimensions on upload (@renchap)
