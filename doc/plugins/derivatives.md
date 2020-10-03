@@ -464,6 +464,11 @@ For adding a single derivative, you can also use the singular
 attacher.add_derivative(:thumb, thumbnail_file)
 ```
 
+> Note that new derivatives will replace any existing derivatives living under
+the same key, but won't delete them. If this is your case, make sure to save a
+reference to the old derivatives before assigning new ones, and then delete
+them after persisting the change.
+
 Any options passed to `Attacher#add_derivative(s)` will be forwarded to
 [`Attacher#upload_derivatives`](#uploading-derivatives).
 
@@ -571,6 +576,11 @@ attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile> } }
 attacher.merge_derivatives attacher.upload_derivatives({ nested: { two: two_file } })
 attacher.derivatives #=> { nested: { one: #<Shrine::UploadedFile>, two: #<Shrine::UploadedFile> } }
 ```
+
+> Note that new derivatives will replace any existing derivatives living under
+the same key, but won't delete them. If this is your case, make sure to save a
+reference to the old derivatives before assigning new ones, and then delete
+them after persisting the change.
 
 The `Attacher#merge_derivatives` method is thread-safe.
 
