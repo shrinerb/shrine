@@ -50,6 +50,20 @@ describe Shrine::Plugins::AddMetadata do
       end
     end
 
+    describe "with skip_nil option" do
+      it "does not ignore not nil values" do
+        @shrine.add_metadata(:custom, skip_nil: true) { false }
+        metadata = @uploader.extract_metadata(fakeio)
+        assert_equal false, metadata.fetch("custom")
+      end
+
+      it "ignores nil" do
+        @shrine.add_metadata(:custom, skip_nil: true) { nil }
+        metadata = @uploader.extract_metadata(fakeio)
+        assert !metadata.has_key?("custom")
+      end
+    end
+
     it "executes inside uploader and forwards correct arguments" do
       minitest = self
       input = fakeio
