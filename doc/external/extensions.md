@@ -28,6 +28,7 @@ title: Extensions
 | :----                                                                                       | :--------                                                             |
 | [administrate-field-shrine](https://github.com/catsky/administrate-field-shrine)            | Plugin for [Administrate](https://github.com/thoughtbot/administrate) |
 | [rails_admin_shrine](https://github.com/iquest/rails_admin_shrine)                          | Plugin for [RailsAdmin](https://github.com/sferik/rails_admin)        |
+| [shrine-blurhash](https://github.com/renchap/shrine-blurhash)                               | Plugin for computing [Blurhash](https://blurha.sh/) on images         |
 | [shrine-color](https://github.com/jnylen/shrine-color)                                      | Plugin for finding dominant color in an image                         |
 | [shrine-configurable_storage](https://github.com/SleeplessByte/shrine-configurable_storage) | Plugin for lazy storage registration                                  |
 | [shrine-content_addressable](https://github.com/SleeplessByte/shrine-content_addressable)   | Plugin for generating content addressable locations                   |
