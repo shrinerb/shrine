@@ -739,7 +739,7 @@ class Shrine
     def verify_signature(string, signature)
       if signature.nil?
         fail InvalidSignature, "missing \"signature\" param"
-      elsif signature != generate_signature(string)
+      elsif !Rack::Utils.secure_compare(signature, generate_signature(string))
         fail InvalidSignature, "provided signature does not match the calculated signature"
       end
     end

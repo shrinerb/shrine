@@ -1,5 +1,7 @@
 ## master
 
+* `derivation_endpoint` – Avoid possibility of timing attacks when comparing signatures (@esparta)
+
 * `derivatives` – Avoid downloading the attached file when calling default no-op processor (@janko)
 
 * `derivatives` – Add `:download` processor setting for skipping downloading source file (@jrochkind, @janko)
