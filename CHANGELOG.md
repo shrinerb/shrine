@@ -22,8 +22,6 @@
 
 * `derivation_endpoint` – Apply `version` URL option in derivation endpoint (@janko)
 
-* `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
-
 * `remove_attachment` – Delete removed file if a new file was attached right after removal (@janko)
 
 * `upload_endpoint` – Fix `Shrine.upload_response` not working in a Rails controller (@pldavid2)
@@ -35,6 +33,10 @@
 * `s3` – Add back support for client-side encryption (@janko)
 
 * `memory` – Ensure `Memory#open` returns content in original encoding (@jrochkind)
+
+## 3.2.2 (2020-08-05)
+
+* `s3` – Fix `S3#open` not working on aws-sdk-core 3.104 and above (@janko)
 
 ## 3.2.1 (2020-01-12)
 
