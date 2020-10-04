@@ -1,8 +1,8 @@
-## master
+## 3.3.0 (2020-10-04)
 
 * `s3` - Support new `Aws::S3::EncryptionV2::Client` for client-side encryption (@janko)
 
-* `derivation_endpoint` – Avoid possibility of timing attacks when comparing signatures (@esparta)
+* `derivation_endpoint` – Reduce possibility of timing attacks when comparing signatures (@esparta)
 
 * `derivatives` – Avoid downloading the attached file when calling default no-op processor (@janko)
 
