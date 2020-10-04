@@ -812,6 +812,38 @@ describe Shrine::Plugins::Derivatives do
         assert_match /^#{Dir.tmpdir}/, result[:path].read
       end
 
+      it "does not download source UploadedFile with raw_source" do
+        @attacher.class.derivatives :original_class, raw_source: true do |original|
+          { original_class: StringIO.new(original.class.inspect) }
+        end
+
+        file   = @attacher.upload(fakeio("file"))
+        result = @attacher.process_derivatives(:original_class, file)
+
+        assert_match /::UploadedFile\Z/, result[:original_class].read
+      end
+
+      it "downloads source non-file IO" do
+        @attacher.class.derivatives :path do |original|
+          { path: original.respond_to?(:path) ? StringIO.new(original.path) : nil }
+        end
+
+        result = @attacher.process_derivatives(:path, StringIO.new("fake content"))
+
+        assert result[:path]
+        assert_match /^#{Dir.tmpdir}/, result[:path].read
+      end
+
+      it "does not download source StringIO with raw_source" do
+        @attacher.class.derivatives :original_class, raw_source: true do |original|
+          { original_class: StringIO.new(original.class.inspect) }
+        end
+
+        result = @attacher.process_derivatives(:original_class, StringIO.new("stringIO"))
+
+        assert_equal "StringIO", result[:original_class].read
+      end
+
       it "forwards additional options" do
         @attacher.class.derivatives :options do |original, **options|
           { options: StringIO.new(options.to_s) }

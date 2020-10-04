@@ -401,7 +401,8 @@ attacher.process_derivatives(:my_processor) # downloads attached file and passes
 
 If you want to use a different source file, you can pass it in to the process
 call. Typically you'd pass a local file on disk. If you pass a
-`Shrine::UploadedFile` object, it will be automatically downloaded to disk.
+`Shrine::UploadedFile` object or another IO-like object, it will be
+automatically downloaded/copied to a local TempFile on disk.
 
 ```rb
 # named processor:
@@ -420,6 +421,17 @@ attacher.file.download do |original|
   attacher.process_derivatives(:colors,     original)
 end
 ```
+
+If a processor would like to avoid the possibly expensive download/copy, becuase
+it does not require a local file copy, it can be registered with raw_source: true:
+
+```rb
+Attacher.derivatives :my_processor, raw_source: true do |source|
+  source #=> Could be File, Shrine::UploadedFile, or other IO-like object
+  shrine_class.with_file(source) do |file|
+    # can force download/copy if necessary with `with_file`,
+  end
+end
 
 ## Adding derivatives
 
