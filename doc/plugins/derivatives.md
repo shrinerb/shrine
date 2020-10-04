@@ -422,16 +422,19 @@ attacher.file.download do |original|
 end
 ```
 
-If a processor would like to avoid the possibly expensive download/copy, becuase
-it does not require a local file copy, it can be registered with raw_source: true:
+If a processor might not always need a local source file, you avoid a
+potentially expensive download/copy by registering the processor with
+`download: false`, in which case the source file will be passed to the
+processor as is.
 
 ```rb
-Attacher.derivatives :my_processor, raw_source: true do |source|
+Attacher.derivatives :my_processor, download: false do |source|
   source #=> Could be File, Shrine::UploadedFile, or other IO-like object
   shrine_class.with_file(source) do |file|
     # can force download/copy if necessary with `with_file`,
   end
 end
+```
 
 ## Adding derivatives
 

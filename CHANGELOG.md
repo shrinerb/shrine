@@ -1,5 +1,11 @@
 ## master
 
+* `derivatives` – Avoid downloading the attached file when calling default no-op processor (@janko)
+
+* `derivatives` – Add `:download` processor setting for skipping downloading source file (@jrochkind, @janko)
+
+* `derivatives` – Copy non-file source IO objects into local file before passing them to the processor (@jrochkind)
+
 * `sequel` – Call `Attacher#reload` in `Sequel::Model#reload`, which keeps rest of attacher state (@janko, @jrochkind)
 
 * `activerecord` – Call `Attacher#reload` in `ActiveRecord::Base#reload`, which keeps rest of attacher state (@janko, @jrochkind)

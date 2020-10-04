@@ -4,8 +4,6 @@ class Shrine
   module Plugins
     # Documentation can be found on https://shrinerb.com/docs/plugins/derivatives
     module Derivatives
-      NOOP_PROCESSOR = -> (*) { Hash.new }
-
       LOG_SUBSCRIBER = -> (event) do
         Shrine.logger.info "Derivatives (#{event.duration}ms) – #{{
           processor:         event[:processor],
@@ -21,7 +19,7 @@ class Shrine
       end
 
       def self.configure(uploader, log_subscriber: LOG_SUBSCRIBER, **opts)
-        uploader.opts[:derivatives] ||= { processors: {}, processor_raw_source: {}, storage: proc { store_key } }
+        uploader.opts[:derivatives] ||= { processors: {}, processor_settings: {}, storage: proc { store_key } }
         uploader.opts[:derivatives].merge!(opts)
 
         # instrumentation plugin integration
@@ -53,31 +51,35 @@ class Shrine
         #       # ...
         #     end
         #
-        # Normally sources are normalized to local files before passing to processor;
-        # if this processor would like to receive raw input -- which could be
-        # a File object, another IO object, or an UploadedFile, then register
-        # with raw_source: true:
+        # By default, Shrine will convert the source IO object into a file
+        # before it's passed to the processor block. You can set `download:
+        # false` to pass the source IO object to the processor block as is.
         #
-        #     Attacher.derivatives_processor :thumbnails, raw_source: true do |original|
+        #     Attacher.derivatives_processor :thumbnails, download: false do |original|
         #       # ...
         #     end
         #
-        # This can be useful if you'd like to defer or avoid a possibly expensive download
-        # operation for processor logic that does not require it.
-        def derivatives_processor(name = :default, raw_source: false, &block)
+        # This can be useful if you'd like to defer or avoid a possibly
+        # expensive download operation for processor logic that does not
+        # require it.
+        def derivatives_processor(name = :default, download: true, &block)
           if block
             shrine_class.derivatives_options[:processors][name.to_sym] = block
-            shrine_class.derivatives_options[:processor_raw_source][name.to_sym] = raw_source
+            shrine_class.derivatives_options[:processor_settings][name.to_sym] = { download: download }
           else
-            processor   = shrine_class.derivatives_options[:processors][name.to_sym]
-            processor ||= NOOP_PROCESSOR if name == :default
-
-            fail Error, "derivatives processor #{name.inspect} not registered" unless processor
-
-            processor
+            shrine_class.derivatives_options[:processors].fetch(name.to_sym) do
+              fail Error, "derivatives processor #{name.inspect} not registered" unless name == :default
+            end
           end
         end
         alias derivatives derivatives_processor
+
+        # Returns settings for the given derivatives processor.
+        #
+        #     Attacher.derivatives_processor_settings(:thumbnails) #=> { download: true }
+        def derivatives_processor_settings(name)
+          shrine_class.derivatives_options[:processor_settings][name.to_sym] || {}
+        end
 
         # Specifies default storage to which derivatives will be uploaded.
         #
@@ -282,14 +284,14 @@ class Shrine
 
           source ||= file!
 
-          raw_source_mode = self.class.shrine_class.derivatives_options[:processor_raw_source][processor_name]
+          processor_settings = self.class.derivatives_processor_settings(processor_name) || {}
 
-          if raw_source_mode
-            _process_derivatives(processor_name, source, **options)
-          else
+          if processor_settings[:download]
             shrine_class.with_file(source) do |file|
               _process_derivatives(processor_name, file, **options)
             end
+          else
+            _process_derivatives(processor_name, source, **options)
           end
         end
 
@@ -487,6 +489,8 @@ class Shrine
         # Calls the derivatives processor with the source file and options.
         def _process_derivatives(processor_name, source, **options)
           processor = self.class.derivatives_processor(processor_name)
+
+          return {} unless processor
 
           result = instrument_derivatives(processor_name, source, options) do
             instance_exec(source, **options, &processor)
