@@ -60,7 +60,7 @@ Shrine::Plugins::Backgrounding::AttacherMethods
 <a name='method-c-new'></a>
 <div class='synopsis'>
 <span class='name'>new</span>
-<span class='arguments'>(*args)</span>
+<span class='arguments'>(**args)</span>
 
 </div>
 <div class='description'>
@@ -72,7 +72,7 @@ Shrine::Plugins::Backgrounding::AttacherMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-c-new-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;<span class="line-num">40</span>   <span class="ruby-keyword">super</span>&#x000A;<span class="line-num">41</span>   <span class="ruby-ivar">@destroy_block</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">destroy_block</span>&#x000A;<span class="line-num">42</span>   <span class="ruby-ivar">@promote_block</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">promote_block</span>&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-c-new-source'>   <span class="ruby-comment"># File lib/shrine/plugins/backgrounding.rb</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">args</span>)&#x000A;<span class="line-num">40</span>   <span class="ruby-keyword">super</span>(<span class="ruby-operator">**</span><span class="ruby-identifier">args</span>)&#x000A;<span class="line-num">41</span>   <span class="ruby-ivar">@destroy_block</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">destroy_block</span>&#x000A;<span class="line-num">42</span>   <span class="ruby-ivar">@promote_block</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">promote_block</span>&#x000A;<span class="line-num">43</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <h2>Public Instance methods</h2>

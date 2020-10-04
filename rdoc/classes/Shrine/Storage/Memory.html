@@ -108,7 +108,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-clear-21-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-clear-21-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;<span class="line-num">43</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-clear-21-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">44</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">clear!</span>&#x000A;<span class="line-num">45</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">clear</span>&#x000A;<span class="line-num">46</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-delete'>
@@ -125,7 +125,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-delete-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">34</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-delete-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">35</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">36</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-delete_prefixed'>
@@ -142,7 +142,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-delete_prefixed-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-delete_prefixed-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">37</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">38</span>   <span class="ruby-identifier">delete_prefix</span> = <span class="ruby-identifier">delete_prefix</span>.<span class="ruby-identifier">chomp</span>(<span class="ruby-string">&quot;/&quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="line-num">39</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete_if</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">_value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-identifier">delete_prefix</span>) }&#x000A;<span class="line-num">40</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-delete_prefixed-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">39</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">delete_prefixed</span>(<span class="ruby-identifier">delete_prefix</span>)&#x000A;<span class="line-num">40</span>   <span class="ruby-identifier">delete_prefix</span> = <span class="ruby-identifier">delete_prefix</span>.<span class="ruby-identifier">chomp</span>(<span class="ruby-string">&quot;/&quot;</span>) <span class="ruby-operator">+</span> <span class="ruby-string">&quot;/&quot;</span>&#x000A;<span class="line-num">41</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">delete_if</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">_value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">key</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-identifier">delete_prefix</span>) }&#x000A;<span class="line-num">42</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-exists-3F'>
@@ -159,14 +159,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-exists-3F-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-exists-3F-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">26</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-exists-3F-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">27</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">exists?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">28</span>   <span class="ruby-identifier">store</span>.<span class="ruby-identifier">key?</span>(<span class="ruby-identifier">id</span>)&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-open'>
 <a name='method-i-open'></a>
 <div class='synopsis'>
 <span class='name'>open</span>
-<span class='arguments'>(id, *)</span>
+<span class='arguments'>(id, **)</span>
 
 </div>
 <div class='description'>
@@ -176,14 +176,14 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-open-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-open-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">open</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">20</span>   <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="line-num">21</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">KeyError</span>&#x000A;<span class="line-num">22</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>, <span class="ruby-node">&quot;file #{id.inspect} not found on storage&quot;</span>&#x000A;<span class="line-num">23</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-open-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">19</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">open</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num">20</span>   <span class="ruby-identifier">io</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">store</span>.<span class="ruby-identifier">fetch</span>(<span class="ruby-identifier">id</span>))&#x000A;<span class="line-num">21</span>   <span class="ruby-identifier">io</span>.<span class="ruby-identifier">set_encoding</span>(<span class="ruby-identifier">io</span>.<span class="ruby-identifier">string</span>.<span class="ruby-identifier">encoding</span>) <span class="ruby-comment"># Ruby 2.7.0 – https://bugs.ruby-lang.org/issues/16497</span>&#x000A;<span class="line-num">22</span>   <span class="ruby-identifier">io</span>&#x000A;<span class="line-num">23</span> <span class="ruby-keyword">rescue</span> <span class="ruby-constant">KeyError</span>&#x000A;<span class="line-num">24</span>   <span class="ruby-identifier">raise</span> <span class="ruby-constant">Shrine</span><span class="ruby-operator">::</span><span class="ruby-constant">FileNotFound</span>, <span class="ruby-node">&quot;file #{id.inspect} not found on storage&quot;</span>&#x000A;<span class="line-num">25</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-upload'>
 <a name='method-i-upload'></a>
 <div class='synopsis'>
 <span class='name'>upload</span>
-<span class='arguments'>(io, id, *)</span>
+<span class='arguments'>(io, id, **)</span>
 
 </div>
 <div class='description'>
@@ -193,7 +193,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-upload-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-upload-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">store</span>[<span class="ruby-identifier">id</span>] = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-upload-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">15</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">upload</span>(<span class="ruby-identifier">io</span>, <span class="ruby-identifier">id</span>, <span class="ruby-operator">**</span>)&#x000A;<span class="line-num">16</span>   <span class="ruby-identifier">store</span>[<span class="ruby-identifier">id</span>] = <span class="ruby-identifier">io</span>.<span class="ruby-identifier">read</span>&#x000A;<span class="line-num">17</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-url'>
@@ -210,7 +210,7 @@ Superclass:
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-url-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-url-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">29</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">30</span>   <span class="ruby-node">&quot;memory://#{id}&quot;</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-url-source'>   <span class="ruby-comment"># File lib/shrine/storage/memory.rb</span>&#x000A;<span class="line-num">31</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">url</span>(<span class="ruby-identifier">id</span>, <span class="ruby-operator">*</span>)&#x000A;<span class="line-num">32</span>   <span class="ruby-node">&quot;memory://#{id}&quot;</span>&#x000A;<span class="line-num">33</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 </div>

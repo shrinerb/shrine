@@ -30,12 +30,54 @@ CHANGELOG.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2020-01-12 21:03:58 +0100</span>
+<span class='datetime'>2020-10-04 21:47:37 +0200</span>
 </div>
 </div>
 <div id='content'>
 <div id='text'>
 <div id='description'>
+<h2 id="label-3.3.0+-282020-10-04-29">3.3.0 (2020-10-04)<span><a href="#label-3.3.0+-282020-10-04-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>s3</code> - Support new <code>Aws::S3::EncryptionV2::Client</code> for client-side encryption (@janko)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Reduce possibility of timing attacks when comparing signatures (@esparta)</p>
+</li><li>
+<p><code>derivatives</code> – Avoid downloading the attached file when calling default no-op processor (@janko)</p>
+</li><li>
+<p><code>derivatives</code> – Add <code>:download</code> processor setting for skipping downloading source file (@jrochkind, @janko)</p>
+</li><li>
+<p><code>derivatives</code> – Copy non-file source IO objects into local file before passing them to the processor (@jrochkind)</p>
+</li><li>
+<p><code>sequel</code> – Call <code>Attacher#reload</code> in <code>Sequel::Model#reload</code>, which keeps rest of attacher state (@janko, @jrochkind)</p>
+</li><li>
+<p><code>activerecord</code> – Call <code>Attacher#reload</code> in <code>ActiveRecord::Base#reload</code>, which keeps rest of attacher state (@janko, @jrochkind)</p>
+</li><li>
+<p><code>add_metadata</code> – Add <code>:skip_nil</code> option for excluding metadata keys whose values are nil (@renchap)</p>
+</li><li>
+<p><code>store_dimensions</code> – Add <code>:auto_extraction</code> option for disabling automatically extracting dimensions on upload (@renchap)</p>
+</li><li>
+<p><code>mirroring</code> – Forward original upload options when mirroring upload (@corneverbruggen)</p>
+</li><li>
+<p><code>derivation_endpoint</code> – Apply <code>version</code> URL option in derivation endpoint (@janko)</p>
+</li><li>
+<p><code>remove_attachment</code> – Delete removed file if a new file was attached right after removal (@janko)</p>
+</li><li>
+<p><code>upload_endpoint</code> – Fix <code>Shrine.upload_response</code> not working in a Rails controller (@pldavid2)</p>
+</li><li>
+<p><code>presign_endpoint</code> – Add <code>OPTIONS</code> route that newer versions of Uppy check (@janko)</p>
+</li><li>
+<p><code>derivatives</code> – Add <code>:create_on_promote</code> option for auto-creating derivatives on promotion (@janko)</p>
+</li><li>
+<p><code>s3</code> – Add back support for client-side encryption (@janko)</p>
+</li><li>
+<p><code>memory</code> – Ensure <code>Memory#open</code> returns content in original encoding (@jrochkind)</p>
+</li></ul>
+
+<h2 id="label-3.2.2+-282020-08-05-29">3.2.2 (2020-08-05)<span><a href="#label-3.2.2+-282020-08-05-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<ul><li>
+<p><code>s3</code> – Fix <code>S3#open</code> not working on aws-sdk-core 3.104 and above (@janko)</p>
+</li></ul>
+
 <h2 id="label-3.2.1+-282020-01-12-29">3.2.1 (2020-01-12)<span><a href="#label-3.2.1+-282020-01-12-29">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><code>derivation_endpoint</code> – Use <code>Rack::Files</code> constant on Rack &gt;= 2.1 (@janko)</p>
@@ -817,7 +859,7 @@ Last Update:
 </li><li>
 <p>Apply default storage options passed via <code>Attachment.new</code> in <code>backgrounding</code> plugin (@janko)</p>
 </li><li>
-<p>Fix S3 storage replacing spaces in filename with "+" symbols (@ndbroadbent)</p>
+<p>Fix S3 storage replacing spaces in filename with “+” symbols (@ndbroadbent)</p>
 </li><li>
 <p>Deprecate the <code>multi_delete</code> plugin (@janko)</p>
 </li><li>
@@ -1365,7 +1407,7 @@ Last Update:
 </li><li>
 <p>Close the <code>UploadedFile</code> on upload only if it was previously opened, which doesn&#39;t happen on S3 COPY (@reidab)</p>
 </li><li>
-<p>Fix <code>NameError</code> when silencing "missing record" errors in backgrounding (@janko)</p>
+<p>Fix <code>NameError</code> when silencing “missing record” errors in backgrounding (@janko)</p>
 </li></ul>
 
 <h2 id="label-1.2.0+-282016-01-26-29+-5Brelease+notes-5D">1.2.0 (2016-01-26) <a href="https://shrinerb.com/docs/release_notes/1.2.0">[release notes]</a><span><a href="#label-1.2.0+-282016-01-26-29+-5Brelease+notes-5D">&para;</a> <a href="#top">&uarr;</a></span></h2>

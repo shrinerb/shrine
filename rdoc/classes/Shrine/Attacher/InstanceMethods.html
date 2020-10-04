@@ -289,7 +289,7 @@ Shrine::Attacher::InstanceMethods
 <a class='source-toggle' href='#' onclick='toggleCode(&#39;method-i-change-source&#39;); return false'>
 [show source]
 </a>
-<pre id='method-i-change-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">219</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">220</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@file</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">file</span>&#x000A;<span class="line-num">221</span>   <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">222</span> <span class="ruby-keyword">end</span></pre>
+<pre id='method-i-change-source'>    <span class="ruby-comment"># File lib/shrine/attacher.rb</span>&#x000A;<span class="line-num">219</span> <span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">change</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">220</span>   <span class="ruby-ivar">@previous</span> = <span class="ruby-identifier">dup</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">change?</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">221</span>   <span class="ruby-identifier">set</span>(<span class="ruby-identifier">file</span>)&#x000A;<span class="line-num">222</span> <span class="ruby-keyword">end</span></pre>
 </div>
 </div>
 <div class='method public-instance' id='method-method-i-changed-3F'>

@@ -16,7 +16,6 @@
         <summary type="html"><![CDATA[<p>This blog post will test file name parsing issues when periods are present.</p> ]]></summary>
         <author>
             <name>Eric Nakagawa</name>
-            <email/>
             <uri>http://twitter.com/ericnakagawa</uri>
         </author>
     </entry>
@@ -28,7 +27,6 @@
         <summary type="html"><![CDATA[<p>This is a test post.</p> <p>A whole bunch of other information.</p> ]]></summary>
         <author>
             <name>Eric Nakagawa</name>
-            <email/>
             <uri>http://twitter.com/ericnakagawa</uri>
         </author>
     </entry>
@@ -42,7 +40,6 @@
 ]]></summary>
         <author>
             <name>Eric Nakagawa</name>
-            <email/>
             <uri>http://twitter.com/ericnakagawa</uri>
         </author>
     </entry>
@@ -55,7 +52,6 @@
 ]]></summary>
         <author>
             <name>Blog Author</name>
-            <email/>
             <uri>http://twitter.com/</uri>
         </author>
     </entry>
@@ -68,7 +64,6 @@
 ]]></summary>
         <author>
             <name>Blog Author</name>
-            <email/>
             <uri>http://twitter.com/</uri>
         </author>
     </entry>

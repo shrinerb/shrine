@@ -30,7 +30,7 @@ doc/advantages.md
 </div>
 <div class='last-update'>
 Last Update:
-<span class='datetime'>2019-12-17 14:32:51 +0100</span>
+<span class='datetime'>2020-10-02 18:59:19 +0200</span>
 </div>
 </div>
 <div id='content'>
@@ -72,7 +72,7 @@ Last Update:
 
 <p><a href="../../classes/Shrine.html"><code>Shrine</code></a> recommends a certain type of attachment flow, but it still offers good low-level abstractions that give you the flexibility to build your own flow.</p>
 
-<pre>uploaded_file = ImageUploader.upload(image, :store) # metadata extraction, upload location generation&#x000A;uploaded_file.id       #=&gt; &quot;44ccafc10ce6a4ff22829e8f579ee6b9.jpg&quot;&#x000A;uplaoded_file.metadata #=&gt; { ... extracted metadata ... }&#x000A;data = uploaded_file.to_json # serialization&#x000A;# ...&#x000A;uploaded_file = ImageUploader.uploaded_file(data) # deserialization&#x000A;&#x000A;uploaded_file.url #=&gt; &quot;https://...&quot;&#x000A;uploaded_file.download { |tempfile| ... } # streaming download&#x000A;uploaded_file.delete</pre>
+<pre>uploaded_file = ImageUploader.upload(image, :store) # metadata extraction, upload location generation&#x000A;uploaded_file.id       #=&gt; &quot;44ccafc10ce6a4ff22829e8f579ee6b9.jpg&quot;&#x000A;uploaded_file.metadata #=&gt; { ... extracted metadata ... }&#x000A;data = uploaded_file.to_json # serialization&#x000A;# ...&#x000A;uploaded_file = ImageUploader.uploaded_file(data) # deserialization&#x000A;&#x000A;uploaded_file.url #=&gt; &quot;https://...&quot;&#x000A;uploaded_file.download { |tempfile| ... } # streaming download&#x000A;uploaded_file.delete</pre>
 
 <h3 id="label-Dependencies">Dependencies<span><a href="#label-Dependencies">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
