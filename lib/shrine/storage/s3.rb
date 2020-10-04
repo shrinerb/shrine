@@ -9,6 +9,7 @@ require "down/chunked_io"
 require "content_disposition"
 
 require "uri"
+require "tempfile"
 
 class Shrine
   module Storage
@@ -342,7 +343,7 @@ class Shrine
         # Save the encryption client and continue initialization with normal
         # client.
         def initialize(client: nil, **options)
-          return super unless client.is_a?(Aws::S3::Encryption::Client)
+          return super unless client.class.name.start_with?("Aws::S3::Encryption")
 
           super(client: client.client, **options)
           @encryption_client = client
@@ -358,16 +359,24 @@ class Shrine
           encryption_client.put_object(body: io, bucket: bucket.name, key: object_key(id), **options)
         end
 
-        # Encryption client doesn't implement #head_object, so we use regular
-        # client for that. We also need to actually call `#get_object` for the
-        # encryption client to add the decrypt handler.
         def get(id, **options)
           return super unless encryption_client
 
-          content_length = client.head_object(bucket: bucket.name, key: object_key(id)).content_length
-          chunks         = encryption_client.enum_for(:get_object, bucket: bucket.name, key: object_key(id), **options)
+          # Encryption client v2 warns against streaming download, so we first
+          # download all content into a file.
+          tempfile = Tempfile.new("shrine-s3", binmode: true)
+          response = encryption_client.get_object(response_target: tempfile, bucket: bucket.name, key: object_key(id), **options)
+          tempfile.rewind
 
-          [chunks, content_length]
+          chunks = Enumerator.new do |yielder|
+            begin
+              yielder << tempfile.read(16*1024) until tempfile.eof?
+            ensure
+              tempfile.close!
+            end
+          end
+
+          [chunks, tempfile.size]
         end
       end
 

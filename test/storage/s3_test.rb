@@ -2,6 +2,7 @@ require "test_helper"
 require "shrine/storage/s3"
 require "shrine/storage/linter"
 require "uri"
+require "openssl"
 
 describe Shrine::Storage::S3 do
   def s3(**options)
@@ -13,6 +14,16 @@ describe Shrine::Storage::S3 do
     @shrine = Class.new(Shrine)
     @shrine.storages = { s3: @s3 }
     @uploader = @shrine.new(:s3)
+  end
+
+  def encryption_client
+    Aws::S3::EncryptionV2::Client.new(
+      encryption_key: OpenSSL::Cipher.new("AES-256-ECB").random_key,
+      key_wrap_schema: :aes_gcm,
+      content_encryption_schema: :aes_gcm_no_padding,
+      security_profile: :v2,
+      stub_responses: true,
+    )
   end
 
   describe "#initialize" do
@@ -29,11 +40,10 @@ describe Shrine::Storage::S3 do
     end
 
     it "accepts encryption :client" do
-      encryption_client = Aws::S3::Encryption::Client.new(encryption_key: "a" * 32, stub_responses: true)
       @s3 = s3(client: encryption_client)
-      assert_equal encryption_client,        @s3.encryption_client
-      assert_equal encryption_client.client, @s3.client
-      assert_equal encryption_client.client, @s3.bucket.client
+      assert_instance_of Aws::S3::EncryptionV2::Client, @s3.encryption_client
+      assert_instance_of Aws::S3::Client,               @s3.client
+      assert_instance_of Aws::S3::Client,               @s3.bucket.client
     end
   end
 
@@ -240,7 +250,7 @@ describe Shrine::Storage::S3 do
 
     it "works with encryption client" do
       @s3 = s3(
-        client: Aws::S3::Encryption::Client.new(encryption_key: "a" * 32, stub_responses: true), 
+        client: encryption_client,
         prefix: "prefix",
         multipart_threshold: { upload: 1 }, # test that we're avoiding multipart uploads
       )
@@ -252,11 +262,7 @@ describe Shrine::Storage::S3 do
       assert_equal "prefix/foo",    @s3.client.api_requests[0][:params][:key]
       assert_equal "public-read",   @s3.client.api_requests[0][:params][:acl]
 
-      @s3.client.stub_responses :get_object,
-        body:     @s3.client.api_requests[0][:params][:body].read,
-        metadata: @s3.client.api_requests[0][:params][:metadata].inject({}) { |h, (k, v)| h.merge(k => v.to_s) }
-
-      assert_equal "file", @s3.open("foo").read
+      assert_instance_of Aws::S3::EncryptionV2::IOEncrypter, @s3.client.api_requests[0][:params][:body]
     end
   end
 
@@ -310,30 +316,40 @@ describe Shrine::Storage::S3 do
 
     it "works with encryption client" do
       @s3 = s3(
-        client: Aws::S3::Encryption::Client.new(encryption_key: "a" * 32, stub_responses: true), 
+        client: encryption_client,
         prefix: "prefix",
         multipart_threshold: { upload: 1 }, # test that we're avoiding multipart uploads
       )
 
       @s3.upload(fakeio("file"), "foo")
 
-      @s3.client.stub_responses :head_object, content_length: 4
-      @s3.client.stub_responses :get_object,
-        body:     @s3.client.api_requests[0][:params][:body].read,
-        metadata: @s3.client.api_requests[0][:params][:metadata].inject({}) { |h, (k, v)| h.merge(k => v.to_s) }
+      content = @s3.client.api_requests[0][:params][:body].read
+
+      @s3.client.stub_responses(:get_object, -> (context) {
+        response = {
+          content_length: content.length,
+          metadata: @s3.client.api_requests[0][:params][:metadata].inject({}) { |h, (k, v)| h.merge(k => v.to_s) },
+        }
+
+        # encryption client sends a ranged request fetching the cipher auth tag
+        if context.params[:range]
+          bytes = Integer(context.params[:range][/\d+$/])
+          response[:body] = content[-bytes..-1]
+        else
+          response[:body] = content
+        end
+
+        response
+      })
 
       io = @s3.open("foo", response_content_disposition: "attachment")
       assert_equal 4,      io.size
       assert_equal "file", io.read
 
-      assert_equal :head_object,    @s3.client.api_requests[1][:operation_name]
+      assert_equal :get_object,     @s3.client.api_requests[1][:operation_name]
       assert_equal @s3.bucket.name, @s3.client.api_requests[1][:params][:bucket]
       assert_equal "prefix/foo",    @s3.client.api_requests[1][:params][:key]
-
-      assert_equal :get_object,     @s3.client.api_requests[2][:operation_name]
-      assert_equal @s3.bucket.name, @s3.client.api_requests[2][:params][:bucket]
-      assert_equal "prefix/foo",    @s3.client.api_requests[2][:params][:key]
-      assert_equal "attachment",    @s3.client.api_requests[2][:params][:response_content_disposition]
+      assert_equal "attachment",    @s3.client.api_requests[1][:params][:response_content_disposition]
     end
   end
 

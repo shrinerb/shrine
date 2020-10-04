@@ -61,7 +61,7 @@ direct uploads for fully asynchronous user experience.
   gem.add_development_dependency "ruby-vips", "~> 2.0" unless ENV["CI"]
 
   # for S3 storage
-  gem.add_development_dependency "aws-sdk-s3", "~> 1.16"
+  gem.add_development_dependency "aws-sdk-s3", "~> 1.69"
   gem.add_development_dependency "aws-sdk-core", "~> 3.23"
 
   # for instrumentation plugin
