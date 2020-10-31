@@ -207,6 +207,16 @@ describe Shrine::Plugins::Sequel do
         assert_equal "bar",        @user.avatar_attacher.context[:foo]
       end
 
+      it "doesn't initialize the attacher if it hasn't been initialized" do
+        @user.class.include @shrine::Attachment.new(:avatar)
+
+        @user.save
+        @user = @user.class.with_pk!(@user.id)
+        @user.reload
+
+        refute @user.instance_variable_defined?(:@avatar_attacher)
+      end
+
       it "returns self" do
         @user.class.include @shrine::Attachment.new(:avatar)
 

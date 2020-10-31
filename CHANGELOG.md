@@ -1,3 +1,9 @@
+## HEAD
+
+* `activerecord` – Don't load the attacher on `ActiveRecord::Base#reload` if it hasn't yet been initialized (@janko)
+
+* `sequel` – Don't load the attacher on `Sequel::Model#reload` if it hasn't yet been initialized (@janko)
+
 ## 3.3.0 (2020-10-04)
 
 * `s3` - Support new `Aws::S3::EncryptionV2::Client` for client-side encryption (@janko)
