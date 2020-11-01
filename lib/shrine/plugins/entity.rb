@@ -116,6 +116,11 @@ class Shrine
           self
         end
 
+        # Loads attachment from the entity attribute.
+        def read
+          load_column(read_attribute)
+        end
+
         # Returns a hash with entity attribute name and column data.
         #
         #     attacher.column_values
@@ -134,11 +139,6 @@ class Shrine
         end
 
         private
-
-        # Loads attachment from the entity attribute.
-        def read
-          load_column(read_attribute)
-        end
 
         # Reads value from the entity attribute.
         def read_attribute

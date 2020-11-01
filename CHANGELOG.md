@@ -1,5 +1,7 @@
 ## HEAD
 
+* `entity` – Make `Attacher#read` method public (@janko)
+
 * `entity` – Reset attachment dirty tracking in `Attacher#reload` (@janko)
 
 * `activerecord` – Don't load the attacher on `ActiveRecord::Base#reload` if it hasn't yet been initialized (@janko)

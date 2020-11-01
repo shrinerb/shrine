@@ -206,6 +206,9 @@ attacher.reload
 attacher.file #=> #<ImageUploader::UploadedFile>
 ```
 
+If you want to reload attachment data while retaining dirty tracking state, use
+`Attacher#read` instead.
+
 ### Column values
 
 The `Attacher#column_values` method returns a hash with the entity attribute as

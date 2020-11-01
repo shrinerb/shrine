@@ -226,6 +226,16 @@ describe Shrine::Plugins::Entity do
       end
     end
 
+    describe "#read" do
+      it "loads entity file data" do
+        @attacher.load_entity(@entity_class.new, :file)
+        @attacher.attach(fakeio)
+        @attacher.read
+
+        assert_nil @attacher.file
+      end
+    end
+
     describe "#column_values" do
       it "returns column values with an attached file" do
         @attacher.load_entity(@entity_class.new, :file)
