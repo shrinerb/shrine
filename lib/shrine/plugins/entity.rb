@@ -112,6 +112,7 @@ class Shrine
         #     attacher.file #=> #<Shrine::UploadedFile>
         def reload
           read
+          @previous = nil
           self
         end
 

@@ -216,6 +216,14 @@ describe Shrine::Plugins::Entity do
 
         assert_nil @attacher.file
       end
+
+      it "resets dirty tracking" do
+        @attacher.load_entity(@entity_class.new, :file)
+        @attacher.attach(fakeio)
+        @attacher.reload
+
+        refute @attacher.changed?
+      end
     end
 
     describe "#column_values" do
