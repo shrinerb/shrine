@@ -274,14 +274,10 @@ describe Shrine::Plugins::Activerecord do
         @user.class.class_eval { attr_accessor :avatar_data }
       end
 
-      after do
-        @user.class.columns_hash["avatar_data"].sql_type_metadata
-          .instance_variable_set(:@type, :text) # revert schema change
-      end
-
       it "handles json type" do
-        @user.class.columns_hash["avatar_data"].sql_type_metadata
-          .instance_variable_set(:@type, :json)
+        column = @user.class.columns_hash["avatar_data"].dup
+        column.singleton_class.send(:define_method, :type) { :json }
+        @user.class.columns_hash["avatar_data"] = column
 
         @attacher.load_model(@user, :avatar)
         @attacher.attach(fakeio)
@@ -294,8 +290,9 @@ describe Shrine::Plugins::Activerecord do
       end
 
       it "handles jsonb type" do
-        @user.class.columns_hash["avatar_data"].sql_type_metadata
-          .instance_variable_set(:@type, :jsonb)
+        column = @user.class.columns_hash["avatar_data"].dup
+        column.singleton_class.send(:define_method, :type) { :jsonb }
+        @user.class.columns_hash["avatar_data"] = column
 
         @attacher.load_model(@user, :avatar)
         @attacher.attach(fakeio)
