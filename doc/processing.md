@@ -322,7 +322,7 @@ perform:
 ```rb
 # config/initializers/shrine.rb (Rails)
 # ...
-Shrine.plugin :derivation_endpoints, secret_key: "<YOUR_SECRET_KEY>"
+Shrine.plugin :derivation_endpoint, secret_key: "<YOUR_SECRET_KEY>"
 ```
 ```rb
 require "image_processing/mini_magick"
