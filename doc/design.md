@@ -125,6 +125,24 @@ MyUploader::UploadedFile.superclass #=> Shrine::UploadedFile
 MyUploader::Attacher.superclass     #=> Shrine::Attacher
 MyUploader::Attachment.superclass   #=> Shrine::Attachment
 ```
+**NB.:** Options in plugins used in Shrine subclasses may cause unexpected results:
+
+```rb
+class BaseUploader < Shrine
+    Shrine.plugin :url_options, store: {
+                  host: Rails.application.secrets.AWS_HOSTNAME
+                }
+end
+
+class ChildUploader < BaseUploader
+    # Child uploader will have no knowledge of 
+    # any options parameters passed to the plugin
+    # in the base class. Why? Because options are copied over
+    # when subclassed. If subclassing happens before
+    # plugins are loaded, those options will not be
+    # copied over into the subclass.
+end
+```
 
 See [Creating a New Plugin] guide and the [Plugin system of Sequel and Roda]
 article for more details on the design of Shrine's plugin system.
